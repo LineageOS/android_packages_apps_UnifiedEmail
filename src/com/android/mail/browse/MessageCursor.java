@@ -19,6 +19,7 @@ package com.android.mail.browse;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 
@@ -30,8 +31,10 @@ import com.android.mail.providers.UIProvider.CursorExtraKeys;
 import com.android.mail.providers.UIProvider.CursorStatus;
 import com.android.mail.ui.ConversationUpdater;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -89,7 +92,8 @@ public class MessageCursor extends CursorWrapper {
         private int getAttachmentsStateHashCode() {
             int hash = 0;
             for (Attachment a : getAttachments()) {
-                hash += (a.uri != null ? a.uri.hashCode() : 0);
+                final Uri uri = a.getIdentifierUri();
+                hash += (uri != null ? uri.hashCode() : 0);
             }
             return hash;
         }
@@ -200,11 +204,15 @@ public class MessageCursor extends CursorWrapper {
         int pos = -1;
         while (moveToPosition(++pos)) {
             final ConversationMessage m = getMessage();
+            final List<Uri> attUris = Lists.newArrayList();
+            for (Attachment a : m.getAttachments()) {
+                attUris.add(a.uri);
+            }
             sb.append(String.format(
                     "[Message #%d hash=%s uri=%s id=%s serverId=%s from='%s' draftType=%d" +
-                    " isSending=%s read=%s starred=%s attJson=%s]\n",
+                    " isSending=%s read=%s starred=%s attUris=%s]\n",
                     pos, m.getStateHashCode(), m.uri, m.id, m.serverId, m.from, m.draftType,
-                    m.isSending, m.read, m.starred, m.attachmentsJson));
+                    m.isSending, m.read, m.starred, attUris));
         }
         return sb.toString();
     }
