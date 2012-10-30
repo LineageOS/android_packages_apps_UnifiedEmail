@@ -414,7 +414,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mCheckboxesEnabled = !checkboxesDisabled;
-        mStarEnabled = !folder.isTrash();
+        mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
