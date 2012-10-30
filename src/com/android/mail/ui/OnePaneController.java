@@ -126,6 +126,20 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     /**
+     * Returns true if the candidate URI is the URI for the default inbox for the given account.
+     * @param candidate
+     * @param account
+     * @return
+     */
+    private static final boolean isDefaultInbox(Uri candidate, Account account) {
+        if (candidate == null || account == null) {
+            return false;
+        }
+        final Uri inboxUri = Settings.getDefaultInboxUri(account.settings);
+        return candidate.equals(account.settings.defaultInbox);
+    }
+
+    /**
      * Returns true if the user is currently in the conversation list view, viewing the default
      * inbox.
      * @return
@@ -136,9 +150,8 @@ public final class OnePaneController extends AbstractActivityController {
                 || account.settings == null) {
             return false;
         }
-        final Uri inboxUri = Settings.getDefaultInboxUri(account.settings);
         return !ConversationListContext.isSearchResult(context)
-                && context.folder.uri.equals(inboxUri);
+                && isDefaultInbox(context.folder.uri, account);
     }
 
     @Override
@@ -377,7 +390,9 @@ public final class OnePaneController extends AbstractActivityController {
      */
     private void transitionToInbox() {
         mViewMode.enterConversationListMode();
-        if (mInbox == null) {
+        // The inbox could have changed, in which case we should load it again.
+        final boolean inboxChanged = !isDefaultInbox(mConvListContext.folder.uri, mAccount);
+        if (mInbox == null || inboxChanged) {
             loadAccountInbox();
         } else {
             final ConversationListContext listContext =
