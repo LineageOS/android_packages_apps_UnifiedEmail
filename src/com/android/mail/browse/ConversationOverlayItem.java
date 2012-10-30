@@ -130,4 +130,12 @@ public abstract class ConversationOverlayItem {
     public void setMessage(ConversationMessage message) {
     }
 
+    /**
+     * Given a view that is already bound to this item, force the view to re-render the item's
+     * current model data. This is typically called after a data model update, to update the
+     * affected view in-place.
+     */
+    public void onModelUpdated(View v) {
+    }
+
 }
