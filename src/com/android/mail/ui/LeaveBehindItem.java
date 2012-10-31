@@ -145,46 +145,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         return new LeaveBehindData(getData(), mUndoOp);
     }
 
-    public class LeaveBehindData implements Parcelable {
-        ToastBarOperation op;
-        Conversation data;
-
-        public LeaveBehindData(Conversation conv, ToastBarOperation undoOp) {;
-            op = undoOp;
-            data = conv;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel arg, int flags) {
-            arg.writeParcelable(op, 0);
-            arg.writeParcelable(data, 0);
-        }
-
-        private LeaveBehindData(Parcel arg) {
-            this((Conversation) arg.readParcelable(null),
-                    (ToastBarOperation) arg.readParcelable(null));
-        }
-
-        public final Creator<LeaveBehindData> CREATOR = new Creator<LeaveBehindData>() {
-
-            @Override
-            public LeaveBehindData createFromParcel(Parcel source) {
-                return new LeaveBehindData(source);
-            }
-
-            @Override
-            public LeaveBehindData[] newArray(int size) {
-                return new LeaveBehindData[size];
-            }
-
-        };
-    }
-
     private Conversation mData;
     private int mAnimatedHeight = -1;
     private int mWidth;

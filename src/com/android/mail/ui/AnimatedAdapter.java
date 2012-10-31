@@ -631,7 +631,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             }
         }
         if (outState.containsKey(LEAVE_BEHIND_ITEM)) {
-            LeaveBehindItem.LeaveBehindData left = outState.getParcelable(LEAVE_BEHIND_ITEM);
+            LeaveBehindData left = outState.getParcelable(LEAVE_BEHIND_ITEM);
             LeaveBehindItem item = setupLeaveBehind(left.data, left.op, left.data.position);
             mLeaveBehindItem = item;
         }
