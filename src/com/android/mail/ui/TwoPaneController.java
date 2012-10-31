@@ -444,7 +444,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
-                if (op.isBatchUndo()) {
+                if (op.isBatchUndo() && !mLayout.isConversationListCollapsed()) {
                     resId = R.dimen.undo_bar_width_conv_list;
                 } else {
                     resId = R.dimen.undo_bar_width_conv;
@@ -456,17 +456,13 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public void onUndoAvailable(ToastBarOperation op) {
         final int mode = mViewMode.getMode();
-        final FrameLayout.LayoutParams params =
-                (FrameLayout.LayoutParams) mToastBar.getLayoutParams();
         final ConversationListFragment convList = getConversationListFragment();
-        int undoBarWidth = getUndoBarWidth(mode, op);
+
+        repositionToastBar(op);
+
         switch (mode) {
             case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
-                params.width = undoBarWidth - params.leftMargin - params.rightMargin;
-                params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                mToastBar.setLayoutParams(params);
-                mToastBar.setConversationMode(false);
                 if (convList != null) {
                     mToastBar.show(
                             getUndoClickedListener(convList.getAnimatedAdapter()),
@@ -481,7 +477,33 @@ public final class TwoPaneController extends AbstractActivityController {
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
-                if (op.isBatchUndo()) {
+                if (convList != null) {
+                    mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()), 0, Html
+                            .fromHtml(op.getDescription(mActivity.getActivityContext(), mFolder)),
+                            true, /* showActionIcon */
+                            R.string.undo, true, /* replaceVisibleToast */
+                            op);
+                }
+                break;
+        }
+    }
+
+    public void repositionToastBar(ToastBarOperation op) {
+        final int mode = mViewMode.getMode();
+        final FrameLayout.LayoutParams params =
+                (FrameLayout.LayoutParams) mToastBar.getLayoutParams();
+        int undoBarWidth = getUndoBarWidth(mode, op);
+        switch (mode) {
+            case ViewMode.SEARCH_RESULTS_LIST:
+            case ViewMode.CONVERSATION_LIST:
+                params.width = undoBarWidth - params.leftMargin - params.rightMargin;
+                params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+                mToastBar.setLayoutParams(params);
+                mToastBar.setConversationMode(false);
+                break;
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+            case ViewMode.CONVERSATION:
+                if (op.isBatchUndo() && !mLayout.isConversationListCollapsed()) {
                     // Show undo bar in the conversation list.
                     params.gravity = Gravity.BOTTOM | Gravity.LEFT;
                     params.width = undoBarWidth - params.leftMargin - params.rightMargin;
@@ -494,15 +516,27 @@ public final class TwoPaneController extends AbstractActivityController {
                     mToastBar.setLayoutParams(params);
                     mToastBar.setConversationMode(true);
                 }
-                if (convList != null) {
-                    mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()), 0, Html
-                            .fromHtml(op.getDescription(mActivity.getActivityContext(), mFolder)),
-                            true, /* showActionIcon */
-                            R.string.undo, true, /* replaceVisibleToast */
-                            op);
-                }
                 break;
         }
+    }
+
+    @Override
+    protected void hideOrRepositionToastBar(final boolean animated) {
+        final int oldViewMode = mViewMode.getMode();
+        mLayout.postDelayed(new Runnable() {
+                @Override
+            public void run() {
+                if (/* the touch did not open a conversation */oldViewMode == mViewMode.getMode() ||
+                /* animation has ended */!mToastBar.isAnimating()) {
+                    mToastBar.hide(animated);
+                } else {
+                    // the touch opened a conversation, reposition undo bar
+                    repositionToastBar(mToastBar.getOperation());
+                }
+            }
+        },
+        /* Give time for ViewMode to change from the touch */
+        mContext.getResources().getInteger(R.integer.dismiss_undo_bar_delay_ms));
     }
 
     @Override

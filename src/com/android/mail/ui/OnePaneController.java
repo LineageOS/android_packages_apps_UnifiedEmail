@@ -551,6 +551,11 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
+    protected void hideOrRepositionToastBar(boolean animated) {
+        mToastBar.hide(animated);
+    }
+
+    @Override
     public void onError(final Folder folder, boolean replaceVisibleToast) {
         final int mode = mViewMode.getMode();
         switch (mode) {
