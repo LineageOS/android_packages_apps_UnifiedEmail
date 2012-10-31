@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -84,15 +85,15 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     private final FolderWatcher mFolderWatcher;
 
     /** Type indicating the current account view shown in the actionbar (not the dropdown) */
-    private static final int TYPE_NON_DROPDOWN = 0;
+    private static final int TYPE_NON_DROPDOWN = -99;
     /** Type indicating an account (user@example.com). */
-    public static final int TYPE_ACCOUNT = 2;
+    public static final int TYPE_ACCOUNT = 0;
     /** Type indicating a view that separates the account list from the recent folder list. */
-    public static final int TYPE_HEADER = 3;
+    public static final int TYPE_HEADER = AdapterView.ITEM_VIEW_TYPE_HEADER_OR_FOOTER;
     /** Type indicating a view containing a recent folder (Sent, Outbox). */
-    public static final int TYPE_FOLDER = 4;
+    public static final int TYPE_FOLDER = 1;
     /** Type indicating the "Show All Folders" view. */
-    public static final int TYPE_ALL_FOLDERS = 5;
+    public static final int TYPE_ALL_FOLDERS = 2;
     private RecentFolderObserver mRecentFolderObserver;
     private RecentFolderObserver mSpinnerRecentFolderObserver = new RecentFolderObserver() {
         @Override
@@ -127,6 +128,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     };
     private RecentFolderController mRecentFolderController;
 
+    @Override
+    public int getViewTypeCount() {
+        return 4;
+    }
+
     /**
      * There can be three types of views: Accounts (test@android.com, fifi@example.com), folders
      * (Inbox, Outbox) or header and footer. This method returns the type of account at given
@@ -135,7 +141,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return the type of account: one of {@link #TYPE_ACCOUNT}, {@link #TYPE_HEADER}, or
      * {@link #TYPE_FOLDER}.
      */
-    public int getType(int position) {
+    @Override
+    public int getItemViewType(int position) {
         // First the accounts
         if (position < mNumAccounts) {
             return TYPE_ACCOUNT;
@@ -149,57 +156,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         }
         // Finally, the recent folders.
         return TYPE_FOLDER;
-    }
-
-    /**
-     * Given a dropdown view, enable only the type, and disable everything else.
-     * @param view
-     * @param type
-     */
-    private static final void selectRelevant(View view, int type) {
-        if (view == null) {
-            return;
-        }
-        final View anchor = view.findViewById(R.id.anchor);
-        final View account = view.findViewById(R.id.account);
-        final View header = view.findViewById(R.id.header);
-        final View folder = view.findViewById(R.id.folder);
-        final View footer = view.findViewById(R.id.footer);
-        // Disable everything initially.
-        disableView(anchor);
-        disableView(account);
-        disableView(header);
-        disableView(folder);
-        disableView(footer);
-        switch (type) {
-            case TYPE_NON_DROPDOWN:
-                enableView(anchor);
-                break;
-            case TYPE_ACCOUNT:
-                enableView(account);
-                break;
-            case TYPE_HEADER:
-                enableView(header);
-                break;
-            case TYPE_FOLDER:
-                enableView(folder);
-                break;
-            case TYPE_ALL_FOLDERS:
-                enableView(footer);
-                break;
-        }
-    }
-
-    private static void enableView(View view) {
-        if (view != null) {
-            view.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private static void disableView(View view) {
-        if (view != null) {
-            view.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -279,7 +235,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        switch (getType(position)){
+        switch (getItemViewType(position)){
             case TYPE_ACCOUNT:
                 return getAccount(position);
             case TYPE_HEADER:
@@ -294,7 +250,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        final int type = getType(position);
+        final int type = getItemViewType(position);
         switch (type) {
             case TYPE_HEADER:
                 // Fall-through
@@ -355,15 +311,13 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         // Do not use stop view recycling in getDropDownView!!!
         // For unknown reasons, using view recycling avoids bugs where the unread count used to
         // disappear.
-        final int type = getType(position);
-        view = mInflater.inflate(
-                mRecentFoldersVisible ? R.layout.account_switch_spinner_dropdown_item
-                        : R.layout.account_switch_spinner_simple_dropdown_item, null);
-        selectRelevant(view, type);
+        final int type = getItemViewType(position);
         switch (type) {
             case TYPE_ACCOUNT:
                 final Account account = getAccount(position);
-                View colorView = view.findViewById(R.id.account_spinner_color);
+                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_account, parent,
+                        false);
+                View colorView = view.findViewById(R.id.dropdown_color);
                 if (account == null) {
                     bigText = "";
                     smallText = "";
@@ -382,29 +336,35 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                     final Folder inbox = mFolderWatcher.get(account.settings.defaultInbox);
                     unreadCount = (inbox != null) ? inbox.unreadCount : 0;
                 }
-                displayOrHide(view, R.id.abd_account_first, bigText);
-                displayOrHide(view, R.id.abd_account_second, smallText);
+                displayOrHide(view, R.id.dropdown_first, bigText);
+                displayOrHide(view, R.id.dropdown_second, smallText);
                 populateUnreadCountView(
-                        (TextView) view.findViewById(R.id.abd_account_unread), unreadCount);
+                        (TextView) view.findViewById(R.id.dropdown_unread), unreadCount);
                 break;
             case TYPE_HEADER:
+                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_header, parent,
+                        false);
                 ((TextView) view.findViewById(R.id.account_spinner_header_account))
                         .setText(getCurrentAccountName());
                 return view;
             case TYPE_FOLDER:
+                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_folder, parent,
+                        false);
                 final Folder folder = mRecentFolderList.get(getRecentOffset(position));
-                colorView = view.findViewById(R.id.abd_folder_color);
+                colorView = view.findViewById(R.id.dropdown_color);
                 bigText = folder.name;
                 unreadCount = folder.unreadCount;
                 Folder.setFolderBlockColor(folder, colorView);
                 colorView.setVisibility(View.VISIBLE);
-                displayOrHide(view, R.id.abd_folder_first, bigText);
-                displayOrHide(view, R.id.abd_folder_second, smallText);
+                displayOrHide(view, R.id.dropdown_first, bigText);
+                displayOrHide(view, R.id.dropdown_second, smallText);
                 populateUnreadCountView(
-                        (TextView) view.findViewById(R.id.abd_folder_unread), unreadCount);
+                        (TextView) view.findViewById(R.id.dropdown_unread), unreadCount);
                 break;
             case TYPE_ALL_FOLDERS:
-                return view;
+                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_footer, parent,
+                        false);
+                break;
         }
         return view;
     }
@@ -454,7 +414,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     @Override
     public boolean isEnabled(int position) {
         // Don't want the user selecting the header.
-        final int type = getType(position);
+        final int type = getItemViewType(position);
         return type != TYPE_HEADER;
     }
 

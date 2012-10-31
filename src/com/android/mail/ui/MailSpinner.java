@@ -118,7 +118,7 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         LogUtils.d(LOG_TAG, "onNavigationItemSelected(%d, %d) called", position, id);
-        final int type = mSpinnerAdapter.getType(position);
+        final int type = mSpinnerAdapter.getItemViewType(position);
         boolean dismiss = false;
         switch (type) {
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
