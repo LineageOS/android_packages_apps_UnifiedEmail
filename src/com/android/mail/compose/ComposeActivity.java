@@ -764,8 +764,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
         }
         if (mReplyFromAccount == null) {
-            mReplyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
-                    mAccount.name, mAccount.name, true, false);
+            mReplyFromAccount = getDefaultReplyFromAccount(mAccount);
         }
 
         mFromSpinner.setCurrentAccount(mReplyFromAccount);
@@ -857,8 +856,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private ReplyFromAccount getDefaultReplyFromAccount(Account account) {
-        List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
-        for (ReplyFromAccount from : replyFromAccounts) {
+        for (ReplyFromAccount from : account.getReplyFroms()) {
             if (from.isDefault) {
                 return from;
             }
