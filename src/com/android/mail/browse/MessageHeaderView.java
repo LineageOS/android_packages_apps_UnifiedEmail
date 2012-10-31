@@ -355,22 +355,30 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             return;
         }
 
+        mMessageHeaderItem = headerItem;
+        render(measureOnly);
+    }
+
+    public void refresh() {
+        render(false);
+    }
+
+    private void render(boolean measureOnly) {
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
 
         mCollapsedDetailsValid = false;
         mExpandedDetailsValid = false;
 
-        mMessageHeaderItem = headerItem;
-        mMessage = headerItem.getMessage();
+        mMessage = mMessageHeaderItem.getMessage();
         mShowImagePrompt = mMessage.shouldShowImagePrompt();
-        setExpanded(headerItem.isExpanded());
+        setExpanded(mMessageHeaderItem.isExpanded());
 
         mTimestampMs = mMessage.dateReceivedMs;
-        mTimestampShort = headerItem.timestampShort;
+        mTimestampShort = mMessageHeaderItem.timestampShort;
         if (mTimestampShort == null) {
             mTimestampShort = mDateBuilder.formatShortDate(mTimestampMs);
-            headerItem.timestampShort = mTimestampShort;
+            mMessageHeaderItem.timestampShort = mTimestampShort;
         }
 
         mFrom = mMessage.getFromAddresses();

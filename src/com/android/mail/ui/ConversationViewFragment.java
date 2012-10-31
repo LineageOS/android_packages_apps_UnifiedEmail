@@ -1184,6 +1184,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private boolean processInPlaceUpdates(MessageCursor newCursor, MessageCursor oldCursor) {
         final Set<String> idsOfChangedBodies = Sets.newHashSet();
+        final List<Integer> changedOverlayPositions = Lists.newArrayList();
+
         boolean changed = false;
 
         int pos = 0;
@@ -1197,10 +1199,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
             if (!TextUtils.equals(newMsg.from, oldMsg.from) ||
                     newMsg.isSending != oldMsg.isSending) {
-                mAdapter.updateItemsForMessage(newMsg);
+                mAdapter.updateItemsForMessage(newMsg, changedOverlayPositions);
                 LogUtils.i(LOG_TAG, "msg #%d (%d): detected from/sending change. isSending=%s",
                         pos, newMsg.id, newMsg.isSending);
-                changed = true;
             }
 
             // update changed message bodies in-place
@@ -1214,9 +1215,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             pos++;
         }
 
-        if (changed) {
+
+        if (!changedOverlayPositions.isEmpty()) {
             // notify once after the entire adapter is updated
-            mAdapter.notifyDataSetChanged();
+            mConversationContainer.onOverlayModelUpdate(changedOverlayPositions);
+            changed = true;
         }
 
         if (!idsOfChangedBodies.isEmpty()) {
