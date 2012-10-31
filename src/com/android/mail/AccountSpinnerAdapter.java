@@ -85,8 +85,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     /** Type indicating the current account view shown in the actionbar (not the dropdown) */
     private static final int TYPE_NON_DROPDOWN = 0;
-    /** Type indicating a dead, non-clickable view that is not shown to the user. */
-    public static final int TYPE_DEAD_HEADER = 1;
     /** Type indicating an account (user@example.com). */
     public static final int TYPE_ACCOUNT = 2;
     /** Type indicating a view that separates the account list from the recent folder list. */
@@ -138,15 +136,12 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * {@link #TYPE_FOLDER}.
      */
     public int getType(int position) {
-        if (position == 0) {
-            return TYPE_DEAD_HEADER;
-        }
         // First the accounts
-        if (position <= mNumAccounts) {
+        if (position < mNumAccounts) {
             return TYPE_ACCOUNT;
         }
         // Then the header
-        if (position == mNumAccounts + 1) {
+        if (position == mNumAccounts) {
             return TYPE_HEADER;
         }
         if (mShowAllFoldersItem && getRecentOffset(position) >= mRecentFolderList.size()) {
@@ -179,9 +174,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         switch (type) {
             case TYPE_NON_DROPDOWN:
                 enableView(anchor);
-                break;
-            case TYPE_DEAD_HEADER:
-                // Select nothing.
                 break;
             case TYPE_ACCOUNT:
                 enableView(account);
@@ -217,16 +209,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return
      */
     private final int getRecentOffset(int position) {
-        return position - mNumAccounts - 2;
-    }
-
-    /**
-     * Returns the position of the dead, unselectable element in the spinner.
-     * @return
-     */
-    public final int getSpacerPosition() {
-        // Return the position of the dead header, which is always at the top.
-        return 0;
+        return position - mNumAccounts - 1;
     }
 
     /**
@@ -291,14 +274,12 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         final int numRecents = mRecentFolderList == null? 0 : mRecentFolderList.size();
         final int numFolders = (mRecentFoldersVisible && numRecents > 0) ?
                 (1 + numRecents + (mShowAllFoldersItem ? 1 : 0)) : 0;
-        return 1 + mNumAccounts + numFolders;
+        return mNumAccounts + numFolders;
     }
 
     @Override
     public Object getItem(int position) {
         switch (getType(position)){
-            case TYPE_DEAD_HEADER:
-                return "dead header";
             case TYPE_ACCOUNT:
                 return getAccount(position);
             case TYPE_HEADER:
@@ -315,8 +296,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public long getItemId(int position) {
         final int type = getType(position);
         switch (type) {
-            case TYPE_DEAD_HEADER:
-                // Fall-through
             case TYPE_HEADER:
                 // Fall-through
             case TYPE_ALL_FOLDERS:
@@ -382,8 +361,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                         : R.layout.account_switch_spinner_simple_dropdown_item, null);
         selectRelevant(view, type);
         switch (type) {
-            case TYPE_DEAD_HEADER:
-                return view;
             case TYPE_ACCOUNT:
                 final Account account = getAccount(position);
                 View colorView = view.findViewById(R.id.account_spinner_color);
@@ -467,10 +444,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return the account at the given position.
      */
     private Account getAccount(int position) {
-        if (position >= mNumAccounts + 1) {
+        if (position >= mNumAccounts) {
             return null;
         }
-        return mAllAccounts[position - 1];
+        return mAllAccounts[position];
     }
 
 

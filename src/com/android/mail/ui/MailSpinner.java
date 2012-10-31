@@ -121,10 +121,6 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
         final int type = mSpinnerAdapter.getType(position);
         boolean dismiss = false;
         switch (type) {
-            case AccountSpinnerAdapter.TYPE_DEAD_HEADER:
-                // Automatic selections
-                LogUtils.d(LOG_TAG, "Got a tap on the dead header");
-                break;
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
                 // Get the capabilities associated with this account.
                 final Account account = (Account) mSpinnerAdapter.getItem(position);
