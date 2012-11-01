@@ -29,7 +29,6 @@
         <View android:id="@+id/dropdown_color"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_gravity="top|right"
             android:layout_height="@dimen/color_block_height"
             android:layout_width="@dimen/color_block_width"/>
         <TextView
