@@ -272,6 +272,23 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         return mOverlayAdapter;
     }
 
+    /**
+     * Re-bind any existing views that correspond to the given adapter positions.
+     *
+     */
+    public void onOverlayModelUpdate(List<Integer> affectedAdapterPositions) {
+        for (Integer i : affectedAdapterPositions) {
+            final ConversationOverlayItem item = mOverlayAdapter.getItem(i);
+            final OverlayView overlay = mOverlayViews.get(i);
+            if (overlay != null && overlay.view != null && item != null) {
+                item.onModelUpdated(overlay.view);
+            }
+            if (i == mSnapIndex) {
+                mSnapHeader.refresh();
+            }
+        }
+    }
+
     private void clearOverlays() {
         for (int i = 0, len = mOverlayViews.size(); i < len; i++) {
             detachOverlay(mOverlayViews.valueAt(i));
