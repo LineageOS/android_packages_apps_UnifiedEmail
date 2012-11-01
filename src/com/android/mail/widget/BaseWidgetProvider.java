@@ -188,19 +188,16 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             final String accountFolder = Persistence.getPreferences(context).getString(
                     WIDGET_ACCOUNT_PREFIX + appWidgetIds[i], null);
             String accountUri = null;
-            String folderUri = null;
+            Uri folderUri = null;
             if (!TextUtils.isEmpty(accountFolder)) {
                 final String[] parsedInfo = TextUtils.split(accountFolder,
                         ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
                 if (parsedInfo.length == 2) {
                     accountUri = parsedInfo[0];
-                    folderUri = parsedInfo[1];
+                    folderUri = Uri.parse(parsedInfo[1]);
                 } else {
-                    // TODO: (mindyp) how can we lookup the associated account?
-                    // AccountCacheProvider?
                     accountUri = accountFolder;
-                    folderUri = null; // account.getAccountInbox(context,
-                                      // account);
+                    folderUri =  Uri.EMPTY;
                 }
             }
             // account will be null the first time a widget is created. This is
@@ -212,11 +209,14 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             if (!TextUtils.isEmpty(accountUri)) {
                 account = getAccountObject(context, accountUri);
             }
+            if (Utils.isEmpty(folderUri) && account != null) {
+                folderUri = account.settings.defaultInbox;
+            }
             Folder folder = null;
-            if (!TextUtils.isEmpty(folderUri)) {
+            if (!Utils.isEmpty(folderUri)) {
                 Cursor folderCursor = null;
                 try {
-                    folderCursor = resolver.query(Uri.parse(folderUri),
+                    folderCursor = resolver.query(folderUri,
                             UIProvider.FOLDERS_PROJECTION, null, null, null);
                     if (folderCursor != null) {
                         if (folderCursor.moveToFirst()) {
@@ -278,7 +278,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
         final boolean isAccountValid = isAccountValid(context, account);
 
-        if (!isAccountValid) {
+        if (!isAccountValid || folder == null) {
             // Widget has not been configured yet
             remoteViews.setViewVisibility(R.id.widget_folder, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_account, View.GONE);
