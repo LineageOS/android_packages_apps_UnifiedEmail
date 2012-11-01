@@ -167,6 +167,12 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
+        public void onModelUpdated(View v) {
+            final MessageHeaderView header = (MessageHeaderView) v;
+            header.refresh();
+        }
+
+        @Override
         public boolean isContiguous() {
             return !isExpanded();
         }
@@ -417,10 +423,13 @@ public class ConversationViewAdapter extends BaseAdapter {
         mItems.addAll(pos, replacements);
     }
 
-    public void updateItemsForMessage(ConversationMessage message) {
-        for (ConversationOverlayItem item : mItems) {
+    public void updateItemsForMessage(ConversationMessage message,
+            List<Integer> affectedPositions) {
+        for (int i = 0, len = mItems.size(); i < len; i++) {
+            final ConversationOverlayItem item = mItems.get(i);
             if (item.belongsToMessage(message)) {
                 item.setMessage(message);
+                affectedPositions.add(i);
             }
         }
     }
