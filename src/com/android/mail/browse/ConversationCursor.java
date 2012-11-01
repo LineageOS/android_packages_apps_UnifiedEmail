@@ -42,6 +42,7 @@ import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.ui.ConversationListFragment;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -89,7 +90,7 @@ public final class ConversationCursor implements Cursor {
     @VisibleForTesting
     Cursor mUnderlyingCursor;
     // The new cursor obtained via a requery
-    private volatile Cursor mRequeryCursor;
+    private volatile CursorWrapper mRequeryCursor;
     // A mapping from Uri to updated ContentValues
     private HashMap<String, ContentValues> mCacheMap = new HashMap<String, ContentValues>();
     // Cache map lock (will be used only very briefly - few ms at most)
@@ -130,7 +131,7 @@ public final class ConversationCursor implements Cursor {
     private Uri qUri;
     private String[] qProjection;
 
-    private void setCursor(Cursor cursor) {
+    private void setCursor(CursorWrapper cursor) {
         // If we have an existing underlying cursor, make sure it's closed
         if (mUnderlyingCursor != null) {
             close();
@@ -215,10 +216,58 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
+     * Simple wrapper for a cursor that provides methods for quickly determining
+     * the existence of a row.
+     */
+    private class CursorWrapper {
+        private Set<String> mUris;
+        private Cursor mInnerCursor;
+
+        public CursorWrapper(Cursor result) {
+            mInnerCursor = result;
+            if (mInnerCursor != null && mInnerCursor.moveToFirst()) {
+                // We don't want iterating over this cusor to trigger a network
+                // request
+                final boolean networkWasEnabled = Utils
+                        .disableConversationCursorNetworkAccess(mInnerCursor);
+
+                mUris = Sets.newHashSet();
+                do {
+                    mUris.add(mInnerCursor.getString(sUriColumnIndex));
+                } while (mInnerCursor.moveToNext());
+
+                if (networkWasEnabled) {
+                    Utils.enableConversationCursorNetworkAccess(mInnerCursor);
+                }
+            }
+        }
+
+        public boolean contains(String uri) {
+            return mUris != null && mUris.contains(uri);
+        }
+
+        public String[] getColumnNames() {
+            return mInnerCursor.getColumnNames();
+        }
+
+        public int getCount() {
+            return mInnerCursor.getCount();
+        }
+
+        public void close() {
+            mInnerCursor.close();
+        }
+
+        public Cursor getCursor() {
+            return mInnerCursor;
+        }
+    }
+
+    /**
      * Runnable that performs the query on the underlying provider
      */
     private class RefreshTask extends AsyncTask<Void, Void, Void> {
-        private Cursor mCursor = null;
+        private CursorWrapper mCursor = null;
 
         private RefreshTask() {
         }
@@ -265,7 +314,7 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
-    private Cursor doQuery(boolean withLimit) {
+    private CursorWrapper doQuery(boolean withLimit) {
         Uri uri = qUri;
         if (withLimit) {
             uri = uri.buildUpon().appendQueryParameter(ConversationListQueryParameters.LIMIT,
@@ -281,7 +330,7 @@ public final class ConversationCursor implements Cursor {
             LogUtils.i(TAG, "ConversationCursor query: %s, %dms, %d results",
                     uri, time, result.getCount());
         }
-        return result;
+        return new CursorWrapper(result);
     }
 
     static boolean offUiThread() {
@@ -295,7 +344,7 @@ public final class ConversationCursor implements Cursor {
      * (estimated at a few ms, but we can profile this; remember that the cache will usually
      * be empty or have a few entries)
      */
-    private void resetCursor(Cursor newCursor) {
+    private void resetCursor(CursorWrapper newCursorWrapper) {
         synchronized (mCacheMapLock) {
             // Walk through the cache
             Iterator<HashMap.Entry<String, ContentValues>> iter = mCacheMap.entrySet().iterator();
@@ -304,32 +353,42 @@ public final class ConversationCursor implements Cursor {
                 HashMap.Entry<String, ContentValues> entry = iter.next();
                 final ContentValues values = entry.getValue();
                 final String key = entry.getKey();
+                boolean withinTimeWindow = false;
+                boolean removed = false;
                 if (values != null) {
                     Long updateTime = values.getAsLong(UPDATE_TIME_COLUMN);
                     if (updateTime != null && ((now - updateTime) < REQUERY_ALLOWANCE_TIME)) {
                         LogUtils.i(TAG, "IN resetCursor, keep recent changes to %s", key);
-                        continue;
+                        withinTimeWindow = true;
                     } else if (updateTime == null) {
                         LogUtils.e(TAG, "null updateTime from mCacheMap for key: %s", key);
                     }
                     if (values.containsKey(DELETED_COLUMN)) {
-                        // Keep the deleted count up-to-date; remove the cache entry
-                        mDeletedCount--;
-                        LogUtils.i(TAG, "IN resetCursor, sDeletedCount decremented to: %d by %s",
-                                mDeletedCount, key);
+                        // Item is deleted locally AND deleted in the new cursor.
+                        if (!newCursorWrapper.contains(key)) {
+                            // Keep the deleted count up-to-date; remove the
+                            // cache entry
+                            mDeletedCount--;
+                            removed = true;
+                            LogUtils.i(TAG,
+                                    "IN resetCursor, sDeletedCount decremented to: %d by %s",
+                                    mDeletedCount, key);
+                        }
                     }
                 } else {
                     LogUtils.e(TAG, "null ContentValues from mCacheMap for key: %s", key);
                 }
-                // Remove the entry
-                iter.remove();
+                // Remove the entry if it was time for an update or the item was deleted by the user.
+                if (!withinTimeWindow || removed) {
+                    iter.remove();
+                }
             }
 
             // Swap cursor
             if (mUnderlyingCursor != null) {
                 close();
             }
-            mUnderlyingCursor = newCursor;
+            mUnderlyingCursor = newCursorWrapper.getCursor();
 
             mPosition = -1;
             mUnderlyingCursor.moveToPosition(mPosition);
