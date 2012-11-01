@@ -399,16 +399,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void checkValidAccounts() {
-        mAccounts = AccountUtils.getAccounts(this);
-        if (mAccounts == null || mAccounts.length == 0) {
+        final Account[] allAccounts = AccountUtils.getAccounts(this);
+        if (allAccounts == null || allAccounts.length == 0) {
             final Intent noAccountIntent = MailAppProvider.getNoAccountIntent(this);
             if (noAccountIntent != null) {
+                mAccounts = null;
                 startActivityForResult(noAccountIntent, RESULT_CREATE_ACCOUNT);
             }
         } else {
             // If none of the accounts are syncing, setup a watcher.
             boolean anySyncing = false;
-            for (Account a : mAccounts) {
+            for (Account a : allAccounts) {
                 if (a.isAccountReady()) {
                     anySyncing = true;
                     break;
@@ -420,6 +421,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
                 return;
             }
+            mAccounts = AccountUtils.getSyncingAccounts(this);
             finishCreate();
         }
     }
@@ -2994,8 +2996,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 if (data != null && data.moveToFirst()) {
                     // there are accounts now!
                     Account account;
-                    ArrayList<Account> accounts = new ArrayList<Account>();
-                    ArrayList<Account> initializedAccounts = new ArrayList<Account>();
+                    final ArrayList<Account> accounts = new ArrayList<Account>();
+                    final ArrayList<Account> initializedAccounts = new ArrayList<Account>();
                     do {
                         account = new Account(data);
                         if (account.isAccountReady()) {
@@ -3007,7 +3009,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                         findViewById(R.id.wait).setVisibility(View.GONE);
                         getLoaderManager().destroyLoader(LOADER_ACCOUNT_CURSOR);
                         findViewById(R.id.compose).setVisibility(View.VISIBLE);
-                        mAccounts = accounts.toArray(new Account[initializedAccounts.size()]);
+                        mAccounts = initializedAccounts.toArray(
+                                new Account[initializedAccounts.size()]);
+
                         finishCreate();
                         invalidateOptionsMenu();
                     } else {
