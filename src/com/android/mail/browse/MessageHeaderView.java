@@ -364,6 +364,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     private void render(boolean measureOnly) {
+        if (mMessageHeaderItem == null) {
+            return;
+        }
+
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
 
@@ -447,6 +451,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
 
         t.pause(HEADER_RENDER_TAG);
+    }
+
+    public boolean isBoundTo(ConversationOverlayItem item) {
+        return item == mMessageHeaderItem;
     }
 
     private Address getAddress(String emailStr) {

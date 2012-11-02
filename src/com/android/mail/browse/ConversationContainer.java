@@ -281,7 +281,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             if (overlay != null && overlay.view != null && item != null) {
                 item.onModelUpdated(overlay.view);
             }
-            if (i == mSnapIndex) {
+            // update the snap header too, but only it's showing if the current item
+            if (i == mSnapIndex && mSnapHeader.isBoundTo(item)) {
                 mSnapHeader.refresh();
             }
         }
