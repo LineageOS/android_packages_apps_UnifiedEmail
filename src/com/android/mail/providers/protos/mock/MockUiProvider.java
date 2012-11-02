@@ -467,6 +467,8 @@ public final class MockUiProvider extends ContentProvider {
                 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.ACCOUNT_COOKIE_QUERY_URI),
                 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.UPDATE_SETTINGS_URI),
+                0);
         Parcel p = Parcel.obtain();
         p.writeString("");
         p.writeInt(1);

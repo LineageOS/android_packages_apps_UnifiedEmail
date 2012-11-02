@@ -768,4 +768,41 @@
 
     <!-- Dialog title when showing message header details in a popup window. [CHAR LIMIT=100]-->
     <string name="message_details_title">Message details</string>
+
+    <!-- Title of the dialog that appears the first time they perform an action that would cause
+         auto advance logic to fire [CHAR LIMIT=70] -->
+    <string name="auto_advance_help_title">Set auto-advance preference\n(after you delete, etc.)</string>
+
+    <!-- The auto-advance modes -->
+    <string-array name="prefEntries_autoAdvance">
+        <!-- Newer conversation -->
+        <item>Newer</item>
+        <!-- Older conversation -->
+        <item>Older</item>
+        <!-- Conversation list -->
+        <item>Conversation list</item>
+    </string-array>
+
+    <!-- Description for each auto-advance option to display after the user has picked one -->
+    <!-- The entries here must correspond to the entries in prefEntries_autoAdvance [CHAR LIMIT=60] -->
+    <string-array name="prefSummaries_autoAdvance">
+        <!-- Newer conversation -->
+        <item>Show newer conversation after you delete</item>
+        <!-- Older conversation -->
+        <item>Show older conversation after you delete</item>
+        <!-- Conversation list -->
+        <item>Show conversation list after you delete</item>
+    </string-array>
+
+    <!-- TODO: these pref keys that are never user visible should probably be
+    moved to a donttranslate file -->
+    <!-- The default auto-advance mode -->
+    <string translatable="false" name="prefDefault_autoAdvance">list</string>
+
+    <!-- The auto-advance mode values -->
+    <string-array translatable="false" name="prefValues_autoAdvance">
+        <item>newer</item>
+        <item>older</item>
+        <item>list</item>
+    </string-array>
 </resources>
