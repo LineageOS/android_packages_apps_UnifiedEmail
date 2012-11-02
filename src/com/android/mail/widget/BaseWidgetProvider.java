@@ -70,7 +70,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         super.onDeleted(context, appWidgetIds);
 
         // TODO: (mindyp) save widget information.
-        Editor editor = Persistence.getPreferences(context).edit();
+        Editor editor = Persistence.getInstance().getPreferences(context).edit();
         for (int i = 0; i < appWidgetIds.length; ++i) {
             // Remove the account in the preference
             editor.remove(WIDGET_ACCOUNT_PREFIX + appWidgetIds[i]);
@@ -100,8 +100,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         for (int i = 0; i < widgetIds.length; i++) {
             // Retrieve the persisted information for this widget from
             // preferences.
-            final String accountFolder = Persistence.getPreferences(context).getString(
-                    WIDGET_ACCOUNT_PREFIX + widgetIds[i], null);
+            final String accountFolder = Persistence.getInstance()
+                    .getPreferences(context).getString(WIDGET_ACCOUNT_PREFIX + widgetIds[i], null);
             // If the account matched, update the widget.
             if (accountFolder != null) {
                 widgetInfo[i] = TextUtils.split(accountFolder, ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
@@ -144,8 +144,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             for (int id : getCurrentWidgetIds(context)) {
                 // Retrieve the persisted information for this widget from
                 // preferences.
-                final String accountFolder = Persistence.getPreferences(context).getString(
-                        WIDGET_ACCOUNT_PREFIX + id, null);
+                final String accountFolder = Persistence.getInstance()
+                        .getPreferences(context).getString(WIDGET_ACCOUNT_PREFIX + id, null);
                 // If the account matched, update the widget.
                 if (accountFolder != null) {
                     final String[] parsedInfo = TextUtils.split(accountFolder,
@@ -185,8 +185,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         ContentResolver resolver = context.getContentResolver();
         for (int i = 0; i < appWidgetIds.length; ++i) {
             // Get the account for this widget from preference
-            final String accountFolder = Persistence.getPreferences(context).getString(
-                    WIDGET_ACCOUNT_PREFIX + appWidgetIds[i], null);
+            final String accountFolder = Persistence.getInstance().getPreferences(context)
+                    .getString(WIDGET_ACCOUNT_PREFIX + appWidgetIds[i], null);
             String accountUri = null;
             Uri folderUri = null;
             if (!TextUtils.isEmpty(accountFolder)) {
@@ -322,7 +322,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
     }
 
     private boolean isWidgetConfigured(Context context, int widgetId) {
-        final SharedPreferences pref = Persistence.getPreferences(context);
+        final SharedPreferences pref = Persistence.getInstance().getPreferences(context);
         return pref.getString(WIDGET_ACCOUNT_PREFIX + widgetId, null) != null;
     }
 

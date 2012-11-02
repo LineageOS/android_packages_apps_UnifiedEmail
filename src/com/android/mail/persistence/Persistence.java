@@ -43,7 +43,7 @@ public class Persistence {
     }
 
     // The name of our shared preferences store
-    public static final String SHARED_PREFERENCES_NAME = "UnifiedEmail";
+    private static final String SHARED_PREFERENCES_NAME = "UnifiedEmail";
 
     public static Persistence getInstance() {
         if (mInstance == null) {
@@ -53,10 +53,14 @@ public class Persistence {
         return mInstance;
     }
 
-    public static SharedPreferences getPreferences(Context context) {
+    public String getSharedPreferencesName() {
+        return SHARED_PREFERENCES_NAME;
+    }
+
+    public SharedPreferences getPreferences(Context context) {
         if (sSharedPrefs == null) {
             sSharedPrefs = context.getSharedPreferences(
-                    SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+                    getSharedPreferencesName(), Context.MODE_PRIVATE);
         }
         return sSharedPrefs;
     }
