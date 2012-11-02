@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
  * A custom {@link View} that exposes an action to the user.
@@ -38,6 +39,7 @@ public class ActionableToastBar extends LinearLayout {
     private Animator mShowAnimation;
     private Animator mHideAnimation;
     private final int mBottomMarginSizeInConversation;
+    private final int mBottomMarginSize;
 
     /** Icon for the description. */
     private ImageView mActionDescriptionIcon;
@@ -61,6 +63,8 @@ public class ActionableToastBar extends LinearLayout {
 
     public ActionableToastBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mBottomMarginSize = context.getResources()
+                .getDimensionPixelSize(R.dimen.toast_bar_bottom_margin);
         mBottomMarginSizeInConversation = context.getResources().getDimensionPixelSize(
                 R.dimen.toast_bar_bottom_margin_in_conversation);
         LayoutInflater.from(context).inflate(R.layout.actionable_toast_row, this, true);
@@ -84,7 +88,8 @@ public class ActionableToastBar extends LinearLayout {
      */
     public void setConversationMode(boolean isInConversationMode) {
         final FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) getLayoutParams();
-        params.bottomMargin = isInConversationMode ? mBottomMarginSizeInConversation : 0;
+        params.bottomMargin = isInConversationMode ? mBottomMarginSizeInConversation
+                : mBottomMarginSize;
         setLayoutParams(params);
     }
 
@@ -216,6 +221,9 @@ public class ActionableToastBar extends LinearLayout {
         return (x > xy[0] && x < (xy[0] + getWidth()) && y > xy[1] && y < xy[1] + getHeight());
     }
 
+    public boolean isAnimating() {
+        return mShowAnimation != null && mShowAnimation.isStarted();
+    }
     /**
      * Classes that wish to perform some action when the action button is clicked
      * should implement this interface.
