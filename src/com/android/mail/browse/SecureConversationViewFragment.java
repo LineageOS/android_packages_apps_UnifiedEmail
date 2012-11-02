@@ -136,6 +136,11 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
+    protected WebView getWebView() {
+        return mWebView;
+    }
+
+    @Override
     protected void markUnread() {
         // Ignore unsafe calls made after a fragment is detached from an
         // activity

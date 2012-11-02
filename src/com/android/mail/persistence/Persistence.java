@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.android.mail.R;
 import com.android.mail.utils.LogTag;
 
 import java.util.Map;
@@ -35,6 +36,9 @@ import java.util.Set;
  */
 public class Persistence {
     public static final String TAG = LogTag.getLogTag();
+
+    // Hidden preference to indicate what version a "What's New" dialog was last shown for.
+    private static final String WHATS_NEW_LAST_SHOWN_VERSION = "whats-new-last-shown-version";
 
     private static Persistence mInstance = null;
 
@@ -114,5 +118,36 @@ public class Persistence {
         Editor editor = getPreferences(context).edit();
         editor.remove(key);
         editor.apply();
+    }
+
+    public int getInt(Context context, String account, String key, int def) {
+        return getPreferences(context).getInt(makeKey(account, key), def);
+    }
+
+    public void setInt(Context context, String account, String key, int value) {
+        Editor editor = getPreferences(context).edit();
+        editor.putInt(makeKey(account, key), value);
+        editor.apply();
+    }
+
+    /**
+     * Returns a boolean indicating whether the What's New dialog should be shown
+     * @param context Context
+     * @return Boolean indicating whether the What's New dialogs should be shown
+     */
+    public boolean getShouldShowWhatsNew(final Context context) {
+        // Get the last versionCode from the last time that the whats new dialogs has been shown
+        final String key = WHATS_NEW_LAST_SHOWN_VERSION;
+        final int lastShownVersion = getInt(context, null, key, 0);
+
+        // Get the last version the What's New dialog was updated
+        final int lastUpdatedVersion =
+                context.getResources().getInteger(R.integer.whats_new_last_updated);
+
+        return lastUpdatedVersion > lastShownVersion;
+    }
+
+    public void setHasShownWhatsNew(final Context context, final int version) {
+        setInt(context, null, WHATS_NEW_LAST_SHOWN_VERSION, version);
     }
 }

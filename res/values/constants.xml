@@ -97,4 +97,7 @@
 
     <!-- Whether or not to use a nice transition when showing the folder list fragment; used in 2-pane layouts -->
     <integer name="use_folder_list_fragment_transition">1</integer>
+
+    <!-- Whether or not to prompt the user to enable auto-fit the first time they encounter a wide message. TODO: Remove this when the email setting is added. -->
+    <integer name="prompt_auto_fit_on_first_wide_message">0</integer>
 </resources>

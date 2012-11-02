@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -33,9 +34,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 
+import com.android.mail.persistence.Persistence;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
+import com.android.mail.ui.WhatsNewDialogFragment.WhatsNewDialogListener;
 import com.android.mail.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
@@ -46,8 +49,8 @@ import java.net.URLEncoder;
  * (usually a list of folders), and the main content fragment (either a
  * conversation list or a conversation view).
  */
-public class MailActivity extends AbstractMailActivity implements ControllableActivity {
-    // TODO(viki) This class lacks: What's New dialog
+public class MailActivity extends AbstractMailActivity implements ControllableActivity,
+        WhatsNewDialogListener {
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
 
     private NfcAdapter mNfcAdapter; // final after onCreate
@@ -134,6 +137,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
                 (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
         mAccessibilityEnabled = mAccessibilityManager.isEnabled();
         setupNfc();
+
+        // Check if they haven't seen the current what's new dialog
+        if (Persistence.getInstance().getShouldShowWhatsNew(this)) {
+            // Don't show it if it's already displayed
+            if (getFragmentManager().findFragmentByTag(WhatsNewDialogFragment.FRAGMENT_TAG)
+                    == null) {
+                showWhatsNewDialog();
+            }
+        }
     }
 
     @Override
@@ -435,5 +447,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onAccessibilityStateChanged(boolean enabled) {
         mAccessibilityEnabled = enabled;
         mController.onAccessibilityStateChanged();
+    }
+
+    private void showWhatsNewDialog() {
+        final DialogFragment fragment = WhatsNewDialogFragment.newInstance();
+        fragment.show(getFragmentManager(), WhatsNewDialogFragment.FRAGMENT_TAG);
+    }
+
+    @Override
+    public void onWhatsNewDialogLayoutInflated(final View view) {
+        // No special action needed here, but Gmail needs some special handling.
     }
 }
