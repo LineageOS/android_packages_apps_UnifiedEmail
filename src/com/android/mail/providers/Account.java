@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
@@ -175,6 +176,13 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final Uri accoutCookieQueryUri;
 
     /**
+     * URI to be used with an update() ContentResolver call with a {@link ContentValues} object
+     * where the keys are from the {@link AccountColumns.SettingsColumns}, and the values are the
+     * new values.
+     */
+    public final Uri updateSettingsUri;
+
+    /**
      * Transient cache of parsed {@link #accountFromAddresses}, plus an entry for the main account
      * address.
      */
@@ -218,6 +226,7 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI,
                     viewIntentProxyUri);
             json.put(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
+            json.put(UIProvider.AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -305,6 +314,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 .getValidUri(json.optString(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI));
         accoutCookieQueryUri = Utils.getValidUri(
                 json.optString(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI));
+        updateSettingsUri = Utils.getValidUri(
+                json.optString(UIProvider.AccountColumns.UPDATE_SETTINGS_URI));
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -342,6 +353,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         manualSyncUri = in.readParcelable(null);
         viewIntentProxyUri = in.readParcelable(null);
         accoutCookieQueryUri = in.readParcelable(null);
+        updateSettingsUri = in.readParcelable(null);
         final String serializedSettings = in.readString();
         final Settings parcelSettings = Settings.newInstance(serializedSettings);
         if (parcelSettings != null) {
@@ -392,6 +404,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 .getString(UIProvider.ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN));
         accoutCookieQueryUri = Utils.getValidUri(cursor
                 .getString(UIProvider.ACCOUNT_COOKIE_QUERY_URI_COLUMN));
+        updateSettingsUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_UPDATE_SETTINGS_URI_COLUMN));
         settings = new Settings(cursor);
     }
 
@@ -466,6 +480,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(manualSyncUri, 0);
         dest.writeParcelable(viewIntentProxyUri, 0);
         dest.writeParcelable(accoutCookieQueryUri, 0);
+        dest.writeParcelable(updateSettingsUri, 0);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
         }
@@ -560,6 +575,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(defaultRecentFolderListUri, other.defaultRecentFolderListUri) &&
                 Objects.equal(viewIntentProxyUri, other.viewIntentProxyUri) &&
                 Objects.equal(accoutCookieQueryUri, other.accoutCookieQueryUri) &&
+                Objects.equal(updateSettingsUri, other.updateSettingsUri) &&
                 Objects.equal(settings, other.settings);
     }
 
@@ -589,7 +605,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                         sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri,
                         helpIntentUri, sendFeedbackIntentUri, reauthenticationIntentUri, syncStatus,
                         composeIntentUri, mimeType, recentFolderListUri, color,
-                        defaultRecentFolderListUri, viewIntentProxyUri, accoutCookieQueryUri);
+                        defaultRecentFolderListUri, viewIntentProxyUri, accoutCookieQueryUri,
+                        updateSettingsUri);
     }
 
     /**

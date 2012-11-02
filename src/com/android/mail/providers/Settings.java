@@ -61,7 +61,8 @@ public class Settings implements Parcelable {
      * Integer, one of {@link AutoAdvance#LIST}, {@link AutoAdvance#NEWER},
      * {@link AutoAdvance#OLDER} or  {@link AutoAdvance#UNSET}
      */
-    public final int autoAdvance;
+    private final int mAutoAdvance;
+    private Integer mTransientAutoAdvance = null;
     public final int messageTextSize;
     public final int snapHeaders;
     public final int replyBehavior;
@@ -95,7 +96,7 @@ public class Settings implements Parcelable {
 
     private Settings() {
         signature = "";
-        autoAdvance = AutoAdvance.LIST;
+        mAutoAdvance = AutoAdvance.LIST;
         messageTextSize = MessageTextSize.NORMAL;
         snapHeaders = SnapHeaderValue.ALWAYS;
         replyBehavior = DefaultReplyBehavior.REPLY;
@@ -115,7 +116,7 @@ public class Settings implements Parcelable {
 
     public Settings(Parcel inParcel) {
         signature = inParcel.readString();
-        autoAdvance = inParcel.readInt();
+        mAutoAdvance = inParcel.readInt();
         messageTextSize = inParcel.readInt();
         snapHeaders = inParcel.readInt();
         replyBehavior = inParcel.readInt();
@@ -135,7 +136,7 @@ public class Settings implements Parcelable {
 
     public Settings(Cursor cursor) {
         signature = cursor.getString(UIProvider.ACCOUNT_SETTINGS_SIGNATURE_COLUMN);
-        autoAdvance = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN);
+        mAutoAdvance = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN);
         messageTextSize = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN);
         snapHeaders = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN);
         replyBehavior = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN);
@@ -159,8 +160,8 @@ public class Settings implements Parcelable {
 
     private Settings(JSONObject json) {
         signature = json.optString(AccountColumns.SettingsColumns.SIGNATURE, sDefault.signature);
-        autoAdvance = json.optInt(AccountColumns.SettingsColumns.AUTO_ADVANCE,
-                sDefault.autoAdvance);
+        mAutoAdvance = json.optInt(AccountColumns.SettingsColumns.AUTO_ADVANCE,
+                sDefault.getAutoAdvanceSetting());
         messageTextSize = json.optInt(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE,
                 sDefault.messageTextSize);
         snapHeaders = json.optInt(AccountColumns.SettingsColumns.SNAP_HEADERS,
@@ -216,7 +217,7 @@ public class Settings implements Parcelable {
         try {
             json.put(AccountColumns.SettingsColumns.SIGNATURE,
                     getNonNull(signature, sDefault.signature));
-            json.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, autoAdvance);
+            json.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, getAutoAdvanceSetting());
             json.put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, messageTextSize);
             json.put(AccountColumns.SettingsColumns.SNAP_HEADERS, snapHeaders);
             json.put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
@@ -285,7 +286,7 @@ public class Settings implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString((String) getNonNull(signature, sDefault.signature));
-        dest.writeInt(autoAdvance);
+        dest.writeInt(getAutoAdvanceSetting());
         dest.writeInt(messageTextSize);
         dest.writeInt(snapHeaders);
         dest.writeInt(replyBehavior);
@@ -318,18 +319,37 @@ public class Settings implements Parcelable {
     }
 
     /**
-     * Return the auto advance setting for the settings provided. It is safe to pass this method
-     * a null object. It always returns a valid {@link AutoAdvance} setting.
+     * <p>Return the auto advance setting for the settings provided.</p>
+     * <p>It is safe to pass this method a null object, in which case, it will return
+     * {@link AutoAdvance#LIST}.</p>
+     *
      * @return the auto advance setting, a constant from {@link AutoAdvance}
      */
     public static int getAutoAdvanceSetting(Settings settings) {
-        // TODO(mindyp): if this isn't set, then show the dialog telling the user to set it.
-        // Remove defaulting to AutoAdvance.LIST.
-        final int autoAdvance = (settings != null) ?
-                (settings.autoAdvance == AutoAdvance.UNSET ?
-                        AutoAdvance.LIST : settings.autoAdvance)
-                : AutoAdvance.LIST;
-        return autoAdvance;
+        if (settings == null) {
+            return AutoAdvance.LIST;
+        }
+
+        return settings.getAutoAdvanceSetting();
+    }
+
+    /**
+     * Gets the autoadvance setting for this object, which may have changed since the settings were
+     * initially loaded.
+     */
+    public int getAutoAdvanceSetting() {
+        if (mTransientAutoAdvance != null) {
+            return mTransientAutoAdvance.intValue();
+        }
+
+        return mAutoAdvance;
+    }
+
+    /**
+     * Sets the transient autoadvance setting, which will override the initial autoadvance setting.
+     */
+    public void setAutoAdvanceSetting(final int autoAdvance) {
+        mTransientAutoAdvance = Integer.valueOf(autoAdvance);
     }
 
     /**
@@ -372,7 +392,8 @@ public class Settings implements Parcelable {
         }
         final Settings that = (Settings) aThat;
         return (TextUtils.equals(signature, that.signature)
-                && autoAdvance == that.autoAdvance
+                && mAutoAdvance == that.mAutoAdvance
+                && mTransientAutoAdvance == that.mTransientAutoAdvance
                 && messageTextSize == that.messageTextSize
                 && replyBehavior == that.replyBehavior
                 && hideCheckboxes == that.hideCheckboxes
@@ -403,8 +424,8 @@ public class Settings implements Parcelable {
      */
     private final int calculateHashCode() {
         return super.hashCode()
-                ^ Objects.hashCode(signature, autoAdvance, messageTextSize, replyBehavior,
-                        hideCheckboxes, confirmDelete, confirmArchive, confirmSend,
+                ^ Objects.hashCode(signature, mAutoAdvance, mTransientAutoAdvance, messageTextSize,
+                        replyBehavior, hideCheckboxes, confirmDelete, confirmArchive, confirmSend,
                         defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
                         priorityArrowsEnabled, setupIntentUri, conversationViewMode);
     }

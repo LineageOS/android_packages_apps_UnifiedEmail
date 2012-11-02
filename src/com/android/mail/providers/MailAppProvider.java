@@ -31,7 +31,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
@@ -286,7 +285,7 @@ public abstract class MailAppProvider extends ContentProvider
                         builder.add(account.settings.signature);
                         break;
                     case UIProvider.ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.autoAdvance));
+                        builder.add(Integer.valueOf(account.settings.getAutoAdvanceSetting()));
                         break;
                     case UIProvider.ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN:
                         builder.add(Integer.valueOf(account.settings.messageTextSize));
@@ -332,6 +331,9 @@ public abstract class MailAppProvider extends ContentProvider
                         break;
                     case UIProvider.ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN:
                         builder.add(account.settings.conversationViewMode);
+                        break;
+                    case UIProvider.ACCOUNT_UPDATE_SETTINGS_URI_COLUMN:
+                        builder.add(account.updateSettingsUri);
                         break;
                     default:
                         throw new IllegalStateException("Column not found: " + columnName);

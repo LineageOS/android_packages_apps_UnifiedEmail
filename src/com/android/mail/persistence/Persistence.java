@@ -16,13 +16,13 @@
 
 package com.android.mail.persistence;
 
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+
+import com.android.mail.utils.LogTag;
 
 import java.util.Set;
 
@@ -38,7 +38,7 @@ public class Persistence {
 
     private static SharedPreferences sSharedPrefs;
 
-    private Persistence() {
+    protected Persistence() {
         //  Singleton only, use getInstance()
     }
 
@@ -61,7 +61,7 @@ public class Persistence {
         return sSharedPrefs;
     }
 
-    private String makeKey(String account, String key) {
+    protected String makeKey(String account, String key) {
         return account != null ? account + "-" + key : key;
     }
 
@@ -81,6 +81,14 @@ public class Persistence {
         return getPreferences(context).getStringSet(makeKey(account, key), def);
     }
 
+    /**
+     * Sets a boolean preference. For an account-specific setting, provide a string account
+     * (user@example.com). Otherwise, providing null is safe.
+     * @param context
+     * @param account
+     * @param key
+     * @param value
+     */
     public void setBoolean(Context context, String account, String key, Boolean value) {
         Editor editor = getPreferences(context).edit();
         editor.putBoolean(makeKey(account, key), value);
@@ -92,7 +100,7 @@ public class Persistence {
         remove(context, makeKey(account, key));
     }
 
-    private void remove(Context context, String key) {
+    protected void remove(Context context, String key) {
         Editor editor = getPreferences(context).edit();
         editor.remove(key);
         editor.apply();
