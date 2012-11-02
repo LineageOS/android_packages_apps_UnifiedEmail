@@ -2468,10 +2468,12 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             if (mToastBar != null && !mToastBar.isEventInToastBar(event)) {
-                mToastBar.hide(true);
+                hideOrRepositionToastBar(true);
             }
         }
     }
+
+    protected abstract void hideOrRepositionToastBar(boolean animated);
 
     @Override
     public void onConversationSeen(Conversation conv) {
