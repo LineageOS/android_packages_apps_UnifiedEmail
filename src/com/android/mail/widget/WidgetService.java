@@ -161,7 +161,8 @@ public class WidgetService extends RemoteViewsService {
      */
     public static void saveWidgetInformation(Context context, int appWidgetId, Account account,
                 Folder folder) {
-        final SharedPreferences.Editor editor = Persistence.getPreferences(context).edit();
+        final SharedPreferences.Editor editor =
+                Persistence.getInstance().getPreferences(context).edit();
         editor.putString(WidgetProvider.WIDGET_ACCOUNT_PREFIX + appWidgetId,
                 createWidgetPreferenceValue(account, folder));
         editor.apply();
@@ -179,7 +180,7 @@ public class WidgetService extends RemoteViewsService {
     public boolean isWidgetConfigured(Context context, int appWidgetId, Account account,
             Folder folder) {
         if (isAccountValid(context, account)) {
-            return Persistence.getPreferences(context).getString(
+            return Persistence.getInstance().getPreferences(context).getString(
                     BaseWidgetProvider.WIDGET_ACCOUNT_PREFIX + appWidgetId, null) != null;
         }
         return false;
