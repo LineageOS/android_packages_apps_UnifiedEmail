@@ -240,6 +240,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     protected Message mRefMessage;
     private long mDraftId = UIProvider.INVALID_MESSAGE_ID;
     private Message mDraft;
+    private ReplyFromAccount mDraftAccount;
     private Object mDraftLock = new Object();
     private View mPhotoAttachmentsButton;
     private View mVideoAttachmentsButton;
@@ -1791,12 +1792,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         public final SendOrSaveCallback mSendOrSaveCallback;
         @VisibleForTesting
         public final SendOrSaveMessage mSendOrSaveMessage;
+        private ReplyFromAccount mExistingDraftAccount;
 
         public SendOrSaveTask(Context context, SendOrSaveMessage message,
-                SendOrSaveCallback callback) {
+                SendOrSaveCallback callback, ReplyFromAccount draftAccount) {
             mContext = context;
             mSendOrSaveCallback = callback;
             mSendOrSaveMessage = message;
+            mExistingDraftAccount = draftAccount;
         }
 
         @Override
@@ -1809,7 +1812,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // If a previous draft has been saved, in an account that is different
             // than what the user wants to send from, remove the old draft, and treat this
             // as a new message
-            if (!selectedAccount.equals(sendOrSaveMessage.mAccount)) {
+            if (mExistingDraftAccount != null
+                    && !selectedAccount.account.uri.equals(mExistingDraftAccount.account.uri)) {
                 if (messageId != UIProvider.INVALID_MESSAGE_ID) {
                     ContentResolver resolver = mContext.getContentResolver();
                     ContentValues values = new ContentValues();
@@ -2329,7 +2333,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /* package */
     static int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
             Message message, final Message refMessage, Spanned body, final CharSequence quotedText,
-            SendOrSaveCallback callback, Handler handler, boolean save, int composeMode) {
+            SendOrSaveCallback callback, Handler handler, boolean save, int composeMode,
+            ReplyFromAccount draftAccount) {
         ContentValues values = new ContentValues();
 
         String refMessageId = refMessage != null ? refMessage.uri.toString() : "";
@@ -2379,13 +2384,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (!TextUtils.isEmpty(refMessageId)) {
             MessageModification.putRefMessageId(values, refMessageId);
         }
-
         SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(context, replyFromAccount,
                 values, refMessageId, message.getAttachments(), save);
-        SendOrSaveTask sendOrSaveTask = new SendOrSaveTask(context, sendOrSaveMessage, callback);
+        SendOrSaveTask sendOrSaveTask = new SendOrSaveTask(context, sendOrSaveMessage, callback,
+                draftAccount);
 
         callback.initializeSendOrSave(sendOrSaveTask);
-
         // Do the send/save action on the specified handler to avoid possible
         // ANRs
         handler.post(sendOrSaveTask);
@@ -2454,6 +2458,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             public void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage,
                     Message message) {
                 synchronized (mDraftLock) {
+                    mDraftAccount = sendOrSaveMessage.mAccount;
                     mDraftId = message.id;
                     mDraft = message;
                     if (sRequestMessageIdMap != null) {
@@ -2528,7 +2533,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Message msg = createMessage(mReplyFromAccount, getMode());
         mRequestId = sendOrSaveInternal(this, mReplyFromAccount, msg, mRefMessage, body,
                 mQuotedTextView.getQuotedTextIfIncluded(), callback,
-                mSendSaveTaskHandler, save, mComposeMode);
+                mSendSaveTaskHandler, save, mComposeMode, mDraftAccount);
 
         if (mRecipient != null && mRecipient.equals(mAccount.name)) {
             mRecipient = selectedAccount.name;
