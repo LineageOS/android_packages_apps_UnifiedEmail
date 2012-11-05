@@ -186,7 +186,9 @@ public class HtmlConversationTemplates {
             throw new IllegalStateException("must call startConversation first");
         }
 
-        append(sConversationLower, mContext.getString(R.string.hide_elided),
+        final String contentReadyClass = enableContentReadySignal ? "initial-load" : "";
+
+        append(sConversationLower, contentReadyClass, mContext.getString(R.string.hide_elided),
                 mContext.getString(R.string.show_elided), docBaseUri, conversationBaseUri,
                 viewWidth, viewportWidth, enableContentReadySignal, normalizeMessageWidths);
 

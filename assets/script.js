@@ -301,7 +301,6 @@ function setupContentReady() {
     if (ENABLE_CONTENT_READY) {
         signalDiv = document.getElementById("initial-load-signal");
         signalDiv.addEventListener("webkitAnimationStart", onContentReady, false);
-        signalDiv.classList.add("initial-load");
     }
 }
 
