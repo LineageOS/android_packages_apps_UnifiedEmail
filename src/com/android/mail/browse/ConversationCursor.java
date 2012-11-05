@@ -41,6 +41,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.ui.ConversationListFragment;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
@@ -61,7 +62,7 @@ import java.util.Set;
  * implemented as a static HashMap.
  */
 public final class ConversationCursor implements Cursor {
-    private static final String TAG = "ConversationCursor";
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private static final boolean DEBUG = true;  // STOPSHIP Set to false before shipping
     // A deleted row is indicated by the presence of DELETED_COLUMN in the cache map
@@ -169,7 +170,7 @@ public final class ConversationCursor implements Cursor {
         synchronized (mCacheMapLock) {
             try {
                 // Create new ConversationCursor
-                LogUtils.i(TAG, "Create: initial creation");
+                LogUtils.i(LOG_TAG, "Create: initial creation");
                 setCursor(doQuery(mInitialConversationLimit));
             } finally {
                 // If we used a limit, queue up a query without limit
@@ -186,7 +187,7 @@ public final class ConversationCursor implements Cursor {
      */
     public void pause() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Paused: %s]", mName);
+            LogUtils.i(LOG_TAG, "[Paused: %s]", mName);
         }
         mPaused = true;
     }
@@ -196,13 +197,19 @@ public final class ConversationCursor implements Cursor {
      */
     public void resume() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Resumed: %s]", mName);
+            LogUtils.i(LOG_TAG, "[Resumed: %s]", mName);
         }
         mPaused = false;
         checkNotifyUI();
     }
 
     private void checkNotifyUI() {
+        LogUtils.d(
+                LOG_TAG,
+                "Received notify ui callback and sending a notification is enabled?" +
+                " %s and refresh ready ? %s",
+                (!mPaused && !mDeferSync),
+                (mRefreshReady || (mRefreshRequired && mRefreshTask == null)));
         if (!mPaused && !mDeferSync) {
             if (mRefreshRequired && (mRefreshTask == null)) {
                 notifyRefreshRequired();
@@ -210,7 +217,7 @@ public final class ConversationCursor implements Cursor {
                 notifyRefreshReady();
             }
         } else {
-            LogUtils.i(TAG, "[checkNotifyUI: %s%s",
+            LogUtils.i(LOG_TAG, "[checkNotifyUI: %s%s",
                     (mPaused ? "Paused " : ""), (mDeferSync ? "Defer" : ""));
         }
     }
@@ -275,7 +282,7 @@ public final class ConversationCursor implements Cursor {
         @Override
         protected Void doInBackground(Void... params) {
             if (DEBUG) {
-                LogUtils.i(TAG, "[Start refresh of %s: %d]", mName, hashCode());
+                LogUtils.i(LOG_TAG, "[Start refresh of %s: %d]", mName, hashCode());
             }
             // Get new data
             mCursor = doQuery(false);
@@ -287,6 +294,10 @@ public final class ConversationCursor implements Cursor {
         @Override
         protected void onPostExecute(Void param) {
             synchronized(mCacheMapLock) {
+                LogUtils.d(
+                        LOG_TAG,
+                        "Received notify ui callback and sending a notification is enabled? %s",
+                        (!mPaused && !mDeferSync));
                 // If cursor got closed (e.g. reset loader) in the meantime, cancel the refresh
                 if (isClosed()) {
                     onCancelled();
@@ -295,7 +306,7 @@ public final class ConversationCursor implements Cursor {
                 mRequeryCursor = mCursor;
                 mRefreshReady = true;
                 if (DEBUG) {
-                    LogUtils.i(TAG, "[Query done %s: %d]", mName, hashCode());
+                    LogUtils.i(LOG_TAG, "[Query done %s: %d]", mName, hashCode());
                 }
                 if (!mDeferSync && !mPaused) {
                     notifyRefreshReady();
@@ -306,7 +317,7 @@ public final class ConversationCursor implements Cursor {
         @Override
         protected void onCancelled() {
             if (DEBUG) {
-                LogUtils.i(TAG, "[Ignoring refresh result: %d]", hashCode());
+                LogUtils.i(LOG_TAG, "[Ignoring refresh result: %d]", hashCode());
             }
             if (mCursor != null) {
                 mCursor.close();
@@ -324,10 +335,10 @@ public final class ConversationCursor implements Cursor {
 
         Cursor result = sResolver.query(uri, qProjection, null, null, null);
         if (result == null) {
-            Log.w(TAG, "doQuery returning null cursor, uri: " + uri);
+            Log.w(LOG_TAG, "doQuery returning null cursor, uri: " + uri);
         } else if (DEBUG) {
             time = System.currentTimeMillis() - time;
-            LogUtils.i(TAG, "ConversationCursor query: %s, %dms, %d results",
+            LogUtils.i(LOG_TAG, "ConversationCursor query: %s, %dms, %d results",
                     uri, time, result.getCount());
         }
         return new CursorWrapper(result);
@@ -358,10 +369,10 @@ public final class ConversationCursor implements Cursor {
                 if (values != null) {
                     Long updateTime = values.getAsLong(UPDATE_TIME_COLUMN);
                     if (updateTime != null && ((now - updateTime) < REQUERY_ALLOWANCE_TIME)) {
-                        LogUtils.i(TAG, "IN resetCursor, keep recent changes to %s", key);
+                        LogUtils.i(LOG_TAG, "IN resetCursor, keep recent changes to %s", key);
                         withinTimeWindow = true;
                     } else if (updateTime == null) {
-                        LogUtils.e(TAG, "null updateTime from mCacheMap for key: %s", key);
+                        LogUtils.e(LOG_TAG, "null updateTime from mCacheMap for key: %s", key);
                     }
                     if (values.containsKey(DELETED_COLUMN)) {
                         // Item is deleted locally AND deleted in the new cursor.
@@ -370,13 +381,13 @@ public final class ConversationCursor implements Cursor {
                             // cache entry
                             mDeletedCount--;
                             removed = true;
-                            LogUtils.i(TAG,
+                            LogUtils.i(LOG_TAG,
                                     "IN resetCursor, sDeletedCount decremented to: %d by %s",
                                     mDeletedCount, key);
                         }
                     }
                 } else {
-                    LogUtils.e(TAG, "null ContentValues from mCacheMap for key: %s", key);
+                    LogUtils.e(LOG_TAG, "null ContentValues from mCacheMap for key: %s", key);
                 }
                 // Remove the entry if it was time for an update or the item was deleted by the user.
                 if (!withinTimeWindow || removed) {
@@ -433,7 +444,7 @@ public final class ConversationCursor implements Cursor {
             if (!mListeners.contains(listener)) {
                 mListeners.add(listener);
             } else {
-                LogUtils.i(TAG, "Ignoring duplicate add of listener");
+                LogUtils.i(LOG_TAG, "Ignoring duplicate add of listener");
             }
         }
     }
@@ -505,7 +516,8 @@ public final class ConversationCursor implements Cursor {
         // Calling this method off the UI thread will mess with ListView's reading of the cursor's
         // count
         if (offUiThread()) {
-            LogUtils.e(TAG, new Error(), "cacheValue incorrectly being called from non-UI thread");
+            LogUtils.e(LOG_TAG, new Error(),
+                    "cacheValue incorrectly being called from non-UI thread");
         }
 
         synchronized (mCacheMapLock) {
@@ -523,21 +535,21 @@ public final class ConversationCursor implements Cursor {
                 if (state && !hasValue) {
                     mDeletedCount++;
                     if (DEBUG) {
-                        LogUtils.i(TAG, "Deleted %s, incremented deleted count=%d", uriString,
+                        LogUtils.i(LOG_TAG, "Deleted %s, incremented deleted count=%d", uriString,
                                 mDeletedCount);
                     }
                 } else if (!state && hasValue) {
                     mDeletedCount--;
                     map.remove(columnName);
                     if (DEBUG) {
-                        LogUtils.i(TAG, "Undeleted %s, decremented deleted count=%d", uriString,
+                        LogUtils.i(LOG_TAG, "Undeleted %s, decremented deleted count=%d", uriString,
                                 mDeletedCount);
                     }
                     return;
                 } else if (!state) {
                     // Trying to undelete, but it's not deleted; just return
                     if (DEBUG) {
-                        LogUtils.i(TAG, "Undeleted %s, IGNORING, deleted count=%d", uriString,
+                        LogUtils.i(LOG_TAG, "Undeleted %s, IGNORING, deleted count=%d", uriString,
                                 mDeletedCount);
                     }
                     return;
@@ -559,7 +571,7 @@ public final class ConversationCursor implements Cursor {
             }
             map.put(UPDATE_TIME_COLUMN, System.currentTimeMillis());
             if (DEBUG && (columnName != DELETED_COLUMN)) {
-                LogUtils.i(TAG, "Caching value for %s: %s", uriString, columnName);
+                LogUtils.i(LOG_TAG, "Caching value for %s: %s", uriString, columnName);
             }
         }
     }
@@ -613,7 +625,7 @@ public final class ConversationCursor implements Cursor {
      */
     private void notifyRefreshRequired() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Notify %s: onRefreshRequired()]", mName);
+            LogUtils.i(LOG_TAG, "[Notify %s: onRefreshRequired()]", mName);
         }
         if (!mDeferSync) {
             synchronized(mListeners) {
@@ -629,7 +641,7 @@ public final class ConversationCursor implements Cursor {
      */
     private void notifyRefreshReady() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Notify %s: onRefreshReady(), %d listeners]",
+            LogUtils.i(LOG_TAG, "[Notify %s: onRefreshReady(), %d listeners]",
                     mName, mListeners.size());
         }
         synchronized(mListeners) {
@@ -644,7 +656,7 @@ public final class ConversationCursor implements Cursor {
      */
     private void notifyDataChanged() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Notify %s: onDataSetChanged()]", mName);
+            LogUtils.i(LOG_TAG, "[Notify %s: onDataSetChanged()]", mName);
         }
         synchronized(mListeners) {
             for (ConversationListener listener: mListeners) {
@@ -661,13 +673,13 @@ public final class ConversationCursor implements Cursor {
             // This can happen during an animated deletion, if the UI isn't keeping track, or
             // if a new query intervened (i.e. user changed folders)
             if (DEBUG) {
-                LogUtils.i(TAG, "[sync() %s; no requery cursor]", mName);
+                LogUtils.i(LOG_TAG, "[sync() %s; no requery cursor]", mName);
             }
             return;
         }
         synchronized(mCacheMapLock) {
             if (DEBUG) {
-                LogUtils.i(TAG, "[sync() %s]", mName);
+                LogUtils.i(LOG_TAG, "[sync() %s]", mName);
             }
             resetCursor(mRequeryCursor);
             mRequeryCursor = null;
@@ -690,7 +702,7 @@ public final class ConversationCursor implements Cursor {
      */
     public void cancelRefresh() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[cancelRefresh() %s]", mName);
+            LogUtils.i(LOG_TAG, "[cancelRefresh() %s]", mName);
         }
         synchronized(mCacheMapLock) {
             if (mRefreshTask != null) {
@@ -723,12 +735,12 @@ public final class ConversationCursor implements Cursor {
      */
     public boolean refresh() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[refresh() %s]", mName);
+            LogUtils.i(LOG_TAG, "[refresh() %s]", mName);
         }
         synchronized(mCacheMapLock) {
             if (mRefreshTask != null) {
                 if (DEBUG) {
-                    LogUtils.i(TAG, "[refresh() %s returning; already running %d]",
+                    LogUtils.i(LOG_TAG, "[refresh() %s returning; already running %d]",
                             mName, mRefreshTask.hashCode());
                 }
                 return false;
@@ -772,7 +784,7 @@ public final class ConversationCursor implements Cursor {
             if (!ret) {
                 mPosition = getCount();
                 // STOPSHIP
-                LogUtils.i(TAG, "*** moveToNext returns false; pos = %d, und = %d, del = %d",
+                LogUtils.i(LOG_TAG, "*** moveToNext returns false; pos = %d, und = %d, del = %d",
                         mPosition, mUnderlyingCursor.getPosition(), mDeletedCount);
                 return false;
             }
@@ -839,7 +851,7 @@ public final class ConversationCursor implements Cursor {
         // But we don't want to return true on a subsequent "move to first", which we would if we
         // check pos vs mPosition first
         if (mUnderlyingCursor.getPosition() == -1) {
-            LogUtils.i(TAG, "*** Underlying cursor position is -1 asking to move from %d to %d",
+            LogUtils.i(LOG_TAG, "*** Underlying cursor position is -1 asking to move from %d to %d",
                     mPosition, pos);
         }
         if (pos == 0) {
@@ -861,7 +873,7 @@ public final class ConversationCursor implements Cursor {
         } else if ((pos >= 0) && (mPosition - pos) > pos) {
             // Optimization if it's easier to move forward to position instead of backward
             // STOPSHIP (Remove logging)
-            LogUtils.i(TAG, "*** Move from %d to %d, starting from first", mPosition, pos);
+            LogUtils.i(LOG_TAG, "*** Move from %d to %d, starting from first", mPosition, pos);
             moveToFirst();
             return moveToPosition(pos);
         } else {
@@ -1211,7 +1223,7 @@ public final class ConversationCursor implements Cursor {
     }
 
     void setMostlyDead(String uriString, Conversation conv) {
-        LogUtils.i(TAG, "[Mostly dead, deferring: %s] ", uriString);
+        LogUtils.i(LOG_TAG, "[Mostly dead, deferring: %s] ", uriString);
         cacheValue(uriString,
                 UIProvider.ConversationColumns.FLAGS, Conversation.FLAG_MOSTLY_DEAD);
         conv.convFlags |= Conversation.FLAG_MOSTLY_DEAD;
@@ -1222,7 +1234,7 @@ public final class ConversationCursor implements Cursor {
     void commitMostlyDead(Conversation conv) {
         conv.convFlags &= ~Conversation.FLAG_MOSTLY_DEAD;
         sMostlyDead.remove(conv);
-        LogUtils.i(TAG, "[All dead: %s]", conv.uri);
+        LogUtils.i(LOG_TAG, "[All dead: %s]", conv.uri);
         if (sMostlyDead.isEmpty()) {
             mDeferSync = false;
             checkNotifyUI();
