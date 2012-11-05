@@ -110,18 +110,11 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void resetActionBarIcon() {
         final int mode = mViewMode.getMode();
-        // If the viewmode is not set, preserve existing icon.
-        if (mode == ViewMode.UNKNOWN) {
-            return;
-        }
-        if (!inInbox(mAccount, mConvListContext)
-                || mode == ViewMode.SEARCH_RESULTS_LIST
-                || mode == ViewMode.SEARCH_RESULTS_CONVERSATION
-                || mode == ViewMode.CONVERSATION
-                || mode == ViewMode.FOLDER_LIST) {
-            mActionBarView.setBackButton();
-        } else {
+        if (mode == ViewMode.CONVERSATION_LIST
+                && inInbox(mAccount, mConvListContext)) {
             mActionBarView.removeBackButton();
+        } else {
+            mActionBarView.setBackButton();
         }
     }
 
@@ -187,7 +180,6 @@ public final class OnePaneController extends AbstractActivityController {
         if (!ViewMode.isConversationMode(newMode)) {
             setCurrentConversation(null);
         }
-        resetActionBarIcon();
     }
 
     @Override

@@ -111,7 +111,10 @@ public final class TwoPaneController extends AbstractActivityController {
         fragmentTransaction.commitAllowingStateLoss();
         // Since we are showing the folder list, we are at the start of the view
         // stack.
-        resetActionBarIcon();
+        // TODO(viki): We don't need this call. Evaluate and remove.
+        if (mViewMode.getMode() != ViewMode.UNKNOWN) {
+            resetActionBarIcon();
+        }
     }
 
     @Override
@@ -217,7 +220,6 @@ public final class TwoPaneController extends AbstractActivityController {
         if (newMode == ViewMode.CONVERSATION || newMode == ViewMode.CONVERSATION_LIST){
             enableOrDisableCab();
         }
-        resetActionBarIcon();
     }
 
     @Override
@@ -240,10 +242,8 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void resetActionBarIcon() {
-        // If the viewmode is not set, preserve existing icon.
-        if (mViewMode.getMode() == ViewMode.UNKNOWN) {
-            return;
-        }
+        // On two-pane, the back button is only removed in the conversation list mode, and shown
+        // for every other condition.
         if (mViewMode.isListMode()) {
             mActionBarView.removeBackButton();
         } else {
