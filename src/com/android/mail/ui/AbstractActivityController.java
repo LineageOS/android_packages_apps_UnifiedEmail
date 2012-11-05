@@ -577,7 +577,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param folder the folder to change to
      * @param query if non-null, this represents the search string that the folder represents.
      */
-    private void changeFolder(Folder folder, String query) {
+    private final void changeFolder(Folder folder, String query) {
         if (!Objects.equal(mFolder, folder)) {
             commitDestructiveActions(false);
         }
@@ -586,6 +586,7 @@ public abstract class AbstractActivityController implements ActivityController {
             setListContext(folder, query);
             showConversationList(mConvListContext);
         }
+        resetActionBarIcon();
     }
 
     @Override
@@ -1414,6 +1415,12 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
+     * Set the Action Bar icon according to the mode. The Action Bar icon can contain a back button
+     * or not. The individual controller is responsible for changing the icon based on the mode.
+     */
+    protected abstract void resetActionBarIcon();
+
+    /**
      * {@inheritDoc} Subclasses must override this to listen to mode changes
      * from the ViewMode. Subclasses <b>must</b> call the parent's
      * onViewModeChanged since the parent will handle common state changes.
@@ -1424,6 +1431,10 @@ public abstract class AbstractActivityController implements ActivityController {
         // anymore. Let's blank it out so clients calling getCurrentConversation are not misled.
         if (!ViewMode.isConversationMode(newMode)) {
             setCurrentConversation(null);
+        }
+        // If the viewmode is not set, preserve existing icon.
+        if (newMode != ViewMode.UNKNOWN) {
+            resetActionBarIcon();
         }
     }
 

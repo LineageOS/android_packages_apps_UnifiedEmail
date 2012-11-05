@@ -204,12 +204,6 @@ public interface ActivityController extends LayoutListener,
     void onWindowFocusChanged(boolean hasFocus);
 
     /**
-     * Set the Action Bar icon according to the mode. The Action Bar icon can contain a back button
-     * or not. The individual controller is responsible for changing the icon based on the mode.
-     */
-    void resetActionBarIcon();
-
-    /**
      * Show the conversation List with the list context provided here. On certain layouts, this
      * might show more than just the conversation list. For instance, on tablets this might show
      * the conversations along with the conversation list.
