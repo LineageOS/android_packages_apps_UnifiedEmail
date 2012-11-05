@@ -26,14 +26,14 @@
         width: 2px;
         height: 2px;
         -webkit-transform: translate3d(0, 0, 1px);
-        -webkit-animation-name: initial-load;
+        -webkit-animation-name: initial-load-noop-animation;
         -webkit-animation-duration: 1ms;  /* doesn't matter */
     }
 
     /* Animating the z-position is fast and does not actually change anything in the default
      * perspective.
      */
-    @-webkit-keyframes initial-load {
+    @-webkit-keyframes initial-load-noop-animation {
         from {
             -webkit-transform: translate3d(0, 0, 1px);
         }
