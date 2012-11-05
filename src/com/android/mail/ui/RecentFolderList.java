@@ -146,8 +146,12 @@ public final class RecentFolderList {
      * @param account the new current account
      */
     private void setCurrentAccount(Account account) {
+        final boolean accountSwitched = (mAccount == null) || account.uri.equals(mAccount.uri);
         mAccount = account;
-        mFolderCache.clear();
+        // Clear the cache only if we moved from alice@example.com -> alice@work.com
+        if (accountSwitched) {
+            mFolderCache.clear();
+        }
     }
 
     /**
@@ -156,12 +160,13 @@ public final class RecentFolderList {
      */
     public void loadFromUiProvider(Cursor c) {
         if (mAccount == null || c == null) {
+            LogUtils.e(TAG, "RecentFolderList.loadFromUiProvider: bad input. mAccount=%s,cursor=%s",
+                    mAccount, c);
             return;
         }
         LogUtils.d(TAG, "Number of recents = %d", c.getCount());
-        int i = 0;
         if (!c.moveToLast()) {
-            LogUtils.d(TAG, "Not able to move to last in recent labels cursor");
+            LogUtils.e(TAG, "Not able to move to last in recent labels cursor");
             return;
         }
         // Add them backwards, since the most recent values are at the beginning in the cursor.
