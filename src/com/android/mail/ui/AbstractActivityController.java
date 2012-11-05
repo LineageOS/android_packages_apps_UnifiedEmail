@@ -441,36 +441,6 @@ public abstract class AbstractActivityController implements ActivityController {
     protected abstract boolean isConversationListVisible();
 
     /**
-     * Switch the current account to the one provided as an argument to the method.
-     * @param account new account
-     * @param shouldReloadInbox whether the default inbox should be reloaded.
-     */
-    private void switchAccount(Account account, boolean shouldReloadInbox){
-        // Current account is different from the new account, restart loaders and show
-        // the account Inbox.
-        mAccount = account;
-        LogUtils.d(LOG_TAG, "AbstractActivityController.switchAccount(): mAccount = %s",
-                mAccount.uri);
-        cancelRefreshTask();
-        mAccountObservers.notifyChanged();
-        if (shouldReloadInbox) {
-            loadAccountInbox();
-        }
-        perhapsEnterWaitMode();
-        restartOptionalLoader(LOADER_RECENT_FOLDERS);
-        mActivity.invalidateOptionsMenu();
-        disableNotificationsOnAccountChange(mAccount);
-        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
-        MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
-        if (mAccount != null && !Uri.EMPTY.equals(mAccount.settings.setupIntentUri)) {
-            // Launch the intent!
-            Intent intent = new Intent(Intent.ACTION_EDIT);
-            intent.setData(mAccount.settings.setupIntentUri);
-            mActivity.startActivity(intent);
-        }
-    }
-
-    /**
      * If required, starts wait mode for the current account.
      */
     final void perhapsEnterWaitMode() {
@@ -501,23 +471,39 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onAccountChanged(Account account) {
         // Is the account or account settings different from the existing account?
         final boolean firstLoad = mAccount == null;
-        LogUtils.d(LOG_TAG, "onAccountChanged (%s) called. firstLoad=%s", account, firstLoad);
         final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
-        final boolean settingsChanged = firstLoad || account.settingsDiffer(mAccount);
-        if (accountChanged || settingsChanged) {
-            if (account != null) {
-                final String accountName = account.name;
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        MailActivity.setForegroundNdef(MailActivity.getMailtoNdef(accountName));
-                    }
-                });
+        // If nothing has changed, return early without wasting any more time.
+        if (!accountChanged && !account.settingsDiffer(mAccount)) {
+            return;
+        }
+        // We also don't want to do anything if the new account is null
+        if (account == null) {
+            LogUtils.e(LOG_TAG, "AAC.onAccountChanged(null) called.");
+            return;
+        }
+        final String accountName = account.name;
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                MailActivity.setForegroundNdef(MailActivity.getMailtoNdef(accountName));
             }
-            if (accountChanged) {
-                commitDestructiveActions(false);
-            }
-            switchAccount(account, accountChanged);
+        });
+        if (accountChanged) {
+            commitDestructiveActions(false);
+        }
+        // Change the account here
+        setAccount(account);
+        // And carry out associated actions.
+        cancelRefreshTask();
+        if (accountChanged) {
+            loadAccountInbox();
+        }
+        // Check if we need to force setting up an account before proceeding.
+        if (mAccount != null && !Uri.EMPTY.equals(mAccount.settings.setupIntentUri)) {
+            // Launch the intent!
+            final Intent intent = new Intent(Intent.ACTION_EDIT);
+            intent.setData(mAccount.settings.setupIntentUri);
+            mActivity.startActivity(intent);
         }
     }
 
@@ -1467,8 +1453,6 @@ public abstract class AbstractActivityController implements ActivityController {
      * Set the account, and carry out all the account-related changes that rely on this.
      * @param account
      */
-    // TODO(viki): Two different methods do the same thing. Resolve
-    // {@link #setAccount(Account)} and {@link #switchAccount(Account, boolean)}
     private void setAccount(Account account) {
         if (account == null) {
             LogUtils.w(LOG_TAG, new Error(),
