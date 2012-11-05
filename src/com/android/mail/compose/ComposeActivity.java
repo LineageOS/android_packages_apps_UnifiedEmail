@@ -1548,7 +1548,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // it's the To recipient list of the original message.
         // OR missing, in which case use the sender of the original message
         Set<String> toAddresses = Sets.newHashSet();
-        if (!TextUtils.isEmpty(replyToAddress)) {
+        if (!TextUtils.isEmpty(replyToAddress)
+                && !recipientMatchesThisAccount(account, replyToAddress)) {
             toAddresses.add(replyToAddress);
         } else {
             if (!recipientMatchesThisAccount(account, senderAddress)) {
@@ -1558,7 +1559,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // wrote. In this case, "reply" really means "re-send," so we
                 // target the original recipients. This works as expected even
                 // if the user sent the original message to themselves.
-                toAddresses.addAll(Arrays.asList(inToAddresses));
+                for (String address : inToAddresses) {
+                    if (!recipientMatchesThisAccount(account, address)) {
+                        toAddresses.add(address);
+                    }
+                }
             }
         }
         return toAddresses;
@@ -1586,7 +1591,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     protected boolean recipientMatchesThisAccount(String accountAddress, String recipientAddress) {
         return accountAddress.equalsIgnoreCase(recipientAddress)
                 || ReplyFromAccount.isCustomFrom(recipientAddress,
-                        mFromSpinner.getReplyFromAccounts());
+                        mAccount.getReplyFroms());
     }
 
     private void setSubject(Message refMessage, int action) {

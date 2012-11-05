@@ -82,21 +82,29 @@ public final class MockUiProvider extends ContentProvider {
         builder.put(folderDetailsMap0.get(FolderColumns.URI).toString(),
                 ImmutableList.of(folderDetailsMap0));
         Map<String, Object> folderDetailsMap2 = createFolderDetailsMap(2, "two", 2, 2);
-        // Account 1
+        // Account 0
         accountDetailsMap0 = createAccountDetailsMap(0, true,
                 (String)folderDetailsMap0.get(FolderColumns.URI));
 
         accountList.add(accountDetailsMap0);
-        Uri accountUri1 = (Uri) accountDetailsMap0.get(AccountColumns.URI);
-        builder.put(accountUri1.toString(), ImmutableList.of(accountDetailsMap0));
+        builder.put(((Uri) accountDetailsMap0.get(AccountColumns.URI)).toString(),
+                ImmutableList.of(accountDetailsMap0));
 
-        // Account 2
+        Map<String, Object> accountDetailsMap2 = createAccountDetailsMap(2, true,
+                (String)folderDetailsMap0.get(FolderColumns.URI));
+
+        // Account 1
         Map<String, Object> accountDetailsMap1 = createAccountDetailsMap(1, true,
                 (String)folderDetailsMap2.get(FolderColumns.URI));
         accountList.add(accountDetailsMap1);
 
-        Uri accountUri2 = (Uri) accountDetailsMap1.get(AccountColumns.URI);
-        builder.put(accountUri2.toString(), ImmutableList.of(accountDetailsMap1));
+        builder.put(((Uri) accountDetailsMap1.get(AccountColumns.URI)).toString(),
+                ImmutableList.of(accountDetailsMap1));
+
+        // Account 2
+        accountList.add(accountDetailsMap2);
+        builder.put(((Uri) accountDetailsMap2.get(AccountColumns.URI)).toString(),
+                ImmutableList.of(accountDetailsMap2));
 
         // Add the account list to the builder
         builder.put(getAccountsUri().toString(), accountList);
@@ -147,6 +155,9 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(folderDetailsMap3));
         builder.put(accountDetailsMap1.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap2, folderDetailsMap3));
+
+        builder.put(accountDetailsMap2.get(AccountColumns.FOLDER_LIST_URI).toString(),
+                ImmutableList.of(folderDetailsMap0, folderDetailsMap1));
 
         Map<String, Object> conv3 = createConversationDetailsMap("zeroConv3".hashCode(),
                 "zeroConv3", 0, 1, 0);
@@ -257,9 +268,6 @@ public final class MockUiProvider extends ContentProvider {
         messageMap.put(MessageColumns.ATTACHMENT_LIST_URI, messageUri + "/getAttachments");
         messageMap.put(MessageColumns.TO, "account1@mock.com, account2@mock.com");
         messageMap.put(MessageColumns.FROM, "fromaccount1@mock.com");
-        if (addReplyTo) {
-            messageMap.put(MessageColumns.REPLY_TO, "replytofromaccount1@mock.com");
-        }
         return messageMap;
     }
 
