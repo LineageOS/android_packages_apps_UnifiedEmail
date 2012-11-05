@@ -2354,6 +2354,8 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public final void onRefreshReady() {
+        LogUtils.d(LOG_TAG, "Received refresh ready callback for folder %s",
+                mFolder != null ? mFolder.id : "-1");
         if (!isAnimating()) {
             // Swap cursors
             mConversationListCursor.sync();
