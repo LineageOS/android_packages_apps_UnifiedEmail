@@ -79,6 +79,7 @@ import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
 import com.android.mail.utils.ContentProviderTask;
@@ -1071,6 +1072,9 @@ public abstract class AbstractActivityController implements ActivityController {
         for (final Conversation target : targets) {
             final ContentValues value = new ContentValues();
             value.put(ConversationColumns.READ, read);
+
+            // The mark read/unread/viewed operations do not show an undo bar
+            value.put(ConversationOperations.Parameters.SUPPRESS_UNDO, true);
             if (markViewed) {
                 value.put(ConversationColumns.VIEWED, true);
             }

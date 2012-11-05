@@ -1258,6 +1258,16 @@ public class UIProvider {
          */
         public static final String DISCARD_DRAFTS = "discard_drafts";
 
+
+        public static final class Parameters {
+            /**
+             * Boolean indicating whether the undo for this operation should be suppressed
+             */
+            public static final String SUPPRESS_UNDO = "suppress_undo";
+
+            private Parameters() {}
+        }
+
         private ConversationOperations() {
         }
     }
