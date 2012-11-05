@@ -1589,7 +1589,6 @@ public abstract class AbstractActivityController implements ActivityController {
                     mViewMode.enterSearchResultsListMode();
                 }
                 setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                restartOptionalLoader(LOADER_RECENT_FOLDERS);
                 fetchSearchFolder(intent);
             } else {
                 LogUtils.e(LOG_TAG, "Missing account extra from search intent.  Finishing");
