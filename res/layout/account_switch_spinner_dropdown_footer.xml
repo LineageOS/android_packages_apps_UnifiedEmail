@@ -17,19 +17,20 @@
 -->
 
 <!-- The footer in the dropdown list that says "Show all labels" -->
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="?android:attr/spinnerDropDownItemStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/account_dropdown_item_height"
-    android:gravity="center_horizontal">
+    android:orientation="horizontal"
+    android:minHeight="@dimen/account_dropdown_item_height">
     <TextView
         android:singleLine="true"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
         android:layout_centerVertical="true"
         android:ellipsize="end"
+        android:gravity="center_vertical"
         android:text="@string/show_all_folders"
         style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title" />
-</RelativeLayout>
+</LinearLayout>
