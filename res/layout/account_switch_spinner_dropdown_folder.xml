@@ -16,42 +16,35 @@
      limitations under the License.
 -->
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="?android:attr/spinnerDropDownItemStyle"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <View android:id="@+id/dropdown_color"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_height="@dimen/color_block_height"
-        android:layout_width="@dimen/color_block_width"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/dropdown_unread"
-        android:orientation="vertical"
-        android:minHeight="@dimen/account_dropdown_item_height">
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:minHeight="@dimen/account_dropdown_item_height">
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <View android:id="@+id/dropdown_color"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_height="@dimen/color_block_height"
+            android:layout_width="@dimen/color_block_width"/>
         <TextView
             android:id="@+id/dropdown_first"
             android:singleLine="true"
-            android:gravity="center_vertical"
-            android:layout_height="0dp"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:ellipsize="end"
             style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title" />
-        <TextView
-            android:id="@+id/dropdown_second"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:ellipsize="end"
-            style="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle" />
-    </LinearLayout>
+    </FrameLayout>
     <TextView
         android:id="@+id/dropdown_unread"
         android:layout_width="wrap_content"
-        style="@style/UnreadCount"
-        android:layout_alignParentRight="true"/>
-</RelativeLayout>
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        style="@style/UnreadCount"/>
+</LinearLayout>
