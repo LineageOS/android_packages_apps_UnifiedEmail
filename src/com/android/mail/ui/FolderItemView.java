@@ -21,7 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider.FolderType;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import android.content.Context;
@@ -39,6 +40,7 @@ import android.widget.RelativeLayout;
  * The view for each folder in the folder list.
  */
 public class FolderItemView extends RelativeLayout {
+    private final String LOG_TAG = LogTag.getLogTag();
     // Static colors
     private static int NON_DROPPABLE_TARGET_TEXT_COLOR;
 
@@ -116,12 +118,28 @@ public class FolderItemView extends RelativeLayout {
         mDropHandler = dropHandler;
         mFolderTextView.setText(folder.name);
         mFolderParentIcon.setVisibility(mFolder.hasChildren ? View.VISIBLE : View.GONE);
-        final int count = Utils.getFolderUnreadDisplayCount(mFolder);
-        mUnreadCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+        setUnreadCount(Utils.getFolderUnreadDisplayCount(mFolder));
+    }
 
+    /**
+     * Sets the unread count, taking care to hide/show the textview if the count is zero/non-zero.
+     * @param count
+     */
+    private final void setUnreadCount(int count) {
+        mUnreadCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
         if (count > 0) {
             mUnreadCountTextView.setText(Utils.getUnreadCountString(getContext(), count));
         }
+    }
+
+    /**
+     * Used if we detect a problem with the unread count and want to force an override.
+     * @param count
+     */
+    public final void overrideUnreadCount(int count) {
+        LogUtils.e(LOG_TAG, "FLF->FolderItem.getFolderView: unread count mismatch found (%s vs %d)",
+                mUnreadCountTextView.getText(), count);
+        setUnreadCount(count);
     }
 
     private boolean isDroppableTarget(DragEvent event) {

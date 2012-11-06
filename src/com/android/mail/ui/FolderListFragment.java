@@ -43,8 +43,6 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -70,6 +68,11 @@ public final class FolderListFragment extends ListFragment implements
 
     /** The currently selected folder (the folder being viewed).  This is never null. */
     private Uri mSelectedFolderUri = Uri.EMPTY;
+    /**
+     * The current folder from the controller.  This is meant only to check when the unread count
+     * goes out of sync and fixing it. This should NOT be serialized and stored.
+     */
+    private Folder mCurrentFolderForUnreadCheck;
     /** Parent of the current folder, or null if the current folder is not a child. */
     private Folder mParentFolder;
 
@@ -180,6 +183,7 @@ public final class FolderListFragment extends ListFragment implements
         if (controller != null) {
             // Only register for selected folder updates if we have a controller.
             controller.registerFolderObserver(mFolderObserver);
+            mCurrentFolderForUnreadCheck = controller.getFolder();
         }
 
         mListener = mActivity.getFolderListSelectionListener();
@@ -478,6 +482,13 @@ public final class FolderListFragment extends ListFragment implements
                     final boolean isSelected = (mFolderType == mSelectedFolderType)
                             && mFolder.uri.equals(mSelectedFolderUri);
                     mListView.setItemChecked(position, isSelected);
+                    // If this is the current folder, also check to verify that the unread count
+                    // matches what the action bar shows.
+                    if (isSelected && (mCurrentFolderForUnreadCheck != null)
+                            && mFolder.unreadCount != mCurrentFolderForUnreadCheck.unreadCount) {
+                        folderItemView.overrideUnreadCount(
+                                mCurrentFolderForUnreadCheck.unreadCount);
+                    }
                 }
                 Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
                 Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_box));
@@ -707,6 +718,13 @@ public final class FolderListFragment extends ListFragment implements
             folderItemView.bind(folder, mDropHandler);
             if (folder.uri.equals(mSelectedFolderUri)) {
                 getListView().setItemChecked(position, true);
+                // If this is the current folder, also check to verify that the unread count
+                // matches what the action bar shows.
+                final boolean unreadCountDiffers = (mCurrentFolderForUnreadCheck != null)
+                        && folder.unreadCount != mCurrentFolderForUnreadCheck.unreadCount;
+                if (unreadCountDiffers) {
+                    folderItemView.overrideUnreadCount(mCurrentFolderForUnreadCheck.unreadCount);
+                }
             }
             Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.folder_box));
             return folderItemView;
@@ -758,8 +776,10 @@ public final class FolderListFragment extends ListFragment implements
     private void setSelectedFolder(Folder folder) {
         if (folder == null) {
             mSelectedFolderUri = Uri.EMPTY;
+            LogUtils.e(LOG_TAG, "FolderListFragment.setSelectedFolder(null) called!");
             return;
         }
+        mCurrentFolderForUnreadCheck = folder;
         mSelectedFolderUri = folder.uri;
         setSelectedFolderType(folder);
         if (mCursorAdapter != null) {
