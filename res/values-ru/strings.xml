@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Все папки"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Последние папки"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Сведения о сообщении"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Настройка автоперехода"\n"(после архивации, удаления и т. п.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Более поздние"</item>
+    <item msgid="5562093094216840213">"Более ранние"</item>
+    <item msgid="3331655314944797957">"Список цепочек"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Показывать более позднюю цепочку после удаления текущей"</item>
+    <item msgid="732746454445519134">"Показывать более раннюю цепочку после удаления текущей"</item>
+    <item msgid="2189929276292165301">"Показывать список цепочек после удаления текущей цепочки"</item>
+  </string-array>
 </resources>

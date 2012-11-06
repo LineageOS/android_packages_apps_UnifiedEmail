@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Sve mape"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Nedavne mape"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Pojedinosti poruke"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Postavljanje automatskog prijelaza na sljedeće"\n"(nakon brisanja itd.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Novije"</item>
+    <item msgid="5562093094216840213">"Starije"</item>
+    <item msgid="3331655314944797957">"Popis razgovora"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Prikaz novijeg razgovora nakon brisanja"</item>
+    <item msgid="732746454445519134">"Prikaz starijeg razgovora nakon brisanja"</item>
+    <item msgid="2189929276292165301">"Prikaz popisa razgovora nakon brisanja"</item>
+  </string-array>
 </resources>

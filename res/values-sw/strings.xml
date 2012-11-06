@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Folda zote"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Folda za hivi karibuni"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Maelezo ya ujumbe"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Weka mapendeleo pevu ya kitomatiki"\n"(baada ya kufuta, n.k.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Mpya zaidi"</item>
+    <item msgid="5562093094216840213">"Nzee zaidi"</item>
+    <item msgid="3331655314944797957">"Orodha ya mazungumzo"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Onyeshja mazungumzo mapya zaidi baada ya kufuta"</item>
+    <item msgid="732746454445519134">"Onyeshja mazungumzo ya zamani zaidi baada ya kufuta"</item>
+    <item msgid="2189929276292165301">"Onyesha orodha ya mazungumzo baada ya kufuta"</item>
+  </string-array>
 </resources>

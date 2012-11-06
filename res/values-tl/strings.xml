@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Lahat ng folder"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Mga kamakailang folder"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Mga detalye ng mensahe"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Magtakda auto-advance na kagustuhan"\n"(pagkatapos mong magtanggal, atbp.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Mas bago"</item>
+    <item msgid="5562093094216840213">"Mas luma"</item>
+    <item msgid="3331655314944797957">"Listahan ng pag-uusap"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Magpakita ng mas bagong pag-uusap pagkatapos mong magtanggal"</item>
+    <item msgid="732746454445519134">"Magpakita ng mas lumang pag-uusap pagkatapos mong magtanggal"</item>
+    <item msgid="2189929276292165301">"Ipakita ang listahan ng pag-uusap pagkatapos mong magtanggal"</item>
+  </string-array>
 </resources>

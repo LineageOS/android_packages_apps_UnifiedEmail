@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Visas mapes"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Jaunākās mapes"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Informācija par ziņojumu"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Automātiskas pāriešanas preferences"\n"iestatīšana (pēc dzēšanas utt.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Jaunākas"</item>
+    <item msgid="5562093094216840213">"Vecākas"</item>
+    <item msgid="3331655314944797957">"Sarunu saraksts"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Rādīt jaunāku sarunu pēc dzēšanas"</item>
+    <item msgid="732746454445519134">"Rādīt vecāku sarunu pēc dzēšanas"</item>
+    <item msgid="2189929276292165301">"Rādīt sarunu sarakstu pēc dzēšanas"</item>
+  </string-array>
 </resources>
