@@ -1698,7 +1698,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final WaitFragment waitFragment = getWaitFragment();
         if (waitFragment != null) {
             final Account fragmentAccount = waitFragment.getAccount();
-            return fragmentAccount.uri.equals(mAccount.uri) &&
+            return fragmentAccount != null && fragmentAccount.uri.equals(mAccount.uri) &&
                     mViewMode.getMode() == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION;
         }
         return false;
