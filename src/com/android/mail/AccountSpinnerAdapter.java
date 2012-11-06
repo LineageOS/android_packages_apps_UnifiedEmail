@@ -303,86 +303,64 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             // Commit any leave behind items.
             mActivityController.commitDestructiveActions(false);
         }
-        // Shown in the first text view with big font.
-        String bigText = "";
-        // Shown in the second text view with smaller font.
-        String smallText = "";
-        int unreadCount = 0;
-        // Do not use stop view recycling in getDropDownView!!!
-        // For unknown reasons, using view recycling avoids bugs where the unread count used to
-        // disappear.
         final int type = getItemViewType(position);
         switch (type) {
             case TYPE_ACCOUNT:
-                final Account account = getAccount(position);
                 view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_account, parent,
                         false);
-                View colorView = view.findViewById(R.id.dropdown_color);
+                final Account account = getAccount(position);
                 if (account == null) {
-                    bigText = "";
-                    smallText = "";
-                    unreadCount = 0;
-                    colorView.setVisibility(View.INVISIBLE);
-                } else {
-                    bigText = account.settings.defaultInboxName;
-                    smallText = account.name;
-                    final int color = account.color;
-                    if (color != 0) {
-                        colorView.setVisibility(View.VISIBLE);
-                        colorView.setBackgroundColor(color);
-                    } else {
-                        colorView.setVisibility(View.INVISIBLE);
-                    }
-                    final Folder inbox = mFolderWatcher.get(account.settings.defaultInbox);
-                    unreadCount = (inbox != null) ? inbox.unreadCount : 0;
+                    LogUtils.e(LOG_TAG, "AccountSpinnerAdapter(%d): Null account at position.",
+                            position);
+                    return null;
                 }
-                displayOrHide(view, R.id.dropdown_first, bigText);
-                displayOrHide(view, R.id.dropdown_second, smallText);
-                populateUnreadCountView(
-                        (TextView) view.findViewById(R.id.dropdown_unread), unreadCount);
+                final int color = account.color;
+                final View colorView = view.findViewById(R.id.dropdown_color);
+                if (color != 0) {
+                    colorView.setVisibility(View.VISIBLE);
+                    colorView.setBackgroundColor(color);
+                } else {
+                    colorView.setVisibility(View.GONE);
+                }
+                final Folder inbox = mFolderWatcher.get(account.settings.defaultInbox);
+                final int unreadCount = (inbox != null) ? inbox.unreadCount : 0;
+                setText(view, R.id.dropdown_first, account.settings.defaultInboxName);
+                setText(view, R.id.dropdown_second, account.name);
+                setUnreadCount(view, R.id.dropdown_unread, unreadCount);
                 break;
             case TYPE_HEADER:
                 view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_header, parent,
                         false);
-                ((TextView) view.findViewById(R.id.account_spinner_header_account))
-                        .setText(getCurrentAccountName());
-                return view;
+                setText(view, R.id.account_spinner_header_account, getCurrentAccountName());
+                break;
             case TYPE_FOLDER:
                 view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_folder, parent,
                         false);
                 final Folder folder = mRecentFolderList.get(getRecentOffset(position));
-                colorView = view.findViewById(R.id.dropdown_color);
-                bigText = folder.name;
-                unreadCount = folder.unreadCount;
-                Folder.setFolderBlockColor(folder, colorView);
-                colorView.setVisibility(View.VISIBLE);
-                displayOrHide(view, R.id.dropdown_first, bigText);
-                displayOrHide(view, R.id.dropdown_second, smallText);
-                populateUnreadCountView(
-                        (TextView) view.findViewById(R.id.dropdown_unread), unreadCount);
+                Folder.setFolderBlockColor(folder, view.findViewById(R.id.dropdown_color));
+                setText(view, R.id.dropdown_first, folder.name);
+                setUnreadCount(view, R.id.dropdown_unread, folder.unreadCount);
                 break;
             case TYPE_ALL_FOLDERS:
                 view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_footer, parent,
                         false);
+                break;
+            default:
+                LogUtils.e(LOG_TAG, "AccountSpinnerAdapter.getView(): Unknown type: %d", type);
                 break;
         }
         return view;
     }
 
     /**
-     * Sets the text of the TextView to the given text, if it is non-empty. If the given
-     * text is empty, then the TextView is hidden (set to View.GONE).
+     * Sets the text of the TextView to the given text.
      * @param v
      * @param resourceId
      * @param toDisplay the given text
      */
-    static private void displayOrHide(View v, int resourceId, String toDisplay) {
+    static private void setText(View v, int resourceId, String toDisplay) {
         final TextView target = (TextView) v.findViewById(resourceId);
         if (target == null) {
-            return;
-        }
-        if (TextUtils.isEmpty(toDisplay)) {
-            target.setVisibility(View.GONE);
             return;
         }
         target.setText(toDisplay);
@@ -391,11 +369,21 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /**
      * Sets the unread count, which is a nonzero number or an empty string if there are no unread
      * messages.
-     * @param unreadCountView
+     * @param v
+     * @param resourceId
      * @param unreadCount
      */
-    private final void populateUnreadCountView(TextView unreadCountView, int unreadCount) {
-        unreadCountView.setText(Utils.getUnreadCountString(mContext, unreadCount));
+    private final void setUnreadCount(View v, int resourceId, int unreadCount) {
+        final TextView target = (TextView) v.findViewById(resourceId);
+        if (target == null) {
+            return;
+        }
+        if (unreadCount <= 0) {
+            target.setVisibility(View.GONE);
+            return;
+        }
+        target.setVisibility(View.VISIBLE);
+        target.setText(Utils.getUnreadCountString(mContext, unreadCount));
     }
 
     /**
