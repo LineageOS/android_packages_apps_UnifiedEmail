@@ -480,6 +480,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void finishSetup(int action, Intent intent, Bundle savedInstanceState,
             boolean showQuotedText) {
+        setFocus(action);
         if (action == COMPOSE) {
             mQuotedTextView.setVisibility(View.GONE);
         }
@@ -493,7 +494,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         initFromSpinner(savedInstanceState != null ? savedInstanceState : intent.getExtras(),
                 action);
         initChangeListeners();
-        setFocus(action);
         updateHideOrShowCcBcc();
         updateHideOrShowQuotedText(showQuotedText);
     }
