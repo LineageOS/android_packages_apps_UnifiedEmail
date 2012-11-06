@@ -60,6 +60,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     private MessageFooterView mMessageFooterView;
     private ConversationMessage mMessage;
     private ScrollView mScrollView;
+
     private WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -222,8 +223,9 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
                 }
             }
             convHtml.append(content);
-            mWebView.loadDataWithBaseURL(mBaseUri, convHtml.toString(), "text/html", "utf-8", null);
             mMessage = messageCursor.getMessage();
+            mWebView.getSettings().setBlockNetworkImage(!mMessage.alwaysShowImages);
+            mWebView.loadDataWithBaseURL(mBaseUri, convHtml.toString(), "text/html", "utf-8", null);
             ConversationViewAdapter mAdapter = new ConversationViewAdapter(mActivity, null, null,
                     null, null, null, null, null, null);
             MessageHeaderItem item = mAdapter.newMessageHeaderItem(mMessage, true);
