@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"כל התיקיות"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"תיקיות אחרונות"</string>
     <string name="message_details_title" msgid="2183394728494962332">"פרטי הודעה"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"הגדר העדפה להתקדמות אוטומטית"\n"(לאחר ביצוע מחיקה וכדומה)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"חדש יותר"</item>
+    <item msgid="5562093094216840213">"ישן יותר"</item>
+    <item msgid="3331655314944797957">"רשימת שיחות"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"הצג שיחה חדשה יותר לאחר ביצוע מחיקה"</item>
+    <item msgid="732746454445519134">"הצג שיחה ישנה יותר לאחר ביצוע מחיקה"</item>
+    <item msgid="2189929276292165301">"הצג רשימת שיחות לאחר ביצוע מחיקה"</item>
+  </string-array>
 </resources>

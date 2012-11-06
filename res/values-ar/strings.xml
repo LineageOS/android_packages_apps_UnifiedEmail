@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"جميع المجلدات"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"المجلدات الحديثة"</string>
     <string name="message_details_title" msgid="2183394728494962332">"تفاصيل الرسالة"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"تعيين تفضيل التقدم التلقائي"\n"(بعد الحذف وما إلى ذلك)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"أحدث"</item>
+    <item msgid="5562093094216840213">"أقدم"</item>
+    <item msgid="3331655314944797957">"قائمة المحادثات"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"عرض المحادثة الأحدث بعد الحذف"</item>
+    <item msgid="732746454445519134">"عرض المحادثة الأقدم بعد الحذف"</item>
+    <item msgid="2189929276292165301">"عرض قائمة المحادثات بعد الحذف"</item>
+  </string-array>
 </resources>

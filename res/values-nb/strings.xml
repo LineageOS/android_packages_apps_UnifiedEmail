@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Alle mapper"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Nylige mapper"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Meldingsinformasjon"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Angi innst. for autoflytting"\n"(etter at du sletter, osv.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Nyere"</item>
+    <item msgid="5562093094216840213">"Eldre"</item>
+    <item msgid="3331655314944797957">"Samtaleliste"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Vis nyere samtaler etter du har slettet"</item>
+    <item msgid="732746454445519134">"Vis eldre samtaler etter du har slettet"</item>
+    <item msgid="2189929276292165301">"Vis samtaleliste etter du har slettet"</item>
+  </string-array>
 </resources>

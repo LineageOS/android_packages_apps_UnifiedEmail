@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"모든 폴더"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"최근 폴더"</string>
     <string name="message_details_title" msgid="2183394728494962332">"메시지 세부정보"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"자동 진행 환경설정"\n"(삭제 등을 수행한 후)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"최신"</item>
+    <item msgid="5562093094216840213">"이전"</item>
+    <item msgid="3331655314944797957">"대화 목록"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"삭제 후 최신 대화 표시"</item>
+    <item msgid="732746454445519134">"삭제 후 이전 대화 표시"</item>
+    <item msgid="2189929276292165301">"삭제 후 대화 목록 표시"</item>
+  </string-array>
 </resources>

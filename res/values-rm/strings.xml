@@ -547,4 +547,12 @@
     <skip />
     <!-- no translation found for message_details_title (2183394728494962332) -->
     <skip />
+    <!-- no translation found for auto_advance_help_title (8091541690538426090) -->
+    <skip />
+    <!-- no translation found for prefEntries_autoAdvance:0 (3400401085256526376) -->
+    <!-- no translation found for prefEntries_autoAdvance:1 (5562093094216840213) -->
+    <!-- no translation found for prefEntries_autoAdvance:2 (3331655314944797957) -->
+    <!-- no translation found for prefSummaries_autoAdvance:0 (6389534341359835440) -->
+    <!-- no translation found for prefSummaries_autoAdvance:1 (732746454445519134) -->
+    <!-- no translation found for prefSummaries_autoAdvance:2 (2189929276292165301) -->
 </resources>

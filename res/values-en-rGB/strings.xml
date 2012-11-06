@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"All folders"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Recent folders"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Message details"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Set auto-advance preference"\n"(after you delete, etc.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Newer"</item>
+    <item msgid="5562093094216840213">"Older"</item>
+    <item msgid="3331655314944797957">"Conversation list"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Show newer conversation after you delete"</item>
+    <item msgid="732746454445519134">"Show older conversation after you delete"</item>
+    <item msgid="2189929276292165301">"Show conversation list after you delete"</item>
+  </string-array>
 </resources>

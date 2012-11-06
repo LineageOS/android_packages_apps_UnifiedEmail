@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Kõik kaustad"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Hiljutised kaustad"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Sõnumi üksikasjad"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Automaatse edasimineku eelistuse määramine"\n"(pärast kustutamist jne)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Uuemad"</item>
+    <item msgid="5562093094216840213">"Vanemad"</item>
+    <item msgid="3331655314944797957">"Vestlusloend"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Uuema vestluse näitamine pärast kustutamist"</item>
+    <item msgid="732746454445519134">"Vanema vestluse näitamine pärast kustutamist"</item>
+    <item msgid="2189929276292165301">"Vestlusloendi näitamine pärast kustutamist"</item>
+  </string-array>
 </resources>

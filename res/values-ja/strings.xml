@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"すべてのフォルダ"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"最近開いたフォルダ"</string>
     <string name="message_details_title" msgid="2183394728494962332">"メッセージの詳細"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"自動表示の設定"\n"（削除などの後）"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"前"</item>
+    <item msgid="5562093094216840213">"次"</item>
+    <item msgid="3331655314944797957">"スレッドリスト"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"削除後に新しいスレッドを表示する"</item>
+    <item msgid="732746454445519134">"削除後に古いスレッドを表示する"</item>
+    <item msgid="2189929276292165301">"削除後にスレッドリストを表示する"</item>
+  </string-array>
 </resources>

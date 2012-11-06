@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"โฟลเดอร์ทั้งหมด"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"โฟลเดอร์ล่าสุด"</string>
     <string name="message_details_title" msgid="2183394728494962332">"รายละเอียดข้อความ"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"ตั้งค่ากำหนดเลื่อนอัตโนมัติ"\n"(หลังจากที่คุณลบ ฯลฯ)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"ใหม่กว่า"</item>
+    <item msgid="5562093094216840213">"เก่ากว่า"</item>
+    <item msgid="3331655314944797957">"รายการการสนทนา"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"แสดงการสนทนาที่ใหม่กว่าหลังจากลบ"</item>
+    <item msgid="732746454445519134">"แสดงการสนทนาที่เก่ากว่าหลังจากลบ"</item>
+    <item msgid="2189929276292165301">"แสดงรายการสนทนาหลังจากลบ"</item>
+  </string-array>
 </resources>
