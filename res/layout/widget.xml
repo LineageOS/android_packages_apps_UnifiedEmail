@@ -82,7 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/no_conversations"
+        android:text="@string/loading_conversations"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold"

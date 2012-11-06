@@ -288,6 +288,9 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             remoteViews.setViewVisibility(R.id.widget_folder_not_synced, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_configuration, View.VISIBLE);
 
+            remoteViews.setTextViewText(R.id.empty_conversation_list,
+                    context.getString(R.string.loading_conversations));
+
             final Intent configureIntent = new Intent(context, MailboxSelectionActivity.class);
             configureIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             configureIntent.setData(Uri.parse(configureIntent.toUri(Intent.URI_INTENT_SCHEME)));

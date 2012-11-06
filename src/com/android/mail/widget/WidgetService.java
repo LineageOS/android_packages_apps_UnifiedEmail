@@ -488,6 +488,8 @@ public class WidgetService extends RemoteViewsService {
         @Override
         public void onLoadComplete(Loader<Cursor> loader, Cursor data) {
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+            final RemoteViews remoteViews =
+                    new RemoteViews(mContext.getPackageName(), R.layout.widget);
 
             if (loader == mFolderLoader) {
                 if (!isDataValid(data)) {
@@ -497,9 +499,6 @@ public class WidgetService extends RemoteViewsService {
                 final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
                 final String folderName = data.getString(UIProvider.FOLDER_NAME_COLUMN);
                 mFolderCount = data.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
-
-                final RemoteViews remoteViews =
-                        new RemoteViews(mContext.getPackageName(), R.layout.widget);
 
                 if (!mFolderInformationShown && !TextUtils.isEmpty(folderName) &&
                         !TextUtils.isEmpty(mAccount.name)) {
@@ -529,7 +528,6 @@ public class WidgetService extends RemoteViewsService {
 
                 appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
             } else if (loader == mConversationCursorLoader) {
-
                 // We want to cache the new cursor
                 synchronized (sWidgetLock) {
                     if (!isDataValid(data)) {
@@ -538,8 +536,15 @@ public class WidgetService extends RemoteViewsService {
                         mConversationCursor = data;
                     }
                 }
-                appWidgetManager.notifyAppWidgetViewDataChanged(
-                        mAppWidgetId, R.id.conversation_list);
+
+                appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId,
+                        R.id.conversation_list);
+
+                if (mConversationCursor == null || mConversationCursor.getCount() == 0) {
+                    remoteViews.setTextViewText(R.id.empty_conversation_list,
+                            mContext.getString(R.string.no_conversations));
+                    appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
+                }
             }
         }
 
