@@ -769,6 +769,17 @@
     <!-- Dialog title when showing message header details in a popup window. [CHAR LIMIT=100]-->
     <string name="message_details_title">Message details</string>
 
+    <!-- General preference: Label of the setting for the direction to move to
+         when deleting the current message.
+         Options contain "newer message","older message", etc. [CHAR LIMIT=32] -->
+    <string name="auto_advance_label">Auto-advance</string>
+
+    <!-- General preference: Description of the setting for the direction to move to
+         when deleting the current message.
+         Options contain "newer message","older message", etc. [CHAR LIMIT=64] -->
+    <string name="auto_advance_summary">Choose which screen to show after you
+         delete a message</string>
+
     <!-- Title of the dialog that appears the first time they perform an action that would cause
          auto advance logic to fire [CHAR LIMIT=70] -->
     <string name="auto_advance_help_title">Set auto-advance preference\n(after you delete, etc.)</string>
