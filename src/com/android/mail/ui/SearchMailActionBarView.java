@@ -95,7 +95,7 @@ public class SearchMailActionBarView extends MailActionBarView {
         // Work around b/6664203 by manually forcing this view to be VISIBLE
         // upon ActionView collapse. DISPLAY_SHOW_CUSTOM will still control its final
         // visibility.
-        int mode = getMode();
+        final int mode = getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST
                 || (Utils.showTwoPaneSearchResults(getContext())
                         && mode == ViewMode.SEARCH_RESULTS_CONVERSATION)) {
