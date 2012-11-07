@@ -211,7 +211,7 @@ public class MessageCursor extends CursorWrapper {
             sb.append(String.format(
                     "[Message #%d hash=%s uri=%s id=%s serverId=%s from='%s' draftType=%d" +
                     " isSending=%s read=%s starred=%s attUris=%s]\n",
-                    pos, m.getStateHashCode(), m.uri, m.id, m.serverId, m.from, m.draftType,
+                    pos, m.getStateHashCode(), m.uri, m.id, m.serverId, m.getFrom(), m.draftType,
                     m.isSending, m.read, m.starred, attUris));
         }
         return sb.toString();

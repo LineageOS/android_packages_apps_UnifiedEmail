@@ -96,7 +96,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final Message refMessage = getRefMessage();
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String refMessageFromAccount = refMessage.from;
+        final String refMessageFromAccount = refMessage.getFrom();
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -116,10 +116,10 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     public void testReplyWithReplyTo() {
         setAccount("account1@mockuiprovider.com");
         final Message refMessage = getRefMessage();
-        refMessage.replyTo = "replytofromaccount1@mock.com";
+        refMessage.setReplyTo("replytofromaccount1@mock.com");
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String refReplyToAccount = refMessage.replyTo;
+        final String refReplyToAccount = refMessage.getReplyTo();
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -145,11 +145,11 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         setAccount("account2@mockuiprovider.com");
         final Message refMessage = getRefMessage();
         final String customFrom = "CUSTOMaccounta@mockuiprovider.com";
-        refMessage.from = "account2@mockuiprovider.com";
-        refMessage.to = "someotheraccount@mockuiprovider.com, "
+        refMessage.setFrom("account2@mockuiprovider.com");
+        refMessage.setTo("someotheraccount@mockuiprovider.com, "
                 + "someotheraccount2@mockuiprovider.com, someotheraccount3@mockuiprovider.com, "
-                + customFrom;
-        refMessage.replyTo = customFrom;
+                + customFrom);
+        refMessage.setReplyTo(customFrom);
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.mFromSpinner = new FromAddressSpinner(mActivity);
@@ -185,8 +185,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final Message refMessage = getRefMessage();
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String[] refMessageTo = TextUtils.split(refMessage.to, ",");
-        final String refMessageFromAccount = refMessage.from;
+        final String[] refMessageTo = TextUtils.split(refMessage.getTo(), ",");
+        final String refMessageFromAccount = refMessage.getFrom();
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -206,11 +206,11 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     public void testReplyAllWithReplyTo() {
         setAccount("account1@mockuiprovider.com");
         final Message refMessage = getRefMessage();
-        refMessage.replyTo = "replytofromaccount1@mock.com";
+        refMessage.setReplyTo("replytofromaccount1@mock.com");
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String[] refMessageTo = TextUtils.split(refMessage.to, ",");
-        final String refReplyToAccount = refMessage.replyTo;
+        final String[] refMessageTo = TextUtils.split(refMessage.getTo(), ",");
+        final String refReplyToAccount = refMessage.getReplyTo();
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -254,9 +254,9 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final Message refMessage = getRefMessageWithCc(0, false);
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String[] refMessageTo = TextUtils.split(refMessage.to, ",");
-        final String[] refMessageCc = TextUtils.split(refMessage.cc, ",");
-        final String refMessageFromAccount = refMessage.from;
+        final String[] refMessageTo = TextUtils.split(refMessage.getTo(), ",");
+        final String[] refMessageCc = TextUtils.split(refMessage.getCc(), ",");
+        final String refMessageFromAccount = refMessage.getFrom();
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -326,8 +326,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     public void testRecipientsRefMessageReplyToSelf() {
         setAccount("account0@mockuiprovider.com");
         final Message refMessage = getRefMessage();
-        refMessage.from = "account0@mockuiprovider.com";
-        refMessage.to = "someotheraccount@mockuiprovider.com";
+        refMessage.setFrom("account0@mockuiprovider.com");
+        refMessage.setTo("someotheraccount@mockuiprovider.com");
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
 
@@ -338,7 +338,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String[] cc = activity.getCcAddresses();
                 String[] bcc = activity.getBccAddresses();
                 assertEquals(to.length, 1);
-                assertTrue(to[0].contains(refMessage.to));
+                assertTrue(to[0].contains(refMessage.getTo()));
                 assertEquals(cc.length, 0);
                 assertEquals(bcc.length, 0);
             }
@@ -352,13 +352,13 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     public void testRecipientsRefMessageReplyToCustomFrom() {
         setAccount("account1@mockuiprovider.com");
         final Message refMessage = getRefMessage();
-        refMessage.from = "CUSTOMaccount1@mockuiprovider.com";
-        refMessage.to = "someotheraccount@mockuiprovider.com";
+        refMessage.setFrom("CUSTOMaccount1@mockuiprovider.com");
+        refMessage.setTo("someotheraccount@mockuiprovider.com");
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.mFromSpinner = new FromAddressSpinner(mActivity);
-        ReplyFromAccount a = new ReplyFromAccount(mAccount, mAccount.uri, refMessage.from,
-                refMessage.from, refMessage.from, true, true);
+        ReplyFromAccount a = new ReplyFromAccount(mAccount, mAccount.uri, refMessage.getFrom(),
+                refMessage.getFrom(), refMessage.getFrom(), true, true);
         JSONArray array = new JSONArray();
         array.put(a.serialize());
         mAccount.accountFromAddresses = array.toString();
@@ -375,7 +375,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String[] cc = activity.getCcAddresses();
                 String[] bcc = activity.getBccAddresses();
                 assertEquals(to.length, 1);
-                assertTrue(to[0].contains(refMessage.to));
+                assertTrue(to[0].contains(refMessage.getTo()));
                 assertEquals(cc.length, 0);
                 assertEquals(bcc.length, 0);
             }
@@ -390,10 +390,10 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         setAccount("account1@mockuiprovider.com");
         final Message refMessage = getRefMessage();
         final String customFrom = "CUSTOMaccount1@mockuiprovider.com";
-        refMessage.from = "senderaccount@mockuiprovider.com";
-        refMessage.to = "someotheraccount@mockuiprovider.com, "
+        refMessage.setFrom("senderaccount@mockuiprovider.com");
+        refMessage.setTo("someotheraccount@mockuiprovider.com, "
                 + "someotheraccount2@mockuiprovider.com, someotheraccount3@mockuiprovider.com, "
-                + customFrom;
+                + customFrom);
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.mFromSpinner = new FromAddressSpinner(mActivity);
@@ -432,10 +432,10 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         setAccount("account1@mockuiprovider.com");
         final Message refMessage = getRefMessage();
         final String customFrom = "CUSTOMaccount1@mockuiprovider.com";
-        refMessage.from = "account1@mockuiprovider.com";
-        refMessage.to = "someotheraccount@mockuiprovider.com, "
+        refMessage.setFrom("account1@mockuiprovider.com");
+        refMessage.setTo("someotheraccount@mockuiprovider.com, "
                 + "someotheraccount2@mockuiprovider.com, someotheraccount3@mockuiprovider.com, "
-                + customFrom;
+                + customFrom);
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.mFromSpinner = new FromAddressSpinner(mActivity);
@@ -490,9 +490,9 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     public void testChangeModes0() {
         setAccount("account0@mockuiprovider.com");
         final Message refMessage = getRefMessage();
-        refMessage.from = "fromaccount@mockuiprovider.com";
-        refMessage.to = "account0@mockuiprovider.com";
-        refMessage.cc = "ccaccount@mockuiprovider.com";
+        refMessage.setFrom("fromaccount@mockuiprovider.com");
+        refMessage.setTo("account0@mockuiprovider.com");
+        refMessage.setCc("ccaccount@mockuiprovider.com");
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.runOnUiThread(new Runnable() {
@@ -503,14 +503,14 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String[] cc = activity.getCcAddresses();
                 String[] bcc = activity.getBccAddresses();
                 assertEquals(to.length, 1);
-                assertTrue(to[0].contains(refMessage.from));
+                assertTrue(to[0].contains(refMessage.getFrom()));
                 assertEquals(cc.length, 0);
                 assertEquals(bcc.length, 0);
                 activity.onNavigationItemSelected(1, ComposeActivity.REPLY_ALL);
                 assertEquals(activity.getToAddresses().length, 1);
-                assertTrue(activity.getToAddresses()[0].contains(refMessage.from));
+                assertTrue(activity.getToAddresses()[0].contains(refMessage.getFrom()));
                 assertEquals(activity.getCcAddresses().length, 1);
-                assertTrue(activity.getCcAddresses()[0].contains(refMessage.cc));
+                assertTrue(activity.getCcAddresses()[0].contains(refMessage.getCc()));
                 assertEquals(activity.getBccAddresses().length, 0);
                 activity.onNavigationItemSelected(2, ComposeActivity.FORWARD);
                 assertEquals(activity.getToAddresses().length, 0);
@@ -524,9 +524,9 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     public void testChangeModes1() {
         setAccount("account0@mockuiprovider.com");
         final Message refMessage = getRefMessage();
-        refMessage.from = "fromaccount@mockuiprovider.com";
-        refMessage.to = "account0@mockuiprovider.com, toaccount0@mockuiprovider.com";
-        refMessage.cc = "ccaccount@mockuiprovider.com";
+        refMessage.setFrom("fromaccount@mockuiprovider.com");
+        refMessage.setTo("account0@mockuiprovider.com, toaccount0@mockuiprovider.com");
+        refMessage.setCc("ccaccount@mockuiprovider.com");
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.runOnUiThread(new Runnable() {
@@ -537,15 +537,15 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String[] cc = activity.getCcAddresses();
                 String[] bcc = activity.getBccAddresses();
                 assertEquals(to.length, 1);
-                assertTrue(to[0].contains(refMessage.from));
+                assertTrue(to[0].contains(refMessage.getFrom()));
                 assertEquals(cc.length, 0);
                 assertEquals(bcc.length, 0);
                 activity.onNavigationItemSelected(1, ComposeActivity.REPLY_ALL);
                 assertEquals(activity.getToAddresses().length, 1);
-                assertTrue(activity.getToAddresses()[0].contains(refMessage.from));
+                assertTrue(activity.getToAddresses()[0].contains(refMessage.getFrom()));
                 assertEquals(activity.getCcAddresses().length, 2);
-                assertTrue(activity.getCcAddresses()[0].contains(refMessage.cc)
-                        || activity.getCcAddresses()[1].contains(refMessage.cc));
+                assertTrue(activity.getCcAddresses()[0].contains(refMessage.getCc())
+                        || activity.getCcAddresses()[1].contains(refMessage.getCc()));
                 assertTrue(activity.getCcAddresses()[0].contains("toaccount0@mockuiprovider.com")
                         || activity.getCcAddresses()[1]
                                 .contains("toaccount0@mockuiprovider.com"));
@@ -562,9 +562,9 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     public void testChangeModes2() {
         setAccount("account0@mockuiprovider.com");
         final Message refMessage = getRefMessage();
-        refMessage.from = "fromaccount@mockuiprovider.com";
-        refMessage.to = "account0@mockuiprovider.com, toaccount0@mockuiprovider.com";
-        refMessage.cc = "ccaccount@mockuiprovider.com, ccaccount2@mockuiprovider.com";
+        refMessage.setFrom("fromaccount@mockuiprovider.com");
+        refMessage.setTo("account0@mockuiprovider.com, toaccount0@mockuiprovider.com");
+        refMessage.setCc("ccaccount@mockuiprovider.com, ccaccount2@mockuiprovider.com");
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.runOnUiThread(new Runnable() {
@@ -575,12 +575,12 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String[] cc = activity.getCcAddresses();
                 String[] bcc = activity.getBccAddresses();
                 assertEquals(to.length, 1);
-                assertTrue(to[0].contains(refMessage.from));
+                assertTrue(to[0].contains(refMessage.getFrom()));
                 assertEquals(cc.length, 0);
                 assertEquals(bcc.length, 0);
                 activity.onNavigationItemSelected(1, ComposeActivity.REPLY_ALL);
                 assertEquals(activity.getToAddresses().length, 1);
-                assertTrue(activity.getToAddresses()[0].contains(refMessage.from));
+                assertTrue(activity.getToAddresses()[0].contains(refMessage.getFrom()));
                 assertEquals(activity.getCcAddresses().length, 3);
                 assertTrue(activity.getCcAddresses()[0].contains("ccaccount@mockuiprovider.com")
                         || activity.getCcAddresses()[1].contains("ccaccount@mockuiprovider.com")

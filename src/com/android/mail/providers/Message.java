@@ -74,23 +74,23 @@ public class Message implements Parcelable {
     /**
      * @see UIProvider.MessageColumns#FROM
      */
-    public String from;
+    private String mFrom;
     /**
      * @see UIProvider.MessageColumns#TO
      */
-    public String to;
+    private String mTo;
     /**
      * @see UIProvider.MessageColumns#CC
      */
-    public String cc;
+    private String mCc;
     /**
      * @see UIProvider.MessageColumns#BCC
      */
-    public String bcc;
+    private String mBcc;
     /**
      * @see UIProvider.MessageColumns#REPLY_TO
      */
-    public String replyTo;
+    private String mReplyTo;
     /**
      * @see UIProvider.MessageColumns#DATE_RECEIVED_MS
      */
@@ -224,11 +224,11 @@ public class Message implements Parcelable {
         dest.writeParcelable(conversationUri, 0);
         dest.writeString(subject);
         dest.writeString(snippet);
-        dest.writeString(from);
-        dest.writeString(to);
-        dest.writeString(cc);
-        dest.writeString(bcc);
-        dest.writeString(replyTo);
+        dest.writeString(mFrom);
+        dest.writeString(mTo);
+        dest.writeString(mCc);
+        dest.writeString(mBcc);
+        dest.writeString(mReplyTo);
         dest.writeLong(dateReceivedMs);
         dest.writeString(bodyHtml);
         dest.writeString(bodyText);
@@ -260,11 +260,11 @@ public class Message implements Parcelable {
         conversationUri = in.readParcelable(null);
         subject = in.readString();
         snippet = in.readString();
-        from = in.readString();
-        to = in.readString();
-        cc = in.readString();
-        bcc = in.readString();
-        replyTo = in.readString();
+        mFrom = in.readString();
+        mTo = in.readString();
+        mCc = in.readString();
+        mBcc = in.readString();
+        mReplyTo = in.readString();
         dateReceivedMs = in.readLong();
         bodyHtml = in.readString();
         bodyText = in.readString();
@@ -322,11 +322,11 @@ public class Message implements Parcelable {
             conversationUri = !TextUtils.isEmpty(convUriStr) ? Uri.parse(convUriStr) : null;
             subject = cursor.getString(UIProvider.MESSAGE_SUBJECT_COLUMN);
             snippet = cursor.getString(UIProvider.MESSAGE_SNIPPET_COLUMN);
-            from = cursor.getString(UIProvider.MESSAGE_FROM_COLUMN);
-            to = cursor.getString(UIProvider.MESSAGE_TO_COLUMN);
-            cc = cursor.getString(UIProvider.MESSAGE_CC_COLUMN);
-            bcc = cursor.getString(UIProvider.MESSAGE_BCC_COLUMN);
-            replyTo = cursor.getString(UIProvider.MESSAGE_REPLY_TO_COLUMN);
+            mFrom = cursor.getString(UIProvider.MESSAGE_FROM_COLUMN);
+            mTo = cursor.getString(UIProvider.MESSAGE_TO_COLUMN);
+            mCc = cursor.getString(UIProvider.MESSAGE_CC_COLUMN);
+            mBcc = cursor.getString(UIProvider.MESSAGE_BCC_COLUMN);
+            mReplyTo = cursor.getString(UIProvider.MESSAGE_REPLY_TO_COLUMN);
             dateReceivedMs = cursor.getLong(UIProvider.MESSAGE_DATE_RECEIVED_MS_COLUMN);
             bodyHtml = cursor.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN);
             bodyText = cursor.getString(UIProvider.MESSAGE_BODY_TEXT_COLUMN);
@@ -379,37 +379,82 @@ public class Message implements Parcelable {
                 UIProvider.MessageFlags.CALENDAR_INVITE;
     }
 
+    public String getFrom() {
+        return mFrom;
+    }
+
+    public synchronized void setFrom(final String from) {
+        mFrom = from;
+        mFromAddresses = null;
+    }
+
+    public String getTo() {
+        return mTo;
+    }
+
+    public synchronized void setTo(final String to) {
+        mTo = to;
+        mToAddresses = null;
+    }
+
+    public String getCc() {
+        return mCc;
+    }
+
+    public synchronized void setCc(final String cc) {
+        mCc = cc;
+        mCcAddresses = null;
+    }
+
+    public String getBcc() {
+        return mBcc;
+    }
+
+    public synchronized void setBcc(final String bcc) {
+        mBcc = bcc;
+        mBccAddresses = null;
+    }
+
+    public String getReplyTo() {
+        return mReplyTo;
+    }
+
+    public synchronized void setReplyTo(final String replyTo) {
+        mReplyTo = replyTo;
+        mReplyToAddresses = null;
+    }
+
     public synchronized String[] getFromAddresses() {
         if (mFromAddresses == null) {
-            mFromAddresses = tokenizeAddresses(from);
+            mFromAddresses = tokenizeAddresses(mFrom);
         }
         return mFromAddresses;
     }
 
     public synchronized String[] getToAddresses() {
         if (mToAddresses == null) {
-            mToAddresses = tokenizeAddresses(to);
+            mToAddresses = tokenizeAddresses(mTo);
         }
         return mToAddresses;
     }
 
     public synchronized String[] getCcAddresses() {
         if (mCcAddresses == null) {
-            mCcAddresses = tokenizeAddresses(cc);
+            mCcAddresses = tokenizeAddresses(mCc);
         }
         return mCcAddresses;
     }
 
     public synchronized String[] getBccAddresses() {
         if (mBccAddresses == null) {
-            mBccAddresses = tokenizeAddresses(bcc);
+            mBccAddresses = tokenizeAddresses(mBcc);
         }
         return mBccAddresses;
     }
 
     public synchronized String[] getReplyToAddresses() {
         if (mReplyToAddresses == null) {
-            mReplyToAddresses = tokenizeAddresses(replyTo);
+            mReplyToAddresses = tokenizeAddresses(mReplyTo);
         }
         return mReplyToAddresses;
     }

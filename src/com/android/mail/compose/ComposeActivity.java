@@ -58,7 +58,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -367,8 +366,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             showQuotedText = message.appendRefMessageContent;
         } else if (action == EDIT_DRAFT) {
             initFromDraftMessage(message);
-            boolean showBcc = !TextUtils.isEmpty(message.bcc);
-            boolean showCc = showBcc || !TextUtils.isEmpty(message.cc);
+            boolean showBcc = !TextUtils.isEmpty(message.getBcc());
+            boolean showCc = showBcc || !TextUtils.isEmpty(message.getCc());
             mCcBccView.show(false, showCc, showBcc);
             // Update the action to the draft type of the previous draft
             switch (message.draftType) {
@@ -695,10 +694,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.conversationUri = null;
         message.subject = mSubject.getText().toString();
         message.snippet = null;
-        message.to = formatSenders(mTo.getText().toString());
-        message.cc = formatSenders(mCc.getText().toString());
-        message.bcc = formatSenders(mBcc.getText().toString());
-        message.replyTo = null;
+        message.setTo(formatSenders(mTo.getText().toString()));
+        message.setCc(formatSenders(mCc.getText().toString()));
+        message.setBcc(formatSenders(mBcc.getText().toString()));
+        message.setReplyTo(null);
         message.dateReceivedMs = 0;
         String htmlBody = Html.toHtml(new SpannableString(mBodyView.getText().toString()));
         StringBuilder fullBody = new StringBuilder(htmlBody);
@@ -725,9 +724,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void updateMessage(Message message, ReplyFromAccount selectedReplyFromAccount,
             int mode) {
-        message.from = selectedReplyFromAccount != null ? selectedReplyFromAccount.address
-                : mAccount != null ? mAccount.name : null;
+        message.setFrom(selectedReplyFromAccount != null ? selectedReplyFromAccount.address
+                : mAccount != null ? mAccount.name : null);
         message.draftType = getDraftType(mode);
+        message.setTo(formatSenders(mTo.getText().toString()));
+        message.setCc(formatSenders(mCc.getText().toString()));
+        message.setBcc(formatSenders(mBcc.getText().toString()));
     }
 
     private String formatSenders(String string) {
@@ -877,7 +879,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private ReplyFromAccount getReplyFromAccountFromDraft(Account account, Message msg) {
-        String sender = msg.from;
+        String sender = msg.getFrom();
         ReplyFromAccount replyFromAccount = null;
         List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
         if (TextUtils.equals(account.name, sender)) {
@@ -1428,7 +1430,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // the reply.
         final String accountEmail = Address.getEmailAddress(account).getAddress();
         String[] sentToAddresses = refMessage.getToAddresses();
-        String replytoAddress = refMessage.replyTo;
+        String replytoAddress = refMessage.getReplyTo();
         final Collection<String> toAddresses;
 
         // If this is a reply, the Cc list is empty. If this is a reply-all, the
@@ -1436,13 +1438,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // message, excluding the current user's email address and any addresses
         // already on the To list.
         if (action == ComposeActivity.REPLY) {
-            toAddresses = initToRecipients(account, accountEmail, refMessage.from, replytoAddress,
-                    sentToAddresses);
+            toAddresses = initToRecipients(account, accountEmail, refMessage.getFrom(),
+                    replytoAddress, sentToAddresses);
             addToAddresses(toAddresses);
         } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
-            toAddresses = initToRecipients(account, accountEmail, refMessage.from, replytoAddress,
-                    sentToAddresses);
+            toAddresses = initToRecipients(account, accountEmail, refMessage.getFrom(),
+                    replytoAddress, sentToAddresses);
             addToAddresses(toAddresses);
             addRecipients(accountEmail, ccAddresses, sentToAddresses);
             addRecipients(accountEmail, ccAddresses, refMessage.getCcAddresses());
@@ -2348,7 +2350,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         MessageModification.putCcAddresses(values, message.getCcAddresses());
         MessageModification.putBccAddresses(values, message.getBccAddresses());
 
-        MessageModification.putCustomFromAddress(values, message.from);
+        MessageModification.putCustomFromAddress(values, message.getFrom());
 
         MessageModification.putSubject(values, message.subject);
         String htmlBody = Html.toHtml(new SpannableString(body.toString()));
@@ -2611,10 +2613,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (mDraft != null) {
                 // Following desktop behavior, if the user has added a BCC
                 // field to a draft, we show it regardless of compose mode.
-                showBcc = !TextUtils.isEmpty(mDraft.bcc);
+                showBcc = !TextUtils.isEmpty(mDraft.getBcc());
                 // Use the draft to determine what to populate.
                 // If the Bcc field is showing, show the Cc field whether it is populated or not.
-                showCc = showBcc || (!TextUtils.isEmpty(mDraft.cc) && mComposeMode == REPLY_ALL);
+                showCc = showBcc
+                        || (!TextUtils.isEmpty(mDraft.getCc()) && mComposeMode == REPLY_ALL);
             } else if (mRefMessage != null) {
                 showCc = !TextUtils.isEmpty(mCc.getText());
             }
@@ -2984,8 +2987,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 if (data != null && data.moveToFirst()) {
                     mRefMessage = new Message(data);
                     // We set these based on EXTRA_TO.
-                    mRefMessage.to = null;
-                    mRefMessage.from = null;
+                    mRefMessage.setTo(null);
+                    mRefMessage.setFrom(null);
                     Intent intent = getIntent();
                     int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
                     initFromRefMessage(action, mAccount.name);

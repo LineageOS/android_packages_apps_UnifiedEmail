@@ -1162,7 +1162,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             if (!mViewState.contains(m)) {
                 LogUtils.i(LOG_TAG, "conversation diff: found new msg: %s", m.uri);
 
-                final Address from = getAddress(m.from);
+                final Address from = getAddress(m.getFrom());
                 // distinguish ours from theirs
                 // new messages from the account owner should not trigger a
                 // notification
@@ -1173,7 +1173,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 }
 
                 info.count++;
-                info.senderAddress = m.from;
+                info.senderAddress = m.getFrom();
             }
         }
         return info;
@@ -1194,7 +1194,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             final ConversationMessage newMsg = newCursor.getMessage();
             final ConversationMessage oldMsg = oldCursor.getMessage();
 
-            if (!TextUtils.equals(newMsg.from, oldMsg.from) ||
+            if (!TextUtils.equals(newMsg.getFrom(), oldMsg.getFrom()) ||
                     newMsg.isSending != oldMsg.isSending) {
                 mAdapter.updateItemsForMessage(newMsg, changedOverlayPositions);
                 LogUtils.i(LOG_TAG, "msg #%d (%d): detected from/sending change. isSending=%s",
