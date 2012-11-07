@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Alla mappar"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Senaste mapparna"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Meddelandeinfo"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Ange inställningar för automatisk flytt"\n"(efter borttagning osv.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Nyare"</item>
+    <item msgid="5562093094216840213">"Äldre"</item>
+    <item msgid="3331655314944797957">"Konversationslista"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Visa en nyare konversation efter borttagning"</item>
+    <item msgid="732746454445519134">"Visa en äldre konversation efter borttagning"</item>
+    <item msgid="2189929276292165301">"Visa konversationslistan efter borttagning"</item>
+  </string-array>
 </resources>

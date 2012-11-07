@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"ሁሉም አቃፊዎች"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"የቅርብ ጊዜ አቃፊዎች"</string>
     <string name="message_details_title" msgid="2183394728494962332">"የመልዕክት ዝርዝሮች"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"የራስ-አልቅ ምርጫዎችን ያዋቅሩ"\n"(ከሰረዙ በኋላ፣ ወዘተ.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"ይበልጥ አዲስ"</item>
+    <item msgid="5562093094216840213">"የቆዩ"</item>
+    <item msgid="3331655314944797957">"የውይይት ዝርዝር"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"ከሰረዙ በኋላ ይበልጥ አዲስ ውይይትን ያሳዩ"</item>
+    <item msgid="732746454445519134">"ከሰረዙ በኋላ ይበልጥ የቆዩ ውይይትን ያሳዩ"</item>
+    <item msgid="2189929276292165301">"ከሰረዙ በኋላ የውይይት ዝርዝርን ያሳዩ"</item>
+  </string-array>
 </resources>

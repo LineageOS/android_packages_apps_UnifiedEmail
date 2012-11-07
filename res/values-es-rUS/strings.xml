@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Todas las carpetas"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Carpetas recientes"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Detalles del mensaje"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Configurar preferencia de avance automático"\n"(luego de eliminar, etc.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Más reciente"</item>
+    <item msgid="5562093094216840213">"Más antigua"</item>
+    <item msgid="3331655314944797957">"Lista de conversaciones"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Mostrar la conversación más reciente luego de la eliminación"</item>
+    <item msgid="732746454445519134">"Mostrar la conversación más antigua luego de la eliminación"</item>
+    <item msgid="2189929276292165301">"Mostrar la lista de conversaciones luego de la eliminación"</item>
+  </string-array>
 </resources>
