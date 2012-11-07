@@ -562,6 +562,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
+    private void setShowImages(final boolean showImages) {
+        // use View's 'show images' flag to store whether we are currently displaying images
+        if (mMessageHeaderItem != null) {
+            mMessageHeaderItem.setShowImages(showImages);
+        }
+    }
+
     /**
      * Update the visibility of the many child views based on expanded/collapsed
      * and draft/normal state.
@@ -958,7 +965,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 showSpamWarning();
             }
             if (mShowImagePrompt) {
-                showImagePrompt();
+                if (mMessageHeaderItem.getShowImages()) {
+                    showImagePromptAlways(true);
+                } else {
+                    showImagePromptOnce();
+                }
             } else {
                 hideShowImagePrompt();
             }
@@ -1011,7 +1022,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
-    private void showImagePrompt() {
+    private void showImagePromptOnce() {
         if (mImagePromptView == null) {
             ViewGroup v = (ViewGroup) mInflater.inflate(R.layout.conversation_message_show_pics,
                     this, false);
@@ -1022,6 +1033,33 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mImagePromptView = v;
         }
         mImagePromptView.setVisibility(VISIBLE);
+    }
+
+    /**
+     * Shows the "Always show pictures" message
+     *
+     * @param initialShowing <code>true</code> if this is the first time we are showing the prompt
+     *        for "show images", <code>false</code> if we are transitioning from "Show pictures"
+     */
+    private void showImagePromptAlways(final boolean initialShowing) {
+        if (initialShowing) {
+            // Initialize the view
+            showImagePromptOnce();
+        }
+
+        ImageView descriptionViewIcon =
+                (ImageView) mImagePromptView.findViewById(R.id.show_pictures_icon);
+        descriptionViewIcon.setContentDescription(
+                getResources().getString(R.string.always_show_images));
+        TextView descriptionView =
+                (TextView) mImagePromptView.findViewById(R.id.show_pictures_text);
+        descriptionView.setText(R.string.always_show_images);
+        mImagePromptView.setTag(SHOW_IMAGE_PROMPT_ALWAYS);
+
+        if (!initialShowing) {
+            // the new text's line count may differ, so update the spacer height
+            updateSpacerHeight();
+        }
     }
 
     private void hideSpamWarning() {
@@ -1050,14 +1088,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 if (mCallbacks != null) {
                     mCallbacks.showExternalResources(mMessage);
                 }
-                ImageView descriptionViewIcon = (ImageView) v.findViewById(R.id.show_pictures_icon);
-                descriptionViewIcon.setContentDescription(getResources().getString(
-                        R.string.always_show_images));
-                TextView descriptionView = (TextView) v.findViewById(R.id.show_pictures_text);
-                descriptionView.setText(R.string.always_show_images);
-                v.setTag(SHOW_IMAGE_PROMPT_ALWAYS);
-                // the new text's line count may differ, so update the spacer height
-                updateSpacerHeight();
+                showImagePromptAlways(false);
                 break;
             case SHOW_IMAGE_PROMPT_ALWAYS:
                 mMessage.markAlwaysShowImages(getQueryHandler(), 0 /* token */, null /* cookie */);

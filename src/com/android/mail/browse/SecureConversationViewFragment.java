@@ -228,7 +228,8 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             mWebView.loadDataWithBaseURL(mBaseUri, convHtml.toString(), "text/html", "utf-8", null);
             ConversationViewAdapter mAdapter = new ConversationViewAdapter(mActivity, null, null,
                     null, null, null, null, null, null);
-            MessageHeaderItem item = mAdapter.newMessageHeaderItem(mMessage, true);
+            MessageHeaderItem item = mAdapter.newMessageHeaderItem(mMessage, true,
+                    mMessage.alwaysShowImages);
             mMessageHeaderView.initialize(mDateBuilder, this, mAddressCache);
             mMessageHeaderView.setExpandMode(MessageHeaderView.POPUP_MODE);
             mMessageHeaderView.bind(item, false);

@@ -128,15 +128,17 @@ public class ConversationViewAdapter extends BaseAdapter {
         // view state variables
         private boolean mExpanded;
         public boolean detailsExpanded;
+        private boolean mShowImages;
 
         // cached values to speed up re-rendering during view recycling
         public CharSequence timestampShort;
         public CharSequence timestampLong;
         public CharSequence recipientSummaryText;
 
-        MessageHeaderItem(ConversationMessage message, boolean expanded) {
+        MessageHeaderItem(ConversationMessage message, boolean expanded, boolean showImages) {
             mMessage = message;
             mExpanded = expanded;
+            mShowImages = showImages;
 
             detailsExpanded = false;
         }
@@ -185,6 +187,14 @@ public class ConversationViewAdapter extends BaseAdapter {
             if (mExpanded != expanded) {
                 mExpanded = expanded;
             }
+        }
+
+        public boolean getShowImages() {
+            return mShowImages;
+        }
+
+        public void setShowImages(boolean showImages) {
+            mShowImages = showImages;
         }
 
         @Override
@@ -392,16 +402,17 @@ public class ConversationViewAdapter extends BaseAdapter {
         return addItem(new ConversationHeaderItem(conv));
     }
 
-    public int addMessageHeader(ConversationMessage msg, boolean expanded) {
-        return addItem(new MessageHeaderItem(msg, expanded));
+    public int addMessageHeader(ConversationMessage msg, boolean expanded, boolean showImages) {
+        return addItem(new MessageHeaderItem(msg, expanded, showImages));
     }
 
     public int addMessageFooter(MessageHeaderItem headerItem) {
         return addItem(new MessageFooterItem(headerItem));
     }
 
-    public MessageHeaderItem newMessageHeaderItem(ConversationMessage message, boolean expanded) {
-        return new MessageHeaderItem(message, expanded);
+    public MessageHeaderItem newMessageHeaderItem(ConversationMessage message, boolean expanded,
+            boolean showImages) {
+        return new MessageHeaderItem(message, expanded, showImages);
     }
 
     public MessageFooterItem newMessageFooterItem(MessageHeaderItem headerItem) {

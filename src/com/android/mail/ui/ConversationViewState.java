@@ -81,6 +81,20 @@ class ConversationViewState implements Parcelable {
         mMessageViewStates.put(m.uri, mvs);
     }
 
+    public boolean getShouldShowImages(Message m) {
+        final MessageViewState mvs = mMessageViewStates.get(m.uri);
+        return (mvs != null && mvs.showImages);
+    }
+
+    public void setShouldShowImages(Message m, boolean showImages) {
+        MessageViewState mvs = mMessageViewStates.get(m.uri);
+        if (mvs == null) {
+            mvs = new MessageViewState();
+        }
+        mvs.showImages = showImages;
+        mMessageViewStates.put(m.uri, mvs);
+    }
+
     /**
      * Returns the expansion state of a message in a conversation view.
      *
@@ -180,6 +194,7 @@ class ConversationViewState implements Parcelable {
          *
          */
         public Integer expansionState;
+        public boolean showImages;
 
         public MessageViewState() {}
 
@@ -192,12 +207,14 @@ class ConversationViewState implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(read ? 1 : 0);
             dest.writeInt(expansionState == null ? -1 : expansionState.intValue());
+            dest.writeInt(showImages ? 1 : 0);
         }
 
         private MessageViewState(Parcel source) {
             read = (source.readInt() != 0);
             final int expandedVal = source.readInt();
             expansionState = (expandedVal == -1) ? null : expandedVal;
+            showImages = (source.readInt() != 0);
         }
 
         @SuppressWarnings("hiding")
