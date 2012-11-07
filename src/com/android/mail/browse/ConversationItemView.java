@@ -49,6 +49,7 @@ import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
 import android.util.SparseArray;
 import android.view.DragEvent;
 import android.view.MotionEvent;
@@ -113,12 +114,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static String sElidedPaddingToken;
 
     // Static colors.
-    private static int sDefaultTextColor;
     private static int sActivatedTextColor;
-    private static int sSubjectTextColorRead;
-    private static int sSubjectTextColorUnead;
-    private static int sSnippetTextColorRead;
-    private static int sSnippetTextColorUnread;
     private static int sSendersTextColorRead;
     private static int sSendersTextColorUnread;
     private static int sDateTextColor;
@@ -174,6 +170,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private String mAccount;
     private ControllableActivity mActivity;
     private int mBackgroundOverride = -1;
+    private static TextAppearanceSpan sSubjectTextUnreadSpan;
+    private static TextAppearanceSpan sSubjectTextReadSpan;
+    private static ForegroundColorSpan sSnippetTextUnreadSpan;
+    private static ForegroundColorSpan sSnippetTextReadSpan;
     private static TextView sSubjectTextView;
     private static TextView sSendersTextView;
     private static int sScrollSlop;
@@ -363,15 +363,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
 
             // Initialize colors.
-            sDefaultTextColor = res.getColor(R.color.default_text_color);
             sActivatedTextColor = res.getColor(android.R.color.white);
             sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(sActivatedTextColor));
-            sSubjectTextColorRead = res.getColor(R.color.subject_text_color_read);
-            sSubjectTextColorUnead = res.getColor(R.color.subject_text_color_unread);
-            sSnippetTextColorRead = res.getColor(R.color.snippet_text_color_read);
-            sSnippetTextColorUnread = res.getColor(R.color.snippet_text_color_unread);
             sSendersTextColorRead = res.getColor(R.color.senders_text_color_read);
             sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
+            sSubjectTextUnreadSpan = new TextAppearanceSpan(mContext,
+                    R.style.SubjectAppearanceUnreadStyle);
+            sSubjectTextReadSpan = new TextAppearanceSpan(mContext,
+                    R.style.SubjectAppearanceStyle);
+            sSnippetTextUnreadSpan = new ForegroundColorSpan(R.color.snippet_text_color_unread);
+            sSnippetTextReadSpan = new ForegroundColorSpan(R.color.snippet_text_color_read);
             sDateTextColor = res.getColor(R.color.date_text_color);
             sDateBackgroundPaddingLeft = res
                     .getDimensionPixelSize(R.dimen.date_background_padding_left);
@@ -637,22 +638,20 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private SpannableStringBuilder createSubject(boolean isUnread, boolean activated) {
         final String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.getSnippet();
-        int subjectColor = activated ? sActivatedTextColor : isUnread ? sSubjectTextColorUnead
-                : sSubjectTextColorRead;
-        int snippetColor = activated ? sActivatedTextColor : isUnread ? sSnippetTextColorUnread
-                : sSnippetTextColorRead;
         SpannableStringBuilder subjectText = Conversation.getSubjectAndSnippetForDisplay(mContext,
                 subject, snippet);
-        if (isUnread) {
-            subjectText.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        if (subject != null) {
-            subjectText.setSpan(new ForegroundColorSpan(subjectColor), 0, subject.length(),
+        if (!TextUtils.isEmpty(subject)) {
+            subjectText.setSpan(TextAppearanceSpan.wrap(isUnread ?
+                    sSubjectTextUnreadSpan : sSubjectTextReadSpan), 0, subject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (!TextUtils.isEmpty(snippet)) {
-            subjectText.setSpan(new ForegroundColorSpan(snippetColor), subject.length() + 1,
+            int startOffset = 0;
+            if (!TextUtils.isEmpty(subject)) {
+                startOffset = subject.length() + 1;
+            }
+            subjectText.setSpan(ForegroundColorSpan.wrap(isUnread ?
+                    sSnippetTextUnreadSpan : sSnippetTextReadSpan), startOffset,
                     subjectText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return subjectText;

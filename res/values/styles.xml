@@ -515,4 +515,13 @@
     <style name="ConversationListStyle">
         <item name="android:background">@color/conversation_list_background_color</item>
     </style>
+
+    <style name="SubjectAppearanceUnreadStyle">
+        <item name="android:textColor">@color/subject_text_color_unread</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SubjectAppearanceStyle">
+        <item name="android:textColor">@color/subject_text_color_read</item>
+    </style>
 </resources>

@@ -29,6 +29,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import com.google.common.base.Objects;
@@ -54,6 +56,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
     // TODO: remove this once we figure out which folder is returning a "null" string as the
     // conversation list uri
     private static final String NULL_STRING_URI = "null";
+    private static final String LOG_TAG = LogTag.getLogTag();
+
+    // Variables used to cache folders that are being processed.
+    private static HashMap<Integer, Folder> sCachedFolders = Maps.newHashMap();
+    private static Account sFoldersCacheAccount;
 
     // Try to match the order of members with the order of constants in UIProvider.
 
@@ -431,17 +438,37 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return folderList.toString();
     }
 
+    public static void onAccountChanged(Account account) {
+        if (sFoldersCacheAccount == null
+                || !Objects.equal(account.uri, sFoldersCacheAccount.uri)) {
+            sFoldersCacheAccount = account;
+            sCachedFolders.clear();
+        }
+    }
 
     public static Folder fromString(String inString) {
         if (TextUtils.isEmpty(inString)) {
             return null;
         }
         final Folder f = new Folder();
+        int indexOf = inString.indexOf(SPLITTER);
+        int id = -1;
+        if (indexOf != -1) {
+            id = Integer.valueOf(inString.substring(0, indexOf));
+            if (sCachedFolders != null && sCachedFolders.containsKey(id)) {
+                return sCachedFolders.get(id);
+            }
+        } else {
+            // If no separator was found, we can't parse this folder and the
+            // TextUtils.split call would also fail. Return null.
+            LogUtils.w(LOG_TAG, "Problem parsing folderId: original string: %s", inString);
+            return null;
+        }
         final String[] split = TextUtils.split(inString, SPLITTER_REGEX);
         if (split.length < 20) {
             return null;
         }
-        f.id = Integer.parseInt(split[0]);
+        f.id = id;
         f.uri = Folder.getValidUri(split[1]);
         f.name = split[2];
         f.hasChildren = Integer.parseInt(split[3]) != 0;
@@ -461,6 +488,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         f.loadMoreUri = getValidUri(split[17]);
         f.hierarchicalDesc = split[18];
         f.parent = Folder.fromString(split[19]);
+        sCachedFolders.put(f.id, f);
         return f;
     }
 
