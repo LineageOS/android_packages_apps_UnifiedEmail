@@ -49,7 +49,6 @@ import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationContainer.OverlayPosition;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
-import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
 import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
@@ -84,10 +83,7 @@ import java.util.Set;
  * The conversation view UI component.
  */
 public final class ConversationViewFragment extends AbstractConversationViewFragment implements
-        MessageHeaderViewCallbacks,
         SuperCollapsedBlock.OnClickListener,
-        ConversationController,
-        ConversationAccountController,
         OnLayoutChangeListener {
 
     private static final String LOG_TAG = LogTag.getLogTag();
@@ -315,6 +311,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         View rootView = inflater.inflate(R.layout.conversation_view, container, false);
         mConversationContainer = (ConversationContainer) rootView
                 .findViewById(R.id.conversation_container);
+        mConversationContainer.setAccountController(this);
 
         mNewMessageBar = mConversationContainer.findViewById(R.id.new_message_notification_bar);
         mNewMessageBar.setOnClickListener(new View.OnClickListener() {

@@ -32,7 +32,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
 import com.android.mail.browse.ConversationViewAdapter.ConversationHeaderItem;
 import com.android.mail.browse.FolderSpan.FolderSpanDimensions;
 import com.android.mail.providers.Conversation;

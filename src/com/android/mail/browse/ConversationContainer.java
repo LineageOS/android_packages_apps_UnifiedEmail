@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -34,6 +35,7 @@ import android.widget.ScrollView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ScrollNotifier.ScrollListener;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.InputSmoother;
@@ -80,6 +82,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      */
     private static final float SNAP_HEADER_MAX_SCROLL_SPEED = 600f;
 
+    private ConversationAccountController mAccountController;
     private ConversationViewAdapter mOverlayAdapter;
     private OverlayPosition[] mOverlayPositions;
     private ConversationWebView mWebView;
@@ -178,6 +181,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      */
     private int mSnapIndex;
 
+    private boolean mSnapEnabled;
+
     /**
      * Child views of this container should implement this interface to be notified when they are
      * being detached.
@@ -270,6 +275,12 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         return mOverlayAdapter;
     }
 
+    public void setAccountController(ConversationAccountController controller) {
+        mAccountController = controller;
+
+        mSnapEnabled = isSnapEnabled();
+    }
+
     /**
      * Re-bind any existing views that correspond to the given adapter positions.
      *
@@ -305,6 +316,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         // also unbind the snap header view, so this "reset" causes the snap header to re-create
         // its view, just like all other headers
         mSnapHeader.unbind();
+        mSnapEnabled = isSnapEnabled();
         positionOverlays(0, mOffsetY);
     }
 
@@ -765,10 +777,21 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         return view;
     }
 
+    private boolean isSnapEnabled() {
+        if (mAccountController == null || mAccountController.getAccount() == null
+                || mAccountController.getAccount().settings == null) {
+            return true;
+        }
+        final int snap = mAccountController.getAccount().settings.snapHeaders;
+        return snap == UIProvider.SnapHeaderValue.ALWAYS ||
+                (snap == UIProvider.SnapHeaderValue.PORTRAIT_ONLY && getResources()
+                    .getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
+    }
+
     // render and/or re-position snap header
     private void positionSnapHeader(int snapIndex) {
         ConversationOverlayItem snapItem = null;
-        if (snapIndex != -1) {
+        if (mSnapEnabled && snapIndex != -1) {
             final ConversationOverlayItem item = mOverlayAdapter.getItem(snapIndex);
             if (item.canBecomeSnapHeader()) {
                 snapItem = item;

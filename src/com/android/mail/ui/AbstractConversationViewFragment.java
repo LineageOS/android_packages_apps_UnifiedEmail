@@ -51,7 +51,7 @@ import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.SenderInfoLoader;
-import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
+import com.android.mail.browse.ConversationAccountController;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationController;
