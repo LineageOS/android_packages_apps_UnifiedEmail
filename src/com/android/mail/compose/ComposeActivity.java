@@ -1427,7 +1427,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // This is the email address of the current user, i.e. the one composing
         // the reply.
         final String accountEmail = Address.getEmailAddress(account).getAddress();
-        String fromAddress = getAddress(refMessage.from);
         String[] sentToAddresses = refMessage.getToAddresses();
         String replytoAddress = refMessage.replyTo;
         final Collection<String> toAddresses;
@@ -1437,12 +1436,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // message, excluding the current user's email address and any addresses
         // already on the To list.
         if (action == ComposeActivity.REPLY) {
-            toAddresses = initToRecipients(account, accountEmail, fromAddress, replytoAddress,
+            toAddresses = initToRecipients(account, accountEmail, refMessage.from, replytoAddress,
                     sentToAddresses);
             addToAddresses(toAddresses);
         } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
-            toAddresses = initToRecipients(account, accountEmail, fromAddress, replytoAddress,
+            toAddresses = initToRecipients(account, accountEmail, refMessage.from, replytoAddress,
                     sentToAddresses);
             addToAddresses(toAddresses);
             addRecipients(accountEmail, ccAddresses, sentToAddresses);
@@ -1541,7 +1540,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     protected Collection<String> initToRecipients(String account, String accountEmail,
-            String senderAddress, String replyToAddress, String[] inToAddresses) {
+            String fullSenderAddress, String replyToAddress,
+            String[] inToAddresses) {
         // The To recipient is the reply-to address specified in the original
         // message, unless it is:
         // the current user OR a custom from of the current user, in which case
@@ -1552,8 +1552,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 && !recipientMatchesThisAccount(account, replyToAddress)) {
             toAddresses.add(replyToAddress);
         } else {
-            if (!recipientMatchesThisAccount(account, senderAddress)) {
-                toAddresses.add(senderAddress);
+            if (!recipientMatchesThisAccount(account, fullSenderAddress)) {
+                toAddresses.add(fullSenderAddress);
             } else {
                 // This happens if the user replies to a message they originally
                 // wrote. In this case, "reply" really means "re-send," so we
