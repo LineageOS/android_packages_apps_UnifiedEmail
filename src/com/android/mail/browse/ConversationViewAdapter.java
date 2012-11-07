@@ -33,7 +33,6 @@ import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCall
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock.OnClickListener;
-import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
@@ -77,10 +76,6 @@ public class ConversationViewAdapter extends BaseAdapter {
     public static final int VIEW_TYPE_MESSAGE_FOOTER = 2;
     public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 3;
     public static final int VIEW_TYPE_COUNT = 4;
-
-    public interface ConversationAccountController {
-        Account getAccount();
-    }
 
     public class ConversationHeaderItem extends ConversationOverlayItem {
         public final Conversation mConversation;

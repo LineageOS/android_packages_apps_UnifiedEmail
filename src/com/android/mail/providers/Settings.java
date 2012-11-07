@@ -395,6 +395,7 @@ public class Settings implements Parcelable {
                 && mAutoAdvance == that.mAutoAdvance
                 && mTransientAutoAdvance == that.mTransientAutoAdvance
                 && messageTextSize == that.messageTextSize
+                && snapHeaders == that.snapHeaders
                 && replyBehavior == that.replyBehavior
                 && hideCheckboxes == that.hideCheckboxes
                 && confirmDelete == that.confirmDelete
@@ -420,13 +421,12 @@ public class Settings implements Parcelable {
 
     /**
      * Returns the hash code for this object.
-     * @return
      */
     private final int calculateHashCode() {
         return super.hashCode()
                 ^ Objects.hashCode(signature, mAutoAdvance, mTransientAutoAdvance, messageTextSize,
-                        replyBehavior, hideCheckboxes, confirmDelete, confirmArchive, confirmSend,
-                        defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
+                        snapHeaders, replyBehavior, hideCheckboxes, confirmDelete, confirmArchive,
+                        confirmSend, defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
                         priorityArrowsEnabled, setupIntentUri, conversationViewMode);
     }
 }
