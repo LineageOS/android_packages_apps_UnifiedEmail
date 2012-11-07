@@ -359,9 +359,13 @@
     <!-- Dialog text: confirm discard -->
     <string name="confirm_discard_text">Discard this message?</string>
 
-    <!-- Undo bar strings -->
+    <!-- Conversation list shared between the Activity and Widget -->
+    <!-- Displayed in the middle of the screen when conversations are being loaded [CHAR LIMIT 100]-->
+    <string name="loading_conversations">Loading\u2026</string>
     <!-- Displayed in the middle of the screen when the inbox is empty [CHAR LIMIT 100]-->
     <string name="no_conversations">No conversations.</string>
+
+    <!-- Undo bar strings -->
     <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
     <string name="undo">Undo</string>
 
