@@ -17,6 +17,7 @@
 package com.android.mail.persistence;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Maps;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import android.content.SharedPreferences.Editor;
 
 import com.android.mail.utils.LogTag;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -36,7 +38,7 @@ public class Persistence {
 
     private static Persistence mInstance = null;
 
-    private static SharedPreferences sSharedPrefs;
+    private static final Map<String, SharedPreferences> SHARED_PREFS_MAP = Maps.newHashMap();
 
     protected Persistence() {
         //  Singleton only, use getInstance()
@@ -58,11 +60,15 @@ public class Persistence {
     }
 
     public SharedPreferences getPreferences(Context context) {
-        if (sSharedPrefs == null) {
-            sSharedPrefs = context.getSharedPreferences(
-                    getSharedPreferencesName(), Context.MODE_PRIVATE);
+        final String sharedPrefName = getSharedPreferencesName();
+        synchronized (SHARED_PREFS_MAP) {
+            SharedPreferences preferences = SHARED_PREFS_MAP.get(sharedPrefName);
+            if (preferences == null) {
+                preferences = context.getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE);
+                SHARED_PREFS_MAP.put(sharedPrefName, preferences);
+            }
+            return preferences;
         }
-        return sSharedPrefs;
     }
 
     protected String makeKey(String account, String key) {
