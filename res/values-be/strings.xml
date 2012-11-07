@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Усе папкi"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Апошнія папкi"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Звесткi пра паведамленне"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Усталяваць аўтаматычны выбар пажаданых пазіцый"\n"(пасля выдалення і г.д.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Больш новая"</item>
+    <item msgid="5562093094216840213">"Больш ранняя"</item>
+    <item msgid="3331655314944797957">"Спіс гутарак"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Паказаць больш новую гутарку пасля выдалення"</item>
+    <item msgid="732746454445519134">"Паказаць больш раннюю гутарку пасля выдалення"</item>
+    <item msgid="2189929276292165301">"Паказаць спіс гутарак пасля выдалення"</item>
+  </string-array>
 </resources>

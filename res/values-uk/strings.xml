@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Усі папки"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Останні папки"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Деталі повідомлення"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Установити параметр автоматичного переходу"\n"(після видалення тощо)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Новіші"</item>
+    <item msgid="5562093094216840213">"Старіші"</item>
+    <item msgid="3331655314944797957">"Список бесід"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Показувати новішу бесіду після видалення"</item>
+    <item msgid="732746454445519134">"Показувати старішу бесіду після видалення"</item>
+    <item msgid="2189929276292165301">"Показувати список бесід після видалення"</item>
+  </string-array>
 </resources>

@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"सभी फ़ोल्डर"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"हाल ही के फ़ोल्‍डर"</string>
     <string name="message_details_title" msgid="2183394728494962332">"संदेश विवरण"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"स्वत: उन्नत प्राथमिकता सेट करें"\n"(आपके द्वारा हटाए जाने के बाद, आदि)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"नया"</item>
+    <item msgid="5562093094216840213">"पुराना"</item>
+    <item msgid="3331655314944797957">"वार्तालाप सूची"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"आपके द्वारा हटाए जाने के बाद नया वार्तालाप दिखाएं"</item>
+    <item msgid="732746454445519134">"आपके द्वारा हटाए जाने के बाद पुराना वार्तालाप दिखाएं"</item>
+    <item msgid="2189929276292165301">"आपके द्वारा हटाए जाने के बाद वार्तालाप सूची दिखाएं"</item>
+  </string-array>
 </resources>

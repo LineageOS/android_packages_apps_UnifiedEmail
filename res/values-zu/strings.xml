@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Wonke amafolda"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Amafolda akamuva"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Imininingwane yomlayezo"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Hlela izintandokazi zokuzenzakalelayo okudlulele"\n" (ngemuva kokususa, njalo-njalo.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Okusha kakhulu"</item>
+    <item msgid="5562093094216840213">"Okudala"</item>
+    <item msgid="3331655314944797957">"Uhlu lwengxoxo"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Bonisa ingxoxo entsha ngemuva kokususa"</item>
+    <item msgid="732746454445519134">"Bonisa ingxoxo endala ngemuva kokususa"</item>
+    <item msgid="2189929276292165301">"Bonisa uhlu lwengxoxo ngemuva kokususa"</item>
+  </string-array>
 </resources>

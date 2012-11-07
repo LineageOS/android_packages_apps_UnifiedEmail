@@ -371,4 +371,15 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Alle vouers"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Onlangse vouers"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Boodskapbesonderhede"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Stel outovoortgang-voorkeure"\n"(nadat jy uitvee, ens.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Jonger"</item>
+    <item msgid="5562093094216840213">"Ouer"</item>
+    <item msgid="3331655314944797957">"Gespreklys"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Wys jonger gesprek nadat jy uitvee"</item>
+    <item msgid="732746454445519134">"Wys ouer gesprek nadat jy uitvee"</item>
+    <item msgid="2189929276292165301">"Wys gespreklys nadat jy uitvee"</item>
+  </string-array>
 </resources>
