@@ -34,7 +34,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 
-import com.android.mail.persistence.Persistence;
+import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -139,7 +139,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         setupNfc();
 
         // Check if they haven't seen the current what's new dialog
-        if (Persistence.getInstance().getShouldShowWhatsNew(this)) {
+        if (MailPrefs.get(this).getShouldShowWhatsNew(this)) {
             // Don't show it if it's already displayed
             if (getFragmentManager().findFragmentByTag(WhatsNewDialogFragment.FRAGMENT_TAG)
                     == null) {

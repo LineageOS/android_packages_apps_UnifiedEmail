@@ -15,24 +15,6 @@
  */
 package com.android.mail.widget;
 
-import com.android.mail.R;
-import com.android.mail.browse.SendersView;
-import com.android.mail.compose.ComposeActivity;
-import com.android.mail.persistence.Persistence;
-import com.android.mail.providers.Account;
-import com.android.mail.providers.Conversation;
-import com.android.mail.providers.ConversationInfo;
-import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
-import com.android.mail.utils.AccountUtils;
-import com.android.mail.utils.DelayedTaskHandler;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
-import com.google.android.common.html.parser.HtmlParser;
-import com.google.android.common.html.parser.HtmlTreeBuilder;
-
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -40,7 +22,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.Loader.OnLoadCompleteListener;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -55,6 +36,24 @@ import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.android.mail.R;
+import com.android.mail.browse.SendersView;
+import com.android.mail.compose.ComposeActivity;
+import com.android.mail.preferences.MailPrefs;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
+import com.android.mail.providers.ConversationInfo;
+import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
+import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.DelayedTaskHandler;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
 
 public class WidgetService extends RemoteViewsService {
     /**
@@ -161,17 +160,7 @@ public class WidgetService extends RemoteViewsService {
      */
     public static void saveWidgetInformation(Context context, int appWidgetId, Account account,
                 Folder folder) {
-        final SharedPreferences.Editor editor =
-                Persistence.getInstance().getPreferences(context).edit();
-        editor.putString(WidgetProvider.WIDGET_ACCOUNT_PREFIX + appWidgetId,
-                createWidgetPreferenceValue(account, folder));
-        editor.apply();
-    }
-
-    private static String createWidgetPreferenceValue(Account account, Folder folder) {
-        return account.uri.toString() +
-                BaseWidgetProvider.ACCOUNT_FOLDER_PREFERENCE_SEPARATOR + folder.uri.toString();
-
+        MailPrefs.get(context).configureWidget(appWidgetId, account, folder);
     }
 
     /**
@@ -179,11 +168,8 @@ public class WidgetService extends RemoteViewsService {
      */
     public boolean isWidgetConfigured(Context context, int appWidgetId, Account account,
             Folder folder) {
-        if (isAccountValid(context, account)) {
-            return Persistence.getInstance().getPreferences(context).getString(
-                    BaseWidgetProvider.WIDGET_ACCOUNT_PREFIX + appWidgetId, null) != null;
-        }
-        return false;
+        return isAccountValid(context, account) &&
+                MailPrefs.get(context).isWidgetConfigured(appWidgetId);
     }
 
     protected boolean isAccountValid(Context context, Account account) {
@@ -400,7 +386,7 @@ public class WidgetService extends RemoteViewsService {
                 return remoteViews;
             }
         }
- 
+
         private CharacterStyle getUnreadStyle() {
             if (mUnreadStyle == null) {
                 mUnreadStyle = new TextAppearanceSpan(mContext,
