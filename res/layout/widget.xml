@@ -73,7 +73,8 @@
             android:src="@drawable/ic_menu_compose_normal_holo_light"
             android:background="?android:attr/selectableItemBackground"
             android:paddingLeft="4dip"
-            android:paddingBottom="4dip" />
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/compose" />
     </LinearLayout>
     <ListView
         android:id="@+id/conversation_list"
