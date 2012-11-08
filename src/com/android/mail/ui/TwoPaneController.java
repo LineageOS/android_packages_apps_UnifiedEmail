@@ -61,7 +61,7 @@ public final class TwoPaneController extends AbstractActivityController {
     private void initializeConversationListFragment(boolean show) {
         if (show) {
             if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
-                if (Utils.showTwoPaneSearchResults(mActivity.getActivityContext())) {
+                if (shouldEnterSearchConvMode()) {
                     mViewMode.enterSearchResultsConversationMode();
                 } else {
                     mViewMode.enterSearchResultsListMode();
@@ -419,7 +419,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void exitSearchMode() {
-        int mode = mViewMode.getMode();
+        final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST
                 || (mode == ViewMode.SEARCH_RESULTS_CONVERSATION
                         && Utils.showTwoPaneSearchResults(mActivity.getApplicationContext()))) {
@@ -430,7 +430,7 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean shouldShowFirstConversation() {
         return Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
-                && Utils.showTwoPaneSearchResults(mActivity.getApplicationContext());
+                && shouldEnterSearchConvMode();
     }
 
     private int getUndoBarWidth(int mode, ToastBarOperation op) {
