@@ -262,7 +262,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
                             resources.getString(R.string.reply_attribution),
                             dateFormat.format(date),
                             Utils.cleanUpString(
-                                    refMessage.from, true)));
+                                    refMessage.getFrom(), true)));
             quotedText.append(HEADER_SEPARATOR);
             quotedText.append(BLOCKQUOTE_BEGIN);
             quotedText.append(htmlText);
@@ -272,12 +272,12 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
             quotedText.append(sQuoteBegin);
             quotedText
                     .append(String.format(resources.getString(R.string.forward_attribution), Utils
-                            .cleanUpString(refMessage.from,
+                            .cleanUpString(refMessage.getFrom(),
                                     true /* remove empty quotes */), dateFormat.format(date), Utils
                             .cleanUpString(refMessage.subject,
                                     false /* don't remove empty quotes */), Utils.cleanUpString(
-                            refMessage.to, true)));
-            String ccAddresses = refMessage.cc;
+                            refMessage.getTo(), true)));
+            String ccAddresses = refMessage.getCc();
             quotedText.append(String.format(resources.getString(R.string.cc_attribution),
                     Utils.cleanUpString(ccAddresses, true /* remove empty quotes */)));
             quotedText.append(HEADER_SEPARATOR);

@@ -405,7 +405,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         // 2. the account has no custom froms, fromAddress will be empty, and we
         // can safely fall back and show the account name as sender since it's
         // the only possible fromAddress.
-        String from = mMessage.from;
+        String from = mMessage.getFrom();
         if (TextUtils.isEmpty(from)) {
             from = getAccount().name;
         }
