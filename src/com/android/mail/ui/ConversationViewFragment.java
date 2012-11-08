@@ -606,8 +606,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         while (messageCursor.moveToPosition(++pos)) {
             final ConversationMessage msg = messageCursor.getMessage();
 
-            // TODO: save/restore 'show pics' state
-            final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
+            final boolean safeForImages =
+                    msg.alwaysShowImages || prevState.getShouldShowImages(msg);
             allowNetworkImages |= safeForImages;
 
             final Integer savedExpanded = prevState.getExpansionState(msg);
@@ -625,6 +625,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 expandedState = (!msg.read || msg.starred || messageCursor.isLast()) ?
                         ExpansionState.EXPANDED : ExpansionState.SUPER_COLLAPSED;
             }
+            mViewState.setShouldShowImages(msg, prevState.getShouldShowImages(msg));
             mViewState.setExpansionState(msg, expandedState);
 
             // save off "read" state from the cursor
@@ -682,7 +683,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private void renderMessage(ConversationMessage msg, boolean expanded,
             boolean safeForImages) {
-        final int headerPos = mAdapter.addMessageHeader(msg, expanded);
+        final int headerPos = mAdapter.addMessageHeader(msg, expanded,
+                mViewState.getShouldShowImages(msg));
         final MessageHeaderItem headerItem = (MessageHeaderItem) mAdapter.getItem(headerPos);
 
         final int footerPos = mAdapter.addMessageFooter(headerItem);
@@ -710,7 +712,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             cursor.moveToPosition(i);
             final ConversationMessage msg = cursor.getMessage();
             final MessageHeaderItem header = mAdapter.newMessageHeaderItem(msg,
-                    false /* expanded */);
+                    false /* expanded */, mViewState.getShouldShowImages(msg));
             final MessageFooterItem footer = mAdapter.newMessageFooterItem(header);
 
             final int headerPx = measureOverlayHeight(header);
@@ -812,6 +814,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     public void showExternalResources(Message msg) {
+        mViewState.setShouldShowImages(msg, true);
         mWebView.getSettings().setBlockNetworkImage(false);
         mWebView.loadUrl("javascript:unblockImages('" + mTemplates.getMessageDomId(msg) + "');");
     }
