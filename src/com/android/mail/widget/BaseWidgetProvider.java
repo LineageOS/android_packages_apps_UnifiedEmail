@@ -23,8 +23,6 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,7 +31,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.mail.R;
-import com.android.mail.persistence.Persistence;
+import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -70,13 +68,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         super.onDeleted(context, appWidgetIds);
 
         // TODO: (mindyp) save widget information.
-        Editor editor = Persistence.getInstance().getPreferences(context).edit();
-        for (int i = 0; i < appWidgetIds.length; ++i) {
-            // Remove the account in the preference
-            editor.remove(WIDGET_ACCOUNT_PREFIX + appWidgetIds[i]);
-        }
-        editor.apply();
-
+        MailPrefs.get(context).clearWidgets(appWidgetIds);
     }
 
     /**
@@ -100,8 +92,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         for (int i = 0; i < widgetIds.length; i++) {
             // Retrieve the persisted information for this widget from
             // preferences.
-            final String accountFolder = Persistence.getInstance()
-                    .getPreferences(context).getString(WIDGET_ACCOUNT_PREFIX + widgetIds[i], null);
+            final String accountFolder = MailPrefs.get(context).getWidgetConfiguration(
+                    widgetIds[i]);
             // If the account matched, update the widget.
             if (accountFolder != null) {
                 widgetInfo[i] = TextUtils.split(accountFolder, ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
@@ -144,8 +136,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             for (int id : getCurrentWidgetIds(context)) {
                 // Retrieve the persisted information for this widget from
                 // preferences.
-                final String accountFolder = Persistence.getInstance()
-                        .getPreferences(context).getString(WIDGET_ACCOUNT_PREFIX + id, null);
+                final String accountFolder = MailPrefs.get(context).getWidgetConfiguration(id);
                 // If the account matched, update the widget.
                 if (accountFolder != null) {
                     final String[] parsedInfo = TextUtils.split(accountFolder,
@@ -185,8 +176,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         ContentResolver resolver = context.getContentResolver();
         for (int i = 0; i < appWidgetIds.length; ++i) {
             // Get the account for this widget from preference
-            final String accountFolder = Persistence.getInstance().getPreferences(context)
-                    .getString(WIDGET_ACCOUNT_PREFIX + appWidgetIds[i], null);
+            final String accountFolder = MailPrefs.get(context).getWidgetConfiguration(
+                    appWidgetIds[i]);
             String accountUri = null;
             Uri folderUri = null;
             if (!TextUtils.isEmpty(accountFolder)) {
@@ -324,11 +315,6 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
                 folder, folderDisplayName, WidgetService.class);
     }
 
-    private boolean isWidgetConfigured(Context context, int widgetId) {
-        final SharedPreferences pref = Persistence.getInstance().getPreferences(context);
-        return pref.getString(WIDGET_ACCOUNT_PREFIX + widgetId, null) != null;
-    }
-
     private final void migrateAllLegacyWidgetInformation(Context context) {
         final int[] currentWidgetIds = getCurrentWidgetIds(context);
         migrateLegacyWidgets(context, currentWidgetIds);
@@ -338,7 +324,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         for (int widgetId : widgetIds) {
             // We only want to bother to attempt to upgrade a widget if we don't already
             // have information about.
-            if (!isWidgetConfigured(context, widgetId)) {
+            if (!MailPrefs.get(context).isWidgetConfigured(widgetId)) {
                 migrateLegacyWidgetInformation(context, widgetId);
             }
         }

@@ -28,7 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.android.mail.R;
-import com.android.mail.persistence.Persistence;
+import com.android.mail.preferences.MailPrefs;
 import com.android.mail.utils.Utils;
 
 /**
@@ -96,7 +96,7 @@ public class WhatsNewDialogFragment extends DialogFragment {
                     public void onClick(final DialogInterface dialog, final int whichButton) {
                         final int version = Utils.getVersionCode(context);
                         if (version != -1) {
-                            Persistence.getInstance().setHasShownWhatsNew(context, version);
+                            MailPrefs.get(context).setHasShownWhatsNew(version);
                         }
 
                         dialog.dismiss();
@@ -110,7 +110,7 @@ public class WhatsNewDialogFragment extends DialogFragment {
 
         final int version = Utils.getVersionCode(getActivity());
         if (version != -1) {
-            Persistence.getInstance().setHasShownWhatsNew(getActivity(), version);
+            MailPrefs.get(getActivity()).setHasShownWhatsNew(version);
         }
     }
 }
