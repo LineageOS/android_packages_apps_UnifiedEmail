@@ -126,6 +126,7 @@ public final class ConversationListFragment extends ListFragment implements
         public void onChanged(Account newAccount) {
             mAccount = newAccount;
             setSwipeAction();
+            Folder.onAccountChanged(mAccount);
         }
     };
     private ConversationUpdater mUpdater;
