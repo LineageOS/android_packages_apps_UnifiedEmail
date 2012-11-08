@@ -104,7 +104,7 @@ public class Utils {
     private static final String SMART_HELP_LINK_PARAMETER_NAME = "p";
 
     private static final String SMART_LINK_APP_VERSION = "version";
-    private static String sVersionCode = null;
+    private static int sVersionCode = -1;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -737,9 +737,10 @@ public class Utils {
     private static Uri addParamsToUrl(Context context, String url) {
         url = replaceLocale(url);
         Uri.Builder builder = Uri.parse(url).buildUpon();
-        final String versionCode = getVersionCode(context);
-        if (versionCode != null) {
-            builder = builder.appendQueryParameter(SMART_LINK_APP_VERSION, versionCode);
+        final int versionCode = getVersionCode(context);
+        if (versionCode != -1) {
+            builder = builder.appendQueryParameter(SMART_LINK_APP_VERSION,
+                    String.valueOf(versionCode));
         }
 
         return builder.build();
@@ -764,14 +765,14 @@ public class Utils {
     }
 
     /**
-     * Returns the version code for the package, or null if it cannot be retrieved.
+     * Returns the version code for the package, or -1 if it cannot be retrieved.
      */
-    public static String getVersionCode(Context context) {
-        if (sVersionCode == null) {
+    public static int getVersionCode(Context context) {
+        if (sVersionCode == -1) {
             try {
-                sVersionCode = String.valueOf(context.getPackageManager()
-                        .getPackageInfo(context.getPackageName(), 0 /* flags */)
-                        .versionCode);
+                sVersionCode =
+                        context.getPackageManager().getPackageInfo(context.getPackageName(),
+                                0 /* flags */).versionCode;
             } catch (NameNotFoundException e) {
                 LogUtils.e(Utils.LOG_TAG, "Error finding package %s",
                         context.getApplicationInfo().packageName);

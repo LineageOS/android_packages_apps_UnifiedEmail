@@ -608,6 +608,8 @@
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!-- Folders -->
     <!-- Displayed in the middle of the Folders screen when no folders have been defined -->
@@ -820,4 +822,12 @@
         <item>older</item>
         <item>list</item>
     </string-array>
+
+    <!-- Dialog title for the What's New dialog. [CHAR LIMIT=50] -->
+    <string name="whats_new_dialog_title">What\'s new</string>
+
+    <!-- Dialog title for the Auto-fit messages dialog. [CHAR LIMIT=50] -->
+    <string name="auto_fit_messages_dialog_title">Auto-fit messages?</string>
+    <!-- Dialog message for the Auto-fit messages dialog. -->
+    <string name="auto_fit_messages_dialog_message">Shrink wide messages to fit your screen and allow zooming in. To turn off this option, go to Settings > General\u00A0settings.</string>
 </resources>

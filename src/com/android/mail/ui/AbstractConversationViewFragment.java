@@ -21,13 +21,20 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.DialogInterface.OnClickListener;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -63,6 +70,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -226,6 +234,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             mViewState = getNewViewState();
         }
     }
+
+    protected abstract WebView getWebView();
 
     public void instantiateProgressIndicators(View rootView) {
         mBackgroundView = rootView.findViewById(R.id.background_view);
@@ -567,6 +577,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
 
         activity.getListHandler().onConversationSeen(mConversation);
+
+        showAutoFitPrompt();
     }
 
     protected void markReadOnSeen(ConversationUpdater listController) {
@@ -797,4 +809,30 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     }
 
+    private static boolean isConversationViewModeSet(final Account acct) {
+        return acct.settings.conversationViewMode != UIProvider.ConversationViewMode.UNDEFINED;
+    }
+
+    private void showAutoFitPrompt() {
+        // If the user has never set a conversation view mode, and they view a wide message, we
+        // should prompt them to turn on auto-fit
+        final boolean enablePrompt =
+                getResources().getInteger(R.integer.prompt_auto_fit_on_first_wide_message) == 1;
+        // TODO: Enable this dialog for Email and ensure it saves the setting properly, and remove
+        // R.integer.prompt_auto_fit_on_first_wide_message
+        if (enablePrompt && isUserVisible() && !isConversationViewModeSet(mAccount)) {
+            final boolean isWideContent =
+                    getWebView().canScrollHorizontally(1) || getWebView().canScrollHorizontally(-1);
+
+            final boolean dialogShowing =
+                    getFragmentManager().findFragmentByTag(AutoFitPromptDialogFragment.FRAGMENT_TAG)
+                    != null;
+
+            if (isWideContent && !dialogShowing) {
+                // Not everything fits, so let's prompt them to set an auto-fit value
+                AutoFitPromptDialogFragment.newInstance(mAccount.updateSettingsUri)
+                        .show(getFragmentManager(), AutoFitPromptDialogFragment.FRAGMENT_TAG);
+            }
+        }
+    }
 }

@@ -385,6 +385,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
+    protected WebView getWebView() {
+        return mWebView;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 

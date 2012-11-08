@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2012, Google Inc. -->
+
+<resources>
+    <!-- The version code at which the What's New dialog was last changed. -->
+    <integer name="whats_new_last_updated">0</integer>
+</resources>
