@@ -297,6 +297,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private boolean mRecentsDataUpdated;
     /** A wait fragment we added, if any. */
     private WaitFragment mWaitFragment;
+    /** True if we have results from a search query */
+    private boolean mHaveSearchResults = false;
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
@@ -1576,19 +1578,20 @@ public abstract class AbstractActivityController implements ActivityController {
             }
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
+                mHaveSearchResults = false;
                 // Save this search query for future suggestions.
                 final String query = intent.getStringExtra(SearchManager.QUERY);
                 final String authority = mContext.getString(R.string.suggestions_authority);
                 final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
                         mContext, authority, SuggestionsProvider.MODE);
                 suggestions.saveRecentQuery(query, null);
-                if (Utils.showTwoPaneSearchResults(mActivity.getActivityContext())) {
+                setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                fetchSearchFolder(intent);
+                if (shouldEnterSearchConvMode()) {
                     mViewMode.enterSearchResultsConversationMode();
                 } else {
                     mViewMode.enterSearchResultsListMode();
                 }
-                setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                fetchSearchFolder(intent);
             } else {
                 LogUtils.e(LOG_TAG, "Missing account extra from search intent.  Finishing");
                 mActivity.finish();
@@ -1597,6 +1600,13 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mAccount != null) {
             restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
         }
+    }
+
+    /**
+     * Returns true if we should enter conversation mode with search.
+     */
+    protected final boolean shouldEnterSearchConvMode() {
+        return mHaveSearchResults && Utils.showTwoPaneSearchResults(mActivity.getActivityContext());
     }
 
     /**
@@ -2096,6 +2106,7 @@ public abstract class AbstractActivityController implements ActivityController {
                                     .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
                     showConversationList(mConvListContext);
                     mActivity.invalidateOptionsMenu();
+                    mHaveSearchResults = search.totalCount > 0;
                     mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
                 } else {
                     LogUtils.e(LOG_TAG, "Null or empty cursor returned by LOADER_SEARCH loader");
@@ -2360,6 +2371,7 @@ public abstract class AbstractActivityController implements ActivityController {
             mConversationListCursor.sync();
         }
         mTracker.onCursorUpdated();
+        perhapsShowFirstSearchResult();
     }
 
     @Override
@@ -2620,15 +2632,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 // check and inform the cursor of the change in visibility here.
                 informCursorVisiblity(true);
             }
-            // Shown for search results in two-pane mode only.
-            if (shouldShowFirstConversation()) {
-                if (mConversationListCursor.getCount() > 0) {
-                    mConversationListCursor.moveToPosition(0);
-                    final Conversation conv = new Conversation(mConversationListCursor);
-                    conv.position = 0;
-                    onConversationSelected(conv, true /* checkSafeToModifyFragments */);
-                }
-            }
+            perhapsShowFirstSearchResult();
         }
 
         @Override
@@ -2646,6 +2650,22 @@ public abstract class AbstractActivityController implements ActivityController {
                 mConversationListObservable.notifyChanged();
             }
         }
+    }
+
+    /**
+     * Updates controller state based on search results and shows first conversation if required.
+     */
+    private final void perhapsShowFirstSearchResult() {
+        // Shown for search results in two-pane mode only.
+        mHaveSearchResults = Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
+                && mConversationListCursor.getCount() > 0;
+        if (!shouldShowFirstConversation()) {
+            return;
+        }
+        mConversationListCursor.moveToPosition(0);
+        final Conversation conv = new Conversation(mConversationListCursor);
+        conv.position = 0;
+        onConversationSelected(conv, true /* checkSafeToModifyFragments */);
     }
 
     /**
