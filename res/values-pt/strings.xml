@@ -177,6 +177,7 @@
     <item quantity="other" msgid="4173815457177336569">"Descartar rascunhos das <xliff:g id="COUNT">%1$d</xliff:g> conversas?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Descartar esta mensagem?"</string>
+    <string name="loading_conversations" msgid="2649440958602369555">"Carregando..."</string>
     <string name="no_conversations" msgid="35400008890372241">"Não há conversas."</string>
     <string name="undo" msgid="6070869718469782251">"Desfazer"</string>
   <plurals name="conversation_marking_read">
@@ -305,6 +306,8 @@
     <string name="done" msgid="3079981801778027540">"Concluído"</string>
     <string name="cancel" msgid="8762981157252199115">"Cancelar"</string>
     <string name="close" msgid="419945428844076406">"Fechar"</string>
+    <string name="yes" msgid="7474216525286833848">"Sim"</string>
+    <string name="no" msgid="427548507197604096">"Não"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Nenhuma pasta foi definida para esta conta."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Êxito"</item>
@@ -371,6 +374,8 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Todas as pastas"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Pastas recentes"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Detalhes da mensagem"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"Avanço automático"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"Selecione a tela exibida após excluir uma mensagem"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"Configurar a preferência de avanço automático"\n"(depois de excluir, etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mais recente"</item>
@@ -382,4 +387,10 @@
     <item msgid="732746454445519134">"Exibir conversa mais antiga depois de excluir"</item>
     <item msgid="2189929276292165301">"Exibir a lista de conversas depois de excluir"</item>
   </string-array>
+    <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
+    <skip />
+    <!-- no translation found for auto_fit_messages_dialog_title (2759387078807832659) -->
+    <skip />
+    <!-- no translation found for auto_fit_messages_dialog_message (4039164951892949801) -->
+    <skip />
 </resources>
