@@ -177,6 +177,8 @@
     <item quantity="other" msgid="4173815457177336569">"Hủy thư nháp khỏi <xliff:g id="COUNT">%1$d</xliff:g> cuộc trò chuyện này?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Hủy tin nhắn này?"</string>
+    <!-- no translation found for loading_conversations (2649440958602369555) -->
+    <skip />
     <string name="no_conversations" msgid="35400008890372241">"Không có cuộc hội thoại nào."</string>
     <string name="undo" msgid="6070869718469782251">"Hoàn tác"</string>
   <plurals name="conversation_marking_read">
@@ -305,6 +307,8 @@
     <string name="done" msgid="3079981801778027540">"Hoàn tất"</string>
     <string name="cancel" msgid="8762981157252199115">"Hủy"</string>
     <string name="close" msgid="419945428844076406">"Đóng"</string>
+    <string name="yes" msgid="7474216525286833848">"Có"</string>
+    <string name="no" msgid="427548507197604096">"Không"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Không có thư mục nào được đặt cho tài khoản này."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Thành công"</item>
@@ -371,6 +375,10 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Tất cả thư mục"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Thư mục gần đây"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Chi tiết tin nhắn"</string>
+    <!-- no translation found for auto_advance_label (3192951873988392119) -->
+    <skip />
+    <!-- no translation found for auto_advance_summary (573927628806250719) -->
+    <skip />
     <string name="auto_advance_help_title" msgid="8091541690538426090">"Đặt tùy chọn tự động tiến"\n"(sau khi bạn xóa, v.v.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mới hơn"</item>
@@ -382,4 +390,10 @@
     <item msgid="732746454445519134">"Hiển thị cuộc hội thoại cũ hơn sau khi bạn xóa"</item>
     <item msgid="2189929276292165301">"Hiển thị danh sách cuộc hội thoại sau khi bạn xóa"</item>
   </string-array>
+    <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
+    <skip />
+    <!-- no translation found for auto_fit_messages_dialog_title (2759387078807832659) -->
+    <skip />
+    <!-- no translation found for auto_fit_messages_dialog_message (4039164951892949801) -->
+    <skip />
 </resources>
