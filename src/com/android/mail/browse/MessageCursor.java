@@ -44,12 +44,18 @@ import java.util.Map;
 public class MessageCursor extends CursorWrapper {
 
     private final Map<Long, ConversationMessage> mCache = Maps.newHashMap();
-    private final Conversation mConversation;
-    private final ConversationController mController;
+    /**
+     * The current controller that this cursor can use to reference the owning {@link Conversation},
+     * and a current {@link ConversationUpdater}. Since this cursor will survive a rotation, but
+     * the controller does not, whatever the new controller is MUST update this reference before
+     * using this cursor.
+     */
+    private ConversationController mController;
 
     private Integer mStatus;
 
     public interface ConversationController {
+        Conversation getConversation();
         ConversationUpdater getListController();
         MessageCursor getMessageCursor();
     }
@@ -68,15 +74,18 @@ public class MessageCursor extends CursorWrapper {
      */
     public static final class ConversationMessage extends Message {
 
-        public final transient Conversation conversation;
+        private transient ConversationController mController;
 
-        private final transient ConversationController mController;
-
-        public ConversationMessage(MessageCursor cursor, Conversation conv,
-                ConversationController controller) {
+        private ConversationMessage(MessageCursor cursor) {
             super(cursor);
-            conversation = conv;
+        }
+
+        public void setController(ConversationController controller) {
             mController = controller;
+        }
+
+        public Conversation getConversation() {
+            return mController.getConversation();
         }
 
         /**
@@ -112,9 +121,11 @@ public class MessageCursor extends CursorWrapper {
 
     }
 
-    public MessageCursor(Cursor inner, Conversation conv, ConversationController controller) {
+    public MessageCursor(Cursor inner) {
         super(inner);
-        mConversation = conv;
+    }
+
+    public void setController(ConversationController controller) {
         mController = controller;
     }
 
@@ -122,9 +133,14 @@ public class MessageCursor extends CursorWrapper {
         final long id = getWrappedCursor().getLong(UIProvider.MESSAGE_ID_COLUMN);
         ConversationMessage m = mCache.get(id);
         if (m == null) {
-            m = new ConversationMessage(this, mConversation, mController);
+            m = new ConversationMessage(this);
             mCache.put(id, m);
         }
+        // ALWAYS set up each ConversationMessage with the latest controller.
+        // Rotation invalidates everything except this Cursor, its Loader and the cached Messages,
+        // so if we want to continue using them after rotate, we have to ensure their controller
+        // references always point to the current controller.
+        m.setController(mController);
         return m;
     }
 
@@ -200,7 +216,7 @@ public class MessageCursor extends CursorWrapper {
     public String getDebugDump() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("conv subj='%s' status=%d messages:\n",
-                mConversation.subject, getStatus()));
+                mController.getConversation().subject, getStatus()));
         int pos = -1;
         while (moveToPosition(++pos)) {
             final ConversationMessage m = getMessage();
