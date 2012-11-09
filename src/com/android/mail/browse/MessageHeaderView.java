@@ -415,7 +415,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mStarView.setContentDescription(getResources().getString(
                 mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
         mStarShown = true;
-        ArrayList<Folder> folders = mMessage.conversation.getRawFolders();
+        ArrayList<Folder> folders = mMessage.getConversation().getRawFolders();
         for (Folder folder : folders) {
             if (folder.isTrash()) {
                 mStarShown = false;

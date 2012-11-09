@@ -355,6 +355,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         return mContext;
     }
 
+    @Override
     public Conversation getConversation() {
         return mConversation;
     }
@@ -464,8 +465,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new MessageLoader(mActivity.getActivityContext(), mConversation,
-                    AbstractConversationViewFragment.this);
+            return new MessageLoader(mActivity.getActivityContext(), mConversation.messageListUri);
         }
 
         @Override
@@ -476,6 +476,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                 return;
             } else {
                 final MessageCursor messageCursor = (MessageCursor) data;
+
+                // bind the cursor to this fragment so it can access to the current list controller
+                messageCursor.setController(AbstractConversationViewFragment.this);
 
                 if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
                     LogUtils.d(LOG_TAG, "LOADED CONVERSATION= %s", messageCursor.getDebugDump());
@@ -600,18 +603,14 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     private static class MessageLoader extends CursorLoader {
         private boolean mDeliveredFirstResults = false;
-        private final Conversation mConversation;
-        private final ConversationController mController;
 
-        public MessageLoader(Context c, Conversation conv, ConversationController controller) {
-            super(c, conv.messageListUri, UIProvider.MESSAGE_PROJECTION, null, null, null);
-            mConversation = conv;
-            mController = controller;
+        public MessageLoader(Context c, Uri messageListUri) {
+            super(c, messageListUri, UIProvider.MESSAGE_PROJECTION, null, null, null);
         }
 
         @Override
         public Cursor loadInBackground() {
-            return new MessageCursor(super.loadInBackground(), mConversation, mController);
+            return new MessageCursor(super.loadInBackground());
         }
 
         @Override
