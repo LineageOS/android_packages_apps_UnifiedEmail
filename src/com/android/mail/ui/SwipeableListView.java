@@ -22,6 +22,8 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -34,7 +36,6 @@ import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.SwipeHelper.Callback;
-import com.android.mail.ui.SwipeableListView.ListItemSwipedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -43,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class SwipeableListView extends ListView implements Callback {
+public class SwipeableListView extends ListView implements Callback, OnScrollListener {
     private SwipeHelper mSwipeHelper;
     private boolean mEnableSwipe = false;
 
@@ -53,6 +54,7 @@ public class SwipeableListView extends ListView implements Callback {
     private int mSwipeAction;
     private Folder mFolder;
     private ListItemSwipedListener mSwipedListener;
+    private boolean mScrolling;
 
     public SwipeableListView(Context context) {
         this(context, null);
@@ -68,6 +70,7 @@ public class SwipeableListView extends ListView implements Callback {
         float pagingTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
         mSwipeHelper = new SwipeHelper(context, SwipeHelper.X, this, densityScale,
                 pagingTouchSlop);
+        setOnScrollListener(this);
     }
 
     @Override
@@ -128,10 +131,10 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mEnableSwipe) {
-            return mSwipeHelper.onInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev);
-        } else {
+        if (mScrolling || !mEnableSwipe) {
             return super.onInterceptTouchEvent(ev);
+        } else {
+            return mSwipeHelper.onInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev);
         }
     }
 
@@ -351,5 +354,21 @@ public class SwipeableListView extends ListView implements Callback {
 
     public interface ListItemSwipedListener {
         public void onListItemSwiped(Collection<Conversation> conversations);
+    }
+
+    @Override
+    public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView arg0, int scrollState) {
+        switch (scrollState) {
+            case OnScrollListener.SCROLL_STATE_IDLE:
+                mScrolling = false;
+                break;
+            default:
+                mScrolling = true;
+        }
     }
 }
