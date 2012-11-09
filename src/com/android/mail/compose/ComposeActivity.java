@@ -492,6 +492,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         initActionBar(action);
         initFromSpinner(savedInstanceState != null ? savedInstanceState : intent.getExtras(),
                 action);
+
+        // If this is a draft message, the draft account is whatever account was
+        // used to open the draft message in Compose.
+        if (mDraft != null) {
+            mDraftAccount = mReplyFromAccount;
+        }
+
         initChangeListeners();
         updateHideOrShowCcBcc();
         updateHideOrShowQuotedText(showQuotedText);
