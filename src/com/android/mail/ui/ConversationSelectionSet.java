@@ -351,18 +351,6 @@ public class ConversationSelectionSet implements Parcelable {
                 return;
             }
 
-            // We don't want iterating over this cusor to trigger a network request
-            final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
-
-            // Get the current position of the cursor, so it can be reset
-            final int currentPosition = cursor.getPosition();
-            if (currentPosition != -1) {
-                // Validate batch selection across all conversations, not just the most
-                // recently loaded set.  See bug 2405138 (Batch selection cleared when
-                // additional conversations are loaded on demand).
-                cursor.moveToPosition(-1);
-            }
-
             // First ask the ConversationCursor for the list of conversations that have been deleted
             final Set<String> deletedConversations = cursor.getDeletedItems();
             // For each of the uris in the deleted set, add the conversation id to the
@@ -382,10 +370,10 @@ public class ConversationSelectionSet implements Parcelable {
             // we need to check for existence in the cursor
             batchConversationToCheck.removeAll(itemsToRemoveFromBatch);
 
-            // While there are items to check, walk through the cursor to determine if the item is
-            // still specified in the cursor.  If it is, we can remove it from the items to check
-            while (!batchConversationToCheck.isEmpty() && cursor.moveToNext()) {
-                batchConversationToCheck.remove(Utils.getConversationId(cursor));
+            // While there are items to check, remove all items that are still in the cursor.
+            final Set<Long> cursorConversationIds = cursor.getConversationIds();
+            while (!batchConversationToCheck.isEmpty() && cursorConversationIds != null) {
+                batchConversationToCheck.removeAll(cursorConversationIds);
             }
 
             // At this point any of the item that are remaining in the batchConversationToCheck set
@@ -393,12 +381,6 @@ public class ConversationSelectionSet implements Parcelable {
             itemsToRemoveFromBatch.addAll(batchConversationToCheck);
 
             removeAll(itemsToRemoveFromBatch);
-
-            cursor.moveToPosition(currentPosition);
-
-            if (networkWasEnabled) {
-                Utils.enableConversationCursorNetworkAccess(cursor);
-            }
         }
     }
 

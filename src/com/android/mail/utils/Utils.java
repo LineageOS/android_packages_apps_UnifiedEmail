@@ -1079,6 +1079,14 @@ public class Utils {
     }
 
     /**
+     * This utility method returns the conversation Uri at the current cursor position.
+     * @return the conversation id at the cursor.
+     */
+    public static String getConversationUri(ConversationCursor cursor) {
+        return cursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
+    }
+
+    /**
      * @return whether to show two pane or single pane search results.
      */
     public static boolean showTwoPaneSearchResults(Context context) {
