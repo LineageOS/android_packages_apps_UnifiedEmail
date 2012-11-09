@@ -561,13 +561,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
-    private void setShowImages(final boolean showImages) {
-        // use View's 'show images' flag to store whether we are currently displaying images
-        if (mMessageHeaderItem != null) {
-            mMessageHeaderItem.setShowImages(showImages);
-        }
-    }
-
     /**
      * Update the visibility of the many child views based on expanded/collapsed
      * and draft/normal state.
@@ -1086,6 +1079,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             case SHOW_IMAGE_PROMPT_ONCE:
                 if (mCallbacks != null) {
                     mCallbacks.showExternalResources(mMessage);
+                }
+                if (mMessageHeaderItem != null) {
+                    mMessageHeaderItem.setShowImages(true);
                 }
                 showImagePromptAlways(false);
                 break;
