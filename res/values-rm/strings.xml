@@ -293,6 +293,8 @@
     <!-- no translation found for confirm_discard_drafts_conversation:other (4173815457177336569) -->
     <!-- no translation found for confirm_discard_text (1149834186404614612) -->
     <skip />
+    <!-- no translation found for loading_conversations (2649440958602369555) -->
+    <skip />
     <!-- no translation found for no_conversations (35400008890372241) -->
     <skip />
     <!-- no translation found for undo (6070869718469782251) -->
@@ -441,6 +443,10 @@
     <skip />
     <!-- no translation found for close (419945428844076406) -->
     <skip />
+    <!-- no translation found for yes (7474216525286833848) -->
+    <skip />
+    <!-- no translation found for no (427548507197604096) -->
+    <skip />
     <!-- no translation found for folders_activity_instructions (5237801615196958918) -->
     <skip />
     <!-- no translation found for sync_status:0 (2446076619901049026) -->
@@ -547,6 +553,10 @@
     <skip />
     <!-- no translation found for message_details_title (2183394728494962332) -->
     <skip />
+    <!-- no translation found for auto_advance_label (3192951873988392119) -->
+    <skip />
+    <!-- no translation found for auto_advance_summary (573927628806250719) -->
+    <skip />
     <!-- no translation found for auto_advance_help_title (8091541690538426090) -->
     <skip />
     <!-- no translation found for prefEntries_autoAdvance:0 (3400401085256526376) -->
@@ -555,4 +565,10 @@
     <!-- no translation found for prefSummaries_autoAdvance:0 (6389534341359835440) -->
     <!-- no translation found for prefSummaries_autoAdvance:1 (732746454445519134) -->
     <!-- no translation found for prefSummaries_autoAdvance:2 (2189929276292165301) -->
+    <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
+    <skip />
+    <!-- no translation found for auto_fit_messages_dialog_title (2759387078807832659) -->
+    <skip />
+    <!-- no translation found for auto_fit_messages_dialog_message (4039164951892949801) -->
+    <skip />
 </resources>
