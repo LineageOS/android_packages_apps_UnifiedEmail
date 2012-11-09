@@ -27,6 +27,7 @@ import android.content.OperationApplicationException;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -45,7 +46,10 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
@@ -54,6 +58,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -89,9 +94,9 @@ public final class ConversationCursor implements Cursor {
 
     // The cursor underlying the caching cursor
     @VisibleForTesting
-    Cursor mUnderlyingCursor;
+    UnderlyingCursorWrapper mUnderlyingCursor;
     // The new cursor obtained via a requery
-    private volatile CursorWrapper mRequeryCursor;
+    private volatile UnderlyingCursorWrapper mRequeryCursor;
     // A mapping from Uri to updated ContentValues
     private HashMap<String, ContentValues> mCacheMap = new HashMap<String, ContentValues>();
     // Cache map lock (will be used only very briefly - few ms at most)
@@ -132,7 +137,7 @@ public final class ConversationCursor implements Cursor {
     private Uri qUri;
     private String[] qProjection;
 
-    private void setCursor(CursorWrapper cursor) {
+    private void setCursor(UnderlyingCursorWrapper cursor) {
         // If we have an existing underlying cursor, make sure it's closed
         if (mUnderlyingCursor != null) {
             close();
@@ -222,51 +227,61 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
+    public Integer getConversationPosition(String conversationUri) {
+        return mUnderlyingCursor != null ?
+                mUnderlyingCursor.conversationPosition(conversationUri) : null;
+    }
+
+    public Set<Long> getConversationIds() {
+        return mUnderlyingCursor != null ? mUnderlyingCursor.conversationIds() : null;
+    }
+
     /**
      * Simple wrapper for a cursor that provides methods for quickly determining
      * the existence of a row.
      */
-    private class CursorWrapper {
-        private Set<String> mUris;
-        private Cursor mInnerCursor;
+    private class UnderlyingCursorWrapper extends CursorWrapper {
+        // Ideally these two objects could be combined into a Map from
+        // conversationId -> position, but the cached values uses the conversation
+        // uri as a key.
+        private final Map<String, Integer> mConversationPositions;
+        private final Set<Long> mConversationIds;
 
-        public CursorWrapper(Cursor result) {
-            mInnerCursor = result;
-            if (mInnerCursor != null && mInnerCursor.moveToFirst()) {
-                // We don't want iterating over this cusor to trigger a network
+        public UnderlyingCursorWrapper(Cursor result) {
+            super(result);
+            final ImmutableMap.Builder<String, Integer> conversationPositionsMapBuilder =
+                    new ImmutableMap.Builder<String, Integer>();
+            final ImmutableSet.Builder<Long> conversationSetBuilder =
+                    new ImmutableSet.Builder<Long>();
+            if (result != null && result.moveToFirst()) {
+                // We don't want iterating over this cursor to trigger a network
                 // request
-                final boolean networkWasEnabled = Utils
-                        .disableConversationCursorNetworkAccess(mInnerCursor);
-
-                mUris = Sets.newHashSet();
+                final boolean networkWasEnabled =
+                        Utils.disableConversationCursorNetworkAccess(result);
                 do {
-                    mUris.add(mInnerCursor.getString(sUriColumnIndex));
-                } while (mInnerCursor.moveToNext());
+                    conversationPositionsMapBuilder.put(result.getString(sUriColumnIndex),
+                            result.getPosition());
+                    conversationSetBuilder.add(result.getLong(UIProvider.CONVERSATION_ID_COLUMN));
+                } while (result.moveToNext());
 
                 if (networkWasEnabled) {
-                    Utils.enableConversationCursorNetworkAccess(mInnerCursor);
+                    Utils.enableConversationCursorNetworkAccess(result);
                 }
             }
+            mConversationPositions = conversationPositionsMapBuilder.build();
+            mConversationIds = conversationSetBuilder.build();
         }
 
         public boolean contains(String uri) {
-            return mUris != null && mUris.contains(uri);
+            return mConversationPositions.containsKey(uri);
         }
 
-        public String[] getColumnNames() {
-            return mInnerCursor.getColumnNames();
+        public Integer conversationPosition(String uri) {
+            return mConversationPositions.get(uri);
         }
 
-        public int getCount() {
-            return mInnerCursor.getCount();
-        }
-
-        public void close() {
-            mInnerCursor.close();
-        }
-
-        public Cursor getCursor() {
-            return mInnerCursor;
+        public Set<Long> conversationIds() {
+            return mConversationIds;
         }
     }
 
@@ -274,7 +289,7 @@ public final class ConversationCursor implements Cursor {
      * Runnable that performs the query on the underlying provider
      */
     private class RefreshTask extends AsyncTask<Void, Void, Void> {
-        private CursorWrapper mCursor = null;
+        private UnderlyingCursorWrapper mCursor = null;
 
         private RefreshTask() {
         }
@@ -325,7 +340,7 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
-    private CursorWrapper doQuery(boolean withLimit) {
+    private UnderlyingCursorWrapper doQuery(boolean withLimit) {
         Uri uri = qUri;
         if (withLimit) {
             uri = uri.buildUpon().appendQueryParameter(ConversationListQueryParameters.LIMIT,
@@ -341,7 +356,7 @@ public final class ConversationCursor implements Cursor {
             LogUtils.i(LOG_TAG, "ConversationCursor query: %s, %dms, %d results",
                     uri, time, result.getCount());
         }
-        return new CursorWrapper(result);
+        return new UnderlyingCursorWrapper(result);
     }
 
     static boolean offUiThread() {
@@ -355,7 +370,7 @@ public final class ConversationCursor implements Cursor {
      * (estimated at a few ms, but we can profile this; remember that the cache will usually
      * be empty or have a few entries)
      */
-    private void resetCursor(CursorWrapper newCursorWrapper) {
+    private void resetCursor(UnderlyingCursorWrapper newCursorWrapper) {
         synchronized (mCacheMapLock) {
             // Walk through the cache
             Iterator<HashMap.Entry<String, ContentValues>> iter = mCacheMap.entrySet().iterator();
@@ -399,7 +414,7 @@ public final class ConversationCursor implements Cursor {
             if (mUnderlyingCursor != null) {
                 close();
             }
-            mUnderlyingCursor = newCursorWrapper.getCursor();
+            mUnderlyingCursor = newCursorWrapper;
 
             mPosition = -1;
             mUnderlyingCursor.moveToPosition(mPosition);
