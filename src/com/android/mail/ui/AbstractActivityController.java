@@ -1201,9 +1201,10 @@ public abstract class AbstractActivityController implements ActivityController {
         //
         // when unstarring, only propagate the change if this was the only message starred
         final boolean conversationStarred = starred || msg.isConversationStarred();
-        if (conversationStarred != msg.conversation.starred) {
-            msg.conversation.starred = conversationStarred;
-            mConversationListCursor.setConversationColumn(msg.conversation.uri,
+        final Conversation conv = msg.getConversation();
+        if (conversationStarred != conv.starred) {
+            conv.starred = conversationStarred;
+            mConversationListCursor.setConversationColumn(conv.uri,
                     ConversationColumns.STARRED, conversationStarred);
         }
 
