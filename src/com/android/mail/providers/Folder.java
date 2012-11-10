@@ -58,10 +58,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
     private static final String NULL_STRING_URI = "null";
     private static final String LOG_TAG = LogTag.getLogTag();
 
-    // Variables used to cache folders that are being processed.
-    private static HashMap<Integer, Folder> sCachedFolders = Maps.newHashMap();
-    private static Account sFoldersCacheAccount;
-
     // Try to match the order of members with the order of constants in UIProvider.
 
     /**
@@ -438,14 +434,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return folderList.toString();
     }
 
-    public static void onAccountChanged(Account account) {
-        if (sFoldersCacheAccount == null
-                || !Objects.equal(account.uri, sFoldersCacheAccount.uri)) {
-            sFoldersCacheAccount = account;
-            sCachedFolders.clear();
-        }
-    }
-
     public static Folder fromString(String inString) {
         if (TextUtils.isEmpty(inString)) {
             return null;
@@ -455,9 +443,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         int id = -1;
         if (indexOf != -1) {
             id = Integer.valueOf(inString.substring(0, indexOf));
-            if (sCachedFolders != null && sCachedFolders.containsKey(id)) {
-                return sCachedFolders.get(id);
-            }
         } else {
             // If no separator was found, we can't parse this folder and the
             // TextUtils.split call would also fail. Return null.
@@ -488,7 +473,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         f.loadMoreUri = getValidUri(split[17]);
         f.hierarchicalDesc = split[18];
         f.parent = Folder.fromString(split[19]);
-        sCachedFolders.put(f.id, f);
         return f;
     }
 
