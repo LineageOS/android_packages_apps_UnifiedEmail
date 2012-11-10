@@ -182,14 +182,10 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 mSaveClicked = false;
                 break;
             case R.id.overflow: {
-                final boolean canSave = mAttachment.canSave() && !mAttachment.isDownloading();
-                final boolean canPreview = mAttachment.canPreview();
-                final boolean canDownloadAgain = mAttachment.isPresentLocally();
-
                 // If no overflow items are visible, just bail out.
                 // We shouldn't be able to get here anyhow since the overflow
                 // button should be hidden.
-                if (!canSave && !canPreview && !canDownloadAgain) {
+                if (!shouldShowOverflow()) {
                     break;
                 }
 
@@ -201,9 +197,9 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 }
 
                 final Menu menu = mPopup.getMenu();
-                menu.findItem(R.id.preview_attachment).setVisible(canPreview);
-                menu.findItem(R.id.save_attachment).setVisible(canSave);
-                menu.findItem(R.id.download_again).setVisible(canDownloadAgain);
+                menu.findItem(R.id.preview_attachment).setVisible(shouldShowPreview());
+                menu.findItem(R.id.save_attachment).setVisible(shouldShowSave());
+                menu.findItem(R.id.download_again).setVisible(shouldShowDownloadAgain());
 
                 mPopup.show();
                 break;
@@ -241,6 +237,29 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         }
 
         return true;
+    }
+
+    private boolean shouldShowPreview() {
+        // state could be anything
+        return mAttachment.canPreview();
+    }
+
+    private boolean shouldShowSave() {
+        return mAttachment.canSave() && !mSaveClicked;
+    }
+
+    private boolean shouldShowDownloadAgain() {
+        // implies state == SAVED
+        return mAttachment.isPresentLocally();
+    }
+
+    private boolean shouldShowOverflow() {
+        return (shouldShowPreview() || shouldShowSave() || shouldShowDownloadAgain())
+                && !shouldShowCancel();
+    }
+
+    private boolean shouldShowCancel() {
+        return mAttachment.isDownloading() && mSaveClicked;
     }
 
     public void viewAttachment() {
@@ -290,26 +309,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
         // To avoid visibility state transition bugs, every button's visibility should be touched
         // once by this routine.
-
-        final boolean isDownloading = mAttachment.isDownloading();
-        final boolean canSave = mAttachment.canSave() &&
-                MimeType.isViewable(getContext(),
-                        mAttachment.contentUri, mAttachment.contentType);
-        final boolean canPreview = mAttachment.canPreview();
-        final boolean isInstallable = MimeType.isInstallable(mAttachment.contentType);
-        final boolean canDownloadAgain = mAttachment.isPresentLocally();
-
-        setButtonVisible(mCancelButton, isDownloading && mSaveClicked);
-
-        if (isDownloading) {
-            setButtonVisible(mOverflowButton, false);
-        } else if (canSave && mSaveClicked) {
-            setButtonVisible(mOverflowButton, false);
-        } else if (isInstallable && !canDownloadAgain) {
-            setButtonVisible(mOverflowButton, false);
-        } else {
-            setButtonVisible(mOverflowButton, canSave || canPreview || canDownloadAgain);
-        }
+        setButtonVisible(mCancelButton, shouldShowCancel());
+        setButtonVisible(mOverflowButton, shouldShowOverflow());
     }
 
     public void onUpdateStatus() {
