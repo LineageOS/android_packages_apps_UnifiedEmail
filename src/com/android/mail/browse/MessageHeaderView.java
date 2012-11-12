@@ -206,6 +206,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 int previousMessageHeaderItemHeight);
 
         void showExternalResources(Message msg);
+
+        void showExternalResources(String senderRawAddress);
     }
 
     public MessageHeaderView(Context context) {
@@ -1020,11 +1022,19 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                     this, false);
             addView(v);
             v.setOnClickListener(this);
-            v.setTag(SHOW_IMAGE_PROMPT_ONCE);
 
             mImagePromptView = v;
         }
         mImagePromptView.setVisibility(VISIBLE);
+
+        ImageView descriptionViewIcon =
+                (ImageView) mImagePromptView.findViewById(R.id.show_pictures_icon);
+        descriptionViewIcon.setContentDescription(
+                getResources().getString(R.string.show_images));
+        TextView descriptionView =
+                (TextView) mImagePromptView.findViewById(R.id.show_pictures_text);
+        descriptionView.setText(R.string.show_images);
+        mImagePromptView.setTag(SHOW_IMAGE_PROMPT_ONCE);
     }
 
     /**
@@ -1087,6 +1097,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 break;
             case SHOW_IMAGE_PROMPT_ALWAYS:
                 mMessage.markAlwaysShowImages(getQueryHandler(), 0 /* token */, null /* cookie */);
+
+                if (mCallbacks != null) {
+                    mCallbacks.showExternalResources(mMessage.getFrom());
+                }
 
                 mShowImagePrompt = false;
                 v.setTag(null);

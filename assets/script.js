@@ -334,20 +334,23 @@ function measurePositions() {
     window.mail.onWebContentGeometryChange(overlayTops, overlayBottoms);
 }
 
-function unblockImages(messageDomId) {
-    var i, images, imgCount, image, blockedSrc;
-    var msg = document.getElementById(messageDomId);
-    if (!msg) {
-        console.log("can't unblock, no matching message for id: " + messageDomId);
-        return;
-    }
-    images = msg.getElementsByTagName("img");
-    for (i = 0, imgCount = images.length; i < imgCount; i++) {
-        image = images[i];
-        blockedSrc = image.getAttribute(BLOCKED_SRC_ATTR);
-        if (blockedSrc) {
-            image.src = blockedSrc;
-            image.removeAttribute(BLOCKED_SRC_ATTR);
+function unblockImages(messageDomIds) {
+    var i, j, images, imgCount, image, blockedSrc;
+    for (j = 0, len = messageDomIds.length; j < len; j++) {
+        var messageDomId = messageDomIds[j];
+        var msg = document.getElementById(messageDomId);
+        if (!msg) {
+            console.log("can't unblock, no matching message for id: " + messageDomId);
+            continue;
+        }
+        images = msg.getElementsByTagName("img");
+        for (i = 0, imgCount = images.length; i < imgCount; i++) {
+            image = images[i];
+            blockedSrc = image.getAttribute(BLOCKED_SRC_ATTR);
+            if (blockedSrc) {
+                image.src = blockedSrc;
+                image.removeAttribute(BLOCKED_SRC_ATTR);
+            }
         }
     }
 }

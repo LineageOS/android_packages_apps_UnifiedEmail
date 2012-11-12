@@ -56,10 +56,8 @@ import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.ConversationWebView.ContentSizeChangeListener;
 import com.android.mail.browse.MessageCursor;
-import com.android.mail.browse.MessageCursor.ConversationController;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView;
-import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
@@ -75,6 +73,7 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -818,10 +817,35 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void showExternalResources(Message msg) {
+    public void showExternalResources(final Message msg) {
         mViewState.setShouldShowImages(msg, true);
         mWebView.getSettings().setBlockNetworkImage(false);
-        mWebView.loadUrl("javascript:unblockImages('" + mTemplates.getMessageDomId(msg) + "');");
+        mWebView.loadUrl("javascript:unblockImages(['" + mTemplates.getMessageDomId(msg) + "']);");
+    }
+
+    @Override
+    public void showExternalResources(final String senderRawAddress) {
+        mWebView.getSettings().setBlockNetworkImage(false);
+
+        final Address sender = getAddress(senderRawAddress);
+        final MessageCursor cursor = getMessageCursor();
+
+        final List<String> messageDomIds = new ArrayList<String>();
+
+        int pos = -1;
+        while (cursor.moveToPosition(++pos)) {
+            final ConversationMessage message = cursor.getMessage();
+            if (sender.equals(getAddress(message.getFrom()))) {
+                message.alwaysShowImages = true;
+
+                mViewState.setShouldShowImages(message, true);
+                messageDomIds.add(mTemplates.getMessageDomId(message));
+            }
+        }
+
+        final String url = String.format(
+                "javascript:unblockImages(['%s']);", TextUtils.join("','", messageDomIds));
+        mWebView.loadUrl(url);
     }
     // END message header callbacks
 

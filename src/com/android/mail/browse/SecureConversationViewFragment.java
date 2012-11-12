@@ -191,7 +191,12 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void showExternalResources(Message msg) {
+    public void showExternalResources(final Message msg) {
+        mWebView.getSettings().setBlockNetworkImage(false);
+    }
+
+    @Override
+    public void showExternalResources(final String rawSenderAddress) {
         mWebView.getSettings().setBlockNetworkImage(false);
     }
 
