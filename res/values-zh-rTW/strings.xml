@@ -177,8 +177,7 @@
     <item quantity="other" msgid="4173815457177336569">"要捨棄這 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組的草稿嗎？"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"要捨棄這封郵件嗎？"</string>
-    <!-- no translation found for loading_conversations (2649440958602369555) -->
-    <skip />
+    <string name="loading_conversations" msgid="2649440958602369555">"載入中..."</string>
     <string name="no_conversations" msgid="35400008890372241">"無會話群組。"</string>
     <string name="undo" msgid="6070869718469782251">"復原"</string>
   <plurals name="conversation_marking_read">
@@ -375,10 +374,8 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"所有資料夾"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"最近使用的資料夾"</string>
     <string name="message_details_title" msgid="2183394728494962332">"郵件詳細資料"</string>
-    <!-- no translation found for auto_advance_label (3192951873988392119) -->
-    <skip />
-    <!-- no translation found for auto_advance_summary (573927628806250719) -->
-    <skip />
+    <string name="auto_advance_label" msgid="3192951873988392119">"自動推進"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"選擇刪除郵件後所要顯示的畫面"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"設定自動推進偏好設定"\n"(在刪除等動作完成後執行)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"較新"</item>

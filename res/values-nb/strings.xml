@@ -387,10 +387,7 @@
     <item msgid="732746454445519134">"Vis eldre samtaler etter du har slettet"</item>
     <item msgid="2189929276292165301">"Vis samtaleliste etter du har slettet"</item>
   </string-array>
-    <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_title (2759387078807832659) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_message (4039164951892949801) -->
-    <skip />
+    <string name="whats_new_dialog_title" msgid="4230806739326698666">"Dette er nytt"</string>
+    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"Vil du automatisk tilpasse e-poster?"</string>
+    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Krymp brede e-poster slik at de tilpasses skjermen din og tillat zooming. Gå til Innstillinger &gt; Generelle innstillinger for å deaktivere dette alternativet."</string>
 </resources>
