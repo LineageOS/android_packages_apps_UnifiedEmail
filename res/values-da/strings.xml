@@ -387,10 +387,7 @@
     <item msgid="732746454445519134">"Vis ældre samtale efter sletning"</item>
     <item msgid="2189929276292165301">"Vis samtalelisten efter sletning"</item>
   </string-array>
-    <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_title (2759387078807832659) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_message (4039164951892949801) -->
-    <skip />
+    <string name="whats_new_dialog_title" msgid="4230806739326698666">"Nyheder"</string>
+    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"Skal meddelelser tilpasses automatisk?"</string>
+    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Gør brede meddelelser mindre, så de passer til din skærm og for at gøre det muligt at zoome ind. Hvis du vil deaktivere denne indstilling, skal du gå til Indstillinger &gt; Generelle indstillinger."</string>
 </resources>

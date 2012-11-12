@@ -177,8 +177,7 @@
     <item quantity="other" msgid="4173815457177336569">"Gooi konsepte weg uit hierdie <xliff:g id="COUNT">%1$d</xliff:g> gesprekke?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Gooi hierdie boodskap weg?"</string>
-    <!-- no translation found for loading_conversations (2649440958602369555) -->
-    <skip />
+    <string name="loading_conversations" msgid="2649440958602369555">"Laai tans…"</string>
     <string name="no_conversations" msgid="35400008890372241">"Geen gesprekke nie."</string>
     <string name="undo" msgid="6070869718469782251">"Ontdoen"</string>
   <plurals name="conversation_marking_read">
@@ -375,10 +374,8 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Alle vouers"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Onlangse vouers"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Boodskapbesonderhede"</string>
-    <!-- no translation found for auto_advance_label (3192951873988392119) -->
-    <skip />
-    <!-- no translation found for auto_advance_summary (573927628806250719) -->
-    <skip />
+    <string name="auto_advance_label" msgid="3192951873988392119">"Outovoortgaan"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"Kies watter skerm moet wys nadat jy \'n boodskap uitvee"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"Stel outovoortgang-voorkeure"\n"(nadat jy uitvee, ens.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Jonger"</item>

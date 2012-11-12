@@ -387,10 +387,7 @@
     <item msgid="732746454445519134">"Po odstránení zobraziť staršiu konverzáciu"</item>
     <item msgid="2189929276292165301">"Po odstránení zobraziť zoznam konverzácií"</item>
   </string-array>
-    <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_title (2759387078807832659) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_message (4039164951892949801) -->
-    <skip />
+    <string name="whats_new_dialog_title" msgid="4230806739326698666">"Novinky"</string>
+    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"Automaticky prispôsobiť správy?"</string>
+    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Zmenšite široké správy, aby sa vošli na obrazovku, a umožnite približovanie. Ak chcete povoliť túto možnosť, prejdite na možnosť Nastavenia &gt; Všeobecné nastavenia."</string>
 </resources>
