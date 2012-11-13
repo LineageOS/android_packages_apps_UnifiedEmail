@@ -18,13 +18,10 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
@@ -467,8 +464,8 @@ public final class TwoPaneController extends AbstractActivityController {
                     mToastBar.show(
                             getUndoClickedListener(convList.getAnimatedAdapter()),
                             0,
-                            Html.fromHtml(op.getDescription(mActivity.getActivityContext(),
-                                    mFolder)),
+                            Utils.convertHtmlToPlainText
+                                (op.getDescription(mActivity.getActivityContext(), mFolder)),
                             true, /* showActionIcon */
                             R.string.undo,
                             true,  /* replaceVisibleToast */
@@ -478,8 +475,9 @@ public final class TwoPaneController extends AbstractActivityController {
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
                 if (convList != null) {
-                    mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()), 0, Html
-                            .fromHtml(op.getDescription(mActivity.getActivityContext(), mFolder)),
+                    mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()), 0,
+                            Utils.convertHtmlToPlainText
+                                (op.getDescription(mActivity.getActivityContext(), mFolder)),
                             true, /* showActionIcon */
                             R.string.undo, true, /* replaceVisibleToast */
                             op);

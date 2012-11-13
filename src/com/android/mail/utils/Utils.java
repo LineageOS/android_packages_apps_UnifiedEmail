@@ -324,7 +324,7 @@ public class Utils {
                 draftsFragment = numDrafts == 1 ? draftString : draftPluralString + " ("
                         + numDraftsString + ")";
             } else if (SENDER_LIST_TOKEN_LITERAL.equals(fragment0)) {
-                senderBuilder.append(Html.fromHtml(fragments[i++]));
+                senderBuilder.append(Utils.convertHtmlToPlainText(fragments[i++]));
                 return;
             } else if (SENDER_LIST_TOKEN_SENDING.equals(fragment0)) {
                 sendingFragment = sendingString;
@@ -430,7 +430,7 @@ public class Utils {
                 if (nameString.length() == 0) {
                     nameString = meString.toString();
                 } else {
-                    nameString = Html.fromHtml(nameString).toString();
+                    nameString = Utils.convertHtmlToPlainText(nameString).toString();
                 }
                 if (numCharsToRemovePerWord != 0) {
                     nameString = nameString.substring(0,

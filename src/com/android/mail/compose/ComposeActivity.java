@@ -1072,12 +1072,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // Find the offset in the htmltext of the actual quoted text and strip it out.
                 quotedTextIndex = QuotedTextView.findQuotedTextIndex(message.bodyHtml);
                 if (quotedTextIndex > -1) {
-                    htmlText = Html.fromHtml(message.bodyHtml.substring(0, quotedTextIndex));
+                    htmlText = Utils.convertHtmlToPlainText(message.bodyHtml.substring(0,
+                            quotedTextIndex));
                     quotedText = message.bodyHtml.subSequence(quotedTextIndex,
                             message.bodyHtml.length());
                 }
             } else {
-                htmlText = Html.fromHtml(message.bodyHtml);
+                htmlText = Utils.convertHtmlToPlainText(message.bodyHtml);
             }
             mBodyView.setText(htmlText);
         } else {
@@ -2388,11 +2389,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 MessageModification.putBodyHtml(values, fullBody.toString());
             }
             if (!TextUtils.isEmpty(refMessage.bodyText)) {
-                MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
+                MessageModification.putBody(values,
+                        Utils.convertHtmlToPlainText(fullBody.toString()).toString());
             }
         } else {
             MessageModification.putBodyHtml(values, fullBody.toString());
-            MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
+            MessageModification.putBody(values, Utils.convertHtmlToPlainText(fullBody.toString())
+                    .toString());
         }
         MessageModification.putAttachments(values, message.getAttachments());
         if (!TextUtils.isEmpty(refMessageId)) {

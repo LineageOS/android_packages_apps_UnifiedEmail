@@ -23,16 +23,15 @@ import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
-import com.android.mail.browse.SecureConversationViewFragment;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -514,8 +513,8 @@ public final class OnePaneController extends AbstractActivityController {
                             getUndoClickedListener(
                                     convList != null ? convList.getAnimatedAdapter() : null),
                             0,
-                            Html.fromHtml(op.getDescription(mActivity.getActivityContext(),
-                                    mFolder)),
+                            Utils.convertHtmlToPlainText
+                                (op.getDescription(mActivity.getActivityContext(), mFolder)),
                             true, /* showActionIcon */
                             R.string.undo,
                             true,  /* replaceVisibleToast */
@@ -528,8 +527,8 @@ public final class OnePaneController extends AbstractActivityController {
                         mToastBar.show(
                                 getUndoClickedListener(convList.getAnimatedAdapter()),
                                 0,
-                                Html.fromHtml(op.getDescription(mActivity.getActivityContext(),
-                                        mFolder)),
+                                Utils.convertHtmlToPlainText
+                                    (op.getDescription(mActivity.getActivityContext(), mFolder)),
                                 true, /* showActionIcon */
                                 R.string.undo,
                                 true,  /* replaceVisibleToast */

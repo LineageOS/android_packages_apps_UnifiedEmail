@@ -21,9 +21,6 @@ import android.animation.ObjectAnimator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +34,7 @@ import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 
 public class LeaveBehindItem extends FrameLayout implements OnClickListener,
@@ -107,7 +105,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         // and button text as selected since they set duplicateParentState to true
         mSwipeableContent.setOnClickListener(this);
         mText = ((TextView) findViewById(R.id.undo_descriptionview));
-        mText.setText(Html.fromHtml(mUndoOp
+        mText.setText(Utils.convertHtmlToPlainText(mUndoOp
                 .getSingularDescription(getContext(), folder)));
         mText.setOnClickListener(this);
     }

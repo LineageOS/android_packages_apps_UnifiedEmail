@@ -473,10 +473,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return mSwipeUndoingItems.contains(id);
     }
 
-    private boolean isPositionUndoingType(long id) {
-        return isPositionUndoing(id) || isPositionUndoingSwipe(id);
-    }
-
     private boolean isPositionLeaveBehind(Conversation conv) {
         return hasLeaveBehinds()
                 && mLeaveBehindItem.getConversationId() == conv.id
@@ -487,13 +483,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return hasFadeLeaveBehinds()
                 && mFadeLeaveBehindItems.containsKey(conv.id)
                 && conv.isMostlyDead();
-    }
-
-    private boolean isPositionTypeLeaveBehind(Conversation conv) {
-        if (hasLeaveBehinds()) {
-            return isPositionLeaveBehind(conv) || isPositionFadeLeaveBehind(conv);
-        }
-        return false;
     }
 
     @Override
