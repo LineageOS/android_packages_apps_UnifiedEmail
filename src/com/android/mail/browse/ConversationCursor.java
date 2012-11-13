@@ -227,9 +227,9 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
-    public Integer getConversationPosition(String conversationUri) {
-        return mUnderlyingCursor != null ?
-                mUnderlyingCursor.conversationPosition(conversationUri) : null;
+    public Integer getConversationPosition(Uri conversationUri) {
+        return mUnderlyingCursor == null ? null :
+                mUnderlyingCursor.conversationPosition(uriStringFromCachingUri(conversationUri));
     }
 
     public Set<Long> getConversationIds() {

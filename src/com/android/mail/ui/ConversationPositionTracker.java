@@ -187,7 +187,7 @@ public class ConversationPositionTracker {
         int newPosition = 0;
         // Update the internal state for where the current conversation is in
         // the list.
-        final Integer position = cursor.getConversationPosition(mConversation.uri.toString());
+        final Integer position = cursor.getConversationPosition(mConversation.uri);
         if (position != null) {
             newPosition = position.intValue();
             mConversation.position = newPosition;
