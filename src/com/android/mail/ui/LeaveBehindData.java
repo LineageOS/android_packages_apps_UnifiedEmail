@@ -18,17 +18,16 @@ package com.android.mail.ui;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 
 import com.android.mail.providers.Conversation;
 
 public class LeaveBehindData implements Parcelable {
-    ToastBarOperation op;
-    Conversation data;
+    final Conversation data;
+    final ToastBarOperation op;
 
     public LeaveBehindData(Conversation conv, ToastBarOperation undoOp) {
-        op = undoOp;
         data = conv;
+        op = undoOp;
     }
 
     @Override
@@ -38,20 +37,26 @@ public class LeaveBehindData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel arg, int flags) {
-        arg.writeParcelable(op, 0);
         arg.writeParcelable(data, 0);
+        arg.writeParcelable(op, 0);
     }
 
-    private LeaveBehindData(Parcel arg) {
-        this((Conversation) arg.readParcelable(null),
-                (ToastBarOperation) arg.readParcelable(null));
+    private LeaveBehindData(Parcel arg, ClassLoader loader) {
+        data = arg.readParcelable(loader);
+        op = arg.readParcelable(loader);
     }
 
-    public static final Creator<LeaveBehindData> CREATOR = new Creator<LeaveBehindData>() {
+    public static final ClassLoaderCreator<LeaveBehindData> CREATOR =
+            new ClassLoaderCreator<LeaveBehindData>() {
 
         @Override
         public LeaveBehindData createFromParcel(Parcel source) {
-            return new LeaveBehindData(source);
+            return new LeaveBehindData(source, null);
+        }
+
+        @Override
+        public LeaveBehindData createFromParcel(Parcel source, ClassLoader loader) {
+            return new LeaveBehindData(source, loader);
         }
 
         @Override

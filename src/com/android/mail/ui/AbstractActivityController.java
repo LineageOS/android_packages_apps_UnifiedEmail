@@ -790,7 +790,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 setAccount((Account) savedState.getParcelable(SAVED_ACCOUNT));
             }
             if (savedState.containsKey(SAVED_FOLDER)) {
-                final Folder folder = (Folder) savedState.getParcelable(SAVED_FOLDER);
+                final Folder folder = savedState.getParcelable(SAVED_FOLDER);
                 final String query = savedState.getString(SAVED_QUERY, null);
                 setListContext(folder, query);
             }
@@ -1492,8 +1492,7 @@ public abstract class AbstractActivityController implements ActivityController {
         LogUtils.d(LOG_TAG, "IN AAC.onRestoreInstanceState");
         if (savedState.containsKey(SAVED_CONVERSATION)) {
             // Open the conversation.
-            final Conversation conversation =
-                    (Conversation)savedState.getParcelable(SAVED_CONVERSATION);
+            final Conversation conversation = savedState.getParcelable(SAVED_CONVERSATION);
             if (conversation != null && conversation.position < 0) {
                 // Set the position to 0 on this conversation, as we don't know where it is
                 // in the list
@@ -1503,8 +1502,7 @@ public abstract class AbstractActivityController implements ActivityController {
         }
 
         if (savedState.containsKey(SAVED_TOAST_BAR_OP)) {
-            ToastBarOperation op = ((ToastBarOperation) savedState
-                    .getParcelable(SAVED_TOAST_BAR_OP));
+            ToastBarOperation op = savedState.getParcelable(SAVED_TOAST_BAR_OP);
             if (op != null) {
                 if (op.getType() == ToastBarOperation.UNDO) {
                     onUndoAvailable(op);
@@ -1563,7 +1561,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
                         intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
                 final Conversation conversation =
-                        (Conversation)intent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
+                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
                 if (conversation != null && conversation.position < 0) {
                     // Set the position to 0 on this conversation, as we don't know where it is
                     // in the list

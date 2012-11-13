@@ -17,19 +17,17 @@
 
 package com.android.mail.ui;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationItemView;
+import com.android.mail.providers.Conversation;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.android.mail.browse.ConversationItemView;
-import com.android.mail.browse.ConversationCursor;
-import com.android.mail.providers.Conversation;
-import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,25 +44,24 @@ import java.util.Set;
  * responding to change events.
  */
 public class ConversationSelectionSet implements Parcelable {
-    public static final Parcelable.Creator<ConversationSelectionSet> CREATOR =
-            new Parcelable.Creator<ConversationSelectionSet>() {
+    public static final ClassLoaderCreator<ConversationSelectionSet> CREATOR =
+            new ClassLoaderCreator<ConversationSelectionSet>() {
 
         @Override
         public ConversationSelectionSet createFromParcel(Parcel source) {
-            ConversationSelectionSet result = new ConversationSelectionSet();
-            Parcelable[] conversations = source.readParcelableArray(
-                            Conversation.class.getClassLoader());
-            for (Parcelable parceled : conversations) {
-                Conversation conversation = (Conversation) parceled;
-                result.put(conversation.id, conversation);
-            }
-            return result;
+            return new ConversationSelectionSet(source, null);
+        }
+
+        @Override
+        public ConversationSelectionSet createFromParcel(Parcel source, ClassLoader loader) {
+            return new ConversationSelectionSet(source, loader);
         }
 
         @Override
         public ConversationSelectionSet[] newArray(int size) {
             return new ConversationSelectionSet[size];
         }
+
     };
 
     private final Object mLock = new Object();
@@ -81,6 +78,17 @@ public class ConversationSelectionSet implements Parcelable {
 
     @VisibleForTesting
     final ArrayList<ConversationSetObserver> mObservers = new ArrayList<ConversationSetObserver>();
+
+    public ConversationSelectionSet() {
+    }
+
+    private ConversationSelectionSet(Parcel source, ClassLoader loader) {
+        Parcelable[] conversations = source.readParcelableArray(loader);
+        for (Parcelable parceled : conversations) {
+            Conversation conversation = (Conversation) parceled;
+            put(conversation.id, conversation);
+        }
+    }
 
     /**
      * Registers an observer to listen for interesting changes on this set.

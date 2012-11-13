@@ -16,13 +16,12 @@
  *******************************************************************************/
 package com.android.mail.ui;
 
-import com.android.mail.R;
-import com.android.mail.providers.Folder;
-
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
+import com.android.mail.R;
+import com.android.mail.providers.Folder;
 
 /**
  * A simple holder class that stores the information to undo the application of a folder.
@@ -72,7 +71,6 @@ public class ToastBarOperation implements Parcelable {
         dest.writeInt(mType);
     }
 
-    @SuppressWarnings("hiding")
     public static final Creator<ToastBarOperation> CREATOR = new Creator<ToastBarOperation>() {
         @Override
         public ToastBarOperation createFromParcel(Parcel source) {
