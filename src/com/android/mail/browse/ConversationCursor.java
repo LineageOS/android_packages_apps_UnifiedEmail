@@ -1212,25 +1212,26 @@ public final class ConversationCursor implements Cursor {
             conversationCursor.notifyDataChanged();
 
             // Send changes to underlying provider
-            for (String authority: batchMap.keySet()) {
-                try {
-                    if (offUiThread()) {
-                        sResolver.applyBatch(authority, batchMap.get(authority));
-                    } else {
-                        final String auth = authority;
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    sResolver.applyBatch(auth, batchMap.get(auth));
-                                } catch (RemoteException e) {
-                                } catch (OperationApplicationException e) {
-                                }
-                           }
-                        }).start();
+            final boolean notUiThread = offUiThread();
+            for (final String authority: batchMap.keySet()) {
+                final ArrayList<ContentProviderOperation> opList = batchMap.get(authority);
+                if (notUiThread) {
+                    try {
+                        sResolver.applyBatch(authority, opList);
+                    } catch (RemoteException e) {
+                    } catch (OperationApplicationException e) {
                     }
-                } catch (RemoteException e) {
-                } catch (OperationApplicationException e) {
+                } else {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                sResolver.applyBatch(authority, opList);
+                            } catch (RemoteException e) {
+                            } catch (OperationApplicationException e) {
+                            }
+                        }
+                    }).start();
                 }
             }
             return sSequence;
