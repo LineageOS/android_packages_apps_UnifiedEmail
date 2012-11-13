@@ -363,10 +363,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        if (position == 0) {
-            // Commit any leave behind items.
-            mActivityController.commitDestructiveActions(false);
-        }
         final int type = getItemViewType(position);
         view = getCachedView(position, parent, type);
         switch (type) {

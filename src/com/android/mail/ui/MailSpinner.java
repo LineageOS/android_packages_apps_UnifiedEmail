@@ -161,6 +161,8 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
     public void onClick(View arg0) {
         if (isEnabled() && !mListPopupWindow.isShowing()) {
             mListPopupWindow.show();
+            // Commit any leave behind items.
+            mController.commitDestructiveActions(false);
         }
     }
 
