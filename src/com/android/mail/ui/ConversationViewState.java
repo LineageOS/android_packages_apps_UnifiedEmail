@@ -160,8 +160,8 @@ class ConversationViewState implements Parcelable {
         dest.writeString(mConversationInfo);
     }
 
-    private ConversationViewState(Parcel source) {
-        final Bundle states = source.readBundle(MessageViewState.class.getClassLoader());
+    private ConversationViewState(Parcel source, ClassLoader loader) {
+        final Bundle states = source.readBundle(loader);
         for (String key : states.keySet()) {
             final MessageViewState state = states.getParcelable(key);
             mMessageViewStates.put(Uri.parse(key), state);
@@ -169,12 +169,17 @@ class ConversationViewState implements Parcelable {
         mConversationInfo = source.readString();
     }
 
-    public static Parcelable.Creator<ConversationViewState> CREATOR =
-            new Parcelable.Creator<ConversationViewState>() {
+    public static final ClassLoaderCreator<ConversationViewState> CREATOR =
+            new ClassLoaderCreator<ConversationViewState>() {
 
         @Override
         public ConversationViewState createFromParcel(Parcel source) {
-            return new ConversationViewState(source);
+            return new ConversationViewState(source, null);
+        }
+
+        @Override
+        public ConversationViewState createFromParcel(Parcel source, ClassLoader loader) {
+            return new ConversationViewState(source, loader);
         }
 
         @Override
@@ -218,7 +223,7 @@ class ConversationViewState implements Parcelable {
         }
 
         @SuppressWarnings("hiding")
-        public static Parcelable.Creator<MessageViewState> CREATOR =
+        public static final Parcelable.Creator<MessageViewState> CREATOR =
                 new Parcelable.Creator<MessageViewState>() {
 
             @Override
