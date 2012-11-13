@@ -2752,8 +2752,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void onAccountChanged() {
         mReplyFromAccount = mFromSpinner.getCurrentAccount();
         if (!mAccount.equals(mReplyFromAccount.account)) {
+            // Clear a signature, if there was one.
+            mBodyView.removeTextChangedListener(this);
+            String oldSignature = mSignature;
+            String bodyText = getBody().getText().toString();
+            if (!TextUtils.isEmpty(oldSignature)) {
+                int pos = getSignatureStartPosition(oldSignature, bodyText);
+                if (pos > -1) {
+                    mBodyView.setText(bodyText.substring(0, pos));
+                }
+            }
             setAccount(mReplyFromAccount.account);
-
+            mBodyView.addTextChangedListener(this);
             // TODO: handle discarding attachments when switching accounts.
             // Only enable save for this draft if there is any other content
             // in the message.
