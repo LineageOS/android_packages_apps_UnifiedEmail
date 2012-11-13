@@ -377,10 +377,17 @@ public class ConversationSelectionSet implements Parcelable {
             // Remove all of the items that we know are missing.  This will leave the items where
             // we need to check for existence in the cursor
             batchConversationToCheck.removeAll(itemsToRemoveFromBatch);
+            // At this point batchConversationToCheck contains the conversation ids for the
+            // conversations that had been in the batch selection, with the items we know have been
+            // deleted removed.
 
-            // While there are items to check, remove all items that are still in the cursor.
+            // This set contains the conversation ids that are in the conversation cursor
             final Set<Long> cursorConversationIds = cursor.getConversationIds();
-            while (!batchConversationToCheck.isEmpty() && cursorConversationIds != null) {
+
+            // We want to remove all of the valid items that are in the conversation cursor, from
+            // the batchConversations to check.  The goal is after this block, anything remaining
+            // would be items that don't exist in the conversation cursor anymore.
+            if (!batchConversationToCheck.isEmpty() && cursorConversationIds != null) {
                 batchConversationToCheck.removeAll(cursorConversationIds);
             }
 
