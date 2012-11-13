@@ -39,7 +39,6 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewModel;
 import com.android.mail.browse.ConversationListFooterView;
-import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;

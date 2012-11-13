@@ -21,8 +21,6 @@ import android.animation.ObjectAnimator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
