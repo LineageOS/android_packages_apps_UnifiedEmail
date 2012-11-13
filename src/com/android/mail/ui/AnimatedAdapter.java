@@ -358,6 +358,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 mLeaveBehindItem.dismiss();
             } else {
                 mLeaveBehindItem.commit();
+                mLeaveBehindItem = null;
             }
             changed = true;
         }
