@@ -1743,7 +1743,7 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void setCurrentConversation(Conversation conversation) {
         // Must be the first call because this sets conversation.position if a cursor is available.
-        mTracker.initialize(mCurrentConversation);
+        mTracker.initialize(conversation);
         mCurrentConversation = conversation;
 
         if (mCurrentConversation != null) {
