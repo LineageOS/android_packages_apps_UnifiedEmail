@@ -1104,25 +1104,27 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private void drawSubject(Canvas canvas) {
-        TextView subjectLayout = getSubjectTextView();
-        int subjectWidth = mCoordinates.subjectWidth;
-        int subjectHeight = (int) (subjectLayout.getLineHeight() * 2 + sPaint.descent());
-        sPaint.setTextSize(mCoordinates.subjectFontSize);
-        if (isActivated() && showActivatedText()) {
-            mHeader.subjectText.setSpan(sActivatedTextSpan, 0,
-                    mHeader.subjectText.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        } else {
-            mHeader.subjectText.removeSpan(sActivatedTextSpan);
+        int subjectLength = !TextUtils.isEmpty(mHeader.subjectText) ?
+                mHeader.subjectText.length() : 0;
+        if (subjectLength > 0) {
+            TextView subjectLayout = getSubjectTextView();
+            int subjectWidth = mCoordinates.subjectWidth;
+            int subjectHeight = (int) (subjectLayout.getLineHeight() * 2 + sPaint.descent());
+            sPaint.setTextSize(mCoordinates.subjectFontSize);
+            if (isActivated() && showActivatedText()) {
+                mHeader.subjectText.setSpan(sActivatedTextSpan, 0, mHeader.subjectText.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+                mHeader.subjectText.removeSpan(sActivatedTextSpan);
+            }
+            canvas.translate(mCoordinates.subjectX, mCoordinates.subjectY
+                    + sSendersTextViewTopPadding);
+            subjectLayout.setText(mHeader.subjectText, TextView.BufferType.SPANNABLE);
+            subjectLayout.measure(MeasureSpec.makeMeasureSpec(subjectWidth, MeasureSpec.EXACTLY),
+                    subjectHeight);
+            subjectLayout.layout(0, 0, subjectWidth, subjectHeight);
+            subjectLayout.draw(canvas);
         }
-        canvas.translate(mCoordinates.subjectX, mCoordinates.subjectY
-                + sSendersTextViewTopPadding);
-        subjectLayout.setText(mHeader.subjectText, TextView.BufferType.SPANNABLE);
-        subjectLayout.measure(
-                MeasureSpec.makeMeasureSpec(subjectWidth, MeasureSpec.EXACTLY),
-                subjectHeight);
-        subjectLayout.layout(0, 0, subjectWidth, subjectHeight);
-        subjectLayout.draw(canvas);
     }
 
     private Bitmap getStarBitmap() {
