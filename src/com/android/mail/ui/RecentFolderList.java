@@ -146,7 +146,7 @@ public final class RecentFolderList {
      * @param account the new current account
      */
     private void setCurrentAccount(Account account) {
-        final boolean accountSwitched = (mAccount == null) || account.uri.equals(mAccount.uri);
+        final boolean accountSwitched = (mAccount == null) || !mAccount.matches(account);
         mAccount = account;
         // Clear the cache only if we moved from alice@example.com -> alice@work.com
         if (accountSwitched) {
