@@ -389,5 +389,5 @@
   </string-array>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"מה חדש"</string>
     <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"האם להתאים אוטומטית גודל של הודעות?"</string>
-    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"כווץ הודעות רחבות כדי שיתאימו למסך וכדי לאפשר התקרבות. כדי לכבות אפשרות זו, עבור אל \'הגדרות\' &gt; \'הגדרות כלליות\'."</string>
+    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"כווץ הודעות רחבות כדי שיתאימו למסך וכדי לאפשר שינוי של מרחק התצוגה. כדי לכבות אפשרות זו, עבור אל \'הגדרות\' &gt; \'הגדרות כלליות\'."</string>
 </resources>
