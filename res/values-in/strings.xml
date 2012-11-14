@@ -387,10 +387,7 @@
     <item msgid="732746454445519134">"Tampilkan percakapan lama setelah menghapus"</item>
     <item msgid="2189929276292165301">"Tampilkan daftar percakapan setelah menghapus"</item>
   </string-array>
-    <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_title (2759387078807832659) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_message (4039164951892949801) -->
-    <skip />
+    <string name="whats_new_dialog_title" msgid="4230806739326698666">"Yang baru"</string>
+    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"Otomatis paskan pesan?"</string>
+    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Mampatkan pesan yang lebar agar pas dengan layar Anda dan memungkinkan pembesaran. Untuk mematikan opsi ini, buka Setelan &gt; Setelan umum."</string>
 </resources>
