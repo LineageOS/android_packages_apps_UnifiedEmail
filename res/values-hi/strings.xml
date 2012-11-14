@@ -387,10 +387,7 @@
     <item msgid="732746454445519134">"आपके द्वारा हटाए जाने के बाद पुराना वार्तालाप दिखाएं"</item>
     <item msgid="2189929276292165301">"आपके द्वारा हटाए जाने के बाद वार्तालाप सूची दिखाएं"</item>
   </string-array>
-    <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_title (2759387078807832659) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_message (4039164951892949801) -->
-    <skip />
+    <string name="whats_new_dialog_title" msgid="4230806739326698666">"नया क्या है"</string>
+    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"संदेशों को स्वत: फ़िट करें?"</string>
+    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"बड़े संदेशों को अपनी स्क्रीन में फ़िट करने के लिए उन्हें सिकोड़ें और ज़ूम इन करने दें. इस विकल्प को बंद करने के लिए, सेटिंग &gt; सामान्य सेटिंग पर जाएं."</string>
 </resources>
