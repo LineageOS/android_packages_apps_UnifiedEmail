@@ -32,7 +32,6 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
 import com.android.mail.providers.RecentFolderObserver;
 import com.android.mail.ui.ControllableActivity;
-import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.ui.RecentFolderController;
 import com.android.mail.ui.RecentFolderList;
 import com.android.mail.utils.LogTag;
@@ -47,7 +46,6 @@ import java.util.Vector;
  * This class keeps the account and folder information and returns appropriate views.
  */
 public class AccountSpinnerAdapter extends BaseAdapter {
-    private final ConversationListCallbacks mActivityController;
     private final LayoutInflater mInflater;
     /**
      * The position of the current account being viewed.
@@ -203,7 +201,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         // new data is available. We are only interested in unread counts at this point.
         mFolderWatcher = new FolderWatcher(activity, this);
         mCurrentAccount = mAccountObserver.initialize(activity.getAccountController());
-        mActivityController = activity.getListHandler();
         mRecentFolderController = activity.getRecentFolderController();
     }
 
