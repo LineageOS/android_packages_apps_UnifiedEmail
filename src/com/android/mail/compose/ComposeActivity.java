@@ -88,6 +88,7 @@ import com.android.mail.ui.WaitFragment;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.AttachmentUtils;
+import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -1833,9 +1834,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     ContentResolver resolver = mContext.getContentResolver();
                     ContentValues values = new ContentValues();
                     values.put(BaseColumns._ID, messageId);
-                    if (selectedAccount.account.expungeMessageUri != null) {
-                        resolver.update(selectedAccount.account.expungeMessageUri, values, null,
-                                null);
+                    if (mExistingDraftAccount.account.expungeMessageUri != null) {
+                        new ContentProviderTask.UpdateTask()
+                                .run(resolver, mExistingDraftAccount.account.expungeMessageUri,
+                                        values, null, null);
                     } else {
                         // TODO(mindyp) delete the conversation.
                     }
