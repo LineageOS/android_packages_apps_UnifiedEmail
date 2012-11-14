@@ -607,6 +607,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     public final void onRestoreInstanceState(Bundle savedInstanceState) {
+        clearChangeListeners();
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(EXTRA_FOCUS_SELECTION_START)) {
