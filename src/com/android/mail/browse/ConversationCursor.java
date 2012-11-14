@@ -46,7 +46,6 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -226,11 +225,6 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
-    public Integer getConversationPosition(Uri conversationUri) {
-        return mUnderlyingCursor == null ? null :
-                mUnderlyingCursor.conversationPosition(uriStringFromCachingUri(conversationUri));
-    }
-
     public Set<Long> getConversationIds() {
         return mUnderlyingCursor != null ? mUnderlyingCursor.conversationIds() : null;
     }
@@ -243,13 +237,13 @@ public final class ConversationCursor implements Cursor {
         // Ideally these two objects could be combined into a Map from
         // conversationId -> position, but the cached values uses the conversation
         // uri as a key.
-        private final Map<String, Integer> mConversationPositions;
+        private final Set<String> mConversationUris;
         private final Set<Long> mConversationIds;
 
         public UnderlyingCursorWrapper(Cursor result) {
             super(result);
-            final ImmutableMap.Builder<String, Integer> conversationPositionsMapBuilder =
-                    new ImmutableMap.Builder<String, Integer>();
+            final ImmutableSet.Builder<String> conversationUrisBuilder =
+                    new ImmutableSet.Builder<String>();
             final ImmutableSet.Builder<Long> conversationSetBuilder =
                     new ImmutableSet.Builder<Long>();
             if (result != null && result.moveToFirst()) {
@@ -258,8 +252,7 @@ public final class ConversationCursor implements Cursor {
                 final boolean networkWasEnabled =
                         Utils.disableConversationCursorNetworkAccess(result);
                 do {
-                    conversationPositionsMapBuilder.put(result.getString(sUriColumnIndex),
-                            result.getPosition());
+                    conversationUrisBuilder.add(result.getString(sUriColumnIndex));
                     conversationSetBuilder.add(result.getLong(UIProvider.CONVERSATION_ID_COLUMN));
                 } while (result.moveToNext());
 
@@ -267,16 +260,12 @@ public final class ConversationCursor implements Cursor {
                     Utils.enableConversationCursorNetworkAccess(result);
                 }
             }
-            mConversationPositions = conversationPositionsMapBuilder.build();
+            mConversationUris = conversationUrisBuilder.build();
             mConversationIds = conversationSetBuilder.build();
         }
 
         public boolean contains(String uri) {
-            return mConversationPositions.containsKey(uri);
-        }
-
-        public Integer conversationPosition(String uri) {
-            return mConversationPositions.get(uri);
+            return mConversationUris.contains(uri);
         }
 
         public Set<Long> conversationIds() {
