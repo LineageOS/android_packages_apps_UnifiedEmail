@@ -664,13 +664,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         int mode = getMode();
         state.putInt(EXTRA_ACTION, mode);
 
-        final Message message;
-        // only synthesize a message if a real one isn't already present as a draft
+        final Message message = createMessage(selectedReplyFromAccount, mode);
         if (mDraft != null) {
-            message = mDraft;
-            updateMessage(message, selectedReplyFromAccount, mode);
-        } else {
-            message = createMessage(selectedReplyFromAccount, mode);
+            message.id = mDraft.id;
+            message.serverId = mDraft.serverId;
+            message.uri = mDraft.uri;
         }
         state.putParcelable(EXTRA_MESSAGE, message);
 
@@ -726,18 +724,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.quotedTextOffset = !TextUtils.isEmpty(quotedText) ? QuotedTextView
                 .getQuotedTextOffset(quotedText.toString()) : -1;
         message.accountUri = null;
-        updateMessage(message, selectedReplyFromAccount, mode);
-        return message;
-    }
-
-    private void updateMessage(Message message, ReplyFromAccount selectedReplyFromAccount,
-            int mode) {
         message.setFrom(selectedReplyFromAccount != null ? selectedReplyFromAccount.address
                 : mAccount != null ? mAccount.name : null);
         message.draftType = getDraftType(mode);
         message.setTo(formatSenders(mTo.getText().toString()));
         message.setCc(formatSenders(mCc.getText().toString()));
         message.setBcc(formatSenders(mBcc.getText().toString()));
+        return message;
     }
 
     private String formatSenders(String string) {
