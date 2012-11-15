@@ -532,8 +532,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         switch (action) {
             case FORWARD:
             case COMPOSE:
-                mTo.requestFocus();
-                break;
+                if (TextUtils.isEmpty(mTo.getText())) {
+                    mTo.requestFocus();
+                    break;
+                }
             case REPLY:
             case REPLY_ALL:
             default:
@@ -2723,11 +2725,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void appendSignature() {
         String newSignature = mCachedSettings != null ? mCachedSettings.signature : null;
         boolean hasFocus = mBodyView.hasFocus();
-        if (!TextUtils.equals(newSignature, mSignature)) {
+        int signaturePos = getSignatureStartPosition(mSignature, mBodyView.getText().toString());
+        if (!TextUtils.equals(newSignature, mSignature) || signaturePos < 0) {
             mSignature = newSignature;
-            if (!TextUtils.isEmpty(mSignature)
-                    && getSignatureStartPosition(mSignature,
-                            mBodyView.getText().toString()) < 0) {
+            if (!TextUtils.isEmpty(mSignature)) {
                 // Appending a signature does not count as changing text.
                 mBodyView.removeTextChangedListener(this);
                 mBodyView.append(convertToPrintableSignature(mSignature));
