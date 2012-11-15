@@ -33,7 +33,6 @@ import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.util.LruCache;
 import android.util.Pair;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
@@ -90,9 +89,6 @@ public class ConversationItemViewModel {
 
     boolean hasDraftMessage;
 
-    // Subject
-    SpannableStringBuilder subjectText;
-
     // View Width
     public int viewWidth;
 
@@ -122,8 +118,6 @@ public class ConversationItemViewModel {
     public int styledMessageInfoStringOffset;
 
     private String mContentDescription;
-
-    public TextView sendersTextView;
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
