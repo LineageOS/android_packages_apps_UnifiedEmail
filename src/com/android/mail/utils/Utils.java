@@ -43,6 +43,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -573,11 +574,20 @@ public class Utils {
      * @return measured height of the child in px
      */
     public static int measureViewHeight(View child, ViewGroup parent) {
-        int parentWSpec = MeasureSpec.makeMeasureSpec(parent.getWidth(), MeasureSpec.EXACTLY);
-        int wSpec = ViewGroup.getChildMeasureSpec(parentWSpec,
-                parent.getPaddingLeft() + parent.getPaddingRight(),
+        final ViewGroup.LayoutParams lp = child.getLayoutParams();
+        final int childSideMargin;
+        if (lp instanceof MarginLayoutParams) {
+            final MarginLayoutParams mlp = (MarginLayoutParams) lp;
+            childSideMargin = mlp.leftMargin + mlp.rightMargin;
+        } else {
+            childSideMargin = 0;
+        }
+
+        final int parentWSpec = MeasureSpec.makeMeasureSpec(parent.getWidth(), MeasureSpec.EXACTLY);
+        final int wSpec = ViewGroup.getChildMeasureSpec(parentWSpec,
+                parent.getPaddingLeft() + parent.getPaddingRight() + childSideMargin,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        int hSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        final int hSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         child.measure(wSpec, hSpec);
         return child.getMeasuredHeight();
     }
