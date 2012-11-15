@@ -74,4 +74,6 @@
     <color name="high_spam_color">#CC0000</color>
     <color name="leaveBehindBackground">#5a595a</color>
     <color name="animating_item_background_color">#7F0099cc</color>
+
+    <color name="notification_template_icon_low_bg">#0cffffff</color>
 </resources>
