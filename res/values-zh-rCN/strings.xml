@@ -387,10 +387,7 @@
     <item msgid="732746454445519134">"在您执行删除操作后显示较旧的前一个会话"</item>
     <item msgid="2189929276292165301">"在您执行删除操作后显示会话列表"</item>
   </string-array>
-    <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_title (2759387078807832659) -->
-    <skip />
-    <!-- no translation found for auto_fit_messages_dialog_message (4039164951892949801) -->
-    <skip />
+    <string name="whats_new_dialog_title" msgid="4230806739326698666">"新功能"</string>
+    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"是否自动调整邮件内容缩放比例？"</string>
+    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"缩小过宽的邮件内容，使其适应屏幕大小。您还可以自行放大邮件内容以使其更易阅读。要关闭此选项，请转到“设置”&gt;“常规设置”。"</string>
 </resources>

@@ -177,7 +177,7 @@
     <item quantity="other" msgid="4173815457177336569">"¿Descartar borradores de estas <xliff:g id="COUNT">%1$d</xliff:g> conversaciones?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"¿Quieres descartar este mensaje?"</string>
-    <string name="loading_conversations" msgid="2649440958602369555">"Cargándose..."</string>
+    <string name="loading_conversations" msgid="2649440958602369555">"Cargando…"</string>
     <string name="no_conversations" msgid="35400008890372241">"No hay conversaciones."</string>
     <string name="undo" msgid="6070869718469782251">"Deshacer"</string>
   <plurals name="conversation_marking_read">
@@ -388,6 +388,6 @@
     <item msgid="2189929276292165301">"Mostrar la lista de conversaciones luego de la eliminación"</item>
   </string-array>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Novedades"</string>
-    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"¿Deseas ajustar el tamaño de los mensajes autom.?"</string>
-    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Reduce el tamaño de los mensajes anchos para que se adapten a la pantalla y amplíalos para verlos más de cerca. Para desactivar esta opción, ve a Configuración &gt; Configuración general."</string>
+    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"¿Deseas ajustar automáticamente los mensajes?"</string>
+    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Reduce el tamaño de los mensajes más anchos para que se adapten a la pantalla y amplíalos para verlos más de cerca. Para desactivar esta opción, ve a Configuración &gt; Configuración general."</string>
 </resources>
