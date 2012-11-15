@@ -389,5 +389,5 @@
   </string-array>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"الميزات الجديدة"</string>
     <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"هل تريد الضبط التلقائي للرسائل؟"</string>
-    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"يمكنك تصغير الرسائل الواسعة لتناسب شاشتك كما يمكنك السماح بالتكبير. لإيقاف هذا الخيار، انتقل إلى إعدادات &gt; إعدادات عامة."</string>
+    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"يمكنك تصغير الرسائل الكبيرة لتناسب شاشتك كما يمكنك السماح بالتكبير. لإيقاف هذا الخيار، انتقل إلى إعدادات &gt; إعدادات عامة."</string>
 </resources>
