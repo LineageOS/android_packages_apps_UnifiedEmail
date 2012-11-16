@@ -43,8 +43,6 @@
     <string name="subject_hint">Subject</string>
     <!-- Shown in Compose; the subject of the message [CHAR LIMIT=100] -->
     <string name="body_hint">Compose email</string>
-    <!-- Compose screen, button: add Cc/Bcc fields [CHAR LIMIT=1]-->
-    <string name="plus_cc_label">+</string>
     <!-- Compose screen, button: add bcc fields [CHAR LIMIT=1]-->
     <string name="plus_bcc_folder">+</string>
     <!--  Compose screen button. Add an attachment to this message [CHAR LIMIT=20] -->
@@ -159,8 +157,6 @@
     <string name="manage_folders_subtitle">Sync &amp; notify</string>
     <!-- Menu item: options for this folder. When source text cannot be translated within the char limit, please translate the shorter "Folder options" instead. [CHAR LIMIT = 30] -->
     <string name="menu_folder_options">Folder settings</string>
-    <!-- Menu item: done editing folder options. [CHAR LIMIT = 30] -->
-    <string name="menu_done">Done</string>
     <!-- Menu item: launch the Global Account Settings activity -->
     <string name="menu_account_settings">Account settings</string>
     <!-- Menu item: launch the Settings activity -->
@@ -226,16 +222,10 @@
     <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> File</string>
     <!-- Read email screen, button name. Preview an attachment by Gview. [CHAR LIMIT=18] -->
     <string name="preview_attachment">Preview</string>
-    <!-- Read email screen, button name. View an attachment by an application on device. [CHAR LIMIT=10] -->
-    <string name="view_attachment">View</string>
     <!-- Read email screen, button name. Save an attachment to sd card. [CHAR LIMIT=10] -->
     <string name="save_attachment">Save</string>
     <!-- Read email screen, button name. Open a dialog to explain that no application found to view the attachment. [CHAR LIMIT=10] -->
     <string name="info_attachment">Info</string>
-    <!-- Read email screen, button name. Play a video or audio attachment. [CHAR LIMIT=15] -->
-    <string name="play_attachment">Play</string>
-    <!-- Read email screen, button name. Install an apk attachment. [CHAR LIMIT=12] -->
-    <string name="install_attachment">Install</string>
     <!-- Read email screen, button name. Cancel a downloading attachment. [CHAR LIMIT=10] -->
     <string name="cancel_attachment">Cancel</string>
     <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
@@ -369,38 +359,9 @@
     <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
     <string name="undo">Undo</string>
 
-    <!-- Undo Strings: The following are shown in a dialog while we're waiting for the operation to complete --><skip />
-    <plurals name="conversation_marking_read">
-        <!-- Displayed while marking one conversation read -->
-        <item quantity="one">Marking <xliff:g id="count">%1$d</xliff:g> conversation read.</item>
-        <!-- Displayed while marking multiple conversations read -->
-        <item quantity="other">Marking <xliff:g id="count">%1$d</xliff:g> conversations read.</item>
-    </plurals>
-
-    <plurals name="conversation_marking_unread">
-        <!-- Displayed while marking one conversation unread -->
-        <item quantity="one">Marking <xliff:g id="count">%1$d</xliff:g> conversation unread.</item>
-        <!-- Displayed while marking multiple conversations unread -->
-        <item quantity="other">Marking <xliff:g id="count">%1$d</xliff:g> conversations unread.</item>
-    </plurals>
-
-    <plurals name="conversation_starring">
-        <!-- Displayed while starring one conversation -->
-        <item quantity="one">Starring <xliff:g id="count">%1$d</xliff:g> conversation.</item>
-        <!-- Displayed while starring multiple conversations -->
-        <item quantity="other">Starring <xliff:g id="count">%1$d</xliff:g> conversations.</item>
-    </plurals>
-
     <plurals name="conversation_unstarred">
         <item quantity="one">Unstarring <xliff:g id="count">%1$d</xliff:g> conversation.</item>
         <item quantity="other">Unstarring <xliff:g id="count">%1$d</xliff:g> conversations.</item>
-    </plurals>
-
-    <plurals name="conversation_unknown_operation">
-        <!-- Displayed while waiting for an operation one conversation -->
-        <item quantity="one">Waiting for operation on <xliff:g id="count">%1$d</xliff:g> conversation.</item>
-        <!-- Displayed while waiting for an operation on several conversations -->
-        <item quantity="other">Waiting for operation on <xliff:g id="count">%1$d</xliff:g> conversations.</item>
     </plurals>
 
     <!-- The following are shown as a toast after the operation has completed --><skip />
@@ -446,13 +407,6 @@
         <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> archived.</item>
     </plurals>
 
-    <plurals name="conversation_moved_to_inbox">
-        <!-- Displayed while moving one conversation to the inbox. [CHAR LIMIT=80] -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> moved to the Inbox.</item>
-        <!-- Displayed while moving multiple conversations to the inbox. [CHAR LIMIT=80]-->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> moved to the Inbox.</item>
-    </plurals>
-
     <plurals name="conversation_deleted">
         <!-- Displayed while deleting one conversation -->
         <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> deleted.</item>
@@ -465,36 +419,6 @@
     <string name="archived">Archived</string>
     <!-- Displayed when swiping away a single conversation to remove the currently displayed folder [CHAR LIMIT=80] -->
     <string name="folder_removed">Removed from <xliff:g id="folderName">%1$s</xliff:g></string>
-
-    <plurals name="conversation_marked_important">
-        <!-- Displayed while marking a single conversation as important. [CHAR LIMIT=80] -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked important.</item>
-        <!-- Displayed while marking multiple conversations as important. [CHAR LIMIT=80] -->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked important.</item>
-    </plurals>
-
-    <plurals name="conversation_marked_not_important">
-        <!-- Displayed while marking a single conversation as unimportant.
-             [CHAR LIMIT=80] -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked not important.</item>
-        <!-- Displayed while marking multiple conversations as unimportant.
-             [CHAR LIMIT=80] -->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked not important.</item>
-    </plurals>
-
-    <plurals name="conversation_marked_read">
-        <!-- Displayed while marking a single conversation as read. [CHAR LIMIT=80] -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked read.</item>
-        <!-- Displayed while marking multiple conversations as read. [CHAR LIMIT=80]-->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked read.</item>
-    </plurals>
-
-    <plurals name="conversation_marked_unread">
-        <!-- Displayed while marking a single conversation as unread. [CHAR LIMIT=80] -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked unread.</item>
-        <!-- Displayed while marking multiple conversations as unread. [CHAR LIMIT=80]-->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked unread.</item>
-    </plurals>
  
     <plurals name="conversation_folder_changed">
         <!-- Displayed while adding and removing folders to a single conversation. [CHAR LIMIT=100] -->
@@ -550,8 +474,6 @@
     <string name="contact_info_string">Show contact information for <xliff:g id="name">%1$s</xliff:g></string>
     <!--  Icon name for showing sender contact information when we cannot get sender info. [CHAR LIMIT=100] -->
     <string name="contact_info_string_default">Show contact information</string>
-    <!--  Div name for providing accessibility to collapsed read messages when viewing a conversation. [CHAR LIMIT=40] -->
-    <string name="expand_read_messages">Expand read messages</string>
     <!-- Shown in collapsed mode when a conversation has more than one read message.
          The message count is shown to the right of this text. [CHAR LIMIT=70] -->
     <string name="show_messages_read">Previously read messages</string>
@@ -749,9 +671,6 @@
     <string translate="false" name="hierarchical_folder_parent_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
     <string translate="false" name="hierarchical_folder_parent_top_ellip"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215\u2026\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
     <string translate="false" name="hierarchical_folder_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215</string>
-
-    <string translate="false" name="compose_component_name">com.android.mail.compose.ComposeActivity</string>
-    <string translate="false" name="autosend_component_name"></string>
 
     <!-- Token used as a divider between senders -->
     <string name="senders_split_token">,\u00A0</string>
