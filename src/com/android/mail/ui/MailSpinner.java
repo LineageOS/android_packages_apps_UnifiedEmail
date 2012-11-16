@@ -147,6 +147,13 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
                 mController.showFolderList();
                 dismiss = true;
                 break;
+            case AccountSpinnerAdapter.TYPE_HEADER:
+                LogUtils.e(LOG_TAG, "MailSpinner.onItemClick(): Got unexpected click on header.");
+                break;
+            default:
+                LogUtils.e(LOG_TAG, "MailSpinner.onItemClick(%d): Strange click ignored: type %d.",
+                        position, type);
+                break;
         }
         if (dismiss) {
             mListPopupWindow.dismiss();
