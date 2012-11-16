@@ -781,7 +781,7 @@ public final class FolderListFragment extends ListFragment implements
         }
         // If the current folder changed, we don't have a selected folder type anymore.
         if (!folder.uri.equals(mSelectedFolderUri)) {
-            mSelectedFolderType= FolderListAdapter.Item.NOT_A_FOLDER;
+            mSelectedFolderType = FolderListAdapter.Item.NOT_A_FOLDER;
         }
         mCurrentFolderForUnreadCheck = folder;
         mSelectedFolderUri = folder.uri;
