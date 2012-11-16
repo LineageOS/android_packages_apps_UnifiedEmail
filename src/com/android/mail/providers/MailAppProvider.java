@@ -508,34 +508,40 @@ public abstract class MailAppProvider extends ContentProvider
         final Set<String> accountsStringSet = preference.getStringSet(ACCOUNT_LIST_KEY, null);
 
         if (accountsStringSet != null) {
-            int pos = 0;
+            // Persisted string sets are unordered, so de-serialize and sort them all before adding
+            // them to the cache
+            final List<AccountCacheEntry> accountList = Lists.newArrayList();
             for (String serializedAccount : accountsStringSet) {
                 try {
-                    // TODO (pwestbro): we are creating duplicate AccountCacheEntry objects.
-                    // One here, and one in addAccountImpl.  We should stop doing that.
-                    final AccountCacheEntry accountEntry =
-                            new AccountCacheEntry(serializedAccount, pos);
-                    if (accountEntry.mAccount.settings != null) {
-                        Account account = accountEntry.mAccount;
-                        ContentProviderClient client =
-                                mResolver.acquireContentProviderClient(account.uri);
-                        if (client != null) {
-                            client.release();
-                            addAccountImpl(account, accountEntry.mAccountsQueryUri,
-                                    false /* don't notify */);
-                        } else {
-                            LogUtils.e(LOG_TAG, "Dropping account without provider: %s",
-                                    account.name);
-                        }
-                    } else {
-                        LogUtils.e(LOG_TAG, "Dropping account that doesn't specify settings");
-                    }
-                    pos++;
+                final AccountCacheEntry accountEntry =
+                        new AccountCacheEntry(serializedAccount);
+                accountList.add(accountEntry);
                 } catch (Exception e) {
                     // Unable to create account object, skip to next
                     LogUtils.e(LOG_TAG, e,
                             "Unable to create account object from serialized string '%s'",
                             serializedAccount);
+                }
+            }
+            Collections.sort(accountList);
+
+            // TODO (pwestbro): we are creating duplicate AccountCacheEntry objects.
+            // One here, and one in addAccountImpl.  We should stop doing that.
+            for (AccountCacheEntry accountEntry : accountList) {
+                if (accountEntry.mAccount.settings != null) {
+                    Account account = accountEntry.mAccount;
+                    ContentProviderClient client =
+                            mResolver.acquireContentProviderClient(account.uri);
+                    if (client != null) {
+                        client.release();
+                        addAccountImpl(account, accountEntry.mAccountsQueryUri,
+                                false /* don't notify */);
+                    } else {
+                        LogUtils.e(LOG_TAG, "Dropping account without provider: %s",
+                                account.name);
+                    }
+                } else {
+                    LogUtils.e(LOG_TAG, "Dropping account that doesn't specify settings");
                 }
             }
             broadcastAccountChange();
@@ -596,7 +602,7 @@ public abstract class MailAppProvider extends ContentProvider
             accountList = ImmutableSet.copyOf(mAccountCache.values());
         }
 
-        int lastPosition = 0;
+        int lastPosition = -1;
         // Build a set of the account uris that had been associated with that query
         final Set<Uri> previousQueryUriSet = Sets.newHashSet();
         for (AccountCacheEntry entry : accountList) {
@@ -618,12 +624,34 @@ public abstract class MailAppProvider extends ContentProvider
 
         // We are relying on the fact that all accounts are added in the order specified in the
         // cursor.  Initially assume that we insert these items to at the end of the list
-        int pos = lastPosition;
+        int pos = lastPosition + 1;
         while (data.moveToNext()) {
             final Account account = new Account(data);
             final Uri accountUri = account.uri;
             newQueryUriMap.add(accountUri);
-            addAccountImpl(account, accountsQueryUri, pos++, false /* don't notify */);
+
+            /* For complete/loaded updates, use all-new positions starting after the existing
+             * positions. Updates to existing entries will overwrite in the map.
+             * Incomplete updates should essentially modify existing entries in-place. We do this
+             * by creating a new entry as above, but with an existing position.
+             */
+            Integer existingPos = null;
+            if (!mAccountsFullyLoaded) {
+                synchronized (mAccountCache) {
+                    final AccountCacheEntry entry = mAccountCache.get(accountUri);
+                    if (entry != null) {
+                        existingPos = entry.mPosition;
+                    }
+                }
+            }
+            final int newPos;
+            if (existingPos != null) {
+                newPos = existingPos;
+            } else {
+                newPos = pos++;
+            }
+
+            addAccountImpl(account, accountsQueryUri, newPos, false /* don't notify */);
         }
         // Remove all of the accounts that are in the new result set
         previousQueryUriSet.removeAll(newQueryUriMap);
@@ -649,7 +677,7 @@ public abstract class MailAppProvider extends ContentProvider
         private static final Pattern ACCOUNT_ENTRY_COMPONENT_SEPARATOR_PATTERN =
                 Pattern.compile("\\^\\*\\*\\^");
 
-        private static final int NUMBER_MEMBERS = 2;
+        private static final int NUMBER_MEMBERS = 3;
 
         public AccountCacheEntry(Account account, Uri accountQueryUri, int position) {
             mAccount = account;
@@ -663,6 +691,7 @@ public abstract class MailAppProvider extends ContentProvider
         public synchronized String serialize() {
             StringBuilder out = new StringBuilder();
             out.append(mAccount.serialize()).append(ACCOUNT_ENTRY_COMPONENT_SEPARATOR);
+            out.append(mPosition).append(ACCOUNT_ENTRY_COMPONENT_SEPARATOR);
             final String accountQueryUri =
                     mAccountsQueryUri != null ? mAccountsQueryUri.toString() : "";
             out.append(accountQueryUri);
@@ -676,7 +705,7 @@ public abstract class MailAppProvider extends ContentProvider
          * ignoring the newly created object if the exception is thrown.
          * @param serializedString
          */
-        public AccountCacheEntry(String serializedString, int position)
+        public AccountCacheEntry(String serializedString)
                 throws IllegalArgumentException {
             String[] cacheEntryMembers = TextUtils.split(serializedString,
                     ACCOUNT_ENTRY_COMPONENT_SEPARATOR_PATTERN);
@@ -695,9 +724,9 @@ public abstract class MailAppProvider extends ContentProvider
                 throw new IllegalArgumentException("AccountCacheEntry de-serializing failed. "
                         + "Settings could not be created from the string: " + serializedString);
             }
-            mAccountsQueryUri = !TextUtils.isEmpty(cacheEntryMembers[1]) ?
-                    Uri.parse(cacheEntryMembers[1]) : null;
-            mPosition = position;
+            mPosition = Integer.parseInt(cacheEntryMembers[1]);
+            mAccountsQueryUri = !TextUtils.isEmpty(cacheEntryMembers[2]) ?
+                    Uri.parse(cacheEntryMembers[2]) : null;
         }
 
         @Override
