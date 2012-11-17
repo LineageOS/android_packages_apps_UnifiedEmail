@@ -33,6 +33,7 @@ import android.text.util.Rfc822Tokenizer;
 import com.android.common.contacts.DataUsageStatUpdater;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class UIProvider {
     public static final String EMAIL_SEPARATOR = ",";
@@ -126,52 +127,58 @@ public class UIProvider {
      */
     public static final String LIST_PARAMS_QUERY_PARAMETER = "listParams";
 
-    public static final String[] ACCOUNTS_PROJECTION = {
-            BaseColumns._ID,
-            AccountColumns.NAME,
-            AccountColumns.PROVIDER_VERSION,
-            AccountColumns.URI,
-            AccountColumns.CAPABILITIES,
-            AccountColumns.FOLDER_LIST_URI,
-            AccountColumns.FULL_FOLDER_LIST_URI,
-            AccountColumns.SEARCH_URI,
-            AccountColumns.ACCOUNT_FROM_ADDRESSES,
-            AccountColumns.SAVE_DRAFT_URI,
-            AccountColumns.SEND_MAIL_URI,
-            AccountColumns.EXPUNGE_MESSAGE_URI,
-            AccountColumns.UNDO_URI,
-            AccountColumns.SETTINGS_INTENT_URI,
-            AccountColumns.SYNC_STATUS,
-            AccountColumns.HELP_INTENT_URI,
-            AccountColumns.SEND_FEEDBACK_INTENT_URI,
-            AccountColumns.REAUTHENTICATION_INTENT_URI,
-            AccountColumns.COMPOSE_URI,
-            AccountColumns.MIME_TYPE,
-            AccountColumns.RECENT_FOLDER_LIST_URI,
-            AccountColumns.COLOR,
-            AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
-            AccountColumns.MANUAL_SYNC_URI,
-            AccountColumns.VIEW_INTENT_PROXY_URI,
-            AccountColumns.ACCOUNT_COOKIE_QUERY_URI,
-            AccountColumns.SettingsColumns.SIGNATURE,
-            AccountColumns.SettingsColumns.AUTO_ADVANCE,
-            AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE,
-            AccountColumns.SettingsColumns.SNAP_HEADERS,
-            AccountColumns.SettingsColumns.REPLY_BEHAVIOR,
-            AccountColumns.SettingsColumns.HIDE_CHECKBOXES,
-            AccountColumns.SettingsColumns.CONFIRM_DELETE,
-            AccountColumns.SettingsColumns.CONFIRM_ARCHIVE,
-            AccountColumns.SettingsColumns.CONFIRM_SEND,
-            AccountColumns.SettingsColumns.DEFAULT_INBOX,
-            AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME,
-            AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
-            AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
-            AccountColumns.SettingsColumns.SWIPE,
-            AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
-            AccountColumns.SettingsColumns.SETUP_INTENT_URI,
-            AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
-            AccountColumns.UPDATE_SETTINGS_URI
-    };
+    public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
+            new ImmutableMap.Builder<String, Class<?>>()
+            // order matters! (ImmutableMap.Builder preserves insertion order)
+            .put(BaseColumns._ID, Integer.class)
+            .put(AccountColumns.NAME, String.class)
+            .put(AccountColumns.PROVIDER_VERSION, Integer.class)
+            .put(AccountColumns.URI, String.class)
+            .put(AccountColumns.CAPABILITIES, Integer.class)
+            .put(AccountColumns.FOLDER_LIST_URI, String.class)
+            .put(AccountColumns.FULL_FOLDER_LIST_URI, String.class)
+            .put(AccountColumns.SEARCH_URI, String.class)
+            .put(AccountColumns.ACCOUNT_FROM_ADDRESSES, String.class)
+            .put(AccountColumns.SAVE_DRAFT_URI, String.class)
+            .put(AccountColumns.SEND_MAIL_URI, String.class)
+            .put(AccountColumns.EXPUNGE_MESSAGE_URI, String.class)
+            .put(AccountColumns.UNDO_URI, String.class)
+            .put(AccountColumns.SETTINGS_INTENT_URI, String.class)
+            .put(AccountColumns.SYNC_STATUS, Integer.class)
+            .put(AccountColumns.HELP_INTENT_URI, String.class)
+            .put(AccountColumns.SEND_FEEDBACK_INTENT_URI, String.class)
+            .put(AccountColumns.REAUTHENTICATION_INTENT_URI, String.class)
+            .put(AccountColumns.COMPOSE_URI, String.class)
+            .put(AccountColumns.MIME_TYPE, String.class)
+            .put(AccountColumns.RECENT_FOLDER_LIST_URI, String.class)
+            .put(AccountColumns.COLOR, Integer.class)
+            .put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI, String.class)
+            .put(AccountColumns.MANUAL_SYNC_URI, String.class)
+            .put(AccountColumns.VIEW_INTENT_PROXY_URI, String.class)
+            .put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, String.class)
+            .put(AccountColumns.SettingsColumns.SIGNATURE, String.class)
+            .put(AccountColumns.SettingsColumns.AUTO_ADVANCE, Integer.class)
+            .put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, Integer.class)
+            .put(AccountColumns.SettingsColumns.SNAP_HEADERS, Integer.class)
+            .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, Integer.class)
+            .put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES, Integer.class)
+            .put(AccountColumns.SettingsColumns.CONFIRM_DELETE, Integer.class)
+            .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
+            .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)
+            .put(AccountColumns.SettingsColumns.DEFAULT_INBOX, String.class)
+            .put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, String.class)
+            .put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT, Integer.class)
+            .put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE, Integer.class)
+            .put(AccountColumns.SettingsColumns.SWIPE, Integer.class)
+            .put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED, Integer.class)
+            .put(AccountColumns.SettingsColumns.SETUP_INTENT_URI, String.class)
+            .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE, Integer.class)
+            .put(AccountColumns.UPDATE_SETTINGS_URI, String.class)
+            .build();
+
+    // pull out the (ordered!) keyset from above to form the projection
+    public static final String[] ACCOUNTS_PROJECTION = ACCOUNTS_COLUMNS.keySet()
+            .toArray(new String[ACCOUNTS_COLUMNS.size()]);
 
     public static final int ACCOUNT_ID_COLUMN = 0;
     public static final int ACCOUNT_NAME_COLUMN = 1;
@@ -470,7 +477,7 @@ public class UIProvider {
          */
         public static final String DEFAULT_RECENT_FOLDER_LIST_URI = "defaultRecentFolderListUri";
         /**
-         * Color used for this account (for Email/Combined view)
+         * Color (integer) used for this account (for Email/Combined view)
          */
         public static final String COLOR = "color";
         /**
@@ -575,7 +582,7 @@ public class UIProvider {
              */
             public static final String SWIPE = "swipe";
             /**
-             * Boolean column containing whether priority inbox arrows are enabled.
+             * Integer column containing whether priority inbox arrows are enabled.
              */
             public static final String PRIORITY_ARROWS_ENABLED = "priority_inbox_arrows_enabled";
             /**
