@@ -1443,28 +1443,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // message, excluding the current user's email address and any addresses
         // already on the To list.
         if (action == ComposeActivity.REPLY) {
-            toAddresses = initToRecipients(account, accountEmail, refMessage.getFrom(),
+            toAddresses = initToRecipients(accountEmail, refMessage.getFrom(),
                     replytoAddress, sentToAddresses);
             addToAddresses(toAddresses);
         } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
-            toAddresses = initToRecipients(account, accountEmail, refMessage.getFrom(),
+            toAddresses = initToRecipients(accountEmail, refMessage.getFrom(),
                     replytoAddress, sentToAddresses);
             addToAddresses(toAddresses);
             addRecipients(accountEmail, ccAddresses, sentToAddresses);
             addRecipients(accountEmail, ccAddresses, refMessage.getCcAddresses());
             addCcAddresses(ccAddresses, toAddresses);
         }
-    }
-
-    private String getAddress(String toParse) {
-        if (!TextUtils.isEmpty(toParse)) {
-            Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(toParse);
-            if (tokens.length > 0) {
-                return tokens[0].getAddress();
-            }
-        }
-        return "";
     }
 
     private void addToAddresses(Collection<String> addresses) {
@@ -1546,7 +1536,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @VisibleForTesting
-    protected Collection<String> initToRecipients(String account, String accountEmail,
+    protected Collection<String> initToRecipients(String accountEmail,
             String fullSenderAddress, String replyToAddress,
             String[] inToAddresses) {
         // The To recipient is the reply-to address specified in the original
@@ -1556,10 +1546,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // OR missing, in which case use the sender of the original message
         Set<String> toAddresses = Sets.newHashSet();
         if (!TextUtils.isEmpty(replyToAddress)
-                && !recipientMatchesThisAccount(account, replyToAddress)) {
+                && !recipientMatchesThisAccount(replyToAddress)) {
             toAddresses.add(replyToAddress);
         } else {
-            if (!recipientMatchesThisAccount(account, fullSenderAddress)) {
+            if (!recipientMatchesThisAccount(fullSenderAddress)) {
                 toAddresses.add(fullSenderAddress);
             } else {
                 // This happens if the user replies to a message they originally
@@ -1567,7 +1557,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // target the original recipients. This works as expected even
                 // if the user sent the original message to themselves.
                 for (String address : inToAddresses) {
-                    if (!recipientMatchesThisAccount(account, address)) {
+                    if (!recipientMatchesThisAccount(address)) {
                         toAddresses.add(address);
                     }
                 }
@@ -1581,7 +1571,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Do not add this account, or any of its custom from addresses, to
             // the list of recipients.
             final String recipientAddress = Address.getEmailAddress(email).getAddress();
-            if (!recipientMatchesThisAccount(accountAddress, recipientAddress)) {
+            if (!recipientMatchesThisAccount(recipientAddress)) {
                 recipients.add(email.replace("\"\"", ""));
             }
         }
@@ -1595,9 +1585,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @param recipientAddress address we are comparing with the currently selected account
      * @return
      */
-    protected boolean recipientMatchesThisAccount(String accountAddress, String recipientAddress) {
-        return accountAddress.equalsIgnoreCase(recipientAddress)
-                || ReplyFromAccount.isCustomFrom(recipientAddress,
+    protected boolean recipientMatchesThisAccount(String recipientAddress) {
+        return ReplyFromAccount.matchesAccountOrCustomFrom(mAccount, recipientAddress,
                         mAccount.getReplyFroms());
     }
 

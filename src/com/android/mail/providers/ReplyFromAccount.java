@@ -103,14 +103,17 @@ public class ReplyFromAccount implements Serializable {
     }
 
     /**
-     * Determine if this address is a custom from for the active account.
+     * Determine if this address is the account itself or a custom from for the account.
      */
-    public static boolean isCustomFrom(String possibleCustomFrom,
+    public static boolean matchesAccountOrCustomFrom(Account account, String possibleCustomFrom,
             List<ReplyFromAccount> replyFromAccounts) {
-        String customFrom = Rfc822Tokenizer.tokenize(possibleCustomFrom)[0].getAddress();
-        for (ReplyFromAccount account : replyFromAccounts) {
-            if (TextUtils.equals(account.address, customFrom)
-                    && account.isCustomFrom) {
+        String parsedFromAddress = Rfc822Tokenizer.tokenize(possibleCustomFrom)[0].getAddress();
+        if (TextUtils.equals(account.name, parsedFromAddress)) {
+            return true;
+        }
+        for (ReplyFromAccount replyFromAccount : replyFromAccounts) {
+            if (TextUtils.equals(replyFromAccount.address, parsedFromAddress)
+                    && replyFromAccount.isCustomFrom) {
                 return true;
             }
         }
