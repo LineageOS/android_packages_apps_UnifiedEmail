@@ -59,7 +59,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         conv3.addMessage(info4);
         strings = SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
                 new HtmlTreeBuilder());
-        assertEquals(strings.length, 1);
+        assertEquals(1, strings.length);
         assertEquals(strings[0].toString(), "me");
     }
 
@@ -74,7 +74,15 @@ public class SendersFormattingTests extends AndroidTestCase {
         conv.addMessage(info2);
         SpannableString[] strings = SendersView.format(getContext(), conv, "", 100,
                 new HtmlParser(), new HtmlTreeBuilder());
-        assertEquals(strings.length, 1);
-        assertEquals(strings[0].toString(), sender);
+        // We actually don't remove the item, we just set it to null, so count
+        // just the non-null items.
+        int count = 0;
+        for (int i = 0; i < strings.length; i++) {
+            if (strings[i] != null) {
+                count++;
+                assertEquals(strings[i].toString(), sender);
+            }
+        }
+        assertEquals(1, count);
     }
 }
