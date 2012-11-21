@@ -26,6 +26,7 @@ import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 
@@ -263,9 +264,12 @@ public class Attachment implements Parcelable {
         return state == AttachmentState.SAVED && destination == AttachmentDestination.EXTERNAL;
     }
 
+    public boolean isInstallable() {
+        return MimeType.isInstallable(contentType);
+    }
+
     public boolean canSave() {
-        return origin != LOCAL_FILE && state != AttachmentState.DOWNLOADING &&
-                !isSavedToExternal();
+        return origin != LOCAL_FILE && !isSavedToExternal() && !isInstallable();
     }
 
     public boolean canShare() {
