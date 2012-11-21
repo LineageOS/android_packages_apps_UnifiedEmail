@@ -17,6 +17,7 @@
 package com.android.mail.providers;
 
 import android.text.TextUtils;
+
 import com.google.common.base.Objects;
 
 import java.util.regex.Pattern;
@@ -54,14 +55,8 @@ public class MessageInfo {
     }
 
     public static String toString(MessageInfo info) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(info.read ? 1 : 0);
-        builder.append(MSG_DIVIDER);
-        builder.append(info.starred ? 1 : 0);
-        builder.append(MSG_DIVIDER);
-        builder.append(info.sender);
-        builder.append(MSG_DIVIDER);
-        builder.append(info.priority);
+        final StringBuilder builder = new StringBuilder();
+        createAsString(builder, info.read, info.starred, info.sender, info.priority);
         return builder.toString();
     }
 
@@ -69,7 +64,7 @@ public class MessageInfo {
         String[] split = TextUtils.split(inString, MSG_DIVIDER_REGEX);
         int read = Integer.parseInt(split[0]);
         int starred = Integer.parseInt(split[1]);
-        String senders = split[2];
+        String senders = ConversationInfo.unescapeValue(split[2]);
         int priority = Integer.parseInt(split[3]);
         return new MessageInfo(read != 0, starred != 0, senders, priority);
     }
@@ -85,7 +80,7 @@ public class MessageInfo {
         builder.append(MSG_DIVIDER);
         builder.append(starred ? 1 : 0);
         builder.append(MSG_DIVIDER);
-        builder.append(senderName);
+        builder.append(ConversationInfo.escapeValue(senderName));
         builder.append(MSG_DIVIDER);
         builder.append(priority);
     }
