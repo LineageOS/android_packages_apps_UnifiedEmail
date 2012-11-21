@@ -126,6 +126,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private static final String EXTRA_SHOW_CC = "showCc";
     private static final String EXTRA_SHOW_BCC = "showBcc";
+    private static final String EXTRA_RESPONDED_INLINE = "respondedInline";
 
     private static final String UTF8_ENCODING_NAME = "UTF-8";
 
@@ -255,6 +256,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Uri mRefMessageUri;
     private Bundle mSavedInstanceState;
 
+
+    // Array of the outstanding send or save tasks.  Access is synchronized
+    // with the object itself
+    /* package for testing */
+    @VisibleForTesting
+    public ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
+    // FIXME: this variable is never read. related to sRequestMessageIdMap.
+    private int mRequestId;
+    private String mSignature;
+    private Account[] mAccounts;
+    private boolean mRespondedInline;
 
     /**
      * Can be called from a non-UI thread.
@@ -503,6 +515,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         initChangeListeners();
         updateHideOrShowCcBcc();
         updateHideOrShowQuotedText(showQuotedText);
+
+        mRespondedInline = mSavedInstanceState != null ?
+                mSavedInstanceState.getBoolean(EXTRA_RESPONDED_INLINE) : false;
+        if (mRespondedInline) {
+            mQuotedTextView.setVisibility(View.GONE);
+        }
     }
 
     private boolean hadSavedInstanceStateMessage(Bundle savedInstanceState) {
@@ -680,7 +698,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         state.putBoolean(EXTRA_SHOW_CC, mCcBccView.isCcVisible());
         state.putBoolean(EXTRA_SHOW_BCC, mCcBccView.isBccVisible());
-
+        state.putBoolean(EXTRA_RESPONDED_INLINE, mRespondedInline);
         state.putParcelableArrayList(
                 EXTRA_ATTACHMENT_PREVIEWS, mAttachmentsView.getAttachmentPreviews());
     }
@@ -1964,16 +1982,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    // Array of the outstanding send or save tasks.  Access is synchronized
-    // with the object itself
-    /* package for testing */
-    @VisibleForTesting
-    public ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
-    // FIXME: this variable is never read. related to sRequestMessageIdMap.
-    private int mRequestId;
-    private String mSignature;
-    private Account[] mAccounts;
-
     @VisibleForTesting
     public static class SendOrSaveMessage {
         final ReplyFromAccount mAccount;
@@ -2679,6 +2687,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void onRespondInline(String text) {
         appendToBody(text, false);
         mQuotedTextView.setUpperDividerVisible(false);
+        mRespondedInline = true;
         mTo.requestFocus();
     }
 
