@@ -23,12 +23,14 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class ConversationInfo {
-    public static String SPLITTER = "^*^";
-    private static Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
+    public static final String SPLITTER = "^*^";
+    private static final Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
     private static final String MESSAGE_CONV_SPLIT = "^**^";
-    private static Pattern MESSAGE_CONV_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\^");
+    private static final Pattern MESSAGE_CONV_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\^");
     public static final String MESSAGE_SPLIT = "^***^";
-    private static Pattern MESSAGE_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\*\\^");
+    private static final Pattern MESSAGE_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\*\\^");
+    public static final String ESCAPE = "^";
+    public static final String ESCAPE_REPLACE = "\\^\\";
 
     final public ArrayList<MessageInfo> messageInfos;
     public int messageCount;
@@ -64,16 +66,8 @@ public class ConversationInfo {
             return null;
         }
         StringBuilder builder = new StringBuilder();
-        builder.append(info.messageCount);
-        builder.append(SPLITTER);
-        builder.append(info.draftCount);
-        builder.append(SPLITTER);
-        builder.append(info.firstSnippet);
-        builder.append(SPLITTER);
-        builder.append(info.firstUnreadSnippet);
-        builder.append(SPLITTER);
-        builder.append(info.lastSnippet);
-        builder.append(MESSAGE_CONV_SPLIT);
+        createAsString(builder, info.messageCount, info.draftCount, info.firstSnippet,
+                info.firstUnreadSnippet, info.lastSnippet);
         getMessageInfoString(info, builder);
         return builder.toString();
     }
@@ -116,9 +110,9 @@ public class ConversationInfo {
         String[] split = TextUtils.split(conv, SPLITTER_REGEX);
         int messageCount = Integer.parseInt(split[0]);
         int draftCount = Integer.parseInt(split[1]);
-        String first = split[2];
-        String firstUnread = split[3];
-        String lastUnread = split[4];
+        String first = unescapeValue(split[2]);
+        String firstUnread = unescapeValue(split[3]);
+        String lastUnread = unescapeValue(split[4]);
         return new ConversationInfo(messageCount, draftCount, first, firstUnread, lastUnread);
     }
 
@@ -147,11 +141,26 @@ public class ConversationInfo {
         builder.append(SPLITTER);
         builder.append(draftCount);
         builder.append(SPLITTER);
-        builder.append(first);
+        builder.append(escapeValue(first));
         builder.append(SPLITTER);
-        builder.append(firstUnread);
+        builder.append(escapeValue(firstUnread));
         builder.append(SPLITTER);
-        builder.append(last);
+        builder.append(escapeValue(last));
         builder.append(MESSAGE_CONV_SPLIT);
     }
+
+    static String escapeValue(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace(ESCAPE, ESCAPE_REPLACE);
+    }
+
+    static String unescapeValue(String escaped) {
+        if (escaped == null) {
+            return "";
+        }
+        return escaped.replace(ESCAPE_REPLACE, ESCAPE);
+    }
+
 }
