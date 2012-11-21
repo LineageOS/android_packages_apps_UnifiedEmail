@@ -127,6 +127,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_SHOW_CC = "showCc";
     private static final String EXTRA_SHOW_BCC = "showBcc";
     private static final String EXTRA_RESPONDED_INLINE = "respondedInline";
+    private static final String EXTRA_SAVE_ENABLED = "saveEnabled";
 
     private static final String UTF8_ENCODING_NAME = "UTF-8";
 
@@ -642,6 +643,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 }
             }
         }
+        initChangeListeners();
     }
 
     @Override
@@ -699,6 +701,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         state.putBoolean(EXTRA_SHOW_CC, mCcBccView.isCcVisible());
         state.putBoolean(EXTRA_SHOW_BCC, mCcBccView.isBccVisible());
         state.putBoolean(EXTRA_RESPONDED_INLINE, mRespondedInline);
+        state.putBoolean(EXTRA_SAVE_ENABLED, mSave.isEnabled());
         state.putParcelableArrayList(
                 EXTRA_ATTACHMENT_PREVIEWS, mAttachmentsView.getAttachmentPreviews());
     }
@@ -983,6 +986,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // ref message data, set up listeners for any changes that occur to the
     // message.
     private void initChangeListeners() {
+        // Make sure we only add text changed listeners once!
+        clearChangeListeners();
         mSubject.addTextChangedListener(this);
         mBodyView.addTextChangedListener(this);
         if (mToListener == null) {
@@ -1685,7 +1690,31 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.compose_menu, menu);
+
+        /*
+         * Start save in the correct enabled state.
+         * 1) If a user launches compose from within gmail, save is disabled
+         * until they add something, at which point, save is enabled, auto save
+         * on exit; if the user empties everything, save is disabled, exiting does not
+         * auto-save
+         * 2) if a user replies/ reply all/ forwards from within gmail, save is
+         * disabled until they change something, at which point, save is
+         * enabled, auto save on exit; if the user empties everything, save is
+         * disabled, exiting does not auto-save.
+         * 3) If a user launches compose from another application and something
+         * gets populated (attachments, recipients, body, subject, etc), save is
+         * enabled, auto save on exit; if the user empties everything, save is
+         * disabled, exiting does not auto-save
+         */
         mSave = menu.findItem(R.id.save);
+        String action = getIntent() != null ? getIntent().getAction() : null;
+        enableSave(mSavedInstanceState != null ?
+                mSavedInstanceState.getBoolean(EXTRA_SAVE_ENABLED)
+                    : (Intent.ACTION_SEND.equals(action)
+                            || Intent.ACTION_SEND_MULTIPLE.equals(action)
+                            || Intent.ACTION_SENDTO.equals(action)
+                            || shouldSave()));
+
         mSend = menu.findItem(R.id.send);
         MenuItem helpItem = menu.findItem(R.id.help_info_menu_item);
         MenuItem sendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
@@ -1714,9 +1743,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             } else {
                 ccBcc.setVisible(false);
             }
-        }
-        if (mSave != null) {
-            mSave.setEnabled(shouldSave());
         }
         return true;
     }
