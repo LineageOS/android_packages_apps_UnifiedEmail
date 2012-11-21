@@ -106,7 +106,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
     protected void initFromSpinner() {
         // If there are not yet any accounts in the cached synced accounts
         // because this is the first time mail was opened, and it was opened
-        // directly to the compose activity,don't bother populating the reply
+        // directly to the compose activity, don't bother populating the reply
         // from spinner yet.
         if (mAccounts == null || mAccounts.size() == 0) {
             return;

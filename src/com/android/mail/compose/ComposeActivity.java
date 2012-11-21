@@ -1435,8 +1435,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // the reply.
         final String accountEmail = Address.getEmailAddress(account).getAddress();
         String[] sentToAddresses = refMessage.getToAddresses();
-        String replytoAddress = refMessage.getReplyTo();
         final Collection<String> toAddresses;
+        String replytoAddress = refMessage.getReplyTo();
+        // If there is no reply to address, the reply to address is the sender.
+        if (TextUtils.isEmpty(replytoAddress)) {
+            replytoAddress = refMessage.getFrom();
+        }
 
         // If this is a reply, the Cc list is empty. If this is a reply-all, the
         // Cc list is the union of the To and Cc recipients of the original
@@ -1536,30 +1540,32 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @VisibleForTesting
-    protected Collection<String> initToRecipients(String accountEmail,
-            String fullSenderAddress, String replyToAddress,
-            String[] inToAddresses) {
+    protected Collection<String> initToRecipients(String accountEmail, String fullSenderAddress,
+            String replyToAddress, String[] inToAddresses) {
         // The To recipient is the reply-to address specified in the original
         // message, unless it is:
         // the current user OR a custom from of the current user, in which case
         // it's the To recipient list of the original message.
         // OR missing, in which case use the sender of the original message
         Set<String> toAddresses = Sets.newHashSet();
-        if (!TextUtils.isEmpty(replyToAddress)
-                && !recipientMatchesThisAccount(replyToAddress)) {
+        if (!TextUtils.isEmpty(replyToAddress) && !recipientMatchesThisAccount(replyToAddress)) {
             toAddresses.add(replyToAddress);
         } else {
-            if (!recipientMatchesThisAccount(fullSenderAddress)) {
-                toAddresses.add(fullSenderAddress);
-            } else {
-                // This happens if the user replies to a message they originally
-                // wrote. In this case, "reply" really means "re-send," so we
-                // target the original recipients. This works as expected even
-                // if the user sent the original message to themselves.
-                for (String address : inToAddresses) {
-                    if (!recipientMatchesThisAccount(address)) {
-                        toAddresses.add(address);
-                    }
+            // In this case, the user is replying to a message in which their
+            // current account or one of their custom from addresses is the only
+            // recipient and they sent the original message.
+            if (inToAddresses.length == 1 && recipientMatchesThisAccount(fullSenderAddress)
+                    && recipientMatchesThisAccount(inToAddresses[0])) {
+                toAddresses.add(inToAddresses[0]);
+                return toAddresses;
+            }
+            // This happens if the user replies to a message they originally
+            // wrote. In this case, "reply" really means "re-send," so we
+            // target the original recipients. This works as expected even
+            // if the user sent the original message to themselves.
+            for (String address : inToAddresses) {
+                if (!recipientMatchesThisAccount(address)) {
+                    toAddresses.add(address);
                 }
             }
         }
