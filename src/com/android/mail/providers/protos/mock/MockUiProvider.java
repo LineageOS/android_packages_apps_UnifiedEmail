@@ -90,9 +90,6 @@ public final class MockUiProvider extends ContentProvider {
         builder.put(((Uri) accountDetailsMap0.get(AccountColumns.URI)).toString(),
                 ImmutableList.of(accountDetailsMap0));
 
-        Map<String, Object> accountDetailsMap2 = createAccountDetailsMap(2, true,
-                (String)folderDetailsMap0.get(FolderColumns.URI));
-
         // Account 1
         Map<String, Object> accountDetailsMap1 = createAccountDetailsMap(1, true,
                 (String)folderDetailsMap2.get(FolderColumns.URI));
@@ -102,9 +99,19 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(accountDetailsMap1));
 
         // Account 2
+
+        Map<String, Object> accountDetailsMap2 = createAccountDetailsMap(2, true,
+                (String)folderDetailsMap0.get(FolderColumns.URI));
         accountList.add(accountDetailsMap2);
         builder.put(((Uri) accountDetailsMap2.get(AccountColumns.URI)).toString(),
                 ImmutableList.of(accountDetailsMap2));
+
+        // Account 3
+        Map<String, Object> accountDetailsMap3 = createAccountDetailsMap(3, true,
+                (String)folderDetailsMap2.get(FolderColumns.URI));
+        accountList.add(accountDetailsMap3);
+        builder.put(((Uri) accountDetailsMap3.get(AccountColumns.URI)).toString(),
+                ImmutableList.of(accountDetailsMap3));
 
         // Add the account list to the builder
         builder.put(getAccountsUri().toString(), accountList);
@@ -157,6 +164,9 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(folderDetailsMap2, folderDetailsMap3));
 
         builder.put(accountDetailsMap2.get(AccountColumns.FOLDER_LIST_URI).toString(),
+                ImmutableList.of(folderDetailsMap0, folderDetailsMap1));
+
+        builder.put(accountDetailsMap3.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap0, folderDetailsMap1));
 
         Map<String, Object> conv3 = createConversationDetailsMap("zeroConv3".hashCode(),
