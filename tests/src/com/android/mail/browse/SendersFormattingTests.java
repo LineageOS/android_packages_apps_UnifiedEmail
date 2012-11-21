@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.text.SpannableString;
 
 import com.android.mail.providers.ConversationInfo;
@@ -25,6 +26,7 @@ import com.android.mail.providers.MessageInfo;
 import com.google.android.common.html.parser.HtmlParser;
 import com.google.android.common.html.parser.HtmlTreeBuilder;
 
+@SmallTest
 public class SendersFormattingTests extends AndroidTestCase {
 
     private static ConversationInfo createConversationInfo(int count) {
@@ -85,4 +87,40 @@ public class SendersFormattingTests extends AndroidTestCase {
         }
         assertEquals(1, count);
     }
+
+    public void testSenderNameBadInput() {
+        final ConversationInfo conv = createConversationInfo(1);
+        final MessageInfo msg = new MessageInfo(false, false, "****^****", 0);
+        conv.addMessage(msg);
+
+        final String serialized = ConversationInfo.toString(conv);
+
+        ConversationInfo conv2 = ConversationInfo.fromString(serialized);
+        assertEquals(1, conv2.messageInfos.size());
+        assertEquals(msg.sender, conv2.messageInfos.get(0).sender);
+    }
+
+    public void testConversationSnippetsBadInput() {
+        final String firstSnippet = "*^*";
+        final String firstUnreadSnippet = "*^*^*";
+        final String lastSnippet = "*^*^*^*";
+
+        final ConversationInfo conv = new ConversationInfo(42, 49, firstSnippet, firstUnreadSnippet,
+                lastSnippet);
+        final MessageInfo msg = new MessageInfo(false, false, "Foo Bar", 0);
+        conv.addMessage(msg);
+
+        assertEquals(firstSnippet, conv.firstSnippet);
+        assertEquals(firstUnreadSnippet, conv.firstUnreadSnippet);
+        assertEquals(lastSnippet, conv.lastSnippet);
+
+        final String serialized = ConversationInfo.toString(conv);
+
+        ConversationInfo conv2 = ConversationInfo.fromString(serialized);
+
+        assertEquals(conv.firstSnippet, conv2.firstSnippet);
+        assertEquals(conv.firstUnreadSnippet, conv2.firstUnreadSnippet);
+        assertEquals(conv.lastSnippet, conv2.lastSnippet);
+    }
+
 }
