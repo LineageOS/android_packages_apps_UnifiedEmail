@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Context;
@@ -38,7 +39,7 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 
 public class LeaveBehindItem extends FrameLayout implements OnClickListener,
-    SwipeableItemView {
+    SwipeableItemView, AnimatorListener {
 
     private ToastBarOperation mUndoOp;
     private Account mAccount;
@@ -174,12 +175,17 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         }
     }
 
-    public void startFadeInAnimation() {
+    public void startFadeInAnimation(boolean delay) {
         if (!mFadingInText) {
             mFadingInText = true;
             final float start = 0;
             final float end = 1.0f;
             ObjectAnimator fadeIn = ObjectAnimator.ofFloat(mText, "alpha", start, end);
+            mText.setAlpha(0);
+            fadeIn.addListener(this);
+            if (delay) {
+                fadeIn.setStartDelay(sShrinkAnimationDuration);
+            }
             fadeIn.setInterpolator(new DecelerateInterpolator(2.0f));
             fadeIn.setDuration(sFadeInAnimationDuration);
             fadeIn.start();
@@ -222,5 +228,25 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     @Override
     public float getMinAllowScrollDistance() {
         return sScrollSlop;
+    }
+
+    @Override
+    public void onAnimationCancel(Animator arg0) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onAnimationEnd(Animator arg0) {
+        mFadingInText = false;
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator arg0) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onAnimationStart(Animator arg0) {
+        // Do nothing.
     }
 }
