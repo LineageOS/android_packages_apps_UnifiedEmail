@@ -407,7 +407,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (hasLeaveBehinds()) {
             for (LeaveBehindItem item : mLeaveBehindItems.values()) {
                 if (animate) {
-                    item.dismiss();
+                    mFadeLeaveBehindItems.put(item.getConversationId(), item);
                 } else {
                     item.commit();
                 }
