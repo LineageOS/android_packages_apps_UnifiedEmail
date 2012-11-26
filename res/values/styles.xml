@@ -410,7 +410,7 @@
         <item name="android:layout_marginTop">16dip</item>
     </style>
 
-    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.DialogWhenLarge"/>
+    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light"/>
 
     <style name="InvisibleShortcutWidgetTheme" parent="@style/ShortcutWidgetTheme">
         <item name="android:windowNoDisplay">true</item>

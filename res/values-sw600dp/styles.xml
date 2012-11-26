@@ -83,4 +83,6 @@
     <style name="ComposeArea">
         <item name="android:layout_width">match_parent</item>
     </style>
+
+    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.Dialog.MinWidth"/>
 </resources>
