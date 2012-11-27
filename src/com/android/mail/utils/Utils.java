@@ -536,11 +536,17 @@ public class Utils {
      * @return Plain text string representation of the specified Html string
      */
     public static String convertHtmlToPlainText(String htmlText) {
+        if (TextUtils.isEmpty(htmlText)) {
+            return "";
+        }
         return getHtmlTree(htmlText, new HtmlParser(), new HtmlTreeBuilder()).getPlainText();
     }
 
     public static String convertHtmlToPlainText(String htmlText, HtmlParser parser,
             HtmlTreeBuilder builder) {
+        if (TextUtils.isEmpty(htmlText)) {
+            return "";
+        }
         return getHtmlTree(htmlText, parser, builder).getPlainText();
     }
 
@@ -554,7 +560,7 @@ public class Utils {
     /**
      * Returns a {@link HtmlTree} representation of the specified HTML string.
      */
-    public static HtmlTree getHtmlTree(String htmlText, HtmlParser parser,
+    private static HtmlTree getHtmlTree(String htmlText, HtmlParser parser,
             HtmlTreeBuilder builder) {
         final HtmlDocument doc = parser.parse(htmlText);
         doc.accept(builder);
