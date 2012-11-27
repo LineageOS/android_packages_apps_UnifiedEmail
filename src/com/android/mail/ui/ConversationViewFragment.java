@@ -1149,6 +1149,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 LogUtils.i(LOG_TAG, "old cursor: %s", oldCursor.getDebugDump());
                 LogUtils.i(LOG_TAG, "new cursor: %s", newCursor.getDebugDump());
             }
+            // cursors are different, and not due to an incoming message. fall
+            // through and render.
+            LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
+                    + ", but not due to incoming message. rendering. (%s)", this);
         } else {
             LogUtils.i(LOG_TAG, "CONV RENDER: initial render. (%s)", this);
         }
