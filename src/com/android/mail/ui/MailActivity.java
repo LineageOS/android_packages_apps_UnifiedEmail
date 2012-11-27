@@ -46,8 +46,7 @@ import java.net.URLEncoder;
  * (usually a list of folders), and the main content fragment (either a
  * conversation list or a conversation view).
  */
-public class MailActivity extends AbstractMailActivity implements ControllableActivity,
-    AccessibilityManager.AccessibilityStateChangeListener {
+public class MailActivity extends AbstractMailActivity implements ControllableActivity {
     // TODO(viki) This class lacks: What's New dialog
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
 
