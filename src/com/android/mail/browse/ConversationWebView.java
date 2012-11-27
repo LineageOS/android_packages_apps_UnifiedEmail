@@ -105,7 +105,6 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
      */
     private void destroyBitmap() {
         if (mBitmap != null) {
-            mBitmap.recycle();
             mBitmap = null;
             mCanvas = null;
         }
