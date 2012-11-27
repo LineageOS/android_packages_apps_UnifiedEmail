@@ -2655,16 +2655,18 @@ public abstract class AbstractActivityController implements ActivityController {
      * Updates controller state based on search results and shows first conversation if required.
      */
     private final void perhapsShowFirstSearchResult() {
-        // Shown for search results in two-pane mode only.
-        mHaveSearchResults = Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
-                && mConversationListCursor.getCount() > 0;
-        if (!shouldShowFirstConversation()) {
-            return;
+        if (mCurrentConversation == null) {
+            // Shown for search results in two-pane mode only.
+            mHaveSearchResults = Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
+                    && mConversationListCursor.getCount() > 0;
+            if (!shouldShowFirstConversation()) {
+                return;
+            }
+            mConversationListCursor.moveToPosition(0);
+            final Conversation conv = new Conversation(mConversationListCursor);
+            conv.position = 0;
+            onConversationSelected(conv, true /* checkSafeToModifyFragments */);
         }
-        mConversationListCursor.moveToPosition(0);
-        final Conversation conv = new Conversation(mConversationListCursor);
-        conv.position = 0;
-        onConversationSelected(conv, true /* checkSafeToModifyFragments */);
     }
 
     /**
