@@ -458,4 +458,3 @@ normalizeAllMessageWidths();
 //setWideViewport();
 restoreScrollPosition();
 measurePositions();
-
