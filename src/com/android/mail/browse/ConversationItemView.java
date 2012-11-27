@@ -172,6 +172,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mBackgroundOverride = -1;
     private TextView mSubjectTextView;
     private TextView mSendersTextView;
+    private static Rect sDateSrcRect;
+    private static Rect sDateDestRect;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static ForegroundColorSpan sSnippetTextUnreadSpan;
@@ -390,6 +392,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSendersTextViewHeight = res.getDimensionPixelSize
                     (R.dimen.senders_textview_height);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
+            sDateSrcRect = new Rect();
+            sDateSrcRect.top = 0;
+            sDateSrcRect.left = 0;
+            sDateSrcRect.bottom = sDateBackgroundHeight;
+            sDateDestRect = new Rect();
         }
 
         mSubjectTextView = new TextView(mContext);
@@ -1037,7 +1044,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     - sDateBackgroundPaddingLeft;
             int top = mCoordinates.showFolders ? mCoordinates.foldersY : mCoordinates.dateY;
             mHeader.dateBackground = getDateBackground(mHeader.conversation.hasAttachments);
-            canvas.drawBitmap(mHeader.dateBackground, leftOffset, top, sPaint);
+            Rect dateRect = sDateSrcRect;
+            dateRect.right = mHeader.dateBackground.getWidth();
+            Rect destRect = sDateDestRect;
+            destRect.top = top;
+            destRect.left = leftOffset;
+            destRect.bottom = top + sDateBackgroundHeight;
+            destRect.right = getRight();
+            canvas.drawBitmap(mHeader.dateBackground, dateRect, destRect, sPaint);
         } else {
             mHeader.dateBackground = null;
         }
