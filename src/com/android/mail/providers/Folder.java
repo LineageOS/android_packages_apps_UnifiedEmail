@@ -703,6 +703,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         Folder f = Folder.newUnsafeInstance();
         f.id = cursor.getInt(UIProvider.FOLDER_ID_COLUMN);
         f.uri = Utils.getValidUri(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
+        f.totalCount = cursor.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
         f.unreadCount = cursor.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
         f.conversationListUri = Utils.getValidUri(cursor
                 .getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN));
