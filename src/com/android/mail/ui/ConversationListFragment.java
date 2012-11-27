@@ -569,11 +569,7 @@ public final class ConversationListFragment extends ListFragment implements
         };
         final SwipeableListView listView = (SwipeableListView) getListView();
         if (listView.getSwipeAction() == actionId) {
-            if (views == null) {
-                listView.destroyItems(conversations, listener);
-            } else {
-                listView.destroyItems(new ArrayList<ConversationItemView>(views), listener);
-            }
+            listView.destroyItems(conversations, listener);
             return;
         }
         // Delete the local delete items (all for now) and when done,
