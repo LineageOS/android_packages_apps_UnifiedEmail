@@ -286,6 +286,34 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /**
      * Can be called from a non-UI thread.
      */
+    public static Intent createReplyIntent(final Context launcher, final Account account,
+            final Uri messageUri, final boolean isReplyAll) {
+        return createActionIntent(launcher, account, messageUri, isReplyAll ? REPLY_ALL : REPLY);
+    }
+
+    /**
+     * Can be called from a non-UI thread.
+     */
+    public static Intent createForwardIntent(final Context launcher, final Account account,
+            final Uri messageUri) {
+        return createActionIntent(launcher, account, messageUri, FORWARD);
+    }
+
+    private static Intent createActionIntent(final Context launcher, final Account account,
+            final Uri messageUri, final int action) {
+        final Intent intent = new Intent(launcher, ComposeActivity.class);
+
+        intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
+        intent.putExtra(EXTRA_ACTION, action);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account);
+        intent.putExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI, messageUri);
+
+        return intent;
+    }
+
+    /**
+     * Can be called from a non-UI thread.
+     */
     public static void reply(Context launcher, Account account, Message message) {
         launch(launcher, account, message, REPLY);
     }
@@ -403,7 +431,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             showQuotedText = message.appendRefMessageContent;
         } else if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
             if (mRefMessage != null) {
-                initFromRefMessage(action, mAccount.name);
+                initFromRefMessage(action);
                 showQuotedText = true;
             }
         } else {
@@ -1039,8 +1067,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         actionBar.setHomeButtonEnabled(true);
     }
 
-    private void initFromRefMessage(int action, String recipientAddress) {
-        setFieldsFromRefMessage(action, recipientAddress);
+    private void initFromRefMessage(int action) {
+        setFieldsFromRefMessage(action);
         if (mRefMessage != null) {
             // CC field only gets populated when doing REPLY_ALL.
             // BCC never gets auto-populated, unless the user is editing
@@ -1052,13 +1080,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         updateHideOrShowCcBcc();
     }
 
-    private void setFieldsFromRefMessage(int action, String recipientAddress) {
+    private void setFieldsFromRefMessage(int action) {
         setSubject(mRefMessage, action);
         // Setup recipients
         if (action == FORWARD) {
             mForward = true;
         }
-        initRecipientsFromRefMessage(recipientAddress, mRefMessage, action);
+        initRecipientsFromRefMessage(mRefMessage, action);
         initQuotedTextFromRefMessage(mRefMessage, action);
         if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
             initAttachments(mRefMessage);
@@ -1443,8 +1471,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    void initRecipientsFromRefMessage(String recipientAddress, Message refMessage,
-            int action) {
+    void initRecipientsFromRefMessage(Message refMessage, int action) {
         // Don't populate the address if this is a forward.
         if (action == ComposeActivity.FORWARD) {
             return;
@@ -2643,7 +2670,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (initialComposeMode != mComposeMode) {
             resetMessageForModeChange();
             if (mDraft == null && mRefMessage != null) {
-                setFieldsFromRefMessage(mComposeMode, mAccount.name);
+                setFieldsFromRefMessage(mComposeMode);
             }
             boolean showCc = false;
             boolean showBcc = false;
@@ -3033,16 +3060,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             case REFERENCE_MESSAGE_LOADER:
                 if (data != null && data.moveToFirst()) {
                     mRefMessage = new Message(data);
-                    // We set these based on EXTRA_TO.
-                    mRefMessage.setTo(null);
-                    mRefMessage.setFrom(null);
                     Intent intent = getIntent();
                     int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
-                    initFromRefMessage(action, mAccount.name);
+                    initFromRefMessage(action);
                     finishSetup(action, intent, null, true);
                     if (action != FORWARD) {
                         String to = intent.getStringExtra(EXTRA_TO);
                         if (!TextUtils.isEmpty(to)) {
+                            mRefMessage.setTo(null);
+                            mRefMessage.setFrom(null);
                             clearChangeListeners();
                             mTo.append(to);
                             initChangeListeners();
