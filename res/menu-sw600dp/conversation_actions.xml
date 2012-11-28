@@ -46,7 +46,7 @@
         android:id="@+id/remove_folder"
         android:title="@string/remove_folder"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/archive"
+        android:icon="@drawable/ic_remove_label"
         android:alphabeticShortcut="@string/trigger_y_char"
         android:visible="false" />
     <!-- Depends on FolderCapabilities.DELETE -->
