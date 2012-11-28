@@ -1111,7 +1111,9 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     private boolean showNextConversation(final Collection<Conversation> target,
             final Runnable operation) {
-        final boolean currentConversationInView = (mViewMode.getMode() == ViewMode.CONVERSATION)
+        final int viewMode = mViewMode.getMode();
+        final boolean currentConversationInView = (viewMode == ViewMode.CONVERSATION
+                || viewMode == ViewMode.SEARCH_RESULTS_CONVERSATION)
                 && Conversation.contains(target, mCurrentConversation);
 
         if (currentConversationInView) {
