@@ -383,13 +383,15 @@ public final class OnePaneController extends AbstractActivityController {
     private void transitionToInbox() {
         mViewMode.enterConversationListMode();
         // The inbox could have changed, in which case we should load it again.
-        final boolean inboxChanged = !isDefaultInbox(mConvListContext.folder.uri, mAccount);
+        final boolean inboxChanged = mConvListContext == null || mConvListContext.folder == null
+                || !isDefaultInbox(mConvListContext.folder.uri, mAccount);
         if (mInbox == null || inboxChanged) {
             loadAccountInbox();
         } else {
-            final ConversationListContext listContext =
-                    ConversationListContext.forFolder(mAccount, mInbox);
-            // Set the correct context for what the conversation view will be now.
+            final ConversationListContext listContext = ConversationListContext.forFolder(mAccount,
+                    mInbox);
+            // Set the correct context for what the conversation view will be
+            // now.
             onFolderChanged(mInbox);
             showConversationList(listContext);
         }
