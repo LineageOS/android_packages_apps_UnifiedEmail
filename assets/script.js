@@ -21,6 +21,8 @@ var BLOCKED_SRC_ATTR = "blocked-src";
 // this is an Array, but we treat it like a Set and only insert unique items
 var gImageLoadElements = [];
 
+var gScaleInfo;
+
 /**
  * Returns the page offset of an element.
  *
@@ -57,6 +59,17 @@ function up(el, className) {
         parent = parent.parentNode;
     }
     return parent || null;
+}
+
+function getCachedValue(div, property, attrName) {
+    var value;
+    if (div.hasAttribute(attrName)) {
+        value = div.getAttribute(attrName);
+    } else {
+        value = div[property];
+        div.setAttribute(attrName, value);
+    }
+    return value;
 }
 
 function onToggleClick(e) {
@@ -446,6 +459,113 @@ function appendMessageHtml() {
     processQuotedText(msg, true /* showElided */);
     hideUnsafeImages(msg.getElementsByClassName("mail-message-content"));
     measurePositions();
+}
+
+function onScaleBegin(screenX, screenY) {
+//    console.log("JS got scaleBegin x/y=" + screenX + "/" + screenY);
+    var focusX = screenX + document.body.scrollLeft;
+    var focusY = screenY + document.body.scrollTop;
+    var i, len;
+    var msgDivs = document.getElementsByClassName("mail-message");
+    var msgDiv, msgBodyDiv;
+    var msgTop, msgDivTop, nextMsgTop;
+    var initialH;
+    var initialScale;
+    var scaledOriginX, scaledOriginY;
+    var translateX, translateY;
+    var origin;
+
+    gScaleInfo = undefined;
+
+    for (i = 0, len = msgDivs.length; i < len; i++) {
+        msgDiv = msgDivs[i];
+        msgTop = nextMsgTop ? nextMsgTop : getTotalOffset(msgDiv).top;
+        nextMsgTop = (i < len-1) ? getTotalOffset(msgDivs[i+1]).top : document.body.offsetHeight;
+        if (focusY >= msgTop && focusY < nextMsgTop) {
+            msgBodyDiv = msgDiv.children[1];
+            initialScale = msgBodyDiv.getAttribute("data-initial-scale") || 1.0;
+
+            msgDivTop = getTotalOffset(msgBodyDiv).top;
+
+            scaledOriginX = focusX;// / initialScale;
+            scaledOriginY = (focusY - msgDivTop);// / initialScale;
+
+            translateX = scaledOriginX * (initialScale - 1.0) / initialScale;
+            translateY = scaledOriginY * (initialScale - 1.0) / initialScale;
+
+            gScaleInfo = {
+                div: msgBodyDiv,
+                divTop: msgDivTop,
+                initialScale: initialScale,
+                initialX: focusX,
+                initialY: focusY,
+                translateX: translateX,
+                translateY: translateY,
+                initialH: getCachedValue(msgBodyDiv, "offsetHeight", "data-initial-height"),
+                minScale: Math.min(document.body.offsetWidth / msgBodyDiv.scrollWidth, 1.0),
+                currScale: initialScale
+            };
+
+            origin = scaledOriginX + "px " + scaledOriginY + "px";
+            msgBodyDiv.classList.add("zooming-focused");
+            msgBodyDiv.style.webkitTransformOrigin = origin;
+            msgBodyDiv.style.webkitTransform = "scale3d(" + initialScale + "," + initialScale
+                + ",1) translate3d(" + translateX + "px," + translateY + "px,0)";
+//            console.log("scaleBegin, h=" + gScaleInfo.initialH + " origin='" + origin + "'");
+            break;
+        }
+    }
+}
+
+function onScaleEnd(screenX, screenY) {
+    var msgBodyDiv;
+    var scale;
+    var h;
+    if (!gScaleInfo) {
+        return;
+    }
+
+//    console.log("JS got scaleEnd x/y=" + screenX + "/" + screenY);
+    msgBodyDiv = gScaleInfo.div;
+    scale = gScaleInfo.currScale;
+    msgBodyDiv.style.webkitTransformOrigin = "0 0";
+    // clear any translate
+    msgBodyDiv.style.webkitTransform = "scale3d(" + scale + "," + scale + ",1)";
+    // switching to a 2D transform here re-renders the fonts more clearly, but introduces
+    // texture upload lag to any subsequent scale operation
+    //msgBodyDiv.style.webkitTransform = "scale(" + gScaleInfo.currScale + ")";
+    h = gScaleInfo.initialH * scale;
+//    console.log("onScaleEnd set h=" + h);
+    msgBodyDiv.style.height = h + "px";
+    msgBodyDiv.classList.remove("zooming-focused");
+    msgBodyDiv.setAttribute("data-initial-scale", scale);
+}
+
+function onScale(relativeScale, screenX, screenY) {
+    var focusX, focusY;
+    var scale;
+    var translateX, translateY;
+    var transform;
+
+    if (!gScaleInfo) {
+        return;
+    }
+    focusX = screenX + document.body.scrollLeft;
+    focusY = screenY + document.body.scrollTop;
+
+    scale = Math.max(gScaleInfo.initialScale * relativeScale, gScaleInfo.minScale);
+    if (scale > 4.0) {
+        scale = 4.0;
+    }
+    gScaleInfo.currScale = scale;
+    translateX = focusX - gScaleInfo.initialX;
+    translateY = focusY - gScaleInfo.initialY;
+    transform = "translate3d(" + translateX + "px," + translateY + "px,0) scale3d("
+        + scale + "," + scale + ",1) translate3d(" + gScaleInfo.translateX + "px,"
+        + gScaleInfo.translateY + "px,0)";
+    gScaleInfo.div.style.webkitTransform = transform;
+//    console.log("JS got scale=" + relativeScale + " x/y=" + screenX + "/" + screenY
+//        + " transform='" + transform + "'");
 }
 
 // END Java->JavaScript handlers
