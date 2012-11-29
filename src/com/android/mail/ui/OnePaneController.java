@@ -272,6 +272,27 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
+    public boolean doesActionChangeConversationListVisibility(int action) {
+        switch (action) {
+            case R.id.archive:
+            case R.id.remove_folder:
+            case R.id.delete:
+            case R.id.discard_drafts:
+            case R.id.mark_important:
+            case R.id.mark_not_important:
+            case R.id.mute:
+            case R.id.report_spam:
+            case R.id.mark_not_spam:
+            case R.id.report_phishing:
+            case R.id.refresh:
+            case R.id.change_folder:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    @Override
     public void showFolderList() {
         if (mAccount == null) {
             LogUtils.e(LOG_TAG, "Null account in showFolderList");
