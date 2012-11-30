@@ -86,6 +86,21 @@ public final class TwoPaneController extends AbstractActivityController {
         fragmentTransaction.commitAllowingStateLoss();
     }
 
+    @Override
+    public boolean doesActionChangeConversationListVisibility(int action) {
+        switch (action) {
+            case R.id.settings:
+            case R.id.compose:
+            case R.id.help_info_menu_item:
+            case R.id.manage_folders_item:
+            case R.id.folder_options:
+            case R.id.feedback_menu_item:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     /**
      * Render the folder list in the correct pane.
      */
