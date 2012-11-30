@@ -2605,7 +2605,15 @@ public abstract class AbstractActivityController implements ActivityController {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
             ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
             ContentValues values = new ContentValues();
+            ArrayList<Uri> folderUris;
+            ArrayList<Boolean> adds;
             for (Conversation target : conversations) {
+                folderUris = new ArrayList<Uri>();
+                adds = new ArrayList<Boolean>();
+                folderUris.add(folder.uri);
+                adds.add(Boolean.TRUE);
+                ops.add(mConversationListCursor.getFolderUpdateOperationForConversation(target,
+                        folderUris, adds));
                 HashMap<Uri, Folder> targetFolders = Folder.hashMapForFolders(target
                         .getRawFolders());
                 targetFolders.put(folder.uri, folder);
@@ -2655,7 +2663,19 @@ public abstract class AbstractActivityController implements ActivityController {
             onUndoAvailable(undoOp);
             ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
             ContentValues values = new ContentValues();
+            ArrayList<Uri> folderUris;
+            ArrayList<Boolean> adds;
             for (Conversation target : mConversations) {
+                folderUris = new ArrayList<Uri>();
+                adds = new ArrayList<Boolean>();
+                target.localDeleteOnUpdate = true;
+                folderUris.add(mInitialFolder.uri);
+                adds.add(Boolean.FALSE);
+                ops.add(mConversationListCursor.getOperationForConversation(target,
+                        ConversationOperation.UPDATE, values));
+                values.put(UIProvider.ConversationColumns.STARRED, true);
+                ops.add(mConversationListCursor.getOperationForConversation(target,
+                        ConversationOperation.UPDATE, values));
                 HashMap<Uri, Folder> targetFolders = Folder.hashMapForFolders(target
                         .getRawFolders());
                 target.localDeleteOnUpdate = true;
@@ -2853,31 +2873,43 @@ public abstract class AbstractActivityController implements ActivityController {
                 return;
             }
             if (mIsDestructive && mShowUndo) {
-                ToastBarOperation undoOp = new ToastBarOperation(mTarget.size(),
-                        mAction, ToastBarOperation.UNDO, mIsSelectedSet);
+                ToastBarOperation undoOp = new ToastBarOperation(mTarget.size(), mAction,
+                        ToastBarOperation.UNDO, mIsSelectedSet);
                 onUndoAvailable(undoOp);
             }
             // For each conversation, for each operation, add/ remove the
             // appropriate folders.
-            ArrayList<String> updatedTargetFolders = new ArrayList<String>(mTarget.size());
+            ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+            ArrayList<Uri> folderUris;
+            ArrayList<Boolean> adds;
+            ContentValues values;
             for (Conversation target : mTarget) {
-                HashMap<Uri, Folder> targetFolders = Folder
-                        .hashMapForFolders(target.getRawFolders());
+                HashMap<Uri, Folder> targetFolders = Folder.hashMapForFolders(target
+                        .getRawFolders());
+                folderUris = new ArrayList<Uri>();
+                values = new ContentValues();
+                adds = new ArrayList<Boolean>();
                 if (mIsDestructive) {
                     target.localDeleteOnUpdate = true;
                 }
                 for (FolderOperation op : mFolderOps) {
+                    folderUris.add(op.mFolder.uri);
+                    adds.add(op.mAdd ? Boolean.TRUE : Boolean.FALSE);
                     if (op.mAdd) {
                         targetFolders.put(op.mFolder.uri, op.mFolder);
                     } else {
                         targetFolders.remove(op.mFolder.uri);
                     }
                 }
-                updatedTargetFolders.add(Folder.getSerializedFolderString(targetFolders.values()));
+                ops.add(mConversationListCursor.getFolderUpdateOperationForConversation(target,
+                        folderUris, adds));
+                values.put(Conversation.UPDATE_FOLDER_COLUMN,
+                        Folder.getSerializedFolderString(targetFolders.values()));
+                ops.add(mConversationListCursor.getOperationForConversation(target,
+                        ConversationOperation.UPDATE, values));
             }
             if (mConversationListCursor != null) {
-                mConversationListCursor.updateStrings(mContext, mTarget,
-                        Conversation.UPDATE_FOLDER_COLUMN, updatedTargetFolders);
+                mConversationListCursor.updateBulkValues(mContext, ops);
             }
             refreshConversationList();
             if (mIsSelectedSet) {
@@ -2923,14 +2955,6 @@ public abstract class AbstractActivityController implements ActivityController {
         folderOps.add(new FolderOperation(toRemove, false));
         return new FolderDestruction(target, folderOps, isDestructive, isBatch,
                 showUndo, R.id.remove_folder);
-    }
-
-    private final DestructiveAction getRemoveFolder(Collection<Conversation> target,
-            Folder toRemove, boolean isDestructive, boolean isBatch, boolean showUndo) {
-        DestructiveAction da = getDeferredRemoveFolder(target, toRemove, isDestructive, isBatch,
-                showUndo);
-        registerDestructiveAction(da);
-        return da;
     }
 
     @Override
