@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.mail.providers.Conversation;
@@ -1661,6 +1662,18 @@ public final class ConversationCursor implements Cursor {
     public ConversationOperation getOperationForConversation(Conversation conv, int type,
             ContentValues values) {
         return new ConversationOperation(type, conv, values);
+    }
+
+    public ConversationOperation getFolderUpdateOperationForConversation(Conversation conv,
+            ArrayList<Uri> folderUris, ArrayList<Boolean> add) {
+        ContentValues values = new ContentValues();
+        ArrayList<String> folders = new ArrayList<String>();
+        for (int i = 0; i < folderUris.size(); i++) {
+            folders.add(folderUris.get(i).buildUpon().appendPath(add.get(i) + "").toString());
+        }
+        values.put(ConversationOperations.FOLDERS_UPDATED,
+                TextUtils.join(ConversationOperations.FOLDERS_UPDATED_SPLIT_PATTERN, folders));
+        return new ConversationOperation(ConversationOperation.UPDATE, conv, values);
     }
 
     /**

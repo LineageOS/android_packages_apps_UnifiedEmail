@@ -1265,6 +1265,15 @@ public class UIProvider {
          */
         public static final String DISCARD_DRAFTS = "discard_drafts";
 
+        /**
+         * Update conversation folder(s) operation. ContentValues passed as part
+         * of this update will be of the format (FOLDERS_UPDATED, csv of updated
+         * folders) where the comma separated values of the updated folders will
+         * be of the format: folderuri/ADD_VALUE. ADD_VALUE will be true if the
+         * folder was added, false if it was removed.
+         */
+        public static final String FOLDERS_UPDATED = "folders_updated";
+        public static final String FOLDERS_UPDATED_SPLIT_PATTERN = ",";
 
         public static final class Parameters {
             /**
