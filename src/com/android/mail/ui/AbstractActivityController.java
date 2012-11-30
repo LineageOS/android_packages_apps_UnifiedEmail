@@ -843,6 +843,8 @@ public abstract class AbstractActivityController implements ActivityController {
         return false;
     }
 
+    public abstract boolean doesActionChangeConversationListVisibility(int action);
+
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
@@ -851,8 +853,8 @@ public abstract class AbstractActivityController implements ActivityController {
         final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
         final Settings settings = (mAccount == null) ? null : mAccount.settings;
         // The user is choosing a new action; commit whatever they had been
-        // doing before.
-        commitDestructiveActions(true);
+        // doing before. Don't animate if we are launching a new screen.
+        commitDestructiveActions(!doesActionChangeConversationListVisibility(id));
         switch (id) {
             case R.id.archive: {
                 final boolean showDialog = (settings != null && settings.confirmArchive);
