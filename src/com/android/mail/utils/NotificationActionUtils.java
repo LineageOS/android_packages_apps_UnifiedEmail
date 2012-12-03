@@ -603,25 +603,31 @@ public class NotificationActionUtils {
             out.writeLong(mWhen);
         }
 
-        public static final Parcelable.Creator<NotificationAction> CREATOR =
-                new Parcelable.Creator<NotificationAction>() {
+        public static final Parcelable.ClassLoaderCreator<NotificationAction> CREATOR =
+                new Parcelable.ClassLoaderCreator<NotificationAction>() {
                     @Override
                     public NotificationAction createFromParcel(final Parcel in) {
-                        return new NotificationAction(in);
+                        return new NotificationAction(in, null);
                     }
 
                     @Override
                     public NotificationAction[] newArray(final int size) {
                         return new NotificationAction[size];
                     }
+
+                    @Override
+                    public NotificationAction createFromParcel(
+                            final Parcel in, final ClassLoader loader) {
+                        return new NotificationAction(in, loader);
+                    }
                 };
 
-        private NotificationAction(final Parcel in) {
+        private NotificationAction(final Parcel in, final ClassLoader loader) {
             mNotificationActionType = NotificationActionType.values()[in.readInt()];
-            mAccount = in.readParcelable(Account.class.getClassLoader());
-            mConversation = in.readParcelable(Conversation.class.getClassLoader());
-            mMessage = in.readParcelable(Message.class.getClassLoader());
-            mFolder = in.readParcelable(Folder.class.getClassLoader());
+            mAccount = in.readParcelable(loader);
+            mConversation = in.readParcelable(loader);
+            mMessage = in.readParcelable(loader);
+            mFolder = in.readParcelable(loader);
             mConversationId = in.readLong();
             mMessageId = in.readString();
             mLocalMessageId = in.readLong();
