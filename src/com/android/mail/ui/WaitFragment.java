@@ -76,17 +76,14 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mInflater = inflater;
-        return getContent(container);
+        ViewGroup wrapper = (ViewGroup) mInflater
+                .inflate(R.layout.wait_container, container, false);
+        wrapper.addView(getContent(wrapper));
+        return wrapper;
     }
 
     private View getContent(ViewGroup root) {
         final View view;
-
-        // Clear any views in the container.
-        ViewGroup parent = (ViewGroup) getView();
-        if (parent != null) {
-            parent.removeAllViews();
-        }
         if (mAccount != null
                 && (mAccount.syncStatus & SyncStatus.MANUAL_SYNC_REQUIRED)
                     == SyncStatus.MANUAL_SYNC_REQUIRED) {
@@ -109,7 +106,8 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
         mAccount = account;
         ViewGroup parent = (ViewGroup) getView();
         if (parent != null) {
-            parent.addView(getContent(null));
+            parent.removeAllViews();
+            parent.addView(getContent(parent));
         }
     }
 
