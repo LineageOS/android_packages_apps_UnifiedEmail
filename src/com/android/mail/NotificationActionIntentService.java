@@ -34,7 +34,7 @@ import com.android.mail.utils.NotificationActionUtils.NotificationAction;
 public class NotificationActionIntentService extends IntentService {
     // Toggle actions
     public static final String ACTION_MARK_READ = "com.android.mail.action.NOTIF_MARK_READ";
-    // TODO: We may remove the ability to mark unread
+    // TODO(skennedy): We may remove the ability to mark unread
     public static final String ACTION_MARK_UNREAD = "com.android.mail.action.NOTIF_MARK_UNREAD";
     public static final String ACTION_STAR = "com.android.mail.action.NOTIF_STAR";
     public static final String ACTION_UNSTAR = "com.android.mail.action.NOTIF_UNSTAR";
@@ -100,7 +100,7 @@ public class NotificationActionIntentService extends IntentService {
 
                 contentResolver.update(uri, values, null, null);
             } else if (ACTION_MARK_UNREAD.equals(action)) {
-                // TODO: We may remove the ability to mark unread
+                // TODO(skennedy): We may remove the ability to mark unread
                 final Uri uri = message.uri;
 
                 final ContentValues values = new ContentValues(1);
