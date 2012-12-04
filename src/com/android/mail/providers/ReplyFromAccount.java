@@ -18,6 +18,7 @@ package com.android.mail.providers;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
 import com.android.mail.utils.LogTag;
@@ -103,18 +104,22 @@ public class ReplyFromAccount implements Serializable {
     }
 
     /**
-     * Determine if this address is the account itself or a custom from for the account.
+     * Determine if this address is the account itself or a custom from for the
+     * account.
      */
     public static boolean matchesAccountOrCustomFrom(Account account, String possibleCustomFrom,
             List<ReplyFromAccount> replyFromAccounts) {
-        String parsedFromAddress = Rfc822Tokenizer.tokenize(possibleCustomFrom)[0].getAddress();
-        if (TextUtils.equals(account.name, parsedFromAddress)) {
-            return true;
-        }
-        for (ReplyFromAccount replyFromAccount : replyFromAccounts) {
-            if (TextUtils.equals(replyFromAccount.address, parsedFromAddress)
-                    && replyFromAccount.isCustomFrom) {
+        Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(possibleCustomFrom);
+        if (tokens != null && tokens.length > 0) {
+            String parsedFromAddress = tokens[0].getAddress();
+            if (TextUtils.equals(account.name, parsedFromAddress)) {
                 return true;
+            }
+            for (ReplyFromAccount replyFromAccount : replyFromAccounts) {
+                if (TextUtils.equals(replyFromAccount.address, parsedFromAddress)
+                        && replyFromAccount.isCustomFrom) {
+                    return true;
+                }
             }
         }
         return false;
