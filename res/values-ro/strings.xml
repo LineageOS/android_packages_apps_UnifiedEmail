@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Subiect"</string>
     <string name="body_hint" msgid="4279864165439577668">"Scrieţi un e-mail"</string>
-    <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Ataşaţi un fişier"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Ataşaţi o fotografie"</string>
@@ -79,7 +78,6 @@
     <string name="folder_list_title" msgid="4276644062440415214">"Dosare"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sincronizare şi notificare"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Setări pentru dosar"</string>
-    <string name="menu_done" msgid="5791134842152855128">"Terminat"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Setările contului"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Setări"</string>
     <string name="menu_search" msgid="5297197523031943248">"Căutaţi"</string>
@@ -110,11 +108,8 @@
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"Fişier <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Previzual."</string>
-    <string name="view_attachment" msgid="8744325060392671944">"Afişaţi"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Salvaţi"</string>
     <string name="info_attachment" msgid="607849900865956536">"Informaţii"</string>
-    <string name="play_attachment" msgid="41143041901432280">"Redaţi"</string>
-    <string name="install_attachment" msgid="2803531650273683382">"Instalaţi"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Anulaţi"</string>
     <string name="download_again" msgid="7418568915429156518">"Descărcaţi din nou"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informaţii"</string>
@@ -180,25 +175,9 @@
     <string name="loading_conversations" msgid="2649440958602369555">"Se încarcă…"</string>
     <string name="no_conversations" msgid="35400008890372241">"Nicio conversaţie."</string>
     <string name="undo" msgid="6070869718469782251">"Anulaţi"</string>
-  <plurals name="conversation_marking_read">
-    <item quantity="one" msgid="394911867474214874">"Se marchează <xliff:g id="COUNT">%1$d</xliff:g> conversaţie drept citită."</item>
-    <item quantity="other" msgid="247178462544083532">"Se marchează <xliff:g id="COUNT">%1$d</xliff:g> (de) conversaţii drept citite."</item>
-  </plurals>
-  <plurals name="conversation_marking_unread">
-    <item quantity="one" msgid="2959859634779672558">"Se marchează <xliff:g id="COUNT">%1$d</xliff:g> conversaţie drept necitită."</item>
-    <item quantity="other" msgid="6577233770583912846">"Se marchează <xliff:g id="COUNT">%1$d</xliff:g> (de) conversaţii drept necitite."</item>
-  </plurals>
-  <plurals name="conversation_starring">
-    <item quantity="one" msgid="8780588287902503608">"Se marchează cu stea <xliff:g id="COUNT">%1$d</xliff:g> conversaţie."</item>
-    <item quantity="other" msgid="44965256231544025">"Se marchează cu stea <xliff:g id="COUNT">%1$d</xliff:g> (de) conversaţii."</item>
-  </plurals>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Se elimină steaua pentru <xliff:g id="COUNT">%1$d</xliff:g> conversaţie."</item>
     <item quantity="other" msgid="2222365088907519938">"Se elimină steaua pentru <xliff:g id="COUNT">%1$d</xliff:g> (de) conversaţii."</item>
-  </plurals>
-  <plurals name="conversation_unknown_operation">
-    <item quantity="one" msgid="235911194119829184">"Se aşteaptă finalizarea unei operaţii pentru <xliff:g id="COUNT">%1$d</xliff:g> conversaţie."</item>
-    <item quantity="other" msgid="850868849811019745">"Se aşteaptă finalizarea unei operaţii pentru <xliff:g id="COUNT">%1$d</xliff:g> (de) conversaţii."</item>
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; suprimată."</item>
@@ -224,10 +203,6 @@
     <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost arhivată."</item>
     <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost arhivate."</item>
   </plurals>
-  <plurals name="conversation_moved_to_inbox">
-    <item quantity="one" msgid="8031416635831380071">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost mutată în Mesaje primite."</item>
-    <item quantity="other" msgid="395816799927580909">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost mutate în Mesaje primite."</item>
-  </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost ştearsă."</item>
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost şterse."</item>
@@ -235,22 +210,6 @@
     <string name="deleted" msgid="2757349161107268029">"Ştearsă"</string>
     <string name="archived" msgid="7533995360704366325">"Arhivată"</string>
     <string name="folder_removed" msgid="1047474677580149436">"Eliminat din <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
-  <plurals name="conversation_marked_important">
-    <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost marcată ca importantă."</item>
-    <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost marcate ca importante."</item>
-  </plurals>
-  <plurals name="conversation_marked_not_important">
-    <item quantity="one" msgid="63750576337670941">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost marcată ca neimportantă."</item>
-    <item quantity="other" msgid="6160886583510022920">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost marcate ca neimportante."</item>
-  </plurals>
-  <plurals name="conversation_marked_read">
-    <item quantity="one" msgid="7853066345561670409">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost marcată drept citită."</item>
-    <item quantity="other" msgid="6554100868671029370">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost marcate drept citite."</item>
-  </plurals>
-  <plurals name="conversation_marked_unread">
-    <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost marcată ca necitită."</item>
-    <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost marcate ca necitite."</item>
-  </plurals>
   <plurals name="conversation_folder_changed">
     <item quantity="one" msgid="4930161390461457462">"Dosar modificat."</item>
     <item quantity="other" msgid="8918589141287976985">"Dosare modificate."</item>
@@ -277,7 +236,6 @@
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Restrângeţi detaliile destinatarului"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Afişaţi informaţiile de contact pentru <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Afişaţi informaţiile de contact"</string>
-    <string name="expand_read_messages" msgid="7458927270492299063">"Extindeţi mesajele citite"</string>
     <string name="show_messages_read" msgid="9132147830566909631">"Mesaje citite anterior"</string>
     <string name="date_heading" msgid="2414358582984879303">"Dată:"</string>
     <string name="from_heading" msgid="8950294114718418954">"De la:"</string>
@@ -367,8 +325,6 @@
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
-    <string name="compose_component_name" msgid="1673799619444668402">"com.android.mail.compose.ComposeActivity"</string>
-    <string name="autosend_component_name" msgid="3204704549005619187"></string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Toate dosarele"</string>

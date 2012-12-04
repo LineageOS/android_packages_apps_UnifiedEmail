@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Blindkopi"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Emne"</string>
     <string name="body_hint" msgid="4279864165439577668">"Skriv e-post"</string>
-    <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Legg ved fil"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Legg ved bilde"</string>
@@ -79,7 +78,6 @@
     <string name="folder_list_title" msgid="4276644062440415214">"Mapper"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Synkronisering og varsler"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Mappeinnstillinger"</string>
-    <string name="menu_done" msgid="5791134842152855128">"Ferdig"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Kontoinnstillinger"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Innstillinger"</string>
     <string name="menu_search" msgid="5297197523031943248">"Søk"</string>
@@ -110,11 +108,8 @@
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>-fil"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Forhåndsvisning"</string>
-    <string name="view_attachment" msgid="8744325060392671944">"Se"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Lagre"</string>
     <string name="info_attachment" msgid="607849900865956536">"Informasjon"</string>
-    <string name="play_attachment" msgid="41143041901432280">"Spill av"</string>
-    <string name="install_attachment" msgid="2803531650273683382">"Installer"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Avbryt"</string>
     <string name="download_again" msgid="7418568915429156518">"Last ned på nytt"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informasjon"</string>
@@ -180,25 +175,9 @@
     <string name="loading_conversations" msgid="2649440958602369555">"Laster inn ..."</string>
     <string name="no_conversations" msgid="35400008890372241">"Ingen samtaler."</string>
     <string name="undo" msgid="6070869718469782251">"Angre"</string>
-  <plurals name="conversation_marking_read">
-    <item quantity="one" msgid="394911867474214874">"Merker <xliff:g id="COUNT">%1$d</xliff:g> samtale som lest."</item>
-    <item quantity="other" msgid="247178462544083532">"Merker <xliff:g id="COUNT">%1$d</xliff:g> samtaler som lest."</item>
-  </plurals>
-  <plurals name="conversation_marking_unread">
-    <item quantity="one" msgid="2959859634779672558">"Merker <xliff:g id="COUNT">%1$d</xliff:g> samtale som ulest."</item>
-    <item quantity="other" msgid="6577233770583912846">"Merker <xliff:g id="COUNT">%1$d</xliff:g> samtaler som ulest."</item>
-  </plurals>
-  <plurals name="conversation_starring">
-    <item quantity="one" msgid="8780588287902503608">"Setter stjerne på <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>
-    <item quantity="other" msgid="44965256231544025">"Setter stjerne på <xliff:g id="COUNT">%1$d</xliff:g> samtaler."</item>
-  </plurals>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Fjerner stjernemerking for <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>
     <item quantity="other" msgid="2222365088907519938">"Fjerner stjernemerking for <xliff:g id="COUNT">%1$d</xliff:g> samtaler."</item>
-  </plurals>
-  <plurals name="conversation_unknown_operation">
-    <item quantity="one" msgid="235911194119829184">"Venter på handling i <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>
-    <item quantity="other" msgid="850868849811019745">"Venter på handling i <xliff:g id="COUNT">%1$d</xliff:g> samtaler."</item>
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er ignorert."</item>
@@ -224,10 +203,6 @@
     <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er arkivert."</item>
     <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er arkivert."</item>
   </plurals>
-  <plurals name="conversation_moved_to_inbox">
-    <item quantity="one" msgid="8031416635831380071">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er flyttet til innboksen."</item>
-    <item quantity="other" msgid="395816799927580909">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er flyttet til innboksen."</item>
-  </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er slettet."</item>
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er slettet."</item>
@@ -235,22 +210,6 @@
     <string name="deleted" msgid="2757349161107268029">"Slettet"</string>
     <string name="archived" msgid="7533995360704366325">"Arkivert"</string>
     <string name="folder_removed" msgid="1047474677580149436">"Fjernet fra <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
-  <plurals name="conversation_marked_important">
-    <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som viktig."</item>
-    <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som viktige."</item>
-  </plurals>
-  <plurals name="conversation_marked_not_important">
-    <item quantity="one" msgid="63750576337670941">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som uviktig."</item>
-    <item quantity="other" msgid="6160886583510022920">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som uviktige."</item>
-  </plurals>
-  <plurals name="conversation_marked_read">
-    <item quantity="one" msgid="7853066345561670409">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som lest."</item>
-    <item quantity="other" msgid="6554100868671029370">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som lest."</item>
-  </plurals>
-  <plurals name="conversation_marked_unread">
-    <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som ulest."</item>
-    <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som ulest."</item>
-  </plurals>
   <plurals name="conversation_folder_changed">
     <item quantity="one" msgid="4930161390461457462">"Endret mappe."</item>
     <item quantity="other" msgid="8918589141287976985">"Endret mapper."</item>
@@ -277,7 +236,6 @@
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Skjul detaljer om mottaker"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Vis kontaktinformasjon for <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Vis kontaktinformasjon"</string>
-    <string name="expand_read_messages" msgid="7458927270492299063">"Utvid leste e-poster"</string>
     <string name="show_messages_read" msgid="9132147830566909631">"Tidligere leste e-poster"</string>
     <string name="date_heading" msgid="2414358582984879303">"Dato:"</string>
     <string name="from_heading" msgid="8950294114718418954">"Fra:"</string>
@@ -367,8 +325,6 @@
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
-    <string name="compose_component_name" msgid="1673799619444668402">"com.android.mail.compose.ComposeActivity"</string>
-    <string name="autosend_component_name" msgid="3204704549005619187"></string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Alle mapper"</string>
