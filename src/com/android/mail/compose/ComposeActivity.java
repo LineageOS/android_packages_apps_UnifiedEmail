@@ -2669,7 +2669,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         clearChangeListeners();
         if (initialComposeMode != mComposeMode) {
             resetMessageForModeChange();
-            if (mDraft == null && mRefMessage != null) {
+            if (mRefMessage != null) {
                 setFieldsFromRefMessage(mComposeMode);
             }
             boolean showCc = false;
@@ -2682,8 +2682,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // If the Bcc field is showing, show the Cc field whether it is populated or not.
                 showCc = showBcc
                         || (!TextUtils.isEmpty(mDraft.getCc()) && mComposeMode == REPLY_ALL);
-            } else if (mRefMessage != null) {
+            }
+            if (mRefMessage != null) {
                 showCc = !TextUtils.isEmpty(mCc.getText());
+                showBcc = !TextUtils.isEmpty(mBcc.getText());
             }
             mCcBccView.show(false, showCc, showBcc);
         }
