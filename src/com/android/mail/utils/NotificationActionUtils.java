@@ -86,7 +86,7 @@ public class NotificationActionUtils {
             }
         }),
         DELETE("delete", R.drawable.ic_menu_delete_holo_dark, R.string.notification_action_delete),
-        // TODO: We may remove the ability to mark unread
+        // TODO(skennedy): We may remove the ability to mark unread
         MARK_READ("mark_read", R.drawable.ic_menu_mark_read_holo_dark,
                 R.drawable.ic_menu_mark_unread_holo_dark, R.string.notification_action_mark_read,
                 R.string.notification_action_mark_unread, new ActionToggler() {
@@ -105,7 +105,7 @@ public class NotificationActionUtils {
                 return message == null || !message.starred;
             }
         }),
-        // TODO: Mark important icon, mark not important icon
+        // TODO(skennedy): Mark important icon, mark not important icon
         MARK_IMPORTANT("mark_important", R.drawable.ic_email_caret_double_important_unread,
                 R.drawable.ic_email_caret_single_important_unread,
                 R.string.notification_action_mark_important,
@@ -116,7 +116,7 @@ public class NotificationActionUtils {
                 return conversation == null || !conversation.isImportant();
             }
         }),
-        // TODO: Mute icon
+        // TODO(skennedy): Mute icon
         MUTE("mute", R.drawable.ic_cancel_holo_light, R.string.notification_action_delete);
 
         private final String mPersistedValue;
@@ -373,90 +373,90 @@ public class NotificationActionUtils {
                 // Build a task stack that forces the conversation view on the stack before the
                 // reply activity.
                 final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-    
+
                 final Intent replyIntent = createReplyIntent(context, account, messageUri, false);
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
                         Uri.parse("gmailfrom://gmail-ls/account/" + "reply/" + notificationId);
                 replyIntent.setData(notificationUri);
-    
+
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
-    
+
                 return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
             } case REPLY_ALL: {
                 // Build a task stack that forces the conversation view on the stack before the
                 // reply activity.
                 final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-    
+
                 final Intent replyIntent = createReplyIntent(context, account, messageUri, true);
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
                         Uri.parse("gmailfrom://gmail-ls/account/" + "reply/" + notificationId);
                 replyIntent.setData(notificationUri);
-    
+
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
-    
+
                 return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
             } case FORWARD: {
                 // Build a task stack that forces the conversation view on the stack before the
                 // reply activity.
                 final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-    
+
                 final Intent replyIntent = createForwardIntent(context, account, messageUri);
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
                         Uri.parse("gmailfrom://gmail-ls/account/" + "reply/" + notificationId);
                 replyIntent.setData(notificationUri);
-    
+
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
-    
+
                 return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
             } case ARCHIVE_REMOVE_LABEL: {
                 final String intentAction =
                         NotificationActionIntentService.ACTION_ARCHIVE_REMOVE_LABEL;
-    
+
                 final Intent intent = new Intent(intentAction);
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                         notificationAction);
-    
+
                 return PendingIntent.getService(
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case DELETE: {
                 final String intentAction = NotificationActionIntentService.ACTION_DELETE;
-    
+
                 final Intent intent = new Intent(intentAction);
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                         notificationAction);
-    
+
                 return PendingIntent.getService(
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case MARK_READ: {
-                // TODO: We may remove the ability to mark unread
+                // TODO(skennedy): We may remove the ability to mark unread
                 final String intentAction =
                         message.read ? NotificationActionIntentService.ACTION_MARK_UNREAD
                                 : NotificationActionIntentService.ACTION_MARK_READ;
-    
+
                 final Intent intent = new Intent(intentAction);
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                         notificationAction);
-    
+
                 return PendingIntent.getService(
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case ADD_STAR: {
                 final String intentAction =
                         message.starred ? NotificationActionIntentService.ACTION_UNSTAR
                                 : NotificationActionIntentService.ACTION_STAR;
-    
+
                 final Intent intent = new Intent(intentAction);
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                         notificationAction);
-    
+
                 return PendingIntent.getService(
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case MARK_IMPORTANT: {
@@ -464,21 +464,21 @@ public class NotificationActionUtils {
                         conversation.isImportant() ?
                                 NotificationActionIntentService.ACTION_MARK_NOT_IMPORTANT
                                 : NotificationActionIntentService.ACTION_MARK_IMPORTANT;
-    
+
                 final Intent intent = new Intent(intentAction);
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                         notificationAction);
-    
+
                 return PendingIntent.getService(
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             }
             case MUTE: {
                 final String intentAction = NotificationActionIntentService.ACTION_MUTE;
-    
+
                 final Intent intent = new Intent(intentAction);
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                         notificationAction);
-    
+
                 return PendingIntent.getService(
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             }
@@ -816,8 +816,8 @@ public class NotificationActionUtils {
     }
 
     private static int getUndoNotificationId(final String account, final Folder folder) {
-        // TODO: When notifications are fully in UnifiedEmail, remove this method and use the one
-        // in Utils
+        // TODO(skennedy): When notifications are fully in UnifiedEmail, remove this method and use
+        // the one in Utils
         // 1 == Gmail.NOTIFICATION_ID
         return 1 ^ account.hashCode() ^ folder.hashCode();
     }
