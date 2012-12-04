@@ -47,8 +47,6 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
 
     private LayoutInflater mInflater;
 
-    private ViewGroup mContainer;
-
     private boolean mDefault;
 
     public static WaitFragment newInstance(Account account) {
@@ -78,36 +76,41 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mInflater = inflater;
-        mContainer = container;
-        return getContent();
+        return getContent(container);
     }
 
-    private View getContent() {
-        final View root;
+    private View getContent(ViewGroup root) {
+        final View view;
 
         // Clear any views in the container.
-        mContainer.removeAllViews();
+        ViewGroup parent = (ViewGroup) getView();
+        if (parent != null) {
+            parent.removeAllViews();
+        }
         if (mAccount != null
                 && (mAccount.syncStatus & SyncStatus.MANUAL_SYNC_REQUIRED)
                     == SyncStatus.MANUAL_SYNC_REQUIRED) {
             // A manual sync is required
-            root = mInflater.inflate(R.layout.wait_for_manual_sync, mContainer, false);
+            view = mInflater.inflate(R.layout.wait_for_manual_sync, root, false);
 
-            root.findViewById(R.id.manual_sync).setOnClickListener(this);
-            root.findViewById(R.id.change_sync_settings).setOnClickListener(this);
+            view.findViewById(R.id.manual_sync).setOnClickListener(this);
+            view.findViewById(R.id.change_sync_settings).setOnClickListener(this);
 
         } else if (mDefault) {
-            root = mInflater.inflate(R.layout.wait_default, mContainer, false);
+            view = mInflater.inflate(R.layout.wait_default, root, false);
         } else {
-            root = mInflater.inflate(R.layout.wait_for_sync, mContainer, false);
+            view = mInflater.inflate(R.layout.wait_for_sync, root, false);
         }
 
-        return root;
+        return view;
     }
 
     public void updateAccount(Account account) {
         mAccount = account;
-        mContainer.addView(getContent());
+        ViewGroup parent = (ViewGroup) getView();
+        if (parent != null) {
+            parent.addView(getContent(null));
+        }
     }
 
     Account getAccount() {
