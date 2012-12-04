@@ -72,13 +72,12 @@ public class NotificationActionUtils {
             "com.android.mail.action.RESEND_NOTIFICATIONS";
 
     public enum NotificationActionType {
-        // TODO: Confirm icons
         REPLY("reply", R.drawable.ic_reply_holo_dark, R.string.notification_action_reply),
         REPLY_ALL("reply_all", R.drawable.ic_reply_all_holo_dark,
                 R.string.notification_action_reply_all),
         FORWARD("forward", R.drawable.ic_forward_holo_dark, R.string.notification_action_forward),
-        ARCHIVE_REMOVE_LABEL("archive", R.drawable.ic_menu_archive_holo_light,
-                R.drawable.ic_remove_label, R.string.notification_action_archive,
+        ARCHIVE_REMOVE_LABEL("archive", R.drawable.ic_menu_archive_holo_dark,
+                R.drawable.ic_menu_remove_label_holo_dark, R.string.notification_action_archive,
                 R.string.notification_action_remove_label, new ActionToggler() {
             @Override
             public boolean shouldDisplayPrimary(final Folder folder,
@@ -86,10 +85,10 @@ public class NotificationActionUtils {
                 return folder.type == FolderType.INBOX;
             }
         }),
-        DELETE("delete", R.drawable.ic_menu_trash_holo_light, R.string.notification_action_delete),
+        DELETE("delete", R.drawable.ic_menu_delete_holo_dark, R.string.notification_action_delete),
         // TODO: We may remove the ability to mark unread
-        MARK_READ("mark_read", R.drawable.ic_menu_mark_read_holo_light,
-                R.drawable.ic_menu_mark_unread_holo_light, R.string.notification_action_mark_read,
+        MARK_READ("mark_read", R.drawable.ic_menu_mark_read_holo_dark,
+                R.drawable.ic_menu_mark_unread_holo_dark, R.string.notification_action_mark_read,
                 R.string.notification_action_mark_unread, new ActionToggler() {
             @Override
             public boolean shouldDisplayPrimary(final Folder folder,
@@ -97,8 +96,8 @@ public class NotificationActionUtils {
                 return message == null || !message.read;
             }
         }),
-        ADD_STAR("add_star", R.drawable.ic_menu_star_holo_light,
-                R.drawable.ic_menu_star_off_holo_light, R.string.notification_action_add_star,
+        ADD_STAR("add_star", R.drawable.ic_menu_add_star_holo_dark,
+                R.drawable.ic_menu_remove_star_holo_dark, R.string.notification_action_add_star,
                 R.string.notification_action_remove_star, new ActionToggler() {
             @Override
             public boolean shouldDisplayPrimary(final Folder folder,
@@ -106,6 +105,7 @@ public class NotificationActionUtils {
                 return message == null || !message.starred;
             }
         }),
+        // TODO: Mark important icon, mark not important icon
         MARK_IMPORTANT("mark_important", R.drawable.ic_email_caret_double_important_unread,
                 R.drawable.ic_email_caret_single_important_unread,
                 R.string.notification_action_mark_important,
@@ -116,6 +116,7 @@ public class NotificationActionUtils {
                 return conversation == null || !conversation.isImportant();
             }
         }),
+        // TODO: Mute icon
         MUTE("mute", R.drawable.ic_cancel_holo_light, R.string.notification_action_delete);
 
         private final String mPersistedValue;
