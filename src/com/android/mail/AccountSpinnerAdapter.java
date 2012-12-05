@@ -39,7 +39,6 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * An adapter to return the list of accounts and folders for the Account Spinner.
@@ -90,27 +89,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public static final int TYPE_FOLDER = 1;
     /** Type indicating the "Show All Folders" view. */
     public static final int TYPE_ALL_FOLDERS = 2;
-    /**
-     * Cache of {@link #TYPE_ACCOUNT} views returned from {@link #getView(int, View, ViewGroup)}.
-     * The entry at position i is the view shown in the spinner at position i, possibly null. If the
-     * entry is null, then a view should be created and stored in this cache.
-     */
-    private final Vector<View> mAccountViews = new Vector<View>();
-    /**
-     * Cache of {@link #TYPE_FOLDER} views returned from {@link #getView(int, View, ViewGroup)}. The
-     * entry at position i is the view shown in the spinner at position num_accounts + 1 + i,
-     * possibly null. If the entry is null, then a view should be created and stored in this cache.
-     */
-    private final Vector<View> mFolderViews = new Vector<View>();
-    /**
-     * Cache of {@link #TYPE_HEADER} view returned from {@link #getView(int, View, ViewGroup)}.
-     */
-    private View mHeaderView = null;
-    /**
-     * Cache of {@link #TYPE_ALL_FOLDERS} view returned from {@link #getView(int, View, ViewGroup)}.
-     */
-    private View mFooterView = null;
-
     private RecentFolderObserver mRecentFolderObserver;
     private RecentFolderObserver mSpinnerRecentFolderObserver = new RecentFolderObserver() {
         @Override
@@ -212,7 +190,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         final Uri currentAccount = getCurrentAccountUri();
         mAllAccounts = accounts;
         mNumAccounts = accounts.length;
-        mAccountViews.setSize(mNumAccounts);
         if (!isCurrentAccountInvalid()) {
             final int pos = Account.findPosition(accounts, currentAccount);
             LogUtils.d(LOG_TAG, "setAccountArray: mCurrentAccountPos = %d", pos);
@@ -314,56 +291,16 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return false;
     }
 
-    /**
-     * Returns a view (perhaps cached) at the given position.
-     * @param position
-     * @param parent
-     * @param type
-     * @return
-     */
-    final View getCachedView(int position, ViewGroup parent, int type) {
-        switch(type) {
-            case TYPE_ACCOUNT:
-                final View cachedAccount = mAccountViews.get(position);
-                if (cachedAccount != null) {
-                    return cachedAccount;
-                }
-                final View newAccount = mInflater.inflate(
-                        R.layout.account_switch_spinner_dropdown_account, parent, false);
-                mAccountViews.set(position, newAccount);
-                return newAccount;
-            case TYPE_HEADER:
-                if (mHeaderView == null) {
-                    mHeaderView = mInflater.inflate(
-                            R.layout.account_switch_spinner_dropdown_header, parent, false);
-                }
-                return mHeaderView;
-            case TYPE_FOLDER:
-                final int offset = getRecentOffset(position);
-                final View cachedFolder = mFolderViews.get(offset);
-                if (cachedFolder != null) {
-                    return cachedFolder;
-                }
-                final View newFolder = mInflater.inflate(
-                        R.layout.account_switch_spinner_dropdown_folder, parent, false);
-                mFolderViews.set(offset, newFolder);
-                return newFolder;
-            case TYPE_ALL_FOLDERS:
-                if (mFooterView == null) {
-                    mFooterView = mInflater.inflate(
-                            R.layout.account_switch_spinner_dropdown_footer, parent, false);
-                }
-                return mFooterView;
-        }
-        return null;
-    }
-
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = convertView;
         final int type = getItemViewType(position);
-        view = getCachedView(position, parent, type);
         switch (type) {
             case TYPE_ACCOUNT:
+                if (view == null) {
+                    view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_account,
+                            parent, false);
+                }
                 final Account account = getAccount(position);
                 if (account == null) {
                     LogUtils.e(LOG_TAG, "AccountSpinnerAdapter(%d): Null account at position.",
@@ -385,15 +322,27 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 setUnreadCount(view, R.id.dropdown_unread, unreadCount);
                 break;
             case TYPE_HEADER:
+                if (view == null) {
+                    view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_header,
+                            parent, false);
+                }
                 setText(view, R.id.account_spinner_header_account, getCurrentAccountName());
                 break;
             case TYPE_FOLDER:
+                if (view == null) {
+                    view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_folder,
+                            parent, false);
+                }
                 final Folder folder = mRecentFolderList.get(getRecentOffset(position));
                 Folder.setFolderBlockColor(folder, view.findViewById(R.id.dropdown_color));
                 setText(view, R.id.dropdown_first, folder.name);
                 setUnreadCount(view, R.id.dropdown_unread, folder.unreadCount);
                 break;
             case TYPE_ALL_FOLDERS:
+                if (view == null) {
+                    view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_footer,
+                            parent, false);
+                }
                 break;
             default:
                 LogUtils.e(LOG_TAG, "AccountSpinnerAdapter.getView(): Unknown type: %d", type);
@@ -478,7 +427,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         final Uri uri = mCurrentFolder == null ? null : mCurrentFolder.uri;
         if (mRecentFoldersVisible) {
             mRecentFolderList = mRecentFolders.getRecentFolderList(uri);
-            mFolderViews.setSize(mRecentFolderList.size());
             notifyDataSetChanged();
         } else {
             mRecentFolderList = null;
