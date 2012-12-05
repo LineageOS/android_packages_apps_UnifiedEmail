@@ -138,29 +138,42 @@ public class Settings implements Parcelable {
     }
 
     public Settings(Cursor cursor) {
-        signature = cursor.getString(UIProvider.ACCOUNT_SETTINGS_SIGNATURE_COLUMN);
-        mAutoAdvance = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN);
-        messageTextSize = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN);
-        snapHeaders = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN);
-        replyBehavior = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN);
-        showCheckboxes = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_SHOW_CHECKBOXES_COLUMN) != 0;
-        confirmDelete = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN) != 0;
-        confirmArchive = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN) != 0;
-        confirmSend = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN) != 0;
-        defaultInbox = Utils.getValidUri(
-                cursor.getString(UIProvider.ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN));
-        defaultInboxName = cursor.getString(UIProvider.ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN);
-        forceReplyFromDefault = cursor.getInt(
-                UIProvider.ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN) != 0;
-        maxAttachmentSize = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN);
-        swipe = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_SWIPE_COLUMN);
-        priorityArrowsEnabled =
-                cursor.getInt(UIProvider.ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN) != 0;
-        setupIntentUri = Utils.getValidUri(
-                cursor.getString(UIProvider.ACCOUNT_SETTINGS_SETUP_INTENT_URI));
-        conversationViewMode = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN);
-        veiledAddressPattern =
-                cursor.getString(UIProvider.ACCOUNT_SETTINGS_VEILED_ADDRESS_PATTERN_COLUMN);
+        signature = cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.SIGNATURE));
+        mAutoAdvance = cursor.getInt(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.AUTO_ADVANCE));
+        messageTextSize = cursor.getInt(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE));
+        snapHeaders = cursor.getInt(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS));
+        replyBehavior = cursor.getInt(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR));
+        showCheckboxes = cursor.getInt(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.SHOW_CHECKBOXES)) != 0;
+        confirmDelete = cursor.getInt(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE)) != 0;
+        confirmArchive = cursor.getInt(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.CONFIRM_ARCHIVE)) != 0;
+        confirmSend = cursor.getInt(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.CONFIRM_SEND)) != 0;
+        defaultInbox = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX)));
+        defaultInboxName = cursor.getString(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME));
+        forceReplyFromDefault = cursor.getInt(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT)) != 0;
+        maxAttachmentSize = cursor.getInt(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE));
+        swipe = cursor.getInt(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.SWIPE));
+        priorityArrowsEnabled = cursor.getInt(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED)) != 0;
+        setupIntentUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.SETUP_INTENT_URI)));
+        conversationViewMode = cursor.getInt(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE));
+        veiledAddressPattern = cursor.getString(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN));
     }
 
     private Settings(JSONObject json) {

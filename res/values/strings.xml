@@ -794,4 +794,16 @@
     <string name="veiled_alternate_text_unknown_person"></string>
     <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
     <string name="veiled_summary_unknown_person"></string>
+
+    <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
+    <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
+
+    <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
+    <string name="new_messages"><xliff:g id="count">%1$d</xliff:g> new messages</string>
+
+    <!-- Format string used when displaying the title of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
+    <string name="single_new_message_notification_title"><xliff:g id="sender">%1$s</xliff:g>: <xliff:g id="subject">%2$s</xliff:g></string>
+
+    <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
+    <string name="silent_ringtone">Silent</string>
 </resources>

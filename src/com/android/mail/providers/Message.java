@@ -150,6 +150,10 @@ public class Message implements Parcelable {
      */
     public boolean read;
     /**
+     * @see UIProvider.MessageColumns#SEEN
+     */
+    public boolean seen;
+    /**
      * @see UIProvider.MessageColumns#STARRED
      */
     public boolean starred;
@@ -348,6 +352,7 @@ public class Message implements Parcelable {
                     .getString(UIProvider.MESSAGE_SEND_URI_COLUMN);
             alwaysShowImages = cursor.getInt(UIProvider.MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN) != 0;
             read = cursor.getInt(UIProvider.MESSAGE_READ_COLUMN) != 0;
+            seen = cursor.getInt(UIProvider.MESSAGE_SEEN_COLUMN) != 0;
             starred = cursor.getInt(UIProvider.MESSAGE_STARRED_COLUMN) != 0;
             quotedTextOffset = cursor.getInt(UIProvider.QUOTED_TEXT_OFFSET_COLUMN);
             attachmentsJson = cursor.getString(UIProvider.MESSAGE_ATTACHMENTS_COLUMN);

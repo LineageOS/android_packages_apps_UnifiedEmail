@@ -847,7 +847,8 @@ public class Utils {
      * Show the feedback screen for the supplied account.
      */
     public static void sendFeedback(Context context, Account account, boolean reportingProblem) {
-        if (account != null && account.sendFeedbackIntentUri != null) {
+        if (account != null && account.sendFeedbackIntentUri != null
+                && account.sendFeedbackIntentUri != Uri.EMPTY) {
             final Bundle optionalExtras = new Bundle(1);
             optionalExtras.putBoolean(
                     UIProvider.SendFeedbackExtras.EXTRA_REPORTING_PROBLEM, reportingProblem);

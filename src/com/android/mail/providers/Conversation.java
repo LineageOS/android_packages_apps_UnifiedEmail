@@ -94,6 +94,10 @@ public class Conversation implements Parcelable {
      */
     public boolean read;
     /**
+     * @see UIProvider.ConversationColumns#SEEN
+     */
+    public boolean seen;
+    /**
      * @see UIProvider.ConversationColumns#STARRED
      */
     public boolean starred;
@@ -187,6 +191,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(sendingState);
         dest.writeInt(priority);
         dest.writeInt(read ? 1 : 0);
+        dest.writeInt(seen ? 1 : 0);
         dest.writeInt(starred ? 1 : 0);
         dest.writeParcelable(rawFolders, 0);
         dest.writeInt(convFlags);
@@ -215,6 +220,7 @@ public class Conversation implements Parcelable {
         sendingState = in.readInt();
         priority = in.readInt();
         read = (in.readInt() != 0);
+        seen = (in.readInt() != 0);
         starred = (in.readInt() != 0);
         rawFolders = in.readParcelable(loader);
         convFlags = in.readInt();
@@ -279,6 +285,7 @@ public class Conversation implements Parcelable {
             sendingState = cursor.getInt(UIProvider.CONVERSATION_SENDING_STATE_COLUMN);
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) != 0;
+            seen = cursor.getInt(UIProvider.CONVERSATION_SEEN_COLUMN) != 0;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) != 0;
             rawFolders = FolderList.fromBlob(
                     cursor.getBlob(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN));
@@ -314,9 +321,9 @@ public class Conversation implements Parcelable {
     public static Conversation create(long id, Uri uri, String subject, long dateMs,
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
-            boolean starred, FolderList rawFolders, int convFlags, int personalLevel, boolean spam,
-            boolean phishing, boolean muted, Uri accountUri, ConversationInfo conversationInfo,
-            Uri conversationBase, boolean isRemote) {
+            boolean seen, boolean starred, FolderList rawFolders, int convFlags, int personalLevel,
+            boolean spam, boolean phishing, boolean muted, Uri accountUri,
+            ConversationInfo conversationInfo, Uri conversationBase, boolean isRemote) {
 
         final Conversation conversation = new Conversation();
 
@@ -333,6 +340,7 @@ public class Conversation implements Parcelable {
         conversation.sendingState = sendingState;
         conversation.priority = priority;
         conversation.read = read;
+        conversation.seen = seen;
         conversation.starred = starred;
         conversation.rawFolders = rawFolders;
         conversation.convFlags = convFlags;

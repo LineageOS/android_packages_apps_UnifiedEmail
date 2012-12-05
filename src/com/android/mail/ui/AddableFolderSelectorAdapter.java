@@ -43,6 +43,8 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
                 if (type == UIProvider.FolderType.INBOX || type == UIProvider.FolderType.DEFAULT) {
                     folder[UIProvider.FOLDER_ID_COLUMN] = folderCursor
                             .getLong(UIProvider.FOLDER_ID_COLUMN);
+                    folder[UIProvider.FOLDER_PERSISTENT_ID_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_PERSISTENT_ID_COLUMN);
                     folder[UIProvider.FOLDER_URI_COLUMN] = folderCursor
                             .getString(UIProvider.FOLDER_URI_COLUMN);
                     folder[UIProvider.FOLDER_NAME_COLUMN] = folderCursor

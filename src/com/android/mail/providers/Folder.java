@@ -64,6 +64,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public int id;
 
     /**
+     * Persistent (across installations) id of this folder.
+     */
+    public String persistentId;
+
+    /**
      * The content provider URI that returns this folder for this account.
      */
     public Uri uri;
@@ -169,12 +174,13 @@ public class Folder implements Parcelable, Comparable<Folder> {
     private static final Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
 
     // TODO: we desperately need a Builder here
-    public Folder(int id, Uri uri, String name, int capabilities, boolean hasChildren,
-            int syncWindow, Uri conversationListUri, Uri childFoldersListUri, int unreadCount,
-            int totalCount, Uri refreshUri, int syncStatus, int lastSyncResult, int type,
-            long iconResId, String bgColor, String fgColor, Uri loadMoreUri,
+    public Folder(int id, String persistentId, Uri uri, String name, int capabilities,
+            boolean hasChildren, int syncWindow, Uri conversationListUri, Uri childFoldersListUri,
+            int unreadCount, int totalCount, Uri refreshUri, int syncStatus, int lastSyncResult,
+            int type, long iconResId, String bgColor, String fgColor, Uri loadMoreUri,
             String hierarchicalDesc, Folder parent) {
         this.id = id;
+        this.persistentId = persistentId;
         this.uri = uri;
         this.name = name;
         this.capabilities = capabilities;
@@ -198,6 +204,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
 
     public Folder(Parcel in, ClassLoader loader) {
         id = in.readInt();
+        persistentId = in.readString();
         uri = in.readParcelable(loader);
         name = in.readString();
         capabilities = in.readInt();
@@ -222,6 +229,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
 
     public Folder(Cursor cursor) {
         id = cursor.getInt(UIProvider.FOLDER_ID_COLUMN);
+        persistentId = cursor.getString(UIProvider.FOLDER_PERSISTENT_ID_COLUMN);
         uri = Uri.parse(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
         name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);
         capabilities = cursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
@@ -252,6 +260,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
+        dest.writeString(persistentId);
         dest.writeParcelable(uri, 0);
         dest.writeString(name);
         dest.writeInt(capabilities);
@@ -441,29 +450,31 @@ public class Folder implements Parcelable, Comparable<Folder> {
             return null;
         }
         final String[] split = TextUtils.split(inString, SPLITTER_REGEX);
-        if (split.length < 20) {
+        if (split.length < 21) {
             return null;
         }
         f.id = id;
-        f.uri = Folder.getValidUri(split[1]);
-        f.name = split[2];
-        f.hasChildren = Integer.parseInt(split[3]) != 0;
-        f.capabilities = Integer.parseInt(split[4]);
-        f.syncWindow = Integer.parseInt(split[5]);
-        f.conversationListUri = getValidUri(split[6]);
-        f.childFoldersListUri = getValidUri(split[7]);
-        f.unreadCount = Integer.parseInt(split[8]);
-        f.totalCount = Integer.parseInt(split[9]);
-        f.refreshUri = getValidUri(split[10]);
-        f.syncStatus = Integer.parseInt(split[11]);
-        f.lastSyncResult = Integer.parseInt(split[12]);
-        f.type = Integer.parseInt(split[13]);
-        f.iconResId = Integer.parseInt(split[14]);
-        f.bgColor = split[15];
-        f.fgColor = split[16];
-        f.loadMoreUri = getValidUri(split[17]);
-        f.hierarchicalDesc = split[18];
-        f.parent = Folder.fromString(split[19]);
+        int index = 1;
+        f.persistentId = split[index++];
+        f.uri = Folder.getValidUri(split[index++]);
+        f.name = split[index++];
+        f.hasChildren = Integer.parseInt(split[index++]) != 0;
+        f.capabilities = Integer.parseInt(split[index++]);
+        f.syncWindow = Integer.parseInt(split[index++]);
+        f.conversationListUri = getValidUri(split[index++]);
+        f.childFoldersListUri = getValidUri(split[index++]);
+        f.unreadCount = Integer.parseInt(split[index++]);
+        f.totalCount = Integer.parseInt(split[index++]);
+        f.refreshUri = getValidUri(split[index++]);
+        f.syncStatus = Integer.parseInt(split[index++]);
+        f.lastSyncResult = Integer.parseInt(split[index++]);
+        f.type = Integer.parseInt(split[index++]);
+        f.iconResId = Integer.parseInt(split[index++]);
+        f.bgColor = split[index++];
+        f.fgColor = split[index++];
+        f.loadMoreUri = getValidUri(split[index++]);
+        f.hierarchicalDesc = split[index++];
+        f.parent = Folder.fromString(split[index++]);
         return f;
     }
 
@@ -471,13 +482,15 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Create a string representation of a folder.
      */
     @Deprecated
-    public static String createAsString(int id, Uri uri, String name, boolean hasChildren,
-            int capabilities, int syncWindow, Uri convListUri, Uri childFoldersListUri,
-            int unreadCount, int totalCount, Uri refreshUri, int syncStatus, int lastSyncResult,
-            int type, long iconResId, String bgColor, String fgColor, Uri loadMore,
-            String hierarchicalDesc, Folder parent) {
+    public static String createAsString(int id, String persistentId, Uri uri, String name,
+            boolean hasChildren, int capabilities, int syncWindow, Uri convListUri,
+            Uri childFoldersListUri, int unreadCount, int totalCount, Uri refreshUri,
+            int syncStatus, int lastSyncResult, int type, long iconResId, String bgColor,
+            String fgColor, Uri loadMore, String hierarchicalDesc, Folder parent) {
         StringBuilder builder = new StringBuilder();
         builder.append(id);
+        builder.append(SPLITTER);
+        builder.append(persistentId != null ? persistentId : "");
         builder.append(SPLITTER);
         builder.append(uri != null ? uri : "");
         builder.append(SPLITTER);
@@ -525,11 +538,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
 
     @Deprecated
     public static String toString(Folder folder) {
-        return createAsString(folder.id, folder.uri, folder.name, folder.hasChildren,
-                folder.capabilities, folder.syncWindow, folder.conversationListUri,
-                folder.childFoldersListUri, folder.unreadCount, folder.totalCount,
-                folder.refreshUri, folder.syncStatus, folder.lastSyncResult, folder.type,
-                folder.iconResId, folder.bgColor, folder.fgColor, folder.loadMoreUri,
+        return createAsString(folder.id, folder.persistentId, folder.uri, folder.name,
+                folder.hasChildren, folder.capabilities, folder.syncWindow,
+                folder.conversationListUri, folder.childFoldersListUri, folder.unreadCount,
+                folder.totalCount, folder.refreshUri, folder.syncStatus, folder.lastSyncResult,
+                folder.type, folder.iconResId, folder.bgColor, folder.fgColor, folder.loadMoreUri,
                 folder.hierarchicalDesc, folder.parent);
     }
 

@@ -30,7 +30,6 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.util.SparseArrayCompat;
-import android.text.TextUtils;
 import android.widget.RemoteViews;
 
 import com.android.mail.MailIntentService;
@@ -48,7 +47,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -173,31 +172,22 @@ public class NotificationActionUtils {
 
     /**
      * Adds the appropriate notification actions to the specified
-     * {@link android.app.Notification.Builder}
+     * {@link android.support.v4.app.NotificationCompat.Builder}
      *
      * @param notificationIntent The {@link Intent} used when the notification is clicked
      * @param when The value passed into {@link android.app.Notification.Builder#setWhen(long)}.
      *        This is used for maintaining notification ordering with the undo bar
-     * @param notificationActionsString A comma-delimited {@link String} of the actions to display
+     * @param notificationActions A {@link Set} set of the actions to display
      */
     public static void addNotificationActions(final Context context,
-            final Intent notificationIntent, final Notification.Builder notification,
+            final Intent notificationIntent, final NotificationCompat.Builder notification,
             final Account account, final Conversation conversation, final Message message,
             final Folder folder, final int notificationId, final long when,
-            final String notificationActionsString) {
-        final String[] notificationActionsValueArray =
-                TextUtils.isEmpty(notificationActionsString) ? new String[0]
-                        : notificationActionsString.split(",");
-        final List<NotificationActionType> notificationActions =
-                new ArrayList<NotificationActionType>(notificationActionsValueArray.length);
-        for (int i = 0; i < notificationActionsValueArray.length; i++) {
-            notificationActions.add(
-                    NotificationActionType.getActionType(notificationActionsValueArray[i]));
-        }
+            final Set<String> notificationActions) {
+        final List<NotificationActionType> sortedActions =
+                getSortedNotificationActions(folder, notificationActions);
 
-        sortNotificationActions(folder, notificationActions);
-
-        for (final NotificationActionType notificationAction : notificationActions) {
+        for (final NotificationActionType notificationAction : sortedActions) {
             notification.addAction(notificationAction.getActionIconResId(
                     folder, conversation, message), context.getString(notificationAction
                     .getDisplayStringResId(folder, conversation, message)),
@@ -210,13 +200,18 @@ public class NotificationActionUtils {
      * Sorts the notification actions into the appropriate order, based on current label
      *
      * @param folder The {@link Folder} being notified
-     * @param notificationActions The actions to sort
+     * @param notificationActionStrings The action strings to sort
      */
-    private static void sortNotificationActions(
-            final Folder folder, final List<NotificationActionType> notificationActions) {
-        final Set<NotificationActionType> tempActions =
-                new HashSet<NotificationActionType>(notificationActions);
-        notificationActions.clear();
+    private static List<NotificationActionType> getSortedNotificationActions(
+            final Folder folder, final Collection<String> notificationActionStrings) {
+        final List<NotificationActionType> unsortedActions =
+                new ArrayList<NotificationActionType>(notificationActionStrings.size());
+        for (final String action : notificationActionStrings) {
+            unsortedActions.add(NotificationActionType.getActionType(action));
+        }
+
+        final List<NotificationActionType> sortedActions =
+                new ArrayList<NotificationActionType>(unsortedActions.size());
 
         if (folder.type == FolderType.INBOX) {
             // Inbox
@@ -228,23 +223,23 @@ public class NotificationActionUtils {
              * Action 2: Reply, Reply all, Forward, Mark important, Add star, Mark read, Mute,
              * Delete, Archive
              */
-            if (tempActions.contains(NotificationActionType.ARCHIVE_REMOVE_LABEL)) {
-                notificationActions.add(NotificationActionType.ARCHIVE_REMOVE_LABEL);
+            if (unsortedActions.contains(NotificationActionType.ARCHIVE_REMOVE_LABEL)) {
+                sortedActions.add(NotificationActionType.ARCHIVE_REMOVE_LABEL);
             }
-            if (tempActions.contains(NotificationActionType.DELETE)) {
-                notificationActions.add(NotificationActionType.DELETE);
+            if (unsortedActions.contains(NotificationActionType.DELETE)) {
+                sortedActions.add(NotificationActionType.DELETE);
             }
-            if (tempActions.contains(NotificationActionType.MARK_READ)) {
-                notificationActions.add(NotificationActionType.MARK_READ);
+            if (unsortedActions.contains(NotificationActionType.MARK_READ)) {
+                sortedActions.add(NotificationActionType.MARK_READ);
             }
-            if (tempActions.contains(NotificationActionType.REPLY)) {
-                notificationActions.add(NotificationActionType.REPLY);
+            if (unsortedActions.contains(NotificationActionType.REPLY)) {
+                sortedActions.add(NotificationActionType.REPLY);
             }
-            if (tempActions.contains(NotificationActionType.REPLY_ALL)) {
-                notificationActions.add(NotificationActionType.REPLY_ALL);
+            if (unsortedActions.contains(NotificationActionType.REPLY_ALL)) {
+                sortedActions.add(NotificationActionType.REPLY_ALL);
             }
-            if (tempActions.contains(NotificationActionType.FORWARD)) {
-                notificationActions.add(NotificationActionType.FORWARD);
+            if (unsortedActions.contains(NotificationActionType.FORWARD)) {
+                sortedActions.add(NotificationActionType.FORWARD);
             }
         } else if (folder.isProviderFolder()) {
             // Gmail system labels
@@ -256,20 +251,20 @@ public class NotificationActionUtils {
              * Action 2: Reply, Reply all, Forward, Mark important, Add star, Mark read, Mute,
              * Delete
              */
-            if (tempActions.contains(NotificationActionType.DELETE)) {
-                notificationActions.add(NotificationActionType.DELETE);
+            if (unsortedActions.contains(NotificationActionType.DELETE)) {
+                sortedActions.add(NotificationActionType.DELETE);
             }
-            if (tempActions.contains(NotificationActionType.MARK_READ)) {
-                notificationActions.add(NotificationActionType.MARK_READ);
+            if (unsortedActions.contains(NotificationActionType.MARK_READ)) {
+                sortedActions.add(NotificationActionType.MARK_READ);
             }
-            if (tempActions.contains(NotificationActionType.REPLY)) {
-                notificationActions.add(NotificationActionType.REPLY);
+            if (unsortedActions.contains(NotificationActionType.REPLY)) {
+                sortedActions.add(NotificationActionType.REPLY);
             }
-            if (tempActions.contains(NotificationActionType.REPLY_ALL)) {
-                notificationActions.add(NotificationActionType.REPLY_ALL);
+            if (unsortedActions.contains(NotificationActionType.REPLY_ALL)) {
+                sortedActions.add(NotificationActionType.REPLY_ALL);
             }
-            if (tempActions.contains(NotificationActionType.FORWARD)) {
-                notificationActions.add(NotificationActionType.FORWARD);
+            if (unsortedActions.contains(NotificationActionType.FORWARD)) {
+                sortedActions.add(NotificationActionType.FORWARD);
             }
         } else {
             // Gmail user created labels
@@ -280,25 +275,27 @@ public class NotificationActionUtils {
             /*
              * Action 2: Reply, Reply all, Forward, Mark important, Add star, Mark read, Delete
              */
-            if (tempActions.contains(NotificationActionType.ARCHIVE_REMOVE_LABEL)) {
-                notificationActions.add(NotificationActionType.ARCHIVE_REMOVE_LABEL);
+            if (unsortedActions.contains(NotificationActionType.ARCHIVE_REMOVE_LABEL)) {
+                sortedActions.add(NotificationActionType.ARCHIVE_REMOVE_LABEL);
             }
-            if (tempActions.contains(NotificationActionType.DELETE)) {
-                notificationActions.add(NotificationActionType.DELETE);
+            if (unsortedActions.contains(NotificationActionType.DELETE)) {
+                sortedActions.add(NotificationActionType.DELETE);
             }
-            if (tempActions.contains(NotificationActionType.MARK_READ)) {
-                notificationActions.add(NotificationActionType.MARK_READ);
+            if (unsortedActions.contains(NotificationActionType.MARK_READ)) {
+                sortedActions.add(NotificationActionType.MARK_READ);
             }
-            if (tempActions.contains(NotificationActionType.REPLY)) {
-                notificationActions.add(NotificationActionType.REPLY);
+            if (unsortedActions.contains(NotificationActionType.REPLY)) {
+                sortedActions.add(NotificationActionType.REPLY);
             }
-            if (tempActions.contains(NotificationActionType.REPLY_ALL)) {
-                notificationActions.add(NotificationActionType.REPLY_ALL);
+            if (unsortedActions.contains(NotificationActionType.REPLY_ALL)) {
+                sortedActions.add(NotificationActionType.REPLY_ALL);
             }
-            if (tempActions.contains(NotificationActionType.FORWARD)) {
-                notificationActions.add(NotificationActionType.FORWARD);
+            if (unsortedActions.contains(NotificationActionType.FORWARD)) {
+                sortedActions.add(NotificationActionType.FORWARD);
             }
         }
+
+        return sortedActions;
     }
 
     /**
@@ -319,15 +316,16 @@ public class NotificationActionUtils {
                 // reply activity.
                 final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
 
-                final Intent replyIntent = createReplyIntent(context, account, messageUri, false);
-                replyIntent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
+                final Intent intent = createReplyIntent(context, account, messageUri, false);
+                intent.setPackage(context.getPackageName());
+                intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
-                        Uri.parse("gmailfrom://gmail-ls/account/" + "reply/" + notificationId);
-                replyIntent.setData(notificationUri);
+                        Uri.parse("mailfrom://mail/account/" + "reply/" + notificationId);
+                intent.setData(notificationUri);
 
-                taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
+                taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(intent);
 
                 return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -336,15 +334,16 @@ public class NotificationActionUtils {
                 // reply activity.
                 final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
 
-                final Intent replyIntent = createReplyIntent(context, account, messageUri, true);
-                replyIntent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
+                final Intent intent = createReplyIntent(context, account, messageUri, true);
+                intent.setPackage(context.getPackageName());
+                intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
-                        Uri.parse("gmailfrom://gmail-ls/account/" + "replyall/" + notificationId);
-                replyIntent.setData(notificationUri);
+                        Uri.parse("mailfrom://mail/account/" + "replyall/" + notificationId);
+                intent.setData(notificationUri);
 
-                taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
+                taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(intent);
 
                 return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -353,15 +352,16 @@ public class NotificationActionUtils {
                 // reply activity.
                 final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
 
-                final Intent replyIntent = createForwardIntent(context, account, messageUri);
-                replyIntent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
+                final Intent intent = createForwardIntent(context, account, messageUri);
+                intent.setPackage(context.getPackageName());
+                intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
-                        Uri.parse("gmailfrom://gmail-ls/account/" + "forward/" + notificationId);
-                replyIntent.setData(notificationUri);
+                        Uri.parse("mailfrom://mail/account/" + "forward/" + notificationId);
+                intent.setData(notificationUri);
 
-                taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
+                taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(intent);
 
                 return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -370,6 +370,7 @@ public class NotificationActionUtils {
                         NotificationActionIntentService.ACTION_ARCHIVE_REMOVE_LABEL;
 
                 final Intent intent = new Intent(intentAction);
+                intent.setPackage(context.getPackageName());
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                         notificationAction);
 
@@ -379,6 +380,7 @@ public class NotificationActionUtils {
                 final String intentAction = NotificationActionIntentService.ACTION_DELETE;
 
                 final Intent intent = new Intent(intentAction);
+                intent.setPackage(context.getPackageName());
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                         notificationAction);
 
@@ -388,6 +390,7 @@ public class NotificationActionUtils {
                 final String intentAction = NotificationActionIntentService.ACTION_MARK_READ;
 
                 final Intent intent = new Intent(intentAction);
+                intent.setPackage(context.getPackageName());
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                         notificationAction);
 
@@ -558,7 +561,10 @@ public class NotificationActionUtils {
         undoView.setTextViewText(
                 R.id.description_text, context.getString(notificationAction.getActionTextResId()));
 
+        final String packageName = context.getPackageName();
+
         final Intent clickIntent = new Intent(NotificationActionIntentService.ACTION_UNDO);
+        clickIntent.setPackage(packageName);
         clickIntent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                 notificationAction);
         final PendingIntent clickPendingIntent = PendingIntent.getService(context, notificationId,
@@ -570,6 +576,7 @@ public class NotificationActionUtils {
 
         // When the notification is cleared, we perform the destructive action
         final Intent deleteIntent = new Intent(NotificationActionIntentService.ACTION_DESTRUCT);
+        deleteIntent.setPackage(packageName);
         deleteIntent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
                 notificationAction);
         final PendingIntent deletePendingIntent = PendingIntent.getService(context,
@@ -670,12 +677,12 @@ public class NotificationActionUtils {
                     contentResolver.update(uri, values, null, null);
                 }
 
-                markSeen(context, notificationAction.mAccount.toString(), folder);
+                markSeen(context, folder, conversation);
                 break;
             }
             case DELETE: {
                 contentResolver.delete(uri, null, null);
-                markSeen(context, notificationAction.mAccount.toString(), folder);
+                markSeen(context, folder, conversation);
                 break;
             }
             default:
@@ -684,10 +691,11 @@ public class NotificationActionUtils {
         }
     }
 
-    private static void markSeen(final Context context, final String account, final Folder folder) {
+    private static void markSeen(
+            final Context context, final Folder folder, final Conversation conversation) {
         final Intent intent = new Intent(MailIntentService.ACTION_MARK_SEEN);
-        intent.putExtra(MailIntentService.ACCOUNT_EXTRA, account);
         intent.putExtra(MailIntentService.FOLDER_EXTRA, folder);
+        intent.putExtra(MailIntentService.CONVERSATION_EXTRA, conversation);
 
         context.startService(intent);
     }
@@ -697,7 +705,7 @@ public class NotificationActionUtils {
      */
     public static void createUndoNotification(final Context context,
             final NotificationAction notificationAction) {
-        final int notificationId = getNotificationId(
+        final int notificationId = NotificationUtils.getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder());
 
         final Notification notification =
@@ -713,7 +721,7 @@ public class NotificationActionUtils {
 
     public static void cancelUndoNotification(final Context context,
             final NotificationAction notificationAction) {
-        final int notificationId = getNotificationId(
+        final int notificationId = NotificationUtils.getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder());
         removeUndoNotification(context, notificationId, false);
         resendNotifications(context);
@@ -725,7 +733,7 @@ public class NotificationActionUtils {
      */
     public static void processUndoNotification(final Context context,
             final NotificationAction notificationAction) {
-        final int notificationId = getNotificationId(
+        final int notificationId = NotificationUtils.getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder());
         removeUndoNotification(context, notificationId, true);
         sNotificationTimestamps.delete(notificationId);
@@ -749,13 +757,6 @@ public class NotificationActionUtils {
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(notificationId);
         }
-    }
-
-    public static int getNotificationId(final String account, final Folder folder) {
-        // TODO(skennedy): When notifications are fully in UnifiedEmail, remove this method and use
-        // the one in Utils
-        // 1 == Gmail.NOTIFICATION_ID
-        return 1 ^ account.hashCode() ^ folder.hashCode();
     }
 
     /**

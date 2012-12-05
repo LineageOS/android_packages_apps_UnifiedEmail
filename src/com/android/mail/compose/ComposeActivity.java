@@ -398,7 +398,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (notificationFolder != null) {
             final Intent clearNotifIntent =
                     new Intent(MailIntentService.ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS);
-            clearNotifIntent.putExtra(MailIntentService.ACCOUNT_EXTRA, account.name);
+            clearNotifIntent.setPackage(getPackageName());
+            clearNotifIntent.putExtra(MailIntentService.ACCOUNT_EXTRA, account);
             clearNotifIntent.putExtra(MailIntentService.FOLDER_EXTRA, notificationFolder);
 
             startService(clearNotifIntent);

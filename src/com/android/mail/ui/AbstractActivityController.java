@@ -1139,6 +1139,11 @@ public abstract class AbstractActivityController implements ActivityController {
             final ContentValues value = new ContentValues();
             value.put(ConversationColumns.READ, read);
 
+            // We never want to mark unseen here, but we do want to mark it seen
+            if (read || markViewed) {
+                value.put(ConversationColumns.SEEN, Boolean.TRUE);
+            }
+
             // The mark read/unread/viewed operations do not show an undo bar
             value.put(ConversationOperations.Parameters.SUPPRESS_UNDO, true);
             if (markViewed) {
@@ -1965,8 +1970,8 @@ public abstract class AbstractActivityController implements ActivityController {
         // the cursor.
         boolean foundCurrentAccount = false;
         do {
-            final Uri accountUri =
-                    Uri.parse(accountCursor.getString(UIProvider.ACCOUNT_URI_COLUMN));
+            final Uri accountUri = Uri.parse(accountCursor.getString(
+                    accountCursor.getColumnIndex(UIProvider.AccountColumns.URI)));
             if (!foundCurrentAccount && mAccount.uri.equals(accountUri)) {
                 foundCurrentAccount = true;
             }
