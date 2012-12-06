@@ -2612,15 +2612,11 @@ public abstract class AbstractActivityController implements ActivityController {
                 adds = new ArrayList<Boolean>();
                 folderUris.add(folder.uri);
                 adds.add(Boolean.TRUE);
-                ops.add(mConversationListCursor.getFolderUpdateOperationForConversation(target,
-                        folderUris, adds));
-                HashMap<Uri, Folder> targetFolders = Folder.hashMapForFolders(target
-                        .getRawFolders());
+                final HashMap<Uri, Folder> targetFolders =
+                        Folder.hashMapForFolders(target.getRawFolders());
                 targetFolders.put(folder.uri, folder);
-                values.put(Conversation.UPDATE_FOLDER_COLUMN,
-                        Folder.getSerializedFolderString(targetFolders.values()));
-                ops.add(mConversationListCursor.getOperationForConversation(target,
-                        ConversationOperation.UPDATE, values));
+                ops.add(mConversationListCursor.getConversationFolderOperation(target,
+                        folderUris, adds, targetFolders.values()));
             }
             if (mConversationListCursor != null) {
                 mConversationListCursor.updateBulkValues(mContext, ops);
@@ -2901,12 +2897,8 @@ public abstract class AbstractActivityController implements ActivityController {
                         targetFolders.remove(op.mFolder.uri);
                     }
                 }
-                ops.add(mConversationListCursor.getFolderUpdateOperationForConversation(target,
-                        folderUris, adds));
-                values.put(Conversation.UPDATE_FOLDER_COLUMN,
-                        Folder.getSerializedFolderString(targetFolders.values()));
-                ops.add(mConversationListCursor.getOperationForConversation(target,
-                        ConversationOperation.UPDATE, values));
+                ops.add(mConversationListCursor.getConversationFolderOperation(target,
+                        folderUris, adds, targetFolders.values()));
             }
             if (mConversationListCursor != null) {
                 mConversationListCursor.updateBulkValues(mContext, ops);
