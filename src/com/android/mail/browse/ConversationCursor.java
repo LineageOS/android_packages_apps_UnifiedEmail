@@ -39,6 +39,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
@@ -1591,10 +1592,10 @@ public final class ConversationCursor implements Cursor {
      */
     public int updateString(Context context, Collection<Conversation> conversations,
             String columnName, String value) {
-        return updateStrings(context, conversations, new String[] {
-            columnName
-        }, new String[] {
-            value
+        return updateStrings(context, conversations, new String[]{
+                columnName
+        }, new String[]{
+                value
         });
     }
 
@@ -1664,16 +1665,29 @@ public final class ConversationCursor implements Cursor {
         return new ConversationOperation(type, conv, values);
     }
 
-    public ConversationOperation getFolderUpdateOperationForConversation(Conversation conv,
-            ArrayList<Uri> folderUris, ArrayList<Boolean> add) {
-        ContentValues values = new ContentValues();
+    private void addFolderUpdates(ArrayList<Uri> folderUris, ArrayList<Boolean> add,
+            ContentValues values) {
         ArrayList<String> folders = new ArrayList<String>();
         for (int i = 0; i < folderUris.size(); i++) {
             folders.add(folderUris.get(i).buildUpon().appendPath(add.get(i) + "").toString());
         }
         values.put(ConversationOperations.FOLDERS_UPDATED,
                 TextUtils.join(ConversationOperations.FOLDERS_UPDATED_SPLIT_PATTERN, folders));
-        return new ConversationOperation(ConversationOperation.UPDATE, conv, values);
+    }
+
+    @Deprecated
+    private void addTargetFolders(Collection<Folder> targetFolders, ContentValues values) {
+        values.put(Conversation.UPDATE_FOLDER_COLUMN,
+                Folder.getSerializedFolderString(targetFolders));
+    }
+
+    public ConversationOperation getConversationFolderOperation(Conversation conv,
+            ArrayList<Uri> folderUris, ArrayList<Boolean> add, Collection<Folder> targetFolders) {
+        final ContentValues values = new ContentValues();
+        addFolderUpdates(folderUris, add, values);
+        // Once all clients support the FOLDERS_UPDATED key, this call should be removed
+        addTargetFolders(targetFolders, values);
+        return getOperationForConversation(conv, ConversationOperation.UPDATE, values);
     }
 
     /**
