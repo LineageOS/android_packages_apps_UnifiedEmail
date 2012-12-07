@@ -1064,8 +1064,8 @@ public class UIProvider {
          */
         public static final String SENDER_INFO = "senderInfo";
         /**
-         * This string column contains the string representation of the
-         * ConversationInfo JSON object for a conversation.
+         * This blob column contains the byte-array representation of the Parceled
+         * ConversationInfo object for a conversation.
          */
         public static final String CONVERSATION_INFO = "conversationInfo";
         /**

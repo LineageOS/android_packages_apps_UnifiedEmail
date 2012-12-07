@@ -93,9 +93,9 @@ public class SendersFormattingTests extends AndroidTestCase {
         final MessageInfo msg = new MessageInfo(false, false, "****^****", 0);
         conv.addMessage(msg);
 
-        final String serialized = ConversationInfo.toString(conv);
+        final byte[] serialized = conv.toBlob();
 
-        ConversationInfo conv2 = ConversationInfo.fromString(serialized);
+        ConversationInfo conv2 = ConversationInfo.fromBlob(serialized);
         assertEquals(1, conv2.messageInfos.size());
         assertEquals(msg.sender, conv2.messageInfos.get(0).sender);
     }
@@ -114,9 +114,9 @@ public class SendersFormattingTests extends AndroidTestCase {
         assertEquals(firstUnreadSnippet, conv.firstUnreadSnippet);
         assertEquals(lastSnippet, conv.lastSnippet);
 
-        final String serialized = ConversationInfo.toString(conv);
+        final byte[] serialized = conv.toBlob();
 
-        ConversationInfo conv2 = ConversationInfo.fromString(serialized);
+        ConversationInfo conv2 = ConversationInfo.fromBlob(serialized);
 
         assertEquals(conv.firstSnippet, conv2.firstSnippet);
         assertEquals(conv.firstUnreadSnippet, conv2.firstUnreadSnippet);

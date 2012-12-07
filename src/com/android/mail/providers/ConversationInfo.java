@@ -16,21 +16,14 @@
 
 package com.android.mail.providers;
 
-import android.text.TextUtils;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.common.base.Objects;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
-public class ConversationInfo {
-    public static final String SPLITTER = "^*^";
-    private static final Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
-    private static final String MESSAGE_CONV_SPLIT = "^**^";
-    private static final Pattern MESSAGE_CONV_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\^");
-    public static final String MESSAGE_SPLIT = "^***^";
-    private static final Pattern MESSAGE_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\*\\^");
-    public static final String ESCAPE = "^";
-    public static final String ESCAPE_REPLACE = "\\^\\";
+public class ConversationInfo implements Parcelable {
 
     final public ArrayList<MessageInfo> messageInfos;
     public int messageCount;
@@ -48,6 +41,43 @@ public class ConversationInfo {
         set(count, draft, first, firstUnread, last);
     }
 
+    private ConversationInfo(Parcel in, ClassLoader loader) {
+        messageCount = in.readInt();
+        draftCount = in.readInt();
+        firstSnippet = in.readString();
+        firstUnreadSnippet = in.readString();
+        lastSnippet = in.readString();
+        messageInfos = in.createTypedArrayList(MessageInfo.CREATOR);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(messageCount);
+        dest.writeInt(draftCount);
+        dest.writeString(firstSnippet);
+        dest.writeString(firstUnreadSnippet);
+        dest.writeString(lastSnippet);
+        dest.writeTypedList(messageInfos);
+    }
+
+    public static ConversationInfo fromBlob(byte[] blob) {
+        final Parcel p = Parcel.obtain();
+        p.unmarshall(blob, 0, blob.length);
+        p.setDataPosition(0);
+        return CREATOR.createFromParcel(p, MessageInfo.class.getClassLoader());
+    }
+
+    public byte[] toBlob() {
+        final Parcel p = Parcel.obtain();
+        writeToParcel(p, 0);
+        return p.marshall();
+    }
+
     public void set(int count, int draft, String first, String firstUnread, String last) {
         messageInfos.clear();
         messageCount = count;
@@ -59,61 +89,6 @@ public class ConversationInfo {
 
     public void addMessage(MessageInfo info) {
         messageInfos.add(info);
-    }
-
-    public static String toString(ConversationInfo info) {
-        if (info == null) {
-            return null;
-        }
-        StringBuilder builder = new StringBuilder();
-        createAsString(builder, info.messageCount, info.draftCount, info.firstSnippet,
-                info.firstUnreadSnippet, info.lastSnippet);
-        getMessageInfoString(info, builder);
-        return builder.toString();
-    }
-
-    private static void getMessageInfoString(ConversationInfo info, StringBuilder builder) {
-        // Create a string of all the messge infos
-        int i = 0;
-        for (MessageInfo msg : info.messageInfos) {
-            builder.append(MessageInfo.toString(msg));
-            if (i < info.messageInfos.size() - 1) {
-                builder.append(MESSAGE_SPLIT);
-            }
-            i++;
-        }
-    }
-
-    public static ConversationInfo fromString(String inString) {
-        if (TextUtils.isEmpty(inString)) {
-            return null;
-        }
-        String[] convMessageSplit = TextUtils.split(inString, MESSAGE_CONV_SPLITTER_REGEX);
-        if (convMessageSplit.length < 2) {
-            return null;
-        }
-        // Parse conversation
-        ConversationInfo info = parseConversation(convMessageSplit[0]);
-        //Messages
-        parseMessages(info, convMessageSplit[1]);
-        return info;
-    }
-
-    private static void parseMessages(ConversationInfo info, String messagesString) {
-        String[] messages = TextUtils.split(messagesString, MESSAGE_SPLITTER_REGEX);
-        for (String m : messages) {
-            info.addMessage(MessageInfo.fromString(m));
-        }
-    }
-
-    private static ConversationInfo parseConversation(String conv) {
-        String[] split = TextUtils.split(conv, SPLITTER_REGEX);
-        int messageCount = Integer.parseInt(split[0]);
-        int draftCount = Integer.parseInt(split[1]);
-        String first = unescapeValue(split[2]);
-        String firstUnread = unescapeValue(split[3]);
-        String lastUnread = unescapeValue(split[4]);
-        return new ConversationInfo(messageCount, draftCount, first, firstUnread, lastUnread);
     }
 
     public boolean markRead(boolean read) {
@@ -135,32 +110,24 @@ public class ConversationInfo {
                 lastSnippet, firstUnreadSnippet);
     }
 
-    public static void createAsString(StringBuilder builder, int numMessages, int draftCount,
-            String first, String firstUnread, String last) {
-        builder.append(numMessages);
-        builder.append(SPLITTER);
-        builder.append(draftCount);
-        builder.append(SPLITTER);
-        builder.append(escapeValue(first));
-        builder.append(SPLITTER);
-        builder.append(escapeValue(firstUnread));
-        builder.append(SPLITTER);
-        builder.append(escapeValue(last));
-        builder.append(MESSAGE_CONV_SPLIT);
-    }
+    public static final ClassLoaderCreator<ConversationInfo> CREATOR =
+            new ClassLoaderCreator<ConversationInfo>() {
 
-    static String escapeValue(String value) {
-        if (value == null) {
-            return "";
+        @Override
+        public ConversationInfo createFromParcel(Parcel source) {
+            return new ConversationInfo(source, null);
         }
-        return value.replace(ESCAPE, ESCAPE_REPLACE);
-    }
 
-    static String unescapeValue(String escaped) {
-        if (escaped == null) {
-            return "";
+        @Override
+        public ConversationInfo createFromParcel(Parcel source, ClassLoader loader) {
+            return new ConversationInfo(source, loader);
         }
-        return escaped.replace(ESCAPE_REPLACE, ESCAPE);
-    }
+
+        @Override
+        public ConversationInfo[] newArray(int size) {
+            return new ConversationInfo[size];
+        }
+
+    };
 
 }

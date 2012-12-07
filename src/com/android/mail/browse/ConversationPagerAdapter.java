@@ -35,6 +35,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AbstractConversationViewFragment;
 import com.android.mail.ui.ActivityController;
 import com.android.mail.ui.ConversationViewFragment;
+import com.android.mail.ui.SecureConversationViewFragment;
 import com.android.mail.utils.FragmentStatePagerAdapter2;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;

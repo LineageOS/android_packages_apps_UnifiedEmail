@@ -116,7 +116,7 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * that {@link ConversationCursor} will temporarily use until the commit is complete.
      */
     void markConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
-            String originalConversationInfo);
+            byte[] originalConversationInfo);
 
     /**
      * Star a single message within a conversation. This method requires a

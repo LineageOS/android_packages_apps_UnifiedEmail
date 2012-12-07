@@ -980,7 +980,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void markConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
-            String originalConversationInfo) {
+            byte[] originalConversationInfo) {
         // The only caller of this method is the conversation view, from where marking unread should
         // *always* take you back to list mode.
         showConversation(null);
@@ -1074,7 +1074,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 boolean changed = info.markRead(read);
                 if (changed) {
                     value.put(ConversationColumns.CONVERSATION_INFO,
-                            ConversationInfo.toString(info));
+                            info.toBlob());
                 }
             }
             opList.add(mConversationListCursor.getOperationForConversation(

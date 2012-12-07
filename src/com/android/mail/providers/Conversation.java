@@ -196,12 +196,12 @@ public class Conversation implements Parcelable {
         dest.writeInt(muted ? 1 : 0);
         dest.writeInt(color);
         dest.writeParcelable(accountUri, 0);
-        dest.writeString(ConversationInfo.toString(conversationInfo));
+        dest.writeParcelable(conversationInfo, 0);
         dest.writeParcelable(conversationBaseUri, 0);
         dest.writeInt(isRemote ? 1 : 0);
     }
 
-    private Conversation(Parcel in) {
+    private Conversation(Parcel in, ClassLoader loader) {
         id = in.readLong();
         uri = in.readParcelable(null);
         subject = in.readString();
@@ -226,7 +226,7 @@ public class Conversation implements Parcelable {
         accountUri = in.readParcelable(null);
         position = NO_POSITION;
         localDeleteOnUpdate = false;
-        conversationInfo = ConversationInfo.fromString(in.readString());
+        conversationInfo = in.readParcelable(loader);
         conversationBaseUri = in.readParcelable(null);
         isRemote = in.readInt() != 0;
     }
@@ -236,11 +236,17 @@ public class Conversation implements Parcelable {
         return "[conversation id=" + id + ", subject =" + subject + "]";
     }
 
-    public static final Creator<Conversation> CREATOR = new Creator<Conversation>() {
+    public static final ClassLoaderCreator<Conversation> CREATOR =
+            new ClassLoaderCreator<Conversation>() {
 
         @Override
         public Conversation createFromParcel(Parcel source) {
-            return new Conversation(source);
+            return new Conversation(source, null);
+        }
+
+        @Override
+        public Conversation createFromParcel(Parcel source, ClassLoader loader) {
+            return new Conversation(source, loader);
         }
 
         @Override
@@ -285,8 +291,8 @@ public class Conversation implements Parcelable {
             accountUri = !TextUtils.isEmpty(account) ? Uri.parse(account) : null;
             position = NO_POSITION;
             localDeleteOnUpdate = false;
-            conversationInfo = ConversationInfo.fromString(cursor
-                    .getString(UIProvider.CONVERSATION_INFO_COLUMN));
+            conversationInfo = ConversationInfo.fromBlob(
+                    cursor.getBlob(UIProvider.CONVERSATION_INFO_COLUMN));
             final String conversationBase =
                     cursor.getString(UIProvider.CONVERSATION_BASE_URI_COLUMN);
             conversationBaseUri = !TextUtils.isEmpty(conversationBase) ?
