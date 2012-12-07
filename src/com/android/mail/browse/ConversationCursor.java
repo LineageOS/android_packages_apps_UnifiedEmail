@@ -561,7 +561,7 @@ public final class ConversationCursor implements Cursor {
                 }
             }
             // ContentValues has no generic "put", so we must test.  For now, the only classes
-            // of values implemented are Boolean/Integer/String, though others are trivially
+            // of values implemented are Boolean/Integer/String/Blob, though others are trivially
             // added
             if (value instanceof Boolean) {
                 map.put(columnName, ((Boolean) value).booleanValue() ? 1 : 0);
@@ -569,6 +569,8 @@ public final class ConversationCursor implements Cursor {
                 map.put(columnName, (Integer) value);
             } else if (value instanceof String) {
                 map.put(columnName, (String) value);
+            } else if (value instanceof byte[]) {
+                map.put(columnName, (byte[])value);
             } else {
                 final String cname = value.getClass().getName();
                 throw new IllegalArgumentException("Value class not compatible with cache: "

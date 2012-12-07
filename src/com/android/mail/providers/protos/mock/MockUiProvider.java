@@ -245,7 +245,7 @@ public final class MockUiProvider extends ContentProvider {
         return conversationMap;
     }
 
-    private static String generateConversationInfo(int messageCount, int draftCount) {
+    private static byte[] generateConversationInfo(int messageCount, int draftCount) {
         ConversationInfo info = new ConversationInfo(messageCount, draftCount, "first",
                 "firstUnread", "last");
         for (int i = 0; i < messageCount; i++) {
@@ -259,7 +259,7 @@ public final class MockUiProvider extends ContentProvider {
                         -1));
             }
         }
-        return ConversationInfo.toString(info);
+        return info.toBlob();
     }
 
     private static Map<String, Object> createMessageDetailsMap(int messageId, String subject,

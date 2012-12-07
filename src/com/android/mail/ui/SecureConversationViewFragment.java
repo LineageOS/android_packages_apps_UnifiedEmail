@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mail.browse;
+package com.android.mail.ui;
 
 import android.content.Loader;
 import android.database.Cursor;
@@ -34,18 +34,18 @@ import android.webkit.WebViewClient;
 import android.widget.ScrollView;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationViewAdapter;
+import com.android.mail.browse.ConversationViewHeader;
+import com.android.mail.browse.MessageCursor;
+import com.android.mail.browse.MessageFooterView;
+import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.AbstractConversationViewFragment;
-import com.android.mail.ui.ControllableActivity;
-import com.android.mail.ui.ConversationViewFragment;
-import com.android.mail.ui.SubjectDisplayChanger;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -153,7 +153,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         HashSet<Uri> uris = new HashSet<Uri>();
         uris.add(mMessage.uri);
         activity.getConversationUpdater().markConversationMessagesUnread(mConversation, uris,
-                ConversationInfo.toString(mConversation.conversationInfo));
+                mViewState.getConversationInfo());
     }
 
     @Override
