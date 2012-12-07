@@ -70,15 +70,6 @@
             android:layout_width="32dp"
             android:layout_height="32dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLargeInverse"
-            android:layout_marginBottom="1dip"
-            android:paddingLeft="5dip"
-            android:textColor="@android:color/black"
-            android:text="@string/loading"/>
-
     </LinearLayout>
     <LinearLayout android:id="@+id/load_more"
         android:layout_width="match_parent"
