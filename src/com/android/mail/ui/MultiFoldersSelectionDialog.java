@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Displays a folder selection dialog for the conversation provided. It allows
@@ -76,7 +77,7 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
             /** All the folders that this conversations is assigned to. */
             final HashSet<String> checked = new HashSet<String>();
             for (final Conversation conversation : mTarget) {
-                final ArrayList<Folder> rawFolders = conversation.getRawFolders();
+                final List<Folder> rawFolders = conversation.getRawFolders();
                 if (conversation != null && rawFolders != null && rawFolders.size() > 0) {
                     // Parse the raw folders and get all the uris.
                     checked.addAll(Arrays.asList(Folder.getUriArray(rawFolders)));

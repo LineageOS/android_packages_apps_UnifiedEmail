@@ -40,6 +40,7 @@ import android.util.Log;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderList;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
@@ -1679,8 +1680,7 @@ public final class ConversationCursor implements Cursor {
 
     @Deprecated
     private void addTargetFolders(Collection<Folder> targetFolders, ContentValues values) {
-        values.put(Conversation.UPDATE_FOLDER_COLUMN,
-                Folder.getSerializedFolderString(targetFolders));
+        values.put(Conversation.UPDATE_FOLDER_COLUMN, FolderList.copyOf(targetFolders).toBlob());
     }
 
     public ConversationOperation getConversationFolderOperation(Conversation conv,
@@ -1813,30 +1813,14 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
-     * As above, for mostly destructive updates
-     */
-    public int mostlyDestructiveUpdate(Context context, Collection<Conversation> conversations,
-            String column, String value) {
-        return mostlyDestructiveUpdate(context, conversations, new String[] {
-            column
-        }, new String[] {
-            value
-        });
-    }
-
-    /**
      * As above, for mostly destructive updates.
      */
     public int mostlyDestructiveUpdate(Context context, Collection<Conversation> conversations,
-            String[] columnNames, String[] values) {
-        ContentValues cv = new ContentValues();
-        for (int i = 0; i < columnNames.length; i++) {
-            cv.put(columnNames[i], values[i]);
-        }
+            ContentValues values) {
         return apply(
                 context,
                 getOperationsForConversations(conversations,
-                        ConversationOperation.MOSTLY_DESTRUCTIVE_UPDATE, cv));
+                        ConversationOperation.MOSTLY_DESTRUCTIVE_UPDATE, values));
     }
 
     /**

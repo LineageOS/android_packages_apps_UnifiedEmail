@@ -32,21 +32,19 @@ import android.widget.ImageView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
  * A folder is a collection of conversations, and perhaps other folders.
  */
+// TODO: make most of these fields final
 public class Folder implements Parcelable, Comparable<Folder> {
     /**
      *
@@ -138,6 +136,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     /**
      * Icon for this folder; 0 implies no icon.
      */
+    // FIXME: resource IDs are ints, not longs.
     public long iconResId;
 
     public String bgColor;
@@ -164,33 +163,61 @@ public class Folder implements Parcelable, Comparable<Folder> {
     /** An immutable, empty conversation list */
     public static final Collection<Folder> EMPTY = Collections.emptyList();
 
+    @Deprecated
     public static final String SPLITTER = "^*^";
+    @Deprecated
     private static final Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
-    public static final String FOLDERS_SPLIT = "^**^";
-    private static final Pattern FOLDERS_SPLIT_REGEX = Pattern.compile("\\^\\*\\*\\^");
 
-    public Folder(Parcel in) {
+    // TODO: we desperately need a Builder here
+    public Folder(int id, Uri uri, String name, int capabilities, boolean hasChildren,
+            int syncWindow, Uri conversationListUri, Uri childFoldersListUri, int unreadCount,
+            int totalCount, Uri refreshUri, int syncStatus, int lastSyncResult, int type,
+            long iconResId, String bgColor, String fgColor, Uri loadMoreUri,
+            String hierarchicalDesc, Folder parent) {
+        this.id = id;
+        this.uri = uri;
+        this.name = name;
+        this.capabilities = capabilities;
+        this.hasChildren = hasChildren;
+        this.syncWindow = syncWindow;
+        this.conversationListUri = conversationListUri;
+        this.childFoldersListUri = childFoldersListUri;
+        this.unreadCount = unreadCount;
+        this.totalCount = totalCount;
+        this.refreshUri = refreshUri;
+        this.syncStatus = syncStatus;
+        this.lastSyncResult = lastSyncResult;
+        this.type = type;
+        this.iconResId = iconResId;
+        this.bgColor = bgColor;
+        this.fgColor = fgColor;
+        this.loadMoreUri = loadMoreUri;
+        this.hierarchicalDesc = hierarchicalDesc;
+        this.parent = parent;
+    }
+
+    public Folder(Parcel in, ClassLoader loader) {
         id = in.readInt();
-        uri = in.readParcelable(null);
+        uri = in.readParcelable(loader);
         name = in.readString();
         capabilities = in.readInt();
         // 1 for true, 0 for false.
         hasChildren = in.readInt() == 1;
         syncWindow = in.readInt();
-        conversationListUri = in.readParcelable(null);
-        childFoldersListUri = in.readParcelable(null);
+        conversationListUri = in.readParcelable(loader);
+        childFoldersListUri = in.readParcelable(loader);
         unreadCount = in.readInt();
         totalCount = in.readInt();
-        refreshUri = in.readParcelable(null);
+        refreshUri = in.readParcelable(loader);
         syncStatus = in.readInt();
         lastSyncResult = in.readInt();
         type = in.readInt();
         iconResId = in.readLong();
         bgColor = in.readString();
         fgColor = in.readString();
-        loadMoreUri = in.readParcelable(null);
+        loadMoreUri = in.readParcelable(loader);
         hierarchicalDesc = in.readString();
-        parent = in.readParcelable(null);
+        parent = in.readParcelable(loader);
      }
 
     public Folder(Cursor cursor) {
@@ -262,7 +289,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return null;
     }
 
-    public static HashMap<Uri, Folder> hashMapForFolders(ArrayList<Folder> rawFolders) {
+    public static HashMap<Uri, Folder> hashMapForFolders(List<Folder> rawFolders) {
         final HashMap<Uri, Folder> folders = new HashMap<Uri, Folder>();
         for (Folder f : rawFolders) {
             folders.put(f.uri, f);
@@ -295,10 +322,15 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     @SuppressWarnings("hiding")
-    public static final Creator<Folder> CREATOR = new Creator<Folder>() {
+    public static final ClassLoaderCreator<Folder> CREATOR = new ClassLoaderCreator<Folder>() {
         @Override
         public Folder createFromParcel(Parcel source) {
-            return new Folder(source);
+            return new Folder(source, null);
+        }
+
+        @Override
+        public Folder createFromParcel(Parcel source, ClassLoader loader) {
+            return new Folder(source, loader);
         }
 
         @Override
@@ -332,39 +364,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
-     * Create a Folder map from a string of serialized folders. This can only be done on the output
-     * of {@link #serialize(Map)}.
-     * @param serializedFolder A string obtained from {@link #serialize(Map)}
-     * @return a Map of folder name to folder.
-     */
-    public static Map<String, Folder> parseFoldersFromString(String serializedFoldersString) {
-        if (TextUtils.isEmpty(serializedFoldersString)) {
-            return null;
-        }
-        Map<String, Folder> folderMap = Maps.newHashMap();
-        ArrayList<Folder> folders = Folder.getFoldersArray(serializedFoldersString);
-        for (Folder folder : folders) {
-            if (folder.name != FOLDER_UNINITIALIZED) {
-                folderMap.put(folder.name, folder);
-            }
-        }
-        return folderMap;
-    }
-
-    /**
      * Returns a boolean indicating whether network activity (sync) is occuring for this folder.
      */
     public boolean isSyncInProgress() {
         return UIProvider.SyncStatus.isSyncInProgress(syncStatus);
-    }
-
-    /**
-     * Serialize the given list of folders
-     * @param folderMap A valid map of folder names to Folders
-     * @return a string containing a serialized output of folder maps.
-     */
-    public static String serialize(Map<String, Folder> folderMap) {
-        return getSerializedFolderString(folderMap.values());
     }
 
     public boolean supportsCapability(int capability) {
@@ -421,19 +424,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return TextUtils.isEmpty(fgColor) ? defaultColor : Integer.parseInt(fgColor);
     }
 
-    public static String getSerializedFolderString(Collection<Folder> folders) {
-        final StringBuilder folderList = new StringBuilder();
-        int i = 0;
-        for (Folder folderEntry : folders) {
-            folderList.append(Folder.toString(folderEntry));
-            if (i < folders.size()) {
-                folderList.append(FOLDERS_SPLIT);
-            }
-            i++;
-        }
-        return folderList.toString();
-    }
-
+    @Deprecated
     public static Folder fromString(String inString) {
         if (TextUtils.isEmpty(inString)) {
             return null;
@@ -479,6 +470,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     /**
      * Create a string representation of a folder.
      */
+    @Deprecated
     public static String createAsString(int id, Uri uri, String name, boolean hasChildren,
             int capabilities, int syncWindow, Uri convListUri, Uri childFoldersListUri,
             int unreadCount, int totalCount, Uri refreshUri, int syncStatus, int lastSyncResult,
@@ -531,6 +523,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return builder.toString();
     }
 
+    @Deprecated
     public static String toString(Folder folder) {
         return createAsString(folder.id, folder.uri, folder.name, folder.hasChildren,
                 folder.capabilities, folder.syncWindow, folder.conversationListUri,
@@ -559,30 +552,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return uris.toString();
     }
 
-
-    /**
-     * Get an array of folders from a rawFolders string.
-     */
-    public static ArrayList<Folder> getFoldersArray(String rawFolders) {
-        if (TextUtils.isEmpty(rawFolders)) {
-            return null;
-        }
-        ArrayList<Folder> folders = new ArrayList<Folder>();
-        String[] split = TextUtils.split(rawFolders, FOLDERS_SPLIT_REGEX);
-        Folder f;
-        for (String folder : split) {
-            f = Folder.fromString(folder);
-            if (f != null) {
-                folders.add(f);
-            }
-        }
-        return folders;
-    }
-
     /**
      * Get just the uri's from an arraylist of folders.
      */
-    public final static String[] getUriArray(ArrayList<Folder> folders) {
+    public final static String[] getUriArray(List<Folder> folders) {
         if (folders == null || folders.size() == 0) {
             return new String[0];
         }
