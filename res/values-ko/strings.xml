@@ -346,38 +346,21 @@
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"새로운 기능"</string>
     <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"메일을 자동 맞춤하시겠습니까?"</string>
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"메일의 너비가 화면에 맞도록 크기를 축소하고, 확대 기능을 지원합니다. 이 옵션을 사용 중지하려면 설정 &gt; 일반 설정으로 이동합니다."</string>
-    <!-- no translation found for notification_action_reply (6015299134424685297) -->
-    <skip />
-    <!-- no translation found for notification_action_reply_all (20020468410400912) -->
-    <skip />
-    <!-- no translation found for notification_action_forward (7252777659544972497) -->
-    <skip />
-    <!-- no translation found for notification_action_archive (81978513898440040) -->
-    <skip />
-    <!-- no translation found for notification_action_remove_label (5852730267411032291) -->
-    <skip />
-    <!-- no translation found for notification_action_delete (327773454111551791) -->
-    <skip />
-    <!-- no translation found for notification_action_mark_read (4351952818740163225) -->
-    <skip />
-    <!-- no translation found for notification_action_mark_unread (5941293881602369664) -->
-    <skip />
-    <!-- no translation found for notification_action_add_star (2612819344157820575) -->
-    <skip />
-    <!-- no translation found for notification_action_remove_star (3538588158594520706) -->
-    <skip />
-    <!-- no translation found for notification_action_mark_important (6370883802077124044) -->
-    <skip />
-    <!-- no translation found for notification_action_mark_not_important (8701153278545904539) -->
-    <skip />
-    <!-- no translation found for notification_action_mute (6000657861064977656) -->
-    <skip />
-    <!-- no translation found for notification_action_undo_archive (7280710366587361219) -->
-    <skip />
-    <!-- no translation found for notification_action_undo_remove_label (1425192858683932457) -->
-    <skip />
-    <!-- no translation found for notification_action_undo_delete (3105611327110905438) -->
-    <skip />
-    <!-- no translation found for notification_action_undo_mute (6618374048997237553) -->
-    <skip />
+    <string name="notification_action_reply" msgid="6015299134424685297">"답장"</string>
+    <string name="notification_action_reply_all" msgid="20020468410400912">"전체답장"</string>
+    <string name="notification_action_forward" msgid="7252777659544972497">"전달"</string>
+    <string name="notification_action_archive" msgid="81978513898440040">"보관처리"</string>
+    <string name="notification_action_remove_label" msgid="5852730267411032291">"라벨 삭제"</string>
+    <string name="notification_action_delete" msgid="327773454111551791">"삭제"</string>
+    <string name="notification_action_mark_read" msgid="4351952818740163225">"읽음으로 표시"</string>
+    <string name="notification_action_mark_unread" msgid="5941293881602369664">"읽지않음으로 표시"</string>
+    <string name="notification_action_add_star" msgid="2612819344157820575">"별표 표시"</string>
+    <string name="notification_action_remove_star" msgid="3538588158594520706">"별표 삭제"</string>
+    <string name="notification_action_mark_important" msgid="6370883802077124044">"중요 표시"</string>
+    <string name="notification_action_mark_not_important" msgid="8701153278545904539">"중요하지 않음으로 표시"</string>
+    <string name="notification_action_mute" msgid="6000657861064977656">"숨기기"</string>
+    <string name="notification_action_undo_archive" msgid="7280710366587361219">"보관처리됨"</string>
+    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"라벨 삭제됨"</string>
+    <string name="notification_action_undo_delete" msgid="3105611327110905438">"삭제됨"</string>
+    <string name="notification_action_undo_mute" msgid="6618374048997237553">"숨김"</string>
 </resources>

@@ -354,11 +354,11 @@
     <string name="notification_action_delete" msgid="327773454111551791">"Eliminar"</string>
     <string name="notification_action_mark_read" msgid="4351952818740163225">"Marcar como leído"</string>
     <string name="notification_action_mark_unread" msgid="5941293881602369664">"Marcar como no leído"</string>
-    <string name="notification_action_add_star" msgid="2612819344157820575">"Destacar con estrella"</string>
+    <string name="notification_action_add_star" msgid="2612819344157820575">"Destacar"</string>
     <string name="notification_action_remove_star" msgid="3538588158594520706">"Eliminar estrella"</string>
     <string name="notification_action_mark_important" msgid="6370883802077124044">"Marcar como importante"</string>
     <string name="notification_action_mark_not_important" msgid="8701153278545904539">"Marcar como no importante"</string>
-    <string name="notification_action_mute" msgid="6000657861064977656">"Ocultar"</string>
+    <string name="notification_action_mute" msgid="6000657861064977656">"Silenciar"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Archivado"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Etiqueta eliminada"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Eliminado"</string>
