@@ -1115,12 +1115,9 @@ public class UIProvider {
         public static String STARRED = "starred";
 
         /**
-         * This string column contains a serialized list of all folders
-         * separated by a Folder.FOLDER_SEPARATOR that are associated with this
-         * conversation. The folders should be only those that the provider
-         * wants to have displayed, so rawFolders will ALWAYS intentionally
-         * exclude the folder currently being viewed. Ideally, only ever use
-         * this for rendering the folder list for a conversation.
+         * This blob column contains the marshalled form of a Parceled
+         * {@FolderList} object. Ideally, only ever use this for
+         * rendering the folder list for a conversation.
          */
         public static final String RAW_FOLDERS = "rawFolders";
         public static final String FLAGS = "conversationFlags";

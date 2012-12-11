@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -35,6 +36,7 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderList;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -209,10 +211,13 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
                 FolderOperation folderOp = new FolderOperation(mFolder, false);
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFolders(conv.getRawFolders());
+             // TODO: switch to updating FOLDERS_UPDATED instead
                 targetFolders.remove(folderOp.mFolder.uri);
-                conv.setRawFolders(Folder.getSerializedFolderString(targetFolders.values()));
-                cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv),
-                        Conversation.UPDATE_FOLDER_COLUMN, conv.getRawFoldersString());
+                final FolderList folders = FolderList.copyOf(targetFolders.values());
+                conv.setRawFolders(folders);
+                final ContentValues values = new ContentValues();
+                values.put(Conversation.UPDATE_FOLDER_COLUMN, folders.toBlob());
+                cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv), values);
                 break;
             case R.id.archive:
                 cc.mostlyArchive(context, convList);

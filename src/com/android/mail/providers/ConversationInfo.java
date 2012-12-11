@@ -72,13 +72,18 @@ public class ConversationInfo implements Parcelable {
         final Parcel p = Parcel.obtain();
         p.unmarshall(blob, 0, blob.length);
         p.setDataPosition(0);
-        return CREATOR.createFromParcel(p, MessageInfo.class.getClassLoader());
+        final ConversationInfo result = CREATOR.createFromParcel(p,
+                MessageInfo.class.getClassLoader());
+        p.recycle();
+        return result;
     }
 
     public byte[] toBlob() {
         final Parcel p = Parcel.obtain();
         writeToParcel(p, 0);
-        return p.marshall();
+        final byte[] result = p.marshall();
+        p.recycle();
+        return result;
     }
 
     public void set(int count, int draft, String first, String firstUnread, String last) {

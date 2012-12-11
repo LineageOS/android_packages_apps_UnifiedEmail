@@ -69,6 +69,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderList;
 import com.android.mail.providers.FolderWatcher;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
@@ -2676,8 +2677,9 @@ public abstract class AbstractActivityController implements ActivityController {
                         .getRawFolders());
                 target.localDeleteOnUpdate = true;
                 targetFolders.remove(mInitialFolder.uri);
+                // TODO: switch to updating FOLDERS_UPDATED instead
                 values.put(Conversation.UPDATE_FOLDER_COLUMN,
-                        Folder.getSerializedFolderString(targetFolders.values()));
+                        FolderList.copyOf(targetFolders.values()).toBlob());
                 values.put(UIProvider.ConversationColumns.STARRED, true);
                 ops.add(mConversationListCursor.getOperationForConversation(target,
                         ConversationOperation.UPDATE, values));

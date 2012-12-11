@@ -60,7 +60,6 @@ import com.google.common.annotations.VisibleForTesting;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
@@ -417,8 +416,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mStarView.setContentDescription(getResources().getString(
                 mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
         mStarShown = true;
-        ArrayList<Folder> folders = mMessage.getConversation().getRawFolders();
-        for (Folder folder : folders) {
+        for (Folder folder : mMessage.getConversation().getRawFolders()) {
             if (folder.isTrash()) {
                 mStarShown = false;
                 break;
