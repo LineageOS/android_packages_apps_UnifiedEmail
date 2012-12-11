@@ -40,10 +40,12 @@ import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderList;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -746,12 +748,10 @@ public class NotificationActionUtils {
                     contentResolver.update(uri, values, null, null);
                 } else {
                     // Not inbox, so remove label
-                    final List<Folder> folders = conversation.getRawFolders();
+                    final List<Folder> folders = Lists.newArrayList(conversation.getRawFolders());
                     folders.remove(folder);
-                    final String folderString = Folder.getSerializedFolderString(folders);
-
                     final ContentValues values = new ContentValues(1);
-                    values.put(Conversation.UPDATE_FOLDER_COLUMN, folderString);
+                    values.put(Conversation.UPDATE_FOLDER_COLUMN, FolderList.listToBlob(folders));
 
                     contentResolver.update(uri, values, null, null);
                 }

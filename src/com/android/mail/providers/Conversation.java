@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class Conversation implements Parcelable {
     public static final int NO_POSITION = -1;
@@ -99,7 +100,7 @@ public class Conversation implements Parcelable {
     /**
      * @see UIProvider.ConversationColumns#RAW_FOLDERS
      */
-    private String rawFolders;
+    private FolderList rawFolders;
     /**
      * @see UIProvider.ConversationColumns#FLAGS
      */
@@ -151,7 +152,6 @@ public class Conversation implements Parcelable {
 
     private transient boolean viewed;
 
-    private ArrayList<Folder> cachedRawFolders;
     private ArrayList<Folder> cachedDisplayableFolders;
 
     private static String sSendersDelimeter;
@@ -188,7 +188,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(priority);
         dest.writeInt(read ? 1 : 0);
         dest.writeInt(starred ? 1 : 0);
-        dest.writeString(rawFolders);
+        dest.writeParcelable(rawFolders, 0);
         dest.writeInt(convFlags);
         dest.writeInt(personalLevel);
         dest.writeInt(spam ? 1 : 0);
@@ -216,7 +216,7 @@ public class Conversation implements Parcelable {
         priority = in.readInt();
         read = (in.readInt() != 0);
         starred = (in.readInt() != 0);
-        rawFolders = in.readString();
+        rawFolders = in.readParcelable(loader);
         convFlags = in.readInt();
         personalLevel = in.readInt();
         spam = in.readInt() != 0;
@@ -280,7 +280,8 @@ public class Conversation implements Parcelable {
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) != 0;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) != 0;
-            rawFolders = cursor.getString(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN);
+            rawFolders = FolderList.fromBlob(
+                    cursor.getBlob(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN));
             convFlags = cursor.getInt(UIProvider.CONVERSATION_FLAGS_COLUMN);
             personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
             spam = cursor.getInt(UIProvider.CONVERSATION_IS_SPAM_COLUMN) != 0;
@@ -313,7 +314,7 @@ public class Conversation implements Parcelable {
     public static Conversation create(long id, Uri uri, String subject, long dateMs,
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
-            boolean starred, String rawFolders, int convFlags, int personalLevel, boolean spam,
+            boolean starred, FolderList rawFolders, int convFlags, int personalLevel, boolean spam,
             boolean phishing, boolean muted, Uri accountUri, ConversationInfo conversationInfo,
             Uri conversationBase, boolean isRemote) {
 
@@ -347,37 +348,29 @@ public class Conversation implements Parcelable {
         return conversation;
     }
 
-    public ArrayList<Folder> getRawFolders() {
-        if (cachedRawFolders == null) {
-            // Create cached folders.
-            if (!TextUtils.isEmpty(rawFolders)) {
-                cachedRawFolders = Folder.getFoldersArray(rawFolders);
-            } else {
-                return new ArrayList<Folder>();
-            }
-        }
-        return cachedRawFolders;
+    /**
+     * Get the <strong>immutable</strong> list of {@link Folder}s for this conversation. To modify
+     * this list, make a new {@link FolderList} and use {@link #setRawFolders(FolderList)}.
+     *
+     * @return <strong>Immutable</strong> list of {@link Folder}s.
+     */
+    public List<Folder> getRawFolders() {
+        return rawFolders.folders;
     }
 
-    public void setRawFolders(String raw) {
+    public void setRawFolders(FolderList folders) {
         clearCachedFolders();
-        rawFolders = raw;
-    }
-
-    public String getRawFoldersString() {
-        return rawFolders;
+        rawFolders = folders;
     }
 
     private void clearCachedFolders() {
-        cachedRawFolders = null;
         cachedDisplayableFolders = null;
     }
 
     public ArrayList<Folder> getRawFoldersForDisplay(Folder ignoreFolder) {
-        ArrayList<Folder> folders = getRawFolders();
         if (cachedDisplayableFolders == null) {
             cachedDisplayableFolders = new ArrayList<Folder>();
-            for (Folder folder : folders) {
+            for (Folder folder : rawFolders.folders) {
                 // skip the ignoreFolder
                 if (ignoreFolder != null && ignoreFolder.equals(folder)) {
                     continue;
