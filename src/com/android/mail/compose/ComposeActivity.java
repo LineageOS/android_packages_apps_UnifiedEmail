@@ -729,7 +729,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         state.putBoolean(EXTRA_SHOW_CC, mCcBccView.isCcVisible());
         state.putBoolean(EXTRA_SHOW_BCC, mCcBccView.isBccVisible());
         state.putBoolean(EXTRA_RESPONDED_INLINE, mRespondedInline);
-        state.putBoolean(EXTRA_SAVE_ENABLED, mSave.isEnabled());
+        state.putBoolean(EXTRA_SAVE_ENABLED, mSave != null && mSave.isEnabled());
         state.putParcelableArrayList(
                 EXTRA_ATTACHMENT_PREVIEWS, mAttachmentsView.getAttachmentPreviews());
     }
