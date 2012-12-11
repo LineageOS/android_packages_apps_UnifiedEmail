@@ -69,7 +69,6 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.FolderList;
 import com.android.mail.providers.FolderWatcher;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
@@ -1708,7 +1707,6 @@ public abstract class AbstractActivityController implements ActivityController {
      * conversation for the current account yet.
      */
     private boolean inWaitMode() {
-        final FragmentManager manager = mActivity.getFragmentManager();
         final WaitFragment waitFragment = getWaitFragment();
         if (waitFragment != null) {
             final Account fragmentAccount = waitFragment.getAccount();
@@ -2268,20 +2266,6 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
-    /**
-     * Get a destructive action for a menu action.
-     * This is a temporary method, to control the profusion of {@link DestructiveAction} classes
-     * that are created. Please do not copy this paradigm.
-     * @param action the resource ID of the menu action: R.id.delete, for example
-     * @param target the conversations to act upon.
-     * @return a {@link DestructiveAction} that performs the specified action.
-     */
-    private final DestructiveAction getAction(int action, Collection<Conversation> target) {
-        final DestructiveAction da = new ConversationAction(action, target, false);
-        registerDestructiveAction(da);
-        return da;
-    }
-
     // Called from the FolderSelectionDialog after a user is done selecting folders to assign the
     // conversations to.
     @Override
@@ -2605,7 +2589,6 @@ public abstract class AbstractActivityController implements ActivityController {
         if (convListFragment != null) {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
             ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
-            ContentValues values = new ContentValues();
             ArrayList<Uri> folderUris;
             ArrayList<Boolean> adds;
             for (Conversation target : conversations) {
@@ -2637,7 +2620,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (convListFragment != null) {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
             convListFragment.requestDelete(R.id.change_folder, conversations, mSelectedSet.views(),
-                    new DroppedInStarredAction(conversations, mFolder));
+                    new DroppedInStarredAction(conversations, mFolder, folder));
             return;
         }
     }
@@ -2647,10 +2630,13 @@ public abstract class AbstractActivityController implements ActivityController {
     private class DroppedInStarredAction implements DestructiveAction {
         private Collection<Conversation> mConversations;
         private Folder mInitialFolder;
+        private Folder mStarred;
 
-        public DroppedInStarredAction(Collection<Conversation> conversations, Folder folder) {
+        public DroppedInStarredAction(Collection<Conversation> conversations, Folder initialFolder,
+                Folder starredFolder) {
             mConversations = conversations;
-            mInitialFolder = folder;
+            mInitialFolder = initialFolder;
+            mStarred = starredFolder;
         }
 
         @Override
@@ -2662,27 +2648,22 @@ public abstract class AbstractActivityController implements ActivityController {
             ContentValues values = new ContentValues();
             ArrayList<Uri> folderUris;
             ArrayList<Boolean> adds;
+            ConversationOperation operation;
             for (Conversation target : mConversations) {
                 folderUris = new ArrayList<Uri>();
                 adds = new ArrayList<Boolean>();
-                target.localDeleteOnUpdate = true;
+                folderUris.add(mStarred.uri);
+                adds.add(Boolean.TRUE);
                 folderUris.add(mInitialFolder.uri);
                 adds.add(Boolean.FALSE);
-                ops.add(mConversationListCursor.getOperationForConversation(target,
-                        ConversationOperation.UPDATE, values));
-                values.put(UIProvider.ConversationColumns.STARRED, true);
-                ops.add(mConversationListCursor.getOperationForConversation(target,
-                        ConversationOperation.UPDATE, values));
-                HashMap<Uri, Folder> targetFolders = Folder.hashMapForFolders(target
-                        .getRawFolders());
-                target.localDeleteOnUpdate = true;
+                final HashMap<Uri, Folder> targetFolders =
+                        Folder.hashMapForFolders(target.getRawFolders());
+                targetFolders.put(mStarred.uri, mStarred);
                 targetFolders.remove(mInitialFolder.uri);
-                // TODO: switch to updating FOLDERS_UPDATED instead
-                values.put(Conversation.UPDATE_FOLDER_COLUMN,
-                        FolderList.copyOf(targetFolders.values()).toBlob());
-                values.put(UIProvider.ConversationColumns.STARRED, true);
-                ops.add(mConversationListCursor.getOperationForConversation(target,
-                        ConversationOperation.UPDATE, values));
+                values.put(ConversationColumns.STARRED, true);
+                operation = mConversationListCursor.getConversationFolderOperation(target,
+                        folderUris, adds, targetFolders.values(), values);
+                ops.add(operation);
             }
             if (mConversationListCursor != null) {
                 mConversationListCursor.updateBulkValues(mContext, ops);
@@ -2880,12 +2861,10 @@ public abstract class AbstractActivityController implements ActivityController {
             ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
             ArrayList<Uri> folderUris;
             ArrayList<Boolean> adds;
-            ContentValues values;
             for (Conversation target : mTarget) {
                 HashMap<Uri, Folder> targetFolders = Folder.hashMapForFolders(target
                         .getRawFolders());
                 folderUris = new ArrayList<Uri>();
-                values = new ContentValues();
                 adds = new ArrayList<Boolean>();
                 if (mIsDestructive) {
                     target.localDeleteOnUpdate = true;
