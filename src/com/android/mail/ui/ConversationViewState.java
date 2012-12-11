@@ -120,7 +120,7 @@ class ConversationViewState implements Parcelable {
     }
 
     public void setInfoForConversation(Conversation conv) {
-        mConversationInfo = conv.conversationInfo.toBlob();
+        mConversationInfo = conv.conversationInfo != null ? conv.conversationInfo.toBlob() : null;
     }
 
     /**
