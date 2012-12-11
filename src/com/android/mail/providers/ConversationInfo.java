@@ -66,6 +66,9 @@ public class ConversationInfo implements Parcelable {
     }
 
     public static ConversationInfo fromBlob(byte[] blob) {
+        if (blob == null) {
+            return null;
+        }
         final Parcel p = Parcel.obtain();
         p.unmarshall(blob, 0, blob.length);
         p.setDataPosition(0);
