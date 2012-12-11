@@ -41,7 +41,7 @@ public class ConversationInfo implements Parcelable {
         set(count, draft, first, firstUnread, last);
     }
 
-    private ConversationInfo(Parcel in, ClassLoader loader) {
+    private ConversationInfo(Parcel in) {
         messageCount = in.readInt();
         draftCount = in.readInt();
         firstSnippet = in.readString();
@@ -72,8 +72,7 @@ public class ConversationInfo implements Parcelable {
         final Parcel p = Parcel.obtain();
         p.unmarshall(blob, 0, blob.length);
         p.setDataPosition(0);
-        final ConversationInfo result = CREATOR.createFromParcel(p,
-                MessageInfo.class.getClassLoader());
+        final ConversationInfo result = CREATOR.createFromParcel(p);
         p.recycle();
         return result;
     }
@@ -118,17 +117,11 @@ public class ConversationInfo implements Parcelable {
                 lastSnippet, firstUnreadSnippet);
     }
 
-    public static final ClassLoaderCreator<ConversationInfo> CREATOR =
-            new ClassLoaderCreator<ConversationInfo>() {
+    public static final Creator<ConversationInfo> CREATOR = new Creator<ConversationInfo>() {
 
         @Override
         public ConversationInfo createFromParcel(Parcel source) {
-            return new ConversationInfo(source, null);
-        }
-
-        @Override
-        public ConversationInfo createFromParcel(Parcel source, ClassLoader loader) {
-            return new ConversationInfo(source, loader);
+            return new ConversationInfo(source);
         }
 
         @Override
