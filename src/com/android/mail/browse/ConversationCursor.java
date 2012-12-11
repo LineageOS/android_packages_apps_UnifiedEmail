@@ -1668,7 +1668,7 @@ public final class ConversationCursor implements Cursor {
         return new ConversationOperation(type, conv, values);
     }
 
-    private void addFolderUpdates(ArrayList<Uri> folderUris, ArrayList<Boolean> add,
+    public void addFolderUpdates(ArrayList<Uri> folderUris, ArrayList<Boolean> add,
             ContentValues values) {
         ArrayList<String> folders = new ArrayList<String>();
         for (int i = 0; i < folderUris.size(); i++) {
@@ -1678,16 +1678,20 @@ public final class ConversationCursor implements Cursor {
                 TextUtils.join(ConversationOperations.FOLDERS_UPDATED_SPLIT_PATTERN, folders));
     }
 
-    @Deprecated
-    private void addTargetFolders(Collection<Folder> targetFolders, ContentValues values) {
+    public void addTargetFolders(Collection<Folder> targetFolders, ContentValues values) {
         values.put(Conversation.UPDATE_FOLDER_COLUMN, FolderList.copyOf(targetFolders).toBlob());
     }
 
     public ConversationOperation getConversationFolderOperation(Conversation conv,
             ArrayList<Uri> folderUris, ArrayList<Boolean> add, Collection<Folder> targetFolders) {
-        final ContentValues values = new ContentValues();
+        return getConversationFolderOperation(conv, folderUris, add, targetFolders,
+                new ContentValues());
+    }
+
+    public ConversationOperation getConversationFolderOperation(Conversation conv,
+            ArrayList<Uri> folderUris, ArrayList<Boolean> add, Collection<Folder> targetFolders,
+            ContentValues values) {
         addFolderUpdates(folderUris, add, values);
-        // Once all clients support the FOLDERS_UPDATED key, this call should be removed
         addTargetFolders(targetFolders, values);
         return getOperationForConversation(conv, ConversationOperation.UPDATE, values);
     }

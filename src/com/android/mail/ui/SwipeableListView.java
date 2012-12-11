@@ -206,17 +206,23 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         adapter.setupLeaveBehind(conv, undoOp, conv.position);
         ConversationCursor cc = (ConversationCursor) adapter.getCursor();
         Collection<Conversation> convList = Conversation.listOf(conv);
+        ArrayList<Uri> folderUris;
+        ArrayList<Boolean> adds;
         switch (mSwipeAction) {
             case R.id.remove_folder:
                 FolderOperation folderOp = new FolderOperation(mFolder, false);
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFolders(conv.getRawFolders());
-             // TODO: switch to updating FOLDERS_UPDATED instead
                 targetFolders.remove(folderOp.mFolder.uri);
                 final FolderList folders = FolderList.copyOf(targetFolders.values());
                 conv.setRawFolders(folders);
                 final ContentValues values = new ContentValues();
-                values.put(Conversation.UPDATE_FOLDER_COLUMN, folders.toBlob());
+                folderUris = new ArrayList<Uri>();
+                folderUris.add(mFolder.uri);
+                adds = new ArrayList<Boolean>();
+                adds.add(Boolean.FALSE);
+                cc.addFolderUpdates(folderUris, adds, values);
+                cc.addTargetFolders(targetFolders.values(), values);
                 cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv), values);
                 break;
             case R.id.archive:
