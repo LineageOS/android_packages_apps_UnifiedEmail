@@ -29,6 +29,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -105,6 +106,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public Uri childFoldersListUri;
 
     /**
+     * The number of messages that are unseen in this folder.
+     */
+    public int unseenCount;
+
+    /**
      * The number of messages that are unread in this folder.
      */
     public int unreadCount;
@@ -140,8 +146,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
     /**
      * Icon for this folder; 0 implies no icon.
      */
-    // FIXME: resource IDs are ints, not longs.
-    public long iconResId;
+    public int iconResId;
+
+    /**
+     * Notification icon for this folder; 0 implies no icon.
+     */
+    public int notificationIconResId;
 
     public String bgColor;
     public String fgColor;
@@ -170,9 +180,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
     // TODO: we desperately need a Builder here
     public Folder(int id, String persistentId, Uri uri, String name, int capabilities,
             boolean hasChildren, int syncWindow, Uri conversationListUri, Uri childFoldersListUri,
-            int unreadCount, int totalCount, Uri refreshUri, int syncStatus, int lastSyncResult,
-            int type, long iconResId, String bgColor, String fgColor, Uri loadMoreUri,
-            String hierarchicalDesc, Folder parent) {
+            int unseenCount, int unreadCount, int totalCount, Uri refreshUri, int syncStatus,
+            int lastSyncResult, int type, int iconResId, int notificationIconResId, String bgColor,
+            String fgColor, Uri loadMoreUri, String hierarchicalDesc, Folder parent) {
         this.id = id;
         this.persistentId = persistentId;
         this.uri = uri;
@@ -182,6 +192,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         this.syncWindow = syncWindow;
         this.conversationListUri = conversationListUri;
         this.childFoldersListUri = childFoldersListUri;
+        this.unseenCount = unseenCount;
         this.unreadCount = unreadCount;
         this.totalCount = totalCount;
         this.refreshUri = refreshUri;
@@ -189,6 +200,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         this.lastSyncResult = lastSyncResult;
         this.type = type;
         this.iconResId = iconResId;
+        this.notificationIconResId = notificationIconResId;
         this.bgColor = bgColor;
         this.fgColor = fgColor;
         this.loadMoreUri = loadMoreUri;
@@ -207,13 +219,15 @@ public class Folder implements Parcelable, Comparable<Folder> {
         syncWindow = in.readInt();
         conversationListUri = in.readParcelable(loader);
         childFoldersListUri = in.readParcelable(loader);
+        unseenCount = in.readInt();
         unreadCount = in.readInt();
         totalCount = in.readInt();
         refreshUri = in.readParcelable(loader);
         syncStatus = in.readInt();
         lastSyncResult = in.readInt();
         type = in.readInt();
-        iconResId = in.readLong();
+        iconResId = in.readInt();
+        notificationIconResId = in.readInt();
         bgColor = in.readString();
         fgColor = in.readString();
         loadMoreUri = in.readParcelable(loader);
@@ -235,6 +249,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         String childList = cursor.getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN);
         childFoldersListUri = (hasChildren && !TextUtils.isEmpty(childList)) ? Uri.parse(childList)
                 : null;
+        unseenCount = cursor.getInt(UIProvider.FOLDER_UNSEEN_COUNT_COLUMN);
         unreadCount = cursor.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
         totalCount = cursor.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
         String refresh = cursor.getString(UIProvider.FOLDER_REFRESH_URI_COLUMN);
@@ -242,7 +257,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         syncStatus = cursor.getInt(UIProvider.FOLDER_SYNC_STATUS_COLUMN);
         lastSyncResult = cursor.getInt(UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN);
         type = cursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
-        iconResId = cursor.getLong(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
+        iconResId = cursor.getInt(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
+        notificationIconResId = cursor.getInt(UIProvider.FOLDER_NOTIFICATION_ICON_RES_ID_COLUMN);
         bgColor = cursor.getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
         fgColor = cursor.getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
         String loadMore = cursor.getString(UIProvider.FOLDER_LOAD_MORE_URI_COLUMN);
@@ -263,13 +279,15 @@ public class Folder implements Parcelable, Comparable<Folder> {
         dest.writeInt(syncWindow);
         dest.writeParcelable(conversationListUri, 0);
         dest.writeParcelable(childFoldersListUri, 0);
+        dest.writeInt(unseenCount);
         dest.writeInt(unreadCount);
         dest.writeInt(totalCount);
         dest.writeParcelable(refreshUri, 0);
         dest.writeInt(syncStatus);
         dest.writeInt(lastSyncResult);
         dest.writeInt(type);
-        dest.writeLong(iconResId);
+        dest.writeInt(iconResId);
+        dest.writeInt(notificationIconResId);
         dest.writeString(bgColor);
         dest.writeString(fgColor);
         dest.writeParcelable(loadMoreUri, 0);
@@ -390,7 +408,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         if (colorBlock == null) {
             return;
         }
-        boolean showBg = !TextUtils.isEmpty(folder.bgColor);
+        boolean showBg =
+                !TextUtils.isEmpty(folder.bgColor) && folder.type != FolderType.INBOX_SECTION;
         final int backgroundColor = showBg ? Integer.parseInt(folder.bgColor) : 0;
         if (backgroundColor == Utils.getDefaultFolderBackgroundColor(colorBlock.getContext())) {
             showBg = false;
@@ -410,12 +429,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
         if (iconView == null) {
             return;
         }
-        final long icon = folder.iconResId;
+        final int icon = folder.iconResId;
         if (icon > 0) {
-            iconView.setImageResource((int)icon);
+            iconView.setImageResource(icon);
             iconView.setVisibility(View.VISIBLE);
         } else {
-            iconView.setVisibility(View.INVISIBLE);
+            iconView.setVisibility(View.GONE);
         }
     }
 
@@ -578,6 +597,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         f.id = cursor.getInt(UIProvider.FOLDER_ID_COLUMN);
         f.uri = Utils.getValidUri(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
         f.totalCount = cursor.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
+        f.unseenCount = cursor.getInt(UIProvider.FOLDER_UNSEEN_COUNT_COLUMN);
         f.unreadCount = cursor.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
         f.conversationListUri = Utils.getValidUri(cursor
                 .getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN));
@@ -585,6 +605,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         f.capabilities = cursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
         f.bgColor = cursor.getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
         f.name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);
+        f.iconResId = cursor.getInt(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
+        f.notificationIconResId = cursor.getInt(UIProvider.FOLDER_NOTIFICATION_ICON_RES_ID_COLUMN);
         return f;
     }
 }
