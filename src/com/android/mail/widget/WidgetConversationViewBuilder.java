@@ -43,7 +43,8 @@ public class WidgetConversationViewBuilder {
     // Static colors
     private static int SUBJECT_TEXT_COLOR_READ;
     private static int SUBJECT_TEXT_COLOR_UNREAD;
-    private static int DATE_TEXT_COLOR;
+    private static int DATE_TEXT_COLOR_READ;
+    private static int DATE_TEXT_COLOR_UNREAD;
 
     // Static bitmap
     private static Bitmap ATTACHMENT;
@@ -122,7 +123,8 @@ public class WidgetConversationViewBuilder {
         // Initialize colors
         SUBJECT_TEXT_COLOR_READ = res.getColor(R.color.subject_text_color_read);
         SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
-        DATE_TEXT_COLOR = res.getColor(R.color.date_text_color);
+        DATE_TEXT_COLOR_READ = res.getColor(R.color.date_text_color_read);
+        DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
 
         // Initialize Bitmap
         ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
@@ -154,7 +156,8 @@ public class WidgetConversationViewBuilder {
         boolean hasAttachments = conversation.hasAttachments;
 
         // Add style to date
-        CharSequence styledDate = addStyle(date, DATE_FONT_SIZE, DATE_TEXT_COLOR);
+        CharSequence styledDate = addStyle(date, DATE_FONT_SIZE,
+                isUnread ? DATE_TEXT_COLOR_UNREAD : DATE_TEXT_COLOR_READ);
 
         // Add style to subject
         int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
