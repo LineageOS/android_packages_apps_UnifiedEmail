@@ -117,7 +117,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sActivatedTextColor;
     private static int sSendersTextColorRead;
     private static int sSendersTextColorUnread;
-    private static int sDateTextColor;
+    private static int sDateTextColorRead;
+    private static int sDateTextColorUnread;
     private static int sDateBackgroundPaddingLeft;
     private static int sTouchSlop;
     private static int sDateBackgroundHeight;
@@ -372,10 +373,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSubjectTextUnreadSpan = new TextAppearanceSpan(mContext,
                     R.style.SubjectAppearanceUnreadStyle);
             sSubjectTextReadSpan = new TextAppearanceSpan(mContext,
-                    R.style.SubjectAppearanceStyle);
+                    R.style.SubjectAppearanceReadStyle);
             sSnippetTextUnreadSpan = new ForegroundColorSpan(R.color.snippet_text_color_unread);
             sSnippetTextReadSpan = new ForegroundColorSpan(R.color.snippet_text_color_read);
-            sDateTextColor = res.getColor(R.color.date_text_color);
+            sDateTextColorRead = res.getColor(R.color.date_text_color_read);
+            sDateTextColorUnread = res.getColor(R.color.date_text_color_unread);
             sDateBackgroundPaddingLeft = res
                     .getDimensionPixelSize(R.dimen.date_background_padding_left);
             sTouchSlop = res.getDimensionPixelSize(R.dimen.touch_slop);
@@ -1075,8 +1077,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         // Date.
         sPaint.setTextSize(mCoordinates.dateFontSize);
-        sPaint.setTypeface(Typeface.DEFAULT);
-        sPaint.setColor(sDateTextColor);
+        sPaint.setTypeface(mHeader.conversation.read ? Typeface.DEFAULT : Typeface.DEFAULT_BOLD);
+        sPaint.setColor(mHeader.conversation.read ? sDateTextColorRead : sDateTextColorUnread);
         drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateY - mCoordinates.dateAscent,
                 sPaint);
 
