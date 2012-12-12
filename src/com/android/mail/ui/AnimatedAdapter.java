@@ -310,7 +310,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             return mFooter;
         }
         ConversationCursor cursor = (ConversationCursor) getItem(position);
-        Conversation conv = new Conversation(cursor);
+        final Conversation conv = cursor.getConversation();
         if (isPositionUndoing(conv.id)) {
             return getUndoingView(position, conv, parent, false /* don't show swipe background */);
         } if (isPositionUndoingSwipe(conv.id)) {

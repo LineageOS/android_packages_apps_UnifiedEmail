@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -54,12 +55,14 @@ import com.android.mail.utils.NotificationActionUtils.NotificationActionType;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,6 +75,9 @@ import java.util.Set;
  * implemented as a static HashMap.
  */
 public final class ConversationCursor implements Cursor {
+
+    private static final boolean ENABLE_CONVERSATION_PRECACHING = true;
+
     private static final String LOG_TAG = LogTag.getLogTag();
     /** Turn to true for debugging. */
     private static final boolean DEBUG = false;
@@ -133,6 +139,8 @@ public final class ConversationCursor implements Cursor {
     private final String mName;
     /** Column names for this cursor */
     private String[] mColumnNames;
+    // Column names as above, as a Set for quick membership checking
+    private Set<String> mColumnNameSet;
     /** An observer on the underlying cursor (so we can detect changes from outside the UI) */
     private final CursorObserver mCursorObserver;
     /** Whether our observer is currently registered with the underlying cursor */
@@ -162,6 +170,11 @@ public final class ConversationCursor implements Cursor {
             close();
         }
         mColumnNames = cursor.getColumnNames();
+        ImmutableSet.Builder<String> builder = ImmutableSet.builder();
+        for (String name : mColumnNames) {
+            builder.add(name);
+        }
+        mColumnNameSet = builder.build();
         mRefreshRequired = false;
         mRefreshReady = false;
         mRefreshTask = null;
@@ -244,42 +257,87 @@ public final class ConversationCursor implements Cursor {
         return mUnderlyingCursor != null ? mUnderlyingCursor.conversationIds() : null;
     }
 
+    private static class UnderlyingRowData {
+        public final String wrappedUri;
+        public final String innerUri;
+        public final Conversation conversation;
+
+        public UnderlyingRowData(String wrappedUri, String innerUri, Conversation conversation) {
+            this.wrappedUri = wrappedUri;
+            this.innerUri = innerUri;
+            this.conversation = conversation;
+        }
+    }
+
     /**
      * Simple wrapper for a cursor that provides methods for quickly determining
      * the existence of a row.
      */
-    private class UnderlyingCursorWrapper extends CursorWrapper {
+    private static class UnderlyingCursorWrapper extends CursorWrapper {
         // Ideally these two objects could be combined into a Map from
         // conversationId -> position, but the cached values uses the conversation
         // uri as a key.
         private final Map<String, Integer> mConversationUriPositionMap;
         private final Map<Long, Integer> mConversationIdPositionMap;
+        private final List<UnderlyingRowData> mRowCache;
 
         public UnderlyingCursorWrapper(Cursor result) {
             super(result);
+            long start = SystemClock.uptimeMillis();
             final ImmutableMap.Builder<String, Integer> conversationUriPositionMapBuilder =
                     new ImmutableMap.Builder<String, Integer>();
             final ImmutableMap.Builder<Long, Integer> conversationIdPositionMapBuilder =
                     new ImmutableMap.Builder<Long, Integer>();
+            final UnderlyingRowData[] cache;
+            final int count;
             if (result != null && result.moveToFirst()) {
+                count = result.getCount();
+                cache = new UnderlyingRowData[count];
                 // We don't want iterating over this cursor to trigger a network
                 // request
                 final boolean networkWasEnabled =
                         Utils.disableConversationCursorNetworkAccess(result);
+                int i = 0;
                 do {
-                    final int position = result.getPosition();
-                    conversationUriPositionMapBuilder.put(
-                            result.getString(URI_COLUMN_INDEX), position);
-                    conversationIdPositionMapBuilder.put(
-                            result.getLong(UIProvider.CONVERSATION_ID_COLUMN), position);
-                } while (result.moveToNext());
+                    final Conversation c;
+                    final String innerUriString;
+                    final String wrappedUriString;
+                    final long convId;
+
+                    if (ENABLE_CONVERSATION_PRECACHING) {
+                        c = new Conversation(this);
+                        innerUriString = c.uri.toString();
+                        wrappedUriString = uriToCachingUriString(c.uri);
+                        convId = c.id;
+                    } else {
+                        c = null;
+                        innerUriString = result.getString(URI_COLUMN_INDEX);
+                        wrappedUriString = uriToCachingUriString(Uri.parse(innerUriString));
+                        convId = result.getLong(UIProvider.CONVERSATION_ID_COLUMN);
+                    }
+                    conversationUriPositionMapBuilder.put(innerUriString, i);
+                    conversationIdPositionMapBuilder.put(convId, i);
+                    cache[i] = new UnderlyingRowData(
+                            wrappedUriString,
+                            innerUriString,
+                            c);
+
+                } while (result.moveToPosition(++i));
 
                 if (networkWasEnabled) {
                     Utils.enableConversationCursorNetworkAccess(result);
                 }
+            } else {
+                count = 0;
+                cache = new UnderlyingRowData[0];
             }
             mConversationUriPositionMap = conversationUriPositionMapBuilder.build();
             mConversationIdPositionMap = conversationIdPositionMapBuilder.build();
+            mRowCache = Collections.unmodifiableList(Arrays.asList(cache));
+            long end = SystemClock.uptimeMillis();
+            LogUtils.i(LOG_TAG, "*** ConversationCursor pre-loading took" +
+                    " %sms n=%s CONV_PRECACHING=%s",
+                    (end-start), count, ENABLE_CONVERSATION_PRECACHING);
         }
 
         public boolean contains(String uri) {
@@ -298,6 +356,18 @@ public final class ConversationCursor implements Cursor {
         public int getPosition(String conversationUri) {
             final Integer position = mConversationUriPositionMap.get(conversationUri);
             return position != null ? position.intValue() : -1;
+        }
+
+        public String getWrappedUri() {
+            return mRowCache.get(getPosition()).wrappedUri;
+        }
+
+        public String getInnerUri() {
+            return mRowCache.get(getPosition()).innerUri;
+        }
+
+        public Conversation getConversation() {
+            return mRowCache.get(getPosition()).conversation;
         }
     }
 
@@ -629,22 +699,7 @@ public final class ConversationCursor implements Cursor {
                     return;
                 }
             }
-            // ContentValues has no generic "put", so we must test.  For now, the only classes
-            // of values implemented are Boolean/Integer/String/Blob, though others are trivially
-            // added
-            if (value instanceof Boolean) {
-                map.put(columnName, ((Boolean) value).booleanValue() ? 1 : 0);
-            } else if (value instanceof Integer) {
-                map.put(columnName, (Integer) value);
-            } else if (value instanceof String) {
-                map.put(columnName, (String) value);
-            } else if (value instanceof byte[]) {
-                map.put(columnName, (byte[])value);
-            } else {
-                final String cname = value.getClass().getName();
-                throw new IllegalArgumentException("Value class not compatible with cache: "
-                        + cname);
-            }
+            putInValues(map, columnName, value);
             map.put(UPDATE_TIME_COLUMN, System.currentTimeMillis());
             if (DEBUG && (columnName != DELETED_COLUMN)) {
                 LogUtils.i(LOG_TAG, "Caching value for %s: %s", uriString, columnName);
@@ -658,7 +713,7 @@ public final class ConversationCursor implements Cursor {
      * @return the cached value for this column, or null if there is none
      */
     private Object getCachedValue(int columnIndex) {
-        String uri = mUnderlyingCursor.getString(URI_COLUMN_INDEX);
+        final String uri = mUnderlyingCursor.getInnerUri();
         return getCachedValue(uri, columnIndex);
     }
 
@@ -1021,8 +1076,7 @@ public final class ConversationCursor implements Cursor {
         // If we're asking for the Uri for the conversation list, we return a forwarding URI
         // so that we can intercept update/delete and handle it ourselves
         if (columnIndex == URI_COLUMN_INDEX) {
-            Uri uri = Uri.parse(mUnderlyingCursor.getString(columnIndex));
-            return uriToCachingUriString(uri);
+            return mUnderlyingCursor.getWrappedUri();
         }
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (String)obj;
@@ -1034,6 +1088,56 @@ public final class ConversationCursor implements Cursor {
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (byte[])obj;
         return mUnderlyingCursor.getBlob(columnIndex);
+    }
+
+    public Conversation getConversation() {
+        Conversation c = mUnderlyingCursor.getConversation();
+
+        if (c == null) {
+            // not pre-cached. fall back to just-in-time construction.
+            c = new Conversation(this);
+        } else {
+            // apply any cached values
+            // but skip over any cached values that aren't part of the cursor projection
+            final ContentValues values = mCacheMap.get(mUnderlyingCursor.getInnerUri());
+            if (values != null) {
+                final ContentValues queryableValues = new ContentValues();
+                for (String key : values.keySet()) {
+                    if (!mColumnNameSet.contains(key)) {
+                        continue;
+                    }
+                    putInValues(queryableValues, key, values.get(key));
+                }
+                if (queryableValues.size() > 0) {
+                    // copy-on-write to help ensure the underlying cached Conversation is immutable
+                    // of course, any callers this method should also try not to modify them
+                    // overmuch...
+                    c = new Conversation(c);
+                    c.applyCachedValues(queryableValues);
+                }
+            }
+        }
+
+        return c;
+    }
+
+    private static void putInValues(ContentValues dest, String key, Object value) {
+        // ContentValues has no generic "put", so we must test.  For now, the only classes
+        // of values implemented are Boolean/Integer/String/Blob, though others are trivially
+        // added
+        if (value instanceof Boolean) {
+            dest.put(key, ((Boolean) value).booleanValue() ? 1 : 0);
+        } else if (value instanceof Integer) {
+            dest.put(key, (Integer) value);
+        } else if (value instanceof String) {
+            dest.put(key, (String) value);
+        } else if (value instanceof byte[]) {
+            dest.put(key, (byte[])value);
+        } else {
+            final String cname = value.getClass().getName();
+            throw new IllegalArgumentException("Value class not compatible with cache: "
+                    + cname);
+        }
     }
 
     /**

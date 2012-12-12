@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -326,6 +327,43 @@ public class Conversation implements Parcelable {
         }
     }
 
+    public Conversation(Conversation other) {
+        if (other == null) {
+            return;
+        }
+
+        id = other.id;
+        uri = other.uri;
+        dateMs = other.dateMs;
+        subject = other.subject;
+        hasAttachments = other.hasAttachments;
+        messageListUri = other.messageListUri;
+        sendingState = other.sendingState;
+        priority = other.priority;
+        read = other.read;
+        seen = other.seen;
+        starred = other.starred;
+        rawFolders = other.rawFolders; // FolderList is immutable, shallow copy is OK
+        convFlags = other.convFlags;
+        personalLevel = other.personalLevel;
+        spam = other.spam;
+        phishing = other.phishing;
+        muted = other.muted;
+        color = other.color;
+        accountUri = other.accountUri;
+        position = other.position;
+        localDeleteOnUpdate = other.localDeleteOnUpdate;
+        // although ConversationInfo is mutable (see ConversationInfo.markRead), applyCachedValues
+        // will overwrite this if cached changes exist anyway, so a shallow copy is OK
+        conversationInfo = other.conversationInfo;
+        conversationBaseUri = other.conversationBaseUri;
+        snippet = other.snippet;
+        senders = other.senders;
+        numMessages = other.numMessages;
+        numDrafts = other.numDrafts;
+        isRemote = other.isRemote;
+    }
+
     public Conversation() {
     }
 
@@ -365,6 +403,36 @@ public class Conversation implements Parcelable {
         conversation.conversationBaseUri = conversationBase;
         conversation.isRemote = isRemote;
         return conversation;
+    }
+
+    /**
+     * Apply any column values from the given {@link ContentValues} (where column names are the
+     * keys) to this conversation.
+     *
+     */
+    public void applyCachedValues(ContentValues values) {
+        if (values == null) {
+            return;
+        }
+        for (String key : values.keySet()) {
+            final Object val = values.get(key);
+            LogUtils.i(LOG_TAG, "Conversation: applying cached value to col=%s val=%s", key,
+                    val);
+            if (ConversationColumns.READ.equals(key)) {
+                read = (Integer) val != 0;
+            } else if (ConversationColumns.CONVERSATION_INFO.equals(key)) {
+                conversationInfo = ConversationInfo.fromBlob((byte[]) val);
+            } else if (ConversationColumns.FLAGS.equals(key)) {
+                convFlags = (Integer) val;
+            } else if (ConversationColumns.STARRED.equals(key)) {
+                starred = (Integer) val != 0;
+            } else if (ConversationColumns.VIEWED.equals(key)) {
+                // ignore. this is not read from the cursor, either.
+            } else {
+                LogUtils.e(LOG_TAG, new UnsupportedOperationException(),
+                        "unsupported cached conv value in col=%s", key);
+            }
+        }
     }
 
     /**
