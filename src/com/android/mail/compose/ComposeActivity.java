@@ -390,7 +390,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             showQuotedText = message.appendRefMessageContent;
         } else if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
             if (mRefMessage != null) {
-                initFromRefMessage(action, mAccount.name);
+                initFromRefMessage(action);
                 showQuotedText = true;
             }
         } else {
@@ -607,6 +607,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     public final void onRestoreInstanceState(Bundle savedInstanceState) {
+        clearChangeListeners();
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(EXTRA_FOCUS_SELECTION_START)) {
@@ -621,6 +622,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 }
             }
         }
+        initChangeListeners();
     }
 
     @Override
@@ -962,6 +964,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // ref message data, set up listeners for any changes that occur to the
     // message.
     private void initChangeListeners() {
+        // Make sure we only add text changed listeners once!
+        clearChangeListeners();
         mSubject.addTextChangedListener(this);
         mBodyView.addTextChangedListener(this);
         if (mToListener == null) {
@@ -1013,8 +1017,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         actionBar.setHomeButtonEnabled(true);
     }
 
-    private void initFromRefMessage(int action, String recipientAddress) {
-        setFieldsFromRefMessage(action, recipientAddress);
+    private void initFromRefMessage(int action) {
+        setFieldsFromRefMessage(action);
         if (mRefMessage != null) {
             // CC field only gets populated when doing REPLY_ALL.
             // BCC never gets auto-populated, unless the user is editing
@@ -1026,13 +1030,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         updateHideOrShowCcBcc();
     }
 
-    private void setFieldsFromRefMessage(int action, String recipientAddress) {
+    private void setFieldsFromRefMessage(int action) {
         setSubject(mRefMessage, action);
         // Setup recipients
         if (action == FORWARD) {
             mForward = true;
         }
-        initRecipientsFromRefMessage(recipientAddress, mRefMessage, action);
+        initRecipientsFromRefMessage(mRefMessage, action);
         initQuotedTextFromRefMessage(mRefMessage, action);
         if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
             initAttachments(mRefMessage);
@@ -1416,8 +1420,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    void initRecipientsFromRefMessage(String recipientAddress, Message refMessage,
-            int action) {
+    void initRecipientsFromRefMessage(Message refMessage, int action) {
         // Don't populate the address if this is a forward.
         if (action == ComposeActivity.FORWARD) {
             return;
@@ -1431,8 +1434,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // the reply.
         final String accountEmail = Address.getEmailAddress(account).getAddress();
         String[] sentToAddresses = refMessage.getToAddresses();
-        String replytoAddress = refMessage.getReplyTo();
         final Collection<String> toAddresses;
+        String replytoAddress = refMessage.getReplyTo();
+        // If there is no reply to address, the reply to address is the sender.
+        if (TextUtils.isEmpty(replytoAddress)) {
+            replytoAddress = refMessage.getFrom();
+        }
 
         // If this is a reply, the Cc list is empty. If this is a reply-all, the
         // Cc list is the union of the To and Cc recipients of the original
@@ -1532,30 +1539,32 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @VisibleForTesting
-    protected Collection<String> initToRecipients(String accountEmail,
-            String fullSenderAddress, String replyToAddress,
-            String[] inToAddresses) {
+    protected Collection<String> initToRecipients(String accountEmail, String fullSenderAddress,
+            String replyToAddress, String[] inToAddresses) {
         // The To recipient is the reply-to address specified in the original
         // message, unless it is:
         // the current user OR a custom from of the current user, in which case
         // it's the To recipient list of the original message.
         // OR missing, in which case use the sender of the original message
         Set<String> toAddresses = Sets.newHashSet();
-        if (!TextUtils.isEmpty(replyToAddress)
-                && !recipientMatchesThisAccount(replyToAddress)) {
+        if (!TextUtils.isEmpty(replyToAddress) && !recipientMatchesThisAccount(replyToAddress)) {
             toAddresses.add(replyToAddress);
         } else {
-            if (!recipientMatchesThisAccount(fullSenderAddress)) {
-                toAddresses.add(fullSenderAddress);
-            } else {
-                // This happens if the user replies to a message they originally
-                // wrote. In this case, "reply" really means "re-send," so we
-                // target the original recipients. This works as expected even
-                // if the user sent the original message to themselves.
-                for (String address : inToAddresses) {
-                    if (!recipientMatchesThisAccount(address)) {
-                        toAddresses.add(address);
-                    }
+            // In this case, the user is replying to a message in which their
+            // current account or one of their custom from addresses is the only
+            // recipient and they sent the original message.
+            if (inToAddresses.length == 1 && recipientMatchesThisAccount(fullSenderAddress)
+                    && recipientMatchesThisAccount(inToAddresses[0])) {
+                toAddresses.add(inToAddresses[0]);
+                return toAddresses;
+            }
+            // This happens if the user replies to a message they originally
+            // wrote. In this case, "reply" really means "re-send," so we
+            // target the original recipients. This works as expected even
+            // if the user sent the original message to themselves.
+            for (String address : inToAddresses) {
+                if (!recipientMatchesThisAccount(address)) {
+                    toAddresses.add(address);
                 }
             }
         }
@@ -2596,8 +2605,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         clearChangeListeners();
         if (initialComposeMode != mComposeMode) {
             resetMessageForModeChange();
-            if (mDraft == null && mRefMessage != null) {
-                setFieldsFromRefMessage(mComposeMode, mAccount.name);
+            if (mRefMessage != null) {
+                setFieldsFromRefMessage(mComposeMode);
             }
             boolean showCc = false;
             boolean showBcc = false;
@@ -2609,8 +2618,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // If the Bcc field is showing, show the Cc field whether it is populated or not.
                 showCc = showBcc
                         || (!TextUtils.isEmpty(mDraft.getCc()) && mComposeMode == REPLY_ALL);
-            } else if (mRefMessage != null) {
+            }
+            if (mRefMessage != null) {
                 showCc = !TextUtils.isEmpty(mCc.getText());
+                showBcc = !TextUtils.isEmpty(mBcc.getText());
             }
             mCcBccView.show(false, showCc, showBcc);
         }
@@ -2987,16 +2998,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             case REFERENCE_MESSAGE_LOADER:
                 if (data != null && data.moveToFirst()) {
                     mRefMessage = new Message(data);
-                    // We set these based on EXTRA_TO.
-                    mRefMessage.setTo(null);
-                    mRefMessage.setFrom(null);
                     Intent intent = getIntent();
                     int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
-                    initFromRefMessage(action, mAccount.name);
+                    initFromRefMessage(action);
                     finishSetup(action, intent, null, true);
                     if (action != FORWARD) {
                         String to = intent.getStringExtra(EXTRA_TO);
                         if (!TextUtils.isEmpty(to)) {
+                            mRefMessage.setTo(null);
+                            mRefMessage.setFrom(null);
                             clearChangeListeners();
                             mTo.append(to);
                             initChangeListeners();
