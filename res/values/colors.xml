@@ -40,6 +40,7 @@
     <color name="folder_list_background_color">#ffdddddd</color>
     <color name="attachment_bg_color">#ffdddddd</color>
     <color name="swiped_bg_color">#ff999999</color>
+    <color name="holo_light_background_color">#ffe8e8e8</color>
 
     <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>
