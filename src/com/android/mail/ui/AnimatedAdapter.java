@@ -137,8 +137,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mListView = listView;
         mHandler = new Handler();
         if (sDismissAllDelay == -1) {
-            sDismissAllDelay =
-                    context.getResources().getInteger(R.integer.dismiss_all_leavebehinds_delay);
+            sDismissAllDelay = 0;
+                    //context.getResources().getInteger(R.integer.dismiss_all_leavebehinds_delay);
         }
     }
 
