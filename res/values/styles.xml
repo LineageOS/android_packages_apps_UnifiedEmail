@@ -195,16 +195,16 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginTop">12sp</item>
+        <item name="android:layout_marginTop">10sp</item>
     </style>
 
     <style name="SendersStyle">
         <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginTop">10sp</item>
+        <item name="android:layout_marginTop">8sp</item>
     </style>
 
     <style name="CheckmarkStyle">
-        <item name="android:layout_marginTop">-6sp</item>
+        <item name="android:layout_marginTop">-4sp</item>
         <item name="android:layout_marginLeft">8dip</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -482,6 +482,17 @@
         <item name="android:textColor">@color/drafts</item>
     </style>
 
+    <style name="SendersReadTextAppearance" parent="@style/MessageInfoTextAppearance">
+        <item name="android:textColor">@color/senders_text_color_read</item>
+        <item name="android:textSize">@dimen/senders_font_size</item>
+    </style>
+
+    <style name="SendersUnreadTextAppearance" parent="@style/SendersReadTextAppearance">
+        <item name="android:textColor">@color/senders_text_color_unread</item>
+        <item name="android:textSize">@dimen/senders_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="AccountSpinnerStyle">
         <item name="android:layout_width">wrap_content</item>
     </style>
@@ -514,26 +525,9 @@
     <style name="SubjectAppearanceUnreadStyle">
         <item name="android:textColor">@color/subject_text_color_unread</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">sans-serif</item>
     </style>
 
-    <style name="SubjectAppearanceReadStyle">
+    <style name="SubjectAppearanceStyle">
         <item name="android:textColor">@color/subject_text_color_read</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="SendersReadTextAppearance" parent="@style/MessageInfoTextAppearance">
-        <item name="android:textColor">@color/senders_text_color_read</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="SendersUnreadTextAppearance" parent="@style/SendersReadTextAppearance">
-        <item name="android:textColor">@color/senders_text_color_unread</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:fontFamily">sans-serif</item>
     </style>
 </resources>

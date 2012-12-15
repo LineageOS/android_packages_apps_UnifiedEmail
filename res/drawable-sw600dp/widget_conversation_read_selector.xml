@@ -27,5 +27,5 @@
     <item android:state_selected="true"
           android:state_activated="true"
           android:drawable="@drawable/list_conversation_wide_read_selected_holo" />
-    <item android:drawable="@drawable/list_conversation_wide_unread_normal_holo" />
+    <item android:drawable="@drawable/list_conversation_wide_read_normal_holo" />
 </selector>
