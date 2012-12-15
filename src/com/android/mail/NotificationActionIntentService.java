@@ -34,20 +34,11 @@ import com.android.mail.utils.NotificationActionUtils.NotificationAction;
 public class NotificationActionIntentService extends IntentService {
     // Toggle actions
     public static final String ACTION_MARK_READ = "com.android.mail.action.NOTIF_MARK_READ";
-    // TODO(skennedy): We may remove the ability to mark unread
-    public static final String ACTION_MARK_UNREAD = "com.android.mail.action.NOTIF_MARK_UNREAD";
-    public static final String ACTION_STAR = "com.android.mail.action.NOTIF_STAR";
-    public static final String ACTION_UNSTAR = "com.android.mail.action.NOTIF_UNSTAR";
-    public static final String ACTION_MARK_IMPORTANT =
-            "com.android.mail.action.NOTIF_MARK_IMPORTANT";
-    public static final String ACTION_MARK_NOT_IMPORTANT =
-            "com.android.mail.action.NOTIF_MARK_NOT_IMPORTANT";
 
     // Destructive actions - These just display the undo bar
     public static final String ACTION_ARCHIVE_REMOVE_LABEL =
             "com.android.mail.action.NOTIF_ARCHIVE";
     public static final String ACTION_DELETE = "com.android.mail.action.NOTIF_DELETE";
-    public static final String ACTION_MUTE = "com.android.mail.action.NOTIF_MUTE";
 
     /**
      * This action cancels the undo notification, and does not commit any changes.
@@ -81,8 +72,7 @@ public class NotificationActionIntentService extends IntentService {
         if (ACTION_UNDO.equals(action)) {
             NotificationActionUtils.cancelUndoTimeout(context, notificationAction);
             NotificationActionUtils.cancelUndoNotification(context, notificationAction);
-        } else if (ACTION_ARCHIVE_REMOVE_LABEL.equals(action) || ACTION_DELETE.equals(action)
-                || ACTION_MUTE.equals(action)) {
+        } else if (ACTION_ARCHIVE_REMOVE_LABEL.equals(action) || ACTION_DELETE.equals(action)) {
             // All we need to do is switch to an Undo notification
             NotificationActionUtils.createUndoNotification(context, notificationAction);
 
@@ -97,44 +87,6 @@ public class NotificationActionIntentService extends IntentService {
 
                 final ContentValues values = new ContentValues(1);
                 values.put(UIProvider.MessageColumns.READ, 1);
-
-                contentResolver.update(uri, values, null, null);
-            } else if (ACTION_MARK_UNREAD.equals(action)) {
-                // TODO(skennedy): We may remove the ability to mark unread
-                final Uri uri = message.uri;
-
-                final ContentValues values = new ContentValues(1);
-                values.put(UIProvider.MessageColumns.READ, 0);
-
-                contentResolver.update(uri, values, null, null);
-            } else if (ACTION_STAR.equals(action)) {
-                final Uri uri = message.uri;
-
-                final ContentValues values = new ContentValues(1);
-                values.put(UIProvider.MessageColumns.STARRED, 1);
-
-                contentResolver.update(uri, values, null, null);
-            } else if (ACTION_UNSTAR.equals(action)) {
-                final Uri uri = message.uri;
-
-                final ContentValues values = new ContentValues(1);
-                values.put(UIProvider.MessageColumns.STARRED, 0);
-
-                contentResolver.update(uri, values, null, null);
-            } else if (ACTION_MARK_IMPORTANT.equals(action)) {
-                final Uri uri = message.uri;
-
-                final ContentValues values = new ContentValues(1);
-                values.put(UIProvider.ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.IMPORTANT);
-
-                contentResolver.update(uri, values, null, null);
-            } else if (ACTION_MARK_NOT_IMPORTANT.equals(action)) {
-                final Uri uri = message.uri;
-
-                final ContentValues values = new ContentValues(1);
-                values.put(UIProvider.ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.DEFAULT);
 
                 contentResolver.update(uri, values, null, null);
             }

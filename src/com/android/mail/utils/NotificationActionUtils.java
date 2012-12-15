@@ -88,38 +88,8 @@ public class NotificationActionUtils {
             }
         }),
         DELETE("delete", R.drawable.ic_menu_delete_holo_dark, R.string.notification_action_delete),
-        // TODO(skennedy): We may remove the ability to mark unread
         MARK_READ("mark_read", R.drawable.ic_menu_mark_read_holo_dark,
-                R.drawable.ic_menu_mark_unread_holo_dark, R.string.notification_action_mark_read,
-                R.string.notification_action_mark_unread, new ActionToggler() {
-            @Override
-            public boolean shouldDisplayPrimary(final Folder folder,
-                    final Conversation conversation, final Message message) {
-                return message == null || !message.read;
-            }
-        }),
-        ADD_STAR("add_star", R.drawable.ic_menu_add_star_holo_dark,
-                R.drawable.ic_menu_remove_star_holo_dark, R.string.notification_action_add_star,
-                R.string.notification_action_remove_star, new ActionToggler() {
-            @Override
-            public boolean shouldDisplayPrimary(final Folder folder,
-                    final Conversation conversation, final Message message) {
-                return message == null || !message.starred;
-            }
-        }),
-        // TODO(skennedy): Mark important icon, mark not important icon
-        MARK_IMPORTANT("mark_important", R.drawable.ic_email_caret_double_important_unread,
-                R.drawable.ic_email_caret_single_important_unread,
-                R.string.notification_action_mark_important,
-                R.string.notification_action_mark_not_important, new ActionToggler() {
-            @Override
-            public boolean shouldDisplayPrimary(final Folder folder,
-                    final Conversation conversation, final Message message) {
-                return conversation == null || !conversation.isImportant();
-            }
-        }),
-        // TODO(skennedy): Mute icon
-        MUTE("mute", R.drawable.ic_cancel_holo_light, R.string.notification_action_delete);
+                R.string.notification_action_mark_read);
 
         private final String mPersistedValue;
 
@@ -267,17 +237,8 @@ public class NotificationActionUtils {
             if (tempActions.contains(NotificationActionType.DELETE)) {
                 notificationActions.add(NotificationActionType.DELETE);
             }
-            if (tempActions.contains(NotificationActionType.MUTE)) {
-                notificationActions.add(NotificationActionType.MUTE);
-            }
             if (tempActions.contains(NotificationActionType.MARK_READ)) {
                 notificationActions.add(NotificationActionType.MARK_READ);
-            }
-            if (tempActions.contains(NotificationActionType.ADD_STAR)) {
-                notificationActions.add(NotificationActionType.ADD_STAR);
-            }
-            if (tempActions.contains(NotificationActionType.MARK_IMPORTANT)) {
-                notificationActions.add(NotificationActionType.MARK_IMPORTANT);
             }
             if (tempActions.contains(NotificationActionType.REPLY)) {
                 notificationActions.add(NotificationActionType.REPLY);
@@ -301,17 +262,8 @@ public class NotificationActionUtils {
             if (tempActions.contains(NotificationActionType.DELETE)) {
                 notificationActions.add(NotificationActionType.DELETE);
             }
-            if (tempActions.contains(NotificationActionType.MUTE)) {
-                notificationActions.add(NotificationActionType.MUTE);
-            }
             if (tempActions.contains(NotificationActionType.MARK_READ)) {
                 notificationActions.add(NotificationActionType.MARK_READ);
-            }
-            if (tempActions.contains(NotificationActionType.ADD_STAR)) {
-                notificationActions.add(NotificationActionType.ADD_STAR);
-            }
-            if (tempActions.contains(NotificationActionType.MARK_IMPORTANT)) {
-                notificationActions.add(NotificationActionType.MARK_IMPORTANT);
             }
             if (tempActions.contains(NotificationActionType.REPLY)) {
                 notificationActions.add(NotificationActionType.REPLY);
@@ -339,12 +291,6 @@ public class NotificationActionUtils {
             }
             if (tempActions.contains(NotificationActionType.MARK_READ)) {
                 notificationActions.add(NotificationActionType.MARK_READ);
-            }
-            if (tempActions.contains(NotificationActionType.ADD_STAR)) {
-                notificationActions.add(NotificationActionType.ADD_STAR);
-            }
-            if (tempActions.contains(NotificationActionType.MARK_IMPORTANT)) {
-                notificationActions.add(NotificationActionType.MARK_IMPORTANT);
             }
             if (tempActions.contains(NotificationActionType.REPLY)) {
                 notificationActions.add(NotificationActionType.REPLY);
@@ -439,43 +385,7 @@ public class NotificationActionUtils {
                 return PendingIntent.getService(
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case MARK_READ: {
-                // TODO(skennedy): We may remove the ability to mark unread
-                final String intentAction =
-                        message.read ? NotificationActionIntentService.ACTION_MARK_UNREAD
-                                : NotificationActionIntentService.ACTION_MARK_READ;
-
-                final Intent intent = new Intent(intentAction);
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                        notificationAction);
-
-                return PendingIntent.getService(
-                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            } case ADD_STAR: {
-                final String intentAction =
-                        message.starred ? NotificationActionIntentService.ACTION_UNSTAR
-                                : NotificationActionIntentService.ACTION_STAR;
-
-                final Intent intent = new Intent(intentAction);
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                        notificationAction);
-
-                return PendingIntent.getService(
-                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            } case MARK_IMPORTANT: {
-                final String intentAction =
-                        conversation.isImportant() ?
-                                NotificationActionIntentService.ACTION_MARK_NOT_IMPORTANT
-                                : NotificationActionIntentService.ACTION_MARK_IMPORTANT;
-
-                final Intent intent = new Intent(intentAction);
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                        notificationAction);
-
-                return PendingIntent.getService(
-                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            }
-            case MUTE: {
-                final String intentAction = NotificationActionIntentService.ACTION_MUTE;
+                final String intentAction = NotificationActionIntentService.ACTION_MARK_READ;
 
                 final Intent intent = new Intent(intentAction);
                 intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
@@ -580,8 +490,6 @@ public class NotificationActionUtils {
                     }
                 case DELETE:
                     return R.string.notification_action_undo_delete;
-                case MUTE:
-                    return R.string.notification_action_undo_mute;
                 default:
                     throw new IllegalStateException(
                             "There is no action text for this NotificationActionType.");
@@ -759,14 +667,6 @@ public class NotificationActionUtils {
             }
             case DELETE: {
                 contentResolver.delete(uri, null, null);
-                break;
-            }
-            case MUTE: {
-                final ContentValues values = new ContentValues(1);
-                values.put(UIProvider.ConversationOperations.OPERATION_KEY,
-                        UIProvider.ConversationOperations.MUTE);
-
-                contentResolver.update(uri, values, null, null);
                 break;
             }
             default:
