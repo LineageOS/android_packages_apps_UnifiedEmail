@@ -765,17 +765,6 @@
     <!-- Notification action for marking a message as read. [CHAR LIMIT=20] -->
     <string name="notification_action_mark_read">Mark read</string>
     <!-- Notification action for marking a message as unread. [CHAR LIMIT=20] -->
-    <string name="notification_action_mark_unread">Mark unread</string>
-    <!-- Notification action for adding a star to a message. [CHAR LIMIT=20] -->
-    <string name="notification_action_add_star">Add star</string>
-    <!-- Notification action for removing a star from a message. [CHAR LIMIT=20] -->
-    <string name="notification_action_remove_star">Remove star</string>
-    <!-- Notification action for marking a message as important. [CHAR LIMIT=20] -->
-    <string name="notification_action_mark_important">Mark important</string>
-    <!-- Notification action for marking a message as not important. [CHAR LIMIT=30] -->
-    <string name="notification_action_mark_not_important">Mark not important</string>
-    <!-- Notification action for muting a message. [CHAR LIMIT=20] -->
-    <string name="notification_action_mute">Mute</string>
 
     <!-- Notification undo text after archiving a message. [CHAR LIMIT=30] -->
     <string name="notification_action_undo_archive">Archived</string>
@@ -783,6 +772,4 @@
     <string name="notification_action_undo_remove_label">Label Removed</string>
     <!-- Notification undo text after deleting a message. [CHAR LIMIT=30] -->
     <string name="notification_action_undo_delete">Deleted</string>
-    <!-- Notification undo text after muting a message. [CHAR LIMIT=30] -->
-    <string name="notification_action_undo_mute">Muted</string>
 </resources>
