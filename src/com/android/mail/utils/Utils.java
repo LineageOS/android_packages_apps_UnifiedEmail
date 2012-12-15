@@ -16,6 +16,12 @@
 
 package com.android.mail.utils;
 
+import com.google.android.common.html.parser.HtmlDocument;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTree;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
+import com.google.common.collect.Maps;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +34,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -49,16 +54,12 @@ import android.webkit.WebView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
-import com.google.android.common.html.parser.HtmlDocument;
-import com.google.android.common.html.parser.HtmlParser;
-import com.google.android.common.html.parser.HtmlTree;
-import com.google.android.common.html.parser.HtmlTreeBuilder;
-import com.google.common.collect.Maps;
 
 import org.json.JSONObject;
 
@@ -1161,4 +1162,22 @@ public class Utils {
         return count;
     }
 
+    /**
+     * @return an intent which, if launched, will reply to the conversation
+     */
+    public static Intent createReplyIntent(final Context context, final Account account,
+            final Uri messageUri, final boolean isReplyAll) {
+        final Intent intent =
+                ComposeActivity.createReplyIntent(context, account, messageUri, isReplyAll);
+        return intent;
+    }
+
+    /**
+     * @return an intent which, if launched, will forward the conversation
+     */
+    public static Intent createForwardIntent(
+            final Context context, final Account account, final Uri messageUri) {
+        final Intent intent = ComposeActivity.createForwardIntent(context, account, messageUri);
+        return intent;
+    }
 }

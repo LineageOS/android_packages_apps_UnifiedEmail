@@ -34,6 +34,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.widget.RemoteViews;
 
+import com.android.mail.MailIntentService;
 import com.android.mail.NotificationActionIntentService;
 import com.android.mail.R;
 import com.android.mail.compose.ComposeActivity;
@@ -69,9 +70,6 @@ public class NotificationActionUtils {
      * the original notification if the action is undone.
      */
     public static final SparseLongArray sNotificationTimestamps = new SparseLongArray();
-
-    public static final String ACTION_RESEND_NOTIFICATIONS =
-            "com.android.mail.action.RESEND_NOTIFICATIONS";
 
     public enum NotificationActionType {
         REPLY("reply", R.drawable.ic_reply_holo_dark, R.string.notification_action_reply),
@@ -331,8 +329,19 @@ public class NotificationActionUtils {
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
 
-                return taskStackBuilder.getPendingIntent(
+                final PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                final String intentAction = NotificationActionIntentService.ACTION_REPLY;
+
+                final Intent intent = new Intent(intentAction);
+                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
+                        notificationAction);
+                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_PENDING_INTENT,
+                        pendingIntent);
+
+                return PendingIntent.getService(
+                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case REPLY_ALL: {
                 // Build a task stack that forces the conversation view on the stack before the
                 // reply activity.
@@ -342,13 +351,24 @@ public class NotificationActionUtils {
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
-                        Uri.parse("gmailfrom://gmail-ls/account/" + "reply/" + notificationId);
+                        Uri.parse("gmailfrom://gmail-ls/account/" + "replyall/" + notificationId);
                 replyIntent.setData(notificationUri);
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
 
-                return taskStackBuilder.getPendingIntent(
+                final PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                final String intentAction = NotificationActionIntentService.ACTION_REPLY_ALL;
+
+                final Intent intent = new Intent(intentAction);
+                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
+                        notificationAction);
+                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_PENDING_INTENT,
+                        pendingIntent);
+
+                return PendingIntent.getService(
+                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case FORWARD: {
                 // Build a task stack that forces the conversation view on the stack before the
                 // reply activity.
@@ -358,13 +378,24 @@ public class NotificationActionUtils {
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
-                        Uri.parse("gmailfrom://gmail-ls/account/" + "reply/" + notificationId);
+                        Uri.parse("gmailfrom://gmail-ls/account/" + "forward/" + notificationId);
                 replyIntent.setData(notificationUri);
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
 
-                return taskStackBuilder.getPendingIntent(
+                final PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                final String intentAction = NotificationActionIntentService.ACTION_FORWARD;
+
+                final Intent intent = new Intent(intentAction);
+                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
+                        notificationAction);
+                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_PENDING_INTENT,
+                        pendingIntent);
+
+                return PendingIntent.getService(
+                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case ARCHIVE_REMOVE_LABEL: {
                 final String intentAction =
                         NotificationActionIntentService.ACTION_ARCHIVE_REMOVE_LABEL;
@@ -680,7 +711,7 @@ public class NotificationActionUtils {
      */
     public static void createUndoNotification(final Context context,
             final NotificationAction notificationAction) {
-        final int notificationId = getUndoNotificationId(
+        final int notificationId = getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder());
 
         final Notification notification =
@@ -696,7 +727,7 @@ public class NotificationActionUtils {
 
     public static void cancelUndoNotification(final Context context,
             final NotificationAction notificationAction) {
-        sUndoNotifications.delete(getUndoNotificationId(
+        sUndoNotifications.delete(getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder()));
         resendNotifications(context);
     }
@@ -707,7 +738,7 @@ public class NotificationActionUtils {
      */
     public static void processUndoNotification(final Context context,
             final NotificationAction notificationAction) {
-        final int notificationId = getUndoNotificationId(
+        final int notificationId = getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder());
         sUndoNotifications.delete(notificationId);
         sNotificationTimestamps.delete(notificationId);
@@ -715,7 +746,7 @@ public class NotificationActionUtils {
         resendNotifications(context);
     }
 
-    private static int getUndoNotificationId(final String account, final Folder folder) {
+    public static int getNotificationId(final String account, final Folder folder) {
         // TODO(skennedy): When notifications are fully in UnifiedEmail, remove this method and use
         // the one in Utils
         // 1 == Gmail.NOTIFICATION_ID
@@ -726,7 +757,7 @@ public class NotificationActionUtils {
      * Broadcasts an {@link Intent} to inform the app to resend its notifications.
      */
     public static void resendNotifications(final Context context) {
-        final Intent intent = new Intent(ACTION_RESEND_NOTIFICATIONS);
+        final Intent intent = new Intent(MailIntentService.ACTION_RESEND_NOTIFICATIONS);
         intent.setPackage(context.getPackageName()); // Make sure we only deliver this to ourself
         context.startService(intent);
     }

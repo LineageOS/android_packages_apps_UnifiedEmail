@@ -16,6 +16,8 @@
 package com.android.mail;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
+import android.app.PendingIntent.CanceledException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -23,8 +25,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.NotificationActionUtils.NotificationAction;
 
@@ -32,6 +37,12 @@ import com.android.mail.utils.NotificationActionUtils.NotificationAction;
  * Processes notification action {@link Intent}s that need to run off the main thread.
  */
 public class NotificationActionIntentService extends IntentService {
+    private static final String TAG = "NotificationActionIntentService";
+
+    // Compose actions
+    public static final String ACTION_REPLY = "com.android.mail.action.NOTIF_REPLY";
+    public static final String ACTION_REPLY_ALL = "com.android.mail.action.NOTIF_REPLY_ALL";
+    public static final String ACTION_FORWARD = "com.android.mail.action.NOTIF_FORWARD";
     // Toggle actions
     public static final String ACTION_MARK_READ = "com.android.mail.action.NOTIF_MARK_READ";
 
@@ -52,6 +63,8 @@ public class NotificationActionIntentService extends IntentService {
 
     public static final String EXTRA_NOTIFICATION_ACTION =
             "com.android.mail.extra.EXTRA_NOTIFICATION_ACTION";
+    public static final String EXTRA_NOTIFICATION_PENDING_INTENT =
+            "com.android.mail.extra.EXTRA_NOTIFICATION_PENDING_INTENT";
     public static final String ACTION_UNDO_TIMEOUT = "com.android.mail.action.NOTIF_UNDO_TIMEOUT";
 
     public NotificationActionIntentService() {
@@ -78,10 +91,24 @@ public class NotificationActionIntentService extends IntentService {
 
             NotificationActionUtils.registerUndoTimeout(context, notificationAction);
         } else {
+            final Account account = notificationAction.getAccount();
+            final String accountName = account.name;
+
             if (ACTION_UNDO_TIMEOUT.equals(action) || ACTION_DESTRUCT.equals(action)) {
                 // Process the action
                 NotificationActionUtils.cancelUndoTimeout(this, notificationAction);
                 NotificationActionUtils.processUndoNotification(this, notificationAction);
+            } else if (ACTION_REPLY.equals(action) || ACTION_REPLY_ALL.equals(action)
+                    || ACTION_FORWARD.equals(action)) {
+                cancelNotifications(accountName, notificationAction.getFolder());
+
+                final PendingIntent pendingIntent =
+                        intent.getParcelableExtra(EXTRA_NOTIFICATION_PENDING_INTENT);
+                try {
+                    pendingIntent.send();
+                } catch (final CanceledException e) {
+                    LogUtils.e(TAG, "Error replying from notification action", e);
+                }
             } else if (ACTION_MARK_READ.equals(action)) {
                 final Uri uri = message.uri;
 
@@ -93,5 +120,13 @@ public class NotificationActionIntentService extends IntentService {
 
             NotificationActionUtils.resendNotifications(context);
         }
+    }
+
+    private void cancelNotifications(final String account, final Folder folder) {
+        final Intent intent = new Intent(MailIntentService.ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS);
+        intent.putExtra(MailIntentService.CLEAR_NEW_MAIL_NOTIFICATIONS_ACCOUNT_EXTRA, account);
+        intent.putExtra(MailIntentService.CLEAR_NEW_MAIL_NOTIFICATIONS_FOLDER_EXTRA, folder);
+
+        startService(intent);
     }
 }
