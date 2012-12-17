@@ -84,7 +84,7 @@ public class NotificationActionUtils {
             @Override
             public boolean shouldDisplayPrimary(final Folder folder,
                     final Conversation conversation, final Message message) {
-                return folder.type == FolderType.INBOX;
+                return folder == null || folder.type == FolderType.INBOX;
             }
         }),
         DELETE("delete", R.drawable.ic_menu_delete_holo_dark, R.string.notification_action_delete),
