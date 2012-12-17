@@ -2749,7 +2749,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         appendToBody(text, false);
         mQuotedTextView.setUpperDividerVisible(false);
         mRespondedInline = true;
-        mTo.requestFocus();
+        if (!mBodyView.hasFocus()) {
+            focusBody();
+        }
     }
 
     /**
