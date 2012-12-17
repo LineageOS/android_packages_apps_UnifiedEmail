@@ -23,6 +23,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.webkit.WebView;
 
 import com.android.mail.R;
@@ -145,6 +147,8 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
 
     private ContentSizeChangeListener mSizeChangeListener;
 
+    private ScaleGestureDetector mScaleDetector;
+
     private int mCachedContentHeight;
 
     private final int mViewportWidth;
@@ -188,6 +192,13 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
         mSizeChangeListener = l;
     }
 
+    public void setOnScaleGestureListener(OnScaleGestureListener l) {
+        if (l == null) {
+            mScaleDetector = null;
+        } else {
+            mScaleDetector = new ScaleGestureDetector(getContext(), l);
+        }
+    }
 
     @Override
     public int computeVerticalScrollRange() {
@@ -259,7 +270,13 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
                 break;
         }
 
-        return super.onTouchEvent(ev);
+        final boolean handled = super.onTouchEvent(ev);
+
+        if (mScaleDetector != null) {
+            mScaleDetector.onTouchEvent(ev);
+        }
+
+        return handled;
     }
 
     public boolean isHandlingTouch() {
@@ -297,4 +314,5 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
     public float webPxToScreenPxError(int webPx) {
         return webPx * getInitialScale() - webPxToScreenPx(webPx);
     }
+
 }
