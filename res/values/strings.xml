@@ -762,9 +762,8 @@
     <string name="notification_action_remove_label">Remove label</string>
     <!-- Notification action for deleting a message. [CHAR LIMIT=20] -->
     <string name="notification_action_delete">Delete</string>
-    <!-- Notification action for marking a message as read. [CHAR LIMIT=20] -->
+    <!-- Notification action for marking a message as read. [CHAR LIMIT=24] -->
     <string name="notification_action_mark_read">Mark read</string>
-    <!-- Notification action for marking a message as unread. [CHAR LIMIT=20] -->
 
     <!-- Notification undo text after archiving a message. [CHAR LIMIT=30] -->
     <string name="notification_action_undo_archive">Archived</string>
