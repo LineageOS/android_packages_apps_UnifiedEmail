@@ -55,7 +55,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class NotificationActionUtils {
-    private static final long UNDO_TIMEOUT_MILLIS = 10 * DateUtils.SECOND_IN_MILLIS;
+    private static long sUndoTimeoutMillis = -1;
 
     /**
      * If an {@link NotificationAction} exists here for a given notification key, then we should
@@ -618,10 +618,15 @@ public class NotificationActionUtils {
      */
     public static void registerUndoTimeout(
             final Context context, final NotificationAction notificationAction) {
+        if (sUndoTimeoutMillis == -1) {
+            sUndoTimeoutMillis =
+                    context.getResources().getInteger(R.integer.undo_notification_timeout);
+        }
+
         final AlarmManager alarmManager =
                 (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        final long triggerAtMills = SystemClock.elapsedRealtime() + UNDO_TIMEOUT_MILLIS;
+        final long triggerAtMills = SystemClock.elapsedRealtime() + sUndoTimeoutMillis;
 
         final PendingIntent pendingIntent =
                 createUndoTimeoutPendingIntent(context, notificationAction);
