@@ -1400,6 +1400,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onDestroy() {
+        // stop listening to the cursor on e.g. configuration changes
+        if (mConversationListCursor != null) {
+            mConversationListCursor.removeListener(this);
+        }
         // unregister the ViewPager's observer on the conversation cursor
         mPagerController.onDestroy();
         mActionBarView.onDestroy();
@@ -2354,6 +2358,12 @@ public abstract class AbstractActivityController implements ActivityController {
     public final void onRefreshReady() {
         LogUtils.d(LOG_TAG, "Received refresh ready callback for folder %s",
                 mFolder != null ? mFolder.id : "-1");
+
+        if (mDestroyed) {
+            LogUtils.i(LOG_TAG, "ignoring onRefreshReady on destroyed AAC");
+            return;
+        }
+
         if (!isAnimating()) {
             // Swap cursors
             mConversationListCursor.sync();
