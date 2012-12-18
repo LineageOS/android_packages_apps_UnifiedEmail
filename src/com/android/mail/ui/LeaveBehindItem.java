@@ -72,12 +72,11 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         int id = v.getId();
         switch (id) {
             case R.id.swipeable_content:
-                if (mAccount.undoUri != null) {
+                if (mAccount.undoUri != null && !mInert) {
                     // NOTE: We might want undo to return the messages affected,
                     // in which case the resulting cursor might be interesting...
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate
                     // the set of commands to undo
-                    mAdapter.clearLeaveBehind(getConversationId());
                     mAdapter.setSwipeUndo(true);
                     ConversationCursor cursor = mAdapter.getConversationCursor();
                     if (cursor != null) {
@@ -135,7 +134,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
 
     @Override
     public boolean canChildBeDismissed() {
-        return true;
+        return !mInert;
     }
 
     public LeaveBehindData getLeaveBehindData() {
@@ -147,6 +146,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     private int mWidth;
     private boolean mAnimating;
     private boolean mFadingInText;
+    private boolean mInert = false;
 
     /**
      * Start the animation on an animating view.
@@ -165,25 +165,21 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
             ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
             mAnimatedHeight = start;
             mWidth = getMeasuredWidth();
-            mSwipeableContent.setVisibility(View.GONE);
-            height.setInterpolator(new DecelerateInterpolator(2.0f));
-            height.addListener(listener);
+            height.setInterpolator(new DecelerateInterpolator(1.0f));
             height.setDuration(sShrinkAnimationDuration);
+            height.addListener(listener);
             height.start();
         }
     }
 
-    public void startFadeInAnimation(boolean delay) {
+    public void startFadeInAnimation() {
         if (!mFadingInText) {
             mFadingInText = true;
             final float start = 0;
             final float end = 1.0f;
-            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(mText, "alpha", start, end);
-            mText.setAlpha(0);
-            if (delay) {
-                fadeIn.setStartDelay(sShrinkAnimationDuration);
-            }
-            fadeIn.setInterpolator(new DecelerateInterpolator(2.0f));
+            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(mSwipeableContent, "alpha", start, end);
+            mSwipeableContent.setAlpha(0);
+            fadeIn.setInterpolator(new DecelerateInterpolator(1.0f));
             fadeIn.setDuration(sFadeInAnimationDuration);
             fadeIn.start();
         }
@@ -230,5 +226,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     // TODO(mindyp): is there a nice way to animate the text away?
     public void makeInert() {
         mSwipeableContent.setVisibility(View.GONE);
+        mInert = true;
     }
 }

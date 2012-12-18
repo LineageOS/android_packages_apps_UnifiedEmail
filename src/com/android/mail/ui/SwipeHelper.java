@@ -212,6 +212,7 @@ public class SwipeHelper {
                     mInitialTouchPosX = ev.getX();
                     mInitialTouchPosY = ev.getY();
                 }
+                mCallback.cancelDismissCounter();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mCurrView != null) {
@@ -472,6 +473,8 @@ public class SwipeHelper {
 
     public interface Callback {
         View getChildAtPosition(MotionEvent ev);
+
+        void cancelDismissCounter();
 
         void onScroll();
 

@@ -137,9 +137,17 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mListView = listView;
         mHandler = new Handler();
         if (sDismissAllDelay == -1) {
-            sDismissAllDelay = 0;
-                    //context.getResources().getInteger(R.integer.dismiss_all_leavebehinds_delay);
+            sDismissAllDelay =
+                    context.getResources().getInteger(R.integer.dismiss_all_leavebehinds_delay);
         }
+    }
+
+    public void cancelDismissCounter() {
+        mHandler.removeCallbacks(mCountDown);
+    }
+
+    public void startDismissCounter() {
+        mHandler.postDelayed(mCountDown, sDismissAllDelay);
     }
 
     public final void destroy() {
@@ -155,9 +163,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     public void setUndo(boolean undo) {
-        if (undo && !mLastDeletingItems.isEmpty()) {
-            mUndoingItems.addAll(mLastDeletingItems);
-            mLastDeletingItems.clear();
+        if (undo) {
+            if (!mLastDeletingItems.isEmpty()) {
+                mUndoingItems.addAll(mLastDeletingItems);
+                mLastDeletingItems.clear();
+            }
+            if (mLastLeaveBehind != -1) {
+                mUndoingItems.add(mLastLeaveBehind);
+                mLastLeaveBehind = -1;
+            }
             // Start animation
             notifyDataSetChanged();
             performAndSetNextAction(mRefreshAction);
@@ -165,9 +179,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     public void setSwipeUndo(boolean undo) {
-        if (undo && !mLastDeletingItems.isEmpty()) {
-            mSwipeUndoingItems.addAll(mLastDeletingItems);
-            mLastDeletingItems.clear();
+        if (undo) {
+            if (!mLastDeletingItems.isEmpty()) {
+                mSwipeUndoingItems.addAll(mLastDeletingItems);
+                mLastDeletingItems.clear();
+            }
+            if (mLastLeaveBehind != -1) {
+                mSwipeUndoingItems.add(mLastLeaveBehind);
+                mLastLeaveBehind = -1;
+            }
             // Start animation
             notifyDataSetChanged();
             performAndSetNextAction(mRefreshAction);
@@ -299,7 +319,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (hasLeaveBehinds()) {
             if (isPositionLeaveBehind(conv)) {
                 LeaveBehindItem fadeIn = getLeaveBehindItem(conv);
-                fadeIn.startFadeInAnimation(hasFadeLeaveBehinds());
+                fadeIn.startFadeInAnimation();
                 return fadeIn;
             }
         }
@@ -366,7 +386,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 item.makeInert();
             }
         }
-        mHandler.postDelayed(mCountDown, sDismissAllDelay);
+        startDismissCounter();
     }
 
     protected void startFadeOutLeaveBehindItemsAnimations() {

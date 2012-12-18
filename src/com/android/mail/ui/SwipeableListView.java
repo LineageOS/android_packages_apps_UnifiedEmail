@@ -260,6 +260,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             view.addBackground(getContext());
             view.setBackgroundVisibility(View.VISIBLE);
         }
+        cancelDismissCounter();
     }
 
     @Override
@@ -270,6 +271,10 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         }
         if (view != null) {
             view.removeBackground();
+        }
+        final AnimatedAdapter adapter = getAnimatedAdapter();
+        if (adapter != null) {
+            adapter.startDismissCounter();
         }
     }
 
@@ -359,6 +364,14 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
                 break;
             default:
                 mScrolling = true;
+        }
+    }
+
+    @Override
+    public void cancelDismissCounter() {
+        AnimatedAdapter adapter = getAnimatedAdapter();
+        if (adapter != null) {
+            adapter.cancelDismissCounter();
         }
     }
 }
