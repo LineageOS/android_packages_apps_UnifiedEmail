@@ -18,7 +18,7 @@ LOCAL_PATH:= $(call my-dir)
 chips_dir := ../../../frameworks/ex/chips/res
 
 #Include res dir from photoviewer
-photo_dir := ../../../frameworks/ex/photoviewer/res
+photo_dir := ../../../frameworks/opt/photoviewer/res
 res_dirs := $(chips_dir) $(photo_dir) res
 
 ##################################################
@@ -29,7 +29,7 @@ src_dirs := src unified_src
 LOCAL_PACKAGE_NAME := UnifiedEmail
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common-chips
-LOCAL_STATIC_JAVA_LIBRARIES += android-common-photoviewer
+LOCAL_STATIC_JAVA_LIBRARIES += libphotoviewer
 LOCAL_STATIC_JAVA_LIBRARIES += guava
 LOCAL_STATIC_JAVA_LIBRARIES += android-common
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
