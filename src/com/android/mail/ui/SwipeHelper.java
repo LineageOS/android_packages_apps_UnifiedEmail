@@ -30,7 +30,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.DecelerateInterpolator;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemView;
@@ -50,7 +50,8 @@ public class SwipeHelper {
     public static final int X = 0;
     public static final int Y = 1;
 
-    private static LinearInterpolator sLinearInterpolator = new LinearInterpolator();
+    private static DecelerateInterpolator sDecelerateInterpolator =
+                                                            new DecelerateInterpolator(1.0f);
 
     private static int SWIPE_ESCAPE_VELOCITY = -1;
     private static int DEFAULT_ESCAPE_ANIMATION_DURATION;
@@ -125,7 +126,7 @@ public class SwipeHelper {
 
     private ObjectAnimator createDismissAnimation(View v, float newPos, int duration) {
         ObjectAnimator anim = createTranslationAnimation(v, newPos);
-        anim.setInterpolator(sLinearInterpolator);
+        anim.setInterpolator(sDecelerateInterpolator);
         anim.setDuration(duration);
         return anim;
     }
