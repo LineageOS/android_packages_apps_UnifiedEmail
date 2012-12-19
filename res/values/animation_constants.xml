@@ -38,5 +38,5 @@
     <dimen name="min_swipe">10dip</dimen>
     <dimen name="min_vert">10dip</dimen>
     <dimen name="min_lock">20dip</dimen>
-    <integer name="dismiss_all_leavebehinds_delay">800</integer>
+    <integer name="dismiss_all_leavebehinds_delay">500</integer>
 </resources>
