@@ -343,9 +343,11 @@ public class ConversationItemViewModel {
             boolean isToday = DateUtils.isToday(conversation.dateMs);
             String date = DateUtils.getRelativeTimeSpanString(context, conversation.dateMs)
                     .toString();
+            String readString = context.getString(
+                    conversation.read ? R.string.read_string : R.string.unread_string);
             int res = isToday ? R.string.content_description_today : R.string.content_description;
             mContentDescription = context.getString(res, sender,
-                    conversation.subject, conversation.getSnippet(), date);
+                    conversation.subject, conversation.getSnippet(), date, readString);
         }
         return mContentDescription;
     }
