@@ -323,6 +323,12 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         mActionHandler.shareAttachments(uris);
     }
 
+    @Override
+    public void onNewPhotoLoaded() {
+        // Don't call the super class, as the default implementation calls setViewActivated()
+        // and we don't want to do that
+    }
+
     /**
      * Helper method to get the currently visible attachment.
      * @return
