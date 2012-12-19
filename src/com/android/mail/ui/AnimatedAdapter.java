@@ -731,4 +731,18 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public ConversationCursor getConversationCursor() {
         return (ConversationCursor) getCursor();
     }
+
+    public void abortFadeOutLastLeaveBehindItemText() {
+        if (mLastLeaveBehind != -1) {
+            // Abort fade out of item; swipe was cancelled.
+            mLeaveBehindItems.get(mLastLeaveBehind).abortFadeOutText();
+        }
+    }
+
+    public LeaveBehindItem getLastLeaveBehindItem() {
+        if (mLastLeaveBehind != -1) {
+            return mLeaveBehindItems.get(mLastLeaveBehind);
+        }
+        return null;
+    }
 }

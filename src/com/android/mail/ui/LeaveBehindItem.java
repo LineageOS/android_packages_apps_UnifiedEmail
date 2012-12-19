@@ -148,6 +148,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     private boolean mAnimating;
     private boolean mFadingInText;
     private boolean mInert = false;
+    private ObjectAnimator mFadeIn;
 
     /**
      * Start the animation on an animating view.
@@ -166,11 +167,19 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
             ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
             mAnimatedHeight = start;
             mWidth = getMeasuredWidth();
-            height.setInterpolator(new DecelerateInterpolator(1.0f));
+            height.setInterpolator(new DecelerateInterpolator(1.75f));
             height.setDuration(sShrinkAnimationDuration);
             height.addListener(listener);
             height.start();
         }
+    }
+
+    public void abortFadeOutText() {
+        mSwipeableContent.setAlpha(1.0f);
+    }
+
+    public void fadeOutText(float alpha) {
+        mSwipeableContent.setAlpha(alpha);
     }
 
     public void startFadeInAnimation() {
@@ -178,11 +187,17 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
             mFadingInText = true;
             final float start = 0;
             final float end = 1.0f;
-            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(mSwipeableContent, "alpha", start, end);
+            mFadeIn = ObjectAnimator.ofFloat(mSwipeableContent, "alpha", start, end);
             mSwipeableContent.setAlpha(0);
-            fadeIn.setInterpolator(new DecelerateInterpolator(1.0f));
-            fadeIn.setDuration(sFadeInAnimationDuration);
-            fadeIn.start();
+            mFadeIn.setInterpolator(new DecelerateInterpolator(1.0f));
+            mFadeIn.setDuration(sFadeInAnimationDuration / 2);
+            mFadeIn.start();
+        }
+    }
+
+    public void cancelFadeInAnimation() {
+        if (mFadeIn != null) {
+            mFadeIn.cancel();
         }
     }
 
@@ -224,8 +239,10 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         return sScrollSlop;
     }
 
-    // TODO(mindyp): is there a nice way to animate the text away?
     public void makeInert() {
+        if (mFadeIn != null) {
+            mFadeIn.cancel();
+        }
         mSwipeableContent.setVisibility(View.GONE);
         mInert = true;
     }
