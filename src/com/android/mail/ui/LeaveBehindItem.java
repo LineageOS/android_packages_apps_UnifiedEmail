@@ -78,6 +78,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate
                     // the set of commands to undo
                     mAdapter.setSwipeUndo(true);
+                    mAdapter.clearLeaveBehind(getConversationId());
                     ConversationCursor cursor = mAdapter.getConversationCursor();
                     if (cursor != null) {
                         cursor.undo(getContext(), mAccount.undoUri);
