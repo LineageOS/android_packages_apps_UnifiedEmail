@@ -678,7 +678,8 @@ public class NotificationActionUtils {
         final Folder folder = notificationAction.getFolder();
 
         final ContentResolver contentResolver = context.getContentResolver();
-        final Uri uri = conversation.uri;
+        final Uri uri = conversation.uri.buildUpon().appendQueryParameter(
+                UIProvider.FORCE_UI_NOTIFICATIONS_QUERY_PARAMETER, Boolean.TRUE.toString()).build();
 
         switch (destructAction) {
             case ARCHIVE_REMOVE_LABEL: {

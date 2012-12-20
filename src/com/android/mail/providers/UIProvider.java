@@ -1901,6 +1901,12 @@ public class UIProvider {
     // Parameter used to indicate the sequence number for an undoable operation
     public static final String SEQUENCE_QUERY_PARAMETER = "seq";
 
+    /**
+     * Parameter used to force UI notifications in an operation involving
+     * {@link ConversationOperations#OPERATION_KEY}.
+     */
+    public static final String FORCE_UI_NOTIFICATIONS_QUERY_PARAMETER = "forceUiNotifications";
+
     public static final String AUTO_ADVANCE_MODE_OLDER = "older";
     public static final String AUTO_ADVANCE_MODE_NEWER = "newer";
     public static final String AUTO_ADVANCE_MODE_LIST = "list";
