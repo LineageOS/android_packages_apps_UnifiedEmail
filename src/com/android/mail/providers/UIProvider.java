@@ -19,11 +19,7 @@ package com.android.mail.providers;
 
 import com.google.common.collect.ImmutableMap;
 
-import android.content.ContentProvider;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
@@ -1313,6 +1309,15 @@ public class UIProvider {
          */
         public static final String SEND_MESSAGE = "send_message";
 
+        /**
+         * Change account method.  The Bundle for the call to
+         * {@link android.content.ContentResolver#call()} should have the columns specified in
+         * {@link SetCurrentAccountColumns}
+         *
+         * The Bundle returned will be empty.
+         */
+        public static final String SET_CURRENT_ACCOUNT = "set_current_account";
+
         private AccountCallMethods() {}
     }
 
@@ -1678,6 +1683,15 @@ public class UIProvider {
         public static final String IS_SENDING = "isSending";
 
         private MessageColumns() {}
+    }
+
+     public static final class SetCurrentAccountColumns {
+        /**
+         * This column contains the Account object Parcelable.
+         */
+        public static final String ACCOUNT = "account";
+
+        private SetCurrentAccountColumns() {}
     }
 
     /**
