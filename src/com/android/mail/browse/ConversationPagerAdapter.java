@@ -128,7 +128,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         return mSingletonMode || mDetachedMode || getCursor() == null;
     }
 
-    private Cursor getCursor() {
+    private ConversationCursor getCursor() {
         if (mController == null) {
             // Happens when someone calls setActivityController(null) on us. This is done in
             // ConversationPagerController.stopListening() to indicate that the Conversation View
@@ -343,27 +343,28 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             return 0;
         }
 
-        final Cursor cursor = getCursor();
+        final ConversationCursor cursor = getCursor();
         if (cursor == null || conv == null) {
             return POSITION_NONE;
         }
 
-        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
-
         int result = POSITION_NONE;
-        int pos = -1;
-        while (cursor.moveToPosition(++pos)) {
-            final long id = cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
-            if (conv.id == id) {
-                LogUtils.d(LOG_TAG, "pager adapter found repositioned convo '%s' at pos=%d",
-                        conv.subject, pos);
-                result = pos;
-                break;
+        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
+        try {
+            int pos = -1;
+            while (cursor.moveToPosition(++pos)) {
+                final long id = Utils.getConversationId(cursor);
+                if (conv.id == id) {
+                    LogUtils.d(LOG_TAG, "pager adapter found repositioned convo '%s' at pos=%d",
+                            conv.subject, pos);
+                    result = pos;
+                    break;
+                }
             }
-        }
-
-        if (networkWasEnabled) {
-            Utils.enableConversationCursorNetworkAccess(cursor);
+        } finally {
+            if (networkWasEnabled) {
+                Utils.enableConversationCursorNetworkAccess(cursor);
+            }
         }
 
         return result;

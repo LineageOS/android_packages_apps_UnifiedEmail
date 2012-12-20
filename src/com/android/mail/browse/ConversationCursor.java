@@ -364,7 +364,8 @@ public final class ConversationCursor implements Cursor {
     private void resetCursor(UnderlyingCursorWrapper newCursorWrapper) {
         synchronized (mCacheMapLock) {
             // Walk through the cache
-            Iterator<HashMap.Entry<String, ContentValues>> iter = mCacheMap.entrySet().iterator();
+            final Iterator<HashMap.Entry<String, ContentValues>> iter =
+                    mCacheMap.entrySet().iterator();
             final long now = System.currentTimeMillis();
             while (iter.hasNext()) {
                 HashMap.Entry<String, ContentValues> entry = iter.next();
