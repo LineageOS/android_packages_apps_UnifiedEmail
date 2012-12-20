@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
@@ -111,7 +112,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
-            mAccount = newAccount;
+            updateAccount(newAccount);
             if (mFolderAccountName != null) {
                 mFolderAccountName.setText(mAccount.name);
             }
@@ -242,7 +243,18 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mSpinner = (MailSpinner) findViewById(R.id.account_spinner);
         mSpinner.setAdapter(mSpinnerAdapter);
         mSpinner.setController(mController);
-        mAccount = mAccountObserver.initialize(activity.getAccountController());
+        updateAccount(mAccountObserver.initialize(activity.getAccountController()));
+    }
+
+    private void updateAccount(Account account) {
+        mAccount = account;
+        if (mAccount != null) {
+            ContentResolver resolver = mActivity.getActivityContext().getContentResolver();
+            Bundle bundle = new Bundle(1);
+            bundle.putParcelable(UIProvider.SetCurrentAccountColumns.ACCOUNT, account);
+            resolver.call(mAccount.uri, UIProvider.AccountCallMethods.SET_CURRENT_ACCOUNT,
+                    mAccount.uri.toString(), bundle);
+        }
     }
 
     /**
