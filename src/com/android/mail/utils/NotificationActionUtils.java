@@ -71,10 +71,6 @@ public class NotificationActionUtils {
     public static final SparseLongArray sNotificationTimestamps = new SparseLongArray();
 
     public enum NotificationActionType {
-        REPLY("reply", R.drawable.ic_reply_holo_dark, R.string.notification_action_reply),
-        REPLY_ALL("reply_all", R.drawable.ic_reply_all_holo_dark,
-                R.string.notification_action_reply_all),
-        FORWARD("forward", R.drawable.ic_forward_holo_dark, R.string.notification_action_forward),
         ARCHIVE_REMOVE_LABEL("archive", R.drawable.ic_menu_archive_holo_dark,
                 R.drawable.ic_menu_remove_label_holo_dark, R.string.notification_action_archive,
                 R.string.notification_action_remove_label, new ActionToggler() {
@@ -86,7 +82,11 @@ public class NotificationActionUtils {
         }),
         DELETE("delete", R.drawable.ic_menu_delete_holo_dark, R.string.notification_action_delete),
         MARK_READ("mark_read", R.drawable.ic_menu_mark_read_holo_dark,
-                R.string.notification_action_mark_read);
+                R.string.notification_action_mark_read),
+        REPLY("reply", R.drawable.ic_reply_holo_dark, R.string.notification_action_reply),
+        REPLY_ALL("reply_all", R.drawable.ic_reply_all_holo_dark,
+                R.string.notification_action_reply_all),
+        FORWARD("forward", R.drawable.ic_forward_holo_dark, R.string.notification_action_forward);
 
         private final String mPersistedValue;
 
