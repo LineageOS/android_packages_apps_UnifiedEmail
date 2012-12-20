@@ -31,7 +31,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.widget.RemoteViews;
 
 import com.android.mail.MailIntentService;
@@ -732,8 +731,9 @@ public class NotificationActionUtils {
 
     public static void cancelUndoNotification(final Context context,
             final NotificationAction notificationAction) {
-        sUndoNotifications.delete(getNotificationId(
-                notificationAction.getAccount().name, notificationAction.getFolder()));
+        final int notificationId = getNotificationId(
+                notificationAction.getAccount().name, notificationAction.getFolder());
+        removeUndoNotification(context, notificationId);
         resendNotifications(context);
     }
 
@@ -745,10 +745,22 @@ public class NotificationActionUtils {
             final NotificationAction notificationAction) {
         final int notificationId = getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder());
-        sUndoNotifications.delete(notificationId);
+        removeUndoNotification(context, notificationId);
         sNotificationTimestamps.delete(notificationId);
         processDestructiveAction(context, notificationAction);
+
         resendNotifications(context);
+    }
+
+    /**
+     * Removes the undo notification.
+     */
+    private static void removeUndoNotification(final Context context, final int notificationId) {
+        sUndoNotifications.delete(notificationId);
+
+        final NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(notificationId);
     }
 
     public static int getNotificationId(final String account, final Folder folder) {
