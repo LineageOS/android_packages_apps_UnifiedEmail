@@ -124,8 +124,8 @@ public class NotificationActionIntentService extends IntentService {
 
     private void cancelNotifications(final String account, final Folder folder) {
         final Intent intent = new Intent(MailIntentService.ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS);
-        intent.putExtra(MailIntentService.CLEAR_NEW_MAIL_NOTIFICATIONS_ACCOUNT_EXTRA, account);
-        intent.putExtra(MailIntentService.CLEAR_NEW_MAIL_NOTIFICATIONS_FOLDER_EXTRA, folder);
+        intent.putExtra(MailIntentService.ACCOUNT_EXTRA, account);
+        intent.putExtra(MailIntentService.FOLDER_EXTRA, folder);
 
         startService(intent);
     }
