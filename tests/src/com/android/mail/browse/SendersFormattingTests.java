@@ -39,7 +39,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         // Blank sender == from "me"
         ConversationInfo conv = createConversationInfo(1);
         boolean read = false, starred = false;
-        MessageInfo info = new MessageInfo(read, starred, null, -1);
+        MessageInfo info = new MessageInfo(read, starred, null, -1, null);
         conv.addMessage(info);
         SpannableString[] strings = SendersView.format(getContext(), conv, "", 100,
                 new HtmlParser(), new HtmlTreeBuilder());
@@ -47,7 +47,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         assertEquals(strings[0].toString(), "me");
 
         ConversationInfo conv2 = createConversationInfo(1);
-        MessageInfo info2 = new MessageInfo(read, starred, "", -1);
+        MessageInfo info2 = new MessageInfo(read, starred, "", -1, null);
         conv2.addMessage(info2);
         strings = SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
                 new HtmlTreeBuilder());
@@ -55,9 +55,9 @@ public class SendersFormattingTests extends AndroidTestCase {
         assertEquals(strings[0].toString(), "me");
 
         ConversationInfo conv3 = createConversationInfo(2);
-        MessageInfo info3 = new MessageInfo(read, starred, "", -1);
+        MessageInfo info3 = new MessageInfo(read, starred, "", -1, null);
         conv3.addMessage(info3);
-        MessageInfo info4 = new MessageInfo(read, starred, "", -1);
+        MessageInfo info4 = new MessageInfo(read, starred, "", -1, null);
         conv3.addMessage(info4);
         strings = SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
                 new HtmlTreeBuilder());
@@ -70,9 +70,9 @@ public class SendersFormattingTests extends AndroidTestCase {
         ConversationInfo conv = createConversationInfo(2);
         boolean read = false, starred = false;
         String sender = "sender@sender.com";
-        MessageInfo info = new MessageInfo(read, starred, sender, -1);
+        MessageInfo info = new MessageInfo(read, starred, sender, -1, null);
         conv.addMessage(info);
-        MessageInfo info2 = new MessageInfo(read, starred, sender, -1);
+        MessageInfo info2 = new MessageInfo(read, starred, sender, -1, null);
         conv.addMessage(info2);
         SpannableString[] strings = SendersView.format(getContext(), conv, "", 100,
                 new HtmlParser(), new HtmlTreeBuilder());
@@ -90,7 +90,7 @@ public class SendersFormattingTests extends AndroidTestCase {
 
     public void testSenderNameBadInput() {
         final ConversationInfo conv = createConversationInfo(1);
-        final MessageInfo msg = new MessageInfo(false, false, "****^****", 0);
+        final MessageInfo msg = new MessageInfo(false, false, "****^****", 0, null);
         conv.addMessage(msg);
 
         final byte[] serialized = conv.toBlob();
@@ -107,7 +107,7 @@ public class SendersFormattingTests extends AndroidTestCase {
 
         final ConversationInfo conv = new ConversationInfo(42, 49, firstSnippet, firstUnreadSnippet,
                 lastSnippet);
-        final MessageInfo msg = new MessageInfo(false, false, "Foo Bar", 0);
+        final MessageInfo msg = new MessageInfo(false, false, "Foo Bar", 0, null);
         conv.addMessage(msg);
 
         assertEquals(firstSnippet, conv.firstSnippet);
