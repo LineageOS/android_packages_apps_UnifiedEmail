@@ -111,7 +111,7 @@ public class ConversationItemViewModel {
 
     public boolean isInvite;
 
-    public SpannableString[] styledSenders;
+    public ArrayList<SpannableString> styledSenders;
 
     public SpannableStringBuilder styledSendersString;
 
@@ -120,6 +120,8 @@ public class ConversationItemViewModel {
     public int styledMessageInfoStringOffset;
 
     private String mContentDescription;
+
+    public ArrayList<String> displayableSenderEmails;
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
