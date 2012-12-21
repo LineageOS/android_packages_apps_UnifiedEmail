@@ -29,7 +29,6 @@ public class MailIntentService extends IntentService {
 
     public static final String CLEAR_NEW_MAIL_NOTIFICATIONS_ACCOUNT_EXTRA = "account";
     public static final String CLEAR_NEW_MAIL_NOTIFICATIONS_FOLDER_EXTRA = "folder";
-    public static final String CLEAR_NEW_MAIL_NOTIFICATIONS_MARK_SEEN_EXTRA = "markSeen";
 
     public MailIntentService() {
         super("MailIntentService");
