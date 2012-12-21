@@ -72,6 +72,7 @@ public class SendersView {
     private static String sMessageCountSpacerString;
     public static CharSequence sElidedString;
     private static BroadcastReceiver sConfigurationChangedReceiver;
+    private static int sMaxDisplayableSenderImages;
 
     // We only want to have at most 2 Priority to length maps.  This will handle the case where
     // there is a widget installed on the launcher while the user is scrolling in the app
@@ -124,6 +125,7 @@ public class SendersView {
             sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersReadTextAppearance);
             sMessageCountSpacerString = res.getString(R.string.message_count_spacer);
             sSendingString = res.getString(R.string.sending);
+            sMaxDisplayableSenderImages = res.getInteger(R.integer.max_list_item_images);
         }
     }
 
@@ -189,17 +191,19 @@ public class SendersView {
     }
 
     @VisibleForTesting
-    public static SpannableString[] format(Context context, ConversationInfo conversationInfo,
-            String messageInfo, int maxChars, HtmlParser parser, HtmlTreeBuilder builder) {
+    public static void format(Context context, ConversationInfo conversationInfo,
+            String messageInfo, int maxChars, HtmlParser parser, HtmlTreeBuilder builder,
+            ArrayList<SpannableString> styledSenders, ArrayList<String> displayableSenderEmails) {
         getSenderResources(context);
-        ArrayList<SpannableString> displays = handlePriority(context, maxChars,
-                messageInfo.toString(), conversationInfo, parser, builder);
-        return displays.toArray(new SpannableString[displays.size()]);
+        handlePriority(context, maxChars, messageInfo,
+                conversationInfo, parser, builder, styledSenders, displayableSenderEmails);
     }
 
-    public static ArrayList<SpannableString> handlePriority(Context context, int maxChars,
+    public static void handlePriority(Context context, int maxChars,
             String messageInfoString, ConversationInfo conversationInfo, HtmlParser parser,
-            HtmlTreeBuilder builder) {
+            HtmlTreeBuilder builder, ArrayList<SpannableString> styledSenders,
+            ArrayList<String> displayableSenderEmails) {
+        boolean shouldAddPhotos = displayableSenderEmails != null;
         int maxPriorityToInclude = -1; // inclusive
         int numCharsUsed = messageInfoString.length(); // draft, number drafts,
                                                        // count
@@ -242,7 +246,6 @@ public class SendersView {
         // 1) The onlyShowUnread flags is not set
         // 2) The above flag is set, and the message is unread
         MessageInfo currentMessage;
-        ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
         SpannableString spannableDisplay;
         String nameString;
         CharacterStyle style;
@@ -274,24 +277,32 @@ public class SendersView {
                     // If the sender entry already existed, and is right next to the
                     // current sender, remove the old entry.
                     if (oldPos != DOES_NOT_EXIST && i > 0 && oldPos == i - 1
-                            && oldPos < senders.size()) {
+                            && oldPos < styledSenders.size()) {
                         // Remove the old one!
-                        senders.set(oldPos, null);
+                        styledSenders.set(oldPos, null);
+                        if (shouldAddPhotos) {
+                            displayableSenderEmails.remove(currentMessage.sender);
+                        }
                     }
                     displayHash.put(currentMessage.sender, i);
                     spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
-                    senders.add(spannableDisplay);
+                    styledSenders.add(spannableDisplay);
+                    if (shouldAddPhotos) {
+                        displayableSenderEmails.add(currentMessage.sender);
+                        if (displayableSenderEmails.size() > sMaxDisplayableSenderImages) {
+                            displayableSenderEmails.remove(0);
+                        }
+                    }
                 }
             } else {
                 if (!appendedElided) {
                     spannableDisplay = new SpannableString(sElidedString);
                     spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
                     appendedElided = true;
-                    senders.add(spannableDisplay);
+                    styledSenders.add(spannableDisplay);
                 }
             }
         }
-        return senders;
     }
 
     private static CharacterStyle getUnreadStyleSpan() {

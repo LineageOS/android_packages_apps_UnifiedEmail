@@ -80,6 +80,8 @@ import com.google.android.common.html.parser.HtmlParser;
 import com.google.android.common.html.parser.HtmlTreeBuilder;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.ArrayList;
+
 public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem {
     // Timer.
     private static int sLayoutCount = 0;
@@ -557,9 +559,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     ConversationItemViewCoordinates.getMode(context, mActivity.getViewMode()),
                     mHeader.folderDisplayer != null && mHeader.folderDisplayer.mFoldersCount > 0,
                     mHeader.conversation.hasAttachments);
-            mHeader.styledSenders = SendersView.format(context,
-                    mHeader.conversation.conversationInfo, mHeader.messageInfoString.toString(),
-                    maxChars, getParser(), getBuilder());
+            mHeader.displayableSenderEmails = new ArrayList<String>();
+            mHeader.styledSenders = new ArrayList<SpannableString>();
+            SendersView.format(context, mHeader.conversation.conversationInfo,
+                    mHeader.messageInfoString.toString(), maxChars, getParser(), getBuilder(),
+                    mHeader.styledSenders, mHeader.displayableSenderEmails);
         } else {
             SendersView.formatSenders(mHeader, getContext());
         }

@@ -26,6 +26,8 @@ import com.android.mail.providers.MessageInfo;
 import com.google.android.common.html.parser.HtmlParser;
 import com.google.android.common.html.parser.HtmlTreeBuilder;
 
+import java.util.ArrayList;
+
 @SmallTest
 public class SendersFormattingTests extends AndroidTestCase {
 
@@ -41,32 +43,38 @@ public class SendersFormattingTests extends AndroidTestCase {
         boolean read = false, starred = false;
         MessageInfo info = new MessageInfo(read, starred, null, -1, null);
         conv.addMessage(info);
-        SpannableString[] strings = SendersView.format(getContext(), conv, "", 100,
-                new HtmlParser(), new HtmlTreeBuilder());
-        assertEquals(strings.length, 1);
-        assertEquals(strings[0].toString(), "me");
+        ArrayList<SpannableString> strings = new ArrayList<SpannableString>();
+        ArrayList<String> emailDisplays = null;
+        SendersView.format(getContext(), conv, "", 100,
+                new HtmlParser(), new HtmlTreeBuilder(), strings, emailDisplays);
+        assertEquals(1, strings.size());
+        assertEquals(strings.get(0).toString(), "me");
 
         ConversationInfo conv2 = createConversationInfo(1);
         MessageInfo info2 = new MessageInfo(read, starred, "", -1, null);
+        strings.clear();
         conv2.addMessage(info2);
-        strings = SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
-                new HtmlTreeBuilder());
-        assertEquals(strings.length, 1);
-        assertEquals(strings[0].toString(), "me");
+        SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
+                new HtmlTreeBuilder(), strings, emailDisplays);
+        assertEquals(1, strings.size());
+        assertEquals(strings.get(0).toString(), "me");
 
         ConversationInfo conv3 = createConversationInfo(2);
         MessageInfo info3 = new MessageInfo(read, starred, "", -1, null);
         conv3.addMessage(info3);
         MessageInfo info4 = new MessageInfo(read, starred, "", -1, null);
         conv3.addMessage(info4);
-        strings = SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
-                new HtmlTreeBuilder());
-        assertEquals(1, strings.length);
-        assertEquals(strings[0].toString(), "me");
+        strings.clear();
+        SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
+                new HtmlTreeBuilder(), strings, emailDisplays);
+        assertEquals(1, strings.size());
+        assertEquals(strings.get(0).toString(), "me");
     }
 
     public void testDupes() {
         // Duplicate sender; should only return 1
+        ArrayList<SpannableString> strings = new ArrayList<SpannableString>();
+        ArrayList<String> emailDisplays = null;
         ConversationInfo conv = createConversationInfo(2);
         boolean read = false, starred = false;
         String sender = "sender@sender.com";
@@ -74,15 +82,15 @@ public class SendersFormattingTests extends AndroidTestCase {
         conv.addMessage(info);
         MessageInfo info2 = new MessageInfo(read, starred, sender, -1, null);
         conv.addMessage(info2);
-        SpannableString[] strings = SendersView.format(getContext(), conv, "", 100,
-                new HtmlParser(), new HtmlTreeBuilder());
+        SendersView.format(getContext(), conv, "", 100,
+                new HtmlParser(), new HtmlTreeBuilder(), strings, emailDisplays);
         // We actually don't remove the item, we just set it to null, so count
         // just the non-null items.
         int count = 0;
-        for (int i = 0; i < strings.length; i++) {
-            if (strings[i] != null) {
+        for (int i = 0; i < strings.size(); i++) {
+            if (strings.get(i) != null) {
                 count++;
-                assertEquals(strings[i].toString(), sender);
+                assertEquals(strings.get(i).toString(), sender);
             }
         }
         assertEquals(1, count);
