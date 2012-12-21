@@ -26,9 +26,10 @@ public class MailIntentService extends IntentService {
             "com.android.mail.action.RESEND_NOTIFICATIONS";
     public static final String ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS =
             "com.android.mail.action.CLEAR_NEW_MAIL_NOTIFICATIONS";
+    public static final String ACTION_MARK_SEEN = "com.android.mail.action.MARK_SEEN";
 
-    public static final String CLEAR_NEW_MAIL_NOTIFICATIONS_ACCOUNT_EXTRA = "account";
-    public static final String CLEAR_NEW_MAIL_NOTIFICATIONS_FOLDER_EXTRA = "folder";
+    public static final String ACCOUNT_EXTRA = "account";
+    public static final String FOLDER_EXTRA = "folder";
 
     public MailIntentService() {
         super("MailIntentService");
