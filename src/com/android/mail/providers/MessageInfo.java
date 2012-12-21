@@ -27,13 +27,15 @@ public class MessageInfo implements Parcelable {
     public boolean read;
     public boolean starred;
     public String sender;
+    public String senderEmail;
     public int priority;
 
     public MessageInfo() {
     }
 
-    public MessageInfo(boolean isRead, boolean isStarred, String senderString, int p) {
-        set(isRead, isStarred, senderString, p);
+    public MessageInfo(boolean isRead, boolean isStarred, String senderString, int p,
+            String email) {
+        set(isRead, isStarred, senderString, p, email);
     }
 
     private MessageInfo(Parcel in) {
@@ -41,6 +43,7 @@ public class MessageInfo implements Parcelable {
         starred = (in.readInt() != 0);
         sender = in.readString();
         priority = in.readInt();
+        senderEmail = in.readString();
     }
 
     @Override
@@ -54,13 +57,15 @@ public class MessageInfo implements Parcelable {
         dest.writeInt(starred ? 1 : 0);
         dest.writeString(sender);
         dest.writeInt(priority);
+        dest.writeString(senderEmail);
     }
 
-    public void set(boolean isRead, boolean isStarred, String senderString, int p) {
+    public void set(boolean isRead, boolean isStarred, String senderString, int p, String email) {
         read = isRead;
         starred = isStarred;
         sender = senderString;
         priority = p;
+        senderEmail = email;
     }
 
     public boolean markRead(boolean isRead) {
@@ -73,7 +78,7 @@ public class MessageInfo implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(read, starred, sender);
+        return Objects.hashCode(read, starred, sender, senderEmail);
     }
 
     public static final Creator<MessageInfo> CREATOR = new Creator<MessageInfo>() {

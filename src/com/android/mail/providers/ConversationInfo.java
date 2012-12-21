@@ -94,6 +94,15 @@ public class ConversationInfo implements Parcelable {
         lastSnippet = last;
     }
 
+    public void reset() {
+        messageInfos.clear();
+        messageCount = 0;
+        draftCount = 0;
+        firstSnippet = null;
+        firstUnreadSnippet = null;
+        lastSnippet = null;
+    }
+
     public void addMessage(MessageInfo info) {
         messageInfos.add(info);
     }
