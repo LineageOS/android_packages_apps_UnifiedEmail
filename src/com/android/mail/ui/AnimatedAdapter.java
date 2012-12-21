@@ -200,7 +200,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             view = new SwipeableConversationItemView(context, mAccount.name);
         }
         view.bind(conv, mActivity, mBatchConversations, mFolder,
-                mAccount != null ? mAccount.settings.hideCheckboxes : false, mSwipeEnabled,
+                mAccount != null ? !mAccount.settings.showCheckboxes : false, mSwipeEnabled,
                 mPriorityMarkersEnabled, this);
         return view;
     }
@@ -507,7 +507,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             return;
         }
         ((SwipeableConversationItemView) view).bind(cursor, mActivity, mBatchConversations, mFolder,
-                mAccount != null ? mAccount.settings.hideCheckboxes : false,
+                mAccount != null ? !mAccount.settings.showCheckboxes : false,
                         mSwipeEnabled, mPriorityMarkersEnabled, this);
     }
 
@@ -517,7 +517,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 position, null, parent);
         view.reset();
         view.bind(conversation, mActivity, mBatchConversations, mFolder,
-                mAccount != null ? mAccount.settings.hideCheckboxes : false, mSwipeEnabled,
+                mAccount != null ? !mAccount.settings.showCheckboxes : false, mSwipeEnabled,
                 mPriorityMarkersEnabled, this);
         mAnimatingViews.put(conversation.id, view);
         return view;
