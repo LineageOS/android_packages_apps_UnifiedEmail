@@ -71,8 +71,7 @@ public class ConversationItemViewModel {
     boolean unread;
 
     // Date
-    String dateText;
-    Bitmap dateBackground;
+    SpannableString dateText;
 
     // Personal level
     Bitmap personalLevelBitmap;
@@ -215,7 +214,7 @@ public class ConversationItemViewModel {
     /**
      * Returns the hashcode to compare if the data in the header is valid.
      */
-    private static int getHashCode(Context context, String dateText, Object convInfo,
+    private static int getHashCode(Context context, SpannableString dateText, Object convInfo,
             List<Folder> rawFolders, boolean starred, boolean read, int priority,
             int sendingState) {
         if (dateText == null) {
@@ -241,9 +240,9 @@ public class ConversationItemViewModel {
      * Marks this header as having valid data and layout.
      */
     void validate(Context context) {
-        mDataHashCode = getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFolders(), conversation.starred, conversation.read,
-                conversation.priority, conversation.sendingState);
+        mDataHashCode = getHashCode(context, dateText,
+                getConvInfo(), conversation.getRawFolders(), conversation.starred,
+                conversation.read, conversation.priority, conversation.sendingState);
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -251,9 +250,9 @@ public class ConversationItemViewModel {
      * Returns if the data in this model is valid.
      */
     boolean isDataValid(Context context) {
-        return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFolders(), conversation.starred, conversation.read,
-                conversation.priority, conversation.sendingState);
+        return mDataHashCode == getHashCode(context, dateText,
+                getConvInfo(), conversation.getRawFolders(), conversation.starred,
+                conversation.read, conversation.priority, conversation.sendingState);
     }
 
     /**
