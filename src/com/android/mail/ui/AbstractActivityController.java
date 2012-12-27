@@ -33,6 +33,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -56,6 +57,7 @@ import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewModel;
@@ -133,6 +135,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_HIERARCHICAL_FOLDER = "saved-hierarchical-folder";
     /** Tag for {@link ConversationListContext#searchQuery} */
     private static final String SAVED_QUERY = "saved-query";
+    /** Tag for {@link #mDialogAction} */
+    private static final String SAVED_ACTION = "saved-action";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -299,6 +303,14 @@ public abstract class AbstractActivityController implements ActivityController {
     private WaitFragment mWaitFragment;
     /** True if we have results from a search query */
     private boolean mHaveSearchResults = false;
+    /** If a confirmation dialog is being show, the listener for the positive action. */
+    private OnClickListener mDialogListener;
+    /**
+     * If a confirmation dialog is being show, the resource of the action: R.id.delete, etc.  This
+     * is used to create a new {@link #mDialogListener} on orientation changes.
+     */
+    private int mDialogAction = -1;
+
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
@@ -793,6 +805,9 @@ public abstract class AbstractActivityController implements ActivityController {
                 final Folder folder = savedState.getParcelable(SAVED_FOLDER);
                 final String query = savedState.getString(SAVED_QUERY, null);
                 setListContext(folder, query);
+            }
+            if (savedState.containsKey(SAVED_ACTION)) {
+                mDialogAction = savedState.getInt(SAVED_ACTION);
             }
             mViewMode.handleRestore(savedState);
         } else if (intent != null) {
@@ -1345,7 +1360,6 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onSaveInstanceState(Bundle outState) {
         mViewMode.handleSaveInstanceState(outState);
         if (mAccount != null) {
-            LogUtils.d(LOG_TAG, "Saving the account now");
             outState.putParcelable(SAVED_ACCOUNT, mAccount);
         }
         if (mFolder != null) {
@@ -1367,6 +1381,9 @@ public abstract class AbstractActivityController implements ActivityController {
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
             convListFragment.getAnimatedAdapter().onSaveInstanceState(outState);
+        }
+        if (mDialogAction != -1) {
+            outState.putInt(SAVED_ACTION, mDialogAction);
         }
         mSafeToModifyFragments = false;
         outState.putString(SAVED_HIERARCHICAL_FOLDER,
@@ -2461,6 +2478,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onSetEmpty() {
+        // There are no selected conversations. Ensure that the listener and its associated actions
+        // are blanked out.
+        setListener(null, -1);
     }
 
     @Override
@@ -2471,6 +2491,11 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set, mFolder,
                 (SwipeableListView) convList.getListView());
+        // If there has been an orientation change, and we need to recreate the listener for the
+        // confirm dialog fragment (delete/archive/...), then do it here.
+        if (mDialogAction != -1) {
+            makeDialogListener(mDialogAction);
+        }
         enableCabMode();
     }
 
@@ -3142,5 +3167,38 @@ public abstract class AbstractActivityController implements ActivityController {
                 adapter.notifyDataSetInvalidated();
             }
         }
+    }
+
+    @Override
+    public void makeDialogListener (final int action) {
+        final DestructiveAction destructiveAction = getDeferredBatchAction(action);
+        final Collection<Conversation> conversations = mSelectedSet.values();
+        final Collection<ConversationItemView> views = mSelectedSet.views();
+        mDialogAction = action;
+        mDialogListener = new AlertDialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                delete(action, conversations, views, destructiveAction);
+                // Afterwards, let's remove references to the listener and the action.
+                setListener(null, -1);
+            }
+        };
+    }
+
+    @Override
+    public AlertDialog.OnClickListener getListener() {
+        return mDialogListener;
+    }
+
+    /**
+     * Sets the listener for the positive action on a confirmation dialog.  Since only a single
+     * confirmation dialog can be shown, this overwrites the previous listener.  It is safe to
+     * unset the listener; in which case action should be set to -1.
+     * @param listener
+     * @param action
+     */
+    private void setListener(AlertDialog.OnClickListener listener, final int action){
+        mDialogListener = listener;
+        mDialogAction = action;
     }
 }

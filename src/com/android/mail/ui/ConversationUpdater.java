@@ -17,9 +17,11 @@
 
 package com.android.mail.ui;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.net.Uri;
 
+import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
@@ -186,4 +188,22 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      *            destructive action.
      */
     void showNextConversation(Collection<Conversation> conversations);
+
+    /**
+     * Make an action listener for a confirmation dialog, and the currently selected set of
+     * conversations. The action is specified as an integer which marks the menu resource:
+     * R.id.delete, R.id.discard_drafts, etc.
+     * @param action the resource ID of the menu action: R.id.delete, for
+     *            example
+     */
+    public void makeDialogListener(final int action);
+
+    /**
+     * If set, get the listener associated with the existing {@link ConfirmDialogFragment}.  This
+     * listener needs to be set centrally, because the dialog fragment can get torn down, along with
+     * the current activity, and the listener has to be created afresh.
+     * @return the current listener for the positive action in the current confirmation dialog, if
+     * any. Returns null if no confirmation dialog is currently shown.
+     */
+    public AlertDialog.OnClickListener getListener();
 }

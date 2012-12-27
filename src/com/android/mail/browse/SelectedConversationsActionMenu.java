@@ -46,8 +46,6 @@ import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FolderSelectionDialog;
-import com.android.mail.ui.MultiFoldersSelectionDialog;
-import com.android.mail.ui.SingleFolderSelectionDialog;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -93,6 +91,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private final Folder mFolder;
 
     private AccountObserver mAccountObserver;
+
+    private static final String DIALOG_TAG = "dialog";
 
     public SelectedConversationsActionMenu(ControllableActivity activity,
             ConversationSelectionSet selectionSet,
@@ -238,14 +238,13 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     private void performDestructiveAction(final int action) {
-        final DestructiveAction destructiveAction = mUpdater.getDeferredBatchAction(action);
-        final Settings settings = mAccount.settings;
         final Collection<Conversation> conversations = mSelectionSet.values();
-        final Collection<ConversationItemView> views = mSelectionSet.views();
+        final Settings settings = mAccount.settings;
         final boolean showDialog =
                 (settings != null && (action == R.id.delete || action == R.id.discard_drafts) ?
                         settings.confirmDelete : settings.confirmArchive);
         if (showDialog) {
+            mUpdater.makeDialogListener(action);
             final int resId;
             switch (action) {
                 case R.id.delete:
@@ -258,16 +257,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     resId = R.plurals.confirm_archive_conversation;
                     break;
             }
-            CharSequence message = Utils.formatPlural(mContext, resId, conversations.size());
-            new AlertDialog.Builder(mContext).setMessage(message)
-                    .setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            destroy(action, conversations, views, destructiveAction);
-                        }
-                    }).setNegativeButton(R.string.cancel, null).create().show();
+            final CharSequence message = Utils.formatPlural(mContext, resId, conversations.size());
+            final ConfirmDialogFragment c = ConfirmDialogFragment.newInstance(message);
+            c.show(mActivity.getFragmentManager(), DIALOG_TAG);
         } else {
-            destroy(action, conversations, views, destructiveAction);
+            // No need to show the dialog, just make a destructive action and destroy the
+            // selected set immediately.
+            final Collection<ConversationItemView> views = mSelectionSet.views();
+            destroy(action, conversations, views, mUpdater.getDeferredBatchAction(action));
         }
     }
 
