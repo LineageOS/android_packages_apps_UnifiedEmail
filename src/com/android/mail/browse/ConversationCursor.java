@@ -59,7 +59,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -88,8 +87,9 @@ public final class ConversationCursor implements Cursor {
     private static int sUriColumnIndex;
     // Our sequence count (for changes sent to underlying provider)
     private static int sSequence = 0;
-    // The resolver for the cursor instantiator's context
-    private static ContentResolver sResolver;
+    /** The resolver for the cursor instantiator's context */
+    private final ContentResolver mResolver;
+
     @VisibleForTesting
     static ConversationProvider sProvider;
 
@@ -153,7 +153,7 @@ public final class ConversationCursor implements Cursor {
     public ConversationCursor(Activity activity, Uri uri, boolean initialConversationLimit,
             String name) {
         mInitialConversationLimit = initialConversationLimit;
-        sResolver = activity.getContentResolver();
+        mResolver = activity.getApplicationContext().getContentResolver();
         sUriColumnIndex = UIProvider.CONVERSATION_URI_COLUMN;
         qUri = uri;
         mName = name;
@@ -163,14 +163,6 @@ public final class ConversationCursor implements Cursor {
 
     /**
      * Create a ConversationCursor; this should be called by the ListActivity using that cursor
-     * @param activity the activity creating the cursor
-     * @param messageListColumn the column used for individual cursor items
-     * @param uri the query uri
-     * @param projection the query projecion
-     * @param selection the query selection
-     * @param selectionArgs the query selection args
-     * @param sortOrder the query sort order
-     * @return a ConversationCursor
      */
     public void load() {
         synchronized (mCacheMapLock) {
@@ -339,7 +331,7 @@ public final class ConversationCursor implements Cursor {
         }
         long time = System.currentTimeMillis();
 
-        Cursor result = sResolver.query(uri, qProjection, null, null, null);
+        final Cursor result = mResolver.query(uri, qProjection, null, null, null);
         if (result == null) {
             Log.w(LOG_TAG, "doQuery returning null cursor, uri: " + uri);
         } else if (DEBUG) {
@@ -996,6 +988,7 @@ public final class ConversationCursor implements Cursor {
      */
     public abstract static class ConversationProvider extends ContentProvider {
         public static String AUTHORITY;
+        private ContentResolver mResolver;
 
         /**
          * Allows the implementing provider to specify the authority that should be used.
@@ -1006,20 +999,21 @@ public final class ConversationCursor implements Cursor {
         public boolean onCreate() {
             sProvider = this;
             AUTHORITY = getAuthority();
+            mResolver = getContext().getContentResolver();
             return true;
         }
 
         @Override
         public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                 String sortOrder) {
-            return sResolver.query(
+            return mResolver.query(
                     uriFromCachingUri(uri), projection, selection, selectionArgs, sortOrder);
         }
 
         @Override
         public Uri insert(Uri uri, ContentValues values) {
             insertLocal(uri, values);
-            return ProviderExecute.opInsert(uri, values);
+            return ProviderExecute.opInsert(mResolver, uri, values);
         }
 
         @Override
@@ -1049,36 +1043,20 @@ public final class ConversationCursor implements Cursor {
             final int mCode;
             final Uri mUri;
             final ContentValues mValues; //HEHEH
+            final ContentResolver mResolver;
 
-            ProviderExecute(int code, Uri uri, ContentValues values) {
+            ProviderExecute(int code, ContentResolver resolver, Uri uri, ContentValues values) {
                 mCode = code;
                 mUri = uriFromCachingUri(uri);
                 mValues = values;
+                mResolver = resolver;
             }
 
-            ProviderExecute(int code, Uri uri) {
-                this(code, uri, null);
-            }
-
-            static Uri opInsert(Uri uri, ContentValues values) {
-                ProviderExecute e = new ProviderExecute(INSERT, uri, values);
+            static Uri opInsert(ContentResolver resolver, Uri uri, ContentValues values) {
+                ProviderExecute e = new ProviderExecute(INSERT, resolver, uri, values);
                 if (offUiThread()) return (Uri)e.go();
                 new Thread(e).start();
                 return null;
-            }
-
-            static int opDelete(Uri uri) {
-                ProviderExecute e = new ProviderExecute(DELETE, uri);
-                if (offUiThread()) return (Integer)e.go();
-                new Thread(new ProviderExecute(DELETE, uri)).start();
-                return 0;
-            }
-
-            static int opUpdate(Uri uri, ContentValues values) {
-                ProviderExecute e = new ProviderExecute(UPDATE, uri, values);
-                if (offUiThread()) return (Integer)e.go();
-                new Thread(e).start();
-                return 0;
             }
 
             @Override
@@ -1089,11 +1067,11 @@ public final class ConversationCursor implements Cursor {
             public Object go() {
                 switch(mCode) {
                     case DELETE:
-                        return sResolver.delete(mUri, null, null);
+                        return mResolver.delete(mUri, null, null);
                     case INSERT:
-                        return sResolver.insert(mUri, mValues);
+                        return mResolver.insert(mUri, mValues);
                     case UPDATE:
-                        return sResolver.update(mUri,  mValues, null, null);
+                        return mResolver.update(mUri,  mValues, null, null);
                     default:
                         return null;
                 }
@@ -1211,7 +1189,7 @@ public final class ConversationCursor implements Cursor {
                 final ArrayList<ContentProviderOperation> opList = batchMap.get(authority);
                 if (notUiThread) {
                     try {
-                        sResolver.applyBatch(authority, opList);
+                        mResolver.applyBatch(authority, opList);
                     } catch (RemoteException e) {
                     } catch (OperationApplicationException e) {
                     }
@@ -1220,7 +1198,7 @@ public final class ConversationCursor implements Cursor {
                         @Override
                         public void run() {
                             try {
-                                sResolver.applyBatch(authority, opList);
+                                mResolver.applyBatch(authority, opList);
                             } catch (RemoteException e) {
                             } catch (OperationApplicationException e) {
                             }
