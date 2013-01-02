@@ -147,8 +147,14 @@
     <item quantity="one" msgid="3657821200245019288">"Move conversation"</item>
     <item quantity="other" msgid="1685896770174368261">"Move <xliff:g id="ID_1">%1$d</xliff:g> conversations"</item>
   </plurals>
-    <string name="content_description" msgid="517417382820459541">"<xliff:g id="SENDER">%1$s</xliff:g> about <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> on <xliff:g id="DATE">%4$s</xliff:g>"</string>
-    <string name="content_description_today" msgid="3358818622191430053">"<xliff:g id="SENDER">%1$s</xliff:g> about <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> at <xliff:g id="TIME">%4$s</xliff:g>"</string>
+    <!-- no translation found for content_description (5191020413686786341) -->
+    <skip />
+    <!-- no translation found for content_description_today (2303358176694038320) -->
+    <skip />
+    <!-- no translation found for read_string (219566857950091332) -->
+    <skip />
+    <!-- no translation found for unread_string (588180203444398297) -->
+    <skip />
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -346,38 +352,16 @@
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"What\'s new"</string>
     <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"Auto-fit messages?"</string>
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Shrink wide messages to fit your screen and allow zooming in. To turn off this option, go to Settings &gt; General settings."</string>
-    <!-- no translation found for notification_action_reply (6015299134424685297) -->
-    <skip />
-    <!-- no translation found for notification_action_reply_all (20020468410400912) -->
-    <skip />
-    <!-- no translation found for notification_action_forward (7252777659544972497) -->
-    <skip />
-    <!-- no translation found for notification_action_archive (81978513898440040) -->
-    <skip />
-    <!-- no translation found for notification_action_remove_label (5852730267411032291) -->
-    <skip />
-    <!-- no translation found for notification_action_delete (327773454111551791) -->
-    <skip />
-    <!-- no translation found for notification_action_mark_read (4351952818740163225) -->
-    <skip />
-    <!-- no translation found for notification_action_mark_unread (5941293881602369664) -->
-    <skip />
-    <!-- no translation found for notification_action_add_star (2612819344157820575) -->
-    <skip />
-    <!-- no translation found for notification_action_remove_star (3538588158594520706) -->
-    <skip />
-    <!-- no translation found for notification_action_mark_important (6370883802077124044) -->
-    <skip />
-    <!-- no translation found for notification_action_mark_not_important (8701153278545904539) -->
-    <skip />
-    <!-- no translation found for notification_action_mute (6000657861064977656) -->
-    <skip />
-    <!-- no translation found for notification_action_undo_archive (7280710366587361219) -->
-    <skip />
-    <!-- no translation found for notification_action_undo_remove_label (1425192858683932457) -->
-    <skip />
-    <!-- no translation found for notification_action_undo_delete (3105611327110905438) -->
-    <skip />
-    <!-- no translation found for notification_action_undo_mute (6618374048997237553) -->
+    <string name="notification_action_reply" msgid="6015299134424685297">"Reply"</string>
+    <string name="notification_action_reply_all" msgid="20020468410400912">"Reply all"</string>
+    <string name="notification_action_forward" msgid="7252777659544972497">"Forward"</string>
+    <string name="notification_action_archive" msgid="81978513898440040">"Archive"</string>
+    <string name="notification_action_remove_label" msgid="5852730267411032291">"Remove label"</string>
+    <string name="notification_action_delete" msgid="327773454111551791">"Delete"</string>
+    <string name="notification_action_mark_read" msgid="4351952818740163225">"Mark as read"</string>
+    <string name="notification_action_undo_archive" msgid="7280710366587361219">"Archived"</string>
+    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Label Removed"</string>
+    <string name="notification_action_undo_delete" msgid="3105611327110905438">"Deleted"</string>
+    <!-- no translation found for notification_action_preference_summary_not_set (8168109255072452703) -->
     <skip />
 </resources>
