@@ -22,16 +22,18 @@
     <dimen name="wide_subject_font_size">16sp</dimen>
     <dimen name="senders_font_size">18sp</dimen>
     <dimen name="subject_font_size">14sp</dimen>
+    <dimen name="folders_top_margin">26sp</dimen>
+    <dimen name="folders_top_margin_wide">24sp</dimen>
     <dimen name="date_font_size">12sp</dimen>
     <dimen name="account_dropdown_dropdownwidth">274dip</dimen>
     <dimen name="actionbar_subject_padding_right">8dp</dimen>
     <dimen name="compose_scrollview_width">700dp</dimen>
     <dimen name="total_conversationbar_width">150dip</dimen>
-    <dimen name="max_total_folder_width">64dip</dimen>
+    <dimen name="max_total_folder_width">56dip</dimen>
     <dimen name="max_total_folder_width_wide">64dip</dimen>
     <dimen name="color_block_width">32dip</dimen>
     <dimen name="color_block_height">6dip</dimen>
-    <dimen name="subject_width">0dip</dimen>
+    <dimen name="subject_width">204dip</dimen>
     <dimen name="folders_font_size">12sp</dimen>
     <dimen name="wide_senders_margin_top">0sp</dimen>
     <dimen name="wide_attachment_margin_top">2sp</dimen>
@@ -86,7 +88,7 @@
     <dimen name="widget_margin_left">0dip</dimen>
     <dimen name="widget_margin_right">0dip</dimen>
     <dimen name="widget_margin_bottom">0dip</dimen>
-    <dimen name="conversation_item_height">70sp</dimen>
+    <dimen name="conversation_item_height">72sp</dimen>
     <dimen name="conversation_item_height_wide">64sp</dimen>
     <dimen name="search_view_width">400dip</dimen>
     <dimen name="titlebar_height">48dip</dimen>
@@ -105,4 +107,6 @@
     <dimen name="senders_textview_top_padding">-4dp</dimen>
     <dimen name="senders_textview_height">30dp</dimen>
     <integer name="chips_max_lines">2</integer>
+    <dimen name="folders_left_padding">8dp</dimen>
+    <dimen name="folders_box_padding">4dp</dimen>
 </resources>

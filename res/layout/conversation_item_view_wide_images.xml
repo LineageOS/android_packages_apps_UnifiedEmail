@@ -15,17 +15,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true"
-          android:drawable="@drawable/list_arrow_focused_holo" />
-    <item android:state_pressed="true"
-          android:drawable="@drawable/list_pressed_holo" />
-    <item android:state_selected="true"
-          android:state_activated="true"
-          android:drawable="@drawable/list_arrow_selected_holo" />
-    <item android:state_activated="true"
-          android:drawable="@drawable/list_arrow_activated_holo" />
-    <item android:state_selected="true"
-          android:drawable="@drawable/list_selected_holo" />
-    <item android:drawable="@drawable/list_unread_holo" />
-</selector>
+
+<!-- This is a placeholder layout is used as a template to create custom view
+    CanvasConversationHeaderView in wide mode when showing sender pictures. To be able to get the
+    correct measurements, every source field should be populated with data here. E.g:
+    - Text View should set text to a random long string (android:text="@string/long_string")
+    - Image View should set source to a specific asset -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+    <include layout="@layout/conversation_item_view_wide"/>
+</merge>

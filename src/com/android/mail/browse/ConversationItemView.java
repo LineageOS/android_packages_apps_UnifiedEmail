@@ -57,11 +57,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
+import com.android.mail.photomanager.ContactPhotoManager;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -119,10 +121,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sActivatedTextColor;
     private static int sSendersTextColorRead;
     private static int sSendersTextColorUnread;
-    private static int sDateTextColor;
-    private static int sDateBackgroundPaddingLeft;
     private static int sTouchSlop;
-    private static int sDateBackgroundHeight;
     private static int sStandardScaledDimen;
     private static int sShrinkAnimationDuration;
     private static int sSlideAnimationDuration;
@@ -174,8 +173,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mBackgroundOverride = -1;
     private TextView mSubjectTextView;
     private TextView mSendersTextView;
-    private static Rect sDateSrcRect;
-    private static Rect sDateDestRect;
+    private TextView mDateTextView;
+    private ImageView mContactImagesView;
+    private static Drawable sDefaultContactDrawable;
+    private static TextAppearanceSpan sDateTextAppearance;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static ForegroundColorSpan sSnippetTextUnreadSpan;
@@ -184,11 +185,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sSendersTextViewTopPadding;
     private static int sSendersTextViewHeight;
     private static CharacterStyle sActivatedTextSpan;
-    private static Bitmap sDateBackgroundAttachment;
-    private static Bitmap sDateBackgroundNoAttachment;
     private static Bitmap MORE_FOLDERS;
     private static HtmlTreeBuilder sHtmlBuilder;
     private static HtmlParser sHtmlParser;
+    private static ContactPhotoManager sContactPhotoManager;
+    public static final ContactPhotoManager.DefaultImageProvider DEFAULT_AVATAR =
+            new ContactPhotoManager.AvatarDefaultImageProvider();
 
     static {
         sPaint.setAntiAlias(true);
@@ -249,22 +251,30 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 return;
             }
 
-            int xEnd = foldersXEnd;
-            int y = coordinates.foldersY - coordinates.foldersAscent;
+            int leftPadding = coordinates.foldersLeftPadding;
+            int xEnd = foldersXEnd - leftPadding;
+            int y = coordinates.foldersY;
             int height = coordinates.foldersHeight;
             int topPadding = coordinates.foldersTopPadding;
             int ascent = coordinates.foldersAscent;
+            int boxPadding = coordinates.foldersBoxPadding;
+
             sFoldersPaint.setTextSize(coordinates.foldersFontSize);
 
             // Initialize space and cell size based on the current mode.
-            int availableSpace = ConversationItemViewCoordinates.getFoldersWidth(mContext, mode);
+            int availableSpace = ConversationItemViewCoordinates.getFoldersWidth(mContext, mode)
+                    - leftPadding;
             int averageWidth = availableSpace / mFoldersCount;
             int cellSize = ConversationItemViewCoordinates.getFolderCellWidth(mContext, mode,
                     mFoldersCount);
 
-            // First pass to calculate the starting point.
             int totalWidth = measureFolders(mode);
-            int xStart = xEnd - Math.min(availableSpace, totalWidth);
+            int xStart = xEnd - Math.min(availableSpace, totalWidth) + leftPadding;
+
+            // The left padding for folders is represented by a white box.
+            sFoldersPaint.setColor(Color.WHITE);
+            sFoldersPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            canvas.drawRect(xStart - leftPadding, y, xEnd + leftPadding, y + height, sFoldersPaint);
 
             // Second pass to draw folders.
             for (Folder f : mFoldersSortedSet) {
@@ -290,7 +300,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 // Draw the box.
                 sFoldersPaint.setColor(bgColor);
                 sFoldersPaint.setStyle(isMuted ? Paint.Style.STROKE : Paint.Style.FILL_AND_STROKE);
-                canvas.drawRect(xStart, y + ascent, xStart + width, y + ascent + height,
+                canvas.drawRect(xStart, y, xStart + width, y + height - topPadding,
                         sFoldersPaint);
 
                 // Draw the text.
@@ -304,10 +314,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder, y,
                             fgColor, Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
                     shortPaint.setShader(shader);
-                    canvas.drawText(folderString, xStart + padding, y + topPadding, shortPaint);
+                    canvas.drawText(folderString, xStart + padding, y + height - topPadding,
+                                    shortPaint);
                 } else {
                     sFoldersPaint.setColor(fgColor);
-                    canvas.drawText(folderString, xStart + padding, y + topPadding, sFoldersPaint);
+                    canvas.drawText(folderString, xStart + padding, y + height - topPadding,
+                            sFoldersPaint);
                 }
 
                 availableSpace -= width;
@@ -374,14 +386,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSubjectTextUnreadSpan = new TextAppearanceSpan(mContext,
                     R.style.SubjectAppearanceUnreadStyle);
             sSubjectTextReadSpan = new TextAppearanceSpan(mContext,
-                    R.style.SubjectAppearanceStyle);
+                    R.style.SubjectAppearanceReadStyle);
             sSnippetTextUnreadSpan = new ForegroundColorSpan(R.color.snippet_text_color_unread);
             sSnippetTextReadSpan = new ForegroundColorSpan(R.color.snippet_text_color_read);
-            sDateTextColor = res.getColor(R.color.date_text_color);
-            sDateBackgroundPaddingLeft = res
-                    .getDimensionPixelSize(R.dimen.date_background_padding_left);
             sTouchSlop = res.getDimensionPixelSize(R.dimen.touch_slop);
-            sDateBackgroundHeight = res.getDimensionPixelSize(R.dimen.date_background_height);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
             sSlideAnimationDuration = res.getInteger(R.integer.slide_animation_duration);
@@ -394,11 +402,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSendersTextViewHeight = res.getDimensionPixelSize
                     (R.dimen.senders_textview_height);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
-            sDateSrcRect = new Rect();
-            sDateSrcRect.top = 0;
-            sDateSrcRect.left = 0;
-            sDateSrcRect.bottom = sDateBackgroundHeight;
-            sDateDestRect = new Rect();
+
+            sDateTextAppearance = new TextAppearanceSpan(mContext, R.style.DateTextAppearance);
+            sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
+            sDefaultContactDrawable = res.getDrawable(R.drawable.ic_contact_picture);
         }
 
         mSubjectTextView = new TextView(mContext);
@@ -410,6 +417,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSendersTextView.setEllipsize(TextUtils.TruncateAt.END);
         mSendersTextView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        mDateTextView = new TextView(mContext);
+        mDateTextView.setEllipsize(TextUtils.TruncateAt.END);
+        mDateTextView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        mContactImagesView = new ImageView(context);
     }
 
     public void bind(Cursor cursor, ControllableActivity activity, ConversationSelectionSet set,
@@ -492,10 +506,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             // Large Text has been toggle on/off. Update the static dimens.
             sStandardScaledDimen = mHeader.standardScaledDimen;
             ConversationItemViewCoordinates.refreshConversationHeights(mContext);
-            sDateBackgroundHeight = res.getDimensionPixelSize(R.dimen.date_background_height);
         }
         mCoordinates = ConversationItemViewCoordinates.forWidth(mContext, mViewWidth, mMode,
-                mHeader.standardScaledDimen);
+                mHeader.standardScaledDimen, mCheckboxesEnabled);
         calculateTextsAndBitmaps();
         calculateCoordinates();
         if (!mHeader.isLayoutValid(mContext)) {
@@ -535,10 +548,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mSelectedConversationSet != null) {
             mChecked = mSelectedConversationSet.contains(mHeader.conversation);
         }
-
-        final boolean checkboxEnabled = mCheckboxesEnabled;
-        if (mHeader.checkboxVisible != checkboxEnabled) {
-            mHeader.checkboxVisible = checkboxEnabled;
+        mHeader.checkboxVisible = mCheckboxesEnabled;
+        // Show either checkbox OR contact images.
+        if (!mHeader.checkboxVisible) {
+            mContactImagesView.setLayoutParams(new LayoutParams(mCoordinates.contactImagesWidth,
+                    mCoordinates.contactImagesHeight));
+            mContactImagesView.setImageDrawable(sDefaultContactDrawable);
+            mContactImagesView.measure(mCoordinates.contactImagesWidth,
+                    mCoordinates.contactImagesHeight);
+            mContactImagesView.layout(0, 0, mCoordinates.contactImagesWidth,
+                    mCoordinates.contactImagesHeight);
         }
 
         final boolean isUnread = mHeader.unread;
@@ -582,8 +601,15 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         pauseTimer(PERF_TAG_CALCULATE_FOLDERS);
 
-        mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
-                mHeader.conversation.dateMs).toString();
+        SpannableString spannableDate = new SpannableString(DateUtils.getRelativeTimeSpanString(
+                mContext, mHeader.conversation.dateMs));
+        spannableDate.setSpan(sDateTextAppearance, 0, spannableDate.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mHeader.dateText = spannableDate;
+        mDateTextView.setText(spannableDate, TextView.BufferType.SPANNABLE);
+        int width = MeasureSpec.makeMeasureSpec(mCoordinates.dateWidth, MeasureSpec.EXACTLY);
+        mDateTextView.measure(width, mCoordinates.dateHeight);
+        mDateTextView.layout(0, 0, mCoordinates.dateWidth, mCoordinates.dateHeight);
 
         // Paper clip icon.
         mHeader.paperclip = null;
@@ -715,7 +741,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         sPaint.setTextSize(mCoordinates.dateFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
-        mDateX = mCoordinates.dateXEnd - (int) sPaint.measureText(mHeader.dateText);
+        mDateX = mCoordinates.dateXEnd - (int) sPaint.measureText(
+                mHeader.dateText != null ? mHeader.dateText.toString() : "");
 
         mPaperclipX = mDateX - ATTACHMENT.getWidth();
 
@@ -990,6 +1017,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mHeader.checkboxVisible) {
             Bitmap checkmark = mChecked ? CHECKMARK_ON : CHECKMARK_OFF;
             canvas.drawBitmap(checkmark, mCoordinates.checkmarkX, mCoordinates.checkmarkY, sPaint);
+        } else {
+            canvas.save();
+            drawContactImages(canvas);
+            canvas.restore();
         }
 
         // Personal Level.
@@ -1037,29 +1068,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     height, sFoldersPaint);
         }
 
-        // Date background: shown when there is an attachment or a visible
-        // folder.
-        if (!isActivated()
-                && (mHeader.conversation.hasAttachments ||
-                        (mHeader.folderDisplayer != null
-                            && mHeader.folderDisplayer.hasVisibleFolders()))
-                && ConversationItemViewCoordinates.showAttachmentBackground(mMode)) {
-            int leftOffset = (mHeader.conversation.hasAttachments ? mPaperclipX : mDateX)
-                    - sDateBackgroundPaddingLeft;
-            int top = mCoordinates.showFolders ? mCoordinates.foldersY : mCoordinates.dateY;
-            mHeader.dateBackground = getDateBackground(mHeader.conversation.hasAttachments);
-            Rect dateRect = sDateSrcRect;
-            dateRect.right = mHeader.dateBackground.getWidth();
-            Rect destRect = sDateDestRect;
-            destRect.top = top;
-            destRect.left = leftOffset;
-            destRect.bottom = top + sDateBackgroundHeight;
-            destRect.right = getRight();
-            canvas.drawBitmap(mHeader.dateBackground, dateRect, destRect, sPaint);
-        } else {
-            mHeader.dateBackground = null;
-        }
-
         // Draw the reply state. Draw nothing if neither replied nor forwarded.
         if (mCoordinates.showReplyState) {
             if (mHeader.hasBeenRepliedTo && mHeader.hasBeenForwarded) {
@@ -1078,11 +1086,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         // Date.
-        sPaint.setTextSize(mCoordinates.dateFontSize);
-        sPaint.setTypeface(Typeface.DEFAULT);
-        sPaint.setColor(sDateTextColor);
-        drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateY - mCoordinates.dateAscent,
-                sPaint);
+        canvas.save();
+        drawDate(canvas);
+        canvas.restore();
 
         // Paper clip icon.
         if (mHeader.paperclip != null) {
@@ -1107,9 +1113,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         if (mStarEnabled) {
-        // Star.
+            // Star.
             canvas.drawBitmap(getStarBitmap(), mCoordinates.starX, mCoordinates.starY, sPaint);
         }
+    }
+
+    private void drawContactImages(Canvas canvas) {
+        canvas.translate(mCoordinates.contactImagesX, mCoordinates.contactImagesY);
+        mContactImagesView.draw(canvas);
+    }
+
+    private void drawDate(Canvas canvas) {
+        canvas.translate(mDateX, mCoordinates.dateY - mCoordinates.dateAscent);
+        mDateTextView.draw(canvas);
     }
 
     private void drawSubject(Canvas canvas) {
@@ -1118,33 +1134,22 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private void drawSenders(Canvas canvas) {
-        canvas.translate(mCoordinates.sendersX, mCoordinates.sendersY + sSendersTextViewTopPadding);
+        int left;
+        if (!mCheckboxesEnabled) {
+            if (mCoordinates.showPersonalLevel && mHeader.personalLevelBitmap != null) {
+                left = mCoordinates.sendersX;
+            } else {
+                left = mCoordinates.personalLevelX;
+            }
+        } else {
+            left = mCoordinates.sendersX;
+        }
+        canvas.translate(left, mCoordinates.sendersY + sSendersTextViewTopPadding);
         mSendersTextView.draw(canvas);
     }
 
     private Bitmap getStarBitmap() {
         return mHeader.conversation.starred ? STAR_ON : STAR_OFF;
-    }
-
-    private Bitmap getDateBackground(boolean hasAttachments) {
-        int leftOffset = (hasAttachments ? mPaperclipX : mDateX) - sDateBackgroundPaddingLeft;
-        if (hasAttachments) {
-            if (sDateBackgroundAttachment == null) {
-                sDateBackgroundAttachment = Bitmap.createScaledBitmap(DATE_BACKGROUND, mViewWidth
-                        - leftOffset, sDateBackgroundHeight, false);
-            }
-            return sDateBackgroundAttachment;
-        } else {
-            if (sDateBackgroundNoAttachment == null) {
-                sDateBackgroundNoAttachment = Bitmap.createScaledBitmap(DATE_BACKGROUND, mViewWidth
-                        - leftOffset, sDateBackgroundHeight, false);
-            }
-            return sDateBackgroundNoAttachment;
-        }
-    }
-
-    private void drawText(Canvas canvas, CharSequence s, int x, int y, TextPaint paint) {
-        canvas.drawText(s, 0, s.length(), x, y, paint);
     }
 
     private void updateBackground(boolean isUnread) {

@@ -195,19 +195,49 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginTop">10sp</item>
+        <item name="android:layout_marginTop">11sp</item>
+        <item name="android:src">@drawable/ic_email_caret_single</item>
+    </style>
+
+    <style name="PersonalIndicatorStyleImages" parent="@style/PersonalIndicatorStyle">
+        <item name="android:layout_marginLeft">0dip</item>
+        <item name="android:layout_marginTop">11sp</item>
     </style>
 
     <style name="SendersStyle">
         <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginTop">8sp</item>
+        <item name="android:layout_marginTop">10sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/senders_font_size</item>
+        <item name="android:lines">1</item>
+        <item name="android:text">@string/long_string</item>
+    </style>
+
+    <style name="SendersStyleImages" parent="@style/SendersStyle">
+        <item name="android:layout_marginLeft">4dip</item>
+        <item name="android:layout_marginTop">10sp</item>
+    </style>
+
+    <style name="DateStyle">
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:text">@string/long_string</item>
+        <item name="android:textSize">@dimen/date_font_size</item>
+        <item name="android:lines">1</item>
+        <item name="android:layout_marginRight">14dip</item>
+    </style>
+
+    <style name="DateStyleImages" parent="@style/DateStyle">
     </style>
 
     <style name="CheckmarkStyle">
-        <item name="android:layout_marginTop">-4sp</item>
+        <item name="android:layout_marginTop">-5sp</item>
         <item name="android:layout_marginLeft">8dip</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/btn_check_on_normal_holo_light</item>
     </style>
 
     <style name="ConversationListFade" parent="@android:style/Widget.Holo.Light.ListView">
@@ -222,17 +252,17 @@
         <item name="android:layout_marginTop">-4sp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/btn_star_off_normal_email_holo_light</item>
     </style>
 
     <style name="SubjectStyle">
-        <item name="android:layout_marginLeft">8dip</item>
         <item name="android:layout_marginTop">-4sp</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:textColor">@color/subject_text_color</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/subject_font_size</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:text">@string/long_string</item>
         <item name="android:lines">2</item>
-        <item name="android:layout_width">0dip</item>
     </style>
     <!-- End browse list item styles -->
 
@@ -469,30 +499,6 @@
         <item name="android:clickable">true</item>
     </style>
 
-    <style name="MessageInfoTextAppearance" parent="@android:attr/textAppearanceMedium">
-        <item name="android:textSize">@dimen/senders_font_size</item>
-        <item name="android:textColor">@color/message_info_text_color</item>
-    </style>
-
-    <style name="DraftTextAppearance" parent="@style/MessageInfoTextAppearance">
-        <item name="android:textColor">@color/drafts</item>
-    </style>
-
-    <style name="SendingTextAppearance" parent="@style/MessageInfoTextAppearance">
-        <item name="android:textColor">@color/drafts</item>
-    </style>
-
-    <style name="SendersReadTextAppearance" parent="@style/MessageInfoTextAppearance">
-        <item name="android:textColor">@color/senders_text_color_read</item>
-        <item name="android:textSize">@dimen/senders_font_size</item>
-    </style>
-
-    <style name="SendersUnreadTextAppearance" parent="@style/SendersReadTextAppearance">
-        <item name="android:textColor">@color/senders_text_color_unread</item>
-        <item name="android:textSize">@dimen/senders_font_size</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="AccountSpinnerStyle">
         <item name="android:layout_width">wrap_content</item>
     </style>
@@ -525,9 +531,49 @@
     <style name="SubjectAppearanceUnreadStyle">
         <item name="android:textColor">@color/subject_text_color_unread</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/subject_font_size</item>
     </style>
 
-    <style name="SubjectAppearanceStyle">
+    <style name="SubjectAppearanceReadStyle">
         <item name="android:textColor">@color/subject_text_color_read</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">@dimen/subject_font_size</item>
+    </style>
+
+    <style name="SendersUnreadTextAppearance">
+        <item name="android:textColor">@color/senders_text_color_unread</item>
+        <item name="android:textSize">@dimen/senders_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SendersReadTextAppearance">
+        <item name="android:textColor">@color/senders_text_color_read</item>
+        <item name="android:textSize">@dimen/senders_font_size</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="MessageInfoUnreadTextAppearance">
+        <item name="android:textSize">@dimen/senders_font_size</item>
+        <item name="android:textColor">@color/message_info_text_color</item>
+    </style>
+
+    <style name="MessageInfoReadTextAppearance">
+        <item name="android:textSize">@dimen/senders_font_size</item>
+        <item name="android:textColor">@color/message_info_text_color</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="DraftTextAppearance" parent="@android:attr/textAppearanceMedium">
+        <item name="android:textColor">@color/drafts</item>
+        <item name="android:textSize">@dimen/senders_font_size</item>
+    </style>
+
+    <style name="SendingTextAppearance" parent="@style/DraftTextAppearance">
+    </style>
+
+    <style name="DateTextAppearance">
+        <item name="android:textColor">@color/senders_text_color_read</item>
+        <item name="android:textSize">@dimen/date_font_size</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 </resources>
