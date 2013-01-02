@@ -62,7 +62,6 @@ public class SendersView {
     private static CharSequence sDraftPluralString;
     private static CharSequence sSendingString;
     private static String sDraftCountFormatString;
-    private static CharacterStyle sMessageInfoStyleSpan;
     private static CharacterStyle sDraftsStyleSpan;
     private static CharacterStyle sSendingStyleSpan;
     private static CharacterStyle sUnreadStyleSpan;
@@ -73,6 +72,8 @@ public class SendersView {
     public static CharSequence sElidedString;
     private static BroadcastReceiver sConfigurationChangedReceiver;
     private static int sMaxDisplayableSenderImages;
+    private static TextAppearanceSpan sMessageInfoReadStyleSpan;
+    private static TextAppearanceSpan sMessageInfoUnreadStyleSpan;
 
     // We only want to have at most 2 Priority to length maps.  This will handle the case where
     // there is a widget installed on the launcher while the user is scrolling in the app
@@ -116,8 +117,10 @@ public class SendersView {
             sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
             sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
             sDraftCountFormatString = res.getString(R.string.draft_count_format);
-            sMessageInfoStyleSpan = new TextAppearanceSpan(context,
-                    R.style.MessageInfoTextAppearance);
+            sMessageInfoUnreadStyleSpan = new TextAppearanceSpan(context,
+                    R.style.MessageInfoUnreadTextAppearance);
+            sMessageInfoReadStyleSpan = new TextAppearanceSpan(context,
+                    R.style.MessageInfoReadTextAppearance);
             sDraftsStyleSpan = new TextAppearanceSpan(context, R.style.DraftTextAppearance);
             sUnreadStyleSpan = new TextAppearanceSpan(context,
                     R.style.SendersUnreadTextAppearance);
@@ -150,8 +153,9 @@ public class SendersView {
             if (count > 1) {
                 messageInfo.append(count + "");
             }
-            messageInfo.setSpan(CharacterStyle.wrap(sMessageInfoStyleSpan), 0,
-                    messageInfo.length(), 0);
+            messageInfo.setSpan(CharacterStyle.wrap(
+                    conv.read ? sMessageInfoReadStyleSpan : sMessageInfoUnreadStyleSpan),
+                    0, messageInfo.length(), 0);
             if (draftCount > 0) {
                 // If we are showing a message count or any draft text and there
                 // is at least 1 sender, prepend the sending state text with a
@@ -280,15 +284,15 @@ public class SendersView {
                             && oldPos < styledSenders.size()) {
                         // Remove the old one!
                         styledSenders.set(oldPos, null);
-                        if (shouldAddPhotos) {
-                            displayableSenderEmails.remove(currentMessage.sender);
+                        if (shouldAddPhotos && !TextUtils.isEmpty(currentMessage.senderEmail)) {
+                            displayableSenderEmails.remove(currentMessage.senderEmail);
                         }
                     }
                     displayHash.put(currentMessage.sender, i);
                     spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
                     styledSenders.add(spannableDisplay);
-                    if (shouldAddPhotos) {
-                        displayableSenderEmails.add(currentMessage.sender);
+                    if (shouldAddPhotos  && !TextUtils.isEmpty(currentMessage.senderEmail)) {
+                        displayableSenderEmails.add(currentMessage.senderEmail);
                         if (displayableSenderEmails.size() > sMaxDisplayableSenderImages) {
                             displayableSenderEmails.remove(0);
                         }

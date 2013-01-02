@@ -20,5 +20,5 @@
           android:drawable="@drawable/list_pressed_holo" />
     <item android:state_focused="true"
           android:drawable="@drawable/list_focused_holo" />
-    <item android:drawable="@drawable/list_read_holo" />
+    <item android:drawable="@drawable/list_unread_holo" />
 </selector>
