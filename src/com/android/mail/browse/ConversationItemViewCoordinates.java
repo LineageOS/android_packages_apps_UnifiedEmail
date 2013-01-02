@@ -91,8 +91,6 @@ public class ConversationItemViewCoordinates {
     int foldersTopPadding;
     int foldersFontSize;
     int foldersAscent;
-    int foldersLeftPadding;
-    int foldersBoxPadding;
     int foldersTextBottomPadding;
     boolean showFolders;
     boolean showColorBlock;
@@ -123,7 +121,6 @@ public class ConversationItemViewCoordinates {
     int dateTextWidth;
     int dateWidth;
     int dateHeight;
-
 
     // Cache to save Coordinates based on view width.
     private static SparseArray<ConversationItemViewCoordinates> sCache =
@@ -264,23 +261,25 @@ public class ConversationItemViewCoordinates {
     /**
      * Returns the length (maximum of characters) of subject in this mode.
      */
-    public static int getSubjectLength(Context context, int mode, boolean hasVisibleFolders,
-            boolean hasAttachments) {
-        if (hasVisibleFolders) {
-            if (hasAttachments) {
-                return context.getResources().getIntArray(
-                        R.array.senders_with_folders_and_attachment_lengths)[mode];
-            } else {
-                return context.getResources().getIntArray(
-                        R.array.senders_with_folders_lengths)[mode];
-            }
+    public static int getSendersLength(Context context, int mode, boolean hasAttachments) {
+        final Resources res = context.getResources();
+        if (hasAttachments) {
+            return res.getIntArray(R.array.senders_with_attachment_lengths)[mode];
         } else {
-            if (hasAttachments) {
-                return context.getResources().getIntArray(
-                        R.array.senders_with_attachment_lengths)[mode];
-            } else {
-                return context.getResources().getIntArray(R.array.senders_lengths)[mode];
-            }
+            return res.getIntArray(R.array.senders_lengths)[mode];
+        }
+    }
+
+    /**
+     * Returns the length (maximum of characters) of subject in this mode, where
+     * mode is defined as CONV_LIST, CONVERSATION, etc
+     */
+    public static int getSubjectLength(Context context, int mode, boolean hasFolders) {
+        final Resources res = context.getResources();
+        if (hasFolders) {
+            return res.getIntArray(R.array.subject_with_folders_lengths)[mode];
+        } else {
+            return res.getIntArray(R.array.subject_lengths)[mode];
         }
     }
 
@@ -408,18 +407,13 @@ public class ConversationItemViewCoordinates {
 
             View folders = view.findViewById(R.id.folders);
             if (folders != null) {
-                Resources res = context.getResources();
                 coordinates.showFolders = true;
-                coordinates.foldersLeftPadding =
-                    res.getDimensionPixelSize(R.dimen.folders_left_padding);
-                coordinates.foldersBoxPadding =
-                    res.getDimensionPixelSize(R.dimen.folders_box_padding);
                 coordinates.foldersXEnd = getX(folders) + folders.getWidth();
                 coordinates.foldersY = getY(folders);
-                coordinates.foldersHeight = folders.getMinimumHeight();
+                coordinates.foldersHeight = folders.getHeight();
                 coordinates.foldersTopPadding = folders.getPaddingTop();
-                coordinates.foldersTextBottomPadding =
-                        res.getDimensionPixelSize(R.dimen.folders_text_bottom_padding);
+                coordinates.foldersTextBottomPadding = context.getResources()
+                        .getDimensionPixelSize(R.dimen.folders_text_bottom_padding);
                 if (folders instanceof TextView) {
                     coordinates.foldersFontSize = (int) ((TextView) folders).getTextSize();
                     sPaint.setTextSize(coordinates.foldersFontSize);
