@@ -93,6 +93,7 @@ public class ConversationItemViewCoordinates {
     int foldersAscent;
     int foldersLeftPadding;
     int foldersBoxPadding;
+    int foldersTextBottomPadding;
     boolean showFolders;
     boolean showColorBlock;
 
@@ -407,15 +408,18 @@ public class ConversationItemViewCoordinates {
 
             View folders = view.findViewById(R.id.folders);
             if (folders != null) {
+                Resources res = context.getResources();
                 coordinates.showFolders = true;
                 coordinates.foldersLeftPadding =
-                    context.getResources().getDimensionPixelSize(R.dimen.folders_left_padding);
+                    res.getDimensionPixelSize(R.dimen.folders_left_padding);
                 coordinates.foldersBoxPadding =
-                    context.getResources().getDimensionPixelSize(R.dimen.folders_box_padding);
+                    res.getDimensionPixelSize(R.dimen.folders_box_padding);
                 coordinates.foldersXEnd = getX(folders) + folders.getWidth();
                 coordinates.foldersY = getY(folders);
-                coordinates.foldersHeight = folders.getHeight();
+                coordinates.foldersHeight = folders.getMinimumHeight();
                 coordinates.foldersTopPadding = folders.getPaddingTop();
+                coordinates.foldersTextBottomPadding =
+                        res.getDimensionPixelSize(R.dimen.folders_text_bottom_padding);
                 if (folders instanceof TextView) {
                     coordinates.foldersFontSize = (int) ((TextView) folders).getTextSize();
                     sPaint.setTextSize(coordinates.foldersFontSize);

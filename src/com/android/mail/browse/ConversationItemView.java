@@ -257,7 +257,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             int height = coordinates.foldersHeight;
             int topPadding = coordinates.foldersTopPadding;
             int ascent = coordinates.foldersAscent;
-            int boxPadding = coordinates.foldersBoxPadding;
+            int textBottomPadding = coordinates.foldersTextBottomPadding;
 
             sFoldersPaint.setTextSize(coordinates.foldersFontSize);
 
@@ -314,11 +314,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder, y,
                             fgColor, Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
                     shortPaint.setShader(shader);
-                    canvas.drawText(folderString, xStart + padding, y + height - topPadding,
+                    canvas.drawText(folderString, xStart + padding, y + height - textBottomPadding,
                                     shortPaint);
                 } else {
                     sFoldersPaint.setColor(fgColor);
-                    canvas.drawText(folderString, xStart + padding, y + height - topPadding,
+                    canvas.drawText(folderString, xStart + padding, y + height - textBottomPadding,
                             sFoldersPaint);
                 }
 
