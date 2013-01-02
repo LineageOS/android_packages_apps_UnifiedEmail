@@ -147,8 +147,14 @@
     <item quantity="one" msgid="3657821200245019288">"Flytt samtale"</item>
     <item quantity="other" msgid="1685896770174368261">"Flytt <xliff:g id="ID_1">%1$d</xliff:g> samtaler"</item>
   </plurals>
-    <string name="content_description" msgid="517417382820459541">"<xliff:g id="SENDER">%1$s</xliff:g> om <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> <xliff:g id="DATE">%4$s</xliff:g>"</string>
-    <string name="content_description_today" msgid="3358818622191430053">"<xliff:g id="SENDER">%1$s</xliff:g> om <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> kl. <xliff:g id="TIME">%4$s</xliff:g>"</string>
+    <!-- no translation found for content_description (5191020413686786341) -->
+    <skip />
+    <!-- no translation found for content_description_today (2303358176694038320) -->
+    <skip />
+    <!-- no translation found for read_string (219566857950091332) -->
+    <skip />
+    <!-- no translation found for unread_string (588180203444398297) -->
+    <skip />
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> – <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -353,14 +359,9 @@
     <string name="notification_action_remove_label" msgid="5852730267411032291">"Fjern etikett"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"Slett"</string>
     <string name="notification_action_mark_read" msgid="4351952818740163225">"Merk som lest"</string>
-    <string name="notification_action_mark_unread" msgid="5941293881602369664">"Merk som ulest"</string>
-    <string name="notification_action_add_star" msgid="2612819344157820575">"Legg til stjerne"</string>
-    <string name="notification_action_remove_star" msgid="3538588158594520706">"Fjern stjerne"</string>
-    <string name="notification_action_mark_important" msgid="6370883802077124044">"Merk som viktig"</string>
-    <string name="notification_action_mark_not_important" msgid="8701153278545904539">"Merk som uviktig"</string>
-    <string name="notification_action_mute" msgid="6000657861064977656">"Ignorer"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Arkivert"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Etiketten er fjernet"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Slettet"</string>
-    <string name="notification_action_undo_mute" msgid="6618374048997237553">"Ignorert"</string>
+    <!-- no translation found for notification_action_preference_summary_not_set (8168109255072452703) -->
+    <skip />
 </resources>
