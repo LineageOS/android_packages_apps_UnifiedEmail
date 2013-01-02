@@ -20,4 +20,5 @@
     <item type="id" name="personal_level"/>
     <item type="id" name="reply_state" />
     <item type="id" name="manage_folders_item"/>
+    <item type="id" name="contact_image" />
 </resources>
