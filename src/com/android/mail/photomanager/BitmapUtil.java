@@ -89,4 +89,44 @@ public class BitmapUtil {
         }
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
     }
+
+    public static Bitmap obtainBitmapWithHalfHeightAndHalfWidth(Bitmap bitmap, int width,
+            int height) {
+        if (bitmap == null) {
+            return null;
+        }
+        return Bitmap.createScaledBitmap(bitmap, width / 2, height / 2, false);
+    }
+
+
+    public static Bitmap obtainBitmapWithHalfWidth(Bitmap bitmap, int width, int height) {
+        if (bitmap != null) {
+            final float originalWidth = bitmap.getWidth();
+            final float originalHeight = bitmap.getHeight();
+            final float originalWidthToHeightRate = originalWidth / originalHeight;
+            final float desiredWidth = width / 2;
+            final float desiredWidthToHeightRate = desiredWidth / height;
+
+            // Scale
+            final int dstWidth;
+            final int dstHeight;
+            if (originalWidthToHeightRate > desiredWidthToHeightRate) {
+                dstWidth = (int) (originalWidth * height / originalHeight);
+                dstHeight = (int) height;
+            } else {
+                dstHeight = (int) (originalHeight * desiredWidth / originalWidth);
+                dstWidth = (int) desiredWidth;
+            }
+            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, true);
+
+            // Crop
+            final float extraWidth = scaled.getWidth() - desiredWidth;
+            final float extraHeight = scaled.getHeight() - height;
+            final int x = (int) (extraWidth / 2.0f);
+            final int y = (int) (extraHeight / 2.0f);
+
+            return Bitmap.createBitmap(scaled, x, y, (int) desiredWidth, (int) height);
+        }
+        return null;
+    }
 }
