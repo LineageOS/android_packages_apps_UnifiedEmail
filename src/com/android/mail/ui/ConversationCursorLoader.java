@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncTaskLoader;
 import android.net.Uri;
 import android.util.Log;
@@ -31,9 +30,7 @@ import java.util.ArrayList;
 
 public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor> {
     private static final String TAG = "ConversationCursorLoader";
-    private static final boolean DEBUG = true; // STOPSHIP
     private final Uri mUri;
-    private final Activity mActivity;
     private boolean mInitialConversationLimit;
     private final ConversationCursor mConversationCursor;
     private boolean mInit = false;
@@ -42,19 +39,20 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
     private boolean mRetained = false;
     private final String mName;
 
+    /** Only used for debugging. Turn {@link #DEBUG} on to make this useful. */
+    private static final boolean DEBUG = false; // STOPSHIP
     private static final ArrayList<ConversationCursorLoader> sLoaders =
             new ArrayList<ConversationCursorLoader>();
 
     public ConversationCursorLoader(Activity activity, Account account, Uri uri, String name) {
         super(activity);
-        mActivity = activity;
         mUri = uri;
         mName = name;
         mInitialConversationLimit =
                 account.supportsCapability(AccountCapabilities.INITIAL_CONVERSATION_LIMIT);
         // Initialize the state of the conversation cursor
         mConversationCursor = new ConversationCursor(
-                mActivity, mUri, mInitialConversationLimit, mName);
+                activity, mUri, mInitialConversationLimit, mName);
         addLoader();
     }
 
@@ -70,10 +68,10 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
     private void addLoader() {
         if (DEBUG) {
             Log.d(TAG, "Add loader: " + mUri);
-        }
-        sLoaders.add(this);
-        if (sLoaders.size() > 1) {
-            dumpLoaders();
+            sLoaders.add(this);
+            if (sLoaders.size() > 1) {
+                dumpLoaders();
+            }
         }
     }
 
@@ -88,15 +86,15 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
     @Override
     public void onReset() {
         if (!mRetain) {
-            if (DEBUG) {
-                Log.d(TAG, "Reset loader/disable cursor: " + mName);
-            }
             // Mark the cursor as disabled
             mConversationCursor.disable();
             mClosed = true;
-            sLoaders.remove(this);
-            if (!sLoaders.isEmpty()) {
-                dumpLoaders();
+            if (DEBUG) {
+                Log.d(TAG, "Reset loader/disable cursor: " + mName);
+                sLoaders.remove(this);
+                if (!sLoaders.isEmpty()) {
+                    dumpLoaders();
+                }
             }
         } else {
             if (DEBUG) {

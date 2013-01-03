@@ -2747,7 +2747,6 @@ public abstract class AbstractActivityController implements ActivityController {
             destroyPending(null);
             mConversationListCursor = data;
             mConversationListCursor.addListener(AbstractActivityController.this);
-
             mTracker.onCursorUpdated();
             mConversationListObservable.notifyChanged();
 
