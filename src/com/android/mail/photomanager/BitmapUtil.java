@@ -90,34 +90,22 @@ public class BitmapUtil {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
     }
 
-    public static Bitmap obtainBitmapWithHalfHeightAndHalfWidth(Bitmap bitmap, int width,
-            int height) {
-        if (bitmap == null) {
-            return null;
-        }
-        return Bitmap.createScaledBitmap(bitmap, width / 2, height / 2, false);
+    public static Bitmap decodeBitmapFromBytes(byte[] bytes, int width, int height) {
+        final BitmapFactory.Options options;
+        options = new BitmapFactory.Options();
+        options.outWidth = width;
+        options.outHeight = height;
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
     }
 
-
-    public static Bitmap obtainBitmapWithHalfWidth(Bitmap bitmap, int width, int height) {
-        if (bitmap != null) {
-            final float originalWidth = bitmap.getWidth();
-            final float originalHeight = bitmap.getHeight();
-            final float originalWidthToHeightRate = originalWidth / originalHeight;
+    // TODO(mindyp): can I do the scale/ crop in 1 step?
+    public static Bitmap obtainBitmapWithHalfWidth(byte[] bytes, int width, int height) {
+        if (bytes != null && bytes.length > 0) {
             final float desiredWidth = width / 2;
-            final float desiredWidthToHeightRate = desiredWidth / height;
-
-            // Scale
-            final int dstWidth;
-            final int dstHeight;
-            if (originalWidthToHeightRate > desiredWidthToHeightRate) {
-                dstWidth = (int) (originalWidth * height / originalHeight);
-                dstHeight = (int) height;
-            } else {
-                dstHeight = (int) (originalHeight * desiredWidth / originalWidth);
-                dstWidth = (int) desiredWidth;
-            }
-            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, true);
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.outWidth = width;
+            opts.outHeight = height;
+            Bitmap scaled = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);
 
             // Crop
             final float extraWidth = scaled.getWidth() - desiredWidth;
