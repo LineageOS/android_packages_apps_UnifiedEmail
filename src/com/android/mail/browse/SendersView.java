@@ -38,6 +38,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.CustomTypefaceSpan;
 import com.android.mail.utils.ObjectCache;
 import com.android.mail.utils.Utils;
 import com.google.android.common.html.parser.HtmlParser;
@@ -64,7 +65,7 @@ public class SendersView {
     private static String sDraftCountFormatString;
     private static CharacterStyle sDraftsStyleSpan;
     private static CharacterStyle sSendingStyleSpan;
-    private static CharacterStyle sUnreadStyleSpan;
+    private static CustomTypefaceSpan sUnreadStyleSpan;
     private static CharacterStyle sReadStyleSpan;
     private static String sMeString;
     private static Locale sMeStringLocale;
@@ -122,8 +123,10 @@ public class SendersView {
             sMessageInfoReadStyleSpan = new TextAppearanceSpan(context,
                     R.style.MessageInfoReadTextAppearance);
             sDraftsStyleSpan = new TextAppearanceSpan(context, R.style.DraftTextAppearance);
-            sUnreadStyleSpan = new TextAppearanceSpan(context,
-                    R.style.SendersUnreadTextAppearance);
+            sUnreadStyleSpan = new CustomTypefaceSpan("sans-serif", Typeface.createFromAsset(
+                    context.getAssets(), "fonts/Roboto-Medium.ttf"),
+                    res.getDimensionPixelSize(R.dimen.senders_font_size),
+                    res.getColor(R.color.senders_text_color_unread));
             sSendingStyleSpan = new TextAppearanceSpan(context, R.style.SendingTextAppearance);
             sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersReadTextAppearance);
             sMessageCountSpacerString = res.getString(R.string.message_count_spacer);

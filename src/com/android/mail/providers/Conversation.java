@@ -523,15 +523,29 @@ public class Conversation implements Parcelable {
     }
 
     /**
-     * Get the properly formatted subject and snippet string for display a conversation.
+     * Get the properly formatted subject and snippet string for display a
+     * conversation.
+     *
+     * @param context
+     * @param filteredSubject
+     * @param snippet
+     * @param maxChars Supply max characters the returned string can have, or -1
+     *            if there is no limit
      */
     public static SpannableStringBuilder getSubjectAndSnippetForDisplay(Context context,
-            String filteredSubject, String snippet) {
+            String filteredSubject, String snippet, int maxChars) {
         if (sSubjectAndSnippet == null) {
             sSubjectAndSnippet = context.getString(R.string.subject_and_snippet);
         }
-        return new SpannableStringBuilder((!TextUtils.isEmpty(snippet)) ?
+        String subjectText = (!TextUtils.isEmpty(snippet)) ?
                 String.format(sSubjectAndSnippet, filteredSubject, snippet)
-                : filteredSubject);
+                : filteredSubject;
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        if (maxChars != -1 && maxChars < subjectText.length()) {
+            builder.append(subjectText, 0, maxChars);
+        } else {
+            builder.append(subjectText);
+        }
+        return builder;
     }
 }
