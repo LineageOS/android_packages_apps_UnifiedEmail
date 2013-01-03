@@ -39,6 +39,7 @@ import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.CustomTypefaceSpan;
+import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.utils.ObjectCache;
 import com.android.mail.utils.Utils;
 import com.google.android.common.html.parser.HtmlParser;
@@ -72,7 +73,6 @@ public class SendersView {
     private static String sMessageCountSpacerString;
     public static CharSequence sElidedString;
     private static BroadcastReceiver sConfigurationChangedReceiver;
-    private static int sMaxDisplayableSenderImages;
     private static TextAppearanceSpan sMessageInfoReadStyleSpan;
     private static TextAppearanceSpan sMessageInfoUnreadStyleSpan;
 
@@ -131,7 +131,6 @@ public class SendersView {
             sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersReadTextAppearance);
             sMessageCountSpacerString = res.getString(R.string.message_count_spacer);
             sSendingString = res.getString(R.string.sending);
-            sMaxDisplayableSenderImages = res.getInteger(R.integer.max_list_item_images);
         }
     }
 
@@ -200,16 +199,17 @@ public class SendersView {
     @VisibleForTesting
     public static void format(Context context, ConversationInfo conversationInfo,
             String messageInfo, int maxChars, HtmlParser parser, HtmlTreeBuilder builder,
-            ArrayList<SpannableString> styledSenders, ArrayList<String> displayableSenderEmails) {
+            ArrayList<SpannableString> styledSenders, ArrayList<String> displayableSenderNames,
+            ArrayList<String> displayableSenderEmails) {
         getSenderResources(context);
-        handlePriority(context, maxChars, messageInfo,
-                conversationInfo, parser, builder, styledSenders, displayableSenderEmails);
+        handlePriority(context, maxChars, messageInfo, conversationInfo, parser, builder,
+                styledSenders, displayableSenderNames, displayableSenderEmails);
     }
 
     public static void handlePriority(Context context, int maxChars,
             String messageInfoString, ConversationInfo conversationInfo, HtmlParser parser,
             HtmlTreeBuilder builder, ArrayList<SpannableString> styledSenders,
-            ArrayList<String> displayableSenderEmails) {
+            ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails) {
         boolean shouldAddPhotos = displayableSenderEmails != null;
         int maxPriorityToInclude = -1; // inclusive
         int numCharsUsed = messageInfoString.length(); // draft, number drafts,
@@ -289,6 +289,7 @@ public class SendersView {
                         styledSenders.set(oldPos, null);
                         if (shouldAddPhotos && !TextUtils.isEmpty(currentMessage.senderEmail)) {
                             displayableSenderEmails.remove(currentMessage.senderEmail);
+                            displayableSenderNames.remove(currentMessage.sender);
                         }
                     }
                     displayHash.put(currentMessage.sender, i);
@@ -296,8 +297,10 @@ public class SendersView {
                     styledSenders.add(spannableDisplay);
                     if (shouldAddPhotos  && !TextUtils.isEmpty(currentMessage.senderEmail)) {
                         displayableSenderEmails.add(currentMessage.senderEmail);
-                        if (displayableSenderEmails.size() > sMaxDisplayableSenderImages) {
+                        displayableSenderNames.add(currentMessage.sender);
+                        if (displayableSenderEmails.size() > DividedImageCanvas.MAX_DIVISIONS) {
                             displayableSenderEmails.remove(0);
+                            displayableSenderNames.remove(0);
                         }
                     }
                 }
