@@ -31,7 +31,7 @@
     <dimen name="actionbar_subject_padding_right">8dp</dimen>
     <dimen name="compose_scrollview_width">700dp</dimen>
     <dimen name="total_conversationbar_width">150dip</dimen>
-    <dimen name="max_total_folder_width">56dip</dimen>
+    <dimen name="max_total_folder_width">64dip</dimen>
     <dimen name="max_total_folder_width_wide">64dip</dimen>
     <dimen name="color_block_width">32dip</dimen>
     <dimen name="color_block_height">6dip</dimen>
@@ -109,6 +109,4 @@
     <dimen name="senders_textview_top_padding">-4dp</dimen>
     <dimen name="senders_textview_height">30dp</dimen>
     <integer name="chips_max_lines">2</integer>
-    <dimen name="folders_left_padding">8dp</dimen>
-    <dimen name="folders_box_padding">4dp</dimen>
 </resources>

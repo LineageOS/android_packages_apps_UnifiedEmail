@@ -17,13 +17,15 @@
 -->
 
 <resources>
-    <integer-array name="senders_with_folders_and_attachment_lengths">
-        <item>50</item>
-        <item>25</item>
+    <integer-array name="subject_with_folders_lengths">
+        <item>0</item>
+        <item>-1</item>
+        <item>70</item>
     </integer-array>
-    <integer-array name="senders_with_folders_lengths">
-        <item>50</item>
-        <item>27</item>
+    <integer-array name="subject_lengths">
+        <item>0</item>
+        <item>-1</item>
+        <item>78</item>
     </integer-array>
     <integer-array name="senders_with_attachment_lengths">
         <item>50</item>

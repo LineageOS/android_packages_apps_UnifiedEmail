@@ -20,13 +20,15 @@
         <item>64</item>
         <item>70</item>
     </integer-array>
-    <integer-array name="senders_with_folders_and_attachment_lengths">
-        <item>35</item>
-        <item>35</item>
+    <integer-array name="subject_with_folders_lengths">
+        <item>0</item>
+        <item>-1</item>
+        <item>134</item>
     </integer-array>
-    <integer-array name="senders_with_folders_lengths">
-        <item>37</item>
-        <item>37</item>
+    <integer-array name="subject_lengths">
+        <item>-1</item>
+        <item>-1</item>
+        <item>-1</item>
     </integer-array>
     <integer-array name="senders_with_attachment_lengths">
         <item>40</item>

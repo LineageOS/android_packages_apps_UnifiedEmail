@@ -16,35 +16,14 @@
      limitations under the License.
 -->
 <resources>
-    <integer-array name="conversation_heights">
-        <item>64</item>
-        <item>72</item>
-    </integer-array>
     <integer-array name="subject_with_folders_lengths">
+        <item>0</item>
+        <item>80</item>
         <item>-1</item>
-        <item>-1</item>
-        <item>66</item>
     </integer-array>
     <integer-array name="subject_lengths">
         <item>-1</item>
+        <item>80</item>
         <item>-1</item>
-        <item>-1</item>
     </integer-array>
-    <integer-array name="senders_with_attachment_lengths">
-        <item>25</item>
-        <item>25</item>
-    </integer-array>
-    <integer-array name="senders_lengths">
-        <item>27</item>
-        <item>27</item>
-    </integer-array>
-    <!-- When no recent folders exist, pre-populate with these as defaults. Do not translate. -->
-    <string-array translatable="false" name="default_recent_folders">
-        <!-- Starred -->
-        <item>^t</item>
-        <!-- Sent -->
-        <item>^f</item>
-        <!-- Drafts -->
-        <item>^r</item>
-    </string-array>
 </resources>
