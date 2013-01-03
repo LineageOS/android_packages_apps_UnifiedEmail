@@ -177,18 +177,13 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
      * Maintains the state of a particular photo.
      */
     private static class BitmapHolder {
-        final byte[] bytes;
-        final int originalSmallerExtent;
+        byte[] bytes;
 
         volatile boolean fresh;
-        Bitmap bitmap;
-        Reference<Bitmap> bitmapRef;
-        int decodedSampleSize;
 
         public BitmapHolder(byte[] bytes, int originalSmallerExtent) {
             this.bytes = bytes;
             this.fresh = true;
-            this.originalSmallerExtent = originalSmallerExtent;
         }
     }
 
@@ -328,11 +323,6 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             if (h.bytes != null) {
                 rawBytes += h.bytes.length;
             }
-            Bitmap b = h.bitmapRef != null ? h.bitmapRef.get() : null;
-            if (b != null) {
-                numBitmaps++;
-                bitmapBytes += b.getByteCount();
-            }
         }
         LogUtils.d(TAG,
                 "L1: " + btk(rawBytes) + " + " + btk(bitmapBytes) + " = "
@@ -440,9 +430,6 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         if (cachedBitmap != null && cachedBitmap.getByteCount() < mBitmapCache.maxSize() / 6) {
             mBitmapCache.put(request.getKey(), cachedBitmap);
         }
-
-        // Soften the reference
-        holder.bitmap = null;
 
         return holder.fresh;
     }
@@ -626,7 +613,6 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         private static final int MAX_PHOTOS_TO_PRELOAD = 100;
 
         private final ContentResolver mResolver;
-        private final StringBuilder mStringBuilder = new StringBuilder();
         private final Set<Long> mPhotoIds = Sets.newHashSet();
         private final Set<String> mPhotoIdsAsStrings = Sets.newHashSet();
         private final Set<Request> mPhotoUris = Sets.newHashSet();

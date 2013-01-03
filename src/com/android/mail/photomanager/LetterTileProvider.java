@@ -60,13 +60,13 @@ public class LetterTileProvider extends DefaultImageProvider {
     @Override
     public void applyDefaultImage(String displayName, String address, DividedImageCanvas view,
             int extent) {
-        String display = !TextUtils.isEmpty(displayName) ? displayName : address;
-        String firstChar = display.substring(0, 1).toUpperCase();
         Bitmap bitmap;
-        byte[] bytes = firstChar.getBytes();
+        final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
+        final char firstChar = display.charAt(0);
         // If its a valid ascii character...
-        if (bytes[0] > 31 && bytes[0] < 253) {
-            bitmap = mTileBitmapCache.get(firstChar);
+        if (Character.isLetter(firstChar)) {
+            final String first = firstChar+"";
+            bitmap = mTileBitmapCache.get(first);
             if (bitmap == null) {
                 // Create bitmap based on the first char
                 int width = view.getWidth();
@@ -84,8 +84,8 @@ public class LetterTileProvider extends DefaultImageProvider {
                             .getDimensionPixelSize(R.dimen.tile_letter_padding_left);
                 }
                 sPaint.setTextSize(sTileLetterFontSize);
-                c.drawText(firstChar, sTilePaddingLeft, height - sTilePaddingBottom, sPaint);
-                mTileBitmapCache.put(firstChar, bitmap);
+                c.drawText(first, sTilePaddingLeft, height - sTilePaddingBottom, sPaint);
+                mTileBitmapCache.put(first, bitmap);
             }
         } else {
             if (mDefaultBitmap == null) {
