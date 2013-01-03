@@ -499,7 +499,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                MailActivity.setForegroundNdef(MailActivity.getMailtoNdef(accountName));
+                MailActivity.setNfcMessage(accountName);
             }
         });
         if (accountChanged) {

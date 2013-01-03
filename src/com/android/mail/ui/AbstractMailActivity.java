@@ -19,14 +19,8 @@ package com.android.mail.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.StrictMode;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 /**
  * <p>
@@ -43,9 +37,6 @@ import java.net.URLEncoder;
 public abstract class AbstractMailActivity extends Activity
         implements HelpCallback, RestrictedActivity {
 
-    private NfcAdapter mNfcAdapter; // final after onCreate
-    private NdefMessage mForegroundNdef;
-    private static AbstractMailActivity sForegroundInstance;
     private final UiHandler mUiHandler = new UiHandler();
 
     private static final boolean STRICT_MODE = false;
@@ -67,13 +58,6 @@ public abstract class AbstractMailActivity extends Activity
         }
 
         super.onCreate(savedInstanceState);
-
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (mNfcAdapter != null) {
-            // Find custom "from" address asynchronously.
-            // TODO(viki): Get a real account
-            String realAccount = "test@android.com";
-        }
         mUiHandler.setEnabled(true);
     }
 
@@ -92,49 +76,10 @@ public abstract class AbstractMailActivity extends Activity
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        synchronized (this) {
-            if (mNfcAdapter != null && mForegroundNdef != null) {
-                mNfcAdapter.disableForegroundNdefPush(this);
-            }
-            sForegroundInstance = null;
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        synchronized (this) {
-            sForegroundInstance = this;
-            if (mNfcAdapter != null && mForegroundNdef != null) {
-                mNfcAdapter.enableForegroundNdefPush(this, mForegroundNdef);
-            }
-        }
 
         mUiHandler.setEnabled(true);
-    }
-
-    /**
-     * Sets an NDEF message to be shared with "zero-clicks" using NFC. The message
-     * will be available as long as the current activity is in the foreground.
-     */
-    static void setForegroundNdef(NdefMessage ndef) {
-        AbstractMailActivity foreground = sForegroundInstance;
-        if (foreground != null && foreground.mNfcAdapter != null) {
-            synchronized (foreground) {
-                foreground.mForegroundNdef = ndef;
-                if (sForegroundInstance != null) {
-                    if (ndef != null) {
-                        sForegroundInstance.mNfcAdapter.enableForegroundNdefPush(
-                                sForegroundInstance, ndef);
-                    } else {
-                        sForegroundInstance.mNfcAdapter.disableForegroundNdefPush(
-                                sForegroundInstance);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -146,26 +91,6 @@ public abstract class AbstractMailActivity extends Activity
     @Override
     public String getHelpContext() {
         return "Mail";
-    }
-
-    /**
-     * Returns an NDEF message with a single mailto URI record
-     * for the given email address.
-     */
-    static NdefMessage getMailtoNdef(String account) {
-        byte[] accountBytes;
-        try {
-            accountBytes = URLEncoder.encode(account, "UTF-8").getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            accountBytes = account.getBytes();
-        }
-        byte prefix = 0x06; // mailto:
-        byte[] recordBytes = new byte[accountBytes.length + 1];
-        recordBytes[0] = prefix;
-        System.arraycopy(accountBytes, 0, recordBytes, 1, accountBytes.length);
-        NdefRecord mailto = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_URI,
-                new byte[0], recordBytes);
-        return new NdefMessage(new NdefRecord[] { mailto });
     }
 
     @Override

@@ -136,7 +136,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         mAccessibilityManager =
                 (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
         mAccessibilityEnabled = mAccessibilityManager.isEnabled();
-        setupNfc();
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         // Check if they haven't seen the current what's new dialog
         if (MailPrefs.get(this).getShouldShowWhatsNew(this)) {
@@ -154,19 +154,19 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         mController.onRestart();
     }
 
-    private void setupNfc() {
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-    }
-
     /**
-     * Sets an NDEF message to be shared with "zero-clicks" using NFC. The message
-     * will be available as long as the current activity is in the foreground.
+     * Constructs and sets the default NFC message. This message instructs the receiver to send
+     * email to the account provided as the argument. This message is to be shared with
+     * "zero-clicks" using NFC. The message will be available as long as the current activity is in
+     * the foreground.
+     *
+     * @param account The email address to send mail to.
      */
-    public static void setForegroundNdef(NdefMessage ndef) {
-        MailActivity foreground = sForegroundInstance;
-        if (foreground != null && foreground.mNfcAdapter != null) {
-            synchronized (foreground) {
-                foreground.mForegroundNdef = ndef;
+    public static void setNfcMessage(String account) {
+        final NdefMessage ndef = getMailtoNdef(account);
+        if (sForegroundInstance != null && sForegroundInstance.mNfcAdapter != null) {
+            synchronized (sForegroundInstance) {
+                sForegroundInstance.mForegroundNdef = ndef;
                 if (sForegroundInstance != null) {
                     if (ndef != null) {
                         sForegroundInstance.mNfcAdapter.enableForegroundNdefPush(
@@ -184,7 +184,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
      * Returns an NDEF message with a single mailto URI record
      * for the given email address.
      */
-    public static NdefMessage getMailtoNdef(String account) {
+    private static NdefMessage getMailtoNdef(String account) {
         byte[] accountBytes;
         try {
             accountBytes = URLEncoder.encode(account, "UTF-8").getBytes("UTF-8");

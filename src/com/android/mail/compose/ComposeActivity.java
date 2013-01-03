@@ -803,7 +803,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             appendSignature();
         }
         if (mAccount != null) {
-            MailActivity.setForegroundNdef(MailActivity.getMailtoNdef(mAccount.name));
+            MailActivity.setNfcMessage(mAccount.name);
         }
     }
 
