@@ -68,73 +68,82 @@ import java.util.Set;
  */
 public final class ConversationCursor implements Cursor {
     private static final String LOG_TAG = LogTag.getLogTag();
-
-    private static final boolean DEBUG = true;  // STOPSHIP Set to false before shipping
-    // A deleted row is indicated by the presence of DELETED_COLUMN in the cache map
+    /** Turn to true for debugging. */
+    private static final boolean DEBUG = false;
+    /** A deleted row is indicated by the presence of DELETED_COLUMN in the cache map */
     private static final String DELETED_COLUMN = "__deleted__";
-    // An row cached during a requery is indicated by the presence of REQUERY_COLUMN in the map
+    /** An row cached during a requery is indicated by the presence of REQUERY_COLUMN in the map */
     private static final String UPDATE_TIME_COLUMN = "__updatetime__";
-    // A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
+    /**
+     * A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
+     */
     private static final int DELETED_COLUMN_INDEX = -1;
-    // Empty deletion list
-    private static final Collection<Conversation> EMPTY_DELETION_LIST = Lists.newArrayList();
-
-    // If a cached value within 10 seconds of a refresh(), preserve it. This time has been
-    // chosen empirically (long enough for UI changes to propagate in any reasonable case)
+    /**
+     * If a cached value within 10 seconds of a refresh(), preserve it. This time has been
+     * chosen empirically (long enough for UI changes to propagate in any reasonable case)
+     */
     private static final long REQUERY_ALLOWANCE_TIME = 10000L;
-    // The index of the Uri whose data is reflected in the cached row
-    // Updates/Deletes to this Uri are cached
-    private static int sUriColumnIndex;
-    // Our sequence count (for changes sent to underlying provider)
-    private static int sSequence = 0;
+
+    /**
+     * The index of the Uri whose data is reflected in the cached row. Updates/Deletes to this Uri
+     * are cached
+     */
+    private static final int URI_COLUMN_INDEX = UIProvider.CONVERSATION_URI_COLUMN;
+
     /** The resolver for the cursor instantiator's context */
     private final ContentResolver mResolver;
 
+    /** Our sequence count (for changes sent to underlying provider) */
+    private static int sSequence = 0;
     @VisibleForTesting
     static ConversationProvider sProvider;
 
-    // The cursor underlying the caching cursor
+    /** The cursor underlying the caching cursor */
     @VisibleForTesting
     UnderlyingCursorWrapper mUnderlyingCursor;
-    // The new cursor obtained via a requery
+    /** The new cursor obtained via a requery */
     private volatile UnderlyingCursorWrapper mRequeryCursor;
-    // A mapping from Uri to updated ContentValues
-    private HashMap<String, ContentValues> mCacheMap = new HashMap<String, ContentValues>();
-    // Cache map lock (will be used only very briefly - few ms at most)
-    private Object mCacheMapLock = new Object();
-    // The listeners registered for this cursor
-    private List<ConversationListener> mListeners = Lists.newArrayList();
-    // The ConversationProvider instance
-    // The runnable executing a refresh (query of underlying provider)
+    /** A mapping from Uri to updated ContentValues */
+    private final HashMap<String, ContentValues> mCacheMap = new HashMap<String, ContentValues>();
+    /** Cache map lock (will be used only very briefly - few ms at most) */
+    private final Object mCacheMapLock = new Object();
+    /** The listeners registered for this cursor */
+    private final List<ConversationListener> mListeners = Lists.newArrayList();
+    /**
+     * The ConversationProvider instance // The runnable executing a refresh (query of underlying
+     * provider)
+     */
     private RefreshTask mRefreshTask;
-    // Set when we've sent refreshReady() to listeners
+    /** Set when we've sent refreshReady() to listeners */
     private boolean mRefreshReady = false;
-    // Set when we've sent refreshRequired() to listeners
+    /** Set when we've sent refreshRequired() to listeners */
     private boolean mRefreshRequired = false;
-    // Whether our first query on this cursor should include a limit
+    /** Whether our first query on this cursor should include a limit */
     private boolean mInitialConversationLimit = false;
-    // A list of mostly-dead items
-    private List<Conversation> sMostlyDead = Lists.newArrayList();
-    // The name of the loader
+    /** A list of mostly-dead items */
+    private final List<Conversation> mMostlyDead = Lists.newArrayList();
+    /** The name of the loader */
     private final String mName;
-    // Column names for this cursor
+    /** Column names for this cursor */
     private String[] mColumnNames;
-    // An observer on the underlying cursor (so we can detect changes from outside the UI)
+    /** An observer on the underlying cursor (so we can detect changes from outside the UI) */
     private final CursorObserver mCursorObserver;
-    // Whether our observer is currently registered with the underlying cursor
+    /** Whether our observer is currently registered with the underlying cursor */
     private boolean mCursorObserverRegistered = false;
-    // Whether our loader is paused
+    /** Whether our loader is paused */
     private boolean mPaused = false;
-    // Whether or not sync from underlying provider should be deferred
+    /** Whether or not sync from underlying provider should be deferred */
     private boolean mDeferSync = false;
 
-    // The current position of the cursor
+    /** The current position of the cursor */
     private int mPosition = -1;
 
-    // The number of cached deletions from this cursor (used to quickly generate an accurate count)
+    /**
+     * The number of cached deletions from this cursor (used to quickly generate an accurate count)
+     */
     private int mDeletedCount = 0;
 
-    // Parameters passed to the underlying query
+    /** Parameters passed to the underlying query */
     private Uri qUri;
     private String[] qProjection;
 
@@ -154,7 +163,6 @@ public final class ConversationCursor implements Cursor {
             String name) {
         mInitialConversationLimit = initialConversationLimit;
         mResolver = activity.getApplicationContext().getContentResolver();
-        sUriColumnIndex = UIProvider.CONVERSATION_URI_COLUMN;
         qUri = uri;
         mName = name;
         qProjection = UIProvider.CONVERSATION_PROJECTION;
@@ -247,7 +255,7 @@ public final class ConversationCursor implements Cursor {
                 final boolean networkWasEnabled =
                         Utils.disableConversationCursorNetworkAccess(result);
                 do {
-                    conversationUrisBuilder.add(result.getString(sUriColumnIndex));
+                    conversationUrisBuilder.add(result.getString(URI_COLUMN_INDEX));
                     conversationSetBuilder.add(result.getLong(UIProvider.CONVERSATION_ID_COLUMN));
                 } while (result.moveToNext());
 
@@ -583,7 +591,7 @@ public final class ConversationCursor implements Cursor {
      * @return the cached value for this column, or null if there is none
      */
     private Object getCachedValue(int columnIndex) {
-        String uri = mUnderlyingCursor.getString(sUriColumnIndex);
+        String uri = mUnderlyingCursor.getString(URI_COLUMN_INDEX);
         return getCachedValue(uri, columnIndex);
     }
 
@@ -718,15 +726,6 @@ public final class ConversationCursor implements Cursor {
                 mRequeryCursor = null;
             }
         }
-    }
-
-    /**
-     * Get a list of deletions from ConversationCursor to the refreshed cursor that hasn't yet
-     * been swapped into place; this allows the UI to animate these away if desired
-     * @return a list of positions deleted in ConversationCursor
-     */
-    public Collection<Conversation> getRefreshDeletions () {
-        return EMPTY_DELETION_LIST;
     }
 
     /**
@@ -949,7 +948,7 @@ public final class ConversationCursor implements Cursor {
     public String getString(int columnIndex) {
         // If we're asking for the Uri for the conversation list, we return a forwarding URI
         // so that we can intercept update/delete and handle it ourselves
-        if (columnIndex == sUriColumnIndex) {
+        if (columnIndex == URI_COLUMN_INDEX) {
             Uri uri = Uri.parse(mUnderlyingCursor.getString(columnIndex));
             return uriToCachingUriString(uri);
         }
@@ -1215,15 +1214,15 @@ public final class ConversationCursor implements Cursor {
         cacheValue(uriString,
                 UIProvider.ConversationColumns.FLAGS, Conversation.FLAG_MOSTLY_DEAD);
         conv.convFlags |= Conversation.FLAG_MOSTLY_DEAD;
-        sMostlyDead.add(conv);
+        mMostlyDead.add(conv);
         mDeferSync = true;
     }
 
     void commitMostlyDead(Conversation conv) {
         conv.convFlags &= ~Conversation.FLAG_MOSTLY_DEAD;
-        sMostlyDead.remove(conv);
+        mMostlyDead.remove(conv);
         LogUtils.i(LOG_TAG, "[All dead: %s]", conv.uri);
-        if (sMostlyDead.isEmpty()) {
+        if (mMostlyDead.isEmpty()) {
             mDeferSync = false;
             checkNotifyUI();
         }
