@@ -45,8 +45,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         conv.addMessage(info);
         ArrayList<SpannableString> strings = new ArrayList<SpannableString>();
         ArrayList<String> emailDisplays = null;
-        SendersView.format(getContext(), conv, "", 100,
-                new HtmlParser(), new HtmlTreeBuilder(), strings, emailDisplays);
+        SendersView.format(getContext(), conv, "", 100, new HtmlParser(), new HtmlTreeBuilder(),
+                strings, emailDisplays, emailDisplays);
         assertEquals(1, strings.size());
         assertEquals(strings.get(0).toString(), "me");
 
@@ -55,7 +55,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         strings.clear();
         conv2.addMessage(info2);
         SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
-                new HtmlTreeBuilder(), strings, emailDisplays);
+                new HtmlTreeBuilder(), strings, emailDisplays, emailDisplays);
         assertEquals(1, strings.size());
         assertEquals(strings.get(0).toString(), "me");
 
@@ -66,7 +66,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         conv3.addMessage(info4);
         strings.clear();
         SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
-                new HtmlTreeBuilder(), strings, emailDisplays);
+                new HtmlTreeBuilder(), strings, emailDisplays, emailDisplays);
         assertEquals(1, strings.size());
         assertEquals(strings.get(0).toString(), "me");
     }
@@ -83,7 +83,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         MessageInfo info2 = new MessageInfo(read, starred, sender, -1, null);
         conv.addMessage(info2);
         SendersView.format(getContext(), conv, "", 100,
-                new HtmlParser(), new HtmlTreeBuilder(), strings, emailDisplays);
+                new HtmlParser(), new HtmlTreeBuilder(), strings, emailDisplays, emailDisplays);
         // We actually don't remove the item, we just set it to null, so count
         // just the non-null items.
         int count = 0;

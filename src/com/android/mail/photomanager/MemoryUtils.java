@@ -20,6 +20,7 @@ public class MemoryUtils {
     private MemoryUtils() {
     }
 
+    public static final int LARGE_RAM_THRESHOLD = 640 * 1024 * 1024;
     private static long sTotalMemorySize = -1;
 
     public static long getTotalMemorySize() {

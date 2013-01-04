@@ -48,7 +48,6 @@ import android.text.TextUtils.TruncateAt;
 import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.SparseArray;
 import android.view.DragEvent;
@@ -57,13 +56,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.ContactPhotoManager;
+import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -72,6 +71,8 @@ import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.CustomTypefaceSpan;
+import com.android.mail.ui.DividedImageCanvas;
+import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.SwipeableListView;
@@ -85,7 +86,8 @@ import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 
-public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem {
+public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem,
+        InvalidateCallback {
     // Timer.
     private static int sLayoutCount = 0;
     private static Timer sTimer; // Create the sTimer here if you need to do
@@ -109,7 +111,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static Bitmap IMPORTANT_ONLY_TO_ME;
     private static Bitmap IMPORTANT_TO_ME_AND_OTHERS;
     private static Bitmap IMPORTANT_TO_OTHERS;
-    private static Bitmap DATE_BACKGROUND;
     private static Bitmap STATE_REPLIED;
     private static Bitmap STATE_FORWARDED;
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
@@ -175,8 +176,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private TextView mSubjectTextView;
     private TextView mSendersTextView;
     private TextView mDateTextView;
-    private ImageView mContactImagesView;
-    private static Drawable sDefaultContactDrawable;
+    private DividedImageCanvas mContactImagesHolder;
     private static TextAppearanceSpan sDateTextAppearance;
     private static CustomTypefaceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
@@ -190,8 +190,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static HtmlTreeBuilder sHtmlBuilder;
     private static HtmlParser sHtmlParser;
     private static ContactPhotoManager sContactPhotoManager;
-    public static final ContactPhotoManager.DefaultImageProvider DEFAULT_AVATAR =
-            new ContactPhotoManager.AvatarDefaultImageProvider();
+    public static final LetterTileProvider DEFAULT_AVATAR_PROVIDER =
+            new LetterTileProvider();
 
     static {
         sPaint.setAntiAlias(true);
@@ -361,7 +361,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     R.drawable.ic_email_caret_none_important_unread);
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
             MORE_FOLDERS = BitmapFactory.decodeResource(res, R.drawable.ic_folders_more);
-            DATE_BACKGROUND = BitmapFactory.decodeResource(res, R.drawable.folder_bg_holo_light);
             STATE_REPLIED =
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_holo_light);
             STATE_FORWARDED =
@@ -400,7 +399,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
             sDateTextAppearance = new TextAppearanceSpan(mContext, R.style.DateTextAppearance);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
-            sDefaultContactDrawable = res.getDrawable(R.drawable.ic_contact_picture);
         }
 
         mSubjectTextView = new TextView(mContext);
@@ -417,7 +415,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mDateTextView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        mContactImagesView = new ImageView(context);
+        mContactImagesHolder = new DividedImageCanvas(context, this);
     }
 
     public void bind(Cursor cursor, ControllableActivity activity, ConversationSelectionSet set,
@@ -448,6 +446,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mAdapter = adapter;
         setContentDescription();
         requestLayout();
+        sContactPhotoManager.removePhoto(mContactImagesHolder);
     }
 
     /**
@@ -549,16 +548,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mChecked = mSelectedConversationSet.contains(mHeader.conversation);
         }
         mHeader.checkboxVisible = mCheckboxesEnabled;
-        // Show either checkbox OR contact images.
-        if (!mHeader.checkboxVisible) {
-            mContactImagesView.setLayoutParams(new LayoutParams(mCoordinates.contactImagesWidth,
-                    mCoordinates.contactImagesHeight));
-            mContactImagesView.setImageDrawable(sDefaultContactDrawable);
-            mContactImagesView.measure(mCoordinates.contactImagesWidth,
-                    mCoordinates.contactImagesHeight);
-            mContactImagesView.layout(0, 0, mCoordinates.contactImagesWidth,
-                    mCoordinates.contactImagesHeight);
-        }
 
         final boolean isUnread = mHeader.unread;
         updateBackground(isUnread);
@@ -578,10 +567,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     ConversationItemViewCoordinates.getMode(context, mActivity.getViewMode()),
                     mHeader.conversation.hasAttachments);
             mHeader.displayableSenderEmails = new ArrayList<String>();
+            mHeader.displayableSenderNames = new ArrayList<String>();
             mHeader.styledSenders = new ArrayList<SpannableString>();
             SendersView.format(context, mHeader.conversation.conversationInfo,
                     mHeader.messageInfoString.toString(), maxChars, getParser(), getBuilder(),
-                    mHeader.styledSenders, mHeader.displayableSenderEmails);
+                    mHeader.styledSenders, mHeader.displayableSenderNames,
+                    mHeader.displayableSenderEmails);
+            // If we have displayable sendres, load their thumbnails
+            loadSenderImages();
         } else {
             SendersView.formatSenders(mHeader, getContext());
         }
@@ -633,6 +626,21 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
+    }
+
+    private void loadSenderImages() {
+        if (!mCheckboxesEnabled && mHeader.displayableSenderEmails != null
+                && mHeader.displayableSenderEmails.size() > 0) {
+            mContactImagesHolder.setDimensions(mCoordinates.contactImagesWidth,
+                    mCoordinates.contactImagesHeight);
+            mContactImagesHolder.setDivisionIds(mHeader.displayableSenderEmails);
+            int size = mHeader.displayableSenderEmails.size();
+            for (int i = 1; i <= DividedImageCanvas.MAX_DIVISIONS && i <= size; i++) {
+                sContactPhotoManager.loadThumbnail(mContactImagesHolder,
+                        mHeader.displayableSenderNames.get(size - i).toString(),
+                        mHeader.displayableSenderEmails.get(size - i), DEFAULT_AVATAR_PROVIDER);
+            }
+        }
     }
 
     private void layoutSenders(SpannableStringBuilder sendersText) {
@@ -1125,7 +1133,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     private void drawContactImages(Canvas canvas) {
         canvas.translate(mCoordinates.contactImagesX, mCoordinates.contactImagesY);
-        mContactImagesView.draw(canvas);
+        mContactImagesHolder.draw(canvas);
     }
 
     private void drawDate(Canvas canvas) {
@@ -1397,6 +1405,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         setAnimatedHeight(-1);
         setMinimumHeight(ConversationItemViewCoordinates.getMinHeight(mContext,
                 mActivity.getViewMode()));
+        sContactPhotoManager.removePhoto(mContactImagesHolder);
     }
 
     /**

@@ -109,4 +109,7 @@
     <dimen name="senders_textview_top_padding">-4dp</dimen>
     <dimen name="senders_textview_height">30dp</dimen>
     <integer name="chips_max_lines">2</integer>
+    <dimen name="tile_letter_font_size">32sp</dimen>
+    <dimen name="tile_letter_padding_bottom">12dp</dimen>
+    <dimen name="tile_letter_padding_left">14dp</dimen>
 </resources>

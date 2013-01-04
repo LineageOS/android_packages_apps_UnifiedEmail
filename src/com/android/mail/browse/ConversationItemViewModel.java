@@ -120,7 +120,17 @@ public class ConversationItemViewModel {
 
     private String mContentDescription;
 
+    /**
+     * Email address corresponding to the senders that will be displayed in the
+     * senders field.
+     */
     public ArrayList<String> displayableSenderEmails;
+
+    /**
+     * Display names corresponding to the email address corresponding to the
+     * senders that will be displayed in the senders field.
+     */
+    public ArrayList<String> displayableSenderNames;
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
