@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -28,14 +29,17 @@ import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationUpdater;
 
 /**
- * A dialog which is also a fragment. This dialog shows a message, two buttons (ok/cancel), and
- * runs a listener only for the positive action (ok). Since this is a fragment, it is created
- * automatically over orientation changes. To make a listener that works with this dialog, create
- * a listener with {@link ConversationUpdater#makeDialogListener(int)}, which correctly handles
- * activity life-cycle events.
+ * A dialog which is also a fragment. This dialog shows a message, two buttons (ok/cancel), and runs
+ * a listener only for the positive action (ok). Since this is a fragment, it is created
+ * automatically over orientation changes. To make a listener that works with this dialog, create a
+ * listener with {@link ConversationUpdater#makeDialogListener(int, boolean)}, which correctly
+ * handles activity life-cycle events.
  */
 public class ConfirmDialogFragment extends DialogFragment {
-    private final static String MESSAGE_KEY = "message";
+    /** Tag for saving the message shown in the dialog. */
+    private static final String MESSAGE_KEY = "message";
+    /** Tag for the dialog in the fragment manager. */
+    private static final String DIALOG_TAG = "confirm-dialog";
 
     /**
      * Since the fragment can be easily destroyed, get the listener from the central activity
@@ -86,5 +90,13 @@ public class ConfirmDialogFragment extends DialogFragment {
                .setPositiveButton(R.string.ok, POSITIVE_ACTION)
                .setNegativeButton(R.string.cancel, null);
         return builder.create();
+    }
+
+    /**
+     * Display this dialog with the provided fragment manager
+     * @param manager
+     */
+    public final void displayDialog (FragmentManager manager) {
+        show(manager, DIALOG_TAG);
     }
 }
