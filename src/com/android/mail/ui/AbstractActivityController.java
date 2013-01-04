@@ -137,6 +137,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_QUERY = "saved-query";
     /** Tag for {@link #mDialogAction} */
     private static final String SAVED_ACTION = "saved-action";
+    /** Tag for {@link #mDialogFromSelectedSet} */
+    private static final String SAVED_ACTION_FROM_SELECTED = "saved-action-from-selected";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -310,6 +312,11 @@ public abstract class AbstractActivityController implements ActivityController {
      * is used to create a new {@link #mDialogListener} on orientation changes.
      */
     private int mDialogAction = -1;
+    /**
+     * If a confirmation dialog is being shown, this is true if the dialog acts on the selected set
+     * and false if it acts on the currently selected conversation
+     */
+    private boolean mDialogFromSelectedSet;
 
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
@@ -809,6 +816,9 @@ public abstract class AbstractActivityController implements ActivityController {
             if (savedState.containsKey(SAVED_ACTION)) {
                 mDialogAction = savedState.getInt(SAVED_ACTION);
             }
+            if (savedState.containsKey(SAVED_ACTION_FROM_SELECTED)) {
+                mDialogFromSelectedSet = savedState.getBoolean(SAVED_ACTION_FROM_SELECTED);
+            }
             mViewMode.handleRestore(savedState);
         } else if (intent != null) {
             handleIntent(intent);
@@ -873,8 +883,7 @@ public abstract class AbstractActivityController implements ActivityController {
         switch (id) {
             case R.id.archive: {
                 final boolean showDialog = (settings != null && settings.confirmArchive);
-                confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
-                        getDeferredAction(R.id.archive, target, false));
+                confirmAndDelete(id, target, showDialog, R.plurals.confirm_archive_conversation);
                 break;
             }
             case R.id.remove_folder:
@@ -883,14 +892,13 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
             case R.id.delete: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
-                confirmAndDelete(target, showDialog, R.plurals.confirm_delete_conversation,
-                        getDeferredAction(R.id.delete, target, false));
+                confirmAndDelete(id, target, showDialog, R.plurals.confirm_delete_conversation);
                 break;
             }
             case R.id.discard_drafts: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
-                confirmAndDelete(target, showDialog, R.plurals.confirm_discard_drafts_conversation,
-                        getDeferredAction(R.id.discard_drafts, target, false));
+                confirmAndDelete(id, target, showDialog,
+                        R.plurals.confirm_discard_drafts_conversation);
                 break;
             }
             case R.id.mark_important:
@@ -1251,30 +1259,21 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Confirm (based on user's settings) and delete a conversation from the conversation list and
      * from the database.
+     * @param actionId the ID of the menu item that caused the delete: R.id.delete, R.id.archive...
      * @param target the conversations to act upon
      * @param showDialog true if a confirmation dialog is to be shown, false otherwise.
      * @param confirmResource the resource ID of the string that is shown in the confirmation dialog
-     * @param action the action to perform after animating the deletion of the conversations.
      */
-    protected void confirmAndDelete(final Collection<Conversation> target, boolean showDialog,
-            int confirmResource, final DestructiveAction action) {
+    private void confirmAndDelete(int actionId, final Collection<Conversation> target,
+            boolean showDialog, int confirmResource) {
         if (showDialog) {
-            final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == DialogInterface.BUTTON_POSITIVE) {
-                        delete(0, target, action);
-                    }
-                }
-            };
+            makeDialogListener(actionId, false);
             final CharSequence message = Utils.formatPlural(mContext, confirmResource,
                     target.size());
-            new AlertDialog.Builder(mActivity.getActivityContext()).setMessage(message)
-                    .setPositiveButton(R.string.ok, onClick)
-                    .setNegativeButton(R.string.cancel, null)
-                    .create().show();
+            final ConfirmDialogFragment c = ConfirmDialogFragment.newInstance(message);
+            c.displayDialog(mActivity.getFragmentManager());
         } else {
-            delete(0, target, action);
+            delete(0, target, null, getDeferredAction(actionId, target, false));
         }
     }
 
@@ -1382,8 +1381,10 @@ public abstract class AbstractActivityController implements ActivityController {
         if (convListFragment != null) {
             convListFragment.getAnimatedAdapter().onSaveInstanceState(outState);
         }
+        // If there is a dialog being shown, save the state so we can create a listener for it.
         if (mDialogAction != -1) {
             outState.putInt(SAVED_ACTION, mDialogAction);
+            outState.putBoolean(SAVED_ACTION_FROM_SELECTED, mDialogFromSelectedSet);
         }
         mSafeToModifyFragments = false;
         outState.putString(SAVED_HIERARCHICAL_FOLDER,
@@ -1544,13 +1545,20 @@ public abstract class AbstractActivityController implements ActivityController {
         if (convListFragment != null) {
             convListFragment.getAnimatedAdapter().onRestoreInstanceState(savedState);
         }
-        /**
+        /*
          * Restore the state of selected conversations. This needs to be done after the correct mode
          * is set and the action bar is fully initialized. If not, several key pieces of state
          * information will be missing, and the split views may not be initialized correctly.
-         * @param savedState
          */
         restoreSelectedConversations(savedState);
+        // Order is important!!!
+        // The dialog listener needs to happen *after* the selected set is restored.
+
+        // If there has been an orientation change, and we need to recreate the listener for the
+        // confirm dialog fragment (delete/archive/...), then do it here.
+        if (mDialogAction != -1) {
+            makeDialogListener(mDialogAction, mDialogFromSelectedSet);
+        }
     }
 
     /**
@@ -2491,11 +2499,6 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set, mFolder,
                 (SwipeableListView) convList.getListView());
-        // If there has been an orientation change, and we need to recreate the listener for the
-        // confirm dialog fragment (delete/archive/...), then do it here.
-        if (mDialogAction != -1) {
-            makeDialogListener(mDialogAction);
-        }
         enableCabMode();
     }
 
@@ -2843,11 +2846,9 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param target the conversations to act upon.
      * @return a {@link DestructiveAction} that performs the specified action.
      */
-    @Override
-    public DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
+    private final DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
             boolean batch) {
-        final DestructiveAction da = new ConversationAction(action, target, batch);
-        return da;
+        return new ConversationAction(action, target, batch);
     }
 
     /**
@@ -3169,15 +3170,25 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void makeDialogListener (final int action) {
-        final DestructiveAction destructiveAction = getDeferredBatchAction(action);
-        final Collection<Conversation> conversations = mSelectedSet.values();
-        final Collection<ConversationItemView> views = mSelectedSet.views();
+    public void makeDialogListener (final int action, boolean isBatch) {
+        final Collection<Conversation> target;
+        final Collection<ConversationItemView> views;
+        if (isBatch) {
+            target = mSelectedSet.values();
+            views = mSelectedSet.views();
+        } else {
+            LogUtils.d(LOG_TAG, "Will act upon %s", mCurrentConversation);
+            target = Conversation.listOf(mCurrentConversation);
+            // When the current conversation is deleted, we don't need to update the views.
+            views = null;
+        }
+        final DestructiveAction destructiveAction = getDeferredAction(action, target, isBatch);
         mDialogAction = action;
+        mDialogFromSelectedSet = isBatch;
         mDialogListener = new AlertDialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                delete(action, conversations, views, destructiveAction);
+                delete(action, target, views, destructiveAction);
                 // Afterwards, let's remove references to the listener and the action.
                 setListener(null, -1);
             }

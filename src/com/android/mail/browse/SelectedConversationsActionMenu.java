@@ -92,8 +92,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private AccountObserver mAccountObserver;
 
-    private static final String DIALOG_TAG = "dialog";
-
     public SelectedConversationsActionMenu(ControllableActivity activity,
             ConversationSelectionSet selectionSet,
             Folder folder, SwipeableListView list) {
@@ -244,7 +242,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 (settings != null && (action == R.id.delete || action == R.id.discard_drafts) ?
                         settings.confirmDelete : settings.confirmArchive);
         if (showDialog) {
-            mUpdater.makeDialogListener(action);
+            mUpdater.makeDialogListener(action, true /* fromSelectedSet */);
             final int resId;
             switch (action) {
                 case R.id.delete:
@@ -259,11 +257,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             }
             final CharSequence message = Utils.formatPlural(mContext, resId, conversations.size());
             final ConfirmDialogFragment c = ConfirmDialogFragment.newInstance(message);
-            c.show(mActivity.getFragmentManager(), DIALOG_TAG);
+            c.displayDialog(mActivity.getFragmentManager());
         } else {
             // No need to show the dialog, just make a destructive action and destroy the
             // selected set immediately.
             final Collection<ConversationItemView> views = mSelectionSet.views();
+            // TODO(viki): Stop using the deferred action here. Use the registered action.
             destroy(action, conversations, views, mUpdater.getDeferredBatchAction(action));
         }
     }

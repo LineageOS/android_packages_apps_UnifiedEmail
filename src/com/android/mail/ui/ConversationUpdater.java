@@ -144,18 +144,6 @@ public interface ConversationUpdater extends ConversationListCallbacks {
     public DestructiveAction getDeferredBatchAction(int action);
 
     /**
-     * Get a destructive action for selected conversations. The action
-     * corresponds to Menu item identifiers, for example R.id.unread, or
-     * R.id.delete. but is not automatically added to the pending actions list.
-     * The caller must explicitly call performAction.
-     * @param action
-     * @param batch
-     * @return
-     */
-    public DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
-            boolean batch);
-
-    /**
      * Get destructive folder change for selected conversations.
      * The caller must explicitly call performAction.
      * @param action
@@ -193,10 +181,11 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * Make an action listener for a confirmation dialog, and the currently selected set of
      * conversations. The action is specified as an integer which marks the menu resource:
      * R.id.delete, R.id.discard_drafts, etc.
-     * @param action the resource ID of the menu action: R.id.delete, for
-     *            example
+     * @param action the resource ID of the menu action: R.id.delete, for example
+     * @param fromSelectedSet true if the listener acts on the selected set, false if the listener
+     *        acts on the current conversation.
      */
-    public void makeDialogListener(final int action);
+    public void makeDialogListener(final int action, boolean fromSelectedSet);
 
     /**
      * If set, get the listener associated with the existing {@link ConfirmDialogFragment}.  This
