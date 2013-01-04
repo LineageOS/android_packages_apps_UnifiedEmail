@@ -366,7 +366,7 @@ public class WidgetService extends RemoteViewsService {
                     ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
                     SendersView.format(mContext,
                             conversation.conversationInfo, "", MAX_SENDERS_LENGTH,
-                            new HtmlParser(), new HtmlTreeBuilder(), senders, null);
+                            new HtmlParser(), new HtmlTreeBuilder(), senders, null, null);
                     senderBuilder = ellipsizeStyledSenders(conversation.conversationInfo,
                             MAX_SENDERS_LENGTH, senders);
                 } else {

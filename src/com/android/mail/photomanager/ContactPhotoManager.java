@@ -21,16 +21,12 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -43,18 +39,14 @@ import android.provider.ContactsContract.Contacts.Photo;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.Directory;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.LruCache;
-import android.util.TypedValue;
-import android.widget.ImageView;
+import com.android.mail.ui.DividedImageCanvas;
+import com.android.mail.utils.LogUtils;
 
-import com.android.mail.R;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
@@ -73,52 +65,20 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
     static final boolean DEBUG = false; // Don't submit with true
     static final boolean DEBUG_SIZES = false; // Don't submit with true
 
-    /** Caches 180dip in pixel. This is used to detect whether to show the hires or lores version
-     * of the default avatar */
-    private static int s180DipInPixel = -1;
-
     public static final String CONTACT_PHOTO_SERVICE = "contactPhotos";
-
-    /**
-     * Returns the resource id of the default avatar. Tries to find a resource that is bigger
-     * than the given extent (width or height). If extent=-1, a thumbnail avatar is returned
-     */
-    public static int getDefaultAvatarResId(Context context, int extent, boolean darkTheme) {
-        // TODO: Is it worth finding a nicer way to do hires/lores here? In practice, the
-        // default avatar doesn't look too different when stretched
-        if (s180DipInPixel == -1) {
-            Resources r = context.getResources();
-            s180DipInPixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180,
-                    r.getDisplayMetrics());
-        }
-
-        final boolean hires = (extent != -1) && (extent > s180DipInPixel);
-        return getDefaultAvatarResId(hires, darkTheme);
-    }
-
-    public static int getDefaultAvatarResId(boolean hires, boolean darkTheme) {
-        if (hires && darkTheme) return R.drawable.ic_contact_picture_180_holo_dark;
-        if (hires) return R.drawable.ic_contact_picture_180_holo_light;
-        if (darkTheme) return R.drawable.ic_contact_picture_holo_dark;
-        return R.drawable.ic_contact_picture;
-    }
 
     public static abstract class DefaultImageProvider {
         /**
-         * Applies the default avatar to the ImageView. Extent is an indicator for the size (width
-         * or height). If darkTheme is set, the avatar is one that looks better on dark background
+         * Applies the default avatar to the DividedImageView. Extent is an
+         * indicator for the size (width or height). If darkTheme is set, the
+         * avatar is one that looks better on dark background
+         * @param id
          */
-        public abstract void applyDefaultImage(ImageView view, int extent, boolean darkTheme);
+        public abstract void applyDefaultImage(String name, String emailAddress,
+                DividedImageCanvas view, int extent);
     }
 
-    public static class AvatarDefaultImageProvider extends DefaultImageProvider {
-        @Override
-        public void applyDefaultImage(ImageView view, int extent, boolean darkTheme) {
-            view.setImageResource(getDefaultAvatarResId(view.getContext(), extent, darkTheme));
-        }
-    }
-
-    public static final DefaultImageProvider DEFAULT_AVATAR = new AvatarDefaultImageProvider();
+    public static final DefaultImageProvider DEFAULT_AVATAR = new LetterTileProvider();
 
     /**
      * Requests the singleton instance of {@link AccountTypeManager} with data bound from
@@ -130,7 +90,7 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
                 (ContactPhotoManager) applicationContext.getSystemService(CONTACT_PHOTO_SERVICE);
         if (service == null) {
             service = createContactPhotoManager(applicationContext);
-            Log.e(TAG, "No contact photo service in context: " + applicationContext);
+            LogUtils.e(TAG, "No contact photo service in context: " + applicationContext);
         }
         return service;
     }
@@ -140,21 +100,21 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
     }
 
     /**
-     * Calls {@link #loadThumbnail(ImageView, long, boolean, DefaultImageProvider)} with
+     * Calls {@link #loadThumbnail(DividedImageCanvas, long, boolean, DefaultImageProvider)} with
      * {@link #DEFAULT_AVATAR}.
      */
-    public final void loadThumbnail(ImageView view, String name, boolean darkTheme) {
-        loadThumbnail(view, name, darkTheme, DEFAULT_AVATAR);
+    public final void loadThumbnail(DividedImageCanvas view, String name, String emailAddress) {
+        loadThumbnail(view, name, emailAddress, DEFAULT_AVATAR);
     }
 
-    public abstract void loadThumbnail(ImageView view, String name, boolean darkTheme,
+    public abstract void loadThumbnail(DividedImageCanvas view, String name, String emailAddress,
             DefaultImageProvider defaultProvider);
 
     /**
      * Remove photo from the supplied image view. This also cancels current pending load request
      * inside this photo manager.
      */
-    public abstract void removePhoto(ImageView view);
+    public abstract void removePhoto(DividedImageCanvas view);
 
     /**
      * Temporarily stops loading photos from the database.
@@ -172,14 +132,6 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
      * if so.
      */
     public abstract void refreshCache();
-
-    /**
-     * Stores the given bitmap directly in the LRU bitmap cache.
-     * @param photoUri The URI of the photo (for future requests).
-     * @param bitmap The bitmap.
-     * @param photoBytes The bytes that were parsed to create the bitmap.
-     */
-    public abstract void cacheBitmap(Uri photoUri, Bitmap bitmap, byte[] photoBytes);
 
     /**
      * Initiates a background process that over time will fill up cache with
@@ -205,8 +157,6 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
 
 class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     private static final String LOADER_THREAD_NAME = "ContactPhotoLoader";
-
-    private static final int FADE_TRANSITION_DURATION = 200;
 
     /**
      * Type of message sent by the UI thread to itself to indicate that some photos
@@ -252,6 +202,11 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     private final LruCache<Object, BitmapHolder> mBitmapHolderCache;
 
     /**
+     * An LRU cache for photo ids mapped to contact addresses.
+     */
+    private final LruCache<String, Long> mPhotoIdCache;
+
+    /**
      * {@code true} if ALL entries in {@link #mBitmapHolderCache} are NOT fresh.
      */
     private volatile boolean mBitmapHolderCacheAllUnfresh = true;
@@ -269,11 +224,11 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     private final LruCache<Object, Bitmap> mBitmapCache;
 
     /**
-     * A map from ImageView to the corresponding photo ID or uri, encapsulated in a request.
+     * A map from DividedImageView to the corresponding photo ID or uri, encapsulated in a request.
      * The request may swapped out before the photo loading request is started.
      */
-    private final ConcurrentHashMap<ImageView, Request> mPendingRequests =
-            new ConcurrentHashMap<ImageView, Request>();
+    private final ConcurrentHashMap<DividedImageCanvas, Request> mPendingRequests =
+            new ConcurrentHashMap<DividedImageCanvas, Request>();
 
     /**
      * Handler for messages sent to the UI thread.
@@ -302,7 +257,8 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     /** Cache size for {@link #mBitmapCache} for devices with "large" RAM. */
     private static final int BITMAP_CACHE_SIZE = 36864 * 48; // 1728K
 
-    private static final int LARGE_RAM_THRESHOLD = 640 * 1024 * 1024;
+    /** Cache size for {@link #mPhotoIdCache}. Starting with 500 entries. */
+    private static final int PHOTO_ID_CACHE_SIZE = 500;
 
     /** For debug: How many times we had to reload cached photo for a stale entry */
     private final AtomicInteger mStaleCacheOverwrite = new AtomicInteger();
@@ -314,7 +270,8 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         mContext = context;
 
         final float cacheSizeAdjustment =
-                (MemoryUtils.getTotalMemorySize() >= LARGE_RAM_THRESHOLD) ? 1.0f : 0.5f;
+                (MemoryUtils.getTotalMemorySize() >= MemoryUtils.LARGE_RAM_THRESHOLD) ?
+                        1.0f : 0.5f;
         final int bitmapCacheSize = (int) (cacheSizeAdjustment * BITMAP_CACHE_SIZE);
         mBitmapCache = new LruCache<Object, Bitmap>(bitmapCacheSize) {
             @Override protected int sizeOf(Object key, Bitmap value) {
@@ -338,11 +295,12 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             }
         };
         mBitmapHolderCacheRedZoneBytes = (int) (holderCacheSize * 0.75);
-        Log.i(TAG, "Cache adj: " + cacheSizeAdjustment);
+        LogUtils.i(TAG, "Cache adj: " + cacheSizeAdjustment);
         if (DEBUG) {
-            Log.d(TAG, "Cache size: " + btk(mBitmapHolderCache.maxSize())
+            LogUtils.d(TAG, "Cache size: " + btk(mBitmapHolderCache.maxSize())
                     + " + " + btk(mBitmapCache.maxSize()));
         }
+        mPhotoIdCache = new LruCache<String, Long>(PHOTO_ID_CACHE_SIZE);
     }
 
     /** Converts bytes to K bytes, rounding up.  Used only for debug log. */
@@ -376,12 +334,12 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                 bitmapBytes += b.getByteCount();
             }
         }
-        Log.d(TAG,
+        LogUtils.d(TAG,
                 "L1: " + btk(rawBytes) + " + " + btk(bitmapBytes) + " = "
                         + btk(rawBytes + bitmapBytes) + ", " + numHolders + " holders, "
                         + numBitmaps + " bitmaps, avg: " + btk(safeDiv(rawBytes, numHolders)) + ","
                         + btk(safeDiv(bitmapBytes, numBitmaps)));
-        Log.d(TAG, "L1 Stats: " + mBitmapHolderCache.toString() + ", overwrite: fresh="
+        LogUtils.d(TAG, "L1 Stats: " + mBitmapHolderCache.toString() + ", overwrite: fresh="
                 + mFreshCacheOverwrite.get() + " stale=" + mStaleCacheOverwrite.get());
 
         numBitmaps = 0;
@@ -390,14 +348,14 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             numBitmaps++;
             bitmapBytes += b.getByteCount();
         }
-        Log.d(TAG, "L2: " + btk(bitmapBytes) + ", " + numBitmaps + " bitmaps" + ", avg: "
+        LogUtils.d(TAG, "L2: " + btk(bitmapBytes) + ", " + numBitmaps + " bitmaps" + ", avg: "
                 + btk(safeDiv(bitmapBytes, numBitmaps)));
         // We don't get from L2 cache, so L2 stats is meaningless.
     }
 
     @Override
     public void onTrimMemory(int level) {
-        if (DEBUG) Log.d(TAG, "onTrimMemory: " + level);
+        if (DEBUG) LogUtils.d(TAG, "onTrimMemory: " + level);
         if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
             // Clear the caches.  Note all pending requests will be removed too.
             clear();
@@ -411,20 +369,21 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     }
 
     @Override
-    public void loadThumbnail(ImageView view, String name, boolean darkTheme,
+    public void loadThumbnail(DividedImageCanvas view, String name, String emailAddress,
             DefaultImageProvider defaultProvider) {
         if (TextUtils.isEmpty(name)) {
             // No photo is needed
-            defaultProvider.applyDefaultImage(view, -1, darkTheme);
+            defaultProvider.applyDefaultImage(name, emailAddress, view, -1);
             mPendingRequests.remove(view);
         } else {
-            if (DEBUG) Log.d(TAG, "loadPhoto request: " + name);
-            loadPhotoByIdOrUri(view, Request.createFromName(name, darkTheme,
-                    defaultProvider));
+            if (DEBUG)
+                LogUtils.d(TAG, "loadPhoto request: " + name);
+            loadPhotoByIdOrUri(view,
+                    Request.createFromEmailAddress(name, emailAddress, defaultProvider));
         }
     }
 
-    private void loadPhotoByIdOrUri(ImageView view, Request request) {
+    private void loadPhotoByIdOrUri(DividedImageCanvas view, Request request) {
         boolean loaded = loadCachedPhoto(view, request, false);
         if (loaded) {
             mPendingRequests.remove(view);
@@ -438,18 +397,18 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     }
 
     @Override
-    public void removePhoto(ImageView view) {
-        view.setImageDrawable(null);
+    public void removePhoto(DividedImageCanvas view) {
+        view.reset();
         mPendingRequests.remove(view);
     }
 
     @Override
     public void refreshCache() {
         if (mBitmapHolderCacheAllUnfresh) {
-            if (DEBUG) Log.d(TAG, "refreshCache -- no fresh entries.");
+            if (DEBUG) LogUtils.d(TAG, "refreshCache -- no fresh entries.");
             return;
         }
-        if (DEBUG) Log.d(TAG, "refreshCache");
+        if (DEBUG) LogUtils.d(TAG, "refreshCache");
         mBitmapHolderCacheAllUnfresh = true;
         for (BitmapHolder holder : mBitmapHolderCache.snapshot().values()) {
             holder.fresh = false;
@@ -461,7 +420,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
      *
      * @return false if the photo needs to be (re)loaded from the provider.
      */
-    private boolean loadCachedPhoto(ImageView view, Request request, boolean fadeIn) {
+    private boolean loadCachedPhoto(DividedImageCanvas view, Request request, boolean fadeIn) {
         BitmapHolder holder = mBitmapHolderCache.get(request.getKey());
         if (holder == null) {
             // The bitmap has not been loaded ==> show default avatar
@@ -484,30 +443,13 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             } else {
                 // This is bigger data. Let's send that back to the Loader so that we can
                 // inflate this in the background
+                holder.bitmap = null;
                 request.applyDefaultImage(view);
                 return false;
             }
         }
 
-        final Drawable previousDrawable = view.getDrawable();
-        if (fadeIn && previousDrawable != null) {
-            final Drawable[] layers = new Drawable[2];
-            // Prevent cascade of TransitionDrawables.
-            if (previousDrawable instanceof TransitionDrawable) {
-                final TransitionDrawable previousTransitionDrawable =
-                        (TransitionDrawable) previousDrawable;
-                layers[0] = previousTransitionDrawable.getDrawable(
-                        previousTransitionDrawable.getNumberOfLayers() - 1);
-            } else {
-                layers[0] = previousDrawable;
-            }
-            layers[1] = new BitmapDrawable(mContext.getResources(), cachedBitmap);
-            TransitionDrawable drawable = new TransitionDrawable(layers);
-            view.setImageDrawable(drawable);
-            drawable.startTransition(FADE_TRANSITION_DURATION);
-        } else {
-            view.setImageBitmap(cachedBitmap);
-        }
+        view.addDivisionImage(cachedBitmap, request.getEmailAddress());
 
         // Put the bitmap in the LRU cache. But only do this for images that are small enough
         // (we require that at least six of those can be cached at the same time)
@@ -568,7 +510,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             holder.bitmap = bitmap;
             holder.bitmapRef = new SoftReference<Bitmap>(bitmap);
             if (DEBUG) {
-                Log.d(TAG, "inflateBitmap " + btk(bytes.length) + " -> "
+                LogUtils.d(TAG, "inflateBitmap " + btk(bytes.length) + " -> "
                         + bitmap.getWidth() + "x" + bitmap.getHeight()
                         + ", " + btk(bitmap.getByteCount()));
             }
@@ -578,10 +520,11 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     }
 
     public void clear() {
-        if (DEBUG) Log.d(TAG, "clear");
+        if (DEBUG) LogUtils.d(TAG, "clear");
         mPendingRequests.clear();
         mBitmapHolderCache.evictAll();
         mBitmapCache.evictAll();
+        mPhotoIdCache.evictAll();
     }
 
     @Override
@@ -649,9 +592,9 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
      * photos still haven't been loaded, sends another request for image loading.
      */
     private void processLoadedImages() {
-        Iterator<ImageView> iterator = mPendingRequests.keySet().iterator();
+        Iterator<DividedImageCanvas> iterator = mPendingRequests.keySet().iterator();
         while (iterator.hasNext()) {
-            ImageView view = iterator.next();
+            DividedImageCanvas view = iterator.next();
             Request key = mPendingRequests.get(view);
             boolean loaded = loadCachedPhoto(view, key, true);
             if (loaded) {
@@ -659,7 +602,8 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             }
         }
 
-        softenCache();
+        // TODO: this already seems to happen when calling loadCachedPhoto
+        //softenCache();
 
         if (!mPendingRequests.isEmpty()) {
             requestLoading();
@@ -667,13 +611,13 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     }
 
     /**
-     * Removes strong references to loaded bitmaps to allow them to be garbage collected
-     * if needed.  Some of the bitmaps will still be retained by {@link #mBitmapCache}.
+     * Store the supplied photo id to contact address mapping so that we don't
+     * have to lookup the contact again.
+     * @param id Id of the photo matching the contact
+     * @param contactAddress Email address of the contact
      */
-    private void softenCache() {
-        for (BitmapHolder holder : mBitmapHolderCache.snapshot().values()) {
-            holder.bitmap = null;
-        }
+    private void cachePhotoId(Long id, String contactAddress) {
+        mPhotoIdCache.put(contactAddress, id);
     }
 
     /**
@@ -683,14 +627,14 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         if (DEBUG) {
             BitmapHolder prev = mBitmapHolderCache.get(key);
             if (prev != null && prev.bytes != null) {
-                Log.d(TAG, "Overwriting cache: key=" + key + (prev.fresh ? " FRESH" : " stale"));
+                LogUtils.d(TAG, "Overwriting cache: key=" + key + (prev.fresh ? " FRESH" : " stale"));
                 if (prev.fresh) {
                     mFreshCacheOverwrite.incrementAndGet();
                 } else {
                     mStaleCacheOverwrite.incrementAndGet();
                 }
             }
-            Log.d(TAG, "Caching data: key=" + key + ", " +
+            LogUtils.d(TAG, "Caching data: key=" + key + ", " +
                     (bytes == null ? "<null>" : btk(bytes.length)));
         }
         BitmapHolder holder = new BitmapHolder(bytes,
@@ -704,19 +648,6 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
 
         mBitmapHolderCache.put(key, holder);
         mBitmapHolderCacheAllUnfresh = false;
-    }
-
-    @Override
-    public void cacheBitmap(Uri photoUri, Bitmap bitmap, byte[] photoBytes) {
-        final int smallerExtent = Math.min(bitmap.getWidth(), bitmap.getHeight());
-        // We can pretend here that the extent of the photo was the size that we originally
-        // requested
-        Request request = Request.createFromUri(photoUri, smallerExtent, false, DEFAULT_AVATAR);
-        BitmapHolder holder = new BitmapHolder(photoBytes, smallerExtent);
-        holder.bitmapRef = new SoftReference<Bitmap>(bitmap);
-        mBitmapHolderCache.put(request.getKey(), holder);
-        mBitmapHolderCacheAllUnfresh = false;
-        mBitmapCache.put(request.getKey(), bitmap);
     }
 
     /**
@@ -744,21 +675,15 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         while (iterator.hasNext()) {
             Request request = iterator.next();
             final BitmapHolder holder = mBitmapHolderCache.get(request.getKey());
-            if (holder != null && holder.bytes != null && holder.fresh &&
-                    (holder.bitmapRef == null || holder.bitmapRef.get() == null)) {
-                // This was previously loaded but we don't currently have the inflated Bitmap
+            if (holder != null && holder.bytes != null && holder.fresh
+                    && (holder.bitmapRef == null || holder.bitmapRef.get() == null)) {
+                // This was previously loaded but we don't currently have the
+                // inflated Bitmap
                 inflateBitmap(holder, request.getRequestedExtent());
                 jpegsDecoded = true;
             } else {
                 if (holder == null || !holder.fresh) {
-                    if (request.isUriRequest()) {
-                        uris.add(request);
-                    } else if (request.isNameRequest()){
-                        names.add(request);
-                    } else {
-                        photoIds.add(request.getId());
-                        photoIdsAsStrings.add(String.valueOf(request.mId));
-                    }
+                    names.add(request);
                 }
             }
         }
@@ -770,7 +695,6 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
      * The thread that performs loading of photos from the database.
      */
     private class LoaderThread extends HandlerThread implements Callback {
-        private static final int BUFFER_SIZE = 1024*16;
         private static final int MESSAGE_PRELOAD_PHOTOS = 0;
         private static final int MESSAGE_LOAD_PHOTOS = 1;
 
@@ -799,7 +723,6 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         private final List<Long> mPreloadPhotoIds = Lists.newArrayList();
 
         private Handler mLoaderThreadHandler;
-        private byte mBuffer[];
 
         private static final int PRELOAD_STATUS_NOT_STARTED = 0;
         private static final int PRELOAD_STATUS_IN_PROGRESS = 1;
@@ -914,7 +837,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                 mPreloadStatus = PRELOAD_STATUS_DONE;
             }
 
-            Log.v(TAG, "Preloaded " + count + " photos.  Cached bytes: "
+            LogUtils.v(TAG, "Preloaded " + count + " photos.  Cached bytes: "
                     + mBitmapHolderCache.size());
 
             requestPreloading();
@@ -950,8 +873,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         private void loadPhotosInBackground() {
             obtainPhotoIdsAndUrisToLoad(mPhotoIds, mPhotoIdsAsStrings, mPhotoUris, mNames);
             loadThumbnails(false);
-            loadUriBasedPhotos();
-            loadNameBasedPhotos(false);
+            loadEmailAddressBasedPhotos(false);
             requestPreloading();
         }
 
@@ -1043,58 +965,74 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             return mStringBuilder.toString();
         }
 
-        private void loadNameBasedPhotos(boolean preloading) {
-            HashSet<String> names = new HashSet<String>();
+        private void loadEmailAddressBasedPhotos(boolean preloading) {
+            HashSet<String> addresses = new HashSet<String>();
             Set<Long> photoIds = new HashSet<Long>();
             Set<String> photoIdsAsString = new HashSet<String>();
             HashMap<Long, String> photoIdMap = new HashMap<Long, String>();
-
+            Long match;
+            String emailAddress;
             for (Request request : mNames) {
-                names.add(request.getName());
+                emailAddress = request.getEmailAddress();
+                match = mPhotoIdCache.get(emailAddress);
+                if (match != null) {
+                    photoIds.add(match);
+                    photoIdsAsString.add(match + "");
+                    photoIdMap.put(match, emailAddress);
+                } else {
+                    addresses.add(emailAddress);
+                }
             }
-            String[] selectionArgs = new String[names.size()];
-            names.toArray(selectionArgs);
 
-            Cursor photoIdsCursor = null;
-            try {
-
-                photoIdsCursor = mResolver.query(Email.CONTENT_URI, new String[] {
-                        Email.PHOTO_ID, Email.ADDRESS
-                }, createInQuery(Email.ADDRESS, names.size()), selectionArgs, null);
-                Long id;
-                if (photoIdsCursor != null) {
-                    while (photoIdsCursor.moveToNext()) {
-                        id = photoIdsCursor.getLong(0);
-                        photoIds.add(id);
-                        photoIdsAsString.add(id + "");
-                        photoIdMap.put(id, photoIdsCursor.getString(1));
+            if (addresses.size() > 0) {
+                String[] selectionArgs = new String[addresses.size()];
+                addresses.toArray(selectionArgs);
+                Cursor photoIdsCursor = null;
+                try {
+                    photoIdsCursor = mResolver.query(Email.CONTENT_URI, new String[] {
+                            Email.PHOTO_ID, Email.ADDRESS
+                    }, createInQuery(Email.ADDRESS, addresses.size()), selectionArgs, null);
+                    Long id;
+                    String contactAddress;
+                    if (photoIdsCursor != null) {
+                        while (photoIdsCursor.moveToNext()) {
+                            id = photoIdsCursor.getLong(0);
+                            contactAddress = photoIdsCursor.getString(1);
+                            photoIds.add(id);
+                            photoIdsAsString.add(id + "");
+                            photoIdMap.put(id, contactAddress);
+                            cachePhotoId(id, contactAddress);
+                        }
+                    }
+                } finally {
+                    if (photoIdsCursor != null) {
+                        photoIdsCursor.close();
                     }
                 }
-            } finally {
-                if (photoIdsCursor != null) {
-                    photoIdsCursor.close();
-                }
             }
-            Cursor photosCursor = null;
-            try {
-                photosCursor = loadThumbnails(preloading, photoIdsAsString, photoIds);
+            if (photoIds != null && photoIds.size() > 0) {
+                Cursor photosCursor = null;
+                try {
+                    photosCursor = loadThumbnails(preloading, photoIdsAsString, photoIds);
 
-                if (photosCursor != null) {
-                    while (photosCursor.moveToNext()) {
-                        Long id = photosCursor.getLong(0);
-                        byte[] bytes = photosCursor.getBlob(1);
-                        cacheBitmap(photoIdMap.get(id), bytes, preloading, -1);
-                        photoIds.remove(id);
+                    if (photosCursor != null) {
+                        while (photosCursor.moveToNext()) {
+                            Long id = photosCursor.getLong(0);
+                            byte[] bytes = photosCursor.getBlob(1);
+                            cacheBitmap(photoIdMap.get(id), bytes, preloading, -1);
+                            photoIds.remove(id);
+                        }
+                    }
+                } finally {
+                    if (photosCursor != null) {
+                        photosCursor.close();
                     }
                 }
-            } finally {
-                if (photosCursor != null) {
-                    photosCursor.close();
-                }
             }
-
+            String matchingAddress;
             // Remaining photos were not found in the contacts database (but might be in profile).
             for (Long id : photoIds) {
+                matchingAddress = photoIdMap.get(id);
                 if (ContactsContract.isProfileId(id)) {
                     Cursor profileCursor = null;
                     try {
@@ -1102,11 +1040,11 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                                 ContentUris.withAppendedId(Data.CONTENT_URI, id),
                                 COLUMNS, null, null, null);
                         if (profileCursor != null && profileCursor.moveToFirst()) {
-                            cacheBitmap(profileCursor.getLong(0), profileCursor.getBlob(1),
+                            cacheBitmap(matchingAddress, profileCursor.getBlob(1),
                                     preloading, -1);
                         } else {
                             // Couldn't load a photo this way either.
-                            cacheBitmap(photoIdMap.get(id), null, preloading, -1);
+                            cacheBitmap(matchingAddress, null, preloading, -1);
                         }
                     } finally {
                         if (profileCursor != null) {
@@ -1115,107 +1053,41 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                     }
                 } else {
                     // Not a profile photo and not found - mark the cache accordingly
-                    cacheBitmap(id, null, preloading, -1);
+                    cacheBitmap(matchingAddress, null, preloading, -1);
                 }
             }
-
             mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);
-        }
-
-        /**
-         * Loads photos referenced with Uris. Those can be remote thumbnails
-         * (from directory searches), display photos etc
-         */
-        private void loadUriBasedPhotos() {
-            for (Request uriRequest : mPhotoUris) {
-                Uri uri = uriRequest.getUri();
-                if (mBuffer == null) {
-                    mBuffer = new byte[BUFFER_SIZE];
-                }
-                try {
-                    if (DEBUG) Log.d(TAG, "Loading " + uri);
-                    InputStream is = mResolver.openInputStream(uri);
-                    if (is != null) {
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        try {
-                            int size;
-                            while ((size = is.read(mBuffer)) != -1) {
-                                baos.write(mBuffer, 0, size);
-                            }
-                        } finally {
-                            is.close();
-                        }
-                        cacheBitmap(uri, baos.toByteArray(), false,
-                                uriRequest.getRequestedExtent());
-                        mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);
-                    } else {
-                        Log.v(TAG, "Cannot load photo " + uri);
-                        cacheBitmap(uri, null, false, uriRequest.getRequestedExtent());
-                    }
-                } catch (Exception ex) {
-                    Log.v(TAG, "Cannot load photo " + uri, ex);
-                    cacheBitmap(uri, null, false, uriRequest.getRequestedExtent());
-                }
-            }
         }
     }
 
     /**
-     * A holder for either a Uri or an id and a flag whether this was requested for the dark or
-     * light theme
+     * A holder for a contact photo request.
      */
     private static final class Request {
-        private final long mId;
-        private final Uri mUri;
-        private final boolean mDarkTheme;
         private final int mRequestedExtent;
         private final DefaultImageProvider mDefaultProvider;
-        private String mName;
+        private final String mDisplayName;
+        private final String mEmailAddress;
 
-        private Request(long id, Uri uri, String name, int requestedExtent, boolean darkTheme,
+        private Request(String name, String emailAddress, int requestedExtent,
                 DefaultImageProvider defaultProvider) {
-            mId = id;
-            mUri = uri;
-            mDarkTheme = darkTheme;
             mRequestedExtent = requestedExtent;
             mDefaultProvider = defaultProvider;
-            mName = name;
+            mDisplayName = name;
+            mEmailAddress = emailAddress;
         }
 
-        public String getName() {
-            return mName;
+        public String getDisplayName() {
+            return mDisplayName;
         }
 
-        public boolean isNameRequest() {
-            return !TextUtils.isEmpty(mName);
+        public String getEmailAddress() {
+            return mEmailAddress;
         }
 
-        public static Request createFromThumbnailId(long id, boolean darkTheme,
+        public static Request createFromEmailAddress(String displayName, String emailAddress,
                 DefaultImageProvider defaultProvider) {
-            return new Request(id, null /* no URI */, null, -1, darkTheme, defaultProvider);
-        }
-
-        public static Request createFromName(String name, boolean darkTheme,
-                DefaultImageProvider defaultProvider) {
-            return new Request(0, null /* no URI */, name, -1, darkTheme, defaultProvider);
-        }
-
-        public static Request createFromUri(Uri uri, int requestedExtent, boolean darkTheme,
-                DefaultImageProvider defaultProvider) {
-            return new Request(0 /* no ID */, uri, null, requestedExtent, darkTheme,
-                    defaultProvider);
-        }
-
-        public boolean isUriRequest() {
-            return mUri != null;
-        }
-
-        public Uri getUri() {
-            return mUri;
-        }
-
-        public long getId() {
-            return mId;
+            return new Request(displayName, emailAddress, -1, defaultProvider);
         }
 
         public int getRequestedExtent() {
@@ -1226,10 +1098,9 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + (int) (mId ^ (mId >>> 32));
             result = prime * result + mRequestedExtent;
-            result = prime * result + ((mUri == null) ? 0 : mUri.hashCode());
-            result = prime * result + ((mName == null) ? 0 : mName.hashCode());
+            result = prime * result + ((mDisplayName == null) ? 0 : mDisplayName.hashCode());
+            result = prime * result + ((mEmailAddress == null) ? 0 : mEmailAddress.hashCode());
             return result;
         }
 
@@ -1239,10 +1110,9 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             if (obj == null) return false;
             if (getClass() != obj.getClass()) return false;
             final Request that = (Request) obj;
-            if (mId != that.mId) return false;
             if (mRequestedExtent != that.mRequestedExtent) return false;
-            if (!Objects.equal(mUri, that.mUri)) return false;
-            if (!Objects.equal(mName, that.mName)) return false;
+            if (!Objects.equal(mDisplayName, that.mDisplayName)) return false;
+            if (!Objects.equal(mEmailAddress, that.mEmailAddress)) return false;
             // Don't compare equality of mDarkTheme because it is only used in the default contact
             // photo case. When the contact does have a photo, the contact photo is the same
             // regardless of mDarkTheme, so we shouldn't need to put the photo request on the queue
@@ -1251,11 +1121,12 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         }
 
         public Object getKey() {
-            return mName == null ? (mUri == null ? mId : mUri) : mName;
+            return mEmailAddress;
         }
 
-        public void applyDefaultImage(ImageView view) {
-            mDefaultProvider.applyDefaultImage(view, mRequestedExtent, mDarkTheme);
+        public void applyDefaultImage(DividedImageCanvas view) {
+            mDefaultProvider.applyDefaultImage(getDisplayName(), getEmailAddress(), view,
+                    mRequestedExtent);
         }
     }
 }
