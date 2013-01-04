@@ -1056,6 +1056,16 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                     cacheBitmap(matchingAddress, null, preloading, -1);
                 }
             }
+            // TODO(mindyp): this optimization assumes that contact photos don't
+            // change/ update that often, and if you didn't have a matching id
+            // for a contact before, you probably won't be getting it any time soon.
+            for (String a : addresses) {
+                if (!photoIdMap.containsValue(a)) {
+                    // We couldn't find a matching photo id at all, so just
+                    // cache this as needing a default image.
+                    cacheBitmap(a, null, preloading, -1);
+                }
+            }
             mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);
         }
     }
