@@ -22,6 +22,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import com.android.mail.photomanager.BitmapUtil;
+
 import java.util.ArrayList;
 
 /**
@@ -109,12 +111,13 @@ public class DividedImageCanvas {
                 case 1:
                     // Draw the bitmap filling the entire canvas.
                     mDivisionImages.set(pos, b);
-                    draw(mDivisionImages.get(0), mCanvas, 0, 0, width, height);
+                    mCanvas.drawBitmap(mDivisionImages.get(0), 0, 0, sPaint);
                     complete = true;
                     break;
                 case 2:
                     // Draw 2 bitmaps split vertically down the middle
-                    mDivisionImages.set(pos, obtainBitmapWithHalfWidth(b, width, height));
+                    mDivisionImages
+                            .set(pos, BitmapUtil.obtainBitmapWithHalfWidth(b, width, height));
                     switch (pos) {
                         case 0:
                             draw(mDivisionImages.get(0), mCanvas, 0, 0, width / 2, height);
@@ -132,15 +135,18 @@ public class DividedImageCanvas {
                     // position.
                     switch (pos) {
                         case 0:
-                            mDivisionImages.set(pos, obtainBitmapWithHalfWidth(b, width, height));
+                            mDivisionImages.set(pos,
+                                    BitmapUtil.obtainBitmapWithHalfWidth(b, width, height));
                             draw(mDivisionImages.get(0), mCanvas, 0, 0, width / 2, height);
                             break;
                         case 1:
-                            mDivisionImages.set(pos, obtainBitmapWithHalfHeightAndHalfWidth(b));
+                            mDivisionImages.set(pos, BitmapUtil
+                                    .obtainBitmapWithHalfHeightAndHalfWidth(b, width, height));
                             draw(mDivisionImages.get(1), mCanvas, width / 2, 0, width, height / 2);
                             break;
                         case 2:
-                            mDivisionImages.set(pos, obtainBitmapWithHalfHeightAndHalfWidth(b));
+                            mDivisionImages.set(pos, BitmapUtil
+                                    .obtainBitmapWithHalfHeightAndHalfWidth(b, width, height));
                             draw(mDivisionImages.get(2), mCanvas, width / 2, height / 2, width,
                                     height);
                             break;
@@ -150,7 +156,8 @@ public class DividedImageCanvas {
                     break;
                 default:
                     // Draw all 4 bitmaps in a grid
-                    mDivisionImages.set(pos, obtainBitmapWithHalfHeightAndHalfWidth(b));
+                    mDivisionImages.set(pos,
+                            BitmapUtil.obtainBitmapWithHalfHeightAndHalfWidth(b, width, height));
                     switch (pos) {
                         case 0:
                             draw(mDivisionImages.get(0), mCanvas, 0, 0, width / 2, height / 2);
@@ -184,46 +191,6 @@ public class DividedImageCanvas {
         if (mDividedBitmap != null) {
             canvas.drawBitmap(mDividedBitmap, 0, 0, sPaint);
         }
-    }
-
-    private static Bitmap obtainBitmapWithHalfWidth(Bitmap bitmap, int width, int height) {
-        if (bitmap != null) {
-            final float originalWidth = bitmap.getWidth();
-            final float originalHeight = bitmap.getHeight();
-            final float originalWidthToHeightRate = originalWidth / originalHeight;
-            final float desiredWidth = width / 2;
-            final float desiredWidthToHeightRate = desiredWidth / height;
-
-            // Scale
-            final int dstWidth;
-            final int dstHeight;
-            if (originalWidthToHeightRate > desiredWidthToHeightRate) {
-                dstWidth = (int) (originalWidth * height / originalHeight);
-                dstHeight = (int) height;
-            } else {
-                dstHeight = (int) (originalHeight * desiredWidth / originalWidth);
-                dstWidth = (int) desiredWidth;
-            }
-            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, true);
-
-            // Crop
-            final float extraWidth = scaled.getWidth() - desiredWidth;
-            final float extraHeight = scaled.getHeight() - height;
-            final int x = (int) (extraWidth / 2.0f);
-            final int y = (int) (extraHeight / 2.0f);
-
-            return Bitmap.createBitmap(scaled, x, y, (int) desiredWidth, (int) height);
-        }
-        return null;
-    }
-
-    private static Bitmap obtainBitmapWithHalfHeightAndHalfWidth(Bitmap bitmap) {
-        if (bitmap == null) {
-            return null;
-        }
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        return Bitmap.createScaledBitmap(bitmap, width / 2, height / 2, false);
     }
 
     /**
