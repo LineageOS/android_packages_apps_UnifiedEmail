@@ -67,6 +67,7 @@ import android.widget.Toast;
 
 import com.android.common.Rfc822Validator;
 import com.android.ex.chips.RecipientEditTextView;
+import com.android.mail.MailIntentService;
 import com.android.mail.R;
 import com.android.mail.compose.AttachmentsView.AttachmentAddedOrDeletedListener;
 import com.android.mail.compose.AttachmentsView.AttachmentFailureException;
@@ -75,6 +76,7 @@ import com.android.mail.compose.QuotedTextView.RespondInlineListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.MessageModification;
@@ -174,6 +176,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public static final String EXTRA_FROM_EMAIL_TASK = "fromemail";
 
     public static final String EXTRA_ATTACHMENTS = "attachments";
+
+    /** If set, we will clear notifications for this folder. */
+    public static final String EXTRA_NOTIFICATION_FOLDER = "extra-notification-folder";
 
     //  If this is a reply/forward then this extra will hold the original message
     private static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
@@ -384,6 +389,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         setAccount(account);
         if (mAccount == null) {
             return;
+        }
+
+        // Clear the notification and mark the conversation as seen, if necessary
+        final Folder notificationFolder =
+                intent.getParcelableExtra(EXTRA_NOTIFICATION_FOLDER);
+        if (notificationFolder != null) {
+            final Intent clearNotifIntent =
+                    new Intent(MailIntentService.ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS);
+            clearNotifIntent.putExtra(MailIntentService.ACCOUNT_EXTRA, account.name);
+            clearNotifIntent.putExtra(MailIntentService.FOLDER_EXTRA, notificationFolder);
+
+            startService(clearNotifIntent);
         }
 
         if (intent.getBooleanExtra(EXTRA_FROM_EMAIL_TASK, false)) {
