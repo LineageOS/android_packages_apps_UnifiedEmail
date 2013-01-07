@@ -19,6 +19,7 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -40,7 +41,6 @@ public class DividedImageCanvas {
     public static final int MAX_DIVISIONS = 4;
 
     private ArrayList<String> mDivisionIds;
-    private ArrayList<Bitmap> mDivisionImages;
     private Bitmap mDividedBitmap;
     private Canvas mCanvas;
     private int mWidth;
@@ -48,6 +48,7 @@ public class DividedImageCanvas {
 
     private final Context mContext;
     private final InvalidateCallback mCallback;
+    private final ArrayList<Bitmap> mDivisionImages = new ArrayList<Bitmap>(MAX_DIVISIONS);
 
     private static final Paint sPaint = new Paint();
     private static final Rect sSrc = new Rect();
@@ -72,7 +73,6 @@ public class DividedImageCanvas {
      */
     public void setDivisionIds(ArrayList<String> divisionIds) {
         mDivisionIds = divisionIds;
-        mDivisionImages = new ArrayList<Bitmap>(divisionIds.size());
         for (int i = 0; i < mDivisionIds.size(); i++) {
             mDivisionImages.add(null);
         }
@@ -88,6 +88,50 @@ public class DividedImageCanvas {
     }
 
     /**
+     * Create a bitmap and add it to this view in the quadrant matching its id.
+     * @param b Bitmap
+     * @param id Id to look for that was previously set in setDivisionIds.
+     * @return created bitmap or null
+     */
+    public Bitmap addDivisionImage(byte[] bytes, String id) {
+        Bitmap b = null;
+        final int pos = mDivisionIds.indexOf(id);
+        if (pos >= 0 && mDivisionImages.get(pos) == null && bytes != null && bytes.length > 0) {
+            final int width = mWidth;
+            final int height = mHeight;
+            // Different layouts depending on count.
+            int size = mDivisionIds.size();
+            switch (size) {
+                case 1:
+                    // Draw the bitmap filling the entire canvas.
+                    b = BitmapUtil.decodeBitmapFromBytes(bytes, width, height);
+                    break;
+                case 2:
+                    // Draw 2 bitmaps split vertically down the middle
+                    b = BitmapUtil.obtainBitmapWithHalfWidth(bytes, width, height);
+                    break;
+                case 3:
+                    switch (pos) {
+                        case 0:
+                            b = BitmapUtil.obtainBitmapWithHalfWidth(bytes, width, height);
+                            break;
+                        case 1:
+                        case 2:
+                            b = BitmapUtil.decodeBitmapFromBytes(bytes, width / 2, height / 2);
+                            break;
+                    }
+                    break;
+                case 4:
+                    // Draw all 4 bitmaps in a grid
+                    b = BitmapUtil.decodeBitmapFromBytes(bytes, width / 2, height / 2);
+                    break;
+            }
+        }
+        addDivisionImage(b, id);
+        return b;
+    }
+
+    /**
      * Add a bitmap to this view in the quadrant matching its id.
      * @param b Bitmap
      * @param id Id to look for that was previously set in setDivisionIds.
@@ -95,6 +139,7 @@ public class DividedImageCanvas {
     public void addDivisionImage(Bitmap b, String id) {
         int pos = mDivisionIds.indexOf(id);
         if (pos >= 0 && mDivisionImages.get(pos) == null && b != null) {
+            mDivisionImages.set(pos, b);
             boolean complete = false;
             int width = mWidth;
             int height = mHeight;
@@ -110,14 +155,11 @@ public class DividedImageCanvas {
                     break;
                 case 1:
                     // Draw the bitmap filling the entire canvas.
-                    mDivisionImages.set(pos, b);
                     mCanvas.drawBitmap(mDivisionImages.get(0), 0, 0, sPaint);
                     complete = true;
                     break;
                 case 2:
                     // Draw 2 bitmaps split vertically down the middle
-                    mDivisionImages
-                            .set(pos, BitmapUtil.obtainBitmapWithHalfWidth(b, width, height));
                     switch (pos) {
                         case 0:
                             draw(mDivisionImages.get(0), mCanvas, 0, 0, width / 2, height);
@@ -135,18 +177,12 @@ public class DividedImageCanvas {
                     // position.
                     switch (pos) {
                         case 0:
-                            mDivisionImages.set(pos,
-                                    BitmapUtil.obtainBitmapWithHalfWidth(b, width, height));
                             draw(mDivisionImages.get(0), mCanvas, 0, 0, width / 2, height);
                             break;
                         case 1:
-                            mDivisionImages.set(pos, BitmapUtil
-                                    .obtainBitmapWithHalfHeightAndHalfWidth(b, width, height));
                             draw(mDivisionImages.get(1), mCanvas, width / 2, 0, width, height / 2);
                             break;
                         case 2:
-                            mDivisionImages.set(pos, BitmapUtil
-                                    .obtainBitmapWithHalfHeightAndHalfWidth(b, width, height));
                             draw(mDivisionImages.get(2), mCanvas, width / 2, height / 2, width,
                                     height);
                             break;
@@ -156,8 +192,6 @@ public class DividedImageCanvas {
                     break;
                 default:
                     // Draw all 4 bitmaps in a grid
-                    mDivisionImages.set(pos,
-                            BitmapUtil.obtainBitmapWithHalfHeightAndHalfWidth(b, width, height));
                     switch (pos) {
                         case 0:
                             draw(mDivisionImages.get(0), mCanvas, 0, 0, width / 2, height / 2);
@@ -197,10 +231,11 @@ public class DividedImageCanvas {
      * Reset all state associated with this view so that it can be reused.
      */
     public void reset() {
-        mDividedBitmap = null;
+        if (mCanvas != null && mDividedBitmap != null) {
+            mCanvas.drawColor(Color.WHITE);
+        }
         mDivisionIds = null;
-        mDivisionImages = null;
-        mCanvas = null;
+        mDivisionImages.clear();
     }
 
     /**

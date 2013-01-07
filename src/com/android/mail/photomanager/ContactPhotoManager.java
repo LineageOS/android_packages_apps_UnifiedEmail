@@ -48,7 +48,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -433,27 +433,11 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             return holder.fresh;
         }
 
-        Bitmap cachedBitmap = holder.bitmapRef == null ? null : holder.bitmapRef.get();
-        if (cachedBitmap == null) {
-            if (holder.bytes.length < 8 * 1024) {
-                // Small thumbnails are usually quick to inflate. Let's do that on the UI thread
-                inflateBitmap(holder, request.getRequestedExtent());
-                cachedBitmap = holder.bitmap;
-                if (cachedBitmap == null) return false;
-            } else {
-                // This is bigger data. Let's send that back to the Loader so that we can
-                // inflate this in the background
-                holder.bitmap = null;
-                request.applyDefaultImage(view);
-                return false;
-            }
-        }
-
-        view.addDivisionImage(cachedBitmap, request.getEmailAddress());
+        Bitmap cachedBitmap = view.addDivisionImage(holder.bytes, request.getEmailAddress());
 
         // Put the bitmap in the LRU cache. But only do this for images that are small enough
         // (we require that at least six of those can be cached at the same time)
-        if (cachedBitmap.getByteCount() < mBitmapCache.maxSize() / 6) {
+        if (cachedBitmap != null && cachedBitmap.getByteCount() < mBitmapCache.maxSize() / 6) {
             mBitmapCache.put(request.getKey(), cachedBitmap);
         }
 
@@ -461,62 +445,6 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         holder.bitmap = null;
 
         return holder.fresh;
-    }
-
-    /**
-     * If necessary, decodes bytes stored in the holder to Bitmap.  As long as the
-     * bitmap is held either by {@link #mBitmapCache} or by a soft reference in
-     * the holder, it will not be necessary to decode the bitmap.
-     */
-    private static void inflateBitmap(BitmapHolder holder, int requestedExtent) {
-        final int sampleSize =
-                BitmapUtil.findOptimalSampleSize(holder.originalSmallerExtent, requestedExtent);
-        byte[] bytes = holder.bytes;
-        if (bytes == null || bytes.length == 0) {
-            return;
-        }
-
-        if (sampleSize == holder.decodedSampleSize) {
-            // Check the soft reference.  If will be retained if the bitmap is also
-            // in the LRU cache, so we don't need to check the LRU cache explicitly.
-            if (holder.bitmapRef != null) {
-                holder.bitmap = holder.bitmapRef.get();
-                if (holder.bitmap != null) {
-                    return;
-                }
-            }
-        }
-
-        try {
-            Bitmap bitmap = BitmapUtil.decodeBitmapFromBytes(bytes, sampleSize);
-
-            // make bitmap mutable and draw size onto it
-            if (DEBUG_SIZES) {
-                Bitmap original = bitmap;
-                bitmap = bitmap.copy(bitmap.getConfig(), true);
-                original.recycle();
-                Canvas canvas = new Canvas(bitmap);
-                Paint paint = new Paint();
-                paint.setTextSize(16);
-                paint.setColor(Color.BLUE);
-                paint.setStyle(Style.FILL);
-                canvas.drawRect(0.0f, 0.0f, 50.0f, 20.0f, paint);
-                paint.setColor(Color.WHITE);
-                paint.setAntiAlias(true);
-                canvas.drawText(bitmap.getWidth() + "/" + sampleSize, 0, 15, paint);
-            }
-
-            holder.decodedSampleSize = sampleSize;
-            holder.bitmap = bitmap;
-            holder.bitmapRef = new SoftReference<Bitmap>(bitmap);
-            if (DEBUG) {
-                LogUtils.d(TAG, "inflateBitmap " + btk(bytes.length) + " -> "
-                        + bitmap.getWidth() + "x" + bitmap.getHeight()
-                        + ", " + btk(bitmap.getByteCount()));
-            }
-        } catch (OutOfMemoryError e) {
-            // Do nothing - the photo will appear to be missing
-        }
     }
 
     public void clear() {
@@ -623,28 +551,23 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     /**
      * Stores the supplied bitmap in cache.
      */
-    private void cacheBitmap(Object key, byte[] bytes, boolean preloading, int requestedExtent) {
+    private void cacheBitmap(Object key, byte[] bytes, int requestedExtent) {
         if (DEBUG) {
             BitmapHolder prev = mBitmapHolderCache.get(key);
             if (prev != null && prev.bytes != null) {
-                LogUtils.d(TAG, "Overwriting cache: key=" + key + (prev.fresh ? " FRESH" : " stale"));
+                LogUtils.d(TAG, "Overwriting cache: key=" + key
+                        + (prev.fresh ? " FRESH" : " stale"));
                 if (prev.fresh) {
                     mFreshCacheOverwrite.incrementAndGet();
                 } else {
                     mStaleCacheOverwrite.incrementAndGet();
                 }
             }
-            LogUtils.d(TAG, "Caching data: key=" + key + ", " +
-                    (bytes == null ? "<null>" : btk(bytes.length)));
+            LogUtils.d(TAG, "Caching data: key=" + key + ", "
+                    + (bytes == null ? "<null>" : btk(bytes.length)));
         }
-        BitmapHolder holder = new BitmapHolder(bytes,
-                bytes == null ? -1 : BitmapUtil.getSmallerExtentFromBytes(bytes));
-
-        // Unless this image is being preloaded, decode it right away while
-        // we are still on the background thread.
-        if (!preloading) {
-            inflateBitmap(holder, requestedExtent);
-        }
+        BitmapHolder holder = new BitmapHolder(bytes, bytes == null ? -1
+                : BitmapUtil.getSmallerExtentFromBytes(bytes));
 
         mBitmapHolderCache.put(key, holder);
         mBitmapHolderCacheAllUnfresh = false;
@@ -661,8 +584,6 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         uris.clear();
         names.clear();
 
-        boolean jpegsDecoded = false;
-
         /*
          * Since the call is made from the loader thread, the map could be
          * changing during the iteration. That's not really a problem:
@@ -675,20 +596,10 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         while (iterator.hasNext()) {
             Request request = iterator.next();
             final BitmapHolder holder = mBitmapHolderCache.get(request.getKey());
-            if (holder != null && holder.bytes != null && holder.fresh
-                    && (holder.bitmapRef == null || holder.bitmapRef.get() == null)) {
-                // This was previously loaded but we don't currently have the
-                // inflated Bitmap
-                inflateBitmap(holder, request.getRequestedExtent());
-                jpegsDecoded = true;
-            } else {
-                if (holder == null || !holder.fresh) {
-                    names.add(request);
-                }
+            if (holder == null || holder.bytes == null || !holder.fresh) {
+                names.add(request);
             }
         }
-
-        if (jpegsDecoded) mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);
     }
 
     /**
@@ -887,7 +798,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                     while (cursor.moveToNext()) {
                         Long id = cursor.getLong(0);
                         byte[] bytes = cursor.getBlob(1);
-                        cacheBitmap(id, bytes, preloading, -1);
+                        cacheBitmap(id, bytes, -1);
                         mPhotoIds.remove(id);
                     }
                 }
@@ -934,11 +845,10 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                                 ContentUris.withAppendedId(Data.CONTENT_URI, id),
                                 COLUMNS, null, null, null);
                         if (profileCursor != null && profileCursor.moveToFirst()) {
-                            cacheBitmap(profileCursor.getLong(0), profileCursor.getBlob(1),
-                                    preloading, -1);
+                            cacheBitmap(profileCursor.getLong(0), profileCursor.getBlob(1), -1);
                         } else {
                             // Couldn't load a photo this way either.
-                            cacheBitmap(id, null, preloading, -1);
+                            cacheBitmap(id, null, -1);
                         }
                     } finally {
                         if (profileCursor != null) {
@@ -947,23 +857,38 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                     }
                 } else {
                     // Not a profile photo and not found - mark the cache accordingly
-                    cacheBitmap(id, null, preloading, -1);
+                    cacheBitmap(id, null, -1);
                 }
             }
         }
 
         private String createInQuery(String value, int itemCount) {
-            mStringBuilder.setLength(0);
-            mStringBuilder.append(value + " IN(");
-            for (int i = 0; i < itemCount; i++) {
-                if (i != 0) {
-                    mStringBuilder.append(',');
-                }
-                mStringBuilder.append('?');
-            }
-            mStringBuilder.append(')');
-            return mStringBuilder.toString();
+            // Build first query
+            StringBuilder query = new StringBuilder().append(value + " IN (");
+            appendQuestionMarks(query, itemCount);
+            query.append(')');
+            return query.toString();
         }
+
+        void appendQuestionMarks(StringBuilder query, int itemCount) {
+            boolean first = true;
+            for (int i = 0; i < itemCount; i++) {
+                if (first) {
+                    first = false;
+                } else {
+                    query.append(',');
+                }
+                query.append('?');
+            }
+        }
+
+        private final String[] DATA_COLS = new String[] {
+            Email.DATA,                 // 0
+            Email.PHOTO_ID,             // 1
+        };
+
+        private static final int DATA_EMAIL_COLUMN = 0;
+        private static final int DATA_PHOTO_ID_COLUMN = 1;
 
         private void loadEmailAddressBasedPhotos(boolean preloading) {
             HashSet<String> addresses = new HashSet<String>();
@@ -989,19 +914,28 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                 addresses.toArray(selectionArgs);
                 Cursor photoIdsCursor = null;
                 try {
-                    photoIdsCursor = mResolver.query(Email.CONTENT_URI, new String[] {
-                            Email.PHOTO_ID, Email.ADDRESS
-                    }, createInQuery(Email.ADDRESS, addresses.size()), selectionArgs, null);
+                    StringBuilder query = new StringBuilder().append(Data.MIMETYPE).append("='")
+                            .append(Email.CONTENT_ITEM_TYPE).append("' AND ").append(Email.DATA)
+                            .append(" IN (");
+                    appendQuestionMarks(query, addresses.size());
+                    query.append(')');
+                    photoIdsCursor = mResolver.query(Data.CONTENT_URI, DATA_COLS,
+                            query.toString(), selectionArgs, null /* sortOrder */);
                     Long id;
                     String contactAddress;
                     if (photoIdsCursor != null) {
                         while (photoIdsCursor.moveToNext()) {
-                            id = photoIdsCursor.getLong(0);
-                            contactAddress = photoIdsCursor.getString(1);
-                            photoIds.add(id);
-                            photoIdsAsString.add(id + "");
-                            photoIdMap.put(id, contactAddress);
-                            cachePhotoId(id, contactAddress);
+                            id = photoIdsCursor.getLong(DATA_PHOTO_ID_COLUMN);
+                            // In case there are multiple contacts for this
+                            // contact, try to always pick the one that actually
+                            // has a photo.
+                            if (id != 0) {
+                                contactAddress = photoIdsCursor.getString(DATA_EMAIL_COLUMN);
+                                photoIds.add(id);
+                                photoIdsAsString.add(id + "");
+                                photoIdMap.put(id, contactAddress);
+                                cachePhotoId(id, contactAddress);
+                            }
                         }
                     }
                 } finally {
@@ -1019,7 +953,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                         while (photosCursor.moveToNext()) {
                             Long id = photosCursor.getLong(0);
                             byte[] bytes = photosCursor.getBlob(1);
-                            cacheBitmap(photoIdMap.get(id), bytes, preloading, -1);
+                            cacheBitmap(photoIdMap.get(id), bytes, -1);
                             photoIds.remove(id);
                         }
                     }
@@ -1040,11 +974,10 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                                 ContentUris.withAppendedId(Data.CONTENT_URI, id),
                                 COLUMNS, null, null, null);
                         if (profileCursor != null && profileCursor.moveToFirst()) {
-                            cacheBitmap(matchingAddress, profileCursor.getBlob(1),
-                                    preloading, -1);
+                            cacheBitmap(matchingAddress, profileCursor.getBlob(1), -1);
                         } else {
                             // Couldn't load a photo this way either.
-                            cacheBitmap(matchingAddress, null, preloading, -1);
+                            cacheBitmap(matchingAddress, null, -1);
                         }
                     } finally {
                         if (profileCursor != null) {
@@ -1053,7 +986,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                     }
                 } else {
                     // Not a profile photo and not found - mark the cache accordingly
-                    cacheBitmap(matchingAddress, null, preloading, -1);
+                    cacheBitmap(matchingAddress, null, -1);
                 }
             }
             // TODO(mindyp): this optimization assumes that contact photos don't
@@ -1063,7 +996,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                 if (!photoIdMap.containsValue(a)) {
                     // We couldn't find a matching photo id at all, so just
                     // cache this as needing a default image.
-                    cacheBitmap(a, null, preloading, -1);
+                    cacheBitmap(a, null, -1);
                 }
             }
             mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);
@@ -1098,10 +1031,6 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         public static Request createFromEmailAddress(String displayName, String emailAddress,
                 DefaultImageProvider defaultProvider) {
             return new Request(displayName, emailAddress, -1, defaultProvider);
-        }
-
-        public int getRequestedExtent() {
-            return mRequestedExtent;
         }
 
         @Override
