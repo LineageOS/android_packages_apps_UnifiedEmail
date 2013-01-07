@@ -320,6 +320,7 @@ public class NotificationActionUtils {
                 final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
 
                 final Intent replyIntent = createReplyIntent(context, account, messageUri, false);
+                replyIntent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
@@ -328,25 +329,15 @@ public class NotificationActionUtils {
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
 
-                final PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(
+                return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                final String intentAction = NotificationActionIntentService.ACTION_REPLY;
-
-                final Intent intent = new Intent(intentAction);
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                        notificationAction);
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_PENDING_INTENT,
-                        pendingIntent);
-
-                return PendingIntent.getService(
-                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case REPLY_ALL: {
                 // Build a task stack that forces the conversation view on the stack before the
                 // reply activity.
                 final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
 
                 final Intent replyIntent = createReplyIntent(context, account, messageUri, true);
+                replyIntent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
@@ -355,25 +346,15 @@ public class NotificationActionUtils {
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
 
-                final PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(
+                return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                final String intentAction = NotificationActionIntentService.ACTION_REPLY_ALL;
-
-                final Intent intent = new Intent(intentAction);
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                        notificationAction);
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_PENDING_INTENT,
-                        pendingIntent);
-
-                return PendingIntent.getService(
-                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case FORWARD: {
                 // Build a task stack that forces the conversation view on the stack before the
                 // reply activity.
                 final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
 
                 final Intent replyIntent = createForwardIntent(context, account, messageUri);
+                replyIntent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
                 // To make sure that the reply intents one notification don't clobber over
                 // intents for other notification, force a data uri on the intent
                 final Uri notificationUri =
@@ -382,19 +363,8 @@ public class NotificationActionUtils {
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(replyIntent);
 
-                final PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(
+                return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                final String intentAction = NotificationActionIntentService.ACTION_FORWARD;
-
-                final Intent intent = new Intent(intentAction);
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                        notificationAction);
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_PENDING_INTENT,
-                        pendingIntent);
-
-                return PendingIntent.getService(
-                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case ARCHIVE_REMOVE_LABEL: {
                 final String intentAction =
                         NotificationActionIntentService.ACTION_ARCHIVE_REMOVE_LABEL;
