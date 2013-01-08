@@ -66,6 +66,7 @@ public class ConversationItemViewCoordinates {
     int personalLevelX;
     int personalLevelY;
     boolean showPersonalLevel;
+    boolean inlinePersonalLevel;
 
     // Senders.
     int sendersX;
@@ -364,6 +365,8 @@ public class ConversationItemViewCoordinates {
                     null);
             int widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
             int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            Resources res = context.getResources();
+
             view.measure(widthSpec, heightSpec);
             view.layout(0, 0, width, height);
 
@@ -381,8 +384,10 @@ public class ConversationItemViewCoordinates {
                 coordinates.showPersonalLevel = true;
                 coordinates.personalLevelX = getX(personalLevel);
                 coordinates.personalLevelY = getY(personalLevel);
+                coordinates.inlinePersonalLevel = res.getBoolean(R.bool.inline_personal_level);
             } else {
                 coordinates.showPersonalLevel = false;
+                coordinates.inlinePersonalLevel = false;
             }
 
             TextView senders = (TextView) view.findViewById(R.id.senders);
@@ -412,7 +417,7 @@ public class ConversationItemViewCoordinates {
                 coordinates.foldersY = getY(folders);
                 coordinates.foldersHeight = folders.getHeight();
                 coordinates.foldersTopPadding = folders.getPaddingTop();
-                coordinates.foldersTextBottomPadding = context.getResources()
+                coordinates.foldersTextBottomPadding = res
                         .getDimensionPixelSize(R.dimen.folders_text_bottom_padding);
                 if (folders instanceof TextView) {
                     coordinates.foldersFontSize = (int) ((TextView) folders).getTextSize();

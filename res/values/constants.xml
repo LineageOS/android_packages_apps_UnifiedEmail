@@ -107,6 +107,11 @@
     <!-- The max number of contact images to show in a conversation list item -->
     <integer name="max_list_item_images">4</integer>
 
+
     <!-- True if addresses can be veiled, to show a friendly text message instead. -->
     <bool name="veiled_address_enabled">false</bool>
+
+    <!-- Whether to show the priority indicator inline with the senders in conversation list view -->
+    <bool name="inline_personal_level">true</bool>
+
 </resources>

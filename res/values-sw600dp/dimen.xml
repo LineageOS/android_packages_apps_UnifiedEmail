@@ -48,4 +48,5 @@
     <dimen name="search_view_width">400dip</dimen>
     <dimen name="spinner_frame_width">170dp</dimen>
     <dimen name="folders_top_margin">12sp</dimen>
+    <dimen name="star_top_margin">2sp</dimen>
 </resources>
