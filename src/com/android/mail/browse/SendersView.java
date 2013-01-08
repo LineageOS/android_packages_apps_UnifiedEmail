@@ -44,7 +44,6 @@ import com.android.mail.utils.ObjectCache;
 import com.android.mail.utils.Utils;
 import com.google.android.common.html.parser.HtmlParser;
 import com.google.android.common.html.parser.HtmlTreeBuilder;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
@@ -197,7 +196,6 @@ public class SendersView {
         return messageInfo;
     }
 
-    @VisibleForTesting
     public static void format(Context context, ConversationInfo conversationInfo,
             String messageInfo, int maxChars, HtmlParser parser, HtmlTreeBuilder builder,
             ArrayList<SpannableString> styledSenders, ArrayList<String> displayableSenderNames,
