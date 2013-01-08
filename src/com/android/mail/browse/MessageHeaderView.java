@@ -19,6 +19,7 @@ package com.android.mail.browse;
 import android.app.AlertDialog;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Typeface;
 import android.provider.ContactsContract;
@@ -56,6 +57,8 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.VeiledAddressMatcher;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import java.io.IOException;
@@ -195,6 +198,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private int mExpandMode = DEFAULT_MODE;
 
     private AlertDialog mDetailsPopup;
+
+    private final VeiledAddressMatcher mVeiledMatcher = new VeiledAddressMatcher();
 
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
@@ -649,28 +654,56 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         childView.setLayoutParams(mlp);
     }
 
+    /**
+     * Render an email list for the expanded message details view.
+     * @param rowRes
+     * @param valueRes
+     * @param emails
+     * @param showViaDomain
+     * @param rootView
+     */
     private void renderEmailList(int rowRes, int valueRes, String[] emails, boolean showViaDomain,
             View rootView) {
         if (emails == null || emails.length == 0) {
             return;
         }
-        String[] formattedEmails = new String[emails.length];
+        final String[] formattedEmails = new String[emails.length];
+        final Resources res = getResources();
         for (int i = 0; i < emails.length; i++) {
-            Address e = getAddress(emails[i]);
-            String name = e.getName();
-            String addr = e.getAddress();
+            final Address email = getAddress(emails[i]);
+            String name = email.getName();
+            final String address = email.getAddress();
+            // Check if the address here is a veiled address.  If it is, we need to display an
+            // alternate layout
+            final boolean isVeiledAddress = mVeiledMatcher.isVeiledAddress(res, address);
+            final String addressShown;
+            if (isVeiledAddress) {
+                // Add the warning at the end of the name, and remove the address.  The alternate
+                // text cannot be put in the address part, because the address is made into a link,
+                // and the alternate human-readable text is not a link.
+                addressShown = "";
+                if (TextUtils.isEmpty(name)) {
+                    // Empty name and we will block out the address. Let's write something more
+                    // readable.
+                    name = res.getString(VeiledAddressMatcher.VEILED_ALTERNATE_TEXT_UNKNOWN_PERSON);
+                } else {
+                    name = name + res.getString(VeiledAddressMatcher.VEILED_ALTERNATE_TEXT);
+                }
+            } else {
+                addressShown = address;
+            }
             if (name == null || name.length() == 0) {
-                formattedEmails[i] = addr;
+                formattedEmails[i] = addressShown;
             } else {
                 // The one downside to having the showViaDomain here is that
                 // if the sender does not have a name, it will not show the via info
                 if (showViaDomain) {
-                    formattedEmails[i] = getResources().getString(
+                    formattedEmails[i] = res.getString(
                             R.string.address_display_format_with_via_domain,
-                            name, addr, mMessage.viaDomain);
+                            name, addressShown, mMessage.viaDomain);
                 } else {
-                    formattedEmails[i] = getResources().getString(R.string.address_display_format,
-                            name, addr);
+                    formattedEmails[i] = res.getString(R.string.address_display_format,
+                            name, addressShown);
                 }
             }
         }
