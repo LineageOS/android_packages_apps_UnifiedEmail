@@ -169,7 +169,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         final Attachment attachment = getCurrentAttachment();
 
         final ActionBar actionBar = getActionBar();
-        String subtitle =
+        String size =
                 AttachmentUtils.convertToHumanReadableSize(this, attachment.size);
 
 
@@ -179,13 +179,12 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         //      2. Saving...
         //      3. Default, Attachment Size
         if (attachment.isSavedToExternal()) {
-            actionBar.setSubtitle(
-                    getResources().getString(R.string.saved) + " " + subtitle);
+            actionBar.setSubtitle(getResources().getString(R.string.saved, size));
         } else if (attachment.isDownloading() &&
                 attachment.destination == AttachmentDestination.EXTERNAL) {
                 actionBar.setSubtitle(R.string.saving);
         } else {
-            actionBar.setSubtitle(subtitle);
+            actionBar.setSubtitle(size);
         }
 
         updateActionItems();

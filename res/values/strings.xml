@@ -197,11 +197,11 @@
 
     <!-- Attachments -->
     <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5]-->
-    <string name="bytes">B</string>
+    <string name="bytes"><xliff:g id="count">%s</xliff:g>&#160;B</string>
     <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5] -->
-    <string name="kilobytes">KB</string>
+    <string name="kilobytes"><xliff:g id="count">%s</xliff:g>&#160;KB</string>
     <!-- Size unit, displayed in a button next to an attachment  [CHAR LIMIT=5]-->
-    <string name="megabytes">MB</string>
+    <string name="megabytes"><xliff:g id="count">%s</xliff:g>&#160;MB</string>
     <!-- Attachment description for image files [CHAR LIMIT=30] -->
     <string name="attachment_image">Image</string>
     <!-- Attachment description for video files [CHAR LIMIT=30] -->
@@ -241,7 +241,7 @@
     <!-- Dialog box message. [CHAR LIMIT=80] -->
     <string name="please_wait">Please wait\u2026</string>
     <!-- Displayed in the conversation view, next to a file's size and type. Status of a saved attachment. [CHAR LIMIT=20]-->
-    <string name="saved">Saved,&#160;</string>
+    <string name="saved">Saved,&#160;<xliff:g id="size">%s</xliff:g></string>
     <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=25]-->
     <string name="download_failed">Couldn\'t download.</string>
     <!-- Displayed in the conversation view, as a header informing
