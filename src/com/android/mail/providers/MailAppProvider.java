@@ -295,8 +295,8 @@ public abstract class MailAppProvider extends ContentProvider
                     case UIProvider.ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN:
                         builder.add(Integer.valueOf(account.settings.replyBehavior));
                         break;
-                    case UIProvider.ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.hideCheckboxes ? 1 : 0));
+                    case UIProvider.ACCOUNT_SETTINGS_SHOW_CHECKBOXES_COLUMN:
+                        builder.add(Integer.valueOf(account.settings.showCheckboxes ? 1 : 0));
                         break;
                     case UIProvider.ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN:
                         builder.add(Integer.valueOf(account.settings.confirmDelete ? 1 : 0));
