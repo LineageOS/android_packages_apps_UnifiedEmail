@@ -62,7 +62,7 @@ public class LetterTileProvider extends DefaultImageProvider {
             int extent) {
         Bitmap bitmap;
         final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
-        final char firstChar = display.charAt(0);
+        final char firstChar = Character.toUpperCase(display.charAt(0));
         // If its a valid ascii character...
         if (Character.isLetter(firstChar)) {
             final String first = firstChar+"";
