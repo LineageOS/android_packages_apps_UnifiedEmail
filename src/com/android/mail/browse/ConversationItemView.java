@@ -1148,7 +1148,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     private void drawSenders(Canvas canvas) {
         int left;
-        if (!mCheckboxesEnabled) {
+        if (!mCheckboxesEnabled && mCoordinates.inlinePersonalLevel) {
             if (mCoordinates.showPersonalLevel && mHeader.personalLevelBitmap != null) {
                 left = mCoordinates.sendersX;
             } else {

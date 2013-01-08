@@ -26,4 +26,8 @@
     <dimen name="undo_bar_width_conv">844dp</dimen>
     <dimen name="undo_bar_width_conv_list">426dp</dimen>
     <dimen name="undo_bar_width_search_list">400dp</dimen>
+
+    <!-- Whether to show the priority indicator inline with the senders in conversation list view.
+        Wide mode on 10" tablet is the only place we currently don't do this -->
+    <bool name="inline_personal_level">false</bool>
 </resources>
