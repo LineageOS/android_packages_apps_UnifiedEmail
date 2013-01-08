@@ -102,17 +102,24 @@ public class BitmapUtil {
     public static Bitmap obtainBitmapWithHalfWidth(byte[] bytes, int width, int height) {
         if (bytes != null && bytes.length > 0) {
             final float desiredWidth = width / 2;
-            BitmapFactory.Options opts = new BitmapFactory.Options();
+            final BitmapFactory.Options opts = new BitmapFactory.Options();
             opts.outWidth = width;
             opts.outHeight = height;
-            Bitmap scaled = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);
+            final Bitmap scaled = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);
 
             // Crop
-            final float extraWidth = scaled.getWidth() - desiredWidth;
-            final float extraHeight = scaled.getHeight() - height;
+            final int scaledHeight = scaled.getHeight();
+            final int scaledWidth = scaled.getWidth();
+            final float extraWidth = scaledWidth > 0 && scaledWidth > desiredWidth ?
+                    scaledWidth - desiredWidth : 0;
+            final float extraHeight = scaledHeight > 0 && scaledHeight > height ?
+                    scaledHeight - height : 0;
             final int x = (int) (extraWidth / 2.0f);
             final int y = (int) (extraHeight / 2.0f);
 
+            if (height > scaledHeight) {
+                return scaled;
+            }
             return Bitmap.createBitmap(scaled, x, y, (int) desiredWidth, (int) height);
         }
         return null;
