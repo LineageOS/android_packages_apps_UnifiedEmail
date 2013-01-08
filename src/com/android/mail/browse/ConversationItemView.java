@@ -572,7 +572,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             SendersView.format(context, mHeader.conversation.conversationInfo,
                     mHeader.messageInfoString.toString(), maxChars, getParser(), getBuilder(),
                     mHeader.styledSenders, mHeader.displayableSenderNames,
-                    mHeader.displayableSenderEmails);
+                    mHeader.displayableSenderEmails, mAccount);
             // If we have displayable sendres, load their thumbnails
             loadSenderImages();
         } else {
@@ -635,10 +635,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     mCoordinates.contactImagesHeight);
             mContactImagesHolder.setDivisionIds(mHeader.displayableSenderEmails);
             int size = mHeader.displayableSenderEmails.size();
-            for (int i = 1; i <= DividedImageCanvas.MAX_DIVISIONS && i <= size; i++) {
+            for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < size; i++) {
                 sContactPhotoManager.loadThumbnail(mContactImagesHolder,
-                        mHeader.displayableSenderNames.get(size - i).toString(),
-                        mHeader.displayableSenderEmails.get(size - i), DEFAULT_AVATAR_PROVIDER);
+                        mHeader.displayableSenderNames.get(i),
+                        mHeader.displayableSenderEmails.get(i), DEFAULT_AVATAR_PROVIDER);
             }
         }
     }

@@ -45,6 +45,7 @@ import com.android.mail.utils.Utils;
 import com.google.android.common.html.parser.HtmlParser;
 import com.google.android.common.html.parser.HtmlTreeBuilder;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
@@ -200,16 +201,16 @@ public class SendersView {
     public static void format(Context context, ConversationInfo conversationInfo,
             String messageInfo, int maxChars, HtmlParser parser, HtmlTreeBuilder builder,
             ArrayList<SpannableString> styledSenders, ArrayList<String> displayableSenderNames,
-            ArrayList<String> displayableSenderEmails) {
+            ArrayList<String> displayableSenderEmails, String account) {
         getSenderResources(context);
         handlePriority(context, maxChars, messageInfo, conversationInfo, parser, builder,
-                styledSenders, displayableSenderNames, displayableSenderEmails);
+                styledSenders, displayableSenderNames, displayableSenderEmails, account);
     }
 
-    public static void handlePriority(Context context, int maxChars,
-            String messageInfoString, ConversationInfo conversationInfo, HtmlParser parser,
-            HtmlTreeBuilder builder, ArrayList<SpannableString> styledSenders,
-            ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails) {
+    public static void handlePriority(Context context, int maxChars, String messageInfoString,
+            ConversationInfo conversationInfo, HtmlParser parser, HtmlTreeBuilder builder,
+            ArrayList<SpannableString> styledSenders, ArrayList<String> displayableSenderNames,
+            ArrayList<String> displayableSenderEmails, String account) {
         boolean shouldAddPhotos = displayableSenderEmails != null;
         int maxPriorityToInclude = -1; // inclusive
         int numCharsUsed = messageInfoString.length(); // draft, number drafts,
@@ -258,6 +259,8 @@ public class SendersView {
         CharacterStyle style;
         boolean appendedElided = false;
         Map<String, Integer> displayHash = Maps.newHashMap();
+        String firstDisplayableSenderEmail = null;
+        String firstDisplayableSender = null;
         for (int i = 0; i < conversationInfo.messageInfos.size(); i++) {
             currentMessage = conversationInfo.messageInfos.get(i);
             nameString = !TextUtils.isEmpty(currentMessage.sender) ? currentMessage.sender : "";
@@ -295,14 +298,6 @@ public class SendersView {
                     displayHash.put(currentMessage.sender, i);
                     spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
                     styledSenders.add(spannableDisplay);
-                    if (shouldAddPhotos  && !TextUtils.isEmpty(currentMessage.senderEmail)) {
-                        displayableSenderEmails.add(currentMessage.senderEmail);
-                        displayableSenderNames.add(currentMessage.sender);
-                        if (displayableSenderEmails.size() > DividedImageCanvas.MAX_DIVISIONS) {
-                            displayableSenderEmails.remove(0);
-                            displayableSenderNames.remove(0);
-                        }
-                    }
                 }
             } else {
                 if (!appendedElided) {
@@ -311,6 +306,38 @@ public class SendersView {
                     appendedElided = true;
                     styledSenders.add(spannableDisplay);
                 }
+            }
+            if (shouldAddPhotos) {
+                String senderEmail = TextUtils.isEmpty(currentMessage.sender) ?
+                        account : currentMessage.senderEmail;
+                if (i == 0) {
+                    // Always add the first sender!
+                    firstDisplayableSenderEmail = senderEmail;
+                    firstDisplayableSender = currentMessage.sender;
+                } else {
+                    if (!Objects.equal(firstDisplayableSenderEmail, senderEmail)) {
+                        int indexOf = displayableSenderEmails.indexOf(senderEmail);
+                        if (indexOf > -1) {
+                            displayableSenderEmails.remove(indexOf);
+                            displayableSenderNames.remove(indexOf);
+                        }
+                        displayableSenderEmails.add(senderEmail);
+                        displayableSenderNames.add(currentMessage.sender);
+                        if (displayableSenderEmails.size() > DividedImageCanvas.MAX_DIVISIONS) {
+                            displayableSenderEmails.remove(0);
+                            displayableSenderNames.remove(0);
+                        }
+                    }
+                }
+            }
+        }
+        if (shouldAddPhotos && !TextUtils.isEmpty(firstDisplayableSenderEmail)) {
+            if (displayableSenderEmails.size() < DividedImageCanvas.MAX_DIVISIONS) {
+                displayableSenderEmails.add(0, firstDisplayableSenderEmail);
+                displayableSenderNames.add(0, firstDisplayableSender);
+            } else {
+                displayableSenderEmails.set(0, firstDisplayableSenderEmail);
+                displayableSenderNames.set(0, firstDisplayableSender);
             }
         }
     }
