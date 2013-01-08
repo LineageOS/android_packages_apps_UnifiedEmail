@@ -147,14 +147,10 @@
     <item quantity="one" msgid="3657821200245019288">"Mover una conversación"</item>
     <item quantity="other" msgid="1685896770174368261">"Mover <xliff:g id="ID_1">%1$d</xliff:g> conversaciones"</item>
   </plurals>
-    <!-- no translation found for content_description (5191020413686786341) -->
-    <skip />
-    <!-- no translation found for content_description_today (2303358176694038320) -->
-    <skip />
-    <!-- no translation found for read_string (219566857950091332) -->
-    <skip />
-    <!-- no translation found for unread_string (588180203444398297) -->
-    <skip />
+    <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> sobre <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> el <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> sobre <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> a la(s) <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <string name="read_string" msgid="219566857950091332">"conversación leída"</string>
+    <string name="unread_string" msgid="588180203444398297">"conversación no leída"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> - <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -362,6 +358,5 @@
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Archivado"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Etiqueta eliminada"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Eliminado"</string>
-    <!-- no translation found for notification_action_preference_summary_not_set (8168109255072452703) -->
-    <skip />
+    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"No definido"</string>
 </resources>
