@@ -59,4 +59,10 @@ public class FolderDisplayer {
         mFoldersSortedSet.addAll(conv.getRawFoldersForDisplay(ignoreFolder));
     }
 
+    /**
+     * Reset this FolderDisplayer so that it can be reused.
+     */
+    public void reset() {
+        mFoldersSortedSet.clear();
+    }
 }
