@@ -499,7 +499,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     return account;
                 }
             }
-            accountExtra = intent.getStringExtra(EXTRA_SELECTED_ACCOUNT);
+            accountExtra = intent.hasExtra(Utils.EXTRA_ACCOUNT) ?
+                    intent.getStringExtra(Utils.EXTRA_ACCOUNT) :
+                        intent.getStringExtra(EXTRA_SELECTED_ACCOUNT);
         }
         if (account == null) {
             MailAppProvider provider = MailAppProvider.getInstance();
