@@ -349,22 +349,11 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         }
 
         int result = POSITION_NONE;
-        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
-        try {
-            int pos = -1;
-            while (cursor.moveToPosition(++pos)) {
-                final long id = Utils.getConversationId(cursor);
-                if (conv.id == id) {
-                    LogUtils.d(LOG_TAG, "pager adapter found repositioned convo '%s' at pos=%d",
-                            conv.subject, pos);
-                    result = pos;
-                    break;
-                }
-            }
-        } finally {
-            if (networkWasEnabled) {
-                Utils.enableConversationCursorNetworkAccess(cursor);
-            }
+        final int pos = cursor.getConversationPosition(conv.id);
+        if (pos >= 0) {
+            LogUtils.d(LOG_TAG, "pager adapter found repositioned convo '%s' at pos=%d",
+                    conv.subject, pos);
+            result = pos;
         }
 
         return result;
