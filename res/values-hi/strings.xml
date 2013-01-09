@@ -95,9 +95,12 @@
     <string name="quoted_text_label" msgid="541007446961960617">"उद्धरित पाठ"</string>
     <string name="respond_inline" msgid="6797117334768201180">"इनलाइन प्रतिसाद दें"</string>
     <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
-    <string name="bytes" msgid="8851050881674287386">"B"</string>
-    <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
-    <string name="megabytes" msgid="1469217534120857347">"MB"</string>
+    <!-- no translation found for bytes (874874279846496468) -->
+    <skip />
+    <!-- no translation found for kilobytes (9191949758901349712) -->
+    <skip />
+    <!-- no translation found for megabytes (130431176022837380) -->
+    <skip />
     <string name="attachment_image" msgid="3832985223906528449">"चित्र"</string>
     <string name="attachment_video" msgid="7526134752988603154">"वीडियो"</string>
     <string name="attachment_audio" msgid="135527133955622936">"ऑडियो"</string>
@@ -117,7 +120,8 @@
     <string name="no_application_found" msgid="1945184804521392093">"कोई भी एप्लिकेशन इस अनुलग्नक को देखने के लिए नहीं खोल सकता."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"अनुलग्‍नक फ़ेच कर रहा है"</string>
     <string name="please_wait" msgid="8797634225088247121">"कृपया प्रतीक्षा करें…"</string>
-    <string name="saved" msgid="6977782468220926548">"सहेजा गया,"</string>
+    <!-- no translation found for saved (6660844285730790469) -->
+    <skip />
     <string name="download_failed" msgid="7860650496473302012">"डाउनलोड नहीं कर सका."</string>
     <string name="attachments_header" msgid="6459475590011460229">"अनुलग्नक"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"सभी सहेजें"</string>
@@ -147,14 +151,10 @@
     <item quantity="one" msgid="3657821200245019288">"बातचीत ले जाएं"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> बातचीत ले जाएं"</item>
   </plurals>
-    <!-- no translation found for content_description (5191020413686786341) -->
-    <skip />
-    <!-- no translation found for content_description_today (2303358176694038320) -->
-    <skip />
-    <!-- no translation found for read_string (219566857950091332) -->
-    <skip />
-    <!-- no translation found for unread_string (588180203444398297) -->
-    <skip />
+    <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SUBJECT">%2$s</xliff:g> के बारे में <xliff:g id="SENDER">%1$s</xliff:g>, <xliff:g id="DATE">%4$s</xliff:g> पर <xliff:g id="SNIPPET">%3$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SUBJECT">%2$s</xliff:g> के बारे में <xliff:g id="SENDER">%1$s</xliff:g>, <xliff:g id="TIME">%4$s</xliff:g> पर <xliff:g id="SNIPPET">%3$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <string name="read_string" msgid="219566857950091332">"वार्तालाप पढ़ा गया"</string>
+    <string name="unread_string" msgid="588180203444398297">"वार्तालाप नहीं पढ़ा गया"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -362,6 +362,8 @@
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"संग्रहीत"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"लेबल निकाल दिया गया"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"हटा दिया गया"</string>
-    <!-- no translation found for notification_action_preference_summary_not_set (8168109255072452703) -->
-    <skip />
+    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"सेट नहीं है"</string>
+    <string name="veiled_address" msgid="1209670815434513191"></string>
+    <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
+    <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
 </resources>

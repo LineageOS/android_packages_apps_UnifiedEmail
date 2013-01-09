@@ -95,9 +95,12 @@
     <string name="quoted_text_label" msgid="541007446961960617">"Citerad text"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Svara inbäddade"</string>
     <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
-    <string name="bytes" msgid="8851050881674287386">"B"</string>
-    <string name="kilobytes" msgid="8506546136898321025">"kB"</string>
-    <string name="megabytes" msgid="1469217534120857347">"MB"</string>
+    <!-- no translation found for bytes (874874279846496468) -->
+    <skip />
+    <!-- no translation found for kilobytes (9191949758901349712) -->
+    <skip />
+    <!-- no translation found for megabytes (130431176022837380) -->
+    <skip />
     <string name="attachment_image" msgid="3832985223906528449">"Bild"</string>
     <string name="attachment_video" msgid="7526134752988603154">"Video"</string>
     <string name="attachment_audio" msgid="135527133955622936">"Ljud"</string>
@@ -117,7 +120,8 @@
     <string name="no_application_found" msgid="1945184804521392093">"Det finns inga appar som kan öppna och visa bilagan."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Bilagan hämtas"</string>
     <string name="please_wait" msgid="8797634225088247121">"Vänta …"</string>
-    <string name="saved" msgid="6977782468220926548">"Sparat,"</string>
+    <!-- no translation found for saved (6660844285730790469) -->
+    <skip />
     <string name="download_failed" msgid="7860650496473302012">"Bilagan hämtades inte."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Bilagor"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Spara alla"</string>
@@ -359,4 +363,7 @@
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Etiketten har tagits bort"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Borttaget"</string>
     <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"Har inte angetts"</string>
+    <string name="veiled_address" msgid="1209670815434513191"></string>
+    <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
+    <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
 </resources>
