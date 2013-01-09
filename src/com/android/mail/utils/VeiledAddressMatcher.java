@@ -17,22 +17,23 @@
 package com.android.mail.utils;
 
 import android.content.res.Resources;
+import android.database.DataSetObserver;
+import android.text.TextUtils;
 
 import com.android.mail.R;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
+import com.android.mail.ui.AccountController;
+
 import java.util.regex.Pattern;
 
 /**
  * A veiled email address is where we don't want to display the email address, because the address
  * might be throw-away, or temporary. For these veiled addresses, we want to display some alternate
  * information. To find if an email address is veiled, call the method
- * {@link #isVeiledAddress(Resources, String)}
+ * {@link #isVeiledAddress(String)}
  */
-public final class VeiledAddressMatcher {
-    /**
-     * Private object that does the actual matching. The object is initialized lazily.
-     */
-    private Pattern mMatcher = null;
-
+public final class VeiledAddressMatcher{
     /**
      * Resource for the regex pattern that specifies a veiled addresses.
      */
@@ -42,15 +43,6 @@ public final class VeiledAddressMatcher {
      * Resource that specifies whether veiled address matching is enabled.
      */
     private static final int VEILED_MATCHING_ENABLED = R.bool.veiled_address_enabled;
-
-    /**
-     * True if veiled address matching is enabled, false otherwise.
-     */
-    protected static boolean mVeiledMatchingEnabled = false;
-
-    /**
-     */
-    protected static boolean mInitialized = false;
 
     /**
      * Similar to {@link #VEILED_ALTERNATE_TEXT} except this is for addresses where we don't have
@@ -67,29 +59,85 @@ public final class VeiledAddressMatcher {
     public static final int VEILED_ALTERNATE_TEXT = R.string.veiled_alternate_text;
 
     /**
+     * Private object that does the actual matching.
+     */
+    private Pattern mMatcher = null;
+
+    /**
+     * True if veiled address matching is enabled, false otherwise.
+     */
+    protected boolean mVeiledMatchingEnabled = false;
+
+    /**
+     * The hash code of the last profile pattern retrieved . This allows us to avoid recompiling the
+     * patterns when nothing has changed.
+     */
+    private int mProfilePatternLastHash = -1;
+
+    private final AccountObserver mObserver = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount) {
+            loadPattern(newAccount.settings.veiledAddressPattern);
+        }
+    };
+
+    /**
+     * Make instantiation impossible.
+     */
+    private VeiledAddressMatcher() {
+        // Do nothing.
+    }
+
+    /**
+     * Loads the regular expression that corresponds to veiled addresses. It is safe to call this
+     * method repeatedly with the same pattern. If the pattern has not changed, little extra work
+     * is done.
+     * @param pattern
+     */
+    private final void loadPattern(String pattern) {
+        if (!TextUtils.isEmpty(pattern)) {
+            final int hashCode = pattern.hashCode();
+            if (hashCode != mProfilePatternLastHash) {
+                mProfilePatternLastHash = hashCode;
+                mMatcher = Pattern.compile(pattern);
+                // Since we have a non-empty pattern now, enable pattern matching.
+                mVeiledMatchingEnabled = true;
+            }
+        }
+    }
+
+    /**
+     * Default constructor
+     * @return
+     */
+    public static final VeiledAddressMatcher newInstance(Resources resources) {
+        final VeiledAddressMatcher instance = new VeiledAddressMatcher();
+        instance.mVeiledMatchingEnabled = resources.getBoolean(VEILED_MATCHING_ENABLED);
+        if (instance.mVeiledMatchingEnabled) {
+            instance.loadPattern(resources.getString(VEILED_RESOURCE));
+        }
+        return instance;
+    }
+
+    /**
+     * Initialize the object to listen for account changes. Without this, we cannot obtain updated
+     * values of the veiled address pattern and the value is read once from resources.
+     * @param controller
+     */
+    public final void initialize(AccountController controller) {
+        mObserver.initialize(controller);
+    }
+
+    /**
      * Returns true if the given email address is a throw-away (or veiled) address. Such addresses
      * are created using special server-side logic for the purpose of keeping the real address of
      * the user hidden.
      * @param address
      * @return true if the address is veiled, false otherwise.
      */
-    public final boolean isVeiledAddress (Resources resources, String address) {
-        if (mInitialized && !mVeiledMatchingEnabled) {
-            // We have been initialized, and veiled address matching is explicitly disabled.
-            // Match nothing.
-            return false;
-        }
-        if (resources == null) {
-            return false;
-        }
-        if (mInitialized == false) {
-            mVeiledMatchingEnabled = resources.getBoolean(VEILED_MATCHING_ENABLED);
-            mInitialized = true;
-            if (mVeiledMatchingEnabled) {
-                mMatcher = Pattern.compile(resources.getString(VEILED_RESOURCE));
-            }
-        }
-        if (mMatcher == null) {
+    public final boolean isVeiledAddress (String address) {
+        if (!mVeiledMatchingEnabled || mMatcher == null) {
+            // Veiled address matching is explicitly disabled: Match nothing.
             return false;
         }
         return mMatcher.matcher(address).matches();

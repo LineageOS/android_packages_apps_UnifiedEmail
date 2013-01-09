@@ -88,6 +88,7 @@ import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.VeiledAddressMatcher;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -267,6 +268,13 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private final DataSetObservable mFolderObservable = new DataSetObservable();
 
+    /**
+     * Matched addresses that must be shielded from users because they are temporary. Even though
+     * this is instantiated from settings, this matcher is valid for all accounts, and is expected
+     * to live past the life of an account.
+     */
+    private final VeiledAddressMatcher mVeiledMatcher;
+
     protected static final String LOG_TAG = LogTag.getLogTag();
     /** Constants used to differentiate between the types of loaders. */
     private static final int LOADER_ACCOUNT_CURSOR = 0;
@@ -335,6 +343,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 mContext.getResources().getInteger(R.integer.folder_item_refresh_delay_ms);
         mShowUndoBarDelay =
                 mContext.getResources().getInteger(R.integer.show_undo_bar_delay_ms);
+        mVeiledMatcher = VeiledAddressMatcher.newInstance(activity.getResources());
     }
 
     @Override
@@ -789,6 +798,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mResolver = mActivity.getContentResolver();
         mNewEmailReceiver = new SuppressNotificationReceiver();
         mRecentFolderList.initialize(mActivity);
+        mVeiledMatcher.initialize(this);
 
         // All the individual UI components listen for ViewMode changes. This
         // simplifies the amount of logic in the AbstractActivityController, but increases the
@@ -3211,4 +3221,9 @@ public abstract class AbstractActivityController implements ActivityController {
         mDialogListener = listener;
         mDialogAction = action;
     }
+
+    @Override
+    public VeiledAddressMatcher getVeiledAddressMatcher() {
+        return mVeiledMatcher;
+    };
 }
