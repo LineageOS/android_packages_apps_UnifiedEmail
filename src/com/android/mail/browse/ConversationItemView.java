@@ -70,7 +70,7 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
-import com.android.mail.ui.CustomTypefaceSpan;
+
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
 import com.android.mail.ui.FolderDisplayer;
@@ -176,7 +176,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private TextView mDateTextView;
     private DividedImageCanvas mContactImagesHolder;
     private static TextAppearanceSpan sDateTextAppearance;
-    private static CustomTypefaceSpan sSubjectTextUnreadSpan;
+    private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static ForegroundColorSpan sSnippetTextUnreadSpan;
     private static ForegroundColorSpan sSnippetTextReadSpan;
@@ -378,10 +378,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(sActivatedTextColor));
             sSendersTextColorRead = res.getColor(R.color.senders_text_color_read);
             sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
-            sSubjectTextUnreadSpan = new CustomTypefaceSpan("sans-serif", Typeface.createFromAsset(
-                    context.getAssets(), "fonts/Roboto-Medium.ttf"),
-                    res.getDimensionPixelSize(R.dimen.subject_font_size),
-                    res.getColor(R.color.subject_text_color_unread));
+            sSubjectTextUnreadSpan = new TextAppearanceSpan(mContext,
+                    R.style.SubjectAppearanceUnreadStyle);
             sSubjectTextReadSpan = new TextAppearanceSpan(mContext,
                     R.style.SubjectAppearanceReadStyle);
             sSnippetTextUnreadSpan = new ForegroundColorSpan(R.color.snippet_text_color_unread);
