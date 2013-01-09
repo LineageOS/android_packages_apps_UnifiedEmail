@@ -169,6 +169,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED, Integer.class)
             .put(AccountColumns.SettingsColumns.SETUP_INTENT_URI, String.class)
             .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE, Integer.class)
+            .put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN, String.class)
             .put(AccountColumns.UPDATE_SETTINGS_URI, String.class)
             .build();
 
@@ -220,8 +221,9 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 40;
     public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 41;
     public static final int ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN = 42;
+    public static final int ACCOUNT_SETTINGS_VEILED_ADDRESS_PATTERN_COLUMN = 43;
 
-    public static final int ACCOUNT_UPDATE_SETTINGS_URI_COLUMN = 43;
+    public static final int ACCOUNT_UPDATE_SETTINGS_URI_COLUMN = 44;
 
     public static final class AccountCapabilities {
         /**
@@ -588,6 +590,11 @@ public class UIProvider {
              */
             public static final String SETUP_INTENT_URI = "setup_intent_uri";
             /**
+             * The regex that defines a veiled address, something that must be hidden from user
+             * view because it is temporary, long and clumsy.
+             */
+            public static final String VEILED_ADDRESS_PATTERN = "veiled-address-pattern";
+            /**
              * Integer column containing the Conversation view mode.  This value will match one of
              * constants from  {@link ConversationViewMode}
              */
@@ -660,6 +667,8 @@ public class UIProvider {
                     ACCOUNT_SETTINGS_SETUP_INTENT_URI)
             .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
                     ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN)
+            .put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN,
+                    ACCOUNT_SETTINGS_VEILED_ADDRESS_PATTERN_COLUMN)
             .put(AccountColumns.UPDATE_SETTINGS_URI, ACCOUNT_UPDATE_SETTINGS_URI_COLUMN)
             .build();
 

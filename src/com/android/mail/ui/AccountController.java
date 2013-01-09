@@ -21,6 +21,7 @@ import android.database.DataSetObserver;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
+import com.android.mail.utils.VeiledAddressMatcher;
 
 /**
  * This class consolidates account-specific actions taken by a mail activity.
@@ -43,4 +44,10 @@ public interface AccountController {
      * account, but also updates to the account, in case of settings changes.
      */
     Account getAccount();
+
+    /**
+     * Returns an object that can check veiled addresses.
+     * @return
+     */
+    VeiledAddressMatcher getVeiledAddressMatcher();
 }
