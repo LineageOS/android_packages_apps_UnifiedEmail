@@ -117,11 +117,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         AttachmentAddedOrDeletedListener, OnAccountChangedListener, LoaderManager.LoaderCallbacks<Cursor>,
         TextView.OnEditorActionListener {
     // Identifiers for which type of composition this is
-    static final int COMPOSE = -1;
-    static final int REPLY = 0;
-    static final int REPLY_ALL = 1;
-    static final int FORWARD = 2;
-    static final int EDIT_DRAFT = 3;
+    protected static final int COMPOSE = -1;
+    protected static final int REPLY = 0;
+    protected static final int REPLY_ALL = 1;
+    protected static final int FORWARD = 2;
+    protected static final int EDIT_DRAFT = 3;
 
     // Integer extra holding one of the above compose action
     protected static final String EXTRA_ACTION = "action";
