@@ -27,5 +27,5 @@
           android:drawable="@drawable/list_arrow_activated_holo" />
     <item android:state_selected="true"
           android:drawable="@drawable/list_selected_holo" />
-    <item android:drawable="@drawable/list_unread_holo" />
+    <item android:drawable="@drawable/list_read_holo" />
 </selector>

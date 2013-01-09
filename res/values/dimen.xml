@@ -25,6 +25,7 @@
     <dimen name="folders_text_bottom_padding">4dip</dimen>
     <dimen name="folders_top_margin">10sp</dimen>
     <dimen name="star_top_margin">10sp</dimen>
+    <dimen name="attachment_margin_top">6sp</dimen>
     <dimen name="folders_top_margin_wide">24sp</dimen>
     <dimen name="folders_min_height">18dp</dimen>
     <dimen name="date_font_size">12sp</dimen>
