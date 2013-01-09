@@ -95,9 +95,12 @@
     <string name="quoted_text_label" msgid="541007446961960617">"引用文字"</string>
     <string name="respond_inline" msgid="6797117334768201180">"逐行回覆"</string>
     <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
-    <string name="bytes" msgid="8851050881674287386">"B"</string>
-    <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
-    <string name="megabytes" msgid="1469217534120857347">"MB"</string>
+    <!-- no translation found for bytes (874874279846496468) -->
+    <skip />
+    <!-- no translation found for kilobytes (9191949758901349712) -->
+    <skip />
+    <!-- no translation found for megabytes (130431176022837380) -->
+    <skip />
     <string name="attachment_image" msgid="3832985223906528449">"圖片"</string>
     <string name="attachment_video" msgid="7526134752988603154">"影片"</string>
     <string name="attachment_audio" msgid="135527133955622936">"音訊"</string>
@@ -117,7 +120,8 @@
     <string name="no_application_found" msgid="1945184804521392093">"沒有應用程式可開啟這個附件供您檢視。"</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"擷取附件"</string>
     <string name="please_wait" msgid="8797634225088247121">"請稍候…"</string>
-    <string name="saved" msgid="6977782468220926548">"已儲存，"</string>
+    <!-- no translation found for saved (6660844285730790469) -->
+    <skip />
     <string name="download_failed" msgid="7860650496473302012">"無法下載。"</string>
     <string name="attachments_header" msgid="6459475590011460229">"附件"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"全部儲存"</string>
@@ -147,10 +151,10 @@
     <item quantity="one" msgid="3657821200245019288">"移動會話群組"</item>
     <item quantity="other" msgid="1685896770174368261">"移動 <xliff:g id="ID_1">%1$d</xliff:g> 個會話群組"</item>
   </plurals>
-    <string name="content_description" msgid="5191020413686786341">"寄件者：<xliff:g id="SENDER">%1$s</xliff:g>，主旨：<xliff:g id="SUBJECT">%2$s</xliff:g>，摘要：<xliff:g id="SNIPPET">%3$s</xliff:g>，日期：<xliff:g id="DATE">%4$s</xliff:g>，讀取狀態：<xliff:g id="READSTATE">%5$s</xliff:g>"</string>
-    <string name="content_description_today" msgid="2303358176694038320">"寄件者：<xliff:g id="SENDER">%1$s</xliff:g>，主旨：<xliff:g id="SUBJECT">%2$s</xliff:g>，摘要：<xliff:g id="SNIPPET">%3$s</xliff:g>，時間：<xliff:g id="TIME">%4$s</xliff:g>，讀取狀態：<xliff:g id="READSTATE">%5$s</xliff:g>"</string>
-    <string name="read_string" msgid="219566857950091332">"已讀取會話群組"</string>
-    <string name="unread_string" msgid="588180203444398297">"未讀取會話群組"</string>
+    <string name="content_description" msgid="5191020413686786341">"寄件者：<xliff:g id="SENDER">%1$s</xliff:g>，主旨：<xliff:g id="SUBJECT">%2$s</xliff:g>，摘要：<xliff:g id="SNIPPET">%3$s</xliff:g>，日期：<xliff:g id="DATE">%4$s</xliff:g>，閱讀狀態：<xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="2303358176694038320">"寄件者：<xliff:g id="SENDER">%1$s</xliff:g>，主旨：<xliff:g id="SUBJECT">%2$s</xliff:g>，摘要：<xliff:g id="SNIPPET">%3$s</xliff:g>，時間：<xliff:g id="TIME">%4$s</xliff:g>，閱讀狀態：<xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <string name="read_string" msgid="219566857950091332">"已閱讀的會話群組"</string>
+    <string name="unread_string" msgid="588180203444398297">"未閱讀的會話群組"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -302,7 +306,7 @@
     <string name="load_more" msgid="420892447103014683">"載入更多"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"名稱資料夾捷徑"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"正在等待同步處理"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"您的電子郵件即將顯示。"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"即將顯示您的電子郵件。"</string>
     <string name="not_synced_title" msgid="794279749170198599">"帳戶尚未同步處理"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"這個帳戶尚未設成自動同步處理。"\n"請輕觸 [立即同步處理]"<b></b>"，將您的郵件同步處理一次，或者輕觸 [變更同步處理設定]"<b></b>"，將帳戶設定成自動同步處理郵件。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步處理"</string>
@@ -359,4 +363,7 @@
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"已移除標籤"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"已刪除"</string>
     <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"未設定"</string>
+    <string name="veiled_address" msgid="1209670815434513191"></string>
+    <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
+    <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
 </resources>
