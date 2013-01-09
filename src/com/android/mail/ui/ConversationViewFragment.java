@@ -267,6 +267,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         snapHeader.initialize(dateBuilder, this, mAddressCache);
         snapHeader.setCallbacks(this);
         snapHeader.setContactInfoSource(getContactInfoSource());
+        snapHeader.setVeiledMatcher(mActivity.getAccountController().getVeiledAddressMatcher());
 
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
 

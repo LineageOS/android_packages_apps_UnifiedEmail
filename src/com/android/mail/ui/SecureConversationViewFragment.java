@@ -107,6 +107,9 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mMessageHeaderView.setContactInfoSource(getContactInfoSource());
         mMessageHeaderView.setCallbacks(this);
         mMessageHeaderView.setExpandable(false);
+        mMessageHeaderView.setVeiledMatcher(
+                ((ControllableActivity) getActivity()).getAccountController()
+                        .getVeiledAddressMatcher());
         getLoaderManager().initLoader(MESSAGE_LOADER, null, getMessageLoaderCallbacks());
         showLoadingStatus();
     }

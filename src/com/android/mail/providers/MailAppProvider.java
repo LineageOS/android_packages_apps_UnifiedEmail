@@ -334,6 +334,9 @@ public abstract class MailAppProvider extends ContentProvider
                     case UIProvider.ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN:
                         builder.add(account.settings.conversationViewMode);
                         break;
+                    case UIProvider.ACCOUNT_SETTINGS_VEILED_ADDRESS_PATTERN_COLUMN:
+                        builder.add(account.settings.veiledAddressPattern);
+                        break;
                     case UIProvider.ACCOUNT_UPDATE_SETTINGS_URI_COLUMN:
                         builder.add(account.updateSettingsUri);
                         break;

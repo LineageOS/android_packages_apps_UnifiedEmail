@@ -199,7 +199,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private AlertDialog mDetailsPopup;
 
-    private final VeiledAddressMatcher mVeiledMatcher = new VeiledAddressMatcher();
+    private VeiledAddressMatcher mVeiledMatcher;
 
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
@@ -288,6 +288,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     public void setCallbacks(MessageHeaderViewCallbacks callbacks) {
         mCallbacks = callbacks;
+    }
+
+    public void setVeiledMatcher(VeiledAddressMatcher matcher) {
+        mVeiledMatcher = matcher;
     }
 
     /**
@@ -675,7 +679,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             final String address = email.getAddress();
             // Check if the address here is a veiled address.  If it is, we need to display an
             // alternate layout
-            final boolean isVeiledAddress = mVeiledMatcher.isVeiledAddress(res, address);
+            final boolean isVeiledAddress = mVeiledMatcher.isVeiledAddress(address);
             final String addressShown;
             if (isVeiledAddress) {
                 // Add the warning at the end of the name, and remove the address.  The alternate
