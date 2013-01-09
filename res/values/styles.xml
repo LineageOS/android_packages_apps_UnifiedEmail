@@ -536,7 +536,6 @@
 
     <style name="SubjectAppearanceReadStyle">
         <item name="android:textColor">@color/subject_text_color_read</item>
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/subject_font_size</item>
     </style>
 
@@ -549,18 +548,17 @@
     <style name="SendersReadTextAppearance">
         <item name="android:textColor">@color/senders_text_color_read</item>
         <item name="android:textSize">@dimen/senders_font_size</item>
-        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
     <style name="MessageInfoUnreadTextAppearance">
         <item name="android:textSize">@dimen/senders_font_size</item>
         <item name="android:textColor">@color/message_info_text_color</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="MessageInfoReadTextAppearance">
         <item name="android:textSize">@dimen/senders_font_size</item>
         <item name="android:textColor">@color/message_info_text_color</item>
-        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
     <style name="DraftTextAppearance" parent="@android:attr/textAppearanceMedium">
@@ -574,6 +572,5 @@
     <style name="DateTextAppearance">
         <item name="android:textColor">@color/senders_text_color_read</item>
         <item name="android:textSize">@dimen/date_font_size</item>
-        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 </resources>
