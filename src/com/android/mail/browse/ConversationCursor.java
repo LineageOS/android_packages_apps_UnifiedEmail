@@ -49,7 +49,7 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -59,6 +59,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -240,39 +241,52 @@ public final class ConversationCursor implements Cursor {
         // Ideally these two objects could be combined into a Map from
         // conversationId -> position, but the cached values uses the conversation
         // uri as a key.
-        private final Set<String> mConversationUris;
-        private final Set<Long> mConversationIds;
+        private final Map<String, Integer> mConversationUriPositionMap;
+        private final Map<Long, Integer> mConversationIdPositionMap;
 
         public UnderlyingCursorWrapper(Cursor result) {
             super(result);
-            final ImmutableSet.Builder<String> conversationUrisBuilder =
-                    new ImmutableSet.Builder<String>();
-            final ImmutableSet.Builder<Long> conversationSetBuilder =
-                    new ImmutableSet.Builder<Long>();
+            final ImmutableMap.Builder<String, Integer> conversationUriPositionMapBuilder =
+                    new ImmutableMap.Builder<String, Integer>();
+            final ImmutableMap.Builder<Long, Integer> conversationIdPositionMapBuilder =
+                    new ImmutableMap.Builder<Long, Integer>();
             if (result != null && result.moveToFirst()) {
                 // We don't want iterating over this cursor to trigger a network
                 // request
                 final boolean networkWasEnabled =
                         Utils.disableConversationCursorNetworkAccess(result);
                 do {
-                    conversationUrisBuilder.add(result.getString(URI_COLUMN_INDEX));
-                    conversationSetBuilder.add(result.getLong(UIProvider.CONVERSATION_ID_COLUMN));
+                    final int position = result.getPosition();
+                    conversationUriPositionMapBuilder.put(
+                            result.getString(URI_COLUMN_INDEX), position);
+                    conversationIdPositionMapBuilder.put(
+                            result.getLong(UIProvider.CONVERSATION_ID_COLUMN), position);
                 } while (result.moveToNext());
 
                 if (networkWasEnabled) {
                     Utils.enableConversationCursorNetworkAccess(result);
                 }
             }
-            mConversationUris = conversationUrisBuilder.build();
-            mConversationIds = conversationSetBuilder.build();
+            mConversationUriPositionMap = conversationUriPositionMapBuilder.build();
+            mConversationIdPositionMap = conversationIdPositionMapBuilder.build();
         }
 
         public boolean contains(String uri) {
-            return mConversationUris.contains(uri);
+            return mConversationUriPositionMap.containsKey(uri);
         }
 
         public Set<Long> conversationIds() {
-            return mConversationIds;
+            return mConversationIdPositionMap.keySet()   ;
+        }
+
+        public int getPosition(long conversationId) {
+            final Integer position = mConversationIdPositionMap.get(conversationId);
+            return position != null ? position.intValue() : -1;
+        }
+
+        public int getPosition(String conversationUri) {
+            final Integer position = mConversationUriPositionMap.get(conversationUri);
+            return position != null ? position.intValue() : -1;
         }
     }
 
@@ -440,6 +454,48 @@ public final class ConversationCursor implements Cursor {
                 }
             }
             return deletedItems;
+        }
+    }
+
+    /**
+     * Returns the position, in the ConversationCursor, of the Conversation with the specified id.
+     * The returned posision will take into account any items that have been deleted.
+     */
+    public int getConversationPosition(long conversationId) {
+        final int underlyingPosition = mUnderlyingCursor.getPosition(conversationId);
+        if (underlyingPosition < 0) {
+            // The conversation wasn't found in the underlying cursor, return the underlying result.
+            return underlyingPosition;
+        }
+
+        // Walk through each of the deleted items.  If the deleted item is before the underlying
+        // position, decrement the position
+        synchronized (mCacheMapLock) {
+            int updatedPosition = underlyingPosition;
+            final Iterator<HashMap.Entry<String, ContentValues>> iter =
+                    mCacheMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                final HashMap.Entry<String, ContentValues> entry = iter.next();
+                final ContentValues values = entry.getValue();
+                if (values.containsKey(DELETED_COLUMN)) {
+                    // Since clients of the conversation cursor see conversation ConversationCursor
+                    // provider uris, we need to make sure that this also returns these uris
+                    final String conversationUri = entry.getKey();
+                    final int deletedItemPosition = mUnderlyingCursor.getPosition(conversationUri);
+                    if (deletedItemPosition == underlyingPosition) {
+                        // The requested items has been deleted.
+                        return -1;
+                    }
+
+                    if (deletedItemPosition >= 0 && deletedItemPosition < underlyingPosition) {
+                        // This item has been deleted, but is still in the underlying cursor, at
+                        // a position before the requested item.  Decrement the position of the
+                        // requested item.
+                        updatedPosition--;
+                    }
+                }
+            }
+            return updatedPosition;
         }
     }
 
