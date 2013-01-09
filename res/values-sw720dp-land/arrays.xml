@@ -20,10 +20,12 @@
         <item>0</item>
         <item>80</item>
         <item>-1</item>
+        <item>-1</item>
     </integer-array>
     <integer-array name="subject_lengths">
         <item>-1</item>
         <item>80</item>
+        <item>-1</item>
         <item>-1</item>
     </integer-array>
 </resources>
