@@ -277,11 +277,16 @@ public class ConversationItemViewCoordinates {
      */
     public static int getSubjectLength(Context context, int mode, boolean hasFolders) {
         final Resources res = context.getResources();
+        int[] lengths;
         if (hasFolders) {
-            return res.getIntArray(R.array.subject_with_folders_lengths)[mode];
+            lengths = res.getIntArray(R.array.subject_with_folders_lengths);
         } else {
-            return res.getIntArray(R.array.subject_lengths)[mode];
+            lengths = res.getIntArray(R.array.subject_lengths);
         }
+        if (mode > lengths.length - 1) {
+            mode = ViewMode.CONVERSATION_LIST;
+        }
+        return lengths[mode];
     }
 
     public static int getColorBlockWidth(Context context) {

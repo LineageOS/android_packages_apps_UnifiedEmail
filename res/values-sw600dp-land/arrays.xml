@@ -21,10 +21,12 @@
         <item>0</item>
         <item>56</item>
         <item>160</item>
+        <item>160</item>
     </integer-array>
     <integer-array name="subject_lengths">
         <item>0</item>
         <item>80</item>
+        <item>160</item>
         <item>160</item>
     </integer-array>
 </resources>
