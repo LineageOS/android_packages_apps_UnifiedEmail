@@ -80,8 +80,6 @@ import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.android.common.html.parser.HtmlParser;
-import com.google.android.common.html.parser.HtmlTreeBuilder;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
@@ -187,8 +185,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sSendersTextViewHeight;
     private static CharacterStyle sActivatedTextSpan;
     private static Bitmap MORE_FOLDERS;
-    private static HtmlTreeBuilder sHtmlBuilder;
-    private static HtmlParser sHtmlParser;
     private static ContactPhotoManager sContactPhotoManager;
     public static final LetterTileProvider DEFAULT_AVATAR_PROVIDER =
             new LetterTileProvider();
@@ -219,6 +215,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mFoldersCount = mFoldersSortedSet.size();
             mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
             mFoldersCount = Math.min(mFoldersCount, MAX_DISPLAYED_FOLDERS_COUNT);
+        }
+
+        @Override
+        public void reset() {
+            super.reset();
+            mFoldersCount = 0;
+            mHasMoreFolders = false;
         }
 
         public boolean hasVisibleFolders() {
@@ -540,7 +543,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         startTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
         // Initialize folder displayer.
         if (mCoordinates.showFolders) {
-            mHeader.folderDisplayer = new ConversationItemFolderDisplayer(mContext);
+            if (mHeader.folderDisplayer == null) {
+                mHeader.folderDisplayer = new ConversationItemFolderDisplayer(mContext);
+            } else {
+                mHeader.folderDisplayer.reset();
+            }
             mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation, mDisplayedFolder);
         }
 
@@ -570,9 +577,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mHeader.displayableSenderNames = new ArrayList<String>();
             mHeader.styledSenders = new ArrayList<SpannableString>();
             SendersView.format(context, mHeader.conversation.conversationInfo,
-                    mHeader.messageInfoString.toString(), maxChars, getParser(), getBuilder(),
-                    mHeader.styledSenders, mHeader.displayableSenderNames,
-                    mHeader.displayableSenderEmails, mAccount);
+                    mHeader.messageInfoString.toString(), maxChars, mHeader.styledSenders,
+                    mHeader.displayableSenderNames, mHeader.displayableSenderEmails, mAccount);
             // If we have displayable sendres, load their thumbnails
             loadSenderImages();
         } else {
@@ -660,20 +666,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
     }
 
-    private static HtmlTreeBuilder getBuilder() {
-        if (sHtmlBuilder == null) {
-            sHtmlBuilder = new HtmlTreeBuilder();
-        }
-        return sHtmlBuilder;
-    }
-
-    private static HtmlParser getParser() {
-        if (sHtmlParser == null) {
-            sHtmlParser = new HtmlParser();
-        }
-        return sHtmlParser;
-    }
-
     private void createSubject(boolean isUnread, boolean activated) {
         String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.getSnippet();
@@ -709,7 +701,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         TextView subjectLayout = mSubjectTextView;
         int subjectWidth = mCoordinates.subjectWidth;
         int subjectHeight = (int) (subjectLayout.getLineHeight() * 2 + sPaint.descent());
-        sPaint.setTextSize(mCoordinates.subjectFontSize);
         if (isActivated() && showActivatedText()) {
             subjectText.setSpan(sActivatedTextSpan, 0, subjectText.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

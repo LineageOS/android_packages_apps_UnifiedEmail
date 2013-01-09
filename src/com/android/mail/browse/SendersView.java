@@ -41,9 +41,6 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.CustomTypefaceSpan;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.utils.ObjectCache;
-import com.android.mail.utils.Utils;
-import com.google.android.common.html.parser.HtmlParser;
-import com.google.android.common.html.parser.HtmlTreeBuilder;
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
@@ -197,18 +194,18 @@ public class SendersView {
     }
 
     public static void format(Context context, ConversationInfo conversationInfo,
-            String messageInfo, int maxChars, HtmlParser parser, HtmlTreeBuilder builder,
-            ArrayList<SpannableString> styledSenders, ArrayList<String> displayableSenderNames,
-            ArrayList<String> displayableSenderEmails, String account) {
+            String messageInfo, int maxChars, ArrayList<SpannableString> styledSenders,
+            ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
+            String account) {
         getSenderResources(context);
-        handlePriority(context, maxChars, messageInfo, conversationInfo, parser, builder,
-                styledSenders, displayableSenderNames, displayableSenderEmails, account);
+        handlePriority(context, maxChars, messageInfo, conversationInfo, styledSenders,
+                displayableSenderNames, displayableSenderEmails, account);
     }
 
     public static void handlePriority(Context context, int maxChars, String messageInfoString,
-            ConversationInfo conversationInfo, HtmlParser parser, HtmlTreeBuilder builder,
-            ArrayList<SpannableString> styledSenders, ArrayList<String> displayableSenderNames,
-            ArrayList<String> displayableSenderEmails, String account) {
+            ConversationInfo conversationInfo, ArrayList<SpannableString> styledSenders,
+            ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
+            String account) {
         boolean shouldAddPhotos = displayableSenderEmails != null;
         int maxPriorityToInclude = -1; // inclusive
         int numCharsUsed = messageInfoString.length(); // draft, number drafts,
@@ -264,8 +261,6 @@ public class SendersView {
             nameString = !TextUtils.isEmpty(currentMessage.sender) ? currentMessage.sender : "";
             if (nameString.length() == 0) {
                 nameString = getMe(context);
-            } else {
-                nameString = Utils.convertHtmlToPlainText(nameString, parser, builder);
             }
             if (numCharsToRemovePerWord != 0) {
                 nameString = nameString.substring(0,

@@ -52,8 +52,6 @@ import com.android.mail.utils.DelayedTaskHandler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.android.common.html.parser.HtmlParser;
-import com.google.android.common.html.parser.HtmlTreeBuilder;
 
 import java.util.ArrayList;
 
@@ -365,8 +363,7 @@ public class WidgetService extends RemoteViewsService {
                 if (conversation.conversationInfo != null) {
                     ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
                     SendersView.format(mContext, conversation.conversationInfo, "",
-                            MAX_SENDERS_LENGTH, new HtmlParser(), new HtmlTreeBuilder(), senders,
-                            null, null, mAccount.name);
+                            MAX_SENDERS_LENGTH, senders, null, null, mAccount.name);
                     senderBuilder = ellipsizeStyledSenders(conversation.conversationInfo,
                             MAX_SENDERS_LENGTH, senders);
                 } else {
