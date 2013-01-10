@@ -96,7 +96,7 @@ public class DividedImageCanvas {
     public Bitmap addDivisionImage(byte[] bytes, String id) {
         Bitmap b = null;
         final int pos = mDivisionIds.indexOf(id);
-        if (pos >= 0 && mDivisionImages.get(pos) == null && bytes != null && bytes.length > 0) {
+        if (pos >= 0 && bytes != null && bytes.length > 0) {
             final int width = mWidth;
             final int height = mHeight;
             // Different layouts depending on count.
@@ -138,7 +138,7 @@ public class DividedImageCanvas {
      */
     public void addDivisionImage(Bitmap b, String id) {
         int pos = mDivisionIds.indexOf(id);
-        if (pos >= 0 && mDivisionImages.get(pos) == null && b != null) {
+        if (pos >= 0 && b != null) {
             mDivisionImages.set(pos, b);
             boolean complete = false;
             int width = mWidth;
