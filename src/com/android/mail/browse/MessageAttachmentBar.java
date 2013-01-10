@@ -128,7 +128,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             mAttachmentSizeText = AttachmentUtils.convertToHumanReadableSize(getContext(),
                     attachment.size);
             mDisplayType = AttachmentUtils.getDisplayType(getContext(), attachment);
-            updateSubtitleText(null);
+            updateSubtitleText();
         }
 
         updateActions();
@@ -262,6 +262,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         return mAttachment.isDownloading() && mSaveClicked;
     }
 
+    @Override
     public void viewAttachment() {
         if (mAttachment.contentUri == null) {
             LogUtils.e(LOG_TAG, "viewAttachment with null content uri");
@@ -313,15 +314,12 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         setButtonVisible(mOverflowButton, shouldShowOverflow());
     }
 
+    @Override
     public void onUpdateStatus() {
-        if (mAttachment.state == AttachmentState.FAILED) {
-            mSubTitle.setText(getResources().getString(R.string.download_failed));
-        } else {
-            updateSubtitleText(mAttachment.isSavedToExternal() ?
-                    getResources().getString(R.string.saved) : null);
-        }
+        updateSubtitleText();
     }
 
+    @Override
     public void updateProgress(boolean showProgress) {
         if (mAttachment.isDownloading()) {
             mProgress.setMax(mAttachment.size);
@@ -335,16 +333,21 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         }
     }
 
-    private void updateSubtitleText(String prefix) {
+    private void updateSubtitleText() {
         // TODO: make this a formatted resource when we have a UX design.
         // not worth translation right now.
-        StringBuilder sb = new StringBuilder();
-        if (prefix != null) {
-            sb.append(prefix);
+        final StringBuilder sb = new StringBuilder();
+        if (mAttachment.state == AttachmentState.FAILED) {
+            sb.append(getResources().getString(R.string.download_failed));
+        } else {
+            if (mAttachment.isSavedToExternal()) {
+                sb.append(getResources().getString(R.string.saved, mAttachmentSizeText));
+            } else {
+                sb.append(mAttachmentSizeText);
+            }
+            sb.append(' ');
+            sb.append(mDisplayType);
         }
-        sb.append(mAttachmentSizeText);
-        sb.append(' ');
-        sb.append(mDisplayType);
         mSubTitle.setText(sb.toString());
     }
 
