@@ -445,9 +445,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
+        sContactPhotoManager.removePhoto(mContactImagesHolder);
         setContentDescription();
         requestLayout();
-        sContactPhotoManager.removePhoto(mContactImagesHolder);
     }
 
     /**
@@ -1394,7 +1394,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         setAnimatedHeight(-1);
         setMinimumHeight(ConversationItemViewCoordinates.getMinHeight(mContext,
                 mActivity.getViewMode()));
-        sContactPhotoManager.removePhoto(mContactImagesHolder);
     }
 
     /**
