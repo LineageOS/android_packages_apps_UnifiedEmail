@@ -54,6 +54,10 @@ public class DividedImageCanvas {
     private static final Rect sSrc = new Rect();
     private static final Rect sDest = new Rect();
 
+    private static final float ONE = 1.0f;
+
+    private static final float HALF = 0.5f;
+
     public DividedImageCanvas(Context context, InvalidateCallback callback) {
         mContext = context;
         mCallback = callback;
@@ -129,6 +133,55 @@ public class DividedImageCanvas {
         }
         addDivisionImage(b, id);
         return b;
+    }
+
+
+    /**
+     * Get the desired dimensions and scale for the bitmap to be placed in the
+     * location corresponding to id.
+     * @param id
+     * @return
+     */
+    public Dimensions getDesiredDimensions(String id) {
+        int w = 0, h = 0;
+        float scale = 0;
+        int pos = mDivisionIds.indexOf(id);
+        if (pos >= 0) {
+            int size = mDivisionIds.size();
+            switch (size) {
+                case 0:
+                    break;
+                case 1:
+                    w = mWidth;
+                    h = mHeight;
+                    scale = ONE;
+                    break;
+                case 2:
+                    w = mWidth / 2;
+                    h = mHeight;
+                    scale = ONE;
+                    break;
+                case 3:
+                    switch (pos) {
+                        case 0:
+                            w = mWidth / 2;
+                            h = mHeight;
+                            scale = ONE;
+                            break;
+                        default:
+                            w = mWidth / 2;
+                            h = mHeight / 2;
+                            scale = HALF;
+                    }
+                    break;
+                case 4:
+                    w = mWidth / 2;
+                    h = mHeight / 2;
+                    scale = HALF;
+                    break;
+            }
+        }
+        return new Dimensions(w, h, scale);
     }
 
     /**
@@ -268,5 +321,20 @@ public class DividedImageCanvas {
      */
     public interface InvalidateCallback {
         public void invalidate();
+    }
+
+    /**
+     * Dimensions holds the desired width, height, and scale for a bitmap being
+     * placed in the DividedImageCanvas.
+     */
+    public class Dimensions {
+        final public int width;
+        final public int height;
+        final public float scale;
+        public Dimensions(int w, int h, float s) {
+            width = w;
+            height = h;
+            scale = s;
+        }
     }
 }

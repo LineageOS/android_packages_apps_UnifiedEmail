@@ -16,12 +16,16 @@
 
 package com.android.mail.photomanager;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.LruCache;
@@ -30,6 +34,7 @@ import android.util.TypedValue;
 import com.android.mail.R;
 import com.android.mail.photomanager.ContactPhotoManager.DefaultImageProvider;
 import com.android.mail.ui.DividedImageCanvas;
+import com.google.common.base.Objects;
 
 /**
  * LetterTileProvider is an implementation of the DefaultImageProvider. When no
@@ -41,12 +46,13 @@ import com.android.mail.ui.DividedImageCanvas;
  */
 public class LetterTileProvider extends DefaultImageProvider {
     private Bitmap mDefaultBitmap;
-    private final LruCache<String, Bitmap> mTileBitmapCache;
+    private final LruCache<Integer, Bitmap> mTileBitmapCache;
     private static int sTilePaddingBottom;
     private static int sTilePaddingLeft;
     private static int sTileLetterFontSize = -1;
     private static TextPaint sPaint = new TextPaint();
     private static int DEFAULT_AVATAR_DRAWABLE = R.drawable.ic_contact_picture;
+    private static final Pattern ALPHABET = Pattern.compile("^[a-zA-Z]+$");
 
     public LetterTileProvider() {
         super();
@@ -54,41 +60,44 @@ public class LetterTileProvider extends DefaultImageProvider {
                 (MemoryUtils.getTotalMemorySize() >= MemoryUtils.LARGE_RAM_THRESHOLD) ?
                 1.0f : 0.5f;
         final int bitmapCacheSize = (int) (cacheSizeAdjustment * 26);
-        mTileBitmapCache = new LruCache<String, Bitmap>(bitmapCacheSize);
+        mTileBitmapCache = new LruCache<Integer, Bitmap>(bitmapCacheSize);
     }
 
     @Override
     public void applyDefaultImage(String displayName, String address, DividedImageCanvas view,
             int extent) {
-        Bitmap bitmap;
-        //final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
-        //final char firstChar = Character.toUpperCase(display.charAt(0));
-        // If its a valid ascii character...
-        // TODO: don't show tiles until we have a visual design
+        Bitmap bitmap = null;
+        // TODO: show just the default gray contact photo for now
         if (false) {
             final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
-            final char firstChar = Character.toUpperCase(display.charAt(0));
-            final String first = firstChar+"";
-            bitmap = mTileBitmapCache.get(first);
-            if (bitmap == null) {
-                // Create bitmap based on the first char
-                int width = view.getWidth();
-                int height = view.getHeight();
-                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                Canvas c = new Canvas(bitmap);
-                sPaint.setColor(Color.BLACK);
-                if (sTileLetterFontSize == -1) {
-                    final Resources res = view.getContext().getResources();
-                    sTileLetterFontSize = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_font_size);
-                    sTilePaddingBottom = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_padding_bottom);
-                    sTilePaddingLeft = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_padding_left);
+            final String firstChar = display.substring(0, 1);
+            // If its a valid english alphabet letter...
+            if (isLetter(firstChar)) {
+                final String first = firstChar.toUpperCase();
+                DividedImageCanvas.Dimensions d = view.getDesiredDimensions(address);
+                int hash = Objects.hashCode(first, d);
+                bitmap = mTileBitmapCache.get(hash);
+                if (bitmap == null) {
+                    // Create bitmap based on the first char
+                    bitmap = Bitmap.createBitmap(d.width, d.height, Bitmap.Config.ARGB_8888);
+                    sPaint.setColor(Color.BLACK);
+                    if (sTileLetterFontSize == -1) {
+                        final Resources res = view.getContext().getResources();
+                        sTileLetterFontSize = res
+                                .getDimensionPixelSize(R.dimen.tile_letter_font_size);
+                        sTilePaddingBottom = res
+                                .getDimensionPixelSize(R.dimen.tile_letter_padding_bottom);
+                        sTilePaddingLeft = res
+                                .getDimensionPixelSize(R.dimen.tile_letter_padding_left);
+                    }
+                    sPaint.setTextSize(sTileLetterFontSize * d.scale);
+                    sPaint.setTypeface(Typeface.DEFAULT);
+                    Canvas c = new Canvas(bitmap);
+                    c.drawColor(Color.GRAY);
+                    c.drawText(first, d.scale * sTilePaddingLeft, d.height
+                            - (sTilePaddingBottom * d.scale), sPaint);
+                    mTileBitmapCache.put(hash, bitmap);
                 }
-                sPaint.setTextSize(sTileLetterFontSize);
-                c.drawText(first, sTilePaddingLeft, height - sTilePaddingBottom, sPaint);
-                mTileBitmapCache.put(first, bitmap);
             }
         } else {
             if (mDefaultBitmap == null) {
@@ -100,5 +109,10 @@ public class LetterTileProvider extends DefaultImageProvider {
             bitmap = mDefaultBitmap;
         }
         view.addDivisionImage(bitmap, address);
+    }
+
+    private boolean isLetter(String letter) {
+        Matcher m = ALPHABET.matcher(letter);
+        return m.matches();
     }
 }
