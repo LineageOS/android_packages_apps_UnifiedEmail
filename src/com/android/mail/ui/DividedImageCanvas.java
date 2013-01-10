@@ -155,7 +155,7 @@ public class DividedImageCanvas {
                     break;
                 case 1:
                     // Draw the bitmap filling the entire canvas.
-                    mCanvas.drawBitmap(mDivisionImages.get(0), 0, 0, sPaint);
+                    draw(mDivisionImages.get(0), mCanvas, 0, 0, width, height);
                     complete = true;
                     break;
                 case 2:
