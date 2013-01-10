@@ -150,6 +150,15 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mSubjectView = (SnippetTextView) findViewById(R.id.conversation_subject);
         mFolderView = findViewById(R.id.folder_layout);
         mFolderAccountName = (TextView) mFolderView.findViewById(R.id.account);
+
+        final OnClickListener extraUpListener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mController.onUpPressed();
+            }
+        };
+        mSubjectView.setOnClickListener(extraUpListener);
+        mFolderView.setOnClickListener(extraUpListener);
     }
 
     /**
@@ -416,6 +425,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mSpinner.setVisibility(View.VISIBLE);
         mFolderView.setVisibility(View.GONE);
         mFolderAccountName.setVisibility(View.GONE);
+        mSubjectView.setVisibility(View.GONE);
     }
 
     /**
@@ -425,6 +435,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mSpinner.setVisibility(View.GONE);
         mFolderView.setVisibility(View.VISIBLE);
         mFolderAccountName.setVisibility(View.VISIBLE);
+        mSubjectView.setVisibility(View.VISIBLE);
     }
 
     /**
