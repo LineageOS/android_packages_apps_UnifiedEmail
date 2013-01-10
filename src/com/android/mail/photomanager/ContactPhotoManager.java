@@ -361,7 +361,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     @Override
     public void loadThumbnail(DividedImageCanvas view, String name, String emailAddress,
             DefaultImageProvider defaultProvider) {
-        if (TextUtils.isEmpty(name)) {
+        if (TextUtils.isEmpty(emailAddress)) {
             // No photo is needed
             defaultProvider.applyDefaultImage(name, emailAddress, view, -1);
             mPendingRequests.remove(view);
