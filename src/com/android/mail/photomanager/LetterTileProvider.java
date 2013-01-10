@@ -61,10 +61,13 @@ public class LetterTileProvider extends DefaultImageProvider {
     public void applyDefaultImage(String displayName, String address, DividedImageCanvas view,
             int extent) {
         Bitmap bitmap;
-        final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
-        final char firstChar = Character.toUpperCase(display.charAt(0));
+        //final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
+        //final char firstChar = Character.toUpperCase(display.charAt(0));
         // If its a valid ascii character...
-        if (Character.isLetter(firstChar)) {
+        // TODO: don't show tiles until we have a visual design
+        if (false) {
+            final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
+            final char firstChar = Character.toUpperCase(display.charAt(0));
             final String first = firstChar+"";
             bitmap = mTileBitmapCache.get(first);
             if (bitmap == null) {
