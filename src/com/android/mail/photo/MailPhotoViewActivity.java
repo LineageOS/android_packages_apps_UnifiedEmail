@@ -222,7 +222,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         }
 
         // If the download failed, show the empty text and retry button
-        if (attachment.downloadFailed()) {
+        if (attachment.isDownloadFailed()) {
             emptyText.setText(R.string.photo_load_failed);
             emptyText.setVisibility(View.VISIBLE);
             retryButton.setVisibility(View.VISIBLE);

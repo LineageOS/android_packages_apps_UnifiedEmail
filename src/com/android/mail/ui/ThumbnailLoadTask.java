@@ -24,6 +24,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
 import com.android.ex.photo.util.Exif;
@@ -53,7 +54,7 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             final Attachment attachment, final Attachment prevAttachment) {
         final int width = holder.getThumbnailWidth();
         final int height = holder.getThumbnailHeight();
-        if (attachment == null || width == 0 || height == 0 || !attachment.isImage()) {
+        if (attachment == null || width == 0 || height == 0 || !isImage(attachment)) {
             holder.setThumbnailToDefault();
             return;
         }
@@ -203,6 +204,12 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
         }
 
         return 0;
+    }
+
+    private static boolean isImage(Attachment attachment) {
+        return !TextUtils.isEmpty(attachment.contentType) ? attachment.contentType.startsWith(
+                "image/")
+                : false;
     }
 
     @Override

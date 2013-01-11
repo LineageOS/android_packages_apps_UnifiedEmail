@@ -304,7 +304,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
     private void updateActionsInternal() {
         // If the progress dialog is visible, skip any of the updating
-        if (mActionHandler.isProgressDialogVisible() || mActionHandler.dialogJustClosed()) {
+        if (mActionHandler.isProgressDialogVisible()) {
             return;
         }
 

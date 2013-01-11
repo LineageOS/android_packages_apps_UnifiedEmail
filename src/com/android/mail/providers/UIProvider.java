@@ -1740,7 +1740,8 @@ public class UIProvider {
         AttachmentColumns.DOWNLOADED_SIZE,
         AttachmentColumns.CONTENT_URI,
         AttachmentColumns.THUMBNAIL_URI,
-        AttachmentColumns.PREVIEW_INTENT_URI
+        AttachmentColumns.PREVIEW_INTENT_URI,
+        AttachmentColumns.PROVIDER_DATA
     };
     private static final String EMAIL_SEPARATOR_PATTERN = "\n";
     public static final int ATTACHMENT_NAME_COLUMN = 0;
@@ -1894,6 +1895,10 @@ public class UIProvider {
          * previewing attachments may leave this null.
          */
         public static final String PREVIEW_INTENT_URI = "previewIntentUri";
+        /**
+         * This column contains provider-specific private data as JSON string.
+         */
+        public static final String PROVIDER_DATA = "providerData";
 
         private AttachmentColumns() {}
     }
