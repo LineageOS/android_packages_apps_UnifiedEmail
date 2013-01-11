@@ -1159,9 +1159,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 return false;
             } else {
                 // If we don't have one set, but we're here, just take the default
-                final int autoAdvance = (autoAdvanceSetting == AutoAdvance.UNSET) ? Settings
-                        .getAutoAdvanceSetting(null)
-                        : autoAdvanceSetting;
+                final int autoAdvance = (autoAdvanceSetting == AutoAdvance.UNSET) ?
+                        AutoAdvance.DEFAULT : autoAdvanceSetting;
 
                 final Conversation next = mTracker.getNextConversation(autoAdvance, target);
                 LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
@@ -1283,13 +1282,13 @@ public abstract class AbstractActivityController implements ActivityController {
             final ConfirmDialogFragment c = ConfirmDialogFragment.newInstance(message);
             c.displayDialog(mActivity.getFragmentManager());
         } else {
-            delete(0, target, null, getDeferredAction(actionId, target, false));
+            delete(0, target, getDeferredAction(actionId, target, false));
         }
     }
 
     @Override
     public void delete(final int actionId, final Collection<Conversation> target,
-            final Collection<ConversationItemView> targetViews, final DestructiveAction action) {
+            final DestructiveAction action) {
         // Order of events is critical! The Conversation View Fragment must be
         // notified of the next conversation with showConversation(next) *before* the
         // conversation list
@@ -1300,7 +1299,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final Runnable operation = new Runnable() {
             @Override
             public void run() {
-                delete(actionId, target, targetViews, action);
+                delete(actionId, target, action);
             }
         };
 
@@ -1313,18 +1312,12 @@ public abstract class AbstractActivityController implements ActivityController {
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
-            convListFragment.requestDelete(actionId, target, targetViews, action);
+            convListFragment.requestDelete(actionId, target, action);
             return;
         }
         // No visible UI element handled it on our behalf. Perform the action
         // ourself.
         action.performAction();
-    }
-
-    @Override
-    public void delete(int actionId, final Collection<Conversation> target,
-            final DestructiveAction action) {
-        delete(actionId, target, null, action);
     }
 
     /**
@@ -2667,7 +2660,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // dragged/ dropped conversations.
         if (convListFragment != null) {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
-            convListFragment.requestDelete(R.id.change_folder, conversations, mSelectedSet.views(),
+            convListFragment.requestDelete(R.id.change_folder, conversations,
                     new DroppedInStarredAction(conversations, mFolder, folder));
             return;
         }
@@ -3182,15 +3175,11 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void makeDialogListener (final int action, boolean isBatch) {
         final Collection<Conversation> target;
-        final Collection<ConversationItemView> views;
         if (isBatch) {
             target = mSelectedSet.values();
-            views = mSelectedSet.views();
         } else {
             LogUtils.d(LOG_TAG, "Will act upon %s", mCurrentConversation);
             target = Conversation.listOf(mCurrentConversation);
-            // When the current conversation is deleted, we don't need to update the views.
-            views = null;
         }
         final DestructiveAction destructiveAction = getDeferredAction(action, target, isBatch);
         mDialogAction = action;
@@ -3198,7 +3187,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mDialogListener = new AlertDialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                delete(action, target, views, destructiveAction);
+                delete(action, target, destructiveAction);
                 // Afterwards, let's remove references to the listener and the action.
                 setListener(null, -1);
             }
