@@ -68,12 +68,6 @@ public class ConversationSelectionSet implements Parcelable {
     private final HashMap<Long, Conversation> mInternalMap =
             new HashMap<Long, Conversation>();
 
-    /**
-     * Map of conversation IDs to {@link ConversationItemView} objects. The views are <b>not</b>
-     * updated when a new list view object is created on orientation change.
-     */
-    private final HashMap<Long, ConversationItemView> mInternalViewMap =
-            new HashMap<Long, ConversationItemView>();
     private final BiMap<String, Long> mConversationUriToIdMap = HashBiMap.create();
 
     @VisibleForTesting
@@ -107,7 +101,6 @@ public class ConversationSelectionSet implements Parcelable {
     public void clear() {
         synchronized (mLock) {
             boolean initiallyNotEmpty = !mInternalMap.isEmpty();
-            mInternalViewMap.clear();
             mInternalMap.clear();
             mConversationUriToIdMap.clear();
 
@@ -187,9 +180,6 @@ public class ConversationSelectionSet implements Parcelable {
         synchronized (mLock) {
             final boolean initiallyEmpty = mInternalMap.isEmpty();
             mInternalMap.put(id, info);
-            // Fill out the view map with null. The sizes will match, but
-            // we won't have any views available yet to store.
-            mInternalViewMap.put(id, null);
             mConversationUriToIdMap.put(info.uri.toString(), id);
 
             final ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
@@ -203,8 +193,7 @@ public class ConversationSelectionSet implements Parcelable {
     /** @see java.util.HashMap#put */
     private void put(Long id, ConversationItemView info) {
         synchronized (mLock) {
-            boolean initiallyEmpty = mInternalMap.isEmpty();
-            mInternalViewMap.put(id, info);
+            final boolean initiallyEmpty = mInternalMap.isEmpty();
             mInternalMap.put(id, info.mHeader.conversation);
             mConversationUriToIdMap.put(info.mHeader.conversation.uri.toString(), id);
 
@@ -230,7 +219,6 @@ public class ConversationSelectionSet implements Parcelable {
             final BiMap<Long, String> inverseMap = mConversationUriToIdMap.inverse();
 
             for (Long id : ids) {
-                mInternalViewMap.remove(id);
                 mInternalMap.remove(id);
                 inverseMap.remove(id);
             }
@@ -310,14 +298,7 @@ public class ConversationSelectionSet implements Parcelable {
         final boolean initiallyEmpty = mInternalMap.isEmpty();
         mInternalMap.putAll(other.mInternalMap);
 
-        final Set<Long> keys = other.mInternalMap.keySet();
-        for (Long key : keys) {
-            // Fill out the view map with null. The sizes will match, but
-            // we won't have any views available yet to store.
-            mInternalViewMap.put(key, null);
-        }
-
-        ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+        final ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
         dispatchOnChange(observersCopy);
         if (initiallyEmpty) {
             dispatchOnBecomeUnempty(observersCopy);
@@ -328,10 +309,6 @@ public class ConversationSelectionSet implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         Conversation[] values = values().toArray(new Conversation[size()]);
         dest.writeParcelableArray(values, flags);
-    }
-
-    public Collection<ConversationItemView> views() {
-        return mInternalViewMap.values();
     }
 
     /**

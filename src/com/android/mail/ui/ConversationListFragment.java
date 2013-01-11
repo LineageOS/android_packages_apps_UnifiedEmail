@@ -56,7 +56,6 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -557,7 +556,7 @@ public final class ConversationListFragment extends ListFragment implements
      * @param action
      */
     public void requestDelete(int actionId, final Collection<Conversation> conversations,
-            final Collection<ConversationItemView> views, final DestructiveAction action) {
+            final DestructiveAction action) {
         for (Conversation conv : conversations) {
             conv.localDeleteOnUpdate = true;
         }
