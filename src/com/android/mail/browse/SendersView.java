@@ -298,7 +298,9 @@ public class SendersView {
             }
             if (shouldAddPhotos) {
                 String senderEmail = TextUtils.isEmpty(currentMessage.sender) ?
-                        account : currentMessage.senderEmail;
+                        account :
+                            TextUtils.isEmpty(currentMessage.senderEmail) ?
+                                    currentMessage.sender : currentMessage.senderEmail;
                 if (i == 0) {
                     // Always add the first sender!
                     firstDisplayableSenderEmail = senderEmail;
