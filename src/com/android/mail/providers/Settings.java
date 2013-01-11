@@ -328,21 +328,6 @@ public class Settings implements Parcelable {
     }
 
     /**
-     * <p>Return the auto advance setting for the settings provided.</p>
-     * <p>It is safe to pass this method a null object, in which case, it will return
-     * {@link AutoAdvance#LIST}.</p>
-     *
-     * @return the auto advance setting, a constant from {@link AutoAdvance}
-     */
-    public static int getAutoAdvanceSetting(Settings settings) {
-        if (settings == null) {
-            return AutoAdvance.LIST;
-        }
-
-        return settings.getAutoAdvanceSetting();
-    }
-
-    /**
      * Gets the autoadvance setting for this object, which may have changed since the settings were
      * initially loaded.
      */

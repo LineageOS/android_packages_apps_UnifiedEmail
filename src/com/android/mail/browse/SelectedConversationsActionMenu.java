@@ -127,7 +127,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 performDestructiveAction(R.id.archive);
                 break;
             case R.id.remove_folder:
-                destroy(R.id.remove_folder, mSelectionSet.values(), mSelectionSet.views(),
+                destroy(R.id.remove_folder, mSelectionSet.values(),
                         mUpdater.getDeferredRemoveFolder(mSelectionSet.values(), mFolder, true,
                                 true, true));
                 break;
@@ -261,15 +261,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         } else {
             // No need to show the dialog, just make a destructive action and destroy the
             // selected set immediately.
-            final Collection<ConversationItemView> views = mSelectionSet.views();
             // TODO(viki): Stop using the deferred action here. Use the registered action.
-            destroy(action, conversations, views, mUpdater.getDeferredBatchAction(action));
+            destroy(action, conversations, mUpdater.getDeferredBatchAction(action));
         }
     }
 
     private void destroy(int action, final Collection<Conversation> conversations,
-            final Collection<ConversationItemView> views, final DestructiveAction listener) {
-        mUpdater.delete(action, conversations, views, listener);
+            final DestructiveAction listener) {
+        mUpdater.delete(action, conversations, listener);
     }
 
     /**
