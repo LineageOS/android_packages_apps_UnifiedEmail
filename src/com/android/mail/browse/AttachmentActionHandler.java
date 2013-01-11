@@ -45,7 +45,6 @@ public class AttachmentActionHandler {
     private static final String PROGRESS_FRAGMENT_TAG = "attachment-progress";
 
     private Attachment mAttachment;
-    private boolean mDialogClosed;
 
     private final AttachmentCommandHandler mCommandHandler;
     private final AttachmentViewInterface mView;
@@ -59,7 +58,6 @@ public class AttachmentActionHandler {
         mCommandHandler = new AttachmentCommandHandler(context);
         mView = view;
         mContext = context;
-        mDialogClosed = false;
         mHandler = new Handler();
     }
 
@@ -142,14 +140,6 @@ public class AttachmentActionHandler {
         newFragment.show(ft, PROGRESS_FRAGMENT_TAG);
     }
 
-    public void onDismiss(DialogInterface dialog) {
-        mDialogClosed = true;
-    }
-
-    public void onCancel(DialogInterface dialog) {
-        cancelAttachment();
-    }
-
     /**
      * Update progress-related views. Will also trigger a view intent if a progress dialog was
      * previously brought up (by tapping 'View') and the download has now finished.
@@ -167,7 +157,7 @@ public class AttachmentActionHandler {
             final boolean indeterminate = !showProgress && dialog.isIndeterminate();
             dialog.setIndeterminate(indeterminate);
 
-            if (loaderResult && !mAttachment.isDownloading()) {
+            if (loaderResult && mAttachment.isDownloadFinishedOrFailed()) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -228,20 +218,5 @@ public class AttachmentActionHandler {
             // couldn't find activity for SEND_MULTIPLE intent
             LogUtils.e(LOG_TAG, "Couldn't find Activity for intent", e);
         }
-    }
-
-    /**
-     * Returns true if this is the first time this method has been called after
-     * the progress dialog was closed. Necessary to prevent a brief flicker where the
-     * cancel button would appear after closing the progress dialog. Subsequent
-     * calls to this method will return false until the progress dialog is
-     * opened again.
-     * @return true if this is the first time this method has been called
-     * since a progress dialog was visible. false otherwise.
-     */
-    public boolean dialogJustClosed() {
-        final boolean closed = mDialogClosed;
-        mDialogClosed = false;
-        return closed;
     }
 }
