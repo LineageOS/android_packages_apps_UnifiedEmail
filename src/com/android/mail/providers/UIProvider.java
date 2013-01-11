@@ -1946,6 +1946,8 @@ public class UIProvider {
         public static final int NEWER = 2;
         /** Go back to conversation list*/
         public static final int LIST = 3;
+        /** The default option is to go to the list */
+        public static final int DEFAULT = LIST;
 
         /**
          * Gets the int value for the given auto advance setting.

@@ -1159,9 +1159,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 return false;
             } else {
                 // If we don't have one set, but we're here, just take the default
-                final int autoAdvance = (autoAdvanceSetting == AutoAdvance.UNSET) ? Settings
-                        .getAutoAdvanceSetting(null)
-                        : autoAdvanceSetting;
+                final int autoAdvance = (autoAdvanceSetting == AutoAdvance.UNSET) ?
+                        AutoAdvance.DEFAULT : autoAdvanceSetting;
 
                 final Conversation next = mTracker.getNextConversation(autoAdvance, target);
                 LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
