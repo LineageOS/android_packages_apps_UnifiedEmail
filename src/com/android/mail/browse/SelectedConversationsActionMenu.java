@@ -17,9 +17,7 @@
 
 package com.android.mail.browse;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -46,7 +44,6 @@ import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FolderSelectionDialog;
-import com.android.mail.ui.SwipeableListView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -92,9 +89,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private AccountObserver mAccountObserver;
 
-    public SelectedConversationsActionMenu(ControllableActivity activity,
-            ConversationSelectionSet selectionSet,
-            Folder folder, SwipeableListView list) {
+    public SelectedConversationsActionMenu(
+            ControllableActivity activity, ConversationSelectionSet selectionSet, Folder folder) {
         mActivity = activity;
         mListController = activity.getListHandler();
         mSelectionSet = selectionSet;
