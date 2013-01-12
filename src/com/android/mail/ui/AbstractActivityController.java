@@ -2496,13 +2496,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList == null) {
-            return;
+        mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set, mFolder);
+        if (mViewMode.isListMode()) {
+            enableCabMode();
         }
-        mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set, mFolder,
-                (SwipeableListView) convList.getListView());
-        enableCabMode();
     }
 
     @Override
