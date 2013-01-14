@@ -1499,8 +1499,11 @@ public abstract class AbstractActivityController implements ActivityController {
         mActivity.invalidateOptionsMenu();
         disableNotificationsOnAccountChange(mAccount);
         restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
-        MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
-
+        // The Mail instance can be null during test runs.
+        final MailAppProvider instance = MailAppProvider.getInstance();
+        if (instance != null) {
+            instance.setLastViewedAccount(mAccount.uri.toString());
+        }
         if (account.settings == null) {
             LogUtils.w(LOG_TAG, new Error(), "AAC ignoring account with null settings.");
             return;
