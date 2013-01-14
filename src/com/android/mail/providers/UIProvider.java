@@ -1842,8 +1842,9 @@ public class UIProvider {
          */
         public static final String SIZE = OpenableColumns.SIZE;
         /**
-         * This column is a {@link Uri} that can be queried to monitor download state and progress
-         * for this individual attachment (resulting cursor has one single row for this attachment).
+         * This column is a {@link android.net.Uri} that can be queried to
+         * monitor download state and progress for this individual attachment
+         * (resulting cursor has one single row for this attachment).
          */
         public static final String URI = "uri";
         /**
@@ -1877,22 +1878,24 @@ public class UIProvider {
          */
         public static final String DOWNLOADED_SIZE = "downloadedSize";
         /**
-         * This column is a {@link Uri} that points to the downloaded local file
-         * when {@link #STATE} is {@link AttachmentState#SAVED}. This value is
-         * undefined in any other state.
+         * This column is a {@link android.net.Uri} that points to the
+         * downloaded local file when {@link #STATE} is
+         * {@link AttachmentState#SAVED}. This value is undefined in any other
+         * state.
          */
         public static final String CONTENT_URI = "contentUri";
         /**
-         * This column is a {@link Uri} that points to a local thumbnail file
-         * for the attachment. Providers that do not support downloading
-         * attachment thumbnails may leave this null.
+         * This column is a {@link android.net.Uri} that points to a local
+         * thumbnail file for the attachment. Providers that do not support
+         * downloading attachment thumbnails may leave this null.
          */
         public static final String THUMBNAIL_URI = "thumbnailUri";
         /**
-         * This column is an {@link Uri} used in an {@link Intent#ACTION_VIEW} Intent to launch a
-         * preview activity that allows the user to efficiently view an attachment without having to
-         * first download the entire file. Providers that do not support
-         * previewing attachments may leave this null.
+         * This column is an {@link android.net.Uri} used in an
+         * {@link android.content.Intent#ACTION_VIEW} Intent to launch a preview
+         * activity that allows the user to efficiently view an attachment
+         * without having to first download the entire file. Providers that do
+         * not support previewing attachments may leave this null.
          */
         public static final String PREVIEW_INTENT_URI = "previewIntentUri";
         /**
@@ -1901,6 +1904,34 @@ public class UIProvider {
         public static final String PROVIDER_DATA = "providerData";
 
         private AttachmentColumns() {}
+    }
+
+    public static final class AttachmentContentValueKeys {
+        public static final String RENDITION = "rendition";
+    }
+
+    /**
+     * Indicates a version of an attachment.
+     */
+    public static final class AttachmentRendition {
+
+        /** A smaller or simpler version of the attachment, such as a scaled-down image or an HTML
+         * version of a document. Not always available.
+         */
+        public static final int SIMPLE = 0;
+        /**
+         * The full version of an attachment if it can be handled on the device, otherwise the
+         * preview.
+         */
+        public static final int BEST = 1;
+
+        public static int parseRendition(String rendition) {
+            return rendition.equalsIgnoreCase("BEST") ? BEST : SIMPLE;
+        }
+
+        public static String toString(int rendition) {
+            return rendition == BEST ? "BEST" : "SIMPLE";
+        }
     }
 
     public static String getAttachmentTypeSetting() {
