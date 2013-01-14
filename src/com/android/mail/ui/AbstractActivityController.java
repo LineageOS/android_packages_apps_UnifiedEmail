@@ -1475,6 +1475,8 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         final ConversationListFragment convList = getConversationListFragment();
+        // hasFocus already ensures that the window is in focus, so we don't need to call
+        // AAC.isFragmentVisible(convList) here.
         if (hasFocus && convList != null && convList.isVisible()) {
             // The conversation list is visible.
             informCursorVisiblity(true);
@@ -2417,7 +2419,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             refreshConversationList();
-            if (convList.isVisible() && mActivity.hasWindowFocus()) {
+            if (isFragmentVisible(convList)) {
                 informCursorVisiblity(true);
             }
         }
@@ -2735,6 +2737,14 @@ public abstract class AbstractActivityController implements ActivityController {
         return mPagerController.isInitialConversationLoading();
     }
 
+    /**
+     * Check if the fragment given here is visible. Checking {@link Fragment#isVisible()} is
+     * insufficient because that doesn't check if the window is currently in focus or not.
+     */
+    private final boolean isFragmentVisible(Fragment in) {
+        return in != null && in.isVisible() && mActivity.hasWindowFocus();
+    }
+
     private class ConversationListLoaderCallbacks implements
         LoaderManager.LoaderCallbacks<ConversationCursor> {
 
@@ -2757,7 +2767,7 @@ public abstract class AbstractActivityController implements ActivityController {
             mConversationListObservable.notifyChanged();
 
             final ConversationListFragment convList = getConversationListFragment();
-            if (convList != null && convList.isVisible()) {
+            if (isFragmentVisible(convList)) {
                 // The conversation list is already listening to list changes and gets notified
                 // in the mConversationListObservable.notifyChanged() line above. We only need to
                 // check and inform the cursor of the change in visibility here.
