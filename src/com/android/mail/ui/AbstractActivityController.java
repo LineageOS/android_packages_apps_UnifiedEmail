@@ -2414,7 +2414,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             refreshConversationList();
-            if (convList.isVisible()) {
+            if (convList.isVisible() && mActivity.hasWindowFocus()) {
                 informCursorVisiblity(true);
             }
         }
