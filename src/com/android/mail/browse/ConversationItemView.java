@@ -175,6 +175,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private TextView mSendersTextView;
     private TextView mDateTextView;
     private DividedImageCanvas mContactImagesHolder;
+    private static int sFoldersLeftPadding;
     private static TextAppearanceSpan sDateTextAppearance;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
@@ -397,7 +398,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSendersTextViewHeight = res.getDimensionPixelSize
                     (R.dimen.senders_textview_height);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
-
+            sFoldersLeftPadding = res.getDimensionPixelSize(R.dimen.folders_left_padding);
             sDateTextAppearance = new TextAppearanceSpan(mContext, R.style.DateTextAppearance);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
         }
@@ -505,6 +506,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 mHeader.standardScaledDimen, mCheckboxesEnabled);
         calculateTextsAndBitmaps();
         calculateCoordinates();
+
+        // Subject.
+        createSubject(mHeader.unread, showActivatedText());
+
         if (!mHeader.isLayoutValid(mContext)) {
             setContentDescription();
         }
@@ -556,9 +561,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         final boolean isUnread = mHeader.unread;
         updateBackground(isUnread);
-
-        // Subject.
-        createSubject(isUnread, showActivatedText());
 
         mHeader.sendersDisplayText = new SpannableStringBuilder();
         mHeader.styledSendersString = new SpannableStringBuilder();
@@ -667,14 +669,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void createSubject(boolean isUnread, boolean activated) {
         String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.getSnippet();
-        int maxChars = -1;
-        if (mCoordinates.showFolders && mHeader.folderDisplayer != null
+        int maxWidth = -1;
+        if (!ConversationItemViewCoordinates.isWideMode(mMode) && mCoordinates.showFolders
+                && mHeader.folderDisplayer != null
                 && mHeader.folderDisplayer.hasVisibleFolders()) {
-            maxChars = ConversationItemViewCoordinates.getSubjectLength(mContext,
-                    mActivity.getViewMode().getMode(), true /*hasFolders*/);
+            sPaint.setTextSize(mHeader.unread ? sSubjectTextUnreadSpan.getTextSize()
+                    : sSubjectTextReadSpan.getTextSize());
+            sPaint.setTypeface(mHeader.unread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+            maxWidth = (mSendersWidth * 2)
+                    - ConversationItemViewCoordinates.getFoldersWidth(mContext, mMode)
+                    - sFoldersLeftPadding;
         }
         SpannableStringBuilder subjectText = Conversation.getSubjectAndSnippetForDisplay(mContext,
-                subject, snippet, maxChars);
+                subject, snippet, maxWidth, sPaint);
         int subjectTextLength = Math.min(subjectText.length(), subject.length());
         if (!TextUtils.isEmpty(subject)) {
             subjectText.setSpan(TextAppearanceSpan.wrap(isUnread ?
@@ -746,40 +753,22 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         mPaperclipX = mDateX - ATTACHMENT.getWidth();
 
-        int cellWidth = mContext.getResources().getDimensionPixelSize(R.dimen.folder_cell_width);
-
+        mFoldersXEnd = mCoordinates.foldersXEnd;
         if (ConversationItemViewCoordinates.isWideMode(mMode)) {
-            // Folders are displayed above the date.
-            mFoldersXEnd = mCoordinates.foldersXEnd;
             // In wide mode, the end of the senders should align with
             // the start of the subject and is based on a max width.
             mSendersWidth = mCoordinates.sendersWidth;
         } else {
             // In normal mode, the width is based on where the folders or date
             // (or attachment icon) start.
-            mFoldersXEnd = mCoordinates.foldersXEnd;
-            if (mCoordinates.showFolders) {
-                final int sendersEnd;
-                if (mHeader.paperclip != null) {
-                    sendersEnd = mPaperclipX;
-                } else {
-                    sendersEnd = mDateX - cellWidth / 2;
-                }
-                mSendersWidth = sendersEnd - mCoordinates.sendersX - 2 * cellWidth;
-                if (mHeader.folderDisplayer.hasVisibleFolders()) {
-                    mSendersWidth -= ConversationItemViewCoordinates.getFoldersWidth(mContext,
-                            mMode);
-                }
+            int dateAttachmentStart = 0;
+            // Have this end near the paperclip or date, not the folders.
+            if (mHeader.paperclip != null) {
+                dateAttachmentStart = mPaperclipX;
             } else {
-                int dateAttachmentStart = 0;
-                // Have this end near the paperclip or date, not the folders.
-                if (mHeader.paperclip != null) {
-                    dateAttachmentStart = mPaperclipX;
-                } else {
-                    dateAttachmentStart = mDateX;
-                }
-                mSendersWidth = dateAttachmentStart - mCoordinates.sendersX - cellWidth;
+                dateAttachmentStart = mDateX;
             }
+            mSendersWidth = dateAttachmentStart - mCoordinates.sendersX ;
         }
 
         // Second pass to layout each fragment.

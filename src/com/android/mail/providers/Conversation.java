@@ -23,7 +23,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.TextUtils.TruncateAt;
 
 import com.android.mail.R;
 import com.android.mail.providers.UIProvider.ConversationColumns;
@@ -533,7 +535,7 @@ public class Conversation implements Parcelable {
      *            if there is no limit
      */
     public static SpannableStringBuilder getSubjectAndSnippetForDisplay(Context context,
-            String filteredSubject, String snippet, int maxChars) {
+            String filteredSubject, String snippet, int avail, TextPaint paint) {
         if (sSubjectAndSnippet == null) {
             sSubjectAndSnippet = context.getString(R.string.subject_and_snippet);
         }
@@ -541,8 +543,10 @@ public class Conversation implements Parcelable {
                 String.format(sSubjectAndSnippet, filteredSubject, snippet)
                 : filteredSubject;
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        if (maxChars != -1 && maxChars < subjectText.length()) {
-            builder.append(subjectText, 0, maxChars);
+        if (avail != -1) {
+            CharSequence ellipsizedText = TextUtils.ellipsize(subjectText, paint, avail,
+                    TruncateAt.END);
+            builder.append(ellipsizedText, 0, ellipsizedText.length() - 1);
         } else {
             builder.append(subjectText);
         }

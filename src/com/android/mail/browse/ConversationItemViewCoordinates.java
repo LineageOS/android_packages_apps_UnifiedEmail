@@ -271,24 +271,6 @@ public class ConversationItemViewCoordinates {
         }
     }
 
-    /**
-     * Returns the length (maximum of characters) of subject in this mode, where
-     * mode is defined as CONV_LIST, CONVERSATION, etc
-     */
-    public static int getSubjectLength(Context context, int mode, boolean hasFolders) {
-        final Resources res = context.getResources();
-        int[] lengths;
-        if (hasFolders) {
-            lengths = res.getIntArray(R.array.subject_with_folders_lengths);
-        } else {
-            lengths = res.getIntArray(R.array.subject_lengths);
-        }
-        if (mode > lengths.length - 1) {
-            mode = ViewMode.CONVERSATION_LIST;
-        }
-        return lengths[mode];
-    }
-
     public static int getColorBlockWidth(Context context) {
         Resources res = context.getResources();
         if (COLOR_BLOCK_WIDTH <= 0) {
