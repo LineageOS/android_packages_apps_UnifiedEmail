@@ -781,8 +781,10 @@
 
     <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
     <string name="veiled_address"></string>
-    <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=30] -->
+    <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
     <string name="veiled_alternate_text"></string>
-    <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=30] -->
+    <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
     <string name="veiled_alternate_text_unknown_person"></string>
+    <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
+    <string name="veiled_summary_unknown_person"></string>
 </resources>
