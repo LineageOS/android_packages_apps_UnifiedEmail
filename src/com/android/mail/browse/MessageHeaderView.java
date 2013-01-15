@@ -186,6 +186,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private boolean mObservingContactInfo;
 
+    /**
+     * What I call myself? "me" in English, and internationalized correctly.
+     */
+    private final String mMyName;
+
     private final DataSetObserver mContactInfoObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
@@ -226,6 +231,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         super(context, attrs, defStyle);
 
         mInflater = LayoutInflater.from(context);
+        mMyName = context.getString(R.string.me);
     }
 
     /**
@@ -721,19 +727,23 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private static class RecipientListsBuilder {
         private final Context mContext;
         private final String mMe;
+        private final String mMyName;
         private final SpannableStringBuilder mBuilder = new SpannableStringBuilder();
         private final CharSequence mComma;
         private final Map<String, Address> mAddressCache;
+        private final VeiledAddressMatcher mMatcher;
 
         int mRecipientCount = 0;
         boolean mFirst = true;
 
-        public RecipientListsBuilder(Context context, String me,
-                Map<String, Address> addressCache) {
+        public RecipientListsBuilder(Context context, String me, String myName,
+                Map<String, Address> addressCache, VeiledAddressMatcher matcher) {
             mContext = context;
             mMe = me;
+            mMyName = myName;
             mComma = mContext.getText(R.string.enumeration_comma);
             mAddressCache = addressCache;
+            mMatcher = matcher;
         }
 
         public void append(String[] recipients, int headingRes) {
@@ -767,9 +777,20 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             final int len = Math.min(maxToCopy, rawAddrs.length);
             boolean first = true;
             for (int i = 0; i < len; i++) {
-                Address email = getAddress(mAddressCache, rawAddrs[i]);
-                String name = (mMe.equals(email.getAddress())) ? mContext.getString(R.string.me)
-                        : email.getSimplifiedName();
+                final Address email = getAddress(mAddressCache, rawAddrs[i]);
+                final String emailAddress = email.getAddress();
+                final String name;
+                if (mMatcher.isVeiledAddress(emailAddress)) {
+                    if (TextUtils.isEmpty(email.getName())) {
+                        // Let's write something more readable.
+                        name = mContext.getString(VeiledAddressMatcher.VEILED_SUMMARY_UNKNOWN);
+                    } else {
+                        name = email.getSimplifiedName();
+                    }
+                } else {
+                    // Not a veiled address, show first part of email, or "me".
+                    name = mMe.equals(emailAddress) ? mMyName : email.getSimplifiedName();
+                }
 
                 // duplicate TextUtils.join() logic to minimize temporary
                 // allocations, and because we need to support spans
@@ -790,10 +811,12 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     @VisibleForTesting
-    static CharSequence getRecipientSummaryText(Context context, String me, String[] to,
-            String[] cc, String[] bcc, Map<String, Address> addressCache) {
+    static CharSequence getRecipientSummaryText(Context context, String me, String myName,
+            String[] to, String[] cc, String[] bcc, Map<String, Address> addressCache,
+            VeiledAddressMatcher matcher) {
 
-        RecipientListsBuilder builder = new RecipientListsBuilder(context, me, addressCache);
+        final RecipientListsBuilder builder =
+                new RecipientListsBuilder(context, me, myName, addressCache, matcher);
 
         builder.append(to, R.string.to_heading);
         builder.append(cc, R.string.cc_heading);
@@ -1168,7 +1191,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (!mCollapsedDetailsValid) {
             if (mMessageHeaderItem.recipientSummaryText == null) {
                 mMessageHeaderItem.recipientSummaryText = getRecipientSummaryText(getContext(),
-                        getAccount().name, mTo, mCc, mBcc, mAddressCache);
+                        getAccount().name, mMyName, mTo, mCc, mBcc, mAddressCache, mVeiledMatcher);
             }
             ((TextView) findViewById(R.id.recipients_summary))
                     .setText(mMessageHeaderItem.recipientSummaryText);

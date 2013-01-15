@@ -59,6 +59,11 @@ public final class VeiledAddressMatcher{
     public static final int VEILED_ALTERNATE_TEXT = R.string.veiled_alternate_text;
 
     /**
+     * A summary string (short-string) for an unknown veiled recipient.
+     */
+    public static final int VEILED_SUMMARY_UNKNOWN = R.string.veiled_summary_unknown_person;
+
+    /**
      * Private object that does the actual matching.
      */
     private Pattern mMatcher = null;
