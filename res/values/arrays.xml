@@ -20,18 +20,6 @@
         <item>64</item>
         <item>72</item>
     </integer-array>
-    <integer-array name="subject_with_folders_lengths">
-        <item>-1</item>
-        <item>-1</item>
-        <item>54</item>
-        <item>54</item>
-    </integer-array>
-    <integer-array name="subject_lengths">
-        <item>-1</item>
-        <item>-1</item>
-        <item>-1</item>
-        <item>-1</item>
-    </integer-array>
     <integer-array name="senders_with_attachment_lengths">
         <item>25</item>
         <item>25</item>
