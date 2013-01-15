@@ -159,7 +159,7 @@ public class WidgetConversationViewBuilder {
         // Add style to subject
         int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
         SpannableStringBuilder subjectAndSnippet = Conversation.getSubjectAndSnippetForDisplay(
-                mContext, filteredSubject, snippet, -1);
+                mContext, filteredSubject, snippet, -1, null);
         if (isUnread) {
             subjectAndSnippet.setSpan(new StyleSpan(Typeface.BOLD), 0, filteredSubject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
