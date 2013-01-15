@@ -58,6 +58,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -776,8 +777,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.setBcc(formatSenders(mBcc.getText().toString()));
         message.setReplyTo(null);
         message.dateReceivedMs = 0;
-        String htmlBody = Html.toHtml(new SpannableString(mBodyView.getText().toString()));
-        StringBuilder fullBody = new StringBuilder(htmlBody);
+        final String htmlBody = Html.toHtml(removeComposingSpans(mBodyView.getText()));
+        final StringBuilder fullBody = new StringBuilder(htmlBody);
         message.bodyHtml = fullBody.toString();
         message.bodyText = mBodyView.getText().toString();
         message.embedsExternalResources = false;
@@ -2423,9 +2424,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             Message message, final Message refMessage, Spanned body, final CharSequence quotedText,
             SendOrSaveCallback callback, Handler handler, boolean save, int composeMode,
             ReplyFromAccount draftAccount) {
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
 
-        String refMessageId = refMessage != null ? refMessage.uri.toString() : "";
+        final String refMessageId = refMessage != null ? refMessage.uri.toString() : "";
 
         MessageModification.putToAddresses(values, message.getToAddresses());
         MessageModification.putCcAddresses(values, message.getCcAddresses());
@@ -2434,7 +2435,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         MessageModification.putCustomFromAddress(values, message.getFrom());
 
         MessageModification.putSubject(values, message.subject);
-        String htmlBody = Html.toHtml(new SpannableString(body.toString()));
+        // Make sure to remove only the composing spans from the Spannable before saving.
+        final String htmlBody = Html.toHtml(removeComposingSpans(body));
 
         boolean includeQuotedText = !TextUtils.isEmpty(quotedText);
         StringBuilder fullBody = new StringBuilder(htmlBody);
@@ -2485,6 +2487,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         handler.post(sendOrSaveTask);
 
         return sendOrSaveMessage.requestId();
+    }
+
+    /**
+     * Removes any composing spans from the specified string.  This will create a new
+     * SpannableString instance, as to not modify the behavior of the EditText view.
+     */
+    private static SpannableString removeComposingSpans(Spanned body) {
+        final SpannableString messageBody = new SpannableString(body);
+        BaseInputConnection.removeComposingSpans(messageBody);
+        return messageBody;
     }
 
     private static int getDraftType(int mode) {
