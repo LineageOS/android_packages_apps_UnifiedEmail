@@ -95,12 +95,9 @@
     <string name="quoted_text_label" msgid="541007446961960617">"Idézett szöveg"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Válasz a soron belül"</string>
     <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
-    <!-- no translation found for bytes (874874279846496468) -->
-    <skip />
-    <!-- no translation found for kilobytes (9191949758901349712) -->
-    <skip />
-    <!-- no translation found for megabytes (130431176022837380) -->
-    <skip />
+    <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
+    <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
+    <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
     <string name="attachment_image" msgid="3832985223906528449">"Kép"</string>
     <string name="attachment_video" msgid="7526134752988603154">"Videó"</string>
     <string name="attachment_audio" msgid="135527133955622936">"Hangfájl"</string>
@@ -120,8 +117,7 @@
     <string name="no_application_found" msgid="1945184804521392093">"Egyetlen alkalmazás sem tudja megjeleníteni ezt a mellékletet."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Melléklet letöltése..."</string>
     <string name="please_wait" msgid="8797634225088247121">"Kérjük, várjon..."</string>
-    <!-- no translation found for saved (6660844285730790469) -->
-    <skip />
+    <string name="saved" msgid="6660844285730790469">"Mentve, <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="7860650496473302012">"Letöltés sikertelen"</string>
     <string name="attachments_header" msgid="6459475590011460229">"Mellékletek"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Összes mentése"</string>
