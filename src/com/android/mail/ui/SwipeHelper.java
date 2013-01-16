@@ -50,8 +50,8 @@ public class SwipeHelper {
     public static final int X = 0;
     public static final int Y = 1;
 
-    private static DecelerateInterpolator sDecelerateInterpolator =
-                                                            new DecelerateInterpolator(1.0f);
+    private static DecelerateInterpolator sDecelerateInterpolator = 
+                                                        new DecelerateInterpolator(1.0f);
 
     private static int SWIPE_ESCAPE_VELOCITY = -1;
     private static int DEFAULT_ESCAPE_ANIMATION_DURATION;
@@ -65,6 +65,7 @@ public class SwipeHelper {
 
     public static float ALPHA_FADE_START = 0f; // fraction of thumbnail width
                                                  // where fade starts
+    public static float ALPHA_TEXT_FADE_START = 0.4f;
     static final float ALPHA_FADE_END = 0.7f; // fraction of thumbnail width
                                               // beyond which alpha->0
     private static final float FACTOR = 1.2f;
@@ -83,6 +84,7 @@ public class SwipeHelper {
     private float mDensityScale;
     private float mLastY;
     private float mInitialTouchPosY;
+    private LeaveBehindItem mPrevView;
 
     public SwipeHelper(Context context, int swipeDirection, Callback callback, float densityScale,
             float pagingTouchSlop) {
@@ -166,6 +168,19 @@ public class SwipeHelper {
         return Math.max(mMinAlpha, result);
     }
 
+    private float getTextAlphaForOffset(View view) {
+        float viewSize = getSize(view);
+        final float fadeSize = ALPHA_TEXT_FADE_START * viewSize;
+        float result = 1.0f;
+        float pos = view.getTranslationX();
+        if (pos >= 0) {
+            result = 1.0f - pos / fadeSize;
+        } else if (pos < 0) {
+            result = 1.0f + pos / fadeSize;
+        }
+        return Math.max(0, result);
+    }
+
     // invalidate the view's own bounds all the way up the view hierarchy
     public static void invalidateGlobalRegion(View view) {
         invalidateGlobalRegion(
@@ -235,6 +250,7 @@ public class SwipeHelper {
                     float delta = pos - mInitialTouchPosX;
                     if (Math.abs(delta) > mPagingTouchSlop) {
                         mCallback.onBeginDrag(mCurrView.getSwipeableView());
+                        mPrevView = mCallback.getLastSwipedItem();
                         mDragging = true;
                         mInitialTouchPosX = ev.getX() - mCurrAnimView.getTranslationX();
                         mInitialTouchPosY = ev.getY();
@@ -425,6 +441,11 @@ public class SwipeHelper {
                     setTranslation(mCurrAnimView, deltaX);
                     if (FADE_OUT_DURING_SWIPE && mCanCurrViewBeDimissed) {
                         mCurrAnimView.setAlpha(getAlphaForOffset(mCurrAnimView));
+                        if (mPrevView != null) {
+                            // Base how much the text of the prev item is faded
+                            // on how far the current item has moved.
+                            mPrevView.fadeOutText(getTextAlphaForOffset(mCurrAnimView));
+                        }
                     }
                     invalidateGlobalRegion(mCurrView.getSwipeableView());
                 }
@@ -488,5 +509,7 @@ public class SwipeHelper {
         void onDragCancelled(SwipeableItemView v);
 
         ConversationSelectionSet getSelectionSet();
+
+        LeaveBehindItem getLastSwipedItem();
     }
 }

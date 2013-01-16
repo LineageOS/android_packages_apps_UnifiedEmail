@@ -275,6 +275,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter != null) {
             adapter.startDismissCounter();
+            adapter.abortFadeOutLastLeaveBehindItemText();
         }
     }
 
@@ -373,5 +374,14 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         if (adapter != null) {
             adapter.cancelDismissCounter();
         }
+    }
+
+    @Override
+    public LeaveBehindItem getLastSwipedItem() {
+        AnimatedAdapter adapter = getAnimatedAdapter();
+        if (adapter != null) {
+            return adapter.getLastLeaveBehindItem();
+        }
+        return null;
     }
 }
