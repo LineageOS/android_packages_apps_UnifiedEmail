@@ -682,8 +682,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     : sSubjectTextReadSpan.getTextSize());
             sPaint.setTypeface(mHeader.unread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
             maxWidth = (mSendersWidth * 2)
-                    - ConversationItemViewCoordinates.getFoldersWidth(mContext, mMode)
-                    - sFoldersLeftPadding;
+                        - ConversationItemViewCoordinates.getFoldersWidth(mContext, mMode)
+                        - sFoldersLeftPadding;
         }
         SpannableStringBuilder subjectText = Conversation.getSubjectAndSnippetForDisplay(mContext,
                 subject, snippet, maxWidth, sPaint);
@@ -758,8 +758,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         mPaperclipX = mDateX - ATTACHMENT.getWidth();
 
-        int cellWidth = mContext.getResources().getDimensionPixelSize(R.dimen.folder_cell_width);
-
         if (ConversationItemViewCoordinates.isWideMode(mMode)) {
             // Folders are displayed above the date.
             mFoldersXEnd = mCoordinates.foldersXEnd;
@@ -770,19 +768,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             // In normal mode, the width is based on where the folders or date
             // (or attachment icon) start.
             mFoldersXEnd = mCoordinates.foldersXEnd;
-            if (mCoordinates.showFolders) {
-                final int sendersEnd;
-                if (mHeader.paperclip != null) {
-                    sendersEnd = mPaperclipX;
-                } else {
-                    sendersEnd = mDateX - cellWidth / 2;
-                }
-                mSendersWidth = sendersEnd - mCoordinates.sendersX - 2 * cellWidth;
-                if (mHeader.folderDisplayer.hasVisibleFolders()) {
-                    mSendersWidth -= ConversationItemViewCoordinates.getFoldersWidth(mContext,
-                            mMode);
-                }
-            } else {
                 int dateAttachmentStart = 0;
                 // Have this end near the paperclip or date, not the folders.
                 if (mHeader.paperclip != null) {
@@ -790,8 +775,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 } else {
                     dateAttachmentStart = mDateX;
                 }
-                mSendersWidth = dateAttachmentStart - mCoordinates.sendersX - cellWidth;
-            }
+                mSendersWidth = dateAttachmentStart - mCoordinates.sendersX;
         }
 
         // Second pass to layout each fragment.
