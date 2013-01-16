@@ -21,6 +21,9 @@
     to get the correct measurements, every source field should be populated with data here. E.g:
     - Text View should set text to a random long string (android:text="@string/long_string")
     - Image View should set source to a specific asset -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+<FrameLayout
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     xmlns:android="http://schemas.android.com/apk/res/android" >
     <include layout="@layout/conversation_item_view_normal"/>
-</merge>
+</FrameLayout>
