@@ -593,7 +593,7 @@ public class UIProvider {
              * The regex that defines a veiled address, something that must be hidden from user
              * view because it is temporary, long and clumsy.
              */
-            public static final String VEILED_ADDRESS_PATTERN = "veiled-address-pattern";
+            public static final String VEILED_ADDRESS_PATTERN = "veiled_address_pattern";
             /**
              * Integer column containing the Conversation view mode.  This value will match one of
              * constants from  {@link ConversationViewMode}
