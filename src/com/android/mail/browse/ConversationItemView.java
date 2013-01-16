@@ -437,6 +437,15 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void bind(ConversationItemViewModel header, ControllableActivity activity,
             ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
+        final int count = mContactImagesHolder.getDivisionCount();
+        // If this was previously bound to a conversation, remove any contact
+        // photo manager requests.
+        if (mHeader != null) {
+            for (int pos = 0; pos < count; pos++) {
+                sContactPhotoManager.removePhoto(DividedImageCanvas.generateHash(
+                        mContactImagesHolder, pos, mHeader.displayableSenderEmails.get(pos)));
+            }
+        }
         mHeader = header;
         mActivity = activity;
         mSelectedConversationSet = set;
@@ -446,11 +455,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
-        final int count = mContactImagesHolder.getDivisionCount();
-        for (int pos = 0; pos < count; pos++) {
-            sContactPhotoManager.removePhoto(DividedImageCanvas.generateHash(mContactImagesHolder,
-                    pos));
-        }
         setContentDescription();
         requestLayout();
     }
@@ -645,11 +649,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     mCoordinates.contactImagesHeight);
             mContactImagesHolder.setDivisionIds(mHeader.displayableSenderEmails);
             int size = mHeader.displayableSenderEmails.size();
+            String emailAddress;
             for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < size; i++) {
-                sContactPhotoManager.loadThumbnail(
-                        DividedImageCanvas.generateHash(mContactImagesHolder, i),
+                emailAddress = mHeader.displayableSenderEmails.get(i);
+                sContactPhotoManager.loadThumbnail(DividedImageCanvas.generateHash(
+                        mContactImagesHolder, i, emailAddress),
                         mContactImagesHolder, mHeader.displayableSenderNames.get(i),
-                        mHeader.displayableSenderEmails.get(i), DEFAULT_AVATAR_PROVIDER);
+                        emailAddress, DEFAULT_AVATAR_PROVIDER);
             }
         }
     }

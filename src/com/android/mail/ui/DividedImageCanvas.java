@@ -350,7 +350,7 @@ public class DividedImageCanvas {
      * Generate a unique hashcode to use for the request for an image to put in
      * the specified position of the DividedImageCanvas.
      */
-    public static long generateHash(DividedImageCanvas contactImagesHolder, int i) {
-        return Objects.hashCode(contactImagesHolder, i);
+    public static long generateHash(DividedImageCanvas contactImagesHolder, int i, String address) {
+        return Objects.hashCode(contactImagesHolder, i, address);
     }
 }
