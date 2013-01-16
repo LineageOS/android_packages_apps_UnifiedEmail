@@ -479,9 +479,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
         StringBuilder builder = new StringBuilder();
         builder.append(id);
         builder.append(SPLITTER);
-        builder.append(uri);
+        builder.append(uri != null ? uri : "");
         builder.append(SPLITTER);
-        builder.append(name);
+        builder.append(name != null ? name : "");
         builder.append(SPLITTER);
         builder.append(hasChildren ? 1 : 0);
         builder.append(SPLITTER);
@@ -489,15 +489,15 @@ public class Folder implements Parcelable, Comparable<Folder> {
         builder.append(SPLITTER);
         builder.append(syncWindow);
         builder.append(SPLITTER);
-        builder.append(convListUri);
+        builder.append(convListUri != null ? convListUri : "");
         builder.append(SPLITTER);
-        builder.append(childFoldersListUri);
+        builder.append(childFoldersListUri != null ? childFoldersListUri : "");
         builder.append(SPLITTER);
         builder.append(unreadCount);
         builder.append(SPLITTER);
         builder.append(totalCount);
         builder.append(SPLITTER);
-        builder.append(refreshUri);
+        builder.append(refreshUri != null ? refreshUri : "");
         builder.append(SPLITTER);
         builder.append(syncStatus);
         builder.append(SPLITTER);
@@ -511,9 +511,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
         builder.append(SPLITTER);
         builder.append(fgColor != null ? fgColor : "");
         builder.append(SPLITTER);
-        builder.append(loadMore);
+        builder.append(loadMore != null ? loadMore : "");
         builder.append(SPLITTER);
-        builder.append(hierarchicalDesc);
+        builder.append(hierarchicalDesc != null ? hierarchicalDesc : "");
         builder.append(SPLITTER);
         if (parent != null) {
             builder.append(Folder.toString(parent));
