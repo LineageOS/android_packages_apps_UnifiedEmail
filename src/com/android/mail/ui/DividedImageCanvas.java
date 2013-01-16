@@ -343,7 +343,7 @@ public class DividedImageCanvas {
      * Get the number of divisions currently associated with this DivisionImageCanvas.
      */
     public int getDivisionCount() {
-        return mDivisionIds != null ? 0 : mDivisionIds.size();
+        return mDivisionIds != null ? mDivisionIds.size() : 0;
     }
 
     /**
