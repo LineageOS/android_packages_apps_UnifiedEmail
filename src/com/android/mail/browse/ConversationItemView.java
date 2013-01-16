@@ -446,7 +446,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
-        sContactPhotoManager.removePhoto(mContactImagesHolder);
+        final int count = mContactImagesHolder.getDivisionCount();
+        for (int pos = 0; pos < count; pos++) {
+            sContactPhotoManager.removePhoto(DividedImageCanvas.generateHash(mContactImagesHolder,
+                    pos));
+        }
         setContentDescription();
         requestLayout();
     }
@@ -642,8 +646,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mContactImagesHolder.setDivisionIds(mHeader.displayableSenderEmails);
             int size = mHeader.displayableSenderEmails.size();
             for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < size; i++) {
-                sContactPhotoManager.loadThumbnail(mContactImagesHolder,
-                        mHeader.displayableSenderNames.get(i),
+                sContactPhotoManager.loadThumbnail(
+                        DividedImageCanvas.generateHash(mContactImagesHolder, i),
+                        mContactImagesHolder, mHeader.displayableSenderNames.get(i),
                         mHeader.displayableSenderEmails.get(i), DEFAULT_AVATAR_PROVIDER);
             }
         }
@@ -753,22 +758,40 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         mPaperclipX = mDateX - ATTACHMENT.getWidth();
 
-        mFoldersXEnd = mCoordinates.foldersXEnd;
+        int cellWidth = mContext.getResources().getDimensionPixelSize(R.dimen.folder_cell_width);
+
         if (ConversationItemViewCoordinates.isWideMode(mMode)) {
+            // Folders are displayed above the date.
+            mFoldersXEnd = mCoordinates.foldersXEnd;
             // In wide mode, the end of the senders should align with
             // the start of the subject and is based on a max width.
             mSendersWidth = mCoordinates.sendersWidth;
         } else {
             // In normal mode, the width is based on where the folders or date
             // (or attachment icon) start.
-            int dateAttachmentStart = 0;
-            // Have this end near the paperclip or date, not the folders.
-            if (mHeader.paperclip != null) {
-                dateAttachmentStart = mPaperclipX;
+            mFoldersXEnd = mCoordinates.foldersXEnd;
+            if (mCoordinates.showFolders) {
+                final int sendersEnd;
+                if (mHeader.paperclip != null) {
+                    sendersEnd = mPaperclipX;
+                } else {
+                    sendersEnd = mDateX - cellWidth / 2;
+                }
+                mSendersWidth = sendersEnd - mCoordinates.sendersX - 2 * cellWidth;
+                if (mHeader.folderDisplayer.hasVisibleFolders()) {
+                    mSendersWidth -= ConversationItemViewCoordinates.getFoldersWidth(mContext,
+                            mMode);
+                }
             } else {
-                dateAttachmentStart = mDateX;
+                int dateAttachmentStart = 0;
+                // Have this end near the paperclip or date, not the folders.
+                if (mHeader.paperclip != null) {
+                    dateAttachmentStart = mPaperclipX;
+                } else {
+                    dateAttachmentStart = mDateX;
+                }
+                mSendersWidth = dateAttachmentStart - mCoordinates.sendersX - cellWidth;
             }
-            mSendersWidth = dateAttachmentStart - mCoordinates.sendersX ;
         }
 
         // Second pass to layout each fragment.

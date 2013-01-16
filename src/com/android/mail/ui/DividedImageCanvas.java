@@ -24,6 +24,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.android.mail.photomanager.BitmapUtil;
+import com.google.common.base.Objects;
 
 import java.util.ArrayList;
 
@@ -336,5 +337,20 @@ public class DividedImageCanvas {
             height = h;
             scale = s;
         }
+    }
+
+    /**
+     * Get the number of divisions currently associated with this DivisionImageCanvas.
+     */
+    public int getDivisionCount() {
+        return mDivisionIds != null ? 0 : mDivisionIds.size();
+    }
+
+    /**
+     * Generate a unique hashcode to use for the request for an image to put in
+     * the specified position of the DividedImageCanvas.
+     */
+    public static long generateHash(DividedImageCanvas contactImagesHolder, int i) {
+        return Objects.hashCode(contactImagesHolder, i);
     }
 }

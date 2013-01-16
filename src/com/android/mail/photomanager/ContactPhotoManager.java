@@ -100,21 +100,23 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
     }
 
     /**
-     * Calls {@link #loadThumbnail(DividedImageCanvas, long, boolean, DefaultImageProvider)} with
-     * {@link #DEFAULT_AVATAR}.
+     * Calls
+     * {@link #loadThumbnail(long, DividedImageCanvas, long, boolean, DefaultImageProvider)}
+     * with {@link #DEFAULT_AVATAR}.
      */
-    public final void loadThumbnail(DividedImageCanvas view, String name, String emailAddress) {
-        loadThumbnail(view, name, emailAddress, DEFAULT_AVATAR);
+    public final void loadThumbnail(Long hashCode, DividedImageCanvas view, String name,
+            String emailAddress) {
+        loadThumbnail(hashCode, view, name, emailAddress, DEFAULT_AVATAR);
     }
 
-    public abstract void loadThumbnail(DividedImageCanvas view, String name, String emailAddress,
-            DefaultImageProvider defaultProvider);
+    public abstract void loadThumbnail(Long hashCode, DividedImageCanvas view, String name,
+            String emailAddress, DefaultImageProvider defaultProvider);
 
     /**
      * Remove photo from the supplied image view. This also cancels current pending load request
      * inside this photo manager.
      */
-    public abstract void removePhoto(DividedImageCanvas view);
+    public abstract void removePhoto(Long hash);
 
     /**
      * Temporarily stops loading photos from the database.
@@ -222,8 +224,8 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
      * A map from DividedImageView to the corresponding photo ID or uri, encapsulated in a request.
      * The request may swapped out before the photo loading request is started.
      */
-    private final ConcurrentHashMap<DividedImageCanvas, Request> mPendingRequests =
-            new ConcurrentHashMap<DividedImageCanvas, Request>();
+    private final ConcurrentHashMap<Long, Request> mPendingRequests =
+            new ConcurrentHashMap<Long, Request>();
 
     /**
      * Handler for messages sent to the UI thread.
@@ -359,26 +361,26 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     }
 
     @Override
-    public void loadThumbnail(DividedImageCanvas view, String name, String emailAddress,
-            DefaultImageProvider defaultProvider) {
+    public void loadThumbnail(Long hashCode, DividedImageCanvas view, String name,
+            String emailAddress, DefaultImageProvider defaultProvider) {
         if (TextUtils.isEmpty(emailAddress)) {
             // No photo is needed
             defaultProvider.applyDefaultImage(name, emailAddress, view, -1);
-            mPendingRequests.remove(view);
+            mPendingRequests.remove(hashCode);
         } else {
             if (DEBUG)
                 LogUtils.d(TAG, "loadPhoto request: " + name);
-            loadPhotoByIdOrUri(view,
-                    Request.createFromEmailAddress(name, emailAddress, defaultProvider));
+            loadPhotoByIdOrUri(hashCode, view,
+                    Request.createFromEmailAddress(name, emailAddress, defaultProvider, view));
         }
     }
 
-    private void loadPhotoByIdOrUri(DividedImageCanvas view, Request request) {
+    private void loadPhotoByIdOrUri(Long hashCode, DividedImageCanvas view, Request request) {
         boolean loaded = loadCachedPhoto(view, request, false);
         if (loaded) {
-            mPendingRequests.remove(view);
+            mPendingRequests.remove(hashCode);
         } else {
-            mPendingRequests.put(view, request);
+            mPendingRequests.put(hashCode, request);
             if (!mPaused) {
                 // Send a request to start loading photos
                 requestLoading();
@@ -387,9 +389,12 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     }
 
     @Override
-    public void removePhoto(DividedImageCanvas view) {
-        view.reset();
-        mPendingRequests.remove(view);
+    public void removePhoto(Long hash) {
+        Request r = mPendingRequests.get(hash);
+        if (r != null) {
+            r.getView().reset();
+            mPendingRequests.remove(hash);
+        }
     }
 
     @Override
@@ -507,11 +512,11 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
      * photos still haven't been loaded, sends another request for image loading.
      */
     private void processLoadedImages() {
-        Iterator<DividedImageCanvas> iterator = mPendingRequests.keySet().iterator();
+        Iterator<Long> iterator = mPendingRequests.keySet().iterator();
         while (iterator.hasNext()) {
-            DividedImageCanvas view = iterator.next();
-            Request key = mPendingRequests.get(view);
-            boolean loaded = loadCachedPhoto(view, key, true);
+            Long hash = iterator.next();
+            Request key = mPendingRequests.get(hash);
+            boolean loaded = loadCachedPhoto(key.getView(), key, true);
             if (loaded) {
                 iterator.remove();
             }
@@ -915,7 +920,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
                             // In case there are multiple contacts for this
                             // contact, try to always pick the one that actually
                             // has a photo.
-                            if (id != 0) {
+                            if (!photoIdsCursor.isNull(DATA_PHOTO_ID_COLUMN)) {
                                 contactAddress = photoIdsCursor.getString(DATA_EMAIL_COLUMN);
                                 photoIds.add(id);
                                 photoIdsAsString.add(id + "");
@@ -997,13 +1002,19 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         private final DefaultImageProvider mDefaultProvider;
         private final String mDisplayName;
         private final String mEmailAddress;
+        private final DividedImageCanvas mView;
 
         private Request(String name, String emailAddress, int requestedExtent,
-                DefaultImageProvider defaultProvider) {
+                DefaultImageProvider defaultProvider, DividedImageCanvas view) {
             mRequestedExtent = requestedExtent;
             mDefaultProvider = defaultProvider;
             mDisplayName = name;
             mEmailAddress = emailAddress;
+            mView = view;
+        }
+
+        public DividedImageCanvas getView() {
+            return mView;
         }
 
         public String getDisplayName() {
@@ -1015,8 +1026,8 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         }
 
         public static Request createFromEmailAddress(String displayName, String emailAddress,
-                DefaultImageProvider defaultProvider) {
-            return new Request(displayName, emailAddress, -1, defaultProvider);
+                DefaultImageProvider defaultProvider, DividedImageCanvas view) {
+            return new Request(displayName, emailAddress, -1, defaultProvider, view);
         }
 
         @Override
@@ -1026,6 +1037,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             result = prime * result + mRequestedExtent;
             result = prime * result + ((mDisplayName == null) ? 0 : mDisplayName.hashCode());
             result = prime * result + ((mEmailAddress == null) ? 0 : mEmailAddress.hashCode());
+            result = prime * result + ((mView == null) ? 0 : mView.hashCode());
             return result;
         }
 
