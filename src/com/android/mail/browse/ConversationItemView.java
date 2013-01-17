@@ -437,13 +437,15 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void bind(ConversationItemViewModel header, ControllableActivity activity,
             ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
-        final int count = mContactImagesHolder.getDivisionCount();
         // If this was previously bound to a conversation, remove any contact
         // photo manager requests.
         if (mHeader != null) {
-            for (int pos = 0; pos < count; pos++) {
-                sContactPhotoManager.removePhoto(DividedImageCanvas.generateHash(
-                        mContactImagesHolder, pos, mHeader.displayableSenderEmails.get(pos)));
+            final ArrayList<String> divisionIds = mContactImagesHolder.getDivisionIds();
+            if (divisionIds != null) {
+                for (int pos = 0; pos < divisionIds.size(); pos++) {
+                    sContactPhotoManager.removePhoto(DividedImageCanvas.generateHash(
+                            mContactImagesHolder, pos, divisionIds.get(pos)));
+                }
             }
         }
         mHeader = header;

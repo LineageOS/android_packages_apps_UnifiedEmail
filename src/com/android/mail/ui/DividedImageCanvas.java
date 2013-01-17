@@ -339,9 +339,6 @@ public class DividedImageCanvas {
         }
     }
 
-    /**
-     * Get the number of divisions currently associated with this DivisionImageCanvas.
-     */
     public int getDivisionCount() {
         return mDivisionIds != null ? mDivisionIds.size() : 0;
     }
@@ -352,5 +349,12 @@ public class DividedImageCanvas {
      */
     public static long generateHash(DividedImageCanvas contactImagesHolder, int i, String address) {
         return Objects.hashCode(contactImagesHolder, i, address);
+    }
+
+    /**
+     * Get the division ids currently associated with this DivisionImageCanvas.
+     */
+    public ArrayList<String> getDivisionIds() {
+        return mDivisionIds;
     }
 }
