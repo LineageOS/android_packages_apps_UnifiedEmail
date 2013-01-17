@@ -360,4 +360,5 @@
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
+    <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
 </resources>
