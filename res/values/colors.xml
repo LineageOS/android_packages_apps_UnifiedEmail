@@ -77,4 +77,7 @@
     <color name="animating_item_background_color">#7F0099cc</color>
 
     <color name="notification_template_icon_low_bg">#0cffffff</color>
+
+    <color name="letter_tile_color">#d8d8d8</color>
+    <color name="letter_tile_font_color">#ffffff</color>
 </resources>
