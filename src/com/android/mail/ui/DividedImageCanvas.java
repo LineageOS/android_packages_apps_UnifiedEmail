@@ -55,9 +55,11 @@ public class DividedImageCanvas {
     private static final Rect sSrc = new Rect();
     private static final Rect sDest = new Rect();
 
-    private static final float ONE = 1.0f;
+    public static final float ONE = 1.0f;
 
-    private static final float HALF = 0.5f;
+    public static final float HALF = 0.5f;
+
+    public static final float QUARTER = 0.25f;
 
     public DividedImageCanvas(Context context, InvalidateCallback callback) {
         mContext = context;
@@ -160,25 +162,25 @@ public class DividedImageCanvas {
                 case 2:
                     w = mWidth / 2;
                     h = mHeight;
-                    scale = ONE;
+                    scale = HALF;
                     break;
                 case 3:
                     switch (pos) {
                         case 0:
                             w = mWidth / 2;
                             h = mHeight;
-                            scale = ONE;
+                            scale = HALF;
                             break;
                         default:
                             w = mWidth / 2;
                             h = mHeight / 2;
-                            scale = HALF;
+                            scale = QUARTER;
                     }
                     break;
                 case 4:
                     w = mWidth / 2;
                     h = mHeight / 2;
-                    scale = HALF;
+                    scale = QUARTER;
                     break;
             }
         }
