@@ -269,7 +269,7 @@ public class Attachment implements Parcelable {
 
     public boolean shouldShowProgress() {
         return state == AttachmentState.DOWNLOADING
-                && size > 0 && downloadedSize > 0 && downloadedSize < size;
+                && size > 0 && downloadedSize > 0 && downloadedSize <= size;
     }
 
     public boolean isDownloadFailed() {
