@@ -53,7 +53,8 @@ import java.util.Map.Entry;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
         android.animation.Animator.AnimatorListener {
-    private static int sDismissAllDelay = -1;
+    private static int sDismissAllShortDelay = -1;
+    private static int sDismissAllLongDelay = -1;
     private static final String LAST_DELETING_ITEMS = "last_deleting_items";
     private static final String LEAVE_BEHIND_ITEM_DATA = "leave_behind_item_data";
     private static final String LEAVE_BEHIND_ITEM_ID = "leave_behind_item_id";
@@ -124,6 +125,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * Used only for debugging.
      */
     private static final String LOG_TAG = LogTag.getLogTag();
+    private static final int INCREASE_WAIT_COUNT = 2;
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch,
@@ -136,9 +138,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mShowFooter = false;
         mListView = listView;
         mHandler = new Handler();
-        if (sDismissAllDelay == -1) {
-            sDismissAllDelay =
-                    context.getResources().getInteger(R.integer.dismiss_all_leavebehinds_delay);
+        if (sDismissAllShortDelay == -1) {
+            sDismissAllShortDelay =
+                    context.getResources()
+                        .getInteger(R.integer.dismiss_all_leavebehinds_short_delay);
+            sDismissAllLongDelay =
+                    context.getResources()
+                        .getInteger(R.integer.dismiss_all_leavebehinds_long_delay);
         }
     }
 
@@ -148,7 +154,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     public void startDismissCounter() {
-        mHandler.postDelayed(mCountDown, sDismissAllDelay);
+        if (mLeaveBehindItems.size() > INCREASE_WAIT_COUNT) {
+            mHandler.postDelayed(mCountDown, sDismissAllLongDelay);
+        } else {
+            mHandler.postDelayed(mCountDown, sDismissAllShortDelay);
+        }
     }
 
     public final void destroy() {
@@ -321,7 +331,18 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             if (isPositionLeaveBehind(conv)) {
                 LeaveBehindItem fadeIn = getLeaveBehindItem(conv);
                 if (conv.id == mLastLeaveBehind) {
-                    fadeIn.startFadeInTextAnimation(true /* delay start */);
+                    // If it looks like the person is doing a lot of rapid
+                    // swipes, wait patiently before animating
+                    if (mLeaveBehindItems.size() > INCREASE_WAIT_COUNT) {
+                        if (fadeIn.isAnimating()) {
+                            fadeIn.increaseFadeInDelay(sDismissAllLongDelay);
+                        } else {
+                            fadeIn.startFadeInTextAnimation(sDismissAllLongDelay);
+                        }
+                    } else {
+                        // Otherwise, assume they are just doing 1 and wait less time
+                        fadeIn.startFadeInTextAnimation(sDismissAllShortDelay /* delay start */);
+                    }
                 }
                 return fadeIn;
             }
@@ -387,6 +408,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             item = i.next().getValue();
             Conversation conv = item.getData();
             if (mLastLeaveBehind == -1 || conv.id != mLastLeaveBehind) {
+                item.cancelFadeInTextAnimation();
                 item.makeInert();
             }
         }
@@ -614,10 +636,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             if (!hasFadeLeaveBehinds()) {
                 // Cancel any existing animations on the remaining leave behind
                 // item and start fading in text immediately.
-                cancelLeaveBehindFadeInAnimation();
                 LeaveBehindItem item = getLastLeaveBehindItem();
                 if (item != null) {
-                    item.startFadeInTextAnimation(false /* delay start */);
+                    boolean cancelled = item.cancelFadeInTextAnimationIfNotStarted();
+                    if (cancelled) {
+                        item.startFadeInTextAnimation(0 /* delay start */);
+                    }
                 }
             }
             // The view types have changed, since the animating views are gone.
