@@ -313,10 +313,15 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void setCurrentConversation(Conversation conversation) {
-        long oldId = mCurrentConversation != null ? mCurrentConversation.id : -1;
-        long newId = conversation != null ? conversation.id : -1;
-        boolean different = oldId != newId;
+        // Order is important! We want to calculate different *before* the superclass changes
+        // mCurrentConversation, so before super.setCurrentConversation().
+        final long oldId = mCurrentConversation != null ? mCurrentConversation.id : -1;
+        final long newId = conversation != null ? conversation.id : -1;
+        final boolean different = oldId != newId;
+
+        // This call might change mCurrentConversation.
         super.setCurrentConversation(conversation);
+
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null && conversation != null) {
             convList.setSelected(conversation.position, different);
