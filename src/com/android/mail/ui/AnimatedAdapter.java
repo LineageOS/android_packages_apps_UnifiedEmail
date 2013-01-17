@@ -321,7 +321,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             if (isPositionLeaveBehind(conv)) {
                 LeaveBehindItem fadeIn = getLeaveBehindItem(conv);
                 if (conv.id == mLastLeaveBehind) {
-                    fadeIn.startFadeInTextAnimation();
+                    fadeIn.startFadeInTextAnimation(true /* delay start */);
                 }
                 return fadeIn;
             }
@@ -612,7 +612,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             clearLeaveBehind(objItem.getConversationId());
             objItem.commit();
             if (!hasFadeLeaveBehinds()) {
+                // Cancel any existing animations on the remaining leave behind
+                // item and start fading in text immediately.
                 cancelLeaveBehindFadeInAnimation();
+                LeaveBehindItem item = getLastLeaveBehindItem();
+                if (item != null) {
+                    item.startFadeInTextAnimation(false /* delay start */);
+                }
             }
             // The view types have changed, since the animating views are gone.
             notifyDataSetChanged();

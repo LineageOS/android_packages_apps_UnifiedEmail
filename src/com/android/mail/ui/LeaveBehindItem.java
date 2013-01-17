@@ -189,7 +189,11 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         }
     }
 
-    public void startFadeInTextAnimation() {
+    /**
+     * Kick off the animation to fade in the leave behind text.
+     * @param delay Whether to delay the start of the animation or not.
+     */
+    public void startFadeInTextAnimation(boolean delay) {
         // If this thing isn't already fully visible AND its not already animating...
         if (!mFadingInText && mSwipeableContent.getAlpha() != OPAQUE) {
             mFadingInText = true;
@@ -197,7 +201,9 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
             final float end = OPAQUE;
             mFadeIn = ObjectAnimator.ofFloat(mSwipeableContent, "alpha", start, end);
             mSwipeableContent.setAlpha(INVISIBLE);
-            mFadeIn.setStartDelay(sDismissAllLeaveBehindsDelay);
+            if (delay) {
+                mFadeIn.setStartDelay(sDismissAllLeaveBehindsDelay);
+            }
             mFadeIn.setInterpolator(new DecelerateInterpolator(OPAQUE));
             mFadeIn.setDuration(sFadeInAnimationDuration / 2);
             mFadeIn.start();
