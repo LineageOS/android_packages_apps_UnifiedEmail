@@ -546,7 +546,9 @@ public class Conversation implements Parcelable {
         if (avail != -1) {
             CharSequence ellipsizedText = TextUtils.ellipsize(subjectText, paint, avail,
                     TruncateAt.END);
-            builder.append(ellipsizedText, 0, ellipsizedText.length() - 1);
+            if (!TextUtils.isEmpty(ellipsizedText)) {
+                builder.append(ellipsizedText, 0, ellipsizedText.length() - 1);
+            }
         } else {
             builder.append(subjectText);
         }
