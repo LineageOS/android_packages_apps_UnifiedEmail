@@ -17,6 +17,7 @@
 
 package com.android.mail.browse;
 
+
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -24,14 +25,15 @@ import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
 
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
+import com.android.mail.providers.UIProvider.AttachmentContentValueKeys;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.LogTag;
@@ -87,7 +89,8 @@ public class AttachmentActionHandler {
 
         for (final Attachment attachment : attachments) {
             if (!attachment.isPresentLocally()) {
-                startDownloadingAttachment(attachment, AttachmentDestination.CACHE);
+                startDownloadingAttachment(attachment, AttachmentDestination.CACHE,
+                        UIProvider.AttachmentRendition.BEST);
             }
         }
 
@@ -95,13 +98,18 @@ public class AttachmentActionHandler {
     }
 
     public void startDownloadingAttachment(int destination) {
-        startDownloadingAttachment(mAttachment, destination);
+        startDownloadingAttachment(destination, UIProvider.AttachmentRendition.BEST);
     }
 
-    private void startDownloadingAttachment(Attachment attachment, int destination) {
+    public void startDownloadingAttachment(int destination, int rendition) {
+        startDownloadingAttachment(mAttachment, destination, rendition);
+    }
+
+    private void startDownloadingAttachment(Attachment attachment, int destination, int rendition) {
         final ContentValues params = new ContentValues(2);
         params.put(AttachmentColumns.STATE, AttachmentState.DOWNLOADING);
         params.put(AttachmentColumns.DESTINATION, destination);
+        params.put(AttachmentContentValueKeys.RENDITION, rendition);
 
         mCommandHandler.sendCommand(attachment.uri, params);
     }

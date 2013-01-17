@@ -267,4 +267,9 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
         void set(Attachment attachment, Bitmap preview);
         Bitmap get(Attachment attachment);
     }
+
+    @Override
+    public void thumbnailLoadFailed() {
+        setThumbnailToDefault();
+    }
 }

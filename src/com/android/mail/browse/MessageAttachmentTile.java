@@ -37,9 +37,10 @@ import com.android.mail.R;
 import com.android.mail.photo.MailPhotoViewActivity;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AttachmentDestination;
+import com.android.mail.providers.UIProvider.AttachmentRendition;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
-import com.android.mail.ui.AttachmentTile.AttachmentPreviewCache;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -122,6 +123,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         return true;
     }
 
+    @Override
     public void viewAttachment() {
         if (ImageUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.contentType))) {
             final PhotoViewIntentBuilder builder =
@@ -148,6 +150,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         }
     }
 
+    @Override
     public void updateProgress(boolean showDeterminateProgress) {
         if (mAttachment.isDownloading()) {
             mProgress.setMax(mAttachment.size);
@@ -159,6 +162,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         }
     }
 
+    @Override
     public void onUpdateStatus() {
     }
 
@@ -177,5 +181,12 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
     @Override
     public List<Attachment> getAttachments() {
         return ((AttachmentTileGrid) getParent()).getAttachments();
+    }
+
+    @Override
+    public void thumbnailLoadFailed() {
+        super.thumbnailLoadFailed();
+        mActionHandler.startDownloadingAttachment(
+                AttachmentDestination.CACHE, AttachmentRendition.SIMPLE);
     }
 }
