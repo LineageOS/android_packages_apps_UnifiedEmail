@@ -69,6 +69,10 @@ public class LogUtils {
      */
     @VisibleForTesting
     static void setDebugLoggingEnabledForTests(boolean enabled) {
+        setDebugLoggingEnabledForTestsInternal(enabled);
+    }
+
+    protected static void setDebugLoggingEnabledForTestsInternal(boolean enabled) {
         sDebugLoggingEnabledForTests = Boolean.valueOf(enabled);
     }
 
