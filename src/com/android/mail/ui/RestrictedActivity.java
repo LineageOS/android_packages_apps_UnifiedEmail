@@ -190,6 +190,11 @@ public interface RestrictedActivity {
      */
     boolean onOptionsItemSelected(MenuItem item);
 
+    /**
+     * @see Activity#hasWindowFocus()
+     */
+    public boolean hasWindowFocus();
+
     void setPendingToastOperation(ToastBarOperation op);
 
     ToastBarOperation getPendingToastOperation();
