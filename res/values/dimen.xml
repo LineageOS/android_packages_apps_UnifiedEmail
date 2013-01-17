@@ -112,8 +112,8 @@
     <dimen name="senders_textview_top_padding">-4dp</dimen>
     <dimen name="senders_textview_height">30dp</dimen>
     <integer name="chips_max_lines">2</integer>
-    <dimen name="tile_letter_font_size">24sp</dimen>
-    <dimen name="tile_letter_font_size_med">18sp</dimen>
-    <dimen name="tile_letter_font_size_small">12sp</dimen>
+    <dimen name="tile_letter_font_size">33dp</dimen>
+    <dimen name="tile_letter_font_size_med">16dp</dimen>
+    <dimen name="tile_letter_font_size_small">16dp</dimen>
     <dimen name="tile_divider_width">1dp</dimen>
 </resources>

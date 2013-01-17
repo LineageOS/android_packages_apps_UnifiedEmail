@@ -258,8 +258,7 @@ public class DividedImageCanvas {
                     if (complete) {
                         // Draw dividers
                         drawVerticalDivider(width, height);
-                        drawHorizontalDivider(width / 2, height / 2, width, height / 2
-                                + sDividerLineWidth);
+                        drawHorizontalDivider(width / 2, height / 2, width, height / 2);
                     }
                     break;
                 default:
@@ -284,7 +283,7 @@ public class DividedImageCanvas {
                     if (complete) {
                         // Draw dividers
                         drawVerticalDivider(width, height);
-                        drawHorizontalDivider(0, height / 2, width, height / 2 + sDividerLineWidth);
+                        drawHorizontalDivider(0, height / 2, width, height / 2);
                     }
                     break;
             }
@@ -304,14 +303,19 @@ public class DividedImageCanvas {
         }
     }
 
-    private void drawVerticalDivider(int width, int height) {
-        int x1 = width / 2, y1 = 0, x2 = width/2 + sDividerLineWidth, y2 = height;
+    private void setupPaint() {
+        sPaint.setStrokeWidth(sDividerLineWidth);
         sPaint.setColor(sDividerColor);
+    }
+
+    private void drawVerticalDivider(int width, int height) {
+        int x1 = width / 2, y1 = 0, x2 = width/2, y2 = height;
+        setupPaint();
         mCanvas.drawLine(x1, y1, x2, y2, sPaint);
     }
 
     private void drawHorizontalDivider(int x1, int y1, int x2, int y2) {
-        sPaint.setColor(Color.WHITE);
+        setupPaint();
         mCanvas.drawLine(x1, y1, x2, y2, sPaint);
     }
 
