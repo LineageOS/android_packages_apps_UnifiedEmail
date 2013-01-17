@@ -1338,6 +1338,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mConversation = conv;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
+            headerView.setSubject(conv.subject);
         }
     }
 

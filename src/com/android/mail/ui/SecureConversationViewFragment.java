@@ -184,13 +184,10 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         if (mActivity == null) {
             return;
         }
-        final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
-        if (sdc != null) {
-            sdc.setSubject(mConversation.subject);
+        if (isUserVisible()) {
+            mScrollView.scrollTo(0, 0);
+            onConversationSeen();
         }
-        mConversationHeaderView.setSubject(mConversation.subject);
-        this.mScrollView.scrollTo(0, 0);
-        onConversationSeen();
     }
 
     @Override
@@ -225,7 +222,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
      */
     private void renderMessageBodies(MessageCursor messageCursor,
             boolean enableContentReadySignal) {
-        StringBuilder convHtml = new StringBuilder();
+        final StringBuilder convHtml = new StringBuilder();
         String content;
         if (messageCursor.moveToFirst()) {
             content = messageCursor.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN);
@@ -260,6 +257,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         final ConversationViewHeader headerView = mConversationHeaderView;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
+            headerView.setSubject(conv.subject);
         }
     }
 
