@@ -275,7 +275,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter != null) {
             adapter.startDismissCounter();
-            adapter.abortFadeOutLastLeaveBehindItemText();
+            adapter.cancelFadeOutLastLeaveBehindItemText();
         }
     }
 

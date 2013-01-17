@@ -47,7 +47,10 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     public int position;
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
+    private static int sDismissAllLeaveBehindsDelay = -1;
     private static float sScrollSlop;
+    private static float OPAQUE = 1.0f;
+    private static float INVISIBLE = 0.0f;
 
     public LeaveBehindItem(Context context) {
         this(context, null);
@@ -64,6 +67,8 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
             sFadeInAnimationDuration = res.getInteger(R.integer.fade_in_animation_duration);
             sScrollSlop = res.getInteger(R.integer.leaveBehindSwipeScrollSlop);
+            sDismissAllLeaveBehindsDelay = res
+                    .getInteger(R.integer.dismiss_all_leavebehinds_delay);
         }
     }
 
@@ -103,6 +108,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         // Listen on swipeable content so that we can show both the undo icon
         // and button text as selected since they set duplicateParentState to true
         mSwipeableContent.setOnClickListener(this);
+        mSwipeableContent.setAlpha(INVISIBLE);
         mText = ((TextView) findViewById(R.id.undo_descriptionview));
         mText.setText(Utils.convertHtmlToPlainText(mUndoOp
                 .getSingularDescription(getContext(), folder)));
@@ -151,13 +157,13 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     private ObjectAnimator mFadeIn;
 
     /**
-     * Start the animation on an animating view.
+     * Animate shrinking the height of this view.
      * @param item the conversation to animate
      * @param listener the method to call when the animation is done
      * @param undo true if an operation is being undone. We animate the item
      *            away during delete. Undoing populates the item.
      */
-    public void startAnimation(ViewMode viewMode, AnimatorListener listener) {
+    public void startShrinkAnimation(ViewMode viewMode, AnimatorListener listener) {
         if (!mAnimating) {
             mAnimating = true;
             int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(), viewMode);
@@ -174,29 +180,33 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         }
     }
 
-    public void abortFadeOutText() {
-        mSwipeableContent.setAlpha(1.0f);
+    /**
+     * Set the alpha value for the text displayed by this item.
+     */
+    public void setTextAlpha(float alpha) {
+        if (mSwipeableContent.getAlpha() > INVISIBLE) {
+            mSwipeableContent.setAlpha(alpha);
+        }
     }
 
-    public void fadeOutText(float alpha) {
-        mSwipeableContent.setAlpha(alpha);
-    }
-
-    public void startFadeInAnimation() {
-        if (!mFadingInText) {
+    public void startFadeInTextAnimation() {
+        // If this thing isn't already fully visible AND its not already animating...
+        if (!mFadingInText && mSwipeableContent.getAlpha() != OPAQUE) {
             mFadingInText = true;
-            final float start = 0;
-            final float end = 1.0f;
+            final float start = INVISIBLE;
+            final float end = OPAQUE;
             mFadeIn = ObjectAnimator.ofFloat(mSwipeableContent, "alpha", start, end);
-            mSwipeableContent.setAlpha(0);
-            mFadeIn.setInterpolator(new DecelerateInterpolator(1.0f));
+            mSwipeableContent.setAlpha(INVISIBLE);
+            mFadeIn.setStartDelay(sDismissAllLeaveBehindsDelay);
+            mFadeIn.setInterpolator(new DecelerateInterpolator(OPAQUE));
             mFadeIn.setDuration(sFadeInAnimationDuration / 2);
             mFadeIn.start();
         }
     }
 
-    public void cancelFadeInAnimation() {
+    public void cancelFadeInTextAnimation() {
         if (mFadeIn != null) {
+            mFadingInText = false;
             mFadeIn.cancel();
         }
     }
@@ -226,14 +236,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         requestLayout();
     }
 
-    /**
-     * We are in a state where we can't afford the alpha fade in, so just show the text.
-     */
-    public void showTextImmediately() {
-        // Fake that we are already fading it in so animations get ignored.
-        mFadingInText = true;
-    }
-
     @Override
     public float getMinAllowScrollDistance() {
         return sScrollSlop;
@@ -245,5 +247,9 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         }
         mSwipeableContent.setVisibility(View.GONE);
         mInert = true;
+    }
+
+    public void cancelFadeOutText() {
+        mSwipeableContent.setAlpha(OPAQUE);
     }
 }
