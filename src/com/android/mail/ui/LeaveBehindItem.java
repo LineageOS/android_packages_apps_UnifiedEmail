@@ -47,7 +47,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     public int position;
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
-    private static int sDismissAllLeaveBehindsDelay = -1;
     private static float sScrollSlop;
     private static float OPAQUE = 1.0f;
     private static float INVISIBLE = 0.0f;
@@ -67,8 +66,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
             sFadeInAnimationDuration = res.getInteger(R.integer.fade_in_animation_duration);
             sScrollSlop = res.getInteger(R.integer.leaveBehindSwipeScrollSlop);
-            sDismissAllLeaveBehindsDelay = res
-                    .getInteger(R.integer.dismiss_all_leavebehinds_delay);
         }
     }
 
@@ -193,7 +190,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
      * Kick off the animation to fade in the leave behind text.
      * @param delay Whether to delay the start of the animation or not.
      */
-    public void startFadeInTextAnimation(boolean delay) {
+    public void startFadeInTextAnimation(int delay) {
         // If this thing isn't already fully visible AND its not already animating...
         if (!mFadingInText && mSwipeableContent.getAlpha() != OPAQUE) {
             mFadingInText = true;
@@ -201,8 +198,8 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
             final float end = OPAQUE;
             mFadeIn = ObjectAnimator.ofFloat(mSwipeableContent, "alpha", start, end);
             mSwipeableContent.setAlpha(INVISIBLE);
-            if (delay) {
-                mFadeIn.setStartDelay(sDismissAllLeaveBehindsDelay);
+            if (delay != 0) {
+                mFadeIn.setStartDelay(delay);
             }
             mFadeIn.setInterpolator(new DecelerateInterpolator(OPAQUE));
             mFadeIn.setDuration(sFadeInAnimationDuration / 2);
@@ -210,11 +207,46 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         }
     }
 
+    /**
+     * Increase the overall time before fading in a the text description this view.
+     * @param newDelay Amount of total delay the user should see
+     */
+    public void increaseFadeInDelay(int newDelay) {
+        // If this thing isn't already fully visible AND its not already animating...
+        if (!mFadingInText && mSwipeableContent.getAlpha() != OPAQUE) {
+            mFadingInText = true;
+            long delay = mFadeIn.getStartDelay();
+            if (newDelay == delay || mFadeIn.isRunning()) {
+                return;
+            }
+            mFadeIn.cancel();
+            mFadeIn.setStartDelay(newDelay - delay);
+            mFadeIn.start();
+        }
+    }
+
+    /**
+     * Cancel fading in the text description for this view.
+     */
     public void cancelFadeInTextAnimation() {
         if (mFadeIn != null) {
             mFadingInText = false;
             mFadeIn.cancel();
         }
+    }
+
+    /**
+     * Cancel fading in the text description for this view only if it the
+     * animation hasn't already started.
+     * @return whether the animation was cancelled
+     */
+    public boolean cancelFadeInTextAnimationIfNotStarted() {
+        // The animation was started, so don't cancel and restart it.
+        if (mFadeIn != null && !mFadeIn.isRunning()) {
+            cancelFadeInTextAnimation();
+            return true;
+        }
+        return false;
     }
 
     public void setData(Conversation conversation) {
@@ -257,5 +289,9 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
 
     public void cancelFadeOutText() {
         mSwipeableContent.setAlpha(OPAQUE);
+    }
+
+    public boolean isAnimating() {
+        return this.mFadingInText;
     }
 }
