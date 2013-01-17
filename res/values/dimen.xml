@@ -115,10 +115,5 @@
     <dimen name="tile_letter_font_size">24sp</dimen>
     <dimen name="tile_letter_font_size_med">18sp</dimen>
     <dimen name="tile_letter_font_size_small">12sp</dimen>
-    <dimen name="tile_letter_padding_bottom">15dp</dimen>
-    <dimen name="tile_letter_padding_left">16dp</dimen>
-    <dimen name="tile_letter_padding_bottom_half">18dp</dimen>
-    <dimen name="tile_letter_padding_left_half">7dp</dimen>
-    <dimen name="tile_letter_padding_bottom_quarter">8dp</dimen>
-    <dimen name="tile_letter_padding_left_quarter">8dp</dimen>
+    <dimen name="tile_divider_width">1dp</dimen>
 </resources>

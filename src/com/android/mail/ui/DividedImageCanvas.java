@@ -17,12 +17,14 @@
 package com.android.mail.ui;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import com.android.mail.R;
 import com.android.mail.photomanager.BitmapUtil;
 import com.google.common.base.Objects;
 
@@ -51,6 +53,7 @@ public class DividedImageCanvas {
     private final InvalidateCallback mCallback;
     private final ArrayList<Bitmap> mDivisionImages = new ArrayList<Bitmap>(MAX_DIVISIONS);
 
+
     private static final Paint sPaint = new Paint();
     private static final Rect sSrc = new Rect();
     private static final Rect sDest = new Rect();
@@ -61,9 +64,13 @@ public class DividedImageCanvas {
 
     public static final float QUARTER = 0.25f;
 
+    private static int sDividerLineWidth = -1;
+    private static int sDividerColor;
+
     public DividedImageCanvas(Context context, InvalidateCallback callback) {
         mContext = context;
         mCallback = callback;
+        setupDividerLines();
     }
 
     /**
@@ -225,11 +232,14 @@ public class DividedImageCanvas {
                             break;
                     }
                     complete = mDivisionImages.get(0) != null && mDivisionImages.get(1) != null;
+                    if (complete) {
+                        // Draw dividers
+                        drawVerticalDivider(width, height);
+                    }
                     break;
                 case 3:
                     // Draw 3 bitmaps: the first takes up all vertical
-                    // space,
-                    // the 2nd and 3rd are stacked in the second vertical
+                    // space, the 2nd and 3rd are stacked in the second vertical
                     // position.
                     switch (pos) {
                         case 0:
@@ -245,6 +255,12 @@ public class DividedImageCanvas {
                     }
                     complete = mDivisionImages.get(0) != null && mDivisionImages.get(1) != null
                             && mDivisionImages.get(2) != null;
+                    if (complete) {
+                        // Draw dividers
+                        drawVerticalDivider(width, height);
+                        drawHorizontalDivider(width / 2, height / 2, width, height / 2
+                                + sDividerLineWidth);
+                    }
                     break;
                 default:
                     // Draw all 4 bitmaps in a grid
@@ -265,6 +281,11 @@ public class DividedImageCanvas {
                     }
                     complete = mDivisionImages.get(0) != null && mDivisionImages.get(1) != null
                             && mDivisionImages.get(2) != null && mDivisionImages.get(3) != null;
+                    if (complete) {
+                        // Draw dividers
+                        drawVerticalDivider(width, height);
+                        drawHorizontalDivider(0, height / 2, width, height / 2 + sDividerLineWidth);
+                    }
                     break;
             }
             // Create the new image bitmap.
@@ -272,6 +293,26 @@ public class DividedImageCanvas {
                 mCallback.invalidate();
             }
         }
+    }
+
+    private void setupDividerLines() {
+        if (sDividerLineWidth == -1) {
+            Resources res = getContext().getResources();
+            sDividerLineWidth = res
+                    .getDimensionPixelSize(R.dimen.tile_divider_width);
+            sDividerColor = res.getColor(R.color.tile_divider_color);
+        }
+    }
+
+    private void drawVerticalDivider(int width, int height) {
+        int x1 = width / 2, y1 = 0, x2 = width/2 + sDividerLineWidth, y2 = height;
+        sPaint.setColor(sDividerColor);
+        mCanvas.drawLine(x1, y1, x2, y2, sPaint);
+    }
+
+    private void drawHorizontalDivider(int x1, int y1, int x2, int y2) {
+        sPaint.setColor(Color.WHITE);
+        mCanvas.drawLine(x1, y1, x2, y2, sPaint);
     }
 
     /**
