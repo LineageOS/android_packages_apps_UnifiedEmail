@@ -162,6 +162,7 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
      * POINTER_UP/POINTER_CANCEL.
      */
     private boolean mHandlingTouch;
+    private boolean mIgnoringTouch;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -263,14 +264,21 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
             case MotionEvent.ACTION_POINTER_DOWN:
                 LogUtils.d(LOG_TAG, "WebView disabling intercepts: POINTER_DOWN");
                 requestDisallowInterceptTouchEvent(true);
+                if (mScaleDetector != null) {
+                    mIgnoringTouch = true;
+                    final MotionEvent fakeCancel = MotionEvent.obtain(ev);
+                    fakeCancel.setAction(MotionEvent.ACTION_CANCEL);
+                    super.onTouchEvent(fakeCancel);
+                }
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 mHandlingTouch = false;
+                mIgnoringTouch = false;
                 break;
         }
 
-        final boolean handled = super.onTouchEvent(ev);
+        final boolean handled = mIgnoringTouch || super.onTouchEvent(ev);
 
         if (mScaleDetector != null) {
             mScaleDetector.onTouchEvent(ev);

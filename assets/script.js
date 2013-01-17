@@ -487,23 +487,29 @@ function onScaleBegin(screenX, screenY) {
 
             msgDivTop = getTotalOffset(msgBodyDiv).top;
 
-            scaledOriginX = focusX;// / initialScale;
-            scaledOriginY = (focusY - msgDivTop);// / initialScale;
+            // TODO: correct only for no initial translation
+            // FIXME: wrong for initialScale > 1.0
+            scaledOriginX = focusX / initialScale;
+            scaledOriginY = (focusY - msgDivTop) / initialScale;
 
-            translateX = scaledOriginX * (initialScale - 1.0) / initialScale;
-            translateY = scaledOriginY * (initialScale - 1.0) / initialScale;
+            // TODO: is this still needed?
+            translateX = 0;
+            translateY = 0;
 
             gScaleInfo = {
                 div: msgBodyDiv,
-                divTop: msgDivTop,
                 initialScale: initialScale,
-                initialX: focusX,
-                initialY: focusY,
+                initialScreenX: screenX,
+                initialScreenY: screenY,
+                originX: scaledOriginX,
+                originY: scaledOriginY,
                 translateX: translateX,
                 translateY: translateY,
                 initialH: getCachedValue(msgBodyDiv, "offsetHeight", "data-initial-height"),
                 minScale: Math.min(document.body.offsetWidth / msgBodyDiv.scrollWidth, 1.0),
-                currScale: initialScale
+                currScale: initialScale,
+                currTranslateX: 0,
+                currTranslateY: 0
             };
 
             origin = scaledOriginX + "px " + scaledOriginY + "px";
@@ -530,19 +536,31 @@ function onScaleEnd(screenX, screenY) {
     scale = gScaleInfo.currScale;
     msgBodyDiv.style.webkitTransformOrigin = "0 0";
     // clear any translate
-    msgBodyDiv.style.webkitTransform = "scale3d(" + scale + "," + scale + ",1)";
     // switching to a 2D transform here re-renders the fonts more clearly, but introduces
     // texture upload lag to any subsequent scale operation
-    //msgBodyDiv.style.webkitTransform = "scale(" + gScaleInfo.currScale + ")";
+    // TODO: conditionalize this based on device GPU performance and/or body size/complexity?
+    if (true) {
+        msgBodyDiv.style.webkitTransform = "scale(" + gScaleInfo.currScale + ")";
+    } else {
+        msgBodyDiv.style.webkitTransform = "scale3d(" + scale + "," + scale + ",1)";
+    }
     h = gScaleInfo.initialH * scale;
 //    console.log("onScaleEnd set h=" + h);
     msgBodyDiv.style.height = h + "px";
+
+    // Use saved translateX/Y rather than calculating from screenX/Y because screenX/Y values
+    // from onScaleEnd only track focus of remaining pointers, which is not useful and leads
+    // to a perceived jump.
+    var deltaScrollX = (scale - 1) * gScaleInfo.originX - gScaleInfo.currTranslateX;
+    var deltaScrollY = (scale - 1) * gScaleInfo.originY - gScaleInfo.currTranslateY;
+//    console.log("JS adjusting scroll by x/y=" + deltaScrollX + "/" + deltaScrollY);
+    window.scrollBy(deltaScrollX, deltaScrollY);
+
     msgBodyDiv.classList.remove("zooming-focused");
     msgBodyDiv.setAttribute("data-initial-scale", scale);
 }
 
 function onScale(relativeScale, screenX, screenY) {
-    var focusX, focusY;
     var scale;
     var translateX, translateY;
     var transform;
@@ -550,21 +568,22 @@ function onScale(relativeScale, screenX, screenY) {
     if (!gScaleInfo) {
         return;
     }
-    focusX = screenX + document.body.scrollLeft;
-    focusY = screenY + document.body.scrollTop;
 
     scale = Math.max(gScaleInfo.initialScale * relativeScale, gScaleInfo.minScale);
     if (scale > 4.0) {
         scale = 4.0;
     }
+    translateX = screenX - gScaleInfo.initialScreenX;
+    translateY = screenY - gScaleInfo.initialScreenY;
+    // TODO: clamp translation to prevent going beyond body edges
     gScaleInfo.currScale = scale;
-    translateX = focusX - gScaleInfo.initialX;
-    translateY = focusY - gScaleInfo.initialY;
+    gScaleInfo.currTranslateX = translateX;
+    gScaleInfo.currTranslateY = translateY;
     transform = "translate3d(" + translateX + "px," + translateY + "px,0) scale3d("
         + scale + "," + scale + ",1) translate3d(" + gScaleInfo.translateX + "px,"
         + gScaleInfo.translateY + "px,0)";
     gScaleInfo.div.style.webkitTransform = transform;
-//    console.log("JS got scale=" + relativeScale + " x/y=" + screenX + "/" + screenY
+//    console.log("JS got scale=" + scale + " x/y=" + screenX + "/" + screenY
 //        + " transform='" + transform + "'");
 }
 
