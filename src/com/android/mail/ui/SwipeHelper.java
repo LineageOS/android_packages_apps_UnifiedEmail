@@ -444,7 +444,7 @@ public class SwipeHelper {
                         if (mPrevView != null) {
                             // Base how much the text of the prev item is faded
                             // on how far the current item has moved.
-                            mPrevView.fadeOutText(getTextAlphaForOffset(mCurrAnimView));
+                            mPrevView.setTextAlpha(getTextAlphaForOffset(mCurrAnimView));
                         }
                     }
                     invalidateGlobalRegion(mCurrView.getSwipeableView());
