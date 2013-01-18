@@ -49,10 +49,10 @@ import com.google.common.base.Objects;
 public class LetterTileProvider extends DefaultImageProvider {
     private Bitmap mDefaultBitmap;
     private final LruCache<Integer, Bitmap> mTileBitmapCache;
+    private static Typeface sSansSerifLight;
     private static Rect sBounds;
     private static int sTileLetterFontSize = -1;
     private static int sTileLetterFontSizeSmall;
-    private static int sTileLetterFontSizeMed;
     private static int sTileColor;
     private static int sTileFontColor;
     private static TextPaint sPaint = new TextPaint();
@@ -87,20 +87,20 @@ public class LetterTileProvider extends DefaultImageProvider {
                 if (sTileLetterFontSize == -1) {
                     final Resources res = view.getContext().getResources();
                     sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
-                    sTileLetterFontSizeMed = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_font_size_med);
                     sTileLetterFontSizeSmall = res
                             .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
                     sTileColor = res.getColor(R.color.letter_tile_color);
                     sTileFontColor = res.getColor(R.color.letter_tile_font_color);
+                    sSansSerifLight = Typeface.create("sans-serif-light", Typeface.NORMAL);
                     sBounds = new Rect();
                 }
                 Canvas c = new Canvas(bitmap);
                 c.drawColor(sTileColor);
                 sPaint.setTextSize(getFontSize(d.scale));
-                sPaint.setTypeface(Typeface.SANS_SERIF);
+                sPaint.setTypeface(sSansSerifLight);
                 sPaint.setColor(sTileFontColor);
                 sPaint.setTextAlign(Align.CENTER);
+                sPaint.setAntiAlias(true);
                 sPaint.getTextBounds(first, 0, first.length(), sBounds);
                 c.drawText(first, 0+d.width/2, 0+d.height/2+(sBounds.bottom-sBounds.top)/2, sPaint);
                 mTileBitmapCache.put(hash, bitmap);
@@ -120,8 +120,6 @@ public class LetterTileProvider extends DefaultImageProvider {
     private int getFontSize(float scale)  {
         if (scale == DividedImageCanvas.ONE) {
             return sTileLetterFontSize;
-        } else if (scale == DividedImageCanvas.HALF) {
-            return sTileLetterFontSizeMed;
         } else {
             return sTileLetterFontSizeSmall;
         }
