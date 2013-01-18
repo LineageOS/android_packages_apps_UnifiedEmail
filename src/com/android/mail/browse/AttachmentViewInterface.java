@@ -42,9 +42,4 @@ public interface AttachmentViewInterface {
      * Called in {@link AttachmentActionHandler#updateStatus}.
      */
     public void onUpdateStatus();
-
-    /**
-     * Returns the list of attachments of which this view is a part.
-     */
-    public List<Attachment> getAttachments();
 }

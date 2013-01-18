@@ -1908,6 +1908,8 @@ public class UIProvider {
 
     public static final class AttachmentContentValueKeys {
         public static final String RENDITION = "rendition";
+        public static final String ADDITIONAL_PRIORITY = "additionalPriority";
+        public static final String DELAY_DOWNLOAD = "delayDownload";
     }
 
     /**

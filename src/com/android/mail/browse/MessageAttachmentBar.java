@@ -350,9 +350,4 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         }
         mSubTitle.setText(sb.toString());
     }
-
-    @Override
-    public List<Attachment> getAttachments() {
-        return null;
-    }
 }
