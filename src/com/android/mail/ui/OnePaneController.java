@@ -77,7 +77,6 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onRestoreInstanceState(Bundle inState) {
         super.onRestoreInstanceState(inState);
-        // TODO(mindyp) handle saved state.
         if (inState == null) {
             return;
         }
@@ -95,7 +94,6 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // TODO(mindyp) handle saved state.
         outState.putInt(FOLDER_LIST_TRANSACTION_KEY, mLastFolderListTransactionId);
         outState.putInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY,
                 mLastInboxConversationListTransactionId);
@@ -170,7 +168,6 @@ public final class OnePaneController extends AbstractActivityController {
 
         // When entering conversation list mode, hide and clean up any currently visible
         // conversation.
-        // TODO: improve this transition
         if (ViewMode.isListMode(newMode)) {
             mPagerController.hide(true /* changeVisibility */);
         }
@@ -185,15 +182,11 @@ public final class OnePaneController extends AbstractActivityController {
     public void showConversationList(ConversationListContext listContext) {
         super.showConversationList(listContext);
         enableCabMode();
-        // TODO(viki): Check if the account has been changed since the previous
-        // time.
         if (ConversationListContext.isSearchResult(listContext)) {
             mViewMode.enterSearchResultsListMode();
         } else {
             mViewMode.enterConversationListMode();
         }
-        // TODO(viki): This account transition looks strange in two pane mode.
-        // Revisit as the app is coming together and improve the look and feel.
         final int transition = mConversationListNeverShown
                 ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
@@ -248,7 +241,6 @@ public final class OnePaneController extends AbstractActivityController {
         // activity, as when the transaction is popped off, the FragmentManager will attempt to
         // readd the same fragment twice
         if (f != null && f.isAdded()) {
-            // TODO: improve this transition
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.remove(f);
             ft.commitAllowingStateLoss();

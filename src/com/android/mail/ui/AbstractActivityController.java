@@ -874,7 +874,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public final boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO(viki): Auto-generated method stub
         return false;
     }
 
