@@ -193,21 +193,21 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     @Override
     public void onFragmentVisible(PhotoViewFragment fragment) {
         super.onFragmentVisible(fragment);
-
-        final Attachment attachment = getCurrentAttachment();
-        updateProgressAndEmptyViews(fragment, attachment);
     }
 
+    @Override
+    public void onCursorChanged(PhotoViewFragment fragment, Cursor cursor) {
+        super.onCursorChanged(fragment, cursor);
+        updateProgressAndEmptyViews(fragment, new Attachment(cursor));
+    }
 
     /**
      * Updates the empty views of the fragment based upon the current
      * state of the attachment.
      * @param fragment the current fragment
-     * @param attachment the current {@link Attachment}
      */
     private void updateProgressAndEmptyViews(
-            PhotoViewFragment fragment, final Attachment attachment) {
-
+            final PhotoViewFragment fragment, final Attachment attachment) {
         final ProgressBarWrapper progressBar = fragment.getPhotoProgressBar();
         final TextView emptyText = fragment.getEmptyText();
         final ImageView retryButton = fragment.getRetryButton();
@@ -230,7 +230,6 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
                 @Override
                 public void onClick(View view) {
                     downloadAttachment();
-                    progressBar.setVisibility(View.VISIBLE);
                 }
             });
             progressBar.setVisibility(View.GONE);
@@ -330,7 +329,6 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
     /**
      * Helper method to get the currently visible attachment.
-     * @return
      */
     protected Attachment getCurrentAttachment() {
         final Cursor cursor = getCursorAtProperPosition();
