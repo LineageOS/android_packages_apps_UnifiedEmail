@@ -59,10 +59,9 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.ConversationItemView;
+import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.ConversationItemViewModel;
 import com.android.mail.browse.ConversationPagerController;
-import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.SyncErrorDialogFragment;
@@ -205,6 +204,19 @@ public abstract class AbstractActivityController implements ActivityController {
                     count, mObservers.size());
         }
     };
+
+    /**
+     * Interface for actions that are deferred until after a load completes. This is for handling
+     * user actions which affect cursors (e.g. marking messages read or unread) that happen before
+     * that cursor is loaded.
+     */
+    private interface LoadFinishedCallback {
+        void onLoadFinished();
+    }
+
+    /** The deferred actions to execute when mConversationListCursor load completes. */
+    private final ArrayList<LoadFinishedCallback> mConversationListLoadFinishedCallbacks =
+            new ArrayList<LoadFinishedCallback>();
 
     private RefreshTimerTask mConversationListRefreshTask;
 
@@ -1012,8 +1024,8 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void markConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
-            byte[] originalConversationInfo) {
+    public void markConversationMessagesUnread(final Conversation conv,
+            final Set<Uri> unreadMessageUris, final byte[] originalConversationInfo) {
         // The only caller of this method is the conversation view, from where marking unread should
         // *always* take you back to list mode.
         showConversation(null);
@@ -1021,12 +1033,24 @@ public abstract class AbstractActivityController implements ActivityController {
         // locally mark conversation unread (the provider is supposed to propagate message unread
         // to conversation unread)
         conv.read = false;
-
         if (mConversationListCursor == null) {
-            LogUtils.e(LOG_TAG, "null ConversationCursor in markConversationMessagesUnread");
-            return;
-        }
+            LogUtils.d(LOG_TAG, "deferring markConversationMessagesUnread for id=%d", conv.id);
 
+            mConversationListLoadFinishedCallbacks.add(new LoadFinishedCallback() {
+                @Override
+                public void onLoadFinished() {
+                    doMarkConversationMessagesUnread(conv, unreadMessageUris,
+                            originalConversationInfo);
+                }
+            });
+        } else {
+            doMarkConversationMessagesUnread(conv, unreadMessageUris, originalConversationInfo);
+        }
+    }
+
+    private void doMarkConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
+            byte[] originalConversationInfo) {
+        LogUtils.d(LOG_TAG, "performing markConversationMessagesUnread for id=%d", conv.id);
         // only do a granular 'mark unread' if a subset of messages are unread
         final int unreadCount = (unreadMessageUris == null) ? 0 : unreadMessageUris.size();
         final int numMessages = conv.getNumMessages();
@@ -1068,14 +1092,25 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void markConversationsRead(Collection<Conversation> targets, boolean read,
-            boolean viewed) {
-        // We want to show the next conversation if we are marking unread.
-        markConversationsRead(targets, read, viewed, true);
+    public void markConversationsRead(final Collection<Conversation> targets, final boolean read,
+            final boolean viewed) {
+        if (mConversationListCursor == null) {
+            LogUtils.d(LOG_TAG, "deferring markConversationsRead");
+            mConversationListLoadFinishedCallbacks.add(new LoadFinishedCallback() {
+                @Override
+                public void onLoadFinished() {
+                    markConversationsRead(targets, read, viewed, true);
+                }
+            });
+        } else {
+            // We want to show the next conversation if we are marking unread.
+            markConversationsRead(targets, read, viewed, true);
+        }
     }
 
     private void markConversationsRead(final Collection<Conversation> targets, final boolean read,
             final boolean markViewed, final boolean showNext) {
+        LogUtils.d(LOG_TAG, "performing markConversationsRead");
         // Auto-advance if requested and the current conversation is being marked unread
         if (showNext && !read) {
             final Runnable operation = new Runnable() {
@@ -1141,6 +1176,8 @@ public abstract class AbstractActivityController implements ActivityController {
      * <p>Does nothing if outside of conversation mode.</p>
      *
      * @param target the set of conversations being deleted/marked unread
+     * @param operation if auto-advance setting is unset, this operation is run after the user
+     *        is prompted to select a setting.
      * @return <code>false</code> if we aborted because the user has not yet specified a default
      *         action, <code>true</code> otherwise
      */
@@ -2765,6 +2802,11 @@ public abstract class AbstractActivityController implements ActivityController {
             mConversationListCursor.addListener(AbstractActivityController.this);
             mTracker.onCursorUpdated();
             mConversationListObservable.notifyChanged();
+            // Handle actions that were deferred until after the conversation list was loaded.
+            for (LoadFinishedCallback callback : mConversationListLoadFinishedCallbacks) {
+                callback.onLoadFinished();
+            }
+            mConversationListLoadFinishedCallbacks.clear();
 
             final ConversationListFragment convList = getConversationListFragment();
             if (isFragmentVisible(convList)) {
