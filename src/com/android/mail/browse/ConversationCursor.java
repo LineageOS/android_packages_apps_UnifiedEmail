@@ -276,7 +276,7 @@ public final class ConversationCursor implements Cursor {
         }
 
         public Set<Long> conversationIds() {
-            return mConversationIdPositionMap.keySet()   ;
+            return mConversationIdPositionMap.keySet();
         }
 
         public int getPosition(long conversationId) {
@@ -378,11 +378,11 @@ public final class ConversationCursor implements Cursor {
     private void resetCursor(UnderlyingCursorWrapper newCursorWrapper) {
         synchronized (mCacheMapLock) {
             // Walk through the cache
-            final Iterator<HashMap.Entry<String, ContentValues>> iter =
+            final Iterator<Map.Entry<String, ContentValues>> iter =
                     mCacheMap.entrySet().iterator();
             final long now = System.currentTimeMillis();
             while (iter.hasNext()) {
-                HashMap.Entry<String, ContentValues> entry = iter.next();
+                Map.Entry<String, ContentValues> entry = iter.next();
                 final ContentValues values = entry.getValue();
                 final String key = entry.getKey();
                 boolean withinTimeWindow = false;
@@ -441,10 +441,10 @@ public final class ConversationCursor implements Cursor {
         synchronized (mCacheMapLock) {
             // Walk through the cache and return the list of uris that have been deleted
             final Set<String> deletedItems = Sets.newHashSet();
-            final Iterator<HashMap.Entry<String, ContentValues>> iter =
+            final Iterator<Map.Entry<String, ContentValues>> iter =
                     mCacheMap.entrySet().iterator();
             while (iter.hasNext()) {
-                final HashMap.Entry<String, ContentValues> entry = iter.next();
+                final Map.Entry<String, ContentValues> entry = iter.next();
                 final ContentValues values = entry.getValue();
                 if (values.containsKey(DELETED_COLUMN)) {
                     // Since clients of the conversation cursor see conversation ConversationCursor
@@ -472,10 +472,10 @@ public final class ConversationCursor implements Cursor {
         // position, decrement the position
         synchronized (mCacheMapLock) {
             int updatedPosition = underlyingPosition;
-            final Iterator<HashMap.Entry<String, ContentValues>> iter =
+            final Iterator<Map.Entry<String, ContentValues>> iter =
                     mCacheMap.entrySet().iterator();
             while (iter.hasNext()) {
-                final HashMap.Entry<String, ContentValues> entry = iter.next();
+                final Map.Entry<String, ContentValues> entry = iter.next();
                 final ContentValues values = entry.getValue();
                 if (values.containsKey(DELETED_COLUMN)) {
                     // Since clients of the conversation cursor see conversation ConversationCursor

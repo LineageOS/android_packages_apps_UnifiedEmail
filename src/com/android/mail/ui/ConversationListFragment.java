@@ -69,6 +69,8 @@ public final class ConversationListFragment extends ListFragment implements
     private static final String LIST_STATE_KEY = "list-state";
 
     private static final String LOG_TAG = LogTag.getLogTag();
+    /** Key used to save the ListView choice mode, since ListView doesn't save it automatically! */
+    private static final String CHOICE_MODE_KEY = "choice-mode-key";
 
     // True if we are on a tablet device
     private static boolean mTabletDevice;
@@ -116,7 +118,7 @@ public final class ConversationListFragment extends ListFragment implements
     private View mEmptyView;
     private ErrorListener mErrorListener;
     private DataSetObserver mFolderObserver;
-    private DataSetObserver mConversationListStatusObserver;
+    private DataSetObserver mConversationCursorObserver;
 
     private ConversationSelectionSet mSelectedSet;
     private final AccountObserver mAccountObserver = new AccountObserver() {
@@ -153,7 +155,7 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
-    private class ConversationListStatusObserver extends DataSetObserver {
+    private class ConversationCursorObserver extends DataSetObserver {
         @Override
         public void onChanged() {
             onConversationListStatusUpdated();
@@ -262,7 +264,7 @@ public final class ConversationListFragment extends ListFragment implements
                 null);
         mFooterView.setClickListener(mActivity);
         final ConversationCursor conversationCursor = getConversationListCursor();
-        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
+        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(),
                 conversationCursor, mActivity.getSelectedSet(), mActivity, mListView);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
@@ -271,9 +273,9 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter.hideFooter();
         mFolderObserver = new FolderObserver();
         mActivity.getFolderController().registerFolderObserver(mFolderObserver);
-        mConversationListStatusObserver = new ConversationListStatusObserver();
+        mConversationCursorObserver = new ConversationCursorObserver();
         mUpdater = mActivity.getConversationUpdater();
-        mUpdater.registerConversationListObserver(mConversationListStatusObserver);
+        mUpdater.registerConversationListObserver(mConversationCursorObserver);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext().getResources());
         initializeUiForFirstDisplay();
         configureSearchResultHeader();
@@ -337,20 +339,59 @@ public final class ConversationListFragment extends ListFragment implements
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
-        // Choice mode here represents the current conversation only. CAB mode does not rely on the
-        // platform: it is a local variable within conversation items.
-        mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setOnItemLongClickListener(this);
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setSwipedListener(this);
 
-        // Restore the list state
-        if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
-            mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
-            // TODO: find a better way to unset the selected item when restoring
-            mListView.clearChoices();
+        final int choiceMode;
+        if (savedState != null) {
+            // Restore the choice mode if it was set earlier, or SINGLE if creating a fresh view.
+            // Choice mode here represents the current conversation only. CAB mode does not rely on
+            // the platform: it is a local variable within conversation items.
+            choiceMode = savedState.getInt(CHOICE_MODE_KEY, ListView.CHOICE_MODE_SINGLE);
+            if (savedState.containsKey(LIST_STATE_KEY)) {
+                mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
+                // TODO: find a better way to unset the selected item when restoring
+                mListView.clearChoices();
+            }
+        } else {
+            choiceMode = ListView.CHOICE_MODE_SINGLE;
         }
+        setChoiceMode(choiceMode);
         return rootView;
+    }
+
+    /**
+     * Sets the choice mode of the list view
+     * @param choiceMode ListView#
+     */
+    private final void setChoiceMode(int choiceMode) {
+        mListView.setChoiceMode(choiceMode);
+    }
+
+    /**
+     * Tell the list to select nothing.
+     */
+    public final void setChoiceNone() {
+        final int currentSelected = mListView.getCheckedItemPosition();
+        mListView.clearChoices();
+        // We use the activated state to show the blue highlight on tablet. Clearing the choices
+        // removes the checked state, but doesn't do anything to the activated state.  We must
+        // manually clear that.
+        if (currentSelected != ListView.INVALID_POSITION) {
+            final View v = mListView.getChildAt(currentSelected);
+            if (v != null) {
+                v.setActivated(false);
+            }
+        }
+        setChoiceMode(ListView.CHOICE_MODE_NONE);
+    }
+
+    /**
+     * Tell the list to get out of selecting none.
+     */
+    public final void revertChoiceMode() {
+        setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
@@ -370,9 +411,9 @@ public final class ConversationListFragment extends ListFragment implements
             mActivity.getFolderController().unregisterFolderObserver(mFolderObserver);
             mFolderObserver = null;
         }
-        if (mConversationListStatusObserver != null) {
-            mUpdater.unregisterConversationListObserver(mConversationListStatusObserver);
-            mConversationListStatusObserver = null;
+        if (mConversationCursorObserver != null) {
+            mUpdater.unregisterConversationListObserver(mConversationCursorObserver);
+            mConversationCursorObserver = null;
         }
         mAccountObserver.unregisterAndDestroy();
         super.onDestroyView();
@@ -457,6 +498,7 @@ public final class ConversationListFragment extends ListFragment implements
         super.onSaveInstanceState(outState);
         if (mListView != null) {
             outState.putParcelable(LIST_STATE_KEY, mListView.onSaveInstanceState());
+            outState.putInt(CHOICE_MODE_KEY, mListView.getChoiceMode());
         }
     }
 
@@ -510,7 +552,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     protected void viewConversation(int position) {
         LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
-        setSelected(position);
+        setSelected(position, true);
         final ConversationCursor cursor = getConversationListCursor();
         if (cursor != null && cursor.moveToPosition(position)) {
             final Conversation conv = new Conversation(cursor);
@@ -519,8 +561,17 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
-
+    /**
+     * Sets the selected conversation to the position given here.
+     * @param position
+     * @param different if the currently selected conversation is different from the one provided
+     * here.  This is a difference in conversations, not a difference in positions. For example, a
+     * conversation at position 2 can move to position 4 as a result of new mail.
+     */
     public void setSelected(int position, boolean different) {
+        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE) {
+            return;
+        }
         if (different) {
             mListView.smoothScrollToPosition(position);
         }
@@ -528,14 +579,9 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * Sets the selected position (the highlighted conversation) to the position
-     * provided here.
-     * @param position
+     * Returns the cursor associated with the conversation list.
+     * @return
      */
-    protected final void setSelected(int position) {
-        setSelected(position, true);
-    }
-
     private ConversationCursor getConversationListCursor() {
         return mCallbacks != null ? mCallbacks.getConversationListCursor() : null;
     }
@@ -693,8 +739,9 @@ public final class ConversationListFragment extends ListFragment implements
         if (conv == null) {
             return;
         }
-        if (mListView.getCheckedItemPosition() == -1) {
-            setSelected(conv.position);
+        if (mListView.getChoiceMode() != ListView.CHOICE_MODE_NONE
+                && mListView.getCheckedItemPosition() == -1) {
+            setSelected(conv.position, true);
         }
     }
 

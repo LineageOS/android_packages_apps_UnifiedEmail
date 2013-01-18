@@ -140,6 +140,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_ACTION = "saved-action";
     /** Tag for {@link #mDialogFromSelectedSet} */
     private static final String SAVED_ACTION_FROM_SELECTED = "saved-action-from-selected";
+    /** Tag for {@link #mDetachedConvUri} */
+    private static final String SAVED_DETACHED_CONV_URI = "saved-detached-conv-uri";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -159,6 +161,10 @@ public abstract class AbstractActivityController implements ActivityController {
     protected final RecentFolderList mRecentFolderList;
     protected ConversationListContext mConvListContext;
     protected Conversation mCurrentConversation;
+    /**
+     * The hash of {@link #mCurrentConversation} in detached mode. 0 if we are not in detached mode.
+     */
+    private Uri mDetachedConvUri;
 
     /** A {@link android.content.BroadcastReceiver} that suppresses new e-mail notifications. */
     private SuppressNotificationReceiver mNewEmailReceiver = null;
@@ -842,9 +848,7 @@ public abstract class AbstractActivityController implements ActivityController {
             if (savedState.containsKey(SAVED_ACTION)) {
                 mDialogAction = savedState.getInt(SAVED_ACTION);
             }
-            if (savedState.containsKey(SAVED_ACTION_FROM_SELECTED)) {
-                mDialogFromSelectedSet = savedState.getBoolean(SAVED_ACTION_FROM_SELECTED);
-            }
+            mDialogFromSelectedSet = savedState.getBoolean(SAVED_ACTION_FROM_SELECTED, false);
             mViewMode.handleRestore(savedState);
         } else if (intent != null) {
             handleIntent(intent);
@@ -1429,6 +1433,9 @@ public abstract class AbstractActivityController implements ActivityController {
             outState.putInt(SAVED_ACTION, mDialogAction);
             outState.putBoolean(SAVED_ACTION_FROM_SELECTED, mDialogFromSelectedSet);
         }
+        if (mDetachedConvUri != null) {
+            outState.putParcelable(SAVED_DETACHED_CONV_URI, mDetachedConvUri);
+        }
         mSafeToModifyFragments = false;
         outState.putString(SAVED_HIERARCHICAL_FOLDER,
                 (mFolderListFolder != null) ? Folder.toString(mFolderListFolder) : null);
@@ -1563,7 +1570,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void onRestoreInstanceState(Bundle savedState) {
-        LogUtils.d(LOG_TAG, "IN AAC.onRestoreInstanceState");
+        mDetachedConvUri = savedState.getParcelable(SAVED_DETACHED_CONV_URI);
         if (savedState.containsKey(SAVED_CONVERSATION)) {
             // Open the conversation.
             final Conversation conversation = savedState.getParcelable(SAVED_CONVERSATION);
@@ -1822,7 +1829,14 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void setCurrentConversation(Conversation conversation) {
-        // Must be the first call because this sets conversation.position if a cursor is available.
+        // The controller should come out of detached mode if a new conversation is viewed, or if
+        if (conversation == null || (mDetachedConvUri != null
+                && !mDetachedConvUri.equals(conversation.uri))) {
+            clearDetachedMode();
+        }
+
+        // Must happen *before* setting mCurrentConversation because this sets
+        // conversation.position if a cursor is available.
         mTracker.initialize(conversation);
         mCurrentConversation = conversation;
 
@@ -3218,7 +3232,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // Clear the cache of objects.
         ConversationItemViewModel.onAccessibilityUpdated();
         // Re-render the list if it exists.
-        ConversationListFragment frag = getConversationListFragment();
+        final ConversationListFragment frag = getConversationListFragment();
         if (frag != null) {
             AnimatedAdapter adapter = frag.getAnimatedAdapter();
             if (adapter != null) {
@@ -3269,5 +3283,31 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public VeiledAddressMatcher getVeiledAddressMatcher() {
         return mVeiledMatcher;
-    };
+    }
+
+    @Override
+    public void setDetachedMode() {
+        // Tell the conversation list not to select anything.
+        final ConversationListFragment frag = getConversationListFragment();
+        if (frag != null) {
+            frag.setChoiceNone();
+        } else {
+            // How did we ever land here? Detached mode, and no CLF???
+            LogUtils.e(LOG_TAG, "AAC.setDetachedMode(): CLF = null!");
+        }
+        mDetachedConvUri = mCurrentConversation.uri;
+    }
+
+    private void clearDetachedMode() {
+        // Tell the conversation list to go back to its usual selection behavior.
+        final ConversationListFragment frag = getConversationListFragment();
+        if (frag != null) {
+            frag.revertChoiceMode();
+        } else {
+            // How did we ever land here? Detached mode, and no CLF???
+            LogUtils.e(LOG_TAG, "AAC.clearDetachedMode(): CLF = null!");
+        }
+        mDetachedConvUri = null;
+    }
+
 }

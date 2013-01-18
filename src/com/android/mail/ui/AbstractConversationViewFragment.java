@@ -63,6 +63,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.CursorStatus;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -464,9 +465,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                     LogUtils.d(LOG_TAG, "LOADED CONVERSATION= %s", messageCursor.getDebugDump());
                 }
 
-                // When the last cursor had message(s), and the new version has
-                // no messages, we need to exit conversation view.
-                if (messageCursor.getCount() == 0 && mCursor != null) {
+                // We have no messages: exit conversation view.
+                if (messageCursor.getCount() == 0
+                        && !CursorStatus.isWaitingForResults(messageCursor.getStatus())) {
                     if (mUserVisible) {
                         onError();
                     } else {
