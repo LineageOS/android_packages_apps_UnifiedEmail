@@ -80,4 +80,5 @@
 
     <color name="letter_tile_color">#d8d8d8</color>
     <color name="letter_tile_font_color">#ffffff</color>
+    <color name="tile_divider_color">#ffffff</color>
 </resources>

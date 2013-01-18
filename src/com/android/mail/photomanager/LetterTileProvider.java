@@ -25,6 +25,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint.Align;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -47,12 +49,7 @@ import com.google.common.base.Objects;
 public class LetterTileProvider extends DefaultImageProvider {
     private Bitmap mDefaultBitmap;
     private final LruCache<Integer, Bitmap> mTileBitmapCache;
-    private static int sTilePaddingLeftHalf;
-    private static int sTilePaddingBottomHalf;
-    private static int sTilePaddingLeftQuarter;
-    private static int sTilePaddingBottomQuarter;
-    private static int sTilePaddingBottom;
-    private static int sTilePaddingLeft;
+    private static Rect sBounds;
     private static int sTileLetterFontSize = -1;
     private static int sTileLetterFontSizeSmall;
     private static int sTileLetterFontSizeMed;
@@ -94,27 +91,18 @@ public class LetterTileProvider extends DefaultImageProvider {
                             .getDimensionPixelSize(R.dimen.tile_letter_font_size_med);
                     sTileLetterFontSizeSmall = res
                             .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
-                    sTilePaddingBottom = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_padding_bottom);
-                    sTilePaddingBottomHalf = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_padding_bottom_half);
-                    sTilePaddingBottomQuarter = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_padding_bottom_quarter);
-                    sTilePaddingLeft = res.getDimensionPixelSize(R.dimen.tile_letter_padding_left);
-                    sTilePaddingLeftHalf = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_padding_left_half);
-                    sTilePaddingLeftQuarter = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_padding_left_quarter);
                     sTileColor = res.getColor(R.color.letter_tile_color);
                     sTileFontColor = res.getColor(R.color.letter_tile_font_color);
+                    sBounds = new Rect();
                 }
-                sPaint.setTextSize(getFontSize(d.scale));
-                sPaint.setTypeface(Typeface.DEFAULT);
-                sPaint.setColor(sTileFontColor);
                 Canvas c = new Canvas(bitmap);
                 c.drawColor(sTileColor);
-                c.drawText(first, getLeftPadding(d.scale), d.height - getBottomPadding(d.scale),
-                        sPaint);
+                sPaint.setTextSize(getFontSize(d.scale));
+                sPaint.setTypeface(Typeface.SANS_SERIF);
+                sPaint.setColor(sTileFontColor);
+                sPaint.setTextAlign(Align.CENTER);
+                sPaint.getTextBounds(first, 0, first.length(), sBounds);
+                c.drawText(first, 0+d.width/2, 0+d.height/2+(sBounds.bottom-sBounds.top)/2, sPaint);
                 mTileBitmapCache.put(hash, bitmap);
             }
         } else {
@@ -136,26 +124,6 @@ public class LetterTileProvider extends DefaultImageProvider {
             return sTileLetterFontSizeMed;
         } else {
             return sTileLetterFontSizeSmall;
-        }
-    }
-
-    private int getBottomPadding(float scale)  {
-        if (scale == DividedImageCanvas.ONE) {
-            return sTilePaddingBottom;
-        } else if (scale == DividedImageCanvas.HALF){
-            return sTilePaddingBottomHalf;
-        } else {
-            return sTilePaddingBottomQuarter;
-        }
-    }
-
-    private int getLeftPadding(float scale)  {
-        if (scale == DividedImageCanvas.ONE) {
-            return sTilePaddingLeft;
-        } else if (scale == DividedImageCanvas.HALF){
-            return sTilePaddingLeftHalf;
-        } else {
-            return sTilePaddingLeftQuarter;
         }
     }
 
