@@ -84,32 +84,25 @@ public class AttachmentActionHandler {
         }
     }
 
-    public void showAndDownloadAttachments() {
-        final List<Attachment> attachments = mView.getAttachments();
-
-        for (final Attachment attachment : attachments) {
-            if (!attachment.isPresentLocally()) {
-                startDownloadingAttachment(attachment, AttachmentDestination.CACHE,
-                        UIProvider.AttachmentRendition.BEST);
-            }
-        }
-
-        mView.viewAttachment();
-    }
-
     public void startDownloadingAttachment(int destination) {
-        startDownloadingAttachment(destination, UIProvider.AttachmentRendition.BEST);
+        startDownloadingAttachment(destination, UIProvider.AttachmentRendition.BEST, 0, false);
     }
 
-    public void startDownloadingAttachment(int destination, int rendition) {
-        startDownloadingAttachment(mAttachment, destination, rendition);
+    public void startDownloadingAttachment(
+            int destination, int rendition, int additionalPriority, boolean delayDownload) {
+        startDownloadingAttachment(
+                mAttachment, destination, rendition, additionalPriority, delayDownload);
     }
 
-    private void startDownloadingAttachment(Attachment attachment, int destination, int rendition) {
+    private void startDownloadingAttachment(
+            Attachment attachment, int destination, int rendition, int additionalPriority,
+            boolean delayDownload) {
         final ContentValues params = new ContentValues(2);
         params.put(AttachmentColumns.STATE, AttachmentState.DOWNLOADING);
         params.put(AttachmentColumns.DESTINATION, destination);
         params.put(AttachmentContentValueKeys.RENDITION, rendition);
+        params.put(AttachmentContentValueKeys.ADDITIONAL_PRIORITY, additionalPriority);
+        params.put(AttachmentContentValueKeys.DELAY_DOWNLOAD, delayDownload);
 
         mCommandHandler.sendCommand(attachment.uri, params);
     }
