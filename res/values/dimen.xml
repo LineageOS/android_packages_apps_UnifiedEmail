@@ -49,7 +49,7 @@
     <dimen name="move_slop">4dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">8dip</dimen>
-    <dimen name="folders_left_padding">16dip</dimen>
+    <dimen name="folders_left_padding">4dip</dimen>
     <dimen name="triangle_width">15dip</dimen>
     <dimen name="conversation_page_gutter">16dp</dimen>
     <dimen name="conversation_message_content_margin_side">16dp</dimen>

@@ -43,7 +43,6 @@
     <dimen name="attachment_tile_min_size">180dp</dimen>
     <dimen name="attachment_tile_max_size">254dp</dimen>
     <dimen name="wait_padding">32dp</dimen>
-    <dimen name="folders_left_padding">8dip</dimen>
 
     <dimen name="compose_area_left_padding">80dip</dimen>
     <dimen name="compose_area_right_padding">80dip</dimen>
