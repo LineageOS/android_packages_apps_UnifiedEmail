@@ -194,14 +194,27 @@ public class SendersView {
             ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
             String account) {
         getSenderResources(context);
+        format(context, conversationInfo, messageInfo, maxChars, styledSenders,
+                displayableSenderNames, displayableSenderEmails, account,
+                sUnreadStyleSpan, sReadStyleSpan);
+    }
+
+    public static void format(Context context, ConversationInfo conversationInfo,
+            String messageInfo, int maxChars, ArrayList<SpannableString> styledSenders,
+            ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
+            String account, final TextAppearanceSpan notificationUnreadStyleSpan,
+            final CharacterStyle notificationReadStyleSpan) {
+        getSenderResources(context);
         handlePriority(context, maxChars, messageInfo, conversationInfo, styledSenders,
-                displayableSenderNames, displayableSenderEmails, account);
+                displayableSenderNames, displayableSenderEmails, account,
+                notificationUnreadStyleSpan, notificationReadStyleSpan);
     }
 
     public static void handlePriority(Context context, int maxChars, String messageInfoString,
             ConversationInfo conversationInfo, ArrayList<SpannableString> styledSenders,
             ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
-            String account) {
+            String account, final TextAppearanceSpan unreadStyleSpan,
+            final CharacterStyle readStyleSpan) {
         boolean shouldAddPhotos = displayableSenderEmails != null;
         int maxPriorityToInclude = -1; // inclusive
         int numCharsUsed = messageInfoString.length(); // draft, number drafts,
@@ -263,7 +276,8 @@ public class SendersView {
                         Math.max(nameString.length() - numCharsToRemovePerWord, 0));
             }
             final int priority = currentMessage.priority;
-            style = !currentMessage.read ? getUnreadStyleSpan() : getReadStyleSpan();
+            style = !currentMessage.read ? getWrappedStyleSpan(unreadStyleSpan)
+                    : getWrappedStyleSpan(readStyleSpan);
             if (priority <= maxPriorityToInclude) {
                 spannableDisplay = new SpannableString(nameString);
                 // Don't duplicate senders; leave the first instance, unless the
@@ -333,12 +347,8 @@ public class SendersView {
         }
     }
 
-    private static CharacterStyle getUnreadStyleSpan() {
-        return CharacterStyle.wrap(sUnreadStyleSpan);
-    }
-
-    private static CharacterStyle getReadStyleSpan() {
-        return CharacterStyle.wrap(sReadStyleSpan);
+    private static CharacterStyle getWrappedStyleSpan(final CharacterStyle characterStyle) {
+        return CharacterStyle.wrap(characterStyle);
     }
 
     static String getMe(Context context) {
@@ -353,7 +363,7 @@ public class SendersView {
     }
 
     private static void formatDefault(ConversationItemViewModel header, String sendersString,
-            Context context) {
+            Context context, final CharacterStyle readStyleSpan) {
         getSenderResources(context);
         // Clear any existing sender fragments; we must re-make all of them.
         header.senderFragments.clear();
@@ -371,15 +381,23 @@ public class SendersView {
                 namesOnly[i] = display;
             }
         }
-        generateSenderFragments(header, namesOnly);
+        generateSenderFragments(header, namesOnly, readStyleSpan);
     }
 
-    private static void generateSenderFragments(ConversationItemViewModel header, String[] names) {
+    private static void generateSenderFragments(ConversationItemViewModel header, String[] names,
+            final CharacterStyle readStyleSpan) {
         header.sendersText = TextUtils.join(Address.ADDRESS_DELIMETER + " ", names);
-        header.addSenderFragment(0, header.sendersText.length(), getReadStyleSpan(), true);
+        header.addSenderFragment(0, header.sendersText.length(), getWrappedStyleSpan(readStyleSpan),
+                true);
     }
 
     public static void formatSenders(ConversationItemViewModel header, Context context) {
-        formatDefault(header, header.conversation.senders, context);
+        getSenderResources(context);
+        formatSenders(header, context, sReadStyleSpan);
+    }
+
+    public static void formatSenders(ConversationItemViewModel header, Context context,
+            final CharacterStyle readStyleSpan) {
+        formatDefault(header, header.conversation.senders, context, readStyleSpan);
     }
 }
