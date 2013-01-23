@@ -100,8 +100,8 @@ public class EllipsizedMultilineTextView extends TextView {
         }
 
         builder.append(text, 0, layout.getLineStart(mMaxLines - 1));
-        if (!TextUtils.isEmpty(remainder) && remainder.length() > 1) {
-            builder.append(remainder, 0, remainder.length() - 1);
+        if (!TextUtils.isEmpty(remainder)) {
+            builder.append(remainder);
         }
         setText(builder, TextView.BufferType.SPANNABLE);
     }
