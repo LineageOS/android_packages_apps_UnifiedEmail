@@ -157,7 +157,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, Integer.class)
             .put(AccountColumns.SettingsColumns.SNAP_HEADERS, Integer.class)
             .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, Integer.class)
-            .put(AccountColumns.SettingsColumns.SHOW_CHECKBOXES, Integer.class)
+            .put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_DELETE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)
@@ -209,7 +209,7 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 28;
     public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 29;
     public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 30;
-    public static final int ACCOUNT_SETTINGS_SHOW_CHECKBOXES_COLUMN = 31;
+    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 31;
     public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 32;
     public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 33;
     public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 34;
@@ -534,9 +534,9 @@ public class UIProvider {
 
             /**
              * Integer column containing the user's specified checkbox preference. A
-             * non zero value means to show checkboxes.
+             * non zero value means to hide checkboxes.
              */
-            public static final String SHOW_CHECKBOXES = "show_checkboxes";
+            public static final String HIDE_CHECKBOXES = "hide_checkboxes";
 
             /**
              * Integer column containing the user's specified confirm delete preference value.
@@ -644,8 +644,8 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.SNAP_HEADERS,ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN)
             .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR,
                     ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN)
-            .put(AccountColumns.SettingsColumns.SHOW_CHECKBOXES,
-                    ACCOUNT_SETTINGS_SHOW_CHECKBOXES_COLUMN)
+            .put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES,
+                    ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN)
             .put(AccountColumns.SettingsColumns.CONFIRM_DELETE,
                     ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN)
             .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE,

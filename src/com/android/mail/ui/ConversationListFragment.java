@@ -435,7 +435,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (!(view instanceof ToggleableItem)) {
             return;
         }
-        if (!mAccount.settings.showCheckboxes && !mSelectedSet.isEmpty()) {
+        if (mAccount.settings.hideCheckboxes && !mSelectedSet.isEmpty()) {
             ToggleableItem v = (ToggleableItem) view;
             v.toggleCheckMarkOrBeginDrag();
         } else {
