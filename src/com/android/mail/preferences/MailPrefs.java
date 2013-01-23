@@ -45,6 +45,7 @@ public final class MailPrefs {
 
     // Hidden preference to indicate what version a "What's New" dialog was last shown for.
     private static final String WHATS_NEW_LAST_SHOWN_VERSION = "whats-new-last-shown-version";
+    public static final String ENABLE_CONVLIST_PHOTOS = "enable-convlist-photos";
 
     public static MailPrefs get(Context c) {
         if (sInstance == null) {
@@ -61,6 +62,13 @@ public final class MailPrefs {
         return PREFS_NAME;
     }
 
+    /**
+     * Set the value of a shared preference of type boolean.
+     */
+    public void setSharedBooleanPreference(String pref, boolean value) {
+        mPrefs.edit().putBoolean(pref, value).apply();
+    }
+
     public boolean isWidgetConfigured(int appWidgetId) {
         return mPrefs.contains(WIDGET_ACCOUNT_PREFIX + appWidgetId);
     }
@@ -74,6 +82,14 @@ public final class MailPrefs {
 
     public String getWidgetConfiguration(int appWidgetId) {
         return mPrefs.getString(WIDGET_ACCOUNT_PREFIX + appWidgetId, null);
+    }
+
+    /**
+     * Get whether to show the experimental inline contact photos in the
+     * conversation list.
+     */
+    public boolean areConvListPhotosEnabled() {
+        return mPrefs.getBoolean(ENABLE_CONVLIST_PHOTOS, false);
     }
 
     private static String createWidgetPreferenceValue(Account account, Folder folder) {

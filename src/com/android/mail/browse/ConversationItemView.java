@@ -63,6 +63,7 @@ import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.ContactPhotoManager;
 import com.android.mail.photomanager.LetterTileProvider;
+import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -176,6 +177,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private TextView mSendersTextView;
     private TextView mDateTextView;
     private DividedImageCanvas mContactImagesHolder;
+    private boolean mConvListPhotosEnabled;
     private static int sFoldersLeftPadding;
     private static TextAppearanceSpan sDateTextAppearance;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
@@ -455,6 +457,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mCheckboxesEnabled = !checkboxesDisabled;
+        mConvListPhotosEnabled = MailPrefs.get(activity.getActivityContext())
+                .areConvListPhotosEnabled();
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
@@ -515,7 +519,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             ConversationItemViewCoordinates.refreshConversationHeights(mContext);
         }
         mCoordinates = ConversationItemViewCoordinates.forWidth(mContext, mViewWidth, mMode,
-                mHeader.standardScaledDimen, mCheckboxesEnabled);
+                mHeader.standardScaledDimen, mConvListPhotosEnabled);
         calculateTextsAndBitmaps();
         calculateCoordinates();
 
@@ -569,7 +573,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mSelectedConversationSet != null) {
             mChecked = mSelectedConversationSet.contains(mHeader.conversation);
         }
-        mHeader.checkboxVisible = mCheckboxesEnabled;
+        mHeader.checkboxVisible = mCheckboxesEnabled && !mConvListPhotosEnabled;
 
         final boolean isUnread = mHeader.unread;
         updateBackground(isUnread);
@@ -647,7 +651,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private void loadSenderImages() {
-        if (!mCheckboxesEnabled && mHeader.displayableSenderEmails != null
+        if (mConvListPhotosEnabled && mHeader.displayableSenderEmails != null
                 && mHeader.displayableSenderEmails.size() > 0) {
             mContactImagesHolder.setDimensions(mCoordinates.contactImagesWidth,
                     mCoordinates.contactImagesHeight);
@@ -1023,13 +1027,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     @Override
     protected void onDraw(Canvas canvas) {
         // Check mark.
-        if (mHeader.checkboxVisible) {
-            Bitmap checkmark = mChecked ? CHECKMARK_ON : CHECKMARK_OFF;
-            canvas.drawBitmap(checkmark, mCoordinates.checkmarkX, mCoordinates.checkmarkY, sPaint);
-        } else {
+        if (mConvListPhotosEnabled) {
             canvas.save();
             drawContactImages(canvas);
             canvas.restore();
+        } else if (mHeader.checkboxVisible) {
+            Bitmap checkmark = mChecked ? CHECKMARK_ON : CHECKMARK_OFF;
+            canvas.drawBitmap(checkmark, mCoordinates.checkmarkX, mCoordinates.checkmarkY, sPaint);
         }
 
         // Personal Level.
@@ -1144,7 +1148,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     private void drawSenders(Canvas canvas) {
         int left;
-        if (!mCheckboxesEnabled && mCoordinates.inlinePersonalLevel) {
+        if (mConvListPhotosEnabled && mCoordinates.inlinePersonalLevel) {
             if (mCoordinates.showPersonalLevel && mHeader.personalLevelBitmap != null) {
                 left = mCoordinates.sendersX;
             } else {

@@ -168,8 +168,8 @@ public class ConversationItemViewCoordinates {
     /**
      * Returns the layout id to be inflated in this mode.
      */
-    private static int getLayoutId(int mode, boolean checkboxesEnabled) {
-        if (checkboxesEnabled) {
+    private static int getLayoutId(int mode, boolean convListPhotosEnabled) {
+        if (!convListPhotosEnabled) {
             switch (mode) {
                 case WIDE_MODE:
                     return R.layout.conversation_item_view_wide;
@@ -339,17 +339,17 @@ public class ConversationItemViewCoordinates {
      * the view width.
      */
     public static ConversationItemViewCoordinates forWidth(Context context, int width, int mode,
-            int standardScaledDimen, boolean checkboxesEnabled) {
+            int standardScaledDimen, boolean convListPhotosEnabled) {
         ConversationItemViewCoordinates coordinates = sCache.get(Objects.hashCode(width, mode,
-                checkboxesEnabled));
+                convListPhotosEnabled));
         if (coordinates == null) {
             coordinates = new ConversationItemViewCoordinates();
-            sCache.put(Objects.hashCode(width, mode, checkboxesEnabled), coordinates);
+            sCache.put(Objects.hashCode(width, mode, convListPhotosEnabled), coordinates);
 
             // Layout the appropriate view.
             int height = getHeight(context, mode);
-            View view = LayoutInflater.from(context).inflate(getLayoutId(mode, checkboxesEnabled),
-                    null);
+            View view = LayoutInflater.from(context).inflate(
+                    getLayoutId(mode, convListPhotosEnabled), null);
             int widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
             int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
             Resources res = context.getResources();
@@ -442,7 +442,7 @@ public class ConversationItemViewCoordinates {
             coordinates.paperclipY = getY(paperclip);
 
             // Contact images view
-            if (!checkboxesEnabled) {
+            if (convListPhotosEnabled) {
             View contactImagesView = view.findViewById(R.id.contact_image);
                 if (contactImagesView != null) {
                     coordinates.contactImagesWidth = contactImagesView.getWidth();
