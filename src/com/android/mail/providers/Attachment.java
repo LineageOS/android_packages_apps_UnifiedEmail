@@ -256,7 +256,7 @@ public class Attachment implements Parcelable {
     }
 
     public boolean isDownloading() {
-        return state == AttachmentState.DOWNLOADING;
+        return state == AttachmentState.DOWNLOADING || state == AttachmentState.PAUSED;
     }
 
     public boolean isSavedToExternal() {
@@ -268,7 +268,7 @@ public class Attachment implements Parcelable {
     }
 
     public boolean shouldShowProgress() {
-        return state == AttachmentState.DOWNLOADING
+        return (state == AttachmentState.DOWNLOADING || state == AttachmentState.PAUSED)
                 && size > 0 && downloadedSize > 0 && downloadedSize <= size;
     }
 

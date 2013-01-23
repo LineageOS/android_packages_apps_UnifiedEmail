@@ -41,7 +41,6 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AttachmentActionHandler {
     private static final String PROGRESS_FRAGMENT_TAG = "attachment-progress";
@@ -72,6 +71,10 @@ public class AttachmentActionHandler {
     }
 
     public void showAttachment(int destination) {
+        if (mView == null) {
+            return;
+        }
+
         // If the caller requested that this attachments be saved to the external storage, we should
         // verify that the it was saved there.
         if (mAttachment.isPresentLocally() &&
@@ -84,6 +87,10 @@ public class AttachmentActionHandler {
         }
     }
 
+    /**
+     * Start downloading the full size attachment set with
+     * {@link #setAttachment(Attachment)} immediately.
+     */
     public void startDownloadingAttachment(int destination) {
         startDownloadingAttachment(destination, UIProvider.AttachmentRendition.BEST, 0, false);
     }
@@ -146,6 +153,10 @@ public class AttachmentActionHandler {
      * previously brought up (by tapping 'View') and the download has now finished.
      */
     public void updateStatus(boolean loaderResult) {
+        if (mView == null) {
+            return;
+        }
+
         final boolean showProgress = mAttachment.shouldShowProgress();
 
         final AttachmentProgressDialogFragment dialog = (AttachmentProgressDialogFragment)
