@@ -57,14 +57,14 @@ public class LetterTileProvider extends DefaultImageProvider {
     private static int sTileFontColor;
     private static TextPaint sPaint = new TextPaint();
     private static int DEFAULT_AVATAR_DRAWABLE = R.drawable.ic_contact_picture;
-    private static final Pattern ALPHABET = Pattern.compile("^[a-zA-Z]+$");
+    private static final Pattern ALPHABET = Pattern.compile("^[a-zA-Z0-9]+$");
 
     public LetterTileProvider() {
         super();
         final float cacheSizeAdjustment =
                 (MemoryUtils.getTotalMemorySize() >= MemoryUtils.LARGE_RAM_THRESHOLD) ?
                         1.0f : 0.5f;
-        final int bitmapCacheSize = (int) (cacheSizeAdjustment * 26);
+        final int bitmapCacheSize = (int) (cacheSizeAdjustment * 36);
         mTileBitmapCache = new LruCache<Integer, Bitmap>(bitmapCacheSize);
     }
 
