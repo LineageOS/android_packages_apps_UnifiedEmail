@@ -95,13 +95,14 @@ public class SendersView {
         return isUnread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT;
     }
 
-    private static void getSenderResources(Context context) {
-        if (sConfigurationChangedReceiver == null) {
+    private static synchronized void getSenderResources(
+            Context context, final boolean resourceCachingRequired) {
+        if (sConfigurationChangedReceiver == null && resourceCachingRequired) {
             sConfigurationChangedReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     sDraftSingularString = null;
-                    getSenderResources(context);
+                    getSenderResources(context, true);
                 }
             };
             context.registerReceiver(sConfigurationChangedReceiver, new IntentFilter(
@@ -127,7 +128,8 @@ public class SendersView {
         }
     }
 
-    public static SpannableStringBuilder createMessageInfo(Context context, Conversation conv) {
+    public static SpannableStringBuilder createMessageInfo(Context context, Conversation conv,
+            final boolean resourceCachingRequired) {
         ConversationInfo conversationInfo = conv.conversationInfo;
         int sendingStatus = conv.sendingState;
         SpannableStringBuilder messageInfo = new SpannableStringBuilder();
@@ -140,7 +142,7 @@ public class SendersView {
                 break;
             }
         }
-        getSenderResources(context);
+        getSenderResources(context, resourceCachingRequired);
         if (conversationInfo != null) {
             int count = conversationInfo.messageCount;
             int draftCount = conversationInfo.draftCount;
@@ -186,28 +188,41 @@ public class SendersView {
                         .append(messageInfo);
             }
         }
+
+        if (!resourceCachingRequired) {
+            clearResourceCache();
+        }
+
         return messageInfo;
     }
 
     public static void format(Context context, ConversationInfo conversationInfo,
             String messageInfo, int maxChars, ArrayList<SpannableString> styledSenders,
             ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
-            String account) {
-        getSenderResources(context);
+            String account, final boolean resourceCachingRequired) {
+        getSenderResources(context, resourceCachingRequired);
         format(context, conversationInfo, messageInfo, maxChars, styledSenders,
                 displayableSenderNames, displayableSenderEmails, account,
-                sUnreadStyleSpan, sReadStyleSpan);
+                sUnreadStyleSpan, sReadStyleSpan, resourceCachingRequired);
+
+        if (!resourceCachingRequired) {
+            clearResourceCache();
+        }
     }
 
     public static void format(Context context, ConversationInfo conversationInfo,
             String messageInfo, int maxChars, ArrayList<SpannableString> styledSenders,
             ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
             String account, final TextAppearanceSpan notificationUnreadStyleSpan,
-            final CharacterStyle notificationReadStyleSpan) {
-        getSenderResources(context);
+            final CharacterStyle notificationReadStyleSpan, final boolean resourceCachingRequired) {
+        getSenderResources(context, resourceCachingRequired);
         handlePriority(context, maxChars, messageInfo, conversationInfo, styledSenders,
                 displayableSenderNames, displayableSenderEmails, account,
                 notificationUnreadStyleSpan, notificationReadStyleSpan);
+
+        if (!resourceCachingRequired) {
+            clearResourceCache();
+        }
     }
 
     public static void handlePriority(Context context, int maxChars, String messageInfoString,
@@ -363,8 +378,9 @@ public class SendersView {
     }
 
     private static void formatDefault(ConversationItemViewModel header, String sendersString,
-            Context context, final CharacterStyle readStyleSpan) {
-        getSenderResources(context);
+            Context context, final CharacterStyle readStyleSpan,
+            final boolean resourceCachingRequired) {
+        getSenderResources(context, resourceCachingRequired);
         // Clear any existing sender fragments; we must re-make all of them.
         header.senderFragments.clear();
         String[] senders = TextUtils.split(sendersString, Address.ADDRESS_DELIMETER);
@@ -382,6 +398,10 @@ public class SendersView {
             }
         }
         generateSenderFragments(header, namesOnly, readStyleSpan);
+
+        if (!resourceCachingRequired) {
+            clearResourceCache();
+        }
     }
 
     private static void generateSenderFragments(ConversationItemViewModel header, String[] names,
@@ -391,13 +411,27 @@ public class SendersView {
                 true);
     }
 
-    public static void formatSenders(ConversationItemViewModel header, Context context) {
-        getSenderResources(context);
-        formatSenders(header, context, sReadStyleSpan);
+    public static void formatSenders(ConversationItemViewModel header, Context context,
+            final boolean resourceCachingRequired) {
+        getSenderResources(context, resourceCachingRequired);
+        formatSenders(header, context, sReadStyleSpan, resourceCachingRequired);
+
+        if (!resourceCachingRequired) {
+            clearResourceCache();
+        }
     }
 
     public static void formatSenders(ConversationItemViewModel header, Context context,
-            final CharacterStyle readStyleSpan) {
-        formatDefault(header, header.conversation.senders, context, readStyleSpan);
+            final CharacterStyle readStyleSpan, final boolean resourceCachingRequired) {
+        formatDefault(header, header.conversation.senders, context, readStyleSpan,
+                resourceCachingRequired);
+
+        if (!resourceCachingRequired) {
+            clearResourceCache();
+        }
+    }
+
+    private static void clearResourceCache() {
+        sDraftSingularString = null;
     }
 }

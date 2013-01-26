@@ -585,7 +585,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mHeader.conversation.conversationInfo != null) {
             Context context = getContext();
             mHeader.messageInfoString = SendersView
-                    .createMessageInfo(context, mHeader.conversation);
+                    .createMessageInfo(context, mHeader.conversation, true);
             int maxChars = ConversationItemViewCoordinates.getSendersLength(context,
                     ConversationItemViewCoordinates.getMode(context, mActivity.getViewMode()),
                     mHeader.conversation.hasAttachments);
@@ -594,11 +594,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mHeader.styledSenders = new ArrayList<SpannableString>();
             SendersView.format(context, mHeader.conversation.conversationInfo,
                     mHeader.messageInfoString.toString(), maxChars, mHeader.styledSenders,
-                    mHeader.displayableSenderNames, mHeader.displayableSenderEmails, mAccount);
+                    mHeader.displayableSenderNames, mHeader.displayableSenderEmails, mAccount,
+                    true);
             // If we have displayable sendres, load their thumbnails
             loadSenderImages();
         } else {
-            SendersView.formatSenders(mHeader, getContext());
+            SendersView.formatSenders(mHeader, getContext(), true);
         }
 
         SpannableString spannableDate = new SpannableString(DateUtils.getRelativeTimeSpanString(
