@@ -2542,7 +2542,7 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set, mFolder);
-        if (mViewMode.isListMode()) {
+        if (mViewMode.isListMode() || (mIsTablet && mViewMode.isConversationMode())) {
             enableCabMode();
         }
     }
