@@ -35,8 +35,6 @@
         android:focusable="false"
         android:clickable="true"/>
 
-    <include layout="@layout/actionbar_folder" />
-
     <include layout="@layout/actionbar_subject" />
 
 </com.android.mail.ui.SearchMailActionBarView>
