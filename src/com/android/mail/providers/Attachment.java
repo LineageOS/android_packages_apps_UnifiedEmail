@@ -90,6 +90,9 @@ public class Attachment implements Parcelable {
     public int downloadedSize;
 
     /**
+     * Shareable, openable uri for this attachment
+     * content:// Gmail.getAttachmentDefaultUri() if origin is SERVER_ATTACHMENT
+     * content:// uri pointing to the content to be uploaded if origin is LOCAL_FILE
      * @see AttachmentColumns#CONTENT_URI
      */
     public Uri contentUri;
@@ -159,9 +162,13 @@ public class Attachment implements Parcelable {
         name = srcJson.optString(AttachmentColumns.NAME, null);
         size = srcJson.optInt(AttachmentColumns.SIZE);
         uri = parseOptionalUri(srcJson, AttachmentColumns.URI);
-        contentUri = parseOptionalUri(srcJson, AttachmentColumns.CONTENT_URI);
         contentType = srcJson.optString(AttachmentColumns.CONTENT_TYPE, null);
         state = srcJson.optInt(AttachmentColumns.STATE);
+        destination = srcJson.optInt(AttachmentColumns.DESTINATION);
+        downloadedSize = srcJson.optInt(AttachmentColumns.DOWNLOADED_SIZE);
+        contentUri = parseOptionalUri(srcJson, AttachmentColumns.CONTENT_URI);
+        thumbnailUri = parseOptionalUri(srcJson, AttachmentColumns.THUMBNAIL_URI);
+        previewIntentUri = parseOptionalUri(srcJson, AttachmentColumns.PREVIEW_INTENT_URI);
         providerData = srcJson.optString(AttachmentColumns.PROVIDER_DATA);
     }
 
@@ -186,27 +193,16 @@ public class Attachment implements Parcelable {
         result.putOpt(AttachmentColumns.NAME, name);
         result.putOpt(AttachmentColumns.SIZE, size);
         result.putOpt(AttachmentColumns.URI, stringify(uri));
-        result.putOpt(AttachmentColumns.CONTENT_URI, stringify(contentUri));
         result.putOpt(AttachmentColumns.CONTENT_TYPE, contentType);
-        result.put(AttachmentColumns.STATE, state);
+        result.putOpt(AttachmentColumns.STATE, state);
+        result.putOpt(AttachmentColumns.DESTINATION, destination);
+        result.putOpt(AttachmentColumns.DOWNLOADED_SIZE, downloadedSize);
+        result.putOpt(AttachmentColumns.CONTENT_URI, stringify(contentUri));
+        result.putOpt(AttachmentColumns.THUMBNAIL_URI, stringify(thumbnailUri));
+        result.putOpt(AttachmentColumns.PREVIEW_INTENT_URI, stringify(previewIntentUri));
         result.put(AttachmentColumns.PROVIDER_DATA, providerData);
 
         return result;
-    }
-
-    public static final int SERVER_ATTACHMENT = 0;
-    public static final int LOCAL_FILE = 1;
-
-    public String toJoinedString() {
-        return TextUtils.join("|", Lists.newArrayList(
-                partId == null ? "" : partId,
-                name == null ? "" : name.replaceAll("[|\n]", ""),
-                contentType,
-                size,
-                contentType,
-                contentUri != null ? SERVER_ATTACHMENT : LOCAL_FILE,
-                contentUri,
-                ""));
     }
 
     @Override
@@ -214,10 +210,7 @@ public class Attachment implements Parcelable {
         try {
             final JSONObject jsonObject = toJSON();
             // Add some additional fields that are helpful when debugging issues
-            jsonObject.put(AttachmentColumns.DOWNLOADED_SIZE, downloadedSize);
-            jsonObject.put(AttachmentColumns.DESTINATION, destination);
-            jsonObject.put(AttachmentColumns.THUMBNAIL_URI, thumbnailUri);
-            jsonObject.put(AttachmentColumns.PREVIEW_INTENT_URI, previewIntentUri);
+            jsonObject.put("partId", partId);
             return jsonObject.toString();
         } catch (JSONException e) {
             LogUtils.e(LOG_TAG, e, "JSONException in toString");
@@ -290,37 +283,11 @@ public class Attachment implements Parcelable {
      */
     public Uri getIdentifierUri() {
         if (mIdentifierUri == null) {
-            mIdentifierUri = Utils.isEmpty(uri) ? Uri.EMPTY : uri.buildUpon().clearQuery().build();
+            mIdentifierUri = Utils.isEmpty(uri) ?
+                    (Utils.isEmpty(contentUri) ? Uri.EMPTY : contentUri)
+                    : uri.buildUpon().clearQuery().build();
         }
         return mIdentifierUri;
-    }
-
-    /**
-     * Sets the contentUri. Side effect: sets name.
-     * 
-     * If the input is a filename (pathless), only set the name. If the input is
-     * a uri, set contentUri and the name.
-     */
-    public void setContentUri(String uriString) {
-        if (uriString == null) {
-            contentUri = null;
-            // do not set name to null. avoid losing partial data
-        } else {
-            Uri uri = Uri.parse(uriString);
-            if (uri.getPath() != null) {
-                // uri
-                contentUri = uri;
-                if (name == null) {
-                    name = contentUri.getLastPathSegment();
-                }
-            } else {
-                // filename
-                contentUri = null;
-                if (name == null) {
-                    name = uriString;
-                }
-            }
-        }
     }
 
     /**
@@ -391,6 +358,20 @@ public class Attachment implements Parcelable {
             }
         }
         return results;
+    }
+
+    private static final String SERVER_ATTACHMENT = "SERVER_ATTACHMENT";
+    private static final String LOCAL_FILE = "LOCAL_FILE";
+
+    public String toJoinedString() {
+        return TextUtils.join("|", Lists.newArrayList(
+                partId == null ? "" : partId,
+                name == null ? "" : name.replaceAll("[|\n]", ""),
+                contentType,
+                String.valueOf(size),
+                contentType,
+                contentUri != null ? SERVER_ATTACHMENT : LOCAL_FILE,
+                contentUri));
     }
 
     public static final Creator<Attachment> CREATOR = new Creator<Attachment>() {

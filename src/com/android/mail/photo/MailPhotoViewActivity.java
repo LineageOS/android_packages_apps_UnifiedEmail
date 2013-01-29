@@ -196,7 +196,6 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             mActionHandler.setAttachment(attachment);
             mActionHandler.startDownloadingAttachment(attachment.destination);
         }
-        return;
     }
 
     @Override
@@ -323,11 +322,6 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         }
 
         mActionHandler.shareAttachments(uris);
-    }
-
-    @Override
-    public void onNewPhotoLoaded(int position) {
-        // do nothing
     }
 
     /**
