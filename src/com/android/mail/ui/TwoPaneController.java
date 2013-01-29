@@ -37,8 +37,6 @@ import com.android.mail.utils.Utils;
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
  * abounds.
  */
-
-// Called TwoPaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
     private TwoPaneLayout mLayout;
     private Conversation mConversationToShow;
@@ -121,9 +119,8 @@ public final class TwoPaneController extends AbstractActivityController {
         }
         fragmentTransaction.replace(R.id.content_pane, folderListFragment, TAG_FOLDER_LIST);
         fragmentTransaction.commitAllowingStateLoss();
-        // Since we are showing the folder list, we are at the start of the view
-        // stack.
-        // TODO(viki): We don't need this call. Evaluate and remove.
+        // We only set the action bar if the viewmode has been set previously. Otherwise, we leave
+        // the action bar in the state it is currently in.
         if (mViewMode.getMode() != ViewMode.UNKNOWN) {
             resetActionBarIcon();
         }
