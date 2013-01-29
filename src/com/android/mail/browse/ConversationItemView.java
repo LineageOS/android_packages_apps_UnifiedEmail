@@ -344,9 +344,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         setClickable(true);
         setLongClickable(true);
         mContext = context.getApplicationContext();
-        mTabletDevice = Utils.useTabletUI(mContext);
+        final Resources res = mContext.getResources();
+        mTabletDevice = Utils.useTabletUI(res);
         mAccount = account;
-        Resources res = mContext.getResources();
 
         if (CHECKMARK_OFF == null) {
             // Initialize static bitmaps.

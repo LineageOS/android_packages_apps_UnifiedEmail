@@ -274,7 +274,7 @@ public final class ConversationListFragment extends ListFragment implements
         mConversationListStatusObserver = new ConversationListStatusObserver();
         mUpdater = mActivity.getConversationUpdater();
         mUpdater.registerConversationListObserver(mConversationListStatusObserver);
-        mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
+        mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext().getResources());
         initializeUiForFirstDisplay();
         configureSearchResultHeader();
         // The onViewModeChanged callback doesn't get called when the mode
@@ -444,7 +444,7 @@ public final class ConversationListFragment extends ListFragment implements
         // When a new list item is clicked, commit any existing leave behind
         // items. Wait until we have opened the desired conversation to cause
         // any position changes.
-        commitDestructiveActions(Utils.useTabletUI(mActivity.getActivityContext()));
+        commitDestructiveActions(Utils.useTabletUI(mActivity.getActivityContext().getResources()));
     }
 
     @Override

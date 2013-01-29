@@ -36,6 +36,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -175,6 +176,9 @@ public abstract class AbstractActivityController implements ActivityController {
     private AsyncRefreshTask mAsyncRefreshTask;
 
     private boolean mDestroyed;
+
+    /** True if running on tablet */
+    private final boolean mIsTablet;
 
     /**
      * Are we in a point in the Activity/Fragment lifecycle where it's safe to execute fragment
@@ -351,11 +355,11 @@ public abstract class AbstractActivityController implements ActivityController {
         // aware of the selected set.
         mSelectedSet.addObserver(this);
 
-        mFolderItemUpdateDelayMs =
-                mContext.getResources().getInteger(R.integer.folder_item_refresh_delay_ms);
-        mShowUndoBarDelay =
-                mContext.getResources().getInteger(R.integer.show_undo_bar_delay_ms);
+        final Resources r = mContext.getResources();
+        mFolderItemUpdateDelayMs = r.getInteger(R.integer.folder_item_refresh_delay_ms);
+        mShowUndoBarDelay = r.getInteger(R.integer.show_undo_bar_delay_ms);
         mVeiledMatcher = VeiledAddressMatcher.newInstance(activity.getResources());
+        mIsTablet = Utils.useTabletUI(r);
     }
 
     @Override
@@ -1190,7 +1194,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (currentConversationInView) {
             final int autoAdvanceSetting = mAccount.settings.getAutoAdvanceSetting();
 
-            if (autoAdvanceSetting == AutoAdvance.UNSET && Utils.useTabletUI(mContext)) {
+            if (autoAdvanceSetting == AutoAdvance.UNSET && mIsTablet) {
                 displayAutoAdvanceDialogAndPerformAction(operation);
                 return false;
             } else {
@@ -1801,7 +1805,7 @@ public abstract class AbstractActivityController implements ActivityController {
     public final void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
         // Only animate destructive actions if we are going to be showing the
         // conversation list when we show the next conversation.
-        commitDestructiveActions(Utils.useTabletUI(mContext));
+        commitDestructiveActions(mIsTablet);
         showConversation(conversation, inLoaderCallbacks);
     }
 
@@ -2141,7 +2145,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 // default recents. The default recents will not stomp on the existing value: it
                 // will be shown in addition to the default folders: the max number of recent
                 // folders is more than 1+num(defaultRecents).
-                if (data != null && data.getCount() <= 1 && !Utils.useTabletUI(mContext)) {
+                if (data != null && data.getCount() <= 1 && !mIsTablet) {
                     final class PopulateDefault extends AsyncTask<Uri, Void, Void> {
                         @Override
                         protected Void doInBackground(Uri... uri) {
