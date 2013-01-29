@@ -127,10 +127,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private static final String LOG_TAG = LogTag.getLogTag();
     private static final int INCREASE_WAIT_COUNT = 2;
 
-    public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
-            ConversationSelectionSet batch,
-            ControllableActivity activity, SwipeableListView listView) {
-        super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
+    public AnimatedAdapter(Context context, ConversationCursor cursor,
+            ConversationSelectionSet batch, ControllableActivity activity,
+            SwipeableListView listView) {
+        super(context, -1, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
         setAccount(mAccountListener.initialize(activity.getAccountController()));

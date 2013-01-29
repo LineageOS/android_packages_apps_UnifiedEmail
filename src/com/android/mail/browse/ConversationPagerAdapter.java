@@ -128,6 +128,11 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     }
 
     private ConversationCursor getCursor() {
+        if (mDetachedMode) {
+            // In detached mode, the pager is decoupled from the cursor. Nothing should rely on the
+            // cursor at this point.
+            return null;
+        }
         if (mController == null) {
             // Happens when someone calls setActivityController(null) on us. This is done in
             // ConversationPagerController.stopListening() to indicate that the Conversation View
@@ -277,6 +282,9 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             return;
         }
 
+        // If we are in detached mode, changes to the cursor are of no interest to us, but they may
+        // be to parent classes.
+
         // when the currently visible item disappears from the dataset:
         //   if the new version of the currently visible item has zero messages:
         //     notify the list controller so it can handle this 'current conversation gone' case
@@ -284,13 +292,14 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         //   else
         //     'detach' the conversation view from the cursor, keeping the current item as-is but
         //     disabling swipe (effectively the same as singleton mode)
-        if (mController != null) {
+        if (mController != null && !mDetachedMode) {
             final Conversation currConversation = mController.getCurrentConversation();
             final int pos = getConversationPosition(currConversation);
             if (pos == POSITION_NONE && getCursor() != null && currConversation != null) {
                 // enable detached mode and do no more here. the fragment itself will figure out
                 // if the conversation is empty (using message list cursor) and back out if needed.
                 mDetachedMode = true;
+                mController.setDetachedMode();
                 LogUtils.i(LOG_TAG, "CPA: current conv is gone, reverting to detached mode. c=%s",
                         currConversation.uri);
             } else {
@@ -331,10 +340,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
 
     public int getConversationPosition(Conversation conv) {
         if (isPagingDisabled()) {
-            if (getCursor() == null) {
-                return POSITION_NONE;
-            }
-
             if (conv != getDefaultConversation()) {
                 LogUtils.d(LOG_TAG, "unable to find conversation in singleton mode. c=%s", conv);
                 return POSITION_NONE;

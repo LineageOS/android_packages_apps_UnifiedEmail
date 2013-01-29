@@ -73,4 +73,9 @@ public interface ConversationListCallbacks {
      * Detect if there are any animations occuring in the conversation list.
      */
     boolean isAnimating();
+
+    /**
+     * Tell the controller that the conversation view has entered detached mode.
+     */
+    void setDetachedMode();
 }
