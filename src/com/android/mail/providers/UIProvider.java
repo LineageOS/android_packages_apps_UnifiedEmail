@@ -80,14 +80,8 @@ public class UIProvider {
         public static boolean isSyncInProgress(int syncStatus) {
             return 0 != (syncStatus & (BACKGROUND_SYNC |
                     USER_REFRESH |
-                    LIVE_QUERY |
-                    USER_MORE_RESULTS));
+                    LIVE_QUERY));
         }
-        /**
-         * Unused currently, is not used by any provider.
-         * TODO(viki): Remove.
-         */
-        public static final int USER_MORE_RESULTS = 1<<5;
     }
 
     /**
