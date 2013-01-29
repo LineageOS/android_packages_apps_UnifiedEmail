@@ -22,6 +22,7 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -132,8 +133,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     public MailActionBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mShowConversationSubject = getResources().getBoolean(R.bool.show_conversation_subject);
-        mIsOnTablet = Utils.useTabletUI(context);
+        final Resources r = getResources();
+        mShowConversationSubject = r.getBoolean(R.bool.show_conversation_subject);
+        mIsOnTablet = Utils.useTabletUI(r);
     }
 
     // update the pager title strip as the Folder's conversation count changes
@@ -238,8 +240,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mFolderObserver = new FolderObserver();
         mController.registerFolderObserver(mFolderObserver);
         // We don't want to include the "Show all folders" menu item on tablet devices
-        final boolean showAllFolders = !Utils.useTabletUI(getContext());
-        mSpinnerAdapter = new AccountSpinnerAdapter(activity, getContext(), showAllFolders);
+        final Context context = getContext();
+        final boolean showAllFolders = !Utils.useTabletUI(context.getResources());
+        mSpinnerAdapter = new AccountSpinnerAdapter(activity, context, showAllFolders);
         mSpinner = (MailSpinner) findViewById(R.id.account_spinner);
         mSpinner.setAdapter(mSpinnerAdapter);
         mSpinner.setController(mController);

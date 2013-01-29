@@ -57,7 +57,7 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
 
     public ConversationListFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mTabletDevice = Utils.useTabletUI(context);
+        mTabletDevice = Utils.useTabletUI(context.getResources());
     }
 
     @Override

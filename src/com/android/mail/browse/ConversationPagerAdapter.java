@@ -39,7 +39,6 @@ import com.android.mail.ui.SecureConversationViewFragment;
 import com.android.mail.utils.FragmentStatePagerAdapter2;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 
 public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         implements ViewPager.OnPageChangeListener {
