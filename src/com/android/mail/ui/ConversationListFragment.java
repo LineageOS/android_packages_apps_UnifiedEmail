@@ -235,8 +235,8 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onActivityCreated(Bundle savedState) {
+        super.onActivityCreated(savedState);
         // Strictly speaking, we get back an android.app.Activity from
         // getActivity. However, the
         // only activity creating a ConversationListContext is a MailActivity
@@ -296,6 +296,21 @@ public final class ConversationListFragment extends ListFragment implements
             conversationCursor.sync();
         }
 
+        // On a phone we never highlight a conversation, so the default is to select none.
+        // On a tablet, we highlight a SINGLE conversation in landscape conversation view.
+        int choice = getDefaultChoiceMode(mTabletDevice);
+        if (savedState != null) {
+            // Restore the choice mode if it was set earlier, or NONE if creating a fresh view.
+            // Choice mode here represents the current conversation only. CAB mode does not rely on
+            // the platform: checked state is a local variable {@link ConversationItemView#mChecked}
+            choice = savedState.getInt(CHOICE_MODE_KEY, choice);
+            if (savedState.containsKey(LIST_STATE_KEY)) {
+                // TODO: find a better way to unset the selected item when restoring
+                mListView.clearChoices();
+            }
+        }
+        setChoiceMode(choice);
+
         // Show list and start loading list.
         showList();
         ToastBarOperation pendingOp = mActivity.getPendingToastOperation();
@@ -304,6 +319,16 @@ public final class ConversationListFragment extends ListFragment implements
             mActivity.setPendingToastOperation(null);
             mActivity.onUndoAvailable(pendingOp);
         }
+    }
+
+    /**
+     * Returns the default choice mode for the list based on whether the list is displayed on tablet
+     * or not.
+     * @param isTablet
+     * @return
+     */
+    private final static int getDefaultChoiceMode(boolean isTablet) {
+        return isTablet ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE;
     }
 
     public AnimatedAdapter getAnimatedAdapter() {
@@ -343,21 +368,9 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setSwipedListener(this);
 
-        final int choiceMode;
-        if (savedState != null) {
-            // Restore the choice mode if it was set earlier, or SINGLE if creating a fresh view.
-            // Choice mode here represents the current conversation only. CAB mode does not rely on
-            // the platform: it is a local variable within conversation items.
-            choiceMode = savedState.getInt(CHOICE_MODE_KEY, ListView.CHOICE_MODE_SINGLE);
-            if (savedState.containsKey(LIST_STATE_KEY)) {
-                mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
-                // TODO: find a better way to unset the selected item when restoring
-                mListView.clearChoices();
-            }
-        } else {
-            choiceMode = ListView.CHOICE_MODE_SINGLE;
+        if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
+            mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
         }
-        setChoiceMode(choiceMode);
         return rootView;
     }
 
@@ -373,6 +386,10 @@ public final class ConversationListFragment extends ListFragment implements
      * Tell the list to select nothing.
      */
     public final void setChoiceNone() {
+        // On a phone, the default choice mode is already none, so nothing to do.
+        if (!mTabletDevice) {
+            return;
+        }
         final int currentSelected = mListView.getCheckedItemPosition();
         mListView.clearChoices();
         // We use the activated state to show the blue highlight on tablet. Clearing the choices
@@ -391,7 +408,11 @@ public final class ConversationListFragment extends ListFragment implements
      * Tell the list to get out of selecting none.
      */
     public final void revertChoiceMode() {
-        setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        // On a phone, the default choice mode is always none, so nothing to do.
+        if (!mTabletDevice) {
+            return;
+        }
+        setChoiceMode(getDefaultChoiceMode(mTabletDevice));
     }
 
     @Override
@@ -518,17 +539,13 @@ public final class ConversationListFragment extends ListFragment implements
     public void onViewModeChanged(int newMode) {
         // Change the divider based on view mode.
         if (mTabletDevice) {
-            if (newMode == ViewMode.CONVERSATION) {
+            if (ViewMode.isConversationMode(newMode)) {
                 mListView.setBackgroundResource(R.drawable.panel_conversation_leftstroke);
-            } else if (newMode == ViewMode.CONVERSATION_LIST
-                    || newMode == ViewMode.SEARCH_RESULTS_LIST) {
-                // There are no selected conversations when in conversation
-                // list mode.
-                mListView.clearChoices();
+            } else if (ViewMode.isListMode(newMode)) {
+                // There are no selected conversations when in conversation list mode.
                 mListView.setBackgroundDrawable(null);
+                mListView.clearChoices();
             }
-        } else {
-            mListView.setBackgroundDrawable(null);
         }
         if (mFooterView != null) {
             mFooterView.onViewModeChanged(newMode);
