@@ -301,7 +301,14 @@
         <!-- Move several conversations -->
         <item quantity="other">Move <xliff:g>%1$d</xliff:g> conversations</item>
     </plurals>
-    <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMI=250] -->
+    <!-- Formatting string for the content description field of the unread mail count [CHAR LIMIT=100] -->
+    <plurals name="unread_mail_count">
+        <!-- 1 unread mail -->
+        <item quantity="one">1 unread mail</item>
+        <!-- Several unread mails -->
+        <item quantity="other"><xliff:g>%1$d</xliff:g> unread mails</item>
+    </plurals>
+    <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMIT=250] -->
     <string name="content_description"><xliff:g id="sender">%1$s</xliff:g> about <xliff:g id="subject">%2$s</xliff:g>, <xliff:g id="snippet">%3$s</xliff:g> on <xliff:g id="date">%4$s</xliff:g>, <xliff:g id="readstate">%5$s</xliff:g></string>
     <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode and the message was received today. [CHAR LIMI=250] -->
     <string name="content_description_today"><xliff:g id="sender">%1$s</xliff:g> about <xliff:g id="subject">%2$s</xliff:g>, <xliff:g id="snippet">%3$s</xliff:g> at <xliff:g id="time">%4$s</xliff:g>, <xliff:g id="readstate">%5$s</xliff:g></string>

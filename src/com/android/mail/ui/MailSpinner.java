@@ -104,8 +104,10 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
         mFolder = f;
         if (mFolder != null) {
             mFolderName.setText(mFolder.name);
-            mFolderCount.setText(Utils.getUnreadCountString(getContext(),
-                    Utils.getFolderUnreadDisplayCount(mFolder)));
+            int unreadCount = Utils.getFolderUnreadDisplayCount(mFolder);
+            mFolderCount.setText(Utils.getUnreadCountString(getContext(), unreadCount));
+            mFolderCount.setContentDescription(Utils.formatPlural(getContext(),
+                    R.plurals.unread_mail_count, unreadCount));
 
             if (mSpinnerAdapter != null) {
                 // Update the spinner with this current folder, as it could change the recent items
