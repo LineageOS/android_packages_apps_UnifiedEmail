@@ -36,6 +36,7 @@ import com.android.mail.R;
 import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
+import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
@@ -61,6 +62,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         super.onCreate(savedInstanceState);
 
         mActionHandler = new AttachmentActionHandler(this, null);
+        mActionHandler.initialize(getFragmentManager());
     }
 
     @Override
@@ -193,6 +195,12 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     @Override
     public void onFragmentVisible(PhotoViewFragment fragment) {
         super.onFragmentVisible(fragment);
+        Attachment attachment = getCurrentAttachment();
+        if (attachment.state == AttachmentState.PAUSED) {
+            mActionHandler.setAttachment(attachment);
+            mActionHandler.startDownloadingAttachment(attachment.destination);
+        }
+        return;
     }
 
     @Override
@@ -322,9 +330,8 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     }
 
     @Override
-    public void onNewPhotoLoaded() {
-        // Don't call the super class, as the default implementation calls setViewActivated()
-        // and we don't want to do that
+    public void onNewPhotoLoaded(int position) {
+        // do nothing
     }
 
     /**

@@ -1802,11 +1802,17 @@ public class UIProvider {
          * setting this state will tell the provider to initiate a download to
          * the accompanying destination in {@link AttachmentColumns#DESTINATION}
          * .
-         * <p>
-         * Valid next states: {@link #NOT_SAVED}, {@link #FAILED},
-         * {@link #SAVED}
          */
         public static final int REDOWNLOADING = 4;
+        /**
+         * The attachment is either pending or paused in the download manager.
+         * {@link AttachmentColumns#DOWNLOADED_SIZE} should reflect the current
+         * download progress while in this state. This state may not be used as
+         * a command on its own.
+         * <p>
+         * Valid next states: {@link #DOWNLOADING}, {@link #FAILED}
+         */
+        public static final int PAUSED = 5;
 
         private AttachmentState() {}
     }
