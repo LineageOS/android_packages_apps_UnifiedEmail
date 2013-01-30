@@ -1165,6 +1165,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         return mHeader.conversation.starred ? STAR_ON : STAR_OFF;
     }
 
+    /**
+     * Set the background for this item based on:
+     * 1. Read / Unread (unread messages have a lighter background)
+     * 2. Tablet / Phone
+     * 3. Checkbox checked / Unchecked (controls CAB color for item)
+     * 4. Activated / Not activated (controls the blue highlight on tablet)
+     * @param isUnread
+     */
     private void updateBackground(boolean isUnread) {
         if (mBackgroundOverride != -1) {
             // If the item is animating, we use a color to avoid shrinking a 9-patch
@@ -1173,42 +1181,44 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             return;
         }
         final boolean isListOnTablet = mTabletDevice && mActivity.getViewMode().isListMode();
+        final int background;
         if (isUnread) {
             if (isListOnTablet) {
                 if (mChecked) {
-                    setBackgroundResource(R.drawable.list_conversation_wide_unread_selected_holo);
+                    background = R.drawable.list_conversation_wide_unread_selected_holo;
                 } else {
-                    setBackgroundResource(R.drawable.conversation_wide_unread_selector);
+                    background = R.drawable.conversation_wide_unread_selector;
                 }
             } else {
                 if (mChecked) {
-                    setCheckedActivatedBackground();
+                    background = getCheckedActivatedBackground();
                 } else {
-                    setBackgroundResource(R.drawable.conversation_unread_selector);
+                    background = R.drawable.conversation_unread_selector;
                 }
             }
         } else {
             if (isListOnTablet) {
                 if (mChecked) {
-                    setBackgroundResource(R.drawable.list_conversation_wide_read_selected_holo);
+                    background = R.drawable.list_conversation_wide_read_selected_holo;
                 } else {
-                    setBackgroundResource(R.drawable.conversation_wide_read_selector);
+                    background = R.drawable.conversation_wide_read_selector;
                 }
             } else {
                 if (mChecked) {
-                    setCheckedActivatedBackground();
+                    background = getCheckedActivatedBackground();
                 } else {
-                    setBackgroundResource(R.drawable.conversation_read_selector);
+                    background = R.drawable.conversation_read_selector;
                 }
             }
         }
+        setBackgroundResource(background);
     }
 
-    private void setCheckedActivatedBackground() {
+    private final int getCheckedActivatedBackground() {
         if (isActivated() && mTabletDevice) {
-            setBackgroundResource(R.drawable.list_arrow_selected_holo);
+            return R.drawable.list_arrow_selected_holo;
         } else {
-            setBackgroundResource(R.drawable.list_selected_holo);
+            return R.drawable.list_selected_holo;
         }
     }
 
