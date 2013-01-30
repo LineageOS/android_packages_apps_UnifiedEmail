@@ -554,10 +554,14 @@ function onScaleEnd(screenX, screenY) {
     var deltaScrollX = (scale - 1) * gScaleInfo.originX - gScaleInfo.currTranslateX;
     var deltaScrollY = (scale - 1) * gScaleInfo.originY - gScaleInfo.currTranslateY;
 //    console.log("JS adjusting scroll by x/y=" + deltaScrollX + "/" + deltaScrollY);
-    window.scrollBy(deltaScrollX, deltaScrollY);
 
     msgBodyDiv.classList.remove("zooming-focused");
     msgBodyDiv.setAttribute("data-initial-scale", scale);
+
+    // TODO: is there a better way to make this more reliable?
+    window.setTimeout(function() {
+        window.scrollBy(deltaScrollX, deltaScrollY);
+    }, 10);
 }
 
 function onScale(relativeScale, screenX, screenY) {
