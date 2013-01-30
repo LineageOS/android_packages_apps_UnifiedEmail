@@ -30,7 +30,6 @@
     <dimen name="folders_min_height">18dp</dimen>
     <dimen name="date_font_size">12sp</dimen>
     <dimen name="account_dropdown_dropdownwidth">274dip</dimen>
-    <dimen name="actionbar_subject_padding_right">8dp</dimen>
     <dimen name="compose_scrollview_width">700dp</dimen>
     <dimen name="total_conversationbar_width">150dip</dimen>
     <dimen name="max_total_folder_width">64dip</dimen>
