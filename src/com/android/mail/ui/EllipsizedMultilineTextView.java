@@ -64,17 +64,18 @@ public class EllipsizedMultilineTextView extends TextView {
      * @param avail available width in pixels for the last line
      * @param paint Paint that has the proper properties set to measure the text
      *            for this view
+     * @return the {@link CharSequence} that was set on the {@link TextView}
      */
-    public void setText(final CharSequence text, int avail) {
+    public CharSequence setText(final CharSequence text, int avail) {
         if (text == null || text.length() == 0) {
-            return;
+            return text;
         }
 
         setEllipsize(null);
         setText(text, TextView.BufferType.SPANNABLE);
 
         if (avail == ALL_AVAILABLE) {
-            return;
+            return text;
         }
         Layout layout = getLayout();
 
@@ -85,7 +86,7 @@ public class EllipsizedMultilineTextView extends TextView {
 
         if (layout == null) {
             // Bail
-            return;
+            return text;
         }
 
         CharSequence remainder;
@@ -104,5 +105,7 @@ public class EllipsizedMultilineTextView extends TextView {
             builder.append(remainder);
         }
         setText(builder, TextView.BufferType.SPANNABLE);
+
+        return builder;
     }
 }

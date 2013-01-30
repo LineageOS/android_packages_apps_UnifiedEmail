@@ -386,8 +386,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     R.style.SubjectAppearanceUnreadStyle);
             sSubjectTextReadSpan = new TextAppearanceSpan(mContext,
                     R.style.SubjectAppearanceReadStyle);
-            sSnippetTextUnreadSpan = new ForegroundColorSpan(R.color.snippet_text_color_unread);
-            sSnippetTextReadSpan = new ForegroundColorSpan(R.color.snippet_text_color_read);
+            sSnippetTextUnreadSpan =
+                    new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_unread));
+            sSnippetTextReadSpan =
+                    new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_read));
             sTouchSlop = res.getDimensionPixelSize(R.dimen.touch_slop);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
@@ -691,51 +693,51 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         SpannableStringBuilder subjectText = new SpannableStringBuilder(
                 Conversation.getSubjectAndSnippetForDisplay(mContext, subject, snippet));
-        int subjectTextLength = Math.min(subjectText.length(), subject.length());
-             if (!TextUtils.isEmpty(subject)) {
-                 subjectText.setSpan(TextAppearanceSpan.wrap(isUnread ?
-                         sSubjectTextUnreadSpan : sSubjectTextReadSpan), 0, subjectTextLength,
-                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-             }
-             if (!TextUtils.isEmpty(snippet)) {
-                 final int startOffset = subjectTextLength;
-                 // Start after the end of the subject text; since the subject may be
-                 // "" or null, this could start at the 0th character in the
-                 // subectText string
-                 if (startOffset < subjectText.length()) {
-                     subjectText.setSpan(ForegroundColorSpan.wrap(isUnread ?
-                             sSnippetTextUnreadSpan : sSnippetTextReadSpan), startOffset,
-                             subjectText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                 }
-             }
-             layoutSubject(subjectText);
-    }
 
-
-    private void layoutSubject(SpannableStringBuilder subjectText) {
         int secondLineMaxWidth = EllipsizedMultilineTextView.ALL_AVAILABLE;
         if (!ConversationItemViewCoordinates.isWideMode(mMode) && mCoordinates.showFolders
-                && mHeader.folderDisplayer != null
-                && mHeader.folderDisplayer.hasVisibleFolders()) {
-            secondLineMaxWidth = mCoordinates.subjectWidth
-                    - Math.min(ConversationItemViewCoordinates.getFoldersWidth(mContext, mMode),
-                            mHeader.folderDisplayer.measureFolders(mMode))
-                    - sFoldersLeftPadding;
+                && mHeader.folderDisplayer != null && mHeader.folderDisplayer.hasVisibleFolders()) {
+            secondLineMaxWidth = mCoordinates.subjectWidth - Math.min(
+                    ConversationItemViewCoordinates.getFoldersWidth(mContext, mMode),
+                    mHeader.folderDisplayer.measureFolders(mMode)) - sFoldersLeftPadding;
         }
         EllipsizedMultilineTextView subjectLayout = mSubjectTextView;
         int subjectWidth = mCoordinates.subjectWidth;
-        int subjectHeight = (int) (subjectLayout.getLineHeight() * 2 + subjectLayout.getPaint()
-                .descent());
+        int subjectHeight =
+                (int) (subjectLayout.getLineHeight() * 2 + subjectLayout.getPaint().descent());
+        subjectLayout.measure(
+                MeasureSpec.makeMeasureSpec(subjectWidth, MeasureSpec.EXACTLY), subjectHeight);
+        subjectLayout.layout(0, 0, subjectWidth, subjectHeight);
+
+        final CharSequence displayedText = subjectLayout.setText(subjectText, secondLineMaxWidth);
+
+        final SpannableStringBuilder displayedStringBuilder =
+                new SpannableStringBuilder(displayedText);
+        int subjectTextLength =
+                Math.min(displayedText.length(), Math.min(subjectText.length(), subject.length()));
+        if (!TextUtils.isEmpty(subject)) {
+            displayedStringBuilder.setSpan(TextAppearanceSpan.wrap(
+                    isUnread ? sSubjectTextUnreadSpan : sSubjectTextReadSpan), 0, subjectTextLength,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        if (!TextUtils.isEmpty(snippet)) {
+            final int startOffset = subjectTextLength;
+            // Start after the end of the subject text; since the subject may be
+            // "" or null, this could start at the 0th character in the subectText string
+            if (startOffset < displayedText.length()) {
+                displayedStringBuilder.setSpan(ForegroundColorSpan.wrap(
+                        isUnread ? sSnippetTextUnreadSpan : sSnippetTextReadSpan), startOffset,
+                        displayedText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
         if (isActivated() && showActivatedText()) {
-            subjectText.setSpan(sActivatedTextSpan, 0, subjectText.length(),
+            displayedStringBuilder.setSpan(sActivatedTextSpan, 0, displayedText.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         } else {
-            subjectText.removeSpan(sActivatedTextSpan);
+            displayedStringBuilder.removeSpan(sActivatedTextSpan);
         }
-        subjectLayout.measure(MeasureSpec.makeMeasureSpec(subjectWidth, MeasureSpec.EXACTLY),
-                subjectHeight);
-        subjectLayout.layout(0, 0, subjectWidth, subjectHeight);
-        subjectLayout.setText(subjectText, secondLineMaxWidth);
+
+        subjectLayout.setText(displayedStringBuilder);
     }
 
     /**
