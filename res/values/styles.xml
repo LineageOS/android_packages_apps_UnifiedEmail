@@ -20,7 +20,7 @@
     <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextView">
         <item name="android:minHeight">42dip</item>
         <item name="android:gravity">bottom</item>
-        <item name="android:maxLines">@integer/chips_max_lines</item>
+        <item name="android:maxLines">2</item>
     </style>
 
     <style name="ComposeEditTextView">
