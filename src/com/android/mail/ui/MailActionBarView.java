@@ -195,8 +195,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Get whether to show the conversation subject in the action bar.
      */
     protected boolean showConversationSubject() {
-        return (mMode == ViewMode.SEARCH_RESULTS_CONVERSATION || mMode == ViewMode.CONVERSATION)
-                && mShowConversationSubject;
+        return ViewMode.isConversationMode(mMode) && mShowConversationSubject;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -454,7 +453,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * "standard" snippet. Later on, {@link #getUnshownSubject(String)} will seamlessly switch
      * back to bog-standard SHOW_TITLE mode once the text remainders can safely be determined.
      */
-    private void setSnippetMode() {
+    protected void setSnippetMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_CUSTOM);
         mSpinner.setVisibility(View.GONE);
         mSubjectView.setVisibility(View.VISIBLE);
