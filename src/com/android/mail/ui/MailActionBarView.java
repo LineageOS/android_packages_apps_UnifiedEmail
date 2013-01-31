@@ -118,6 +118,30 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
     };
 
+    private final OnLayoutChangeListener mSnippetLayoutListener = new OnLayoutChangeListener() {
+        @Override
+        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
+                int oldTop, int oldRight, int oldBottom) {
+            v.removeOnLayoutChangeListener(this);
+            // We're in a layout, so try not to do anything layout-related here, and post a
+            // runnable instead.
+            v.post(new Runnable() {
+                @Override
+                public void run() {
+                    // Switch over to title mode when the first fragment asks for a subject
+                    // remainder. We assume that layout has happened by now, so the SnippetTextView
+                    // already has measurements it needs to calculate remainders, and it's safe to
+                    // switch over to TITLE mode to inherit standard system behaviors.
+                    setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | DISPLAY_TITLE_MULTIPLE_LINES);
+
+                    // Work around a bug where the title's container is stuck GONE when a title is
+                    // set while in CUSTOM mode.
+                    mActionBar.setTitle(mActionBar.getTitle());
+                }
+            });
+        }
+    };
+
     /** True if the application has more than one account. */
     private boolean mHasManyAccounts;
 
@@ -434,6 +458,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_CUSTOM);
         mSpinner.setVisibility(View.GONE);
         mSubjectView.setVisibility(View.VISIBLE);
+
+        mSubjectView.addOnLayoutChangeListener(mSnippetLayoutListener);
     }
 
     private void setFoldersMode() {
@@ -634,21 +660,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             return subject;
         }
 
-        final String remainder = mSubjectView.getTextRemainder(subject);
-
-        if (actionBarReportsMultipleLineTitle(mActionBar)) {
-            // Switch over to title mode when the first fragment asks for a subject remainder.
-            // We assume that layout has happened by now, so the SnippetTextView already has
-            // measurements it needs to calculate remainders, and it's safe to switch over to
-            // TITLE mode to inherit standard system behaviors.
-            setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | DISPLAY_TITLE_MULTIPLE_LINES);
-
-            // Work around a bug where the title's container is stuck GONE when a title is set while
-            // in CUSTOM mode.
-            mActionBar.setTitle(mActionBar.getTitle());
-        }
-
-        return remainder;
+        return mSubjectView.getTextRemainder(subject);
     }
 
     private static boolean actionBarReportsMultipleLineTitle(ActionBar bar) {
