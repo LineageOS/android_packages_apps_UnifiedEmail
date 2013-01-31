@@ -89,16 +89,11 @@ public class EllipsizedMultilineTextView extends TextView {
             return text;
         }
 
-        CharSequence remainder;
+        final CharSequence remainder = TextUtils.ellipsize(
+                text.subSequence(layout.getLineStart(mMaxLines - 1), text.length()), getPaint(),
+                avail, TextUtils.TruncateAt.END);
+
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        int lineCount = layout.getLineCount();
-        if (lineCount <= mMaxLines) {
-            remainder = null;
-        } else {
-            remainder = TextUtils.ellipsize(
-                    text.subSequence(layout.getLineStart(mMaxLines - 1), text.length()),
-                    getPaint(), avail, TextUtils.TruncateAt.END);
-        }
 
         builder.append(text, 0, layout.getLineStart(mMaxLines - 1));
         if (!TextUtils.isEmpty(remainder)) {
