@@ -715,7 +715,7 @@ public class NotificationActionUtils {
             final NotificationAction notificationAction) {
         final int notificationId = getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder());
-        removeUndoNotification(context, notificationId);
+        removeUndoNotification(context, notificationId, false);
         resendNotifications(context);
     }
 
@@ -727,7 +727,7 @@ public class NotificationActionUtils {
             final NotificationAction notificationAction) {
         final int notificationId = getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder());
-        removeUndoNotification(context, notificationId);
+        removeUndoNotification(context, notificationId, true);
         sNotificationTimestamps.delete(notificationId);
         processDestructiveAction(context, notificationAction);
 
@@ -736,13 +736,19 @@ public class NotificationActionUtils {
 
     /**
      * Removes the undo notification.
+     *
+     * @param removeNow <code>true</code> to remove it from the drawer right away,
+     *        <code>false</code> to just remove the reference to it
      */
-    private static void removeUndoNotification(final Context context, final int notificationId) {
+    private static void removeUndoNotification(
+            final Context context, final int notificationId, final boolean removeNow) {
         sUndoNotifications.delete(notificationId);
 
-        final NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(notificationId);
+        if (removeNow) {
+            final NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(notificationId);
+        }
     }
 
     public static int getNotificationId(final String account, final Folder folder) {
