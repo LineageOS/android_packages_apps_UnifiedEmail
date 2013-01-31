@@ -48,7 +48,6 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
 
-import java.util.List;
 /**
  * View for a single attachment in conversation view. Shows download status and allows launching
  * intents to act on an attachment.
@@ -249,8 +248,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     }
 
     private boolean shouldShowDownloadAgain() {
-        // implies state == SAVED
-        return mAttachment.isPresentLocally();
+        // implies state == SAVED || state == FAILED
+        return mAttachment.isDownloadFinishedOrFailed();
     }
 
     private boolean shouldShowOverflow() {
