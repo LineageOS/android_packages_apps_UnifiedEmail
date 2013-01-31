@@ -295,7 +295,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         if (mController != null && !mDetachedMode) {
             final Conversation currConversation = mController.getCurrentConversation();
             final int pos = getConversationPosition(currConversation);
-            if (pos == POSITION_NONE && getCursor() != null && currConversation != null) {
+            final Cursor cursor = getCursor();
+            if (pos == POSITION_NONE && cursor != null && currConversation != null) {
                 // enable detached mode and do no more here. the fragment itself will figure out
                 // if the conversation is empty (using message list cursor) and back out if needed.
                 mDetachedMode = true;
@@ -303,16 +304,13 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                 LogUtils.i(LOG_TAG, "CPA: current conv is gone, reverting to detached mode. c=%s",
                         currConversation.uri);
             } else {
-                // notify unaffected fragment items of the change, so they can
-                // re-render
-                // (the change may have been to the labels for a single
-                // conversation, for example)
-                final AbstractConversationViewFragment frag =
+                // notify unaffected fragment items of the change, so they can re-render
+                // (the change may have been to the labels for a single conversation, for example)
+                final AbstractConversationViewFragment frag = (cursor == null) ? null :
                         (AbstractConversationViewFragment) getFragmentAt(pos);
-                final Cursor cursor = getCursor();
                 if (frag != null && cursor.moveToPosition(pos) && frag.isUserVisible()) {
                     // reload what we think is in the current position.
-                    Conversation conv = new Conversation(cursor);
+                    final Conversation conv = new Conversation(cursor);
                     conv.position = pos;
                     frag.onConversationUpdated(conv);
                     mController.setCurrentConversation(conv);
