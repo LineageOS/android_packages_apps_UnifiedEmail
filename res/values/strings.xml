@@ -253,7 +253,7 @@
     <!-- Displayed in the conversation view, next to a file's size and type. Status of a saved attachment. [CHAR LIMIT=20]-->
     <string name="saved">Saved,&#160;</string>
     <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=25]-->
-    <string name="download_failed">Couldn\'t download.</string>
+    <string name="download_failed">Couldn\'t download. Touch to retry.</string>
     <!-- Displayed in the conversation view, as a header informing
          the user that the following is the attachments. [CHAR LIMIT=100] -->
     <string name="attachments_header">Attachments</string>

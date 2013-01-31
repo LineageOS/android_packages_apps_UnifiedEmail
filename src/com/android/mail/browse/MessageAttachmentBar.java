@@ -184,7 +184,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             case R.id.overflow: {
                 final boolean canSave = mAttachment.canSave() && !mAttachment.isDownloading();
                 final boolean canPreview = mAttachment.canPreview();
-                final boolean canDownloadAgain = mAttachment.isPresentLocally();
+                final boolean canDownloadAgain = mAttachment.isPresentLocally() ||
+                    mAttachment.downloadFailed();
 
                 // If no overflow items are visible, just bail out.
                 // We shouldn't be able to get here anyhow since the overflow
@@ -297,7 +298,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                         mAttachment.contentUri, mAttachment.contentType);
         final boolean canPreview = mAttachment.canPreview();
         final boolean isInstallable = MimeType.isInstallable(mAttachment.contentType);
-        final boolean canDownloadAgain = mAttachment.isPresentLocally();
+        final boolean canDownloadAgain = mAttachment.isPresentLocally() ||
+                    mAttachment.downloadFailed();
 
         setButtonVisible(mCancelButton, isDownloading && mSaveClicked);
 
