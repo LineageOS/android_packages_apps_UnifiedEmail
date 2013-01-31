@@ -37,14 +37,6 @@
   *** of(...);
 }
 
--keepclasseswithmembers class com.android.mail.UnifiedEmail {
-  public <methods>;
-}
-
--keepclasseswithmembers class com.android.mail.ui.AnimatingItemView {
-  *** setAnimatedHeight(...);
-}
-
 -keepclasseswithmembers class com.android.mail.ui.LeaveBehindItem {
   *** setAnimatedHeight(...);
 }
