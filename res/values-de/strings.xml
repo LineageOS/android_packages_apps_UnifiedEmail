@@ -123,7 +123,8 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Anhang wird abgerufen..."</string>
     <string name="please_wait" msgid="8797634225088247121">"Bitte warten…"</string>
     <string name="saved" msgid="6977782468220926548">"Gespeichert,"</string>
-    <string name="download_failed" msgid="7860650496473302012">"Download nicht möglich"</string>
+    <!-- no translation found for download_failed (442019281547315527) -->
+    <skip />
     <string name="attachments_header" msgid="6459475590011460229">"Anhänge"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Alle speichern"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Teilen"</string>
@@ -162,7 +163,7 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Senden..."</string>
     <string name="send_failed" msgid="750908595144529579">"Nicht gesendet"</string>
-    <string name="me" msgid="6480762904022198669">"Ich"</string>
+    <string name="me" msgid="6480762904022198669">"Mich"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Alle Ordner anzeigen"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Diese Konversation löschen?"</item>
