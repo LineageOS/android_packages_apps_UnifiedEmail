@@ -19,24 +19,19 @@ package com.android.mail.photomanager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.LruCache;
-import android.util.TypedValue;
 
 import com.android.mail.R;
 import com.android.mail.photomanager.ContactPhotoManager.DefaultImageProvider;
 import com.android.mail.ui.DividedImageCanvas;
-import com.google.common.base.Objects;
 
 /**
  * LetterTileProvider is an implementation of the DefaultImageProvider. When no
@@ -48,7 +43,7 @@ import com.google.common.base.Objects;
  */
 public class LetterTileProvider extends DefaultImageProvider {
     private Bitmap mDefaultBitmap;
-    private final LruCache<Integer, Bitmap> mTileBitmapCache;
+    private static Bitmap[] sBitmapBackgroundCache;
     private static Typeface sSansSerifLight;
     private static Rect sBounds;
     private static int sTileLetterFontSize = -1;
@@ -58,14 +53,10 @@ public class LetterTileProvider extends DefaultImageProvider {
     private static TextPaint sPaint = new TextPaint();
     private static int DEFAULT_AVATAR_DRAWABLE = R.drawable.ic_contact_picture;
     private static final Pattern ALPHABET = Pattern.compile("^[a-zA-Z0-9]+$");
+    private static final int POSSIBLE_BITMAP_SIZES = 3;
 
     public LetterTileProvider() {
         super();
-        final float cacheSizeAdjustment =
-                (MemoryUtils.getTotalMemorySize() >= MemoryUtils.LARGE_RAM_THRESHOLD) ?
-                        1.0f : 0.5f;
-        final int bitmapCacheSize = (int) (cacheSizeAdjustment * 36);
-        mTileBitmapCache = new LruCache<Integer, Bitmap>(bitmapCacheSize);
     }
 
     @Override
@@ -76,35 +67,30 @@ public class LetterTileProvider extends DefaultImageProvider {
         final String firstChar = display.substring(0, 1);
         // If its a valid english alphabet letter...
         if (isLetter(firstChar)) {
-            final String first = firstChar.toUpperCase();
-            DividedImageCanvas.Dimensions d = view.getDesiredDimensions(address);
-            int hash = Objects.hashCode(first, d);
-            bitmap = mTileBitmapCache.get(hash);
-            if (bitmap == null) {
-                // Create bitmap based on the first char
-                bitmap = Bitmap.createBitmap(d.width, d.height, Bitmap.Config.ARGB_8888);
-                sPaint.setColor(Color.BLACK);
-                if (sTileLetterFontSize == -1) {
-                    final Resources res = view.getContext().getResources();
-                    sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
-                    sTileLetterFontSizeSmall = res
-                            .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
-                    sTileColor = res.getColor(R.color.letter_tile_color);
-                    sTileFontColor = res.getColor(R.color.letter_tile_font_color);
-                    sSansSerifLight = Typeface.create("sans-serif-light", Typeface.NORMAL);
-                    sBounds = new Rect();
-                }
-                Canvas c = new Canvas(bitmap);
-                c.drawColor(sTileColor);
-                sPaint.setTextSize(getFontSize(d.scale));
+            if (sTileLetterFontSize == -1) {
+                final Resources res = view.getContext().getResources();
+                sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
+                sTileLetterFontSizeSmall = res
+                        .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
+                sTileColor = res.getColor(R.color.letter_tile_color);
+                sTileFontColor = res.getColor(R.color.letter_tile_font_color);
+                sSansSerifLight = Typeface.create("sans-serif-light", Typeface.NORMAL);
+                sBounds = new Rect();
                 sPaint.setTypeface(sSansSerifLight);
                 sPaint.setColor(sTileFontColor);
                 sPaint.setTextAlign(Align.CENTER);
                 sPaint.setAntiAlias(true);
-                sPaint.getTextBounds(first, 0, first.length(), sBounds);
-                c.drawText(first, 0+d.width/2, 0+d.height/2+(sBounds.bottom-sBounds.top)/2, sPaint);
-                mTileBitmapCache.put(hash, bitmap);
+                sBitmapBackgroundCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
             }
+            final String first = firstChar.toUpperCase();
+            DividedImageCanvas.Dimensions d = view.getDesiredDimensions(address);
+            bitmap = getBitmap(d);
+            Canvas c = new Canvas(bitmap);
+            c.drawColor(sTileColor);
+            sPaint.setTextSize(getFontSize(d.scale));
+            sPaint.getTextBounds(first, 0, first.length(), sBounds);
+            c.drawText(first, 0 + d.width / 2, 0 + d.height / 2 + (sBounds.bottom - sBounds.top)
+                    / 2, sPaint);
         } else {
             if (mDefaultBitmap == null) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
@@ -115,6 +101,25 @@ public class LetterTileProvider extends DefaultImageProvider {
             bitmap = mDefaultBitmap;
         }
         view.addDivisionImage(bitmap, address);
+    }
+
+    private Bitmap getBitmap(final DividedImageCanvas.Dimensions d) {
+        final int pos;
+        float scale = d.scale;
+        if (scale == DividedImageCanvas.ONE) {
+            pos = 0;
+        } else if (scale == DividedImageCanvas.HALF) {
+            pos = 1;
+        } else {
+            pos = 2;
+        }
+        Bitmap bitmap = sBitmapBackgroundCache[pos];
+        if (bitmap == null) {
+            // create and place the bitmap
+            bitmap = Bitmap.createBitmap(d.width, d.height, Bitmap.Config.ARGB_8888);
+            sBitmapBackgroundCache[pos] = bitmap;
+        }
+        return bitmap;
     }
 
     private int getFontSize(float scale)  {
