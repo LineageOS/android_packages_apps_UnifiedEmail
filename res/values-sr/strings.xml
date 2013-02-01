@@ -118,7 +118,8 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Преузимање прилога"</string>
     <string name="please_wait" msgid="8797634225088247121">"Сачекајте…"</string>
     <string name="saved" msgid="6660844285730790469">"Сачувано, <xliff:g id="SIZE">%s</xliff:g>"</string>
-    <string name="download_failed" msgid="7860650496473302012">"Није могуће преузимање."</string>
+    <!-- no translation found for download_failed (442019281547315527) -->
+    <skip />
     <string name="attachments_header" msgid="6459475590011460229">"Прилози"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Сачувaj све"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Дели"</string>
@@ -147,6 +148,8 @@
     <item quantity="one" msgid="3657821200245019288">"Премести преписку"</item>
     <item quantity="other" msgid="1685896770174368261">"Премести преписке (<xliff:g id="ID_1">%1$d</xliff:g>)"</item>
   </plurals>
+    <!-- no translation found for unread_mail_count:one (6419664007105806274) -->
+    <!-- no translation found for unread_mail_count:other (1634106533609170998) -->
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> на тему <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> на тему <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> у <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="read_string" msgid="219566857950091332">"преписка је прочитана"</string>
