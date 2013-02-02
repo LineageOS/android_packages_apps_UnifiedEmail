@@ -27,7 +27,10 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.TextAppearanceSpan;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -637,7 +640,15 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             return;
         }
 
-        mActionBar.setTitle(subject);
+        // Use a smaller font size than the default action bar title text size
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        SpannableString textSizeSpannable = new SpannableString(subject);
+        textSizeSpannable.setSpan(
+            new TextAppearanceSpan(getContext(), R.style.SubjectActionBarTitleText),
+            0, subject.length(), 0);
+        builder.append(textSizeSpannable);
+
+        mActionBar.setTitle(builder);
         mActionBar.setSubtitle(null);
         mSubjectView.setText(subject);
     }
