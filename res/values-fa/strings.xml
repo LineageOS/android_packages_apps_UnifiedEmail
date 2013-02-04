@@ -123,7 +123,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"واکشی پیوست"</string>
     <string name="please_wait" msgid="8797634225088247121">"لطفاً منتظر بمانید…"</string>
     <string name="saved" msgid="6977782468220926548">"ذخیره شد،"</string>
-    <string name="download_failed" msgid="7860650496473302012">"دانلود نشد."</string>
+    <string name="download_failed" msgid="442019281547315527">"دانلود نشد. برای امتحان مجدد لمس کنید."</string>
     <string name="attachments_header" msgid="6459475590011460229">"پیوست‌ها"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"ذخیره همه"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"اشتراک‌گذاری"</string>
