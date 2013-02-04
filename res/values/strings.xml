@@ -242,7 +242,7 @@
     <string name="please_wait">Please wait\u2026</string>
     <!-- Displayed in the conversation view, next to a file's size and type. Status of a saved attachment. [CHAR LIMIT=20]-->
     <string name="saved">Saved,&#160;<xliff:g id="size">%s</xliff:g></string>
-    <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=25]-->
+    <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=50]-->
     <string name="download_failed">Couldn\'t download. Touch to retry.</string>
     <!-- Displayed in the conversation view, as a header informing
          the user that the following is the attachments. [CHAR LIMIT=100] -->
