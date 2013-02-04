@@ -123,8 +123,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"अनुलग्‍नक फ़ेच कर रहा है"</string>
     <string name="please_wait" msgid="8797634225088247121">"कृपया प्रतीक्षा करें…"</string>
     <string name="saved" msgid="6977782468220926548">"सहेजा गया,"</string>
-    <!-- no translation found for download_failed (442019281547315527) -->
-    <skip />
+    <string name="download_failed" msgid="442019281547315527">"डाउनलोड नहीं हो सका. पुनर्प्रयास हेतु स्पर्श करें."</string>
     <string name="attachments_header" msgid="6459475590011460229">"अनुलग्नक"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"सभी सहेजें"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"साझा करें"</string>

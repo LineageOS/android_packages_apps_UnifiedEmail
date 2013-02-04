@@ -123,8 +123,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Anhang wird abgerufen..."</string>
     <string name="please_wait" msgid="8797634225088247121">"Bitte warten…"</string>
     <string name="saved" msgid="6977782468220926548">"Gespeichert,"</string>
-    <!-- no translation found for download_failed (442019281547315527) -->
-    <skip />
+    <string name="download_failed" msgid="442019281547315527">"Downloadfehler. Zum Wiederholen berühren"</string>
     <string name="attachments_header" msgid="6459475590011460229">"Anhänge"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Alle speichern"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Teilen"</string>
