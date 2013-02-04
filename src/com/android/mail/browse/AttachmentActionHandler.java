@@ -167,7 +167,7 @@ public class AttachmentActionHandler {
             final boolean indeterminate = !showProgress && dialog.isIndeterminate();
             dialog.setIndeterminate(indeterminate);
 
-            if (loaderResult && !mAttachment.isDownloading()) {
+            if (loaderResult && mAttachment.isDownloadFinishedOrFailed()) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {

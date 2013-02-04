@@ -255,6 +255,10 @@ public class Attachment implements Parcelable {
         return state == AttachmentState.DOWNLOADING;
     }
 
+    public boolean isDownloadFinishedOrFailed() {
+        return state == AttachmentState.FAILED || state == AttachmentState.SAVED;
+    }
+
     public boolean isPresentLocally() {
         return state == AttachmentState.SAVED || origin == LOCAL_FILE;
     }
