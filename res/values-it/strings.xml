@@ -118,8 +118,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Recupero allegato"</string>
     <string name="please_wait" msgid="8797634225088247121">"Attendi…"</string>
     <string name="saved" msgid="6660844285730790469">"Salvato, <xliff:g id="SIZE">%s</xliff:g>"</string>
-    <!-- no translation found for download_failed (442019281547315527) -->
-    <skip />
+    <string name="download_failed" msgid="442019281547315527">"Download imposs. Tocca e riprova."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Allegati"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Salva tutti"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Condividi"</string>
@@ -148,8 +147,10 @@
     <item quantity="one" msgid="3657821200245019288">"Sposta conversazione"</item>
     <item quantity="other" msgid="1685896770174368261">"Sposta <xliff:g id="ID_1">%1$d</xliff:g> conversazioni"</item>
   </plurals>
-    <!-- no translation found for unread_mail_count:one (6419664007105806274) -->
-    <!-- no translation found for unread_mail_count:other (1634106533609170998) -->
+  <plurals name="unread_mail_count">
+    <item quantity="one" msgid="6419664007105806274">"1 email da leggere"</item>
+    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> email da leggere"</item>
+  </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> in merito a <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> il <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> in merito a <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> alle <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="read_string" msgid="219566857950091332">"conversazione letta"</string>
