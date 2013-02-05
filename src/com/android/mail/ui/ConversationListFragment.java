@@ -631,7 +631,12 @@ public final class ConversationListFragment extends ListFragment implements
         };
         final SwipeableListView listView = (SwipeableListView) getListView();
         if (listView.getSwipeAction() == actionId) {
-            listView.destroyItems(conversations, listener);
+            if (!listView.destroyItems(conversations, listener)) {
+                // The listView failed to destroy the items, perform the action manually
+                LogUtils.e(LOG_TAG, "ConversationListFragment.requestDelete: " +
+                        "listView failed to destroy items.");
+                action.performAction();
+            }
             return;
         }
         // Delete the local delete items (all for now) and when done,

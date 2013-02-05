@@ -282,17 +282,19 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     /**
      * Archive items using the swipe away animation before shrinking them away.
      */
-    public void destroyItems(Collection<Conversation> convs,
+    public boolean destroyItems(Collection<Conversation> convs,
             final ListItemsRemovedListener listener) {
         if (convs == null) {
-            return;
+            LogUtils.e(LOG_TAG, "SwipeableListView.destroyItems: null conversations.");
+            return false;
         }
         final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter == null) {
             LogUtils.e(LOG_TAG, "SwipeableListView.destroyItems: Cannot destroy: adapter is null.");
-            return;
+            return false;
         }
         adapter.swipeDelete(convs, listener);
+        return true;
     }
 
     public int findConversation(ConversationItemView view, Conversation conv) {
