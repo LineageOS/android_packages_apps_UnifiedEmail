@@ -123,8 +123,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"מאחזר קובץ מצורף"</string>
     <string name="please_wait" msgid="8797634225088247121">"המתן…"</string>
     <string name="saved" msgid="6977782468220926548">"נשמר,"</string>
-    <!-- no translation found for download_failed (442019281547315527) -->
-    <skip />
+    <string name="download_failed" msgid="442019281547315527">"לא ניתן היה להוריד. גע כדי לנסות שוב."</string>
     <string name="attachments_header" msgid="6459475590011460229">"קבצים מצורפים"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"שמור הכל"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"שתף"</string>
