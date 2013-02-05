@@ -68,6 +68,7 @@ public class MimeType {
      * Returns whether or not an attachment of the specified type is viewable.
      */
     public static boolean isViewable(Context context, Uri contentUri, String contentType) {
+        LogUtils.d(LOG_TAG, "Checking is viewable for type: %s, uri: '%s", contentType, contentUri);
         // The provider returns a contentType of "null" instead of null, when the
         // content type is not known.  Changing the provider to return null,
         // breaks other areas that will need to be fixed in a later CL.
