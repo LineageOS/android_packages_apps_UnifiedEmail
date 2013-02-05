@@ -433,6 +433,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     protected void markUnread() {
+        super.markUnread();
         // Ignore unsafe calls made after a fragment is detached from an activity
         final ControllableActivity activity = (ControllableActivity) getActivity();
         if (activity == null) {

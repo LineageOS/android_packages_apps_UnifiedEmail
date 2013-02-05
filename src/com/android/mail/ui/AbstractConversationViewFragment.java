@@ -108,7 +108,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private View mProgressView;
     private View mBackgroundView;
     private final Handler mHandler = new Handler();
-
+    /** True if we want to avoid marking the conversation as viewed and read. */
+    private boolean mSuppressMarkingViewed;
     /**
      * Parcelable state of the conversation view. Can safely be used without null checking any time
      * after {@link #onCreate(Bundle)}.
@@ -162,7 +163,10 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * Subclasses must override, since this depends on how many messages are
      * shown in the conversation view.
      */
-    protected abstract void markUnread();
+    protected void markUnread() {
+        // Do not automatically mark this conversation viewed and read.
+        mSuppressMarkingViewed = true;
+    }
 
     /**
      * Subclasses must override this, since they may want to display a single or
@@ -541,23 +545,28 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
         mViewState.setInfoForConversation(mConversation);
 
-        // mark viewed/read if not previously marked viewed by this conversation view,
-        // or if unread messages still exist in the message list cursor
-        // we don't want to keep marking viewed on rotation or restore
-        // but we do want future re-renders to mark read (e.g. "New message from X" case)
-        MessageCursor cursor = getMessageCursor();
-        if (!mConversation.isViewed() || (cursor != null && !cursor.isConversationRead())) {
-            // Mark the conversation viewed and read.
-            activity.getConversationUpdater().markConversationsRead(Arrays.asList(mConversation),
-                    true /* read */, true /* viewed */);
+        // In most circumstances we want to mark the conversation as viewed and read, since the
+        // user has read it.  However, if the user has already marked the conversation unread, we
+        // do not want a  later mark-read operation to undo this.  So we check this variable which
+        // is set in #markUnread() which suppresses automatic mark-read.
+        if (!mSuppressMarkingViewed) {
+            // mark viewed/read if not previously marked viewed by this conversation view,
+            // or if unread messages still exist in the message list cursor
+            // we don't want to keep marking viewed on rotation or restore
+            // but we do want future re-renders to mark read (e.g. "New message from X" case)
+            MessageCursor cursor = getMessageCursor();
+            if (!mConversation.isViewed() || (cursor != null && !cursor.isConversationRead())) {
+                // Mark the conversation viewed and read.
+                activity.getConversationUpdater()
+                        .markConversationsRead(Arrays.asList(mConversation), true, true);
 
-            // and update the Message objects in the cursor so the next time a cursor update happens
-            // with these messages marked read, we know to ignore it
-            if (cursor != null) {
-                cursor.markMessagesRead();
+                // and update the Message objects in the cursor so the next time a cursor update
+                // happens with these messages marked read, we know to ignore it
+                if (cursor != null) {
+                    cursor.markMessagesRead();
+                }
             }
         }
-
         activity.getListHandler().onConversationSeen(mConversation);
 
         showAutoFitPrompt();
