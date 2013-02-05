@@ -123,8 +123,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Inaleta kiambatisho"</string>
     <string name="please_wait" msgid="8797634225088247121">"Tafadhali subiri…"</string>
     <string name="saved" msgid="6977782468220926548">"Imehifadhiwa,"</string>
-    <!-- no translation found for download_failed (442019281547315527) -->
-    <skip />
+    <string name="download_failed" msgid="442019281547315527">"Isingeweza kupakua. Gusa ili ujaribu upya."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Viambatisho"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Hifadhi vyote"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Shiriki"</string>
@@ -278,8 +277,8 @@
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Kunja maelezo ya wapokeaji"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Onyesha maelezo ya mawasiliano ya <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Onyesha maelezo ya mawasiliano"</string>
-    <string name="expand_read_messages" msgid="7458927270492299063">"Panua jumbe zilizosomwa"</string>
-    <string name="show_messages_read" msgid="9132147830566909631">"Jumbe zilizokuwa umesomwa awali"</string>
+    <string name="expand_read_messages" msgid="7458927270492299063">"Panua barua pepe zilizosomwa"</string>
+    <string name="show_messages_read" msgid="9132147830566909631">"Barua pepe zilizokuwa zimesomwa awali"</string>
     <string name="date_heading" msgid="2414358582984879303">"Tarehe:"</string>
     <string name="from_heading" msgid="8950294114718418954">"Kutoka:"</string>
     <string name="replyto_heading" msgid="2081358811894701297">"Jibu-kwa:"</string>
@@ -315,7 +314,7 @@
     <item msgid="7109065688039971961">"Hakuna muunganisho."</item>
     <item msgid="8437496123716232060">"Haikuweza kuingia"</item>
     <item msgid="1651266301325684887">"Hitilafu ya usalama."</item>
-    <item msgid="1461520171154288533">"Haikuweza kulandanisha."</item>
+    <item msgid="1461520171154288533">"Haikuweza kusawazisha."</item>
     <item msgid="4779810016424303449">"Hitilafu ya Ndani"</item>
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Gusa ili kusanidi"</string>
@@ -362,8 +361,8 @@
     <string name="signin" msgid="8958889809095796177">"Ingia"</string>
     <string name="info" msgid="6009817562073541204">"Maelezo"</string>
     <string name="report" msgid="5417082746232614958">"Ripoti"</string>
-    <string name="sync_error" msgid="7368819509040597851">"Hakuweza kulandanisha."</string>
-    <string name="sync_error_message" msgid="5367907194753034375">"Kifaa chako hakina nafasi ya kutosha ya hifadhi ili kulandanisha."</string>
+    <string name="sync_error" msgid="7368819509040597851">"Haikuweza kusawazisha."</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"Kifaa chako hakina nafasi ya kutosha ya hifadhi ili kusawazisha."</string>
     <string name="storage" msgid="3262760336059073446">"Hifadhi"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>

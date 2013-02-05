@@ -123,8 +123,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Загрузка файла"</string>
     <string name="please_wait" msgid="8797634225088247121">"Подождите…"</string>
     <string name="saved" msgid="6977782468220926548">"Сохранено"</string>
-    <!-- no translation found for download_failed (442019281547315527) -->
-    <skip />
+    <string name="download_failed" msgid="442019281547315527">"Ошибка. Нажмите ещё раз."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Прикрепленные файлы"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Сохранить все"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Поделиться"</string>
