@@ -123,8 +123,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"正在提取附件"</string>
     <string name="please_wait" msgid="8797634225088247121">"请稍候…"</string>
     <string name="saved" msgid="6977782468220926548">"已保存，"</string>
-    <!-- no translation found for download_failed (442019281547315527) -->
-    <skip />
+    <string name="download_failed" msgid="442019281547315527">"无法下载。请触摸以重试。"</string>
     <string name="attachments_header" msgid="6459475590011460229">"附件"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"全部保存"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"分享"</string>
