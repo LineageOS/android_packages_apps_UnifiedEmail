@@ -63,7 +63,12 @@ public class SearchMailActionBarView extends MailActionBarView {
                 if (!showConversationSubject()) {
                     setPopulatedSearchView();
                 } else {
-                    setSnippetMode();
+                    // We only want to go into snippet mode if we are not currently showing the
+                    // ActionBar title
+                    if (ActionBar.DISPLAY_SHOW_TITLE !=
+                            (mActionBar.getDisplayOptions() & ActionBar.DISPLAY_SHOW_TITLE)) {
+                        setSnippetMode();
+                    }
                 }
                 break;
         }
