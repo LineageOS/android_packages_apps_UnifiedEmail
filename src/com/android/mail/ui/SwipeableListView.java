@@ -265,10 +265,10 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     /**
      * Archive items using the swipe away animation before shrinking them away.
      */
-    public void destroyItems(final ArrayList<ConversationItemView> views,
+    public boolean destroyItems(final ArrayList<ConversationItemView> views,
             final ListItemsRemovedListener listener) {
         if (views == null || views.size() == 0) {
-            return;
+            return false;
         }
         // Need to find the items in the LIST!
         final ArrayList<Conversation> conversations = new ArrayList<Conversation>();
@@ -281,22 +281,25 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             conversations.add(conv);
         }
         destroyItems(conversations, listener);
+        return true;
     }
 
     /**
      * Archive items using the swipe away animation before shrinking them away.
      */
-    public void destroyItems(Collection<Conversation> convs,
+    public boolean destroyItems(Collection<Conversation> convs,
             final ListItemsRemovedListener listener) {
         if (convs == null) {
-            return;
+            LogUtils.e(LOG_TAG, "SwipeableListView.destroyItems: null conversations.");
+            return false;
         }
         final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter == null) {
             LogUtils.e(LOG_TAG, "SwipeableListView.destroyItems: Cannot destroy: adapter is null.");
-            return;
+            return false;
         }
         adapter.swipeDelete(convs, listener);
+        return true;
     }
 
     public int findConversation(ConversationItemView view, Conversation conv) {

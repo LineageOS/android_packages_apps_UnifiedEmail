@@ -569,10 +569,18 @@ public final class ConversationListFragment extends ListFragment implements
         };
         final SwipeableListView listView = (SwipeableListView) getListView();
         if (listView.getSwipeAction() == actionId) {
+            final boolean itemsDestroyed;
             if (views == null) {
-                listView.destroyItems(conversations, listener);
+                itemsDestroyed = listView.destroyItems(conversations, listener);
             } else {
-                listView.destroyItems(new ArrayList<ConversationItemView>(views), listener);
+                itemsDestroyed = listView.destroyItems(
+                        new ArrayList<ConversationItemView>(views), listener);
+            }
+            if (!itemsDestroyed) {
+                // The listView failed to destroy the items, perform the action manually
+                LogUtils.e(LOG_TAG, "ConversationListFragment.requestDelete: " +
+                        "listView failed to destroy items.");
+                action.performAction();
             }
             return;
         }
