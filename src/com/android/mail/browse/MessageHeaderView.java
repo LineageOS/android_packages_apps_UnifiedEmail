@@ -16,9 +16,13 @@
 
 package com.android.mail.browse;
 
+import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.AsyncQueryHandler;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Typeface;
@@ -32,7 +36,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -66,7 +72,7 @@ import java.io.StringReader;
 import java.util.Map;
 
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
-        OnMenuItemClickListener, ConversationContainer.DetachListener {
+        OnLongClickListener, OnMenuItemClickListener, ConversationContainer.DetachListener {
 
     /**
      * Cap very long recipient lists during summary construction for efficiency.
@@ -204,6 +210,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private AlertDialog mDetailsPopup;
 
+    private Dialog mEmailCopyPopup;
+    private String mCopyAddress;
+
     private VeiledAddressMatcher mVeiledMatcher;
 
     public interface MessageHeaderViewCallbacks {
@@ -280,6 +289,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             View v = findViewById(id);
             if (v != null) {
                 v.setOnClickListener(this);
+                v.setOnLongClickListener(this);
             }
         }
     }
@@ -878,6 +888,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         onClick(v, v.getId());
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        return onLongClick(v.getId());
+    }
+
     /**
      * Handles clicks on either views or menu items. View parameter can be null
      * for menu item clicks.
@@ -891,6 +906,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         boolean handled = true;
 
         switch (id) {
+            case android.R.id.button1:
+                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(
+                        Context.CLIPBOARD_SERVICE);
+                clipboard.setPrimaryClip(ClipData.newPlainText("", mCopyAddress));
+                if(mEmailCopyPopup!=null) {
+                    mEmailCopyPopup.dismiss();
+                }
+                break;
             case R.id.reply:
                 ComposeActivity.reply(getContext(), getAccount(), mMessage);
                 break;
@@ -940,6 +963,30 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 break;
         }
         return handled;
+    }
+
+    /**
+     * Handles long click on message upper header to show dialog for copying
+     * the email address. Does not consume the click, otherwise.
+     */
+    private boolean onLongClick(int id) {
+        if (id == R.id.upper_header) {
+            if(isExpanded()) {
+                mCopyAddress = mSender.getAddress();
+                mEmailCopyPopup = new Dialog(getContext());
+                mEmailCopyPopup.setTitle(mCopyAddress);
+                mEmailCopyPopup.setContentView(R.layout.copy_chip_dialog_layout);
+                mEmailCopyPopup.setCancelable(true);
+                mEmailCopyPopup.setCanceledOnTouchOutside(true);
+                Button button =
+                      (Button)mEmailCopyPopup.findViewById(android.R.id.button1);
+                button.setOnClickListener(this);
+                button.setText(R.string.copy_email);
+                mEmailCopyPopup.show();
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setExpandable(boolean expandable) {
