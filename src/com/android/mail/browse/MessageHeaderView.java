@@ -1282,9 +1282,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                     .setText(mMessageHeaderItem.timestampLong);
             renderEmailList(R.id.replyto_row, R.id.replyto_value, mReplyTo, false,
                     mExpandedDetailsView);
-            if (mMessage.viaDomain != null) {
-                renderEmailList(R.id.from_row, R.id.from_value, mFrom, true, mExpandedDetailsView);
-            }
+            renderEmailList(R.id.from_row, R.id.from_value, mFrom, mMessage.viaDomain != null,
+                    mExpandedDetailsView);
             renderEmailList(R.id.to_row, R.id.to_value, mTo, false, mExpandedDetailsView);
             renderEmailList(R.id.cc_row, R.id.cc_value, mCc, false, mExpandedDetailsView);
             renderEmailList(R.id.bcc_row, R.id.bcc_value, mBcc, false, mExpandedDetailsView);
