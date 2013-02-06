@@ -15,10 +15,9 @@
  */
 package com.android.mail.utils;
 
-import android.database.MatrixCursor;
 import android.os.Bundle;
 
-public class MatrixCursorWithExtra extends MatrixCursor{
+public class MatrixCursorWithExtra extends MatrixCursorWithCachedColumns {
     private final Bundle mExtras;
 
     public MatrixCursorWithExtra(String[] columnNames, int initialCapacity, Bundle extras) {

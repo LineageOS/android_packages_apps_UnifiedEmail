@@ -18,7 +18,6 @@
 package com.android.mail.providers;
 
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -29,6 +28,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.mail.R;
+import com.android.mail.utils.MatrixCursorWithCachedColumns;
 
 import java.util.ArrayList;
 
@@ -123,7 +123,7 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
     /**
      * Utility class to return a cursor over the contacts database
      */
-    private final class ContactsCursor extends MatrixCursor {
+    private final class ContactsCursor extends MatrixCursorWithCachedColumns {
         private final Context mContext;
         public ContactsCursor() {
             super(CONTACTS_COLUMNS);

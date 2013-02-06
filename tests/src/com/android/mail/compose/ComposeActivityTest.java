@@ -31,6 +31,7 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.MatrixCursorWithCachedColumns;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -376,8 +377,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         });
     }
 
-    private Message getRefMessageWithCc(long messageId, boolean hasAttachments) {
-        MatrixCursor cursor = new MatrixCursor(UIProvider.MESSAGE_PROJECTION);
+    private static Message getRefMessageWithCc(long messageId, boolean hasAttachments) {
+        MatrixCursor cursor = new MatrixCursorWithCachedColumns(UIProvider.MESSAGE_PROJECTION);
         final String messageUri = "content://xxx/message/" + messageId;
         Object[] messageValues = new Object[UIProvider.MESSAGE_PROJECTION.length];
         messageValues[UIProvider.MESSAGE_ID_COLUMN] = Long.valueOf(messageId);

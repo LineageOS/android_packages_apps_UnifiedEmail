@@ -40,6 +40,7 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderColumns;
 import com.android.mail.providers.UIProvider.MessageColumns;
+import com.android.mail.utils.MatrixCursorWithCachedColumns;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -410,7 +411,8 @@ public final class MockUiProvider extends ContentProvider {
                 Set<String> keys = queryResults.get(0).keySet();
                 projection = keys.toArray(new String[keys.size()]);
             }
-            MatrixCursor matrixCursor = new MatrixCursor(projection, queryResults.size());
+            MatrixCursor matrixCursor =
+                    new MatrixCursorWithCachedColumns(projection, queryResults.size());
 
             for (Map<String, Object> queryResult : queryResults) {
                 MatrixCursor.RowBuilder rowBuilder = matrixCursor.newRow();
