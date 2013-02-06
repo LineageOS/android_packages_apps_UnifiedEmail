@@ -165,15 +165,12 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      * Adjusts the activity title and subtitle to reflect the image name and size.
      */
     @Override
-    protected void updateActionBar(PhotoViewFragment fragment) {
-        super.updateActionBar(fragment);
+    protected void updateActionBar() {
+        super.updateActionBar();
 
         final Attachment attachment = getCurrentAttachment();
-
         final ActionBar actionBar = getActionBar();
-        String size =
-                AttachmentUtils.convertToHumanReadableSize(this, attachment.size);
-
+        final String size = AttachmentUtils.convertToHumanReadableSize(this, attachment.size);
 
         // update the status
         // There are 3 states
@@ -188,14 +185,13 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         } else {
             actionBar.setSubtitle(size);
         }
-
         updateActionItems();
     }
 
     @Override
     public void onFragmentVisible(PhotoViewFragment fragment) {
         super.onFragmentVisible(fragment);
-        Attachment attachment = getCurrentAttachment();
+        final Attachment attachment = getCurrentAttachment();
         if (attachment.state == AttachmentState.PAUSED) {
             mActionHandler.setAttachment(attachment);
             mActionHandler.startDownloadingAttachment(attachment.destination);
