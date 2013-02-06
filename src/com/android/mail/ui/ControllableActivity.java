@@ -26,8 +26,8 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * able to attach the various view fragments and delegate the method calls between them.
  */
 public interface ControllableActivity extends HelpCallback, RestrictedActivity,
-        FolderItemView.DropHandler, UndoListener, AnimatedAdapter.Listener,
-        ConversationListFooterView.FooterViewClickListener {
+        FeedbackEnabledActivity, FolderItemView.DropHandler, UndoListener,
+        AnimatedAdapter.Listener, ConversationListFooterView.FooterViewClickListener {
     /**
      * Returns the ViewMode the activity is updating.
      * @see com.android.mail.ui.ViewMode

@@ -2113,6 +2113,11 @@ public class UIProvider {
          * Optional boolean extras which indicates that the user is reporting a problem.
          */
         public static final String EXTRA_REPORTING_PROBLEM = "reporting_problem";
+        /**
+         * Optional Parcelable extra containing the screenshot of the screen where the user
+         * is reporting a problem.
+         */
+        public static final String EXTRA_SCREEN_SHOT = "screen_shot";
     }
 
     public static final class ViewProxyExtras {

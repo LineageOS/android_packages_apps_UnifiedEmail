@@ -28,6 +28,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -49,6 +51,7 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -60,6 +63,8 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
+import com.android.mail.ui.ControllableActivity;
+import com.android.mail.ui.FeedbackEnabledActivity;
 
 import org.json.JSONObject;
 
@@ -107,6 +112,8 @@ public class Utils {
 
     private static final String SMART_LINK_APP_VERSION = "version";
     private static int sVersionCode = -1;
+
+    private static final int SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH = 600;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -846,13 +853,42 @@ public class Utils {
     /**
      * Show the feedback screen for the supplied account.
      */
-    public static void sendFeedback(Context context, Account account, boolean reportingProblem) {
+    public static void sendFeedback(FeedbackEnabledActivity activity, Account account,
+            boolean reportingProblem) {
         if (account != null && account.sendFeedbackIntentUri != null) {
-            final Bundle optionalExtras = new Bundle(1);
+            final Bundle optionalExtras = new Bundle(2);
             optionalExtras.putBoolean(
                     UIProvider.SendFeedbackExtras.EXTRA_REPORTING_PROBLEM, reportingProblem);
-            openUrl(context, account.sendFeedbackIntentUri, optionalExtras);
+            final Bitmap screenBitmap =  getReducedSizeBitmap(activity);
+            if (screenBitmap != null) {
+                optionalExtras.putParcelable(
+                        UIProvider.SendFeedbackExtras.EXTRA_SCREEN_SHOT, screenBitmap);
+            }
+            openUrl(activity.getActivityContext(), account.sendFeedbackIntentUri, optionalExtras);
         }
+    }
+
+    public static Bitmap getReducedSizeBitmap(FeedbackEnabledActivity activity) {
+        final Window activityWindow = activity.getWindow();
+        final View currentView = activityWindow != null ? activityWindow.getDecorView() : null;
+        final View rootView = currentView != null ? currentView.getRootView() : null;
+        if (rootView != null) {
+            rootView.setDrawingCacheEnabled(true);
+            final Bitmap originalBitmap =
+                    rootView.getDrawingCache().copy(Bitmap.Config.RGB_565, false);
+            double originalHeight = originalBitmap.getHeight();
+            double originalWidth = originalBitmap.getWidth();
+            int newHeight = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
+            int newWidth = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
+            double scaleX, scaleY;
+            scaleX = newWidth  / originalWidth;
+            scaleY = newHeight / originalHeight;
+            final double scale = Math.min(scaleX, scaleY);
+            newWidth = (int)Math.round(originalWidth * scale);
+            newHeight = (int)Math.round(originalHeight * scale);
+            return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+        }
+        return null;
     }
 
     /**
