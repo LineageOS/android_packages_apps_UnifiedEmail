@@ -145,15 +145,15 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     protected void markUnread() {
-        // Ignore unsafe calls made after a fragment is detached from an
-        // activity
+        super.markUnread();
+        // Ignore unsafe calls made after a fragment is detached from an activity
         final ControllableActivity activity = (ControllableActivity) getActivity();
         if (activity == null || mConversation == null || mMessage == null) {
             LogUtils.w(LOG_TAG, "ignoring markUnread for conv=%s",
                     mConversation != null ? mConversation.id : 0);
             return;
         }
-        HashSet<Uri> uris = new HashSet<Uri>();
+        final HashSet<Uri> uris = new HashSet<Uri>();
         uris.add(mMessage.uri);
         activity.getConversationUpdater().markConversationMessagesUnread(mConversation, uris,
                 mViewState.getConversationInfo());
