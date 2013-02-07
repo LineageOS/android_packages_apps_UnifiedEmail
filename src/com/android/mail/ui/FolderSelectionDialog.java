@@ -52,16 +52,17 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
 
     public static FolderSelectionDialog getInstance(final Context context, Account account,
             final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
-            Folder currentFolder) {
+            Folder currentFolder, boolean isMoveTo) {
         if (sDialogShown) {
             return null;
         }
 
-        if (account.supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
-            return new MultiFoldersSelectionDialog(
+        if (isMoveTo ||
+                !account.supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
+            return new SingleFolderSelectionDialog(
                     context, account, updater, target, isBatch, currentFolder);
         } else {
-            return new SingleFolderSelectionDialog(
+            return new MultiFoldersSelectionDialog(
                     context, account, updater, target, isBatch, currentFolder);
         }
     }
