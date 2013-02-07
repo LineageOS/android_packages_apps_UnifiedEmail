@@ -21,6 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.MatrixCursorWithCachedColumns;
 
 import java.util.Set;
 
@@ -33,7 +34,8 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
 
     public static Cursor filterFolders(Cursor folderCursor) {
         final int projectionSize = UIProvider.FOLDERS_PROJECTION.length;
-        final MatrixCursor cursor = new MatrixCursor(UIProvider.FOLDERS_PROJECTION);
+        final MatrixCursor cursor =
+                new MatrixCursorWithCachedColumns(UIProvider.FOLDERS_PROJECTION);
         Object[] folder = new Object[projectionSize];
         if (folderCursor.moveToFirst()) {
             do {
