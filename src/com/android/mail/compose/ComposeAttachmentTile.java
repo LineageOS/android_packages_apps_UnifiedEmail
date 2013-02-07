@@ -33,6 +33,7 @@ public class ComposeAttachmentTile extends AttachmentTile implements AttachmentD
         mDeleteButton = (ImageButton) findViewById(R.id.attachment_tile_close_button);
     }
 
+    @Override
     public void addDeleteListener(OnClickListener clickListener) {
         mDeleteButton.setOnClickListener(clickListener);
     }
