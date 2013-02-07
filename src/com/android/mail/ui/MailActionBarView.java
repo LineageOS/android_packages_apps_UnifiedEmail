@@ -51,6 +51,7 @@ import com.android.mail.providers.SearchRecentSuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -715,6 +716,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
                 && !mFolder.isProviderFolder());
+        Utils.setMenuItemVisibility(menu, R.id.move_to, mFolder != null
+                && mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION));
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
         if (removeFolder != null) {
             removeFolder.setTitle(mActivity.getApplicationContext().getString(
