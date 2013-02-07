@@ -25,10 +25,12 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 
+import com.android.mail.utils.MatrixCursorWithCachedColumns;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * TestProvider is a ContentProvider that can be used to simulate the storage and retrieval of
@@ -163,7 +165,7 @@ public class TestProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
-        MatrixCursor cursor = new MatrixCursor(projection, 1);
+        MatrixCursor cursor = new MatrixCursorWithCachedColumns(projection, 1);
         for (ContentValues cv : valuesList) {
             Object[] rowValues = new Object[projection.length];
             int i = 0;
