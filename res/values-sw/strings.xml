@@ -104,7 +104,7 @@
     <string name="attachment_video" msgid="7526134752988603154">"Video"</string>
     <string name="attachment_audio" msgid="135527133955622936">"Sauti"</string>
     <string name="attachment_text" msgid="5544874374971562759">"Maandishi"</string>
-    <string name="attachment_application_msword" msgid="2326909450865637910">"Waraka"</string>
+    <string name="attachment_application_msword" msgid="2326909450865637910">"Hati"</string>
     <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"Wasilisho"</string>
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Lohojedwali"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
@@ -123,7 +123,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Inaleta kiambatisho"</string>
     <string name="please_wait" msgid="8797634225088247121">"Tafadhali subiri…"</string>
     <string name="saved" msgid="6977782468220926548">"Imehifadhiwa,"</string>
-    <string name="download_failed" msgid="442019281547315527">"Isingeweza kupakua. Gusa ili ujaribu upya."</string>
+    <string name="download_failed" msgid="442019281547315527">"Haikuweza kupakua. Gusa ili ujaribu upya."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Viambatisho"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Hifadhi vyote"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Shiriki"</string>

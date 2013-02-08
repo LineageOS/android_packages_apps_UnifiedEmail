@@ -123,7 +123,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Obtenció del fitxer adjunt"</string>
     <string name="please_wait" msgid="8797634225088247121">"Espera…"</string>
     <string name="saved" msgid="6977782468220926548">"S\'ha desat,"</string>
-    <string name="download_failed" msgid="442019281547315527">"No s\'ha pogut baixar. Toca per tornar a provar-ho."</string>
+    <string name="download_failed" msgid="442019281547315527">"No s\'ha pogut baixar. Toca per reintentar."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Fitxers adjunts"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Desa tot"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Comparteix"</string>
