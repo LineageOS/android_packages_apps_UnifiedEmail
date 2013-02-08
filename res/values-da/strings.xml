@@ -367,4 +367,12 @@
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
+    <!-- no translation found for label_notification_ticker (1684732605316462621) -->
+    <skip />
+    <!-- no translation found for new_messages (4419173946074516420) -->
+    <skip />
+    <!-- no translation found for single_new_message_notification_title (4138237430881084155) -->
+    <skip />
+    <!-- no translation found for silent_ringtone (5856834572357761687) -->
+    <skip />
 </resources>
