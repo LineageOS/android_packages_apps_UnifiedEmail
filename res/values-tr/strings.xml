@@ -118,7 +118,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Ek alınıyor"</string>
     <string name="please_wait" msgid="8797634225088247121">"Lütfen bekleyin…"</string>
     <string name="saved" msgid="6660844285730790469">"Kaydedildi, <xliff:g id="SIZE">%s</xliff:g>"</string>
-    <string name="download_failed" msgid="442019281547315527">"İndirilemedi. Tekrar denemek için hafifçe dokunun."</string>
+    <string name="download_failed" msgid="442019281547315527">"İndirilemedi. Tekrar denemek için dokunun."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Ekler"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Tümünü kaydet"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Paylaş"</string>
