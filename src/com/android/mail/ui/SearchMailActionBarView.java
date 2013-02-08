@@ -26,10 +26,6 @@ import android.view.MenuItem;
 import android.widget.SearchView;
 
 import com.android.mail.ConversationListContext;
-import com.android.mail.R;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 public class SearchMailActionBarView extends MailActionBarView {
@@ -46,57 +42,72 @@ public class SearchMailActionBarView extends MailActionBarView {
         super(context, attrs, defStyle);
     }
 
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
         super.onPrepareOptionsMenu(menu);
         switch (getMode()) {
             case ViewMode.SEARCH_RESULTS_LIST:
-                mActionBar.setDisplayHomeAsUpEnabled(true);
-                setEmptyMode();
-                if (!showConversationSubject()) {
-                    setPopulatedSearchView();
-                }
-                clearSearchFocus();
-                break;
+                // Fall through.
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                mActionBar.setDisplayHomeAsUpEnabled(true);
                 if (!showConversationSubject()) {
-                    setPopulatedSearchView();
-                } else {
-                    // We only want to go into snippet mode if we are not currently showing the
-                    // ActionBar title
-                    if (ActionBar.DISPLAY_SHOW_TITLE !=
-                            (mActionBar.getDisplayOptions() & ActionBar.DISPLAY_SHOW_TITLE)) {
-                        setSnippetMode();
-                    }
+                    setSearchQueryTerm();
                 }
+                // And immediately give up focus to avoid keyboard popping and suggestions.
+                clearSearchFocus();
                 break;
         }
         return false;
     }
 
+    @Override
+    public void onViewModeChanged(int newMode) {
+        super.onViewModeChanged(newMode);
+        switch (getMode()) {
+            case ViewMode.SEARCH_RESULTS_LIST:
+                setEmptyMode();
+                break;
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                // We only want to go into snippet mode if we are not currently showing the
+                // ActionBar title
+                if (showConversationSubject() && ActionBar.DISPLAY_SHOW_TITLE
+                        != (mActionBar.getDisplayOptions() & ActionBar.DISPLAY_SHOW_TITLE)) {
+                    setSnippetMode();
+                }
+                break;
+        }
+    }
 
+    /**
+     * Remove focus from the search field to avoid
+     * 1. The keyboard popping in and out.
+     * 2. The search suggestions shown up.
+     */
     private void clearSearchFocus() {
         // Remove focus from the search action menu in search results mode so
         // the IME and the suggestions don't get in the way.
-        MenuItem search = getSearch();
+        final MenuItem search = getSearch();
         if (search != null) {
-            SearchView searchWidget = (SearchView) search.getActionView();
+            final SearchView searchWidget = (SearchView) search.getActionView();
             searchWidget.clearFocus();
         }
     }
 
-    private void setPopulatedSearchView() {
-        MenuItem search = getSearch();
+    /**
+     * Sets the query term in the text field, so the user can see what was searched for.
+     */
+    private void setSearchQueryTerm() {
+        final MenuItem search = getSearch();
         if (search != null) {
             search.expandActionView();
-            String query = mActivity.getIntent().getStringExtra(
+            final String query = mActivity.getIntent().getStringExtra(
                     ConversationListContext.EXTRA_SEARCH_QUERY);
-            SearchView searchWidget = (SearchView) search.getActionView();
+            final SearchView searchWidget = (SearchView) search.getActionView();
             if (!TextUtils.isEmpty(query)) {
                 searchWidget.setQuery(query, false);
             }
-            searchWidget.clearFocus();
         }
     }
 
