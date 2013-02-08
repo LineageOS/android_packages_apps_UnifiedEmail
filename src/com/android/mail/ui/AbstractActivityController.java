@@ -983,7 +983,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 Utils.showHelp(mActivity.getActivityContext(), mAccount, getHelpContext());
                 break;
             case R.id.feedback_menu_item:
-                Utils.sendFeedback(mActivity.getActivityContext(), mAccount, false);
+                Utils.sendFeedback(mActivity, mAccount, false);
                 break;
             case R.id.manage_folders_item:
                 Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
@@ -3173,8 +3173,7 @@ public abstract class AbstractActivityController implements ActivityController {
         return new ActionClickedListener() {
             @Override
             public void onActionClicked() {
-                Utils.sendFeedback(
-                        mActivity.getActivityContext(), mAccount, true /* reportingProblem */);
+                Utils.sendFeedback(mActivity, mAccount, true /* reportingProblem */);
             }
         };
     }
@@ -3197,8 +3196,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 showStorageErrorDialog();
                 return;
             case UIProvider.LastSyncResult.INTERNAL_ERROR:
-                Utils.sendFeedback(
-                        mActivity.getActivityContext(), mAccount, true /* reportingProblem */);
+                Utils.sendFeedback(mActivity, mAccount, true /* reportingProblem */);
                 return;
             default:
                 return;

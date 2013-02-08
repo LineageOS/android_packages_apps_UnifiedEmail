@@ -86,6 +86,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.DraftType;
+import com.android.mail.ui.FeedbackEnabledActivity;
 import com.android.mail.ui.MailActivity;
 import com.android.mail.ui.WaitFragment;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
@@ -116,7 +117,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
         AttachmentAddedOrDeletedListener, OnAccountChangedListener, LoaderManager.LoaderCallbacks<Cursor>,
-        TextView.OnEditorActionListener {
+        TextView.OnEditorActionListener, FeedbackEnabledActivity {
     // Identifiers for which type of composition this is
     protected static final int COMPOSE = -1;
     protected static final int REPLY = 0;
@@ -3173,5 +3174,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
         // Do nothing.
+    }
+
+    @Override
+    public Context getActivityContext() {
+        return this;
     }
 }
