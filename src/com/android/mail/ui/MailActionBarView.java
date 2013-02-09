@@ -358,14 +358,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
         switch (mMode) {
             case ViewMode.UNKNOWN:
-                if (mSearch != null) {
-                    mSearch.collapseActionView();
-                }
+                closeSearchField();
                 break;
             case ViewMode.CONVERSATION_LIST:
+                closeSearchField();
                 showNavList();
                 break;
             case ViewMode.CONVERSATION:
+                closeSearchField();
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 if (!mShowConversationSubject) {
                     showNavList();
@@ -374,6 +374,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 }
                 break;
             case ViewMode.FOLDER_LIST:
+                closeSearchField();
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 setFoldersMode();
                 break;
@@ -383,6 +384,17 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 showNavList();
                 break;
         }
+    }
+
+    /**
+     * Close the search query entry field to avoid keyboard events, and to restore the actionbar
+     * to non-search mode.
+     */
+    private final void closeSearchField() {
+        if (mSearch == null) {
+            return;
+        }
+        mSearch.collapseActionView();
     }
 
     protected int getMode() {
@@ -596,13 +608,13 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     public void onFolderUpdated(Folder folder) {
         mSpinner.onFolderUpdated(folder);
-        int status = folder.syncStatus;
         if (folder.isSyncInProgress()) {
             onRefreshStarted();
         } else {
             // Stop the spinner here.
             onRefreshStopped();
         }
+        closeSearchField();
     }
 
     @Override
@@ -671,18 +683,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
 
         return mSubjectView.getTextRemainder(subject);
-    }
-
-    private static boolean actionBarReportsMultipleLineTitle(ActionBar bar) {
-        boolean reports = false;
-        try {
-            if (bar != null) {
-                reports = (ActionBar.class.getField("DISPLAY_TITLE_MULTIPLE_LINES") != null);
-            }
-        } catch (NoSuchFieldException e) {
-            // stay false
-        }
-        return reports;
     }
 
     public void setCurrentConversation(Conversation conversation) {
