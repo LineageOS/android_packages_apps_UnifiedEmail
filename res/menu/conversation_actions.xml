@@ -64,11 +64,6 @@
 
     <!-- Always available -->
     <item
-        android:id="@+id/move_to"
-        android:title="@string/menu_move_to" />
-
-    <!-- Always available -->
-    <item
         android:id="@+id/mark_important"
         android:title="@string/mark_important"
         android:icon="@drawable/ic_email_caret_double" />
