@@ -80,11 +80,6 @@
         android:icon="@drawable/ic_menu_star_off_holo_light" />
 
     <item
-        android:id="@+id/move_to"
-        android:title="@string/menu_move_to"
-        android:showAsAction="never" />
-
-    <item
         android:id="@+id/mark_important"
         android:title="@string/mark_important"
         android:showAsAction="never"
