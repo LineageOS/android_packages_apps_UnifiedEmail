@@ -109,6 +109,8 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      */
     RecentFolderController getRecentFolderController();
 
+    UpOrBackController getUpOrBackController();
+
     void startDragMode();
 
     void stopDragMode();

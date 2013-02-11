@@ -334,7 +334,7 @@ public final class OnePaneController extends AbstractActivityController {
      * back exits the app.
      */
     @Override
-    public boolean onBackPressed() {
+    public boolean handleBackPress() {
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.FOLDER_LIST) {
             final Folder hierarchyFolder = getHierarchyFolder();
@@ -440,7 +440,7 @@ public final class OnePaneController extends AbstractActivityController {
      * 3) If the user is in the inbox, there is no up.
      */
     @Override
-    public boolean onUpPressed() {
+    public boolean handleUpPress() {
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
@@ -449,7 +449,7 @@ public final class OnePaneController extends AbstractActivityController {
                 || mode == ViewMode.FOLDER_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             // Same as go back.
-            mActivity.onBackPressed();
+            handleBackPress();
         }
         return true;
     }

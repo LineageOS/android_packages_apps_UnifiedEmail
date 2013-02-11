@@ -498,6 +498,10 @@ public class Conversation implements Parcelable {
         viewed = true;
     }
 
+    public String getBaseUri(String defaultValue) {
+        return conversationBaseUri != null ? conversationBaseUri.toString() : defaultValue;
+    }
+
     /**
      * Create a human-readable string of all the conversations
      * @param collection Any collection of conversations
