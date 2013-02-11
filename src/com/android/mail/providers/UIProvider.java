@@ -735,6 +735,12 @@ public class UIProvider {
          * the report phishing functionality.
          */
         public static final int REPORT_PHISHING = 0x2000;
+
+        /**
+         * The flag indicates that the user has the ability to move conversations
+         * from this folder.
+         */
+        public static final int ALLOWS_REMOVE_CONVERSATION = 0x4000;
     }
 
     public static final class FolderColumns {
