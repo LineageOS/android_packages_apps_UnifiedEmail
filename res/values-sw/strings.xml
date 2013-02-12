@@ -74,9 +74,11 @@
     <string name="forward" msgid="6822914459902983767">"Sambaza"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Tunga"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Badilisha folda"</string>
+    <!-- no translation found for menu_move_to (9138296669516358542) -->
+    <skip />
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mipangilio ya folda"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Folda"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Landanisha na arifu"</string>
+    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sawazisha na uarifu"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Mipangilio ya folda"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Mipangilio ya akaunti"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Mipangilio"</string>
@@ -282,19 +284,19 @@
     <item msgid="4779810016424303449">"Hitilafu ya Ndani"</item>
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Gusa ili kusanidi"</string>
-    <string name="non_synced_folder_description" msgid="6059194125558004080">"Ili kuona mazungumzo, landanisha folda hii."</string>
-    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Landanisha Folda"</string>
+    <string name="non_synced_folder_description" msgid="6059194125558004080">"Ili kuona mazungumzo, sawazisha folda hii."</string>
+    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sawazisha Folda"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ona mazungumzo zaidi"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Inapakia…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Chagua akaunti"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Chagua folda"</string>
-    <string name="sync_all" msgid="1057043212338233359">"Landanisha: Zote"</string>
+    <string name="sync_all" msgid="1057043212338233359">"Sawazisha: Zote"</string>
   <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Landanisha: Siku <xliff:g id="COUNT">%1$d</xliff:g> ya mwisho"</item>
-    <item quantity="other" msgid="6856940335775567991">"Landanisha: Siku <xliff:g id="COUNT">%1$d</xliff:g> za mwisho"</item>
+    <item quantity="one" msgid="137489911893192702">"Sawazisha: Siku <xliff:g id="COUNT">%1$d</xliff:g> zilizopita"</item>
+    <item quantity="other" msgid="6856940335775567991">"Sawazisha: Siku <xliff:g id="COUNT">%1$d</xliff:g> zilizopita"</item>
   </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Landanisha: Hakuna"</string>
+    <string name="sync_none" msgid="3581727068747471804">"Sawazisha: Hakuna"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Badilisha folda"</string>
     <string name="search_hint" msgid="3625734263059221350">"Tafuta barua pepe"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
