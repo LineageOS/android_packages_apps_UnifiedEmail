@@ -1061,6 +1061,7 @@ public class UIProvider {
         /**
          * @deprecated
          */
+        @Deprecated
         public static final String SENDER_INFO = "senderInfo";
         /**
          * This blob column contains the byte-array representation of the Parceled
@@ -1759,7 +1760,7 @@ public class UIProvider {
          * setting this state will tell the provider to cancel a download in
          * progress.
          * <p>
-         * Valid next states: {@link #DOWNLOADING}
+         * Valid next states: {@link #DOWNLOADING}, {@link #PAUSED}
          */
         public static final int NOT_SAVED = 0;
         /**
@@ -1791,7 +1792,7 @@ public class UIProvider {
          * own. To move a file from cache to external, update
          * {@link AttachmentColumns#DESTINATION}.
          * <p>
-         * Valid next states: {@link #NOT_SAVED}
+         * Valid next states: {@link #NOT_SAVED}, {@link #PAUSED}
          */
         public static final int SAVED = 3;
         /**
