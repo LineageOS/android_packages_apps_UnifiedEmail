@@ -65,6 +65,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         OnQueryTextListener, OnSuggestionListener, MenuItem.OnActionExpandListener,
         SubjectDisplayChanger {
 
+    // This is a private setting available starting JB MR1.1.
     private static final int DISPLAY_TITLE_MULTIPLE_LINES = 0x20;
 
     protected ActionBar mActionBar;
@@ -131,19 +132,37 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             v.post(new Runnable() {
                 @Override
                 public void run() {
-                    // Switch over to title mode when the first fragment asks for a subject
-                    // remainder. We assume that layout has happened by now, so the SnippetTextView
-                    // already has measurements it needs to calculate remainders, and it's safe to
-                    // switch over to TITLE mode to inherit standard system behaviors.
-                    setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | DISPLAY_TITLE_MULTIPLE_LINES);
+                    // Framework only started supporting multi-line action bars in JB MR1.1,
+                    // so on earlier versions, always use our custom action bar.
+                    if (actionBarReportsMultipleLineTitle(mActionBar)) {
+                        // Switch over to title mode when the first fragment asks for a subject
+                        // remainder. We assume that layout has happened by now, so the
+                        // SnippetTextView already has measurements it needs to calculate
+                        // remainders, and it's safe to switch over to TITLE mode to inherit
+                        // standard system behaviors.
+                        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE |
+                                DISPLAY_TITLE_MULTIPLE_LINES);
 
-                    // Work around a bug where the title's container is stuck GONE when a title is
-                    // set while in CUSTOM mode.
-                    mActionBar.setTitle(mActionBar.getTitle());
+                        // Work around a bug where the title's container is stuck GONE when a title
+                        // is set while in CUSTOM mode.
+                        mActionBar.setTitle(mActionBar.getTitle());
+                    }
                 }
             });
         }
     };
+
+    private static boolean actionBarReportsMultipleLineTitle(ActionBar bar) {
+        boolean reports = false;
+        try {
+            if (bar != null) {
+                reports = (ActionBar.class.getField("DISPLAY_TITLE_MULTIPLE_LINES") != null);
+            }
+        } catch (NoSuchFieldException e) {
+            // stay false
+        }
+        return reports;
+    }
 
     /** True if the application has more than one account. */
     private boolean mHasManyAccounts;
