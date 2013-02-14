@@ -122,6 +122,7 @@ public class AttachmentProgressDialogFragment extends DialogFragment {
     }
 
     public boolean isShowingDialogForAttachment(Attachment attachment) {
-        return getDialog() != null && Objects.equal(attachment.uri, mAttachment.uri);
+        return getDialog() != null
+                && Objects.equal(attachment.getIdentifierUri(), mAttachment.getIdentifierUri());
     }
 }

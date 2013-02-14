@@ -62,8 +62,8 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
 
         final Uri thumbnailUri = attachment.thumbnailUri;
         final Uri contentUri = attachment.contentUri;
-        final Uri uri = (prevAttachment == null) ? null : prevAttachment.uri;
-        final Uri prevUri = (prevAttachment == null) ? null : prevAttachment.uri;
+        final Uri uri = (prevAttachment == null) ? null : prevAttachment.getIdentifierUri();
+        final Uri prevUri = (prevAttachment == null) ? null : prevAttachment.getIdentifierUri();
         // begin loading a thumbnail if this is an image and either the thumbnail or the original
         // content is ready (and different from any existing image)
         if ((thumbnailUri != null || contentUri != null)
