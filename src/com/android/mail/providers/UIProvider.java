@@ -1730,6 +1730,7 @@ public class UIProvider {
         public static final int CACHE = 0;
         /**
          * The attachment will be or is already saved to external shared device storage.
+         * This value should be 1 since saveToSd is often used in a similar way
          */
         public static final int EXTERNAL = 1;
 
