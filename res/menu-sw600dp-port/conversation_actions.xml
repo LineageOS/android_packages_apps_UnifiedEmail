@@ -62,6 +62,10 @@
         android:icon="@drawable/ic_menu_mark_unread_holo_light" />
 
     <item
+        android:id="@+id/move_to"
+        android:title="@string/menu_move_to" />
+
+    <item
         android:id="@+id/mark_important"
         android:showAsAction="never"
         android:title="@string/mark_important" />
