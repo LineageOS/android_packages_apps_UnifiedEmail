@@ -282,7 +282,7 @@ public class Attachment implements Parcelable {
      * field stable, and put provider-specific opaque bits and bobs elsewhere
      */
     public Uri getIdentifierUri() {
-        if (mIdentifierUri == null) {
+        if (Utils.isEmpty(mIdentifierUri)) {
             mIdentifierUri = Utils.isEmpty(uri) ?
                     (Utils.isEmpty(contentUri) ? Uri.EMPTY : contentUri)
                     : uri.buildUpon().clearQuery().build();
