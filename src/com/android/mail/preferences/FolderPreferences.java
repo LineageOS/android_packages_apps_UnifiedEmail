@@ -255,9 +255,11 @@ public class FolderPreferences extends VersionedPrefs {
 
     private Set<String> getDefaultNotificationActions(final Context context) {
         final boolean supportsArchive = mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
+        final boolean supportsRemoveLabel =
+                mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION);
         final NotificationActionType destructiveActionType =
-                supportsArchive ? NotificationActionType.ARCHIVE_REMOVE_LABEL
-                        : NotificationActionType.DELETE;
+                (supportsArchive || supportsRemoveLabel) ?
+                        NotificationActionType.ARCHIVE_REMOVE_LABEL : NotificationActionType.DELETE;
         final String destructiveAction = destructiveActionType.getPersistedValue();
 
         final String replyAction =
