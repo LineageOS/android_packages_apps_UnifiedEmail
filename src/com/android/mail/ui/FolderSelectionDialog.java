@@ -52,7 +52,7 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
 
     public static FolderSelectionDialog getInstance(final Context context, Account account,
             final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
-            Folder currentFolder, boolean isMoveTo) {
+            Folder currentFolder) {
         if (sDialogShown) {
             return null;
         }

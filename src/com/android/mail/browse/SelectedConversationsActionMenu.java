@@ -163,8 +163,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     starConversations(false);
                 }
                 break;
-            case R.id.move_to:
-                /* fall through */
             case R.id.change_folder:
                 boolean cantMove = false;
                 Account acct = mAccount;
@@ -189,8 +187,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 }
                 if (!cantMove) {
                     final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
-                            mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder,
-                            item.getItemId() == R.id.move_to);
+                            mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder);
                     if (dialog != null) {
                         dialog.show();
                     }
@@ -372,16 +369,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // 3) If we show neither archive or remove folder, then show a disabled
         // archive icon if the setting for that is true.
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
-        final MenuItem moveTo = menu.findItem(R.id.move_to);
         final boolean showRemoveFolder = mFolder != null && mFolder.type == FolderType.DEFAULT
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
                 && !mFolder.isProviderFolder();
-        final boolean showMoveTo = mFolder != null
-                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
-                && mFolder.type != FolderType.STARRED
-                && mFolder.type != FolderType.OTHER_PROVIDER_FOLDER;
         removeFolder.setVisible(showRemoveFolder);
-        moveTo.setVisible(showMoveTo);
         if (mFolder != null && showRemoveFolder) {
             removeFolder.setTitle(mActivity.getActivityContext().getString(R.string.remove_folder,
                     mFolder.name));
