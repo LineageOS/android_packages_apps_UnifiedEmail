@@ -41,6 +41,7 @@ import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
 
 import com.android.mail.AccountSpinnerAdapter;
+import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.SnippetTextView;
 import com.android.mail.providers.Account;
@@ -378,14 +379,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
         switch (mMode) {
             case ViewMode.UNKNOWN:
-                if (mSearch != null) {
-                    mSearch.collapseActionView();
-                }
+                closeSearchField();
                 break;
             case ViewMode.CONVERSATION_LIST:
+                closeSearchField();
                 showNavList();
                 break;
             case ViewMode.CONVERSATION:
+                closeSearchField();
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 if (!mShowConversationSubject) {
                     showNavList();
@@ -394,6 +395,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 }
                 break;
             case ViewMode.FOLDER_LIST:
+                closeSearchField();
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 setFoldersMode();
                 break;
@@ -403,6 +405,17 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 showNavList();
                 break;
         }
+    }
+
+    /**
+     * Close the search query entry field to avoid keyboard events, and to restore the actionbar
+     * to non-search mode.
+     */
+    private final void closeSearchField() {
+        if (mSearch == null) {
+            return;
+        }
+        mSearch.collapseActionView();
     }
 
     protected int getMode() {
@@ -616,12 +629,16 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     public void onFolderUpdated(Folder folder) {
         mSpinner.onFolderUpdated(folder);
-        int status = folder.syncStatus;
         if (folder.isSyncInProgress()) {
             onRefreshStarted();
         } else {
             // Stop the spinner here.
             onRefreshStopped();
+        }
+        final ConversationListContext listContext = mController == null ? null :
+                mController.getCurrentListContext();
+        if (!ConversationListContext.isSearchResult(listContext)) {
+            closeSearchField();
         }
     }
 
