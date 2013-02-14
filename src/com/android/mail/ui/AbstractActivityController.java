@@ -988,10 +988,13 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.manage_folders_item:
                 Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
                 break;
+            case R.id.move_to:
+                /* fall through */
             case R.id.change_folder:
                 final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
                         mActivity.getActivityContext(), mAccount, this,
-                        Conversation.listOf(mCurrentConversation), false, mFolder);
+                        Conversation.listOf(mCurrentConversation), false, mFolder,
+                        id == R.id.move_to);
                 if (dialog != null) {
                     dialog.show();
                 }
