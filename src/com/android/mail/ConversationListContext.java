@@ -76,7 +76,6 @@ public class ConversationListContext {
 
     /**
      * Builds a context for a view to a Gmail folder.
-     * @param context
      * @param account
      * @param folder
      * @return
@@ -96,10 +95,10 @@ public class ConversationListContext {
     /**
      * Internal constructor
      *
-     * To create a class, use the static {@link #forIntent} or {@link #forBundle(Bundle)} method.
-     * @param account
-     * @param searchQuery
-     * @param folder
+     * To create a class, use the static {@link #forFolder} or {@link #forBundle(Bundle)} method.
+     * @param a
+     * @param query
+     * @param f
      */
     private ConversationListContext(Account a, String query, Folder f) {
         account = a;
