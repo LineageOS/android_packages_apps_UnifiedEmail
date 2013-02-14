@@ -257,8 +257,13 @@ public class FolderPreferences extends VersionedPrefs {
         final boolean supportsArchive = mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
         final boolean supportsRemoveLabel =
                 mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION);
+        // Use the swipe setting, since it is essentially a way to allow the user to specify
+        // whether they prefer archive or delete, without adding another setting
+        final boolean preferDelete =
+                MailPrefs.ConversationListSwipeActions.DELETE.equals(MailPrefs.get(context)
+                        .getConversationListSwipeAction(true /* supportsArchive */));
         final NotificationActionType destructiveActionType =
-                (supportsArchive || supportsRemoveLabel) ?
+                (supportsArchive || supportsRemoveLabel) && !preferDelete ?
                         NotificationActionType.ARCHIVE_REMOVE_LABEL : NotificationActionType.DELETE;
         final String destructiveAction = destructiveActionType.getPersistedValue();
 
