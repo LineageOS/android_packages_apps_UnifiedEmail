@@ -211,6 +211,10 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
                 // If we can install, install.
                 if (MimeType.isInstallable(mAttachment.contentType)) {
+                    // Save to external because the package manager only handles
+                    // file:// uris not content:// uris. We do the same
+                    // workaround in
+                    // UiProvider#getUiAttachmentsCursorForUIAttachments()
                     mActionHandler.showAttachment(AttachmentDestination.EXTERNAL);
                 }
                 // If we can view or play with an on-device app,
@@ -271,8 +275,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        Utils.setIntentDataAndTypeAndNormalize(intent, mAttachment.contentUri,
-                mAttachment.contentType);
+        Utils.setIntentDataAndTypeAndNormalize(
+                intent, mAttachment.contentUri, mAttachment.contentType);
         try {
             getContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {
