@@ -43,8 +43,6 @@ public final class MailPrefs {
     private static final String WIDGET_ACCOUNT_PREFIX = "widget-account-";
     private static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
 
-    // Hidden preference to indicate what version a "What's New" dialog was last shown for.
-    private static final String WHATS_NEW_LAST_SHOWN_VERSION = "whats-new-last-shown-version";
     public static final String ENABLE_CONVLIST_PHOTOS = "enable-convlist-photos";
 
     public static MailPrefs get(Context c) {
@@ -105,27 +103,4 @@ public final class MailPrefs {
         }
         e.apply();
     }
-
-    /**
-     * Returns a boolean indicating whether the What's New dialog should be shown
-     * @param context Context
-     * @return Boolean indicating whether the What's New dialogs should be shown
-     */
-    public boolean getShouldShowWhatsNew(final Context context) {
-        // Get the last versionCode from the last time that the whats new dialogs has been shown
-        final int lastShownVersion = mPrefs.getInt(WHATS_NEW_LAST_SHOWN_VERSION, 0);
-
-        // Get the last version the What's New dialog was updated
-        final int lastUpdatedVersion =
-                context.getResources().getInteger(R.integer.whats_new_last_updated);
-
-        return lastUpdatedVersion > lastShownVersion;
-    }
-
-    public void setHasShownWhatsNew(final int version) {
-        mPrefs.edit()
-            .putInt(WHATS_NEW_LAST_SHOWN_VERSION, version)
-            .apply();
-    }
-
 }
