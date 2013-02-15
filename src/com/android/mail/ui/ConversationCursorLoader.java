@@ -40,7 +40,7 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
     private final String mName;
 
     /** Only used for debugging. Turn {@link #DEBUG} on to make this useful. */
-    private static final boolean DEBUG = false; // STOPSHIP
+    private static final boolean DEBUG = false;
     private static final ArrayList<ConversationCursorLoader> sLoaders =
             new ArrayList<ConversationCursorLoader>();
 
