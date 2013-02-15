@@ -25,6 +25,7 @@ import com.android.mail.MailIntentService;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
 
 import java.util.Set;
 
@@ -53,12 +54,24 @@ public final class MailPrefs extends VersionedPrefs {
          */
         public static final String DEFAULT_REPLY_ALL = "default-reply-all";
 
+        public static final String CONVERSATION_LIST_SWIPE_ACTION =
+                "conversation-list-swipe-action";
+
         /** Hidden preference used to cache the active notification set */
         private static final String CACHED_ACTIVE_NOTIFICATION_SET =
                 "cache-active-notification-set";
 
         public static final ImmutableSet<String> BACKUP_KEYS =
-                new ImmutableSet.Builder<String>().add(DEFAULT_REPLY_ALL).build();
+                new ImmutableSet.Builder<String>()
+                .add(DEFAULT_REPLY_ALL)
+                .add(CONVERSATION_LIST_SWIPE_ACTION)
+                .build();
+    }
+
+    public static final class ConversationListSwipeActions {
+        public static final String ARCHIVE = "archive";
+        public static final String DELETE = "delete";
+        public static final String DISABLED = "disabled";
     }
 
     public static MailPrefs get(Context c) {
@@ -165,6 +178,45 @@ public final class MailPrefs extends VersionedPrefs {
 
     public void setDefaultReplyAll(final boolean replyAll) {
         getEditor().putBoolean(PreferenceKeys.DEFAULT_REPLY_ALL, replyAll).apply();
+        MailIntentService.broadcastBackupDataChanged(getContext());
+    }
+
+    /**
+     * Gets the action to take (one of the values from {@link ConversationListSwipeActions}) when an
+     * item in the conversation list is swiped.
+     *
+     * @param allowArchive <code>true</code> if Archive is an acceptable action (this will affect
+     *        the default return value)
+     */
+    public String getConversationListSwipeAction(final boolean allowArchive) {
+        return getSharedPreferences().getString(
+                PreferenceKeys.CONVERSATION_LIST_SWIPE_ACTION,
+                allowArchive ? ConversationListSwipeActions.ARCHIVE
+                        : ConversationListSwipeActions.DELETE);
+    }
+
+    /**
+     * Gets the action to take (one of the values from {@link UIProvider.Swipe}) when an item in the
+     * conversation list is swiped.
+     *
+     * @param allowArchive <code>true</code> if Archive is an acceptable action (this will affect
+     *        the default return value)
+     */
+    public int getConversationListSwipeActionInteger(final boolean allowArchive) {
+        final String swipeAction = getConversationListSwipeAction(allowArchive);
+        if (ConversationListSwipeActions.ARCHIVE.equals(swipeAction)) {
+            return UIProvider.Swipe.ARCHIVE;
+        } else if (ConversationListSwipeActions.DELETE.equals(swipeAction)) {
+            return UIProvider.Swipe.DELETE;
+        } else if (ConversationListSwipeActions.DISABLED.equals(swipeAction)) {
+            return UIProvider.Swipe.DISABLED;
+        } else {
+            return UIProvider.Swipe.DEFAULT;
+        }
+    }
+
+    public void setConversationListSwipeAction(final String swipeAction) {
+        getEditor().putString(PreferenceKeys.CONVERSATION_LIST_SWIPE_ACTION, swipeAction).apply();
         MailIntentService.broadcastBackupDataChanged(getContext());
     }
 
