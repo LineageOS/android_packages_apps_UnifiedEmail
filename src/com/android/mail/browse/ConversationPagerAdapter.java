@@ -123,8 +123,14 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         return mDetachedMode;
     }
 
-    public boolean isPagingDisabled() {
-        return mSingletonMode || mDetachedMode || getCursor() == null;
+    /**
+     * Returns true if singleton mode or detached mode have been enabled, or if the current cursor
+     * is null.
+     * @param cursor the current conversation cursor (obtained through {@link #getCursor()}.
+     * @return
+     */
+    public boolean isPagingDisabled(Cursor cursor) {
+        return mSingletonMode || mDetachedMode || cursor == null;
     }
 
     private ConversationCursor getCursor() {
@@ -148,8 +154,9 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     @Override
     public Fragment getItem(int position) {
         final Conversation c;
+        final Cursor cursor = getCursor();
 
-        if (isPagingDisabled()) {
+        if (isPagingDisabled(cursor)) {
             // cursor-less adapter is a size-1 cursor that points to mInitialConversation.
             // sanity-check
             if (position != 0) {
@@ -159,11 +166,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             c = getDefaultConversation();
             c.position = 0;
         } else {
-            final Cursor cursor = getCursor();
-            if (cursor == null) {
-                LogUtils.wtf(LOG_TAG, "unable to get ConversationCursor, pos=%d", position);
-                return null;
-            }
             if (!cursor.moveToPosition(position)) {
                 LogUtils.wtf(LOG_TAG, "unable to seek to ConversationCursor pos=%d (%s)", position,
                         cursor);
@@ -189,14 +191,11 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
 
     @Override
     public int getCount() {
-        if (isPagingDisabled()) {
-            LogUtils.d(LOG_TAG, "IN CPA.getCount, returning 1 (effective singleton). cursor=%s",
-                    getCursor());
-            return 1;
-        }
         final Cursor cursor = getCursor();
-        if (cursor == null) {
-            return 0;
+        if (isPagingDisabled(cursor)) {
+            LogUtils.d(LOG_TAG, "IN CPA.getCount, returning 1 (effective singleton). cursor=%s",
+                    cursor);
+            return 1;
         }
         return cursor.getCount();
     }
@@ -222,8 +221,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     public CharSequence getPageTitle(int position) {
         final String title;
         final int currentPosition = mPager.getCurrentItem();
-
-        if (isPagingDisabled()) {
+        final Cursor cursor = getCursor();
+        if (isPagingDisabled(cursor)) {
             title = null;
         } else if (position == currentPosition) {
             int total = getCount();
@@ -337,7 +336,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     }
 
     public int getConversationPosition(Conversation conv) {
-        if (isPagingDisabled()) {
+        final ConversationCursor cursor = getCursor();
+        if (isPagingDisabled(cursor)) {
             if (conv != getDefaultConversation()) {
                 LogUtils.d(LOG_TAG, "unable to find conversation in singleton mode. c=%s", conv);
                 return POSITION_NONE;
@@ -345,8 +345,9 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             return 0;
         }
 
-        final ConversationCursor cursor = getCursor();
-        if (cursor == null || conv == null) {
+        // cursor is guaranteed to be non-null because isPagingDisabled() above checks for null
+        // cursor.
+        if (conv == null) {
             return POSITION_NONE;
         }
 
