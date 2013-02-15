@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 
@@ -31,6 +30,8 @@ import com.android.mail.providers.Folder;
  * This will serve as an eventual replacement for Gmail's Persistence class.
  */
 public final class MailPrefs {
+
+    public static final boolean SHOW_EXPERIMENTAL_PREFS = false;
 
     // TODO: support account-specific prefs. probably just use a different prefs name instead of
     // prepending every key.
@@ -43,7 +44,10 @@ public final class MailPrefs {
     private static final String WIDGET_ACCOUNT_PREFIX = "widget-account-";
     private static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
 
+    private static final String ENABLE_FTS = "enable-fts";
+    private static final String ENABLE_CHIP_DRAG_AND_DROP = "enable-chip-drag-and-drop";
     public static final String ENABLE_CONVLIST_PHOTOS = "enable-convlist-photos";
+    public static final String ENABLE_WHOOSH_ZOOM = "enable-whoosh-zoom";
 
     public static MailPrefs get(Context c) {
         if (sInstance == null) {
@@ -82,12 +86,28 @@ public final class MailPrefs {
         return mPrefs.getString(WIDGET_ACCOUNT_PREFIX + appWidgetId, null);
     }
 
+    public boolean fullTextSearchEnabled() {
+        // If experimental preferences are not enabled, return true.
+        return !SHOW_EXPERIMENTAL_PREFS || mPrefs.getBoolean(ENABLE_FTS, true);
+    }
+
+    public boolean chipDragAndDropEnabled() {
+        // If experimental preferences are not enabled, return false.
+        return SHOW_EXPERIMENTAL_PREFS && mPrefs.getBoolean(ENABLE_CHIP_DRAG_AND_DROP, false);
+    }
+
     /**
      * Get whether to show the experimental inline contact photos in the
      * conversation list.
      */
     public boolean areConvListPhotosEnabled() {
-        return mPrefs.getBoolean(ENABLE_CONVLIST_PHOTOS, false);
+        // If experimental preferences are not enabled, return false.
+        return SHOW_EXPERIMENTAL_PREFS && mPrefs.getBoolean(ENABLE_CONVLIST_PHOTOS, false);
+    }
+
+    public boolean isWhooshZoomEnabled() {
+        // If experimental preferences are not enabled, return false.
+        return SHOW_EXPERIMENTAL_PREFS && mPrefs.getBoolean(ENABLE_WHOOSH_ZOOM, false);
     }
 
     private static String createWidgetPreferenceValue(Account account, Folder folder) {
