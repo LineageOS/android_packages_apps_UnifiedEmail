@@ -23,18 +23,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginTop">3sp</item>
-    </style>
-
-    <style name="SubjectStyle">
-        <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginTop">-6sp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:textColor">@color/subject_text_color</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:lines">2</item>
-        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_marginTop">4sp</item>
     </style>
 
     <style name="CheckmarkStyle">
@@ -45,7 +34,6 @@
     </style>
 
     <style name="StarStyle">
-        <item name="android:layout_marginLeft">12dip</item>
         <item name="android:layout_marginRight">12dip</item>
         <item name="android:layout_marginTop">-6sp</item>
         <item name="android:layout_width">wrap_content</item>
@@ -82,5 +70,17 @@
 
     <style name="ComposeArea">
         <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.Dialog.MinWidth"/>
+
+    <style name="SendersStyleImages" parent="@style/SendersStyle">
+        <item name="android:layout_marginLeft">0dip</item>
+        <item name="android:layout_marginTop">8sp</item>
+    </style>
+
+    <style name="PersonalIndicatorStyleImages" parent="@style/PersonalIndicatorStyle">
+        <item name="android:layout_marginLeft">0dip</item>
+        <item name="android:layout_marginTop">3sp</item>
     </style>
 </resources>

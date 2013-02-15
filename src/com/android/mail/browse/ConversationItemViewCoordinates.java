@@ -28,6 +28,7 @@ import android.view.ViewParent;
 import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.ui.ViewMode;
+import com.google.common.base.Objects;
 
 /**
  * Represents the coordinates of elements inside a CanvasConversationHeaderView
@@ -65,6 +66,7 @@ public class ConversationItemViewCoordinates {
     int personalLevelX;
     int personalLevelY;
     boolean showPersonalLevel;
+    boolean inlinePersonalLevel;
 
     // Senders.
     int sendersX;
@@ -90,6 +92,7 @@ public class ConversationItemViewCoordinates {
     int foldersTopPadding;
     int foldersFontSize;
     int foldersAscent;
+    int foldersTextBottomPadding;
     boolean showFolders;
     boolean showColorBlock;
 
@@ -111,9 +114,17 @@ public class ConversationItemViewCoordinates {
     int minHeight;
     TextView sendersView;
 
+    int contactImagesHeight;
+    int contactImagesWidth;
+    float contactImagesX;
+    float contactImagesY;
+
+    int dateTextWidth;
+    int dateWidth;
+    int dateHeight;
 
     // Cache to save Coordinates based on view width.
-    private static SparseArray<ConversationItemViewCoordinates> mCache =
+    private static SparseArray<ConversationItemViewCoordinates> sCache =
             new SparseArray<ConversationItemViewCoordinates>();
 
     private static TextPaint sPaint = new TextPaint();
@@ -157,14 +168,27 @@ public class ConversationItemViewCoordinates {
     /**
      * Returns the layout id to be inflated in this mode.
      */
-    private static int getLayoutId(int mode) {
-        switch (mode) {
-            case WIDE_MODE:
-                return R.layout.conversation_item_view_wide;
-            case NORMAL_MODE:
-                return R.layout.conversation_item_view_normal;
-            default:
-                throw new IllegalArgumentException("Unknown conversation header view mode " + mode);
+    private static int getLayoutId(int mode, boolean convListPhotosEnabled) {
+        if (!convListPhotosEnabled) {
+            switch (mode) {
+                case WIDE_MODE:
+                    return R.layout.conversation_item_view_wide;
+                case NORMAL_MODE:
+                    return R.layout.conversation_item_view_normal;
+                default:
+                    throw new IllegalArgumentException("Unknown conversation header view mode "
+                            + mode);
+            }
+        } else {
+            switch (mode) {
+                case WIDE_MODE:
+                    return R.layout.conversation_item_view_wide_images;
+                case NORMAL_MODE:
+                    return R.layout.conversation_item_view_normal_images;
+                default:
+                    throw new IllegalArgumentException("Unknown conversation header view mode "
+                            + mode);
+            }
         }
     }
 
@@ -238,23 +262,12 @@ public class ConversationItemViewCoordinates {
     /**
      * Returns the length (maximum of characters) of subject in this mode.
      */
-    public static int getSubjectLength(Context context, int mode, boolean hasVisibleFolders,
-            boolean hasAttachments) {
-        if (hasVisibleFolders) {
-            if (hasAttachments) {
-                return context.getResources().getIntArray(
-                        R.array.senders_with_folders_and_attachment_lengths)[mode];
-            } else {
-                return context.getResources().getIntArray(
-                        R.array.senders_with_folders_lengths)[mode];
-            }
+    public static int getSendersLength(Context context, int mode, boolean hasAttachments) {
+        final Resources res = context.getResources();
+        if (hasAttachments) {
+            return res.getIntArray(R.array.senders_with_attachment_lengths)[mode];
         } else {
-            if (hasAttachments) {
-                return context.getResources().getIntArray(
-                        R.array.senders_with_attachment_lengths)[mode];
-            } else {
-                return context.getResources().getIntArray(R.array.senders_lengths)[mode];
-            }
+            return res.getIntArray(R.array.senders_lengths)[mode];
         }
     }
 
@@ -326,17 +339,21 @@ public class ConversationItemViewCoordinates {
      * the view width.
      */
     public static ConversationItemViewCoordinates forWidth(Context context, int width, int mode,
-            int standardScaledDimen) {
-        ConversationItemViewCoordinates coordinates = mCache.get(width ^ standardScaledDimen);
+            int standardScaledDimen, boolean convListPhotosEnabled) {
+        ConversationItemViewCoordinates coordinates = sCache.get(Objects.hashCode(width, mode,
+                convListPhotosEnabled));
         if (coordinates == null) {
             coordinates = new ConversationItemViewCoordinates();
-            mCache.put(width ^ standardScaledDimen, coordinates);
+            sCache.put(Objects.hashCode(width, mode, convListPhotosEnabled), coordinates);
 
             // Layout the appropriate view.
             int height = getHeight(context, mode);
-            View view = LayoutInflater.from(context).inflate(getLayoutId(mode), null);
+            View view = LayoutInflater.from(context).inflate(
+                    getLayoutId(mode, convListPhotosEnabled), null);
             int widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
             int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            Resources res = context.getResources();
+
             view.measure(widthSpec, heightSpec);
             view.layout(0, 0, width, height);
 
@@ -354,8 +371,10 @@ public class ConversationItemViewCoordinates {
                 coordinates.showPersonalLevel = true;
                 coordinates.personalLevelX = getX(personalLevel);
                 coordinates.personalLevelY = getY(personalLevel);
+                coordinates.inlinePersonalLevel = res.getBoolean(R.bool.inline_personal_level);
             } else {
                 coordinates.showPersonalLevel = false;
+                coordinates.inlinePersonalLevel = false;
             }
 
             TextView senders = (TextView) view.findViewById(R.id.senders);
@@ -385,6 +404,8 @@ public class ConversationItemViewCoordinates {
                 coordinates.foldersY = getY(folders);
                 coordinates.foldersHeight = folders.getHeight();
                 coordinates.foldersTopPadding = folders.getPaddingTop();
+                coordinates.foldersTextBottomPadding = res
+                        .getDimensionPixelSize(R.dimen.folders_text_bottom_padding);
                 if (folders instanceof TextView) {
                     coordinates.foldersFontSize = (int) ((TextView) folders).getTextSize();
                     sPaint.setTextSize(coordinates.foldersFontSize);
@@ -412,11 +433,24 @@ public class ConversationItemViewCoordinates {
             coordinates.dateXEnd = getX(date) + date.getWidth();
             coordinates.dateY = getY(date);
             coordinates.dateFontSize = (int) date.getTextSize();
+            coordinates.dateWidth = date.getWidth();
+            coordinates.dateHeight = date.getHeight();
             sPaint.setTextSize(coordinates.dateFontSize);
             coordinates.dateAscent = (int) sPaint.ascent();
 
             View paperclip = view.findViewById(R.id.paperclip);
             coordinates.paperclipY = getY(paperclip);
+
+            // Contact images view
+            if (convListPhotosEnabled) {
+            View contactImagesView = view.findViewById(R.id.contact_image);
+                if (contactImagesView != null) {
+                    coordinates.contactImagesWidth = contactImagesView.getWidth();
+                    coordinates.contactImagesHeight = contactImagesView.getHeight();
+                    coordinates.contactImagesX = getX(contactImagesView);
+                    coordinates.contactImagesY = getY(contactImagesView);
+                }
+            }
         }
         return coordinates;
     }

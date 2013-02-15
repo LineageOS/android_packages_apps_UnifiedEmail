@@ -779,6 +779,10 @@ public final class FolderListFragment extends ListFragment implements
             LogUtils.e(LOG_TAG, "FolderListFragment.setSelectedFolder(null) called!");
             return;
         }
+        // If the current folder changed, we don't have a selected folder type anymore.
+        if (!folder.uri.equals(mSelectedFolderUri)) {
+            mSelectedFolderType = FolderListAdapter.Item.NOT_A_FOLDER;
+        }
         mCurrentFolderForUnreadCheck = folder;
         mSelectedFolderUri = folder.uri;
         setSelectedFolderType(folder);

@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.DragEvent;
@@ -34,6 +35,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 
+import com.android.mail.compose.ComposeActivity;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
@@ -53,26 +55,59 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         WhatsNewDialogListener {
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
 
-    private NfcAdapter mNfcAdapter; // final after onCreate
-    private NdefMessage mForegroundNdef;
-
     /**
      * The activity controller to which we delegate most Activity lifecycle events.
      */
     private ActivityController mController;
-    /**
-     * A clean launch is when the activity is not resumed. We want to show a "What's New" dialog
-     * on a clean launch: when the user started the Activity by tapping on the icon: not when he
-     * selected "Up" from compose, not when he resumed the activity, etc.
-     */
-    private boolean mLaunchedCleanly = false;
 
     private ViewMode mViewMode;
 
     private ToastBarOperation mPendingToastOp;
     private boolean mAccessibilityEnabled;
     private AccessibilityManager mAccessibilityManager;
-    private static MailActivity sForegroundInstance;
+
+    /**
+     * The account name currently in use. Used to construct the NFC mailto: message. This needs
+     * to be static since the {@link ComposeActivity} needs to statically change the account name
+     * and have the NFC message changed accordingly.
+     */
+    private static String sAccountName = null;
+
+    /**
+     * Create an NFC message (in the NDEF: Nfc Data Exchange Format) to instruct the recepient to
+     * send an email to the current account.
+     */
+    private static class NdefMessageMaker implements NfcAdapter.CreateNdefMessageCallback {
+        @Override
+        public NdefMessage createNdefMessage(NfcEvent event) {
+            if (sAccountName == null) {
+                return null;
+            }
+            return getMailtoNdef(sAccountName);
+        }
+
+        /**
+         * Returns an NDEF message with a single mailto URI record
+         * for the given email address.
+         */
+        private static NdefMessage getMailtoNdef(String account) {
+            byte[] accountBytes;
+            try {
+                accountBytes = URLEncoder.encode(account, "UTF-8").getBytes("UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                accountBytes = account.getBytes();
+            }
+            byte prefix = 0x06; // mailto:
+            byte[] recordBytes = new byte[accountBytes.length + 1];
+            recordBytes[0] = prefix;
+            System.arraycopy(accountBytes, 0, recordBytes, 1, accountBytes.length);
+            NdefRecord mailto = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_URI,
+                    new byte[0], recordBytes);
+            return new NdefMessage(new NdefRecord[] { mailto });
+        }
+    }
+
+    private final NdefMessageMaker mNdefHandler = new NdefMessageMaker();
 
     public MailActivity() {
         super();
@@ -93,16 +128,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public void onActionModeFinished(ActionMode mode) {
-        super.onActionModeFinished(mode);
-    }
-
-    @Override
-    public void onActionModeStarted(ActionMode mode) {
-        super.onActionModeStarted(mode);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         mController.onActivityResult(requestCode, resultCode, data);
     }
@@ -119,25 +144,17 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         super.onCreate(savedState);
 
         mViewMode = new ViewMode(this);
-        final boolean tabletUi = Utils.useTabletUI(this);
+        final boolean tabletUi = Utils.useTabletUI(this.getResources());
         mController = ControllerFactory.forActivity(this, mViewMode, tabletUi);
         mController.onCreate(savedState);
 
-        Intent intent = getIntent();
-        // Only display "What's New" and similar dialogs on a clean launch.
-        // A clean launch is one where the activity is not resumed.
-        // We also want to avoid showing any dialogs when the user goes "up"
-        // from a compose
-        // activity launched directly from a send-to intent. (in that case the
-        // action is null.)
-        if (savedState == null && intent.getAction() != null) {
-            mLaunchedCleanly = true;
-        }
         mAccessibilityManager =
                 (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
         mAccessibilityEnabled = mAccessibilityManager.isEnabled();
-        setupNfc();
-
+        final NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (nfcAdapter != null) {
+            nfcAdapter.setNdefPushMessageCallback(mNdefHandler, this);
+        }
         // Check if they haven't seen the current what's new dialog
         if (MailPrefs.get(this).getShouldShowWhatsNew(this)) {
             // Don't show it if it's already displayed
@@ -154,50 +171,16 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         mController.onRestart();
     }
 
-    private void setupNfc() {
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-    }
-
     /**
-     * Sets an NDEF message to be shared with "zero-clicks" using NFC. The message
-     * will be available as long as the current activity is in the foreground.
+     * Constructs and sets the default NFC message. This message instructs the receiver to send
+     * email to the account provided as the argument. This message is to be shared with
+     * "zero-clicks" using NFC. The message will be available as long as the current activity is in
+     * the foreground.
+     *
+     * @param account The email address to send mail to.
      */
-    public static void setForegroundNdef(NdefMessage ndef) {
-        MailActivity foreground = sForegroundInstance;
-        if (foreground != null && foreground.mNfcAdapter != null) {
-            synchronized (foreground) {
-                foreground.mForegroundNdef = ndef;
-                if (sForegroundInstance != null) {
-                    if (ndef != null) {
-                        sForegroundInstance.mNfcAdapter.enableForegroundNdefPush(
-                                sForegroundInstance, ndef);
-                    } else {
-                        sForegroundInstance.mNfcAdapter.disableForegroundNdefPush(
-                                sForegroundInstance);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns an NDEF message with a single mailto URI record
-     * for the given email address.
-     */
-    public static NdefMessage getMailtoNdef(String account) {
-        byte[] accountBytes;
-        try {
-            accountBytes = URLEncoder.encode(account, "UTF-8").getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            accountBytes = account.getBytes();
-        }
-        byte prefix = 0x06; // mailto:
-        byte[] recordBytes = new byte[accountBytes.length + 1];
-        recordBytes[0] = prefix;
-        System.arraycopy(accountBytes, 0, recordBytes, 1, accountBytes.length);
-        NdefRecord mailto = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_URI,
-                new byte[0], recordBytes);
-        return new NdefMessage(new NdefRecord[] { mailto });
+    public static void setNfcMessage(String account) {
+        sAccountName = account;
     }
 
     @Override
@@ -208,8 +191,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     @Override
     public Dialog onCreateDialog(int id, Bundle bundle) {
-        Dialog dialog = mController.onCreateDialog(id, bundle);
-        // TODO(viki): Handle what's new and the sync window upgrade dialog here.
+        final Dialog dialog = mController.onCreateDialog(id, bundle);
         return dialog == null ? super.onCreateDialog(id, bundle) : dialog;
     }
 
@@ -232,12 +214,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onPause() {
         super.onPause();
         mController.onPause();
-        synchronized (this) {
-            if (mNfcAdapter != null && mForegroundNdef != null) {
-                mNfcAdapter.disableForegroundNdefPush(this);
-            }
-            sForegroundInstance = null;
-        }
     }
 
     @Override
@@ -256,13 +232,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onResume() {
         super.onResume();
         mController.onResume();
-        synchronized (this) {
-            sForegroundInstance = this;
-            if (mNfcAdapter != null && mForegroundNdef != null) {
-                mNfcAdapter.enableForegroundNdefPush(this, mForegroundNdef);
-            }
-        }
-        boolean enabled = mAccessibilityManager.isEnabled();
+        final boolean enabled = mAccessibilityManager.isEnabled();
         if (enabled != mAccessibilityEnabled) {
             onAccessibilityStateChanged(enabled);
         }
@@ -283,9 +253,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     protected void onStart() {
         super.onStart();
-        if (mLaunchedCleanly) {
-            // TODO(viki): Show a "what's new screen"
-        }
         mController.onStart();
     }
 

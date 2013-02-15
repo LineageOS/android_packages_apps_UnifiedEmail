@@ -24,9 +24,9 @@
     <integer name="fade_duration">250</integer>
     <integer name="dialog_animationDefaultDur">220</integer>
     <integer name="dialog_animationShortDur">150</integer>
-    <integer name="shrink_animation_duration">350</integer>
+    <integer name="shrink_animation_duration">200</integer>
     <integer name="slide_animation_duration">320</integer>
-    <integer name="fade_in_animation_duration">350</integer>
+    <integer name="fade_in_animation_duration">300</integer>
 
     <!-- Swipe constants -->
     <integer name="swipe_escape_velocity">100</integer>
@@ -38,4 +38,6 @@
     <dimen name="min_swipe">10dip</dimen>
     <dimen name="min_vert">10dip</dimen>
     <dimen name="min_lock">20dip</dimen>
+    <integer name="dismiss_all_leavebehinds_short_delay">175</integer>
+    <integer name="dismiss_all_leavebehinds_long_delay">350</integer>
 </resources>

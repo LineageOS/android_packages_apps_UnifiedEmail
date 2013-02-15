@@ -30,7 +30,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.DecelerateInterpolator;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemView;
@@ -50,7 +50,8 @@ public class SwipeHelper {
     public static final int X = 0;
     public static final int Y = 1;
 
-    private static LinearInterpolator sLinearInterpolator = new LinearInterpolator();
+    private static DecelerateInterpolator sDecelerateInterpolator = 
+                                                        new DecelerateInterpolator(1.0f);
 
     private static int SWIPE_ESCAPE_VELOCITY = -1;
     private static int DEFAULT_ESCAPE_ANIMATION_DURATION;
@@ -64,6 +65,7 @@ public class SwipeHelper {
 
     public static float ALPHA_FADE_START = 0f; // fraction of thumbnail width
                                                  // where fade starts
+    public static float ALPHA_TEXT_FADE_START = 0.4f;
     static final float ALPHA_FADE_END = 0.7f; // fraction of thumbnail width
                                               // beyond which alpha->0
     private static final float FACTOR = 1.2f;
@@ -82,6 +84,7 @@ public class SwipeHelper {
     private float mDensityScale;
     private float mLastY;
     private float mInitialTouchPosY;
+    private LeaveBehindItem mPrevView;
 
     public SwipeHelper(Context context, int swipeDirection, Callback callback, float densityScale,
             float pagingTouchSlop) {
@@ -125,7 +128,7 @@ public class SwipeHelper {
 
     private ObjectAnimator createDismissAnimation(View v, float newPos, int duration) {
         ObjectAnimator anim = createTranslationAnimation(v, newPos);
-        anim.setInterpolator(sLinearInterpolator);
+        anim.setInterpolator(sDecelerateInterpolator);
         anim.setDuration(duration);
         return anim;
     }
@@ -163,6 +166,19 @@ public class SwipeHelper {
             result = 1.0f + (viewSize * ALPHA_FADE_START + pos) / fadeSize;
         }
         return Math.max(mMinAlpha, result);
+    }
+
+    private float getTextAlphaForOffset(View view) {
+        float viewSize = getSize(view);
+        final float fadeSize = ALPHA_TEXT_FADE_START * viewSize;
+        float result = 1.0f;
+        float pos = view.getTranslationX();
+        if (pos >= 0) {
+            result = 1.0f - pos / fadeSize;
+        } else if (pos < 0) {
+            result = 1.0f + pos / fadeSize;
+        }
+        return Math.max(0, result);
     }
 
     // invalidate the view's own bounds all the way up the view hierarchy
@@ -212,6 +228,7 @@ public class SwipeHelper {
                     mInitialTouchPosX = ev.getX();
                     mInitialTouchPosY = ev.getY();
                 }
+                mCallback.cancelDismissCounter();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mCurrView != null) {
@@ -233,6 +250,7 @@ public class SwipeHelper {
                     float delta = pos - mInitialTouchPosX;
                     if (Math.abs(delta) > mPagingTouchSlop) {
                         mCallback.onBeginDrag(mCurrView.getSwipeableView());
+                        mPrevView = mCallback.getLastSwipedItem();
                         mDragging = true;
                         mInitialTouchPosX = ev.getX() - mCurrAnimView.getTranslationX();
                         mInitialTouchPosY = ev.getY();
@@ -423,6 +441,11 @@ public class SwipeHelper {
                     setTranslation(mCurrAnimView, deltaX);
                     if (FADE_OUT_DURING_SWIPE && mCanCurrViewBeDimissed) {
                         mCurrAnimView.setAlpha(getAlphaForOffset(mCurrAnimView));
+                        if (mPrevView != null) {
+                            // Base how much the text of the prev item is faded
+                            // on how far the current item has moved.
+                            mPrevView.setTextAlpha(getTextAlphaForOffset(mCurrAnimView));
+                        }
                     }
                     invalidateGlobalRegion(mCurrView.getSwipeableView());
                 }
@@ -473,6 +496,8 @@ public class SwipeHelper {
     public interface Callback {
         View getChildAtPosition(MotionEvent ev);
 
+        void cancelDismissCounter();
+
         void onScroll();
 
         boolean canChildBeDismissed(SwipeableItemView v);
@@ -484,5 +509,7 @@ public class SwipeHelper {
         void onDragCancelled(SwipeableItemView v);
 
         ConversationSelectionSet getSelectionSet();
+
+        LeaveBehindItem getLastSwipedItem();
     }
 }

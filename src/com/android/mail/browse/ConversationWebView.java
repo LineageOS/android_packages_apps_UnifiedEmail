@@ -23,6 +23,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.webkit.WebView;
 
 import com.android.mail.R;
@@ -145,6 +147,8 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
 
     private ContentSizeChangeListener mSizeChangeListener;
 
+    private ScaleGestureDetector mScaleDetector;
+
     private int mCachedContentHeight;
 
     private final int mViewportWidth;
@@ -158,6 +162,7 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
      * POINTER_UP/POINTER_CANCEL.
      */
     private boolean mHandlingTouch;
+    private boolean mIgnoringTouch;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -188,6 +193,13 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
         mSizeChangeListener = l;
     }
 
+    public void setOnScaleGestureListener(OnScaleGestureListener l) {
+        if (l == null) {
+            mScaleDetector = null;
+        } else {
+            mScaleDetector = new ScaleGestureDetector(getContext(), l);
+        }
+    }
 
     @Override
     public int computeVerticalScrollRange() {
@@ -252,14 +264,27 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
             case MotionEvent.ACTION_POINTER_DOWN:
                 LogUtils.d(LOG_TAG, "WebView disabling intercepts: POINTER_DOWN");
                 requestDisallowInterceptTouchEvent(true);
+                if (mScaleDetector != null) {
+                    mIgnoringTouch = true;
+                    final MotionEvent fakeCancel = MotionEvent.obtain(ev);
+                    fakeCancel.setAction(MotionEvent.ACTION_CANCEL);
+                    super.onTouchEvent(fakeCancel);
+                }
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 mHandlingTouch = false;
+                mIgnoringTouch = false;
                 break;
         }
 
-        return super.onTouchEvent(ev);
+        final boolean handled = mIgnoringTouch || super.onTouchEvent(ev);
+
+        if (mScaleDetector != null) {
+            mScaleDetector.onTouchEvent(ev);
+        }
+
+        return handled;
     }
 
     public boolean isHandlingTouch() {
@@ -297,4 +322,5 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
     public float webPxToScreenPxError(int webPx) {
         return webPx * getInitialScale() - webPxToScreenPx(webPx);
     }
+
 }

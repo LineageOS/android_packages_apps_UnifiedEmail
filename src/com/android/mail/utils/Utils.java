@@ -16,19 +16,26 @@
 
 package com.android.mail.utils;
 
+import com.google.android.common.html.parser.HtmlDocument;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTree;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
+import com.google.common.collect.Maps;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -44,21 +51,20 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
-import com.google.android.common.html.parser.HtmlDocument;
-import com.google.android.common.html.parser.HtmlParser;
-import com.google.android.common.html.parser.HtmlTree;
-import com.google.android.common.html.parser.HtmlTreeBuilder;
-import com.google.common.collect.Maps;
+import com.android.mail.ui.ControllableActivity;
+import com.android.mail.ui.FeedbackEnabledActivity;
 
 import org.json.JSONObject;
 
@@ -106,6 +112,8 @@ public class Utils {
 
     private static final String SMART_LINK_APP_VERSION = "version";
     private static int sVersionCode = -1;
+
+    private static final int SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH = 600;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -325,7 +333,7 @@ public class Utils {
                 draftsFragment = numDrafts == 1 ? draftString : draftPluralString + " ("
                         + numDraftsString + ")";
             } else if (SENDER_LIST_TOKEN_LITERAL.equals(fragment0)) {
-                senderBuilder.append(Html.fromHtml(fragments[i++]));
+                senderBuilder.append(Utils.convertHtmlToPlainText(fragments[i++]));
                 return;
             } else if (SENDER_LIST_TOKEN_SENDING.equals(fragment0)) {
                 sendingFragment = sendingString;
@@ -431,7 +439,7 @@ public class Utils {
                 if (nameString.length() == 0) {
                     nameString = meString.toString();
                 } else {
-                    nameString = Html.fromHtml(nameString).toString();
+                    nameString = Utils.convertHtmlToPlainText(nameString).toString();
                 }
                 if (numCharsToRemovePerWord != 0) {
                     nameString = nameString.substring(0,
@@ -513,10 +521,9 @@ public class Utils {
     /**
      * Returns a boolean indicating whether the table UI should be shown.
      */
-    public static boolean useTabletUI(Context context) {
-        return context.getResources().getInteger(R.integer.use_tablet_ui) != 0;
+    public static boolean useTabletUI(Resources res) {
+        return res.getInteger(R.integer.use_tablet_ui) != 0;
     }
-
 
     /**
      * Returns a boolean indicating whether or not we should animate in the
@@ -536,11 +543,17 @@ public class Utils {
      * @return Plain text string representation of the specified Html string
      */
     public static String convertHtmlToPlainText(String htmlText) {
+        if (TextUtils.isEmpty(htmlText)) {
+            return "";
+        }
         return getHtmlTree(htmlText, new HtmlParser(), new HtmlTreeBuilder()).getPlainText();
     }
 
     public static String convertHtmlToPlainText(String htmlText, HtmlParser parser,
             HtmlTreeBuilder builder) {
+        if (TextUtils.isEmpty(htmlText)) {
+            return "";
+        }
         return getHtmlTree(htmlText, parser, builder).getPlainText();
     }
 
@@ -554,7 +567,7 @@ public class Utils {
     /**
      * Returns a {@link HtmlTree} representation of the specified HTML string.
      */
-    public static HtmlTree getHtmlTree(String htmlText, HtmlParser parser,
+    private static HtmlTree getHtmlTree(String htmlText, HtmlParser parser,
             HtmlTreeBuilder builder) {
         final HtmlDocument doc = parser.parse(htmlText);
         doc.accept(builder);
@@ -840,13 +853,42 @@ public class Utils {
     /**
      * Show the feedback screen for the supplied account.
      */
-    public static void sendFeedback(Context context, Account account, boolean reportingProblem) {
+    public static void sendFeedback(FeedbackEnabledActivity activity, Account account,
+            boolean reportingProblem) {
         if (account != null && account.sendFeedbackIntentUri != null) {
-            final Bundle optionalExtras = new Bundle(1);
+            final Bundle optionalExtras = new Bundle(2);
             optionalExtras.putBoolean(
                     UIProvider.SendFeedbackExtras.EXTRA_REPORTING_PROBLEM, reportingProblem);
-            openUrl(context, account.sendFeedbackIntentUri, optionalExtras);
+            final Bitmap screenBitmap =  getReducedSizeBitmap(activity);
+            if (screenBitmap != null) {
+                optionalExtras.putParcelable(
+                        UIProvider.SendFeedbackExtras.EXTRA_SCREEN_SHOT, screenBitmap);
+            }
+            openUrl(activity.getActivityContext(), account.sendFeedbackIntentUri, optionalExtras);
         }
+    }
+
+    public static Bitmap getReducedSizeBitmap(FeedbackEnabledActivity activity) {
+        final Window activityWindow = activity.getWindow();
+        final View currentView = activityWindow != null ? activityWindow.getDecorView() : null;
+        final View rootView = currentView != null ? currentView.getRootView() : null;
+        if (rootView != null) {
+            rootView.setDrawingCacheEnabled(true);
+            final Bitmap originalBitmap =
+                    rootView.getDrawingCache().copy(Bitmap.Config.RGB_565, false);
+            double originalHeight = originalBitmap.getHeight();
+            double originalWidth = originalBitmap.getWidth();
+            int newHeight = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
+            int newWidth = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
+            double scaleX, scaleY;
+            scaleX = newWidth  / originalWidth;
+            scaleY = newHeight / originalHeight;
+            final double scale = Math.min(scaleX, scaleY);
+            newWidth = (int)Math.round(originalWidth * scale);
+            newHeight = (int)Math.round(originalHeight * scale);
+            return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+        }
+        return null;
     }
 
     /**
@@ -1155,4 +1197,22 @@ public class Utils {
         return count;
     }
 
+    /**
+     * @return an intent which, if launched, will reply to the conversation
+     */
+    public static Intent createReplyIntent(final Context context, final Account account,
+            final Uri messageUri, final boolean isReplyAll) {
+        final Intent intent =
+                ComposeActivity.createReplyIntent(context, account, messageUri, isReplyAll);
+        return intent;
+    }
+
+    /**
+     * @return an intent which, if launched, will forward the conversation
+     */
+    public static Intent createForwardIntent(
+            final Context context, final Account account, final Uri messageUri) {
+        final Intent intent = ComposeActivity.createForwardIntent(context, account, messageUri);
+        return intent;
+    }
 }

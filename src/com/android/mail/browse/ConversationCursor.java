@@ -35,9 +35,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderList;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
@@ -46,7 +49,7 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -66,72 +69,82 @@ import java.util.Set;
  */
 public final class ConversationCursor implements Cursor {
     private static final String LOG_TAG = LogTag.getLogTag();
-
-    private static final boolean DEBUG = true;  // STOPSHIP Set to false before shipping
-    // A deleted row is indicated by the presence of DELETED_COLUMN in the cache map
+    /** Turn to true for debugging. */
+    private static final boolean DEBUG = false;
+    /** A deleted row is indicated by the presence of DELETED_COLUMN in the cache map */
     private static final String DELETED_COLUMN = "__deleted__";
-    // An row cached during a requery is indicated by the presence of REQUERY_COLUMN in the map
+    /** An row cached during a requery is indicated by the presence of REQUERY_COLUMN in the map */
     private static final String UPDATE_TIME_COLUMN = "__updatetime__";
-    // A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
+    /**
+     * A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
+     */
     private static final int DELETED_COLUMN_INDEX = -1;
-    // Empty deletion list
-    private static final Collection<Conversation> EMPTY_DELETION_LIST = Lists.newArrayList();
-
-    // If a cached value within 10 seconds of a refresh(), preserve it. This time has been
-    // chosen empirically (long enough for UI changes to propagate in any reasonable case)
+    /**
+     * If a cached value within 10 seconds of a refresh(), preserve it. This time has been
+     * chosen empirically (long enough for UI changes to propagate in any reasonable case)
+     */
     private static final long REQUERY_ALLOWANCE_TIME = 10000L;
-    // The index of the Uri whose data is reflected in the cached row
-    // Updates/Deletes to this Uri are cached
-    private static int sUriColumnIndex;
-    // Our sequence count (for changes sent to underlying provider)
+
+    /**
+     * The index of the Uri whose data is reflected in the cached row. Updates/Deletes to this Uri
+     * are cached
+     */
+    private static final int URI_COLUMN_INDEX = UIProvider.CONVERSATION_URI_COLUMN;
+
+    /** The resolver for the cursor instantiator's context */
+    private final ContentResolver mResolver;
+
+    /** Our sequence count (for changes sent to underlying provider) */
     private static int sSequence = 0;
-    // The resolver for the cursor instantiator's context
-    private static ContentResolver sResolver;
     @VisibleForTesting
     static ConversationProvider sProvider;
 
-    // The cursor underlying the caching cursor
+    /** The cursor underlying the caching cursor */
     @VisibleForTesting
     UnderlyingCursorWrapper mUnderlyingCursor;
-    // The new cursor obtained via a requery
+    /** The new cursor obtained via a requery */
     private volatile UnderlyingCursorWrapper mRequeryCursor;
-    // A mapping from Uri to updated ContentValues
-    private HashMap<String, ContentValues> mCacheMap = new HashMap<String, ContentValues>();
-    // Cache map lock (will be used only very briefly - few ms at most)
-    private Object mCacheMapLock = new Object();
-    // The listeners registered for this cursor
-    private List<ConversationListener> mListeners = Lists.newArrayList();
-    // The ConversationProvider instance
-    // The runnable executing a refresh (query of underlying provider)
+    /** A mapping from Uri to updated ContentValues */
+    private final HashMap<String, ContentValues> mCacheMap = new HashMap<String, ContentValues>();
+    /** Cache map lock (will be used only very briefly - few ms at most) */
+    private final Object mCacheMapLock = new Object();
+    /** The listeners registered for this cursor */
+    private final List<ConversationListener> mListeners = Lists.newArrayList();
+    /**
+     * The ConversationProvider instance // The runnable executing a refresh (query of underlying
+     * provider)
+     */
     private RefreshTask mRefreshTask;
-    // Set when we've sent refreshReady() to listeners
+    /** Set when we've sent refreshReady() to listeners */
     private boolean mRefreshReady = false;
-    // Set when we've sent refreshRequired() to listeners
+    /** Set when we've sent refreshRequired() to listeners */
     private boolean mRefreshRequired = false;
-    // Whether our first query on this cursor should include a limit
+    /** Whether our first query on this cursor should include a limit */
     private boolean mInitialConversationLimit = false;
-    // A list of mostly-dead items
-    private List<Conversation> sMostlyDead = Lists.newArrayList();
-    // The name of the loader
+    /** A list of mostly-dead items */
+    private final List<Conversation> mMostlyDead = Lists.newArrayList();
+    /** The name of the loader */
     private final String mName;
-    // Column names for this cursor
+    /** Column names for this cursor */
     private String[] mColumnNames;
-    // An observer on the underlying cursor (so we can detect changes from outside the UI)
+    /** An observer on the underlying cursor (so we can detect changes from outside the UI) */
     private final CursorObserver mCursorObserver;
-    // Whether our observer is currently registered with the underlying cursor
+    /** Whether our observer is currently registered with the underlying cursor */
     private boolean mCursorObserverRegistered = false;
-    // Whether our loader is paused
+    /** Whether our loader is paused */
     private boolean mPaused = false;
-    // Whether or not sync from underlying provider should be deferred
+    /** Whether or not sync from underlying provider should be deferred */
     private boolean mDeferSync = false;
 
-    // The current position of the cursor
+    /** The current position of the cursor */
     private int mPosition = -1;
 
-    // The number of cached deletions from this cursor (used to quickly generate an accurate count)
+    /**
+     * The number of cached deletions from this cursor (used to quickly generate an accurate count)
+     */
     private int mDeletedCount = 0;
 
-    // Parameters passed to the underlying query
+    /** Parameters passed to the underlying query */
     private Uri qUri;
     private String[] qProjection;
 
@@ -150,8 +163,7 @@ public final class ConversationCursor implements Cursor {
     public ConversationCursor(Activity activity, Uri uri, boolean initialConversationLimit,
             String name) {
         mInitialConversationLimit = initialConversationLimit;
-        sResolver = activity.getContentResolver();
-        sUriColumnIndex = UIProvider.CONVERSATION_URI_COLUMN;
+        mResolver = activity.getApplicationContext().getContentResolver();
         qUri = uri;
         mName = name;
         qProjection = UIProvider.CONVERSATION_PROJECTION;
@@ -160,14 +172,6 @@ public final class ConversationCursor implements Cursor {
 
     /**
      * Create a ConversationCursor; this should be called by the ListActivity using that cursor
-     * @param activity the activity creating the cursor
-     * @param messageListColumn the column used for individual cursor items
-     * @param uri the query uri
-     * @param projection the query projecion
-     * @param selection the query selection
-     * @param selectionArgs the query selection args
-     * @param sortOrder the query sort order
-     * @return a ConversationCursor
      */
     public void load() {
         synchronized (mCacheMapLock) {
@@ -237,39 +241,52 @@ public final class ConversationCursor implements Cursor {
         // Ideally these two objects could be combined into a Map from
         // conversationId -> position, but the cached values uses the conversation
         // uri as a key.
-        private final Set<String> mConversationUris;
-        private final Set<Long> mConversationIds;
+        private final Map<String, Integer> mConversationUriPositionMap;
+        private final Map<Long, Integer> mConversationIdPositionMap;
 
         public UnderlyingCursorWrapper(Cursor result) {
             super(result);
-            final ImmutableSet.Builder<String> conversationUrisBuilder =
-                    new ImmutableSet.Builder<String>();
-            final ImmutableSet.Builder<Long> conversationSetBuilder =
-                    new ImmutableSet.Builder<Long>();
+            final ImmutableMap.Builder<String, Integer> conversationUriPositionMapBuilder =
+                    new ImmutableMap.Builder<String, Integer>();
+            final ImmutableMap.Builder<Long, Integer> conversationIdPositionMapBuilder =
+                    new ImmutableMap.Builder<Long, Integer>();
             if (result != null && result.moveToFirst()) {
                 // We don't want iterating over this cursor to trigger a network
                 // request
                 final boolean networkWasEnabled =
                         Utils.disableConversationCursorNetworkAccess(result);
                 do {
-                    conversationUrisBuilder.add(result.getString(sUriColumnIndex));
-                    conversationSetBuilder.add(result.getLong(UIProvider.CONVERSATION_ID_COLUMN));
+                    final int position = result.getPosition();
+                    conversationUriPositionMapBuilder.put(
+                            result.getString(URI_COLUMN_INDEX), position);
+                    conversationIdPositionMapBuilder.put(
+                            result.getLong(UIProvider.CONVERSATION_ID_COLUMN), position);
                 } while (result.moveToNext());
 
                 if (networkWasEnabled) {
                     Utils.enableConversationCursorNetworkAccess(result);
                 }
             }
-            mConversationUris = conversationUrisBuilder.build();
-            mConversationIds = conversationSetBuilder.build();
+            mConversationUriPositionMap = conversationUriPositionMapBuilder.build();
+            mConversationIdPositionMap = conversationIdPositionMapBuilder.build();
         }
 
         public boolean contains(String uri) {
-            return mConversationUris.contains(uri);
+            return mConversationUriPositionMap.containsKey(uri);
         }
 
         public Set<Long> conversationIds() {
-            return mConversationIds;
+            return mConversationIdPositionMap.keySet();
+        }
+
+        public int getPosition(long conversationId) {
+            final Integer position = mConversationIdPositionMap.get(conversationId);
+            return position != null ? position.intValue() : -1;
+        }
+
+        public int getPosition(String conversationUri) {
+            final Integer position = mConversationUriPositionMap.get(conversationUri);
+            return position != null ? position.intValue() : -1;
         }
     }
 
@@ -336,7 +353,7 @@ public final class ConversationCursor implements Cursor {
         }
         long time = System.currentTimeMillis();
 
-        Cursor result = sResolver.query(uri, qProjection, null, null, null);
+        final Cursor result = mResolver.query(uri, qProjection, null, null, null);
         if (result == null) {
             Log.w(LOG_TAG, "doQuery returning null cursor, uri: " + uri);
         } else if (DEBUG) {
@@ -361,10 +378,11 @@ public final class ConversationCursor implements Cursor {
     private void resetCursor(UnderlyingCursorWrapper newCursorWrapper) {
         synchronized (mCacheMapLock) {
             // Walk through the cache
-            Iterator<HashMap.Entry<String, ContentValues>> iter = mCacheMap.entrySet().iterator();
+            final Iterator<Map.Entry<String, ContentValues>> iter =
+                    mCacheMap.entrySet().iterator();
             final long now = System.currentTimeMillis();
             while (iter.hasNext()) {
-                HashMap.Entry<String, ContentValues> entry = iter.next();
+                Map.Entry<String, ContentValues> entry = iter.next();
                 final ContentValues values = entry.getValue();
                 final String key = entry.getKey();
                 boolean withinTimeWindow = false;
@@ -423,10 +441,10 @@ public final class ConversationCursor implements Cursor {
         synchronized (mCacheMapLock) {
             // Walk through the cache and return the list of uris that have been deleted
             final Set<String> deletedItems = Sets.newHashSet();
-            final Iterator<HashMap.Entry<String, ContentValues>> iter =
+            final Iterator<Map.Entry<String, ContentValues>> iter =
                     mCacheMap.entrySet().iterator();
             while (iter.hasNext()) {
-                final HashMap.Entry<String, ContentValues> entry = iter.next();
+                final Map.Entry<String, ContentValues> entry = iter.next();
                 final ContentValues values = entry.getValue();
                 if (values.containsKey(DELETED_COLUMN)) {
                     // Since clients of the conversation cursor see conversation ConversationCursor
@@ -436,6 +454,48 @@ public final class ConversationCursor implements Cursor {
                 }
             }
             return deletedItems;
+        }
+    }
+
+    /**
+     * Returns the position, in the ConversationCursor, of the Conversation with the specified id.
+     * The returned posision will take into account any items that have been deleted.
+     */
+    public int getConversationPosition(long conversationId) {
+        final int underlyingPosition = mUnderlyingCursor.getPosition(conversationId);
+        if (underlyingPosition < 0) {
+            // The conversation wasn't found in the underlying cursor, return the underlying result.
+            return underlyingPosition;
+        }
+
+        // Walk through each of the deleted items.  If the deleted item is before the underlying
+        // position, decrement the position
+        synchronized (mCacheMapLock) {
+            int updatedPosition = underlyingPosition;
+            final Iterator<Map.Entry<String, ContentValues>> iter =
+                    mCacheMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                final Map.Entry<String, ContentValues> entry = iter.next();
+                final ContentValues values = entry.getValue();
+                if (values.containsKey(DELETED_COLUMN)) {
+                    // Since clients of the conversation cursor see conversation ConversationCursor
+                    // provider uris, we need to make sure that this also returns these uris
+                    final String conversationUri = entry.getKey();
+                    final int deletedItemPosition = mUnderlyingCursor.getPosition(conversationUri);
+                    if (deletedItemPosition == underlyingPosition) {
+                        // The requested items has been deleted.
+                        return -1;
+                    }
+
+                    if (deletedItemPosition >= 0 && deletedItemPosition < underlyingPosition) {
+                        // This item has been deleted, but is still in the underlying cursor, at
+                        // a position before the requested item.  Decrement the position of the
+                        // requested item.
+                        updatedPosition--;
+                    }
+                }
+            }
+            return updatedPosition;
         }
     }
 
@@ -559,7 +619,7 @@ public final class ConversationCursor implements Cursor {
                 }
             }
             // ContentValues has no generic "put", so we must test.  For now, the only classes
-            // of values implemented are Boolean/Integer/String, though others are trivially
+            // of values implemented are Boolean/Integer/String/Blob, though others are trivially
             // added
             if (value instanceof Boolean) {
                 map.put(columnName, ((Boolean) value).booleanValue() ? 1 : 0);
@@ -567,6 +627,8 @@ public final class ConversationCursor implements Cursor {
                 map.put(columnName, (Integer) value);
             } else if (value instanceof String) {
                 map.put(columnName, (String) value);
+            } else if (value instanceof byte[]) {
+                map.put(columnName, (byte[])value);
             } else {
                 final String cname = value.getClass().getName();
                 throw new IllegalArgumentException("Value class not compatible with cache: "
@@ -585,7 +647,7 @@ public final class ConversationCursor implements Cursor {
      * @return the cached value for this column, or null if there is none
      */
     private Object getCachedValue(int columnIndex) {
-        String uri = mUnderlyingCursor.getString(sUriColumnIndex);
+        String uri = mUnderlyingCursor.getString(URI_COLUMN_INDEX);
         return getCachedValue(uri, columnIndex);
     }
 
@@ -720,15 +782,6 @@ public final class ConversationCursor implements Cursor {
                 mRequeryCursor = null;
             }
         }
-    }
-
-    /**
-     * Get a list of deletions from ConversationCursor to the refreshed cursor that hasn't yet
-     * been swapped into place; this allows the UI to animate these away if desired
-     * @return a list of positions deleted in ConversationCursor
-     */
-    public Collection<Conversation> getRefreshDeletions () {
-        return EMPTY_DELETION_LIST;
     }
 
     /**
@@ -951,7 +1004,7 @@ public final class ConversationCursor implements Cursor {
     public String getString(int columnIndex) {
         // If we're asking for the Uri for the conversation list, we return a forwarding URI
         // so that we can intercept update/delete and handle it ourselves
-        if (columnIndex == sUriColumnIndex) {
+        if (columnIndex == URI_COLUMN_INDEX) {
             Uri uri = Uri.parse(mUnderlyingCursor.getString(columnIndex));
             return uriToCachingUriString(uri);
         }
@@ -990,6 +1043,7 @@ public final class ConversationCursor implements Cursor {
      */
     public abstract static class ConversationProvider extends ContentProvider {
         public static String AUTHORITY;
+        private ContentResolver mResolver;
 
         /**
          * Allows the implementing provider to specify the authority that should be used.
@@ -1000,20 +1054,21 @@ public final class ConversationCursor implements Cursor {
         public boolean onCreate() {
             sProvider = this;
             AUTHORITY = getAuthority();
+            mResolver = getContext().getContentResolver();
             return true;
         }
 
         @Override
         public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                 String sortOrder) {
-            return sResolver.query(
+            return mResolver.query(
                     uriFromCachingUri(uri), projection, selection, selectionArgs, sortOrder);
         }
 
         @Override
         public Uri insert(Uri uri, ContentValues values) {
             insertLocal(uri, values);
-            return ProviderExecute.opInsert(uri, values);
+            return ProviderExecute.opInsert(mResolver, uri, values);
         }
 
         @Override
@@ -1043,36 +1098,20 @@ public final class ConversationCursor implements Cursor {
             final int mCode;
             final Uri mUri;
             final ContentValues mValues; //HEHEH
+            final ContentResolver mResolver;
 
-            ProviderExecute(int code, Uri uri, ContentValues values) {
+            ProviderExecute(int code, ContentResolver resolver, Uri uri, ContentValues values) {
                 mCode = code;
                 mUri = uriFromCachingUri(uri);
                 mValues = values;
+                mResolver = resolver;
             }
 
-            ProviderExecute(int code, Uri uri) {
-                this(code, uri, null);
-            }
-
-            static Uri opInsert(Uri uri, ContentValues values) {
-                ProviderExecute e = new ProviderExecute(INSERT, uri, values);
+            static Uri opInsert(ContentResolver resolver, Uri uri, ContentValues values) {
+                ProviderExecute e = new ProviderExecute(INSERT, resolver, uri, values);
                 if (offUiThread()) return (Uri)e.go();
                 new Thread(e).start();
                 return null;
-            }
-
-            static int opDelete(Uri uri) {
-                ProviderExecute e = new ProviderExecute(DELETE, uri);
-                if (offUiThread()) return (Integer)e.go();
-                new Thread(new ProviderExecute(DELETE, uri)).start();
-                return 0;
-            }
-
-            static int opUpdate(Uri uri, ContentValues values) {
-                ProviderExecute e = new ProviderExecute(UPDATE, uri, values);
-                if (offUiThread()) return (Integer)e.go();
-                new Thread(e).start();
-                return 0;
             }
 
             @Override
@@ -1083,11 +1122,11 @@ public final class ConversationCursor implements Cursor {
             public Object go() {
                 switch(mCode) {
                     case DELETE:
-                        return sResolver.delete(mUri, null, null);
+                        return mResolver.delete(mUri, null, null);
                     case INSERT:
-                        return sResolver.insert(mUri, mValues);
+                        return mResolver.insert(mUri, mValues);
                     case UPDATE:
-                        return sResolver.update(mUri,  mValues, null, null);
+                        return mResolver.update(mUri,  mValues, null, null);
                     default:
                         return null;
                 }
@@ -1205,7 +1244,7 @@ public final class ConversationCursor implements Cursor {
                 final ArrayList<ContentProviderOperation> opList = batchMap.get(authority);
                 if (notUiThread) {
                     try {
-                        sResolver.applyBatch(authority, opList);
+                        mResolver.applyBatch(authority, opList);
                     } catch (RemoteException e) {
                     } catch (OperationApplicationException e) {
                     }
@@ -1214,7 +1253,7 @@ public final class ConversationCursor implements Cursor {
                         @Override
                         public void run() {
                             try {
-                                sResolver.applyBatch(authority, opList);
+                                mResolver.applyBatch(authority, opList);
                             } catch (RemoteException e) {
                             } catch (OperationApplicationException e) {
                             }
@@ -1231,15 +1270,15 @@ public final class ConversationCursor implements Cursor {
         cacheValue(uriString,
                 UIProvider.ConversationColumns.FLAGS, Conversation.FLAG_MOSTLY_DEAD);
         conv.convFlags |= Conversation.FLAG_MOSTLY_DEAD;
-        sMostlyDead.add(conv);
+        mMostlyDead.add(conv);
         mDeferSync = true;
     }
 
     void commitMostlyDead(Conversation conv) {
         conv.convFlags &= ~Conversation.FLAG_MOSTLY_DEAD;
-        sMostlyDead.remove(conv);
+        mMostlyDead.remove(conv);
         LogUtils.i(LOG_TAG, "[All dead: %s]", conv.uri);
-        if (sMostlyDead.isEmpty()) {
+        if (mMostlyDead.isEmpty()) {
             mDeferSync = false;
             checkNotifyUI();
         }
@@ -1590,10 +1629,10 @@ public final class ConversationCursor implements Cursor {
      */
     public int updateString(Context context, Collection<Conversation> conversations,
             String columnName, String value) {
-        return updateStrings(context, conversations, new String[] {
-            columnName
-        }, new String[] {
-            value
+        return updateStrings(context, conversations, new String[]{
+                columnName
+        }, new String[]{
+                value
         });
     }
 
@@ -1661,6 +1700,34 @@ public final class ConversationCursor implements Cursor {
     public ConversationOperation getOperationForConversation(Conversation conv, int type,
             ContentValues values) {
         return new ConversationOperation(type, conv, values);
+    }
+
+    public void addFolderUpdates(ArrayList<Uri> folderUris, ArrayList<Boolean> add,
+            ContentValues values) {
+        ArrayList<String> folders = new ArrayList<String>();
+        for (int i = 0; i < folderUris.size(); i++) {
+            folders.add(folderUris.get(i).buildUpon().appendPath(add.get(i) + "").toString());
+        }
+        values.put(ConversationOperations.FOLDERS_UPDATED,
+                TextUtils.join(ConversationOperations.FOLDERS_UPDATED_SPLIT_PATTERN, folders));
+    }
+
+    public void addTargetFolders(Collection<Folder> targetFolders, ContentValues values) {
+        values.put(Conversation.UPDATE_FOLDER_COLUMN, FolderList.copyOf(targetFolders).toBlob());
+    }
+
+    public ConversationOperation getConversationFolderOperation(Conversation conv,
+            ArrayList<Uri> folderUris, ArrayList<Boolean> add, Collection<Folder> targetFolders) {
+        return getConversationFolderOperation(conv, folderUris, add, targetFolders,
+                new ContentValues());
+    }
+
+    public ConversationOperation getConversationFolderOperation(Conversation conv,
+            ArrayList<Uri> folderUris, ArrayList<Boolean> add, Collection<Folder> targetFolders,
+            ContentValues values) {
+        addFolderUpdates(folderUris, add, values);
+        addTargetFolders(targetFolders, values);
+        return getOperationForConversation(conv, ConversationOperation.UPDATE, values);
     }
 
     /**
@@ -1784,30 +1851,14 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
-     * As above, for mostly destructive updates
-     */
-    public int mostlyDestructiveUpdate(Context context, Collection<Conversation> conversations,
-            String column, String value) {
-        return mostlyDestructiveUpdate(context, conversations, new String[] {
-            column
-        }, new String[] {
-            value
-        });
-    }
-
-    /**
      * As above, for mostly destructive updates.
      */
     public int mostlyDestructiveUpdate(Context context, Collection<Conversation> conversations,
-            String[] columnNames, String[] values) {
-        ContentValues cv = new ContentValues();
-        for (int i = 0; i < columnNames.length; i++) {
-            cv.put(columnNames[i], values[i]);
-        }
+            ContentValues values) {
         return apply(
                 context,
                 getOperationsForConversations(conversations,
-                        ConversationOperation.MOSTLY_DESTRUCTIVE_UPDATE, cv));
+                        ConversationOperation.MOSTLY_DESTRUCTIVE_UPDATE, values));
     }
 
     /**

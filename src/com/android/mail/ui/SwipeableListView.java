@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -35,6 +36,7 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderList;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -204,15 +206,24 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         adapter.setupLeaveBehind(conv, undoOp, conv.position);
         ConversationCursor cc = (ConversationCursor) adapter.getCursor();
         Collection<Conversation> convList = Conversation.listOf(conv);
+        ArrayList<Uri> folderUris;
+        ArrayList<Boolean> adds;
         switch (mSwipeAction) {
             case R.id.remove_folder:
                 FolderOperation folderOp = new FolderOperation(mFolder, false);
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFolders(conv.getRawFolders());
                 targetFolders.remove(folderOp.mFolder.uri);
-                conv.setRawFolders(Folder.getSerializedFolderString(targetFolders.values()));
-                cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv),
-                        Conversation.UPDATE_FOLDER_COLUMN, conv.getRawFoldersString());
+                final FolderList folders = FolderList.copyOf(targetFolders.values());
+                conv.setRawFolders(folders);
+                final ContentValues values = new ContentValues();
+                folderUris = new ArrayList<Uri>();
+                folderUris.add(mFolder.uri);
+                adds = new ArrayList<Boolean>();
+                adds.add(Boolean.FALSE);
+                cc.addFolderUpdates(folderUris, adds, values);
+                cc.addTargetFolders(targetFolders.values(), values);
+                cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv), values);
                 break;
             case R.id.archive:
                 cc.mostlyArchive(context, convList);
@@ -249,6 +260,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             view.addBackground(getContext());
             view.setBackgroundVisibility(View.VISIBLE);
         }
+        cancelDismissCounter();
     }
 
     @Override
@@ -260,28 +272,11 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         if (view != null) {
             view.removeBackground();
         }
-    }
-
-    /**
-     * Archive items using the swipe away animation before shrinking them away.
-     */
-    public boolean destroyItems(final ArrayList<ConversationItemView> views,
-            final ListItemsRemovedListener listener) {
-        if (views == null || views.size() == 0) {
-            return false;
+        final AnimatedAdapter adapter = getAnimatedAdapter();
+        if (adapter != null) {
+            adapter.startDismissCounter();
+            adapter.cancelFadeOutLastLeaveBehindItemText();
         }
-        // Need to find the items in the LIST!
-        final ArrayList<Conversation> conversations = new ArrayList<Conversation>();
-        for (ConversationItemView view : views) {
-            if (view == null) {
-                continue;
-            }
-            final Conversation conv = view.getConversation();
-            conv.position = findConversation(view, conv);
-            conversations.add(conv);
-        }
-        destroyItems(conversations, listener);
-        return true;
     }
 
     /**
@@ -373,5 +368,22 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             default:
                 mScrolling = true;
         }
+    }
+
+    @Override
+    public void cancelDismissCounter() {
+        AnimatedAdapter adapter = getAnimatedAdapter();
+        if (adapter != null) {
+            adapter.cancelDismissCounter();
+        }
+    }
+
+    @Override
+    public LeaveBehindItem getLastSwipedItem() {
+        AnimatedAdapter adapter = getAnimatedAdapter();
+        if (adapter != null) {
+            return adapter.getLastLeaveBehindItem();
+        }
+        return null;
     }
 }

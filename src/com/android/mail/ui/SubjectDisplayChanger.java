@@ -23,14 +23,11 @@ package com.android.mail.ui;
  * {@link #setSubject(String)}). They can also measure the view and determine how much of the
  * subject string was not shown due to screen constraints ({@link #getUnshownSubject(String)}).
  */
-// Called ConversationSubjectDisplayer in Gmail.
 public interface SubjectDisplayChanger {
     /**
-     * Set the subject of the conversation view to the subject given.
+     * Set the subject of the action bar to the subject given.
      * @param subject the subject string
      */
-    // This had the signature setSubject(ConversationInfo info, String subject) in Gmail, but info
-    // was not being used anywhere.
     void setSubject(String subject);
 
     /**

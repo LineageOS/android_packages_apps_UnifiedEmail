@@ -21,7 +21,6 @@ import android.animation.ObjectAnimator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Context;
 import android.content.res.Resources;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,10 +34,10 @@ import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 
-public class LeaveBehindItem extends FrameLayout implements OnClickListener,
-    SwipeableItemView {
+public class LeaveBehindItem extends FrameLayout implements OnClickListener, SwipeableItemView {
 
     private ToastBarOperation mUndoOp;
     private Account mAccount;
@@ -49,6 +48,8 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
     private static float sScrollSlop;
+    private static float OPAQUE = 1.0f;
+    private static float INVISIBLE = 0.0f;
 
     public LeaveBehindItem(Context context) {
         this(context, null);
@@ -73,13 +74,13 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         int id = v.getId();
         switch (id) {
             case R.id.swipeable_content:
-                if (mAccount.undoUri != null) {
+                if (mAccount.undoUri != null && !mInert) {
                     // NOTE: We might want undo to return the messages affected,
                     // in which case the resulting cursor might be interesting...
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate
                     // the set of commands to undo
-                    mAdapter.clearLeaveBehind(getConversationId());
                     mAdapter.setSwipeUndo(true);
+                    mAdapter.clearLeaveBehind(getConversationId());
                     ConversationCursor cursor = mAdapter.getConversationCursor();
                     if (cursor != null) {
                         cursor.undo(getContext(), mAccount.undoUri);
@@ -104,8 +105,9 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         // Listen on swipeable content so that we can show both the undo icon
         // and button text as selected since they set duplicateParentState to true
         mSwipeableContent.setOnClickListener(this);
+        mSwipeableContent.setAlpha(INVISIBLE);
         mText = ((TextView) findViewById(R.id.undo_descriptionview));
-        mText.setText(Html.fromHtml(mUndoOp
+        mText.setText(Utils.convertHtmlToPlainText(mUndoOp
                 .getSingularDescription(getContext(), folder)));
         mText.setOnClickListener(this);
     }
@@ -120,7 +122,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     @Override
     public void dismiss() {
         if (mAdapter != null) {
-            mAdapter.fadeOutLeaveBehindItems();
+            mAdapter.fadeOutSpecificLeaveBehindItem(mData.id);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -136,7 +138,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
 
     @Override
     public boolean canChildBeDismissed() {
-        return true;
+        return !mInert;
     }
 
     public LeaveBehindData getLeaveBehindData() {
@@ -148,15 +150,17 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     private int mWidth;
     private boolean mAnimating;
     private boolean mFadingInText;
+    private boolean mInert = false;
+    private ObjectAnimator mFadeIn;
 
     /**
-     * Start the animation on an animating view.
+     * Animate shrinking the height of this view.
      * @param item the conversation to animate
      * @param listener the method to call when the animation is done
      * @param undo true if an operation is being undone. We animate the item
      *            away during delete. Undoing populates the item.
      */
-    public void startAnimation(ViewMode viewMode, AnimatorListener listener) {
+    public void startShrinkAnimation(ViewMode viewMode, AnimatorListener listener) {
         if (!mAnimating) {
             mAnimating = true;
             int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(), viewMode);
@@ -166,24 +170,83 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
             ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
             mAnimatedHeight = start;
             mWidth = getMeasuredWidth();
-            mSwipeableContent.setVisibility(View.GONE);
-            height.setInterpolator(new DecelerateInterpolator(2.0f));
-            height.addListener(listener);
+            height.setInterpolator(new DecelerateInterpolator(1.75f));
             height.setDuration(sShrinkAnimationDuration);
+            height.addListener(listener);
             height.start();
         }
     }
 
-    public void startFadeInAnimation() {
-        if (!mFadingInText) {
-            mFadingInText = true;
-            final float start = 0;
-            final float end = 1.0f;
-            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(mText, "alpha", start, end);
-            fadeIn.setInterpolator(new DecelerateInterpolator(2.0f));
-            fadeIn.setDuration(sFadeInAnimationDuration);
-            fadeIn.start();
+    /**
+     * Set the alpha value for the text displayed by this item.
+     */
+    public void setTextAlpha(float alpha) {
+        if (mSwipeableContent.getAlpha() > INVISIBLE) {
+            mSwipeableContent.setAlpha(alpha);
         }
+    }
+
+    /**
+     * Kick off the animation to fade in the leave behind text.
+     * @param delay Whether to delay the start of the animation or not.
+     */
+    public void startFadeInTextAnimation(int delay) {
+        // If this thing isn't already fully visible AND its not already animating...
+        if (!mFadingInText && mSwipeableContent.getAlpha() != OPAQUE) {
+            mFadingInText = true;
+            final float start = INVISIBLE;
+            final float end = OPAQUE;
+            mFadeIn = ObjectAnimator.ofFloat(mSwipeableContent, "alpha", start, end);
+            mSwipeableContent.setAlpha(INVISIBLE);
+            if (delay != 0) {
+                mFadeIn.setStartDelay(delay);
+            }
+            mFadeIn.setInterpolator(new DecelerateInterpolator(OPAQUE));
+            mFadeIn.setDuration(sFadeInAnimationDuration / 2);
+            mFadeIn.start();
+        }
+    }
+
+    /**
+     * Increase the overall time before fading in a the text description this view.
+     * @param newDelay Amount of total delay the user should see
+     */
+    public void increaseFadeInDelay(int newDelay) {
+        // If this thing isn't already fully visible AND its not already animating...
+        if (!mFadingInText && mSwipeableContent.getAlpha() != OPAQUE) {
+            mFadingInText = true;
+            long delay = mFadeIn.getStartDelay();
+            if (newDelay == delay || mFadeIn.isRunning()) {
+                return;
+            }
+            mFadeIn.cancel();
+            mFadeIn.setStartDelay(newDelay - delay);
+            mFadeIn.start();
+        }
+    }
+
+    /**
+     * Cancel fading in the text description for this view.
+     */
+    public void cancelFadeInTextAnimation() {
+        if (mFadeIn != null) {
+            mFadingInText = false;
+            mFadeIn.cancel();
+        }
+    }
+
+    /**
+     * Cancel fading in the text description for this view only if it the
+     * animation hasn't already started.
+     * @return whether the animation was cancelled
+     */
+    public boolean cancelFadeInTextAnimationIfNotStarted() {
+        // The animation was started, so don't cancel and restart it.
+        if (mFadeIn != null && !mFadeIn.isRunning()) {
+            cancelFadeInTextAnimation();
+            return true;
+        }
+        return false;
     }
 
     public void setData(Conversation conversation) {
@@ -211,16 +274,24 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         requestLayout();
     }
 
-    /**
-     * We are in a state where we can't afford the alpha fade in, so just show the text.
-     */
-    public void showTextImmediately() {
-        // Fake that we are already fading it in so animations get ignored.
-        mFadingInText = true;
-    }
-
     @Override
     public float getMinAllowScrollDistance() {
         return sScrollSlop;
+    }
+
+    public void makeInert() {
+        if (mFadeIn != null) {
+            mFadeIn.cancel();
+        }
+        mSwipeableContent.setVisibility(View.GONE);
+        mInert = true;
+    }
+
+    public void cancelFadeOutText() {
+        mSwipeableContent.setAlpha(OPAQUE);
+    }
+
+    public boolean isAnimating() {
+        return this.mFadingInText;
     }
 }

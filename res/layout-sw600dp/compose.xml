@@ -86,7 +86,9 @@
                         android:text="@string/add_cc_label"
                         style="@style/ComposeButton"
                         android:layout_marginBottom="6dip"
-                        android:paddingLeft="8dip"/>
+                        android:paddingLeft="8dip"
+                        android:focusable="true"
+                        android:clickable="true"/>
                 </RelativeLayout>
             </TableRow>
             <TableRow
@@ -112,14 +114,16 @@
                 </RelativeLayout>
                 <RelativeLayout android:id="@+id/add_photo_attachment"
                     style="@style/AttachmentButtonStyle"
-                    android:layout_column="2">
+                    android:layout_column="2"
+                    android:clickable="true"
+                    android:focusable="true">
                     <ImageView
                         android:text="@string/add_file_attachment"
                         android:src="@drawable/ic_attach_image_holo_light"
-                        android:clickable="false"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="4dip"/>
+                        android:paddingLeft="4dip"
+                        android:clickable="false"/>
                 </RelativeLayout>
             </TableRow>
             <TableRow

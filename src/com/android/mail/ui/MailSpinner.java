@@ -104,8 +104,10 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
         mFolder = f;
         if (mFolder != null) {
             mFolderName.setText(mFolder.name);
-            mFolderCount.setText(Utils.getUnreadCountString(getContext(),
-                    Utils.getFolderUnreadDisplayCount(mFolder)));
+            int unreadCount = Utils.getFolderUnreadDisplayCount(mFolder);
+            mFolderCount.setText(Utils.getUnreadCountString(getContext(), unreadCount));
+            mFolderCount.setContentDescription(Utils.formatPlural(getContext(),
+                    R.plurals.unread_mail_count, unreadCount));
 
             if (mSpinnerAdapter != null) {
                 // Update the spinner with this current folder, as it could change the recent items
@@ -146,6 +148,13 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
             case AccountSpinnerAdapter.TYPE_ALL_FOLDERS:
                 mController.showFolderList();
                 dismiss = true;
+                break;
+            case AccountSpinnerAdapter.TYPE_HEADER:
+                LogUtils.e(LOG_TAG, "MailSpinner.onItemClick(): Got unexpected click on header.");
+                break;
+            default:
+                LogUtils.e(LOG_TAG, "MailSpinner.onItemClick(%d): Strange click ignored: type %d.",
+                        position, type);
                 break;
         }
         if (dismiss) {

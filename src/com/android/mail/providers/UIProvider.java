@@ -19,11 +19,7 @@ package com.android.mail.providers;
 
 import com.google.common.collect.ImmutableMap;
 
-import android.content.ContentProvider;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
@@ -33,6 +29,7 @@ import android.text.util.Rfc822Tokenizer;
 import com.android.common.contacts.DataUsageStatUpdater;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class UIProvider {
     public static final String EMAIL_SEPARATOR = ",";
@@ -83,14 +80,8 @@ public class UIProvider {
         public static boolean isSyncInProgress(int syncStatus) {
             return 0 != (syncStatus & (BACKGROUND_SYNC |
                     USER_REFRESH |
-                    LIVE_QUERY |
-                    USER_MORE_RESULTS));
+                    LIVE_QUERY));
         }
-        /**
-         * Unused currently, is not used by any provider.
-         * TODO(viki): Remove.
-         */
-        public static final int USER_MORE_RESULTS = 1<<5;
     }
 
     /**
@@ -126,52 +117,59 @@ public class UIProvider {
      */
     public static final String LIST_PARAMS_QUERY_PARAMETER = "listParams";
 
-    public static final String[] ACCOUNTS_PROJECTION = {
-            BaseColumns._ID,
-            AccountColumns.NAME,
-            AccountColumns.PROVIDER_VERSION,
-            AccountColumns.URI,
-            AccountColumns.CAPABILITIES,
-            AccountColumns.FOLDER_LIST_URI,
-            AccountColumns.FULL_FOLDER_LIST_URI,
-            AccountColumns.SEARCH_URI,
-            AccountColumns.ACCOUNT_FROM_ADDRESSES,
-            AccountColumns.SAVE_DRAFT_URI,
-            AccountColumns.SEND_MAIL_URI,
-            AccountColumns.EXPUNGE_MESSAGE_URI,
-            AccountColumns.UNDO_URI,
-            AccountColumns.SETTINGS_INTENT_URI,
-            AccountColumns.SYNC_STATUS,
-            AccountColumns.HELP_INTENT_URI,
-            AccountColumns.SEND_FEEDBACK_INTENT_URI,
-            AccountColumns.REAUTHENTICATION_INTENT_URI,
-            AccountColumns.COMPOSE_URI,
-            AccountColumns.MIME_TYPE,
-            AccountColumns.RECENT_FOLDER_LIST_URI,
-            AccountColumns.COLOR,
-            AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
-            AccountColumns.MANUAL_SYNC_URI,
-            AccountColumns.VIEW_INTENT_PROXY_URI,
-            AccountColumns.ACCOUNT_COOKIE_QUERY_URI,
-            AccountColumns.SettingsColumns.SIGNATURE,
-            AccountColumns.SettingsColumns.AUTO_ADVANCE,
-            AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE,
-            AccountColumns.SettingsColumns.SNAP_HEADERS,
-            AccountColumns.SettingsColumns.REPLY_BEHAVIOR,
-            AccountColumns.SettingsColumns.HIDE_CHECKBOXES,
-            AccountColumns.SettingsColumns.CONFIRM_DELETE,
-            AccountColumns.SettingsColumns.CONFIRM_ARCHIVE,
-            AccountColumns.SettingsColumns.CONFIRM_SEND,
-            AccountColumns.SettingsColumns.DEFAULT_INBOX,
-            AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME,
-            AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
-            AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
-            AccountColumns.SettingsColumns.SWIPE,
-            AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
-            AccountColumns.SettingsColumns.SETUP_INTENT_URI,
-            AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
-            AccountColumns.UPDATE_SETTINGS_URI
-    };
+    public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
+            new ImmutableMap.Builder<String, Class<?>>()
+            // order matters! (ImmutableMap.Builder preserves insertion order)
+            .put(BaseColumns._ID, Integer.class)
+            .put(AccountColumns.NAME, String.class)
+            .put(AccountColumns.PROVIDER_VERSION, Integer.class)
+            .put(AccountColumns.URI, String.class)
+            .put(AccountColumns.CAPABILITIES, Integer.class)
+            .put(AccountColumns.FOLDER_LIST_URI, String.class)
+            .put(AccountColumns.FULL_FOLDER_LIST_URI, String.class)
+            .put(AccountColumns.SEARCH_URI, String.class)
+            .put(AccountColumns.ACCOUNT_FROM_ADDRESSES, String.class)
+            .put(AccountColumns.SAVE_DRAFT_URI, String.class)
+            .put(AccountColumns.SEND_MAIL_URI, String.class)
+            .put(AccountColumns.EXPUNGE_MESSAGE_URI, String.class)
+            .put(AccountColumns.UNDO_URI, String.class)
+            .put(AccountColumns.SETTINGS_INTENT_URI, String.class)
+            .put(AccountColumns.SYNC_STATUS, Integer.class)
+            .put(AccountColumns.HELP_INTENT_URI, String.class)
+            .put(AccountColumns.SEND_FEEDBACK_INTENT_URI, String.class)
+            .put(AccountColumns.REAUTHENTICATION_INTENT_URI, String.class)
+            .put(AccountColumns.COMPOSE_URI, String.class)
+            .put(AccountColumns.MIME_TYPE, String.class)
+            .put(AccountColumns.RECENT_FOLDER_LIST_URI, String.class)
+            .put(AccountColumns.COLOR, Integer.class)
+            .put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI, String.class)
+            .put(AccountColumns.MANUAL_SYNC_URI, String.class)
+            .put(AccountColumns.VIEW_INTENT_PROXY_URI, String.class)
+            .put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, String.class)
+            .put(AccountColumns.SettingsColumns.SIGNATURE, String.class)
+            .put(AccountColumns.SettingsColumns.AUTO_ADVANCE, Integer.class)
+            .put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, Integer.class)
+            .put(AccountColumns.SettingsColumns.SNAP_HEADERS, Integer.class)
+            .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, Integer.class)
+            .put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES, Integer.class)
+            .put(AccountColumns.SettingsColumns.CONFIRM_DELETE, Integer.class)
+            .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
+            .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)
+            .put(AccountColumns.SettingsColumns.DEFAULT_INBOX, String.class)
+            .put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, String.class)
+            .put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT, Integer.class)
+            .put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE, Integer.class)
+            .put(AccountColumns.SettingsColumns.SWIPE, Integer.class)
+            .put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED, Integer.class)
+            .put(AccountColumns.SettingsColumns.SETUP_INTENT_URI, String.class)
+            .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE, Integer.class)
+            .put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN, String.class)
+            .put(AccountColumns.UPDATE_SETTINGS_URI, String.class)
+            .build();
+
+    // pull out the (ordered!) keyset from above to form the projection
+    public static final String[] ACCOUNTS_PROJECTION = ACCOUNTS_COLUMNS.keySet()
+            .toArray(new String[ACCOUNTS_COLUMNS.size()]);
 
     public static final int ACCOUNT_ID_COLUMN = 0;
     public static final int ACCOUNT_NAME_COLUMN = 1;
@@ -217,8 +215,9 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 40;
     public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 41;
     public static final int ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN = 42;
+    public static final int ACCOUNT_SETTINGS_VEILED_ADDRESS_PATTERN_COLUMN = 43;
 
-    public static final int ACCOUNT_UPDATE_SETTINGS_URI_COLUMN = 43;
+    public static final int ACCOUNT_UPDATE_SETTINGS_URI_COLUMN = 44;
 
     public static final class AccountCapabilities {
         /**
@@ -470,7 +469,7 @@ public class UIProvider {
          */
         public static final String DEFAULT_RECENT_FOLDER_LIST_URI = "defaultRecentFolderListUri";
         /**
-         * Color used for this account (for Email/Combined view)
+         * Color (integer) used for this account (for Email/Combined view)
          */
         public static final String COLOR = "color";
         /**
@@ -575,7 +574,7 @@ public class UIProvider {
              */
             public static final String SWIPE = "swipe";
             /**
-             * Boolean column containing whether priority inbox arrows are enabled.
+             * Integer column containing whether priority inbox arrows are enabled.
              */
             public static final String PRIORITY_ARROWS_ENABLED = "priority_inbox_arrows_enabled";
             /**
@@ -584,6 +583,11 @@ public class UIProvider {
              * in the account, etc.)
              */
             public static final String SETUP_INTENT_URI = "setup_intent_uri";
+            /**
+             * The regex that defines a veiled address, something that must be hidden from user
+             * view because it is temporary, long and clumsy.
+             */
+            public static final String VEILED_ADDRESS_PATTERN = "veiled_address_pattern";
             /**
              * Integer column containing the Conversation view mode.  This value will match one of
              * constants from  {@link ConversationViewMode}
@@ -657,6 +661,8 @@ public class UIProvider {
                     ACCOUNT_SETTINGS_SETUP_INTENT_URI)
             .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
                     ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN)
+            .put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN,
+                    ACCOUNT_SETTINGS_VEILED_ADDRESS_PATTERN_COLUMN)
             .put(AccountColumns.UPDATE_SETTINGS_URI, ACCOUNT_UPDATE_SETTINGS_URI_COLUMN)
             .build();
 
@@ -1055,10 +1061,11 @@ public class UIProvider {
         /**
          * @deprecated
          */
+        @Deprecated
         public static final String SENDER_INFO = "senderInfo";
         /**
-         * This string column contains the string representation of the
-         * ConversationInfo JSON object for a conversation.
+         * This blob column contains the byte-array representation of the Parceled
+         * ConversationInfo object for a conversation.
          */
         public static final String CONVERSATION_INFO = "conversationInfo";
         /**
@@ -1108,12 +1115,9 @@ public class UIProvider {
         public static String STARRED = "starred";
 
         /**
-         * This string column contains a serialized list of all folders
-         * separated by a Folder.FOLDER_SEPARATOR that are associated with this
-         * conversation. The folders should be only those that the provider
-         * wants to have displayed, so rawFolders will ALWAYS intentionally
-         * exclude the folder currently being viewed. Ideally, only ever use
-         * this for rendering the folder list for a conversation.
+         * This blob column contains the marshalled form of a Parceled
+         * {@FolderList} object. Ideally, only ever use this for
+         * rendering the folder list for a conversation.
          */
         public static final String RAW_FOLDERS = "rawFolders";
         public static final String FLAGS = "conversationFlags";
@@ -1258,6 +1262,15 @@ public class UIProvider {
          */
         public static final String DISCARD_DRAFTS = "discard_drafts";
 
+        /**
+         * Update conversation folder(s) operation. ContentValues passed as part
+         * of this update will be of the format (FOLDERS_UPDATED, csv of updated
+         * folders) where the comma separated values of the updated folders will
+         * be of the format: folderuri/ADD_VALUE. ADD_VALUE will be true if the
+         * folder was added, false if it was removed.
+         */
+        public static final String FOLDERS_UPDATED = "folders_updated";
+        public static final String FOLDERS_UPDATED_SPLIT_PATTERN = ",";
 
         public static final class Parameters {
             /**
@@ -1299,6 +1312,15 @@ public class UIProvider {
          * {@link MessageColumns#URI} key.
          */
         public static final String SEND_MESSAGE = "send_message";
+
+        /**
+         * Change account method.  The Bundle for the call to
+         * {@link android.content.ContentResolver#call()} should have the columns specified in
+         * {@link SetCurrentAccountColumns}
+         *
+         * The Bundle returned will be empty.
+         */
+        public static final String SET_CURRENT_ACCOUNT = "set_current_account";
 
         private AccountCallMethods() {}
     }
@@ -1667,6 +1689,15 @@ public class UIProvider {
         private MessageColumns() {}
     }
 
+     public static final class SetCurrentAccountColumns {
+        /**
+         * This column contains the Account object Parcelable.
+         */
+        public static final String ACCOUNT = "account";
+
+        private SetCurrentAccountColumns() {}
+    }
+
     /**
      * List of operations that can can be performed on a message. These operations are applied
      * with {@link ContentProvider#update(Uri, ContentValues, String, String[])}
@@ -1704,7 +1735,8 @@ public class UIProvider {
         AttachmentColumns.DOWNLOADED_SIZE,
         AttachmentColumns.CONTENT_URI,
         AttachmentColumns.THUMBNAIL_URI,
-        AttachmentColumns.PREVIEW_INTENT_URI
+        AttachmentColumns.PREVIEW_INTENT_URI,
+        AttachmentColumns.PROVIDER_DATA
     };
     private static final String EMAIL_SEPARATOR_PATTERN = "\n";
     public static final int ATTACHMENT_NAME_COLUMN = 0;
@@ -1728,7 +1760,7 @@ public class UIProvider {
          * setting this state will tell the provider to cancel a download in
          * progress.
          * <p>
-         * Valid next states: {@link #DOWNLOADING}
+         * Valid next states: {@link #DOWNLOADING}, {@link #PAUSED}
          */
         public static final int NOT_SAVED = 0;
         /**
@@ -1760,7 +1792,7 @@ public class UIProvider {
          * own. To move a file from cache to external, update
          * {@link AttachmentColumns#DESTINATION}.
          * <p>
-         * Valid next states: {@link #NOT_SAVED}
+         * Valid next states: {@link #NOT_SAVED}, {@link #PAUSED}
          */
         public static final int SAVED = 3;
         /**
@@ -1771,11 +1803,17 @@ public class UIProvider {
          * setting this state will tell the provider to initiate a download to
          * the accompanying destination in {@link AttachmentColumns#DESTINATION}
          * .
-         * <p>
-         * Valid next states: {@link #NOT_SAVED}, {@link #FAILED},
-         * {@link #SAVED}
          */
         public static final int REDOWNLOADING = 4;
+        /**
+         * The attachment is either pending or paused in the download manager.
+         * {@link AttachmentColumns#DOWNLOADED_SIZE} should reflect the current
+         * download progress while in this state. This state may not be used as
+         * a command on its own.
+         * <p>
+         * Valid next states: {@link #DOWNLOADING}, {@link #FAILED}
+         */
+        public static final int PAUSED = 5;
 
         private AttachmentState() {}
     }
@@ -1788,6 +1826,7 @@ public class UIProvider {
         public static final int CACHE = 0;
         /**
          * The attachment will be or is already saved to external shared device storage.
+         * This value should be 1 since saveToSd is often used in a similar way
          */
         public static final int EXTERNAL = 1;
 
@@ -1805,8 +1844,9 @@ public class UIProvider {
          */
         public static final String SIZE = OpenableColumns.SIZE;
         /**
-         * This column is a {@link Uri} that can be queried to monitor download state and progress
-         * for this individual attachment (resulting cursor has one single row for this attachment).
+         * This column is a {@link android.net.Uri} that can be queried to
+         * monitor download state and progress for this individual attachment
+         * (resulting cursor has one single row for this attachment).
          */
         public static final String URI = "uri";
         /**
@@ -1840,26 +1880,62 @@ public class UIProvider {
          */
         public static final String DOWNLOADED_SIZE = "downloadedSize";
         /**
-         * This column is a {@link Uri} that points to the downloaded local file
-         * when {@link #STATE} is {@link AttachmentState#SAVED}. This value is
-         * undefined in any other state.
+         * This column is a {@link android.net.Uri} that points to the
+         * downloaded local file when {@link #STATE} is
+         * {@link AttachmentState#SAVED}. This value is undefined in any other
+         * state.
          */
         public static final String CONTENT_URI = "contentUri";
         /**
-         * This column is a {@link Uri} that points to a local thumbnail file
-         * for the attachment. Providers that do not support downloading
-         * attachment thumbnails may leave this null.
+         * This column is a {@link android.net.Uri} that points to a local
+         * thumbnail file for the attachment. Providers that do not support
+         * downloading attachment thumbnails may leave this null.
          */
         public static final String THUMBNAIL_URI = "thumbnailUri";
         /**
-         * This column is an {@link Uri} used in an {@link Intent#ACTION_VIEW} Intent to launch a
-         * preview activity that allows the user to efficiently view an attachment without having to
-         * first download the entire file. Providers that do not support
-         * previewing attachments may leave this null.
+         * This column is an {@link android.net.Uri} used in an
+         * {@link android.content.Intent#ACTION_VIEW} Intent to launch a preview
+         * activity that allows the user to efficiently view an attachment
+         * without having to first download the entire file. Providers that do
+         * not support previewing attachments may leave this null.
          */
         public static final String PREVIEW_INTENT_URI = "previewIntentUri";
+        /**
+         * This column contains provider-specific private data as JSON string.
+         */
+        public static final String PROVIDER_DATA = "providerData";
 
         private AttachmentColumns() {}
+    }
+
+    public static final class AttachmentContentValueKeys {
+        public static final String RENDITION = "rendition";
+        public static final String ADDITIONAL_PRIORITY = "additionalPriority";
+        public static final String DELAY_DOWNLOAD = "delayDownload";
+    }
+
+    /**
+     * Indicates a version of an attachment.
+     */
+    public static final class AttachmentRendition {
+
+        /** A smaller or simpler version of the attachment, such as a scaled-down image or an HTML
+         * version of a document. Not always available.
+         */
+        public static final int SIMPLE = 0;
+        /**
+         * The full version of an attachment if it can be handled on the device, otherwise the
+         * preview.
+         */
+        public static final int BEST = 1;
+
+        public static int parseRendition(String rendition) {
+            return rendition.equalsIgnoreCase("BEST") ? BEST : SIMPLE;
+        }
+
+        public static String toString(int rendition) {
+            return rendition == BEST ? "BEST" : "SIMPLE";
+        }
     }
 
     public static String getAttachmentTypeSetting() {
@@ -1888,6 +1964,12 @@ public class UIProvider {
     // Parameter used to indicate the sequence number for an undoable operation
     public static final String SEQUENCE_QUERY_PARAMETER = "seq";
 
+    /**
+     * Parameter used to force UI notifications in an operation involving
+     * {@link ConversationOperations#OPERATION_KEY}.
+     */
+    public static final String FORCE_UI_NOTIFICATIONS_QUERY_PARAMETER = "forceUiNotifications";
+
     public static final String AUTO_ADVANCE_MODE_OLDER = "older";
     public static final String AUTO_ADVANCE_MODE_NEWER = "newer";
     public static final String AUTO_ADVANCE_MODE_LIST = "list";
@@ -1904,6 +1986,8 @@ public class UIProvider {
         public static final int NEWER = 2;
         /** Go back to conversation list*/
         public static final int LIST = 3;
+        /** The default option is to go to the list */
+        public static final int DEFAULT = LIST;
 
         /**
          * Gets the int value for the given auto advance setting.
@@ -2031,6 +2115,11 @@ public class UIProvider {
          * Optional boolean extras which indicates that the user is reporting a problem.
          */
         public static final String EXTRA_REPORTING_PROBLEM = "reporting_problem";
+        /**
+         * Optional Parcelable extra containing the screenshot of the screen where the user
+         * is reporting a problem.
+         */
+        public static final String EXTRA_SCREEN_SHOT = "screen_shot";
     }
 
     public static final class ViewProxyExtras {

@@ -23,7 +23,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Message;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -41,7 +40,7 @@ class ConversationViewState implements Parcelable {
 
     private final Map<Uri, MessageViewState> mMessageViewStates = Maps.newHashMap();
 
-    private String mConversationInfo;
+    private byte[] mConversationInfo;
 
     public static final class ExpansionState {
         public static int EXPANDED = 1;
@@ -116,12 +115,12 @@ class ConversationViewState implements Parcelable {
         mMessageViewStates.put(m.uri, mvs);
     }
 
-    public String getConversationInfo() {
+    public byte[] getConversationInfo() {
         return mConversationInfo;
     }
 
     public void setInfoForConversation(Conversation conv) {
-        mConversationInfo = ConversationInfo.toString(conv.conversationInfo);
+        mConversationInfo = conv.conversationInfo != null ? conv.conversationInfo.toBlob() : null;
     }
 
     /**
@@ -157,7 +156,7 @@ class ConversationViewState implements Parcelable {
             states.putParcelable(uri.toString(), mvs);
         }
         dest.writeBundle(states);
-        dest.writeString(mConversationInfo);
+        dest.writeByteArray(mConversationInfo);
     }
 
     private ConversationViewState(Parcel source, ClassLoader loader) {
@@ -166,7 +165,7 @@ class ConversationViewState implements Parcelable {
             final MessageViewState state = states.getParcelable(key);
             mMessageViewStates.put(Uri.parse(key), state);
         }
-        mConversationInfo = source.readString();
+        mConversationInfo = source.createByteArray();
     }
 
     public static final ClassLoaderCreator<ConversationViewState> CREATOR =

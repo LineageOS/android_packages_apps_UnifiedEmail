@@ -1,7 +1,6 @@
 package com.android.mail.browse;
 
 import android.content.Context;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,6 +12,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.Utils;
 
 public class SpamWarningView extends RelativeLayout implements OnClickListener {
     private ImageView mSpamWarningIcon;
@@ -64,7 +64,7 @@ public class SpamWarningView extends RelativeLayout implements OnClickListener {
         // to enable the proper display.
         final String senderAddress = sender.getAddress();
         final String senderDomain = senderAddress.substring(senderAddress.indexOf('@')+1);
-        mSpamWarningText.setText(Html.fromHtml(String.format(
+        mSpamWarningText.setText(Utils.convertHtmlToPlainText(String.format(
                 message.spamWarningString, senderAddress, senderDomain)));
 
         if (message.spamWarningLevel == UIProvider.SpamWarningLevel.HIGH_WARNING) {

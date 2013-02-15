@@ -21,20 +21,13 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.DialogInterface.OnClickListener;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -70,7 +63,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AccountColumns;
+import com.android.mail.providers.UIProvider.CursorStatus;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -115,19 +108,13 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private View mProgressView;
     private View mBackgroundView;
     private final Handler mHandler = new Handler();
-
+    /** True if we want to avoid marking the conversation as viewed and read. */
+    private boolean mSuppressMarkingViewed;
     /**
      * Parcelable state of the conversation view. Can safely be used without null checking any time
      * after {@link #onCreate(Bundle)}.
      */
     protected ConversationViewState mViewState;
-
-    /**
-     * Handles a deferred 'mark read' operation, necessary when the conversation view has finished
-     * loading before the conversation cursor. Normally null unless this situation occurs.
-     * When finally able to 'mark read', this observer will also be unregistered and cleaned up.
-     */
-    private MarkReadObserver mMarkReadObserver;
 
     private long mLoadingShownTime = -1;
 
@@ -176,7 +163,10 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * Subclasses must override, since this depends on how many messages are
      * shown in the conversation view.
      */
-    protected abstract void markUnread();
+    protected void markUnread() {
+        // Do not automatically mark this conversation viewed and read.
+        mSuppressMarkingViewed = true;
+    }
 
     /**
      * Subclasses must override this, since they may want to display a single or
@@ -432,11 +422,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     public void onDestroyView() {
         super.onDestroyView();
         mAccountObserver.unregisterAndDestroy();
-        if (mMarkReadObserver != null) {
-            mActivity.getConversationUpdater().unregisterConversationListObserver(
-                    mMarkReadObserver);
-            mMarkReadObserver = null;
-        }
     }
 
     /**
@@ -484,9 +469,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                     LogUtils.d(LOG_TAG, "LOADED CONVERSATION= %s", messageCursor.getDebugDump());
                 }
 
-                // When the last cursor had message(s), and the new version has
-                // no messages, we need to exit conversation view.
-                if (messageCursor.getCount() == 0 && mCursor != null) {
+                // We have no messages: exit conversation view.
+                if (messageCursor.getCount() == 0
+                        && !CursorStatus.isWaitingForResults(messageCursor.getStatus())) {
                     if (mUserVisible) {
                         onError();
                     } else {
@@ -560,41 +545,31 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
         mViewState.setInfoForConversation(mConversation);
 
-        // mark viewed/read if not previously marked viewed by this conversation view,
-        // or if unread messages still exist in the message list cursor
-        // we don't want to keep marking viewed on rotation or restore
-        // but we do want future re-renders to mark read (e.g. "New message from X" case)
-        MessageCursor cursor = getMessageCursor();
-        if (!mConversation.isViewed() || (cursor != null && !cursor.isConversationRead())) {
-            final ConversationUpdater listController = activity.getConversationUpdater();
-            // The conversation cursor may not have finished loading by now (when launched via
-            // notification), so watch for when it finishes and mark it read then.
-            if (listController.getConversationListCursor() == null) {
-                LogUtils.i(LOG_TAG, "deferring conv mark read on open for id=%d",
-                        mConversation.id);
-                mMarkReadObserver = new MarkReadObserver(listController);
-                listController.registerConversationListObserver(mMarkReadObserver);
-            } else {
-                markReadOnSeen(listController);
+        // In most circumstances we want to mark the conversation as viewed and read, since the
+        // user has read it.  However, if the user has already marked the conversation unread, we
+        // do not want a  later mark-read operation to undo this.  So we check this variable which
+        // is set in #markUnread() which suppresses automatic mark-read.
+        if (!mSuppressMarkingViewed) {
+            // mark viewed/read if not previously marked viewed by this conversation view,
+            // or if unread messages still exist in the message list cursor
+            // we don't want to keep marking viewed on rotation or restore
+            // but we do want future re-renders to mark read (e.g. "New message from X" case)
+            MessageCursor cursor = getMessageCursor();
+            if (!mConversation.isViewed() || (cursor != null && !cursor.isConversationRead())) {
+                // Mark the conversation viewed and read.
+                activity.getConversationUpdater()
+                        .markConversationsRead(Arrays.asList(mConversation), true, true);
+
+                // and update the Message objects in the cursor so the next time a cursor update
+                // happens with these messages marked read, we know to ignore it
+                if (cursor != null) {
+                    cursor.markMessagesRead();
+                }
             }
         }
-
         activity.getListHandler().onConversationSeen(mConversation);
 
         showAutoFitPrompt();
-    }
-
-    protected void markReadOnSeen(ConversationUpdater listController) {
-        // Mark the conversation viewed and read.
-        listController.markConversationsRead(Arrays.asList(mConversation), true /* read */,
-                true /* viewed */);
-
-        // and update the Message objects in the cursor so the next time a cursor update happens
-        // with these messages marked read, we know to ignore it
-        MessageCursor cursor = getMessageCursor();
-        if (cursor != null) {
-            cursor.markMessagesRead();
-        }
     }
 
     protected ConversationViewState getNewViewState() {
@@ -756,27 +731,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             }
 
             return intent;
-        }
-    }
-
-    private class MarkReadObserver extends DataSetObserver {
-        private final ConversationUpdater mListController;
-
-        private MarkReadObserver(ConversationUpdater listController) {
-            mListController = listController;
-        }
-
-        @Override
-        public void onChanged() {
-            if (mListController.getConversationListCursor() == null) {
-                // nothing yet, keep watching
-                return;
-            }
-            // done loading, safe to mark read now
-            mListController.unregisterConversationListObserver(this);
-            mMarkReadObserver = null;
-            LogUtils.i(LOG_TAG, "running deferred conv mark read on open, id=%d", mConversation.id);
-            markReadOnSeen(mListController);
         }
     }
 

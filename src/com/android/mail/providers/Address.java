@@ -24,7 +24,6 @@ import com.google.common.annotations.VisibleForTesting;
 import org.apache.james.mime4j.codec.EncoderUtil;
 import org.apache.james.mime4j.decoder.DecoderUtil;
 
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
@@ -118,11 +117,13 @@ public class Address {
         final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(rawAddress);
         if (tokens.length > 0) {
             final String tokenizedName = tokens[0].getName();
-            name = tokenizedName != null ? Html.fromHtml(tokenizedName.trim()).toString() : "";
-            address = Html.fromHtml(tokens[0].getAddress()).toString();
+            name = tokenizedName != null ? Utils.convertHtmlToPlainText(tokenizedName.trim())
+                    .toString() : "";
+            address = Utils.convertHtmlToPlainText(tokens[0].getAddress()).toString();
         } else {
             name = "";
-            address = rawAddress == null ? "" : Html.fromHtml(rawAddress).toString();
+            address = rawAddress == null ?
+                    "" : Utils.convertHtmlToPlainText(rawAddress).toString();
         }
         return new Address(name, address);
     }

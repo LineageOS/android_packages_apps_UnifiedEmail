@@ -17,9 +17,11 @@
 
 package com.android.mail.ui;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.net.Uri;
 
+import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
@@ -85,18 +87,6 @@ public interface ConversationUpdater extends ConversationListCallbacks {
             int actionId, final Collection<Conversation> target, final DestructiveAction action);
 
     /**
-     * Requests the removal of the current conversation with the specified
-     * destructive action.
-     * @param actionId TODO(viki):
-     * @param target the conversations to act upon.
-     *@param target the conversation views to act upon.
-     * @param action to perform after the UI has been updated to remove the
-     *            conversations
-     */
-    void delete(int actionId, final Collection<Conversation> target,
-            final Collection<ConversationItemView> targetViews, final DestructiveAction action);
-
-    /**
      * Mark a number of conversations as read or unread.
      * @param targets the conversations to act upon
      * @param read true if the conversations are marked read, false if they are marked unread.
@@ -116,7 +106,7 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * that {@link ConversationCursor} will temporarily use until the commit is complete.
      */
     void markConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
-            String originalConversationInfo);
+            byte[] originalConversationInfo);
 
     /**
      * Star a single message within a conversation. This method requires a
@@ -140,18 +130,6 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * @return
      */
     public DestructiveAction getDeferredBatchAction(int action);
-
-    /**
-     * Get a destructive action for selected conversations. The action
-     * corresponds to Menu item identifiers, for example R.id.unread, or
-     * R.id.delete. but is not automatically added to the pending actions list.
-     * The caller must explicitly call performAction.
-     * @param action
-     * @param batch
-     * @return
-     */
-    public DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
-            boolean batch);
 
     /**
      * Get destructive folder change for selected conversations.
@@ -186,4 +164,23 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      *            destructive action.
      */
     void showNextConversation(Collection<Conversation> conversations);
+
+    /**
+     * Make an action listener for a confirmation dialog, and the currently selected set of
+     * conversations. The action is specified as an integer which marks the menu resource:
+     * R.id.delete, R.id.discard_drafts, etc.
+     * @param action the resource ID of the menu action: R.id.delete, for example
+     * @param fromSelectedSet true if the listener acts on the selected set, false if the listener
+     *        acts on the current conversation.
+     */
+    public void makeDialogListener(final int action, boolean fromSelectedSet);
+
+    /**
+     * If set, get the listener associated with the existing {@link ConfirmDialogFragment}.  This
+     * listener needs to be set centrally, because the dialog fragment can get torn down, along with
+     * the current activity, and the listener has to be created afresh.
+     * @return the current listener for the positive action in the current confirmation dialog, if
+     * any. Returns null if no confirmation dialog is currently shown.
+     */
+    public AlertDialog.OnClickListener getListener();
 }

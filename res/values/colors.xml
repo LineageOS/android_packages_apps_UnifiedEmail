@@ -20,12 +20,12 @@
     <!-- Conversation List Item Colors -->
     <color name="default_text_color">#ff000000</color>
     <color name="subject_text_color_unread">#555555</color>
-    <color name="snippet_text_color_unread">#555555</color>
+    <color name="snippet_text_color_unread">#777777</color>
     <color name="senders_text_color_unread">#333333</color>
     <color name="subject_text_color_read">@color/gray_text_color</color>
     <color name="snippet_text_color_read">@color/gray_text_color</color>
-    <color name="senders_text_color_read">#555555</color>
-    <color name="date_text_color">@color/senders_text_color_read</color>
+    <color name="senders_text_color_read">#000000</color>
+    <color name="date_text_color">@color/gray_text_color</color>
     <color name="message_info_text_color">@color/gray_text_color</color>
     <color name="folder_list_heading_text_color">@color/gray_text_color</color>
     <color name="subject_text_color">#333333</color>
@@ -75,4 +75,10 @@
     <color name="high_spam_color">#CC0000</color>
     <color name="leaveBehindBackground">#5a595a</color>
     <color name="animating_item_background_color">#7F0099cc</color>
+
+    <color name="notification_template_icon_low_bg">#0cffffff</color>
+
+    <color name="letter_tile_color">#d8d8d8</color>
+    <color name="letter_tile_font_color">#ffffff</color>
+    <color name="tile_divider_color">#ffffff</color>
 </resources>

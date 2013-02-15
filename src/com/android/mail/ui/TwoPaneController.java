@@ -18,13 +18,10 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
@@ -40,8 +37,6 @@ import com.android.mail.utils.Utils;
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
  * abounds.
  */
-
-// Called TwoPaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
     private TwoPaneLayout mLayout;
     private Conversation mConversationToShow;
@@ -89,6 +84,21 @@ public final class TwoPaneController extends AbstractActivityController {
         fragmentTransaction.commitAllowingStateLoss();
     }
 
+    @Override
+    public boolean doesActionChangeConversationListVisibility(int action) {
+        switch (action) {
+            case R.id.settings:
+            case R.id.compose:
+            case R.id.help_info_menu_item:
+            case R.id.manage_folders_item:
+            case R.id.folder_options:
+            case R.id.feedback_menu_item:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     /**
      * Render the folder list in the correct pane.
      */
@@ -109,9 +119,8 @@ public final class TwoPaneController extends AbstractActivityController {
         }
         fragmentTransaction.replace(R.id.content_pane, folderListFragment, TAG_FOLDER_LIST);
         fragmentTransaction.commitAllowingStateLoss();
-        // Since we are showing the folder list, we are at the start of the view
-        // stack.
-        // TODO(viki): We don't need this call. Evaluate and remove.
+        // We only set the action bar if the viewmode has been set previously. Otherwise, we leave
+        // the action bar in the state it is currently in.
         if (mViewMode.getMode() != ViewMode.UNKNOWN) {
             resetActionBarIcon();
         }
@@ -301,10 +310,15 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void setCurrentConversation(Conversation conversation) {
-        long oldId = mCurrentConversation != null ? mCurrentConversation.id : -1;
-        long newId = conversation != null ? conversation.id : -1;
-        boolean different = oldId != newId;
+        // Order is important! We want to calculate different *before* the superclass changes
+        // mCurrentConversation, so before super.setCurrentConversation().
+        final long oldId = mCurrentConversation != null ? mCurrentConversation.id : -1;
+        final long newId = conversation != null ? conversation.id : -1;
+        final boolean different = oldId != newId;
+
+        // This call might change mCurrentConversation.
         super.setCurrentConversation(conversation);
+
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null && conversation != null) {
             convList.setSelected(conversation.position, different);
@@ -467,8 +481,8 @@ public final class TwoPaneController extends AbstractActivityController {
                     mToastBar.show(
                             getUndoClickedListener(convList.getAnimatedAdapter()),
                             0,
-                            Html.fromHtml(op.getDescription(mActivity.getActivityContext(),
-                                    mFolder)),
+                            Utils.convertHtmlToPlainText
+                                (op.getDescription(mActivity.getActivityContext(), mFolder)),
                             true, /* showActionIcon */
                             R.string.undo,
                             true,  /* replaceVisibleToast */
@@ -478,8 +492,9 @@ public final class TwoPaneController extends AbstractActivityController {
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
                 if (convList != null) {
-                    mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()), 0, Html
-                            .fromHtml(op.getDescription(mActivity.getActivityContext(), mFolder)),
+                    mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()), 0,
+                            Utils.convertHtmlToPlainText
+                                (op.getDescription(mActivity.getActivityContext(), mFolder)),
                             true, /* showActionIcon */
                             R.string.undo, true, /* replaceVisibleToast */
                             op);

@@ -17,6 +17,7 @@
 
 package com.android.mail.browse;
 
+
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -24,14 +25,15 @@ import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
 
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
+import com.android.mail.providers.UIProvider.AttachmentContentValueKeys;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.LogTag;
@@ -39,13 +41,11 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AttachmentActionHandler {
     private static final String PROGRESS_FRAGMENT_TAG = "attachment-progress";
 
     private Attachment mAttachment;
-    private boolean mDialogClosed;
 
     private final AttachmentCommandHandler mCommandHandler;
     private final AttachmentViewInterface mView;
@@ -59,7 +59,6 @@ public class AttachmentActionHandler {
         mCommandHandler = new AttachmentCommandHandler(context);
         mView = view;
         mContext = context;
-        mDialogClosed = false;
         mHandler = new Handler();
     }
 
@@ -72,6 +71,10 @@ public class AttachmentActionHandler {
     }
 
     public void showAttachment(int destination) {
+        if (mView == null) {
+            return;
+        }
+
         // If the caller requested that this attachments be saved to the external storage, we should
         // verify that the it was saved there.
         if (mAttachment.isPresentLocally() &&
@@ -84,26 +87,29 @@ public class AttachmentActionHandler {
         }
     }
 
-    public void showAndDownloadAttachments() {
-        final List<Attachment> attachments = mView.getAttachments();
-
-        for (final Attachment attachment : attachments) {
-            if (!attachment.isPresentLocally()) {
-                startDownloadingAttachment(attachment, AttachmentDestination.CACHE);
-            }
-        }
-
-        mView.viewAttachment();
-    }
-
+    /**
+     * Start downloading the full size attachment set with
+     * {@link #setAttachment(Attachment)} immediately.
+     */
     public void startDownloadingAttachment(int destination) {
-        startDownloadingAttachment(mAttachment, destination);
+        startDownloadingAttachment(destination, UIProvider.AttachmentRendition.BEST, 0, false);
     }
 
-    private void startDownloadingAttachment(Attachment attachment, int destination) {
+    public void startDownloadingAttachment(
+            int destination, int rendition, int additionalPriority, boolean delayDownload) {
+        startDownloadingAttachment(
+                mAttachment, destination, rendition, additionalPriority, delayDownload);
+    }
+
+    private void startDownloadingAttachment(
+            Attachment attachment, int destination, int rendition, int additionalPriority,
+            boolean delayDownload) {
         final ContentValues params = new ContentValues(2);
         params.put(AttachmentColumns.STATE, AttachmentState.DOWNLOADING);
         params.put(AttachmentColumns.DESTINATION, destination);
+        params.put(AttachmentContentValueKeys.RENDITION, rendition);
+        params.put(AttachmentContentValueKeys.ADDITIONAL_PRIORITY, additionalPriority);
+        params.put(AttachmentContentValueKeys.DELAY_DOWNLOAD, delayDownload);
 
         mCommandHandler.sendCommand(attachment.uri, params);
     }
@@ -142,19 +148,15 @@ public class AttachmentActionHandler {
         newFragment.show(ft, PROGRESS_FRAGMENT_TAG);
     }
 
-    public void onDismiss(DialogInterface dialog) {
-        mDialogClosed = true;
-    }
-
-    public void onCancel(DialogInterface dialog) {
-        cancelAttachment();
-    }
-
     /**
      * Update progress-related views. Will also trigger a view intent if a progress dialog was
      * previously brought up (by tapping 'View') and the download has now finished.
      */
     public void updateStatus(boolean loaderResult) {
+        if (mView == null) {
+            return;
+        }
+
         final boolean showProgress = mAttachment.shouldShowProgress();
 
         final AttachmentProgressDialogFragment dialog = (AttachmentProgressDialogFragment)
@@ -228,20 +230,5 @@ public class AttachmentActionHandler {
             // couldn't find activity for SEND_MULTIPLE intent
             LogUtils.e(LOG_TAG, "Couldn't find Activity for intent", e);
         }
-    }
-
-    /**
-     * Returns true if this is the first time this method has been called after
-     * the progress dialog was closed. Necessary to prevent a brief flicker where the
-     * cancel button would appear after closing the progress dialog. Subsequent
-     * calls to this method will return false until the progress dialog is
-     * opened again.
-     * @return true if this is the first time this method has been called
-     * since a progress dialog was visible. false otherwise.
-     */
-    public boolean dialogJustClosed() {
-        final boolean closed = mDialogClosed;
-        mDialogClosed = false;
-        return closed;
     }
 }

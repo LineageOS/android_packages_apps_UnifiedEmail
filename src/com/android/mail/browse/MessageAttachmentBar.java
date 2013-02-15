@@ -48,7 +48,6 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
 
-import java.util.List;
 /**
  * View for a single attachment in conversation view. Shows download status and allows launching
  * intents to act on an attachment.
@@ -128,7 +127,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             mAttachmentSizeText = AttachmentUtils.convertToHumanReadableSize(getContext(),
                     attachment.size);
             mDisplayType = AttachmentUtils.getDisplayType(getContext(), attachment);
-            updateSubtitleText(null);
+            updateSubtitleText();
         }
 
         updateActions();
@@ -182,15 +181,10 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 mSaveClicked = false;
                 break;
             case R.id.overflow: {
-                final boolean canSave = mAttachment.canSave() && !mAttachment.isDownloading();
-                final boolean canPreview = mAttachment.canPreview();
-                final boolean canDownloadAgain = mAttachment.isPresentLocally() ||
-                    mAttachment.downloadFailed();
-
                 // If no overflow items are visible, just bail out.
                 // We shouldn't be able to get here anyhow since the overflow
                 // button should be hidden.
-                if (!canSave && !canPreview && !canDownloadAgain) {
+                if (!shouldShowOverflow()) {
                     break;
                 }
 
@@ -202,9 +196,9 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 }
 
                 final Menu menu = mPopup.getMenu();
-                menu.findItem(R.id.preview_attachment).setVisible(canPreview);
-                menu.findItem(R.id.save_attachment).setVisible(canSave);
-                menu.findItem(R.id.download_again).setVisible(canDownloadAgain);
+                menu.findItem(R.id.preview_attachment).setVisible(shouldShowPreview());
+                menu.findItem(R.id.save_attachment).setVisible(shouldShowSave());
+                menu.findItem(R.id.download_again).setVisible(shouldShowDownloadAgain());
 
                 mPopup.show();
                 break;
@@ -244,6 +238,30 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         return true;
     }
 
+    private boolean shouldShowPreview() {
+        // state could be anything
+        return mAttachment.canPreview();
+    }
+
+    private boolean shouldShowSave() {
+        return mAttachment.canSave() && !mSaveClicked;
+    }
+
+    private boolean shouldShowDownloadAgain() {
+        // implies state == SAVED || state == FAILED
+        return mAttachment.isDownloadFinishedOrFailed();
+    }
+
+    private boolean shouldShowOverflow() {
+        return (shouldShowPreview() || shouldShowSave() || shouldShowDownloadAgain())
+                && !shouldShowCancel();
+    }
+
+    private boolean shouldShowCancel() {
+        return mAttachment.isDownloading() && mSaveClicked;
+    }
+
+    @Override
     public void viewAttachment() {
         if (mAttachment.contentUri == null) {
             LogUtils.e(LOG_TAG, "viewAttachment with null content uri");
@@ -285,44 +303,22 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
     private void updateActionsInternal() {
         // If the progress dialog is visible, skip any of the updating
-        if (mActionHandler.isProgressDialogVisible() || mActionHandler.dialogJustClosed()) {
+        if (mActionHandler.isProgressDialogVisible()) {
             return;
         }
 
         // To avoid visibility state transition bugs, every button's visibility should be touched
         // once by this routine.
-
-        final boolean isDownloading = mAttachment.isDownloading();
-        final boolean canSave = mAttachment.canSave() &&
-                MimeType.isViewable(getContext(),
-                        mAttachment.contentUri, mAttachment.contentType);
-        final boolean canPreview = mAttachment.canPreview();
-        final boolean isInstallable = MimeType.isInstallable(mAttachment.contentType);
-        final boolean canDownloadAgain = mAttachment.isPresentLocally() ||
-                    mAttachment.downloadFailed();
-
-        setButtonVisible(mCancelButton, isDownloading && mSaveClicked);
-
-        if (isDownloading) {
-            setButtonVisible(mOverflowButton, false);
-        } else if (canSave && mSaveClicked) {
-            setButtonVisible(mOverflowButton, false);
-        } else if (isInstallable && !canDownloadAgain) {
-            setButtonVisible(mOverflowButton, false);
-        } else {
-            setButtonVisible(mOverflowButton, canSave || canPreview || canDownloadAgain);
-        }
+        setButtonVisible(mCancelButton, shouldShowCancel());
+        setButtonVisible(mOverflowButton, shouldShowOverflow());
     }
 
+    @Override
     public void onUpdateStatus() {
-        if (mAttachment.state == AttachmentState.FAILED) {
-            mSubTitle.setText(getResources().getString(R.string.download_failed));
-        } else {
-            updateSubtitleText(mAttachment.isSavedToExternal() ?
-                    getResources().getString(R.string.saved) : null);
-        }
+        updateSubtitleText();
     }
 
+    @Override
     public void updateProgress(boolean showProgress) {
         if (mAttachment.isDownloading()) {
             mProgress.setMax(mAttachment.size);
@@ -336,21 +332,21 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         }
     }
 
-    private void updateSubtitleText(String prefix) {
+    private void updateSubtitleText() {
         // TODO: make this a formatted resource when we have a UX design.
         // not worth translation right now.
-        StringBuilder sb = new StringBuilder();
-        if (prefix != null) {
-            sb.append(prefix);
+        final StringBuilder sb = new StringBuilder();
+        if (mAttachment.state == AttachmentState.FAILED) {
+            sb.append(getResources().getString(R.string.download_failed));
+        } else {
+            if (mAttachment.isSavedToExternal()) {
+                sb.append(getResources().getString(R.string.saved, mAttachmentSizeText));
+            } else {
+                sb.append(mAttachmentSizeText);
+            }
+            sb.append(' ');
+            sb.append(mDisplayType);
         }
-        sb.append(mAttachmentSizeText);
-        sb.append(' ');
-        sb.append(mDisplayType);
         mSubTitle.setText(sb.toString());
-    }
-
-    @Override
-    public List<Attachment> getAttachments() {
-        return null;
     }
 }

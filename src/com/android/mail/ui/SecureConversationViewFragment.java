@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mail.browse;
+package com.android.mail.ui;
 
 import android.content.Loader;
 import android.database.Cursor;
@@ -34,18 +34,18 @@ import android.webkit.WebViewClient;
 import android.widget.ScrollView;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationViewAdapter;
+import com.android.mail.browse.ConversationViewHeader;
+import com.android.mail.browse.MessageCursor;
+import com.android.mail.browse.MessageFooterView;
+import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.AbstractConversationViewFragment;
-import com.android.mail.ui.ControllableActivity;
-import com.android.mail.ui.ConversationViewFragment;
-import com.android.mail.ui.SubjectDisplayChanger;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -107,6 +107,9 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mMessageHeaderView.setContactInfoSource(getContactInfoSource());
         mMessageHeaderView.setCallbacks(this);
         mMessageHeaderView.setExpandable(false);
+        mMessageHeaderView.setVeiledMatcher(
+                ((ControllableActivity) getActivity()).getAccountController()
+                        .getVeiledAddressMatcher());
         getLoaderManager().initLoader(MESSAGE_LOADER, null, getMessageLoaderCallbacks());
         showLoadingStatus();
     }
@@ -142,18 +145,18 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     protected void markUnread() {
-        // Ignore unsafe calls made after a fragment is detached from an
-        // activity
+        super.markUnread();
+        // Ignore unsafe calls made after a fragment is detached from an activity
         final ControllableActivity activity = (ControllableActivity) getActivity();
         if (activity == null || mConversation == null || mMessage == null) {
             LogUtils.w(LOG_TAG, "ignoring markUnread for conv=%s",
                     mConversation != null ? mConversation.id : 0);
             return;
         }
-        HashSet<Uri> uris = new HashSet<Uri>();
+        final HashSet<Uri> uris = new HashSet<Uri>();
         uris.add(mMessage.uri);
         activity.getConversationUpdater().markConversationMessagesUnread(mConversation, uris,
-                ConversationInfo.toString(mConversation.conversationInfo));
+                mViewState.getConversationInfo());
     }
 
     @Override
@@ -181,17 +184,19 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         if (mActivity == null) {
             return;
         }
-        final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
-        if (sdc != null) {
-            sdc.setSubject(mConversation.subject);
+        if (isUserVisible()) {
+            mScrollView.scrollTo(0, 0);
+            onConversationSeen();
         }
-        mConversationHeaderView.setSubject(mConversation.subject);
-        this.mScrollView.scrollTo(0, 0);
-        onConversationSeen();
     }
 
     @Override
-    public void showExternalResources(Message msg) {
+    public void showExternalResources(final Message msg) {
+        mWebView.getSettings().setBlockNetworkImage(false);
+    }
+
+    @Override
+    public void showExternalResources(final String rawSenderAddress) {
         mWebView.getSettings().setBlockNetworkImage(false);
     }
 
@@ -217,7 +222,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
      */
     private void renderMessageBodies(MessageCursor messageCursor,
             boolean enableContentReadySignal) {
-        StringBuilder convHtml = new StringBuilder();
+        final StringBuilder convHtml = new StringBuilder();
         String content;
         if (messageCursor.moveToFirst()) {
             content = messageCursor.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN);
@@ -252,6 +257,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         final ConversationViewHeader headerView = mConversationHeaderView;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
+            headerView.setSubject(conv.subject);
         }
     }
 

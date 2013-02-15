@@ -18,15 +18,7 @@
 <resources>
     <integer-array name="conversation_heights">
         <item>64</item>
-        <item>70</item>
-    </integer-array>
-    <integer-array name="senders_with_folders_and_attachment_lengths">
-        <item>20</item>
-        <item>20</item>
-    </integer-array>
-    <integer-array name="senders_with_folders_lengths">
-        <item>22</item>
-        <item>22</item>
+        <item>72</item>
     </integer-array>
     <integer-array name="senders_with_attachment_lengths">
         <item>25</item>

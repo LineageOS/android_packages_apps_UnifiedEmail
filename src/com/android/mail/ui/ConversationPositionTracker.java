@@ -17,16 +17,12 @@
 
 package com.android.mail.ui;
 
-import android.database.Cursor;
-
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
-
 import java.util.Collection;
 
 /**
@@ -132,7 +128,7 @@ public class ConversationPositionTracker {
     public void initialize(Conversation conversation) {
         mConversation = conversation;
         mCursorDirty = true;
-        calculatePosition();
+        calculatePosition(); // Return value discarded. Running for side effects.
     }
 
     /** @return whether or not we have a valid cursor to check the position of. */
@@ -179,52 +175,43 @@ public class ConversationPositionTracker {
             return invalidPosition;
         }
         mCursorDirty = false;
-        final int listSize = (cursor == null) ? 0 : cursor.getCount();
+        final int listSize = cursor.getCount();
         if (!isDataLoaded(cursor) || listSize == 0) {
             return invalidPosition;
         }
 
-        // We don't want iterating over this cursor to trigger a network request
-        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
-        int newPosition = 0;
-        try {
-            // Update the internal state for where the current conversation is in
-            // the list.  Start from the beginning and find the current conversation in it.
-            while (cursor.moveToPosition(newPosition)) {
-                if (Utils.getConversationId(cursor) == mConversation.id) {
-                    mConversation.position = newPosition;
-                    // Pre-emptively try to load the next cursor position so that the cursor window
-                    // can be filled. The odd behavior of the ConversationCursor requires us to do
-                    // this to ensure the adjacent conversation information is loaded for calls to
-                    // hasNext.
-                    cursor.moveToPosition(newPosition + 1);
-                    return newPosition;
-                }
-                newPosition++;
-            }
-            // If the conversation is no longer found in the list, try to save the same position if
-            // it is still a valid position. Otherwise, go back to a valid position until we can
-            // find a valid one.
-            if (mConversation.position >= listSize || newPosition >= listSize) {
-                // Go to the last position since our expected position is past this somewhere.
-                newPosition = cursor.getCount() - 1;
-            }
-
-            // Did not keep the same conversation, but could still be a valid conversation.
-            if (isDataLoaded(cursor)){
-                LogUtils.d(LOG_TAG, "ConversationPositionTracker: Could not find conversation %s" +
-                        " in the cursor. Moving to position %d ", mConversation.toString(),
-                        newPosition);
-                cursor.moveToPosition(newPosition);
-                mConversation = new Conversation(cursor);
-            }
-
-        } finally {
-            if (networkWasEnabled) {
-                Utils.enableConversationCursorNetworkAccess(cursor);
-            }
+        final int foundPosition = cursor.getConversationPosition(mConversation.id);
+        if (foundPosition >= 0) {
+            mConversation.position = foundPosition;
+            // Pre-emptively try to load the next cursor position so that the cursor window
+            // can be filled. The odd behavior of the ConversationCursor requires us to do
+            // this to ensure the adjacent conversation information is loaded for calls to
+            // hasNext.
+            cursor.moveToPosition(foundPosition + 1);
+            return foundPosition;
         }
 
+        // If the conversation is no longer found in the list, try to save the same position if
+        // it is still a valid position. Otherwise, go back to a valid position until we can
+        // find a valid one.
+        final int newPosition;
+        if (foundPosition >= listSize) {
+            // Go to the last position since our expected position is past this somewhere.
+            newPosition = listSize - 1;
+        } else {
+            newPosition = foundPosition;
+        }
+
+        // Did not keep the current conversation, so let's try to load the conversation from the
+        // new position.
+        if (isDataLoaded(cursor) && newPosition >= 0){
+            LogUtils.d(LOG_TAG, "ConversationPositionTracker: Could not find conversation %s" +
+                    " in the cursor. Moving to position %d ", mConversation.toString(),
+                    newPosition);
+            cursor.moveToPosition(newPosition);
+            mConversation = new Conversation(cursor);
+            mConversation.position = newPosition;
+        }
         return newPosition;
     }
 
@@ -233,10 +220,10 @@ public class ConversationPositionTracker {
      * conversations available in the folder. If no next conversation can be found, this method
      * returns null.
      * @param autoAdvance the auto advance preference for the user as an
-     * {@link Settings#autoAdvance} value.
+     * {@link Settings#getAutoAdvanceSetting()} value.
      * @param mTarget conversations to overlook while finding the next conversation. (These are
      * usually the conversations to be deleted.)
-     * @return
+     * @return the next conversation to be shown, or null if no next conversation exists.
      */
     public Conversation getNextConversation(int autoAdvance, Collection<Conversation> mTarget) {
         final boolean getNewer = autoAdvance == AutoAdvance.NEWER;

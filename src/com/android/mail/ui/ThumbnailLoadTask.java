@@ -27,6 +27,7 @@ import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 
 import com.android.ex.photo.util.Exif;
+import com.android.ex.photo.util.ImageUtils;
 
 import com.android.mail.providers.Attachment;
 import com.android.mail.utils.LogTag;
@@ -53,15 +54,16 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             final Attachment attachment, final Attachment prevAttachment) {
         final int width = holder.getThumbnailWidth();
         final int height = holder.getThumbnailHeight();
-        if (attachment == null || width == 0 || height == 0 || !attachment.isImage()) {
+        if (attachment == null || width == 0 || height == 0
+                || !ImageUtils.isImageMimeType(attachment.contentType)) {
             holder.setThumbnailToDefault();
             return;
         }
 
         final Uri thumbnailUri = attachment.thumbnailUri;
         final Uri contentUri = attachment.contentUri;
-        final Uri uri = (prevAttachment == null) ? null : prevAttachment.uri;
-        final Uri prevUri = (prevAttachment == null) ? null : prevAttachment.uri;
+        final Uri uri = (prevAttachment == null) ? null : prevAttachment.getIdentifierUri();
+        final Uri prevUri = (prevAttachment == null) ? null : prevAttachment.getIdentifierUri();
         // begin loading a thumbnail if this is an image and either the thumbnail or the original
         // content is ready (and different from any existing image)
         if ((thumbnailUri != null || contentUri != null)
@@ -208,8 +210,8 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap result) {
         if (result == null) {
-            LogUtils.d(LOG_TAG, "back in UI thread, decode failed");
-            mHolder.setThumbnailToDefault();
+            LogUtils.d(LOG_TAG, "back in UI thread, decode failed or file does not exist");
+            mHolder.thumbnailLoadFailed();
             return;
         }
 

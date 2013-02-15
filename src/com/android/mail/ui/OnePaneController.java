@@ -23,16 +23,15 @@ import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
-import com.android.mail.browse.SecureConversationViewFragment;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -78,7 +77,6 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onRestoreInstanceState(Bundle inState) {
         super.onRestoreInstanceState(inState);
-        // TODO(mindyp) handle saved state.
         if (inState == null) {
             return;
         }
@@ -96,7 +94,6 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // TODO(mindyp) handle saved state.
         outState.putInt(FOLDER_LIST_TRANSACTION_KEY, mLastFolderListTransactionId);
         outState.putInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY,
                 mLastInboxConversationListTransactionId);
@@ -171,7 +168,6 @@ public final class OnePaneController extends AbstractActivityController {
 
         // When entering conversation list mode, hide and clean up any currently visible
         // conversation.
-        // TODO: improve this transition
         if (ViewMode.isListMode(newMode)) {
             mPagerController.hide(true /* changeVisibility */);
         }
@@ -186,15 +182,11 @@ public final class OnePaneController extends AbstractActivityController {
     public void showConversationList(ConversationListContext listContext) {
         super.showConversationList(listContext);
         enableCabMode();
-        // TODO(viki): Check if the account has been changed since the previous
-        // time.
         if (ConversationListContext.isSearchResult(listContext)) {
             mViewMode.enterSearchResultsListMode();
         } else {
             mViewMode.enterConversationListMode();
         }
-        // TODO(viki): This account transition looks strange in two pane mode.
-        // Revisit as the app is coming together and improve the look and feel.
         final int transition = mConversationListNeverShown
                 ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
@@ -249,7 +241,6 @@ public final class OnePaneController extends AbstractActivityController {
         // activity, as when the transaction is popped off, the FragmentManager will attempt to
         // readd the same fragment twice
         if (f != null && f.isAdded()) {
-            // TODO: improve this transition
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.remove(f);
             ft.commitAllowingStateLoss();
@@ -270,6 +261,27 @@ public final class OnePaneController extends AbstractActivityController {
     protected void hideWaitForInitialization() {
         transitionToInbox();
         super.hideWaitForInitialization();
+    }
+
+    @Override
+    public boolean doesActionChangeConversationListVisibility(int action) {
+        switch (action) {
+            case R.id.archive:
+            case R.id.remove_folder:
+            case R.id.delete:
+            case R.id.discard_drafts:
+            case R.id.mark_important:
+            case R.id.mark_not_important:
+            case R.id.mute:
+            case R.id.report_spam:
+            case R.id.mark_not_spam:
+            case R.id.report_phishing:
+            case R.id.refresh:
+            case R.id.change_folder:
+                return false;
+            default:
+                return true;
+        }
     }
 
     @Override
@@ -516,8 +528,8 @@ public final class OnePaneController extends AbstractActivityController {
                             getUndoClickedListener(
                                     convList != null ? convList.getAnimatedAdapter() : null),
                             0,
-                            Html.fromHtml(op.getDescription(mActivity.getActivityContext(),
-                                    mFolder)),
+                            Utils.convertHtmlToPlainText
+                                (op.getDescription(mActivity.getActivityContext(), mFolder)),
                             true, /* showActionIcon */
                             R.string.undo,
                             true,  /* replaceVisibleToast */
@@ -530,8 +542,8 @@ public final class OnePaneController extends AbstractActivityController {
                         mToastBar.show(
                                 getUndoClickedListener(convList.getAnimatedAdapter()),
                                 0,
-                                Html.fromHtml(op.getDescription(mActivity.getActivityContext(),
-                                        mFolder)),
+                                Utils.convertHtmlToPlainText
+                                    (op.getDescription(mActivity.getActivityContext(), mFolder)),
                                 true, /* showActionIcon */
                                 R.string.undo,
                                 true,  /* replaceVisibleToast */

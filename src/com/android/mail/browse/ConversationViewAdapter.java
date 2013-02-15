@@ -37,6 +37,8 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ControllableActivity;
+import com.android.mail.utils.VeiledAddressMatcher;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -70,6 +72,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
 
     private final List<ConversationOverlayItem> mItems;
+    private final VeiledAddressMatcher mMatcher;
 
     public static final int VIEW_TYPE_CONVERSATION_HEADER = 0;
     public static final int VIEW_TYPE_MESSAGE_HEADER = 1;
@@ -154,6 +157,7 @@ public class ConversationViewAdapter extends BaseAdapter {
             v.initialize(mDateBuilder, mAccountController, mAddressCache);
             v.setCallbacks(mMessageCallbacks);
             v.setContactInfoSource(mContactInfoSource);
+            v.setVeiledMatcher(mMatcher);
             return v;
         }
 
@@ -336,6 +340,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(mContext);
 
         mItems = Lists.newArrayList();
+        mMatcher = controllableActivity.getAccountController().getVeiledAddressMatcher();
     }
 
     @Override

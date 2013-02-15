@@ -30,7 +30,9 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -56,10 +58,8 @@ import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.ConversationWebView.ContentSizeChangeListener;
 import com.android.mail.browse.MessageCursor;
-import com.android.mail.browse.MessageCursor.ConversationController;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView;
-import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
@@ -75,6 +75,7 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -127,6 +128,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private final WebViewClient mWebViewClient = new ConversationWebViewClient();
 
+    private final ScaleInterceptor mScaleInterceptor = new ScaleInterceptor();
+
     private ConversationViewAdapter mAdapter;
 
     private boolean mViewsCreated;
@@ -143,6 +146,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private String mTempBodiesHtml;
 
     private int  mMaxAutoLoadMessages;
+
+    private int mSideMarginPx;
 
     /**
      * If this conversation fragment is not visible, and it's inappropriate to load up front,
@@ -262,8 +267,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         snapHeader.initialize(dateBuilder, this, mAddressCache);
         snapHeader.setCallbacks(this);
         snapHeader.setContactInfoSource(getContactInfoSource());
+        snapHeader.setVeiledMatcher(mActivity.getAccountController().getVeiledAddressMatcher());
 
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
+
+        mSideMarginPx = getResources().getDimensionPixelOffset(
+                R.dimen.conversation_view_margin_side) + getResources().getDimensionPixelOffset(
+                R.dimen.conversation_message_content_margin_side);
 
         mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(getActivity()));
 
@@ -423,6 +433,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     protected void markUnread() {
+        super.markUnread();
         // Ignore unsafe calls made after a fragment is detached from an activity
         final ControllableActivity activity = (ControllableActivity) getActivity();
         if (activity == null) {
@@ -597,11 +608,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         final int convHeaderPos = mAdapter.addConversationHeader(mConversation);
         final int convHeaderPx = measureOverlayHeight(convHeaderPos);
 
-        final int sideMarginPx = getResources().getDimensionPixelOffset(
-                R.dimen.conversation_view_margin_side) + getResources().getDimensionPixelOffset(
-                R.dimen.conversation_message_content_margin_side);
-
-        mTemplates.startConversation(mWebView.screenPxToWebPx(sideMarginPx),
+        mTemplates.startConversation(mWebView.screenPxToWebPx(mSideMarginPx),
                 mWebView.screenPxToWebPx(convHeaderPx));
 
         int collapsedStart = -1;
@@ -818,10 +825,35 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void showExternalResources(Message msg) {
+    public void showExternalResources(final Message msg) {
         mViewState.setShouldShowImages(msg, true);
         mWebView.getSettings().setBlockNetworkImage(false);
-        mWebView.loadUrl("javascript:unblockImages('" + mTemplates.getMessageDomId(msg) + "');");
+        mWebView.loadUrl("javascript:unblockImages(['" + mTemplates.getMessageDomId(msg) + "']);");
+    }
+
+    @Override
+    public void showExternalResources(final String senderRawAddress) {
+        mWebView.getSettings().setBlockNetworkImage(false);
+
+        final Address sender = getAddress(senderRawAddress);
+        final MessageCursor cursor = getMessageCursor();
+
+        final List<String> messageDomIds = new ArrayList<String>();
+
+        int pos = -1;
+        while (cursor.moveToPosition(++pos)) {
+            final ConversationMessage message = cursor.getMessage();
+            if (sender.equals(getAddress(message.getFrom()))) {
+                message.alwaysShowImages = true;
+
+                mViewState.setShouldShowImages(message, true);
+                messageDomIds.add(mTemplates.getMessageDomId(message));
+            }
+        }
+
+        final String url = String.format(
+                "javascript:unblockImages(['%s']);", TextUtils.join("','", messageDomIds));
+        mWebView.loadUrl(url);
     }
     // END message header callbacks
 
@@ -902,14 +934,17 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     private void setupOverviewMode() {
+        // for now, overview mode means use the built-in WebView zoom and disable custom scale
+        // gesture handling
         final boolean overviewMode = isOverviewMode(mAccount);
         final WebSettings settings = mWebView.getSettings();
         settings.setUseWideViewPort(overviewMode);
         settings.setSupportZoom(overviewMode);
+        settings.setBuiltInZoomControls(overviewMode);
         if (overviewMode) {
-            settings.setBuiltInZoomControls(true);
             settings.setDisplayZoomControls(false);
         }
+        mWebView.setOnScaleGestureListener(overviewMode ? null : mScaleInterceptor);
     }
 
     private class ConversationWebViewClient extends AbstractConversationWebViewClient {
@@ -1304,6 +1339,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mConversation = conv;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
+            headerView.setSubject(conv.subject);
         }
     }
 
@@ -1324,4 +1360,38 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             int heightBefore) {
         mDiff = (expanded ? 1 : -1) * Math.abs(i.getHeight() - heightBefore);
     }
+
+    private class ScaleInterceptor implements OnScaleGestureListener {
+
+        private float getFocusXWebPx(ScaleGestureDetector detector) {
+            return (detector.getFocusX() - mSideMarginPx) / mWebView.getInitialScale();
+        }
+
+        private float getFocusYWebPx(ScaleGestureDetector detector) {
+            return detector.getFocusY() / mWebView.getInitialScale();
+        }
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            mWebView.loadUrl(String.format("javascript:onScale(%s, %s, %s);",
+                    detector.getScaleFactor(), getFocusXWebPx(detector),
+                    getFocusYWebPx(detector)));
+            return false;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            mWebView.loadUrl(String.format("javascript:onScaleBegin(%s, %s);",
+                    getFocusXWebPx(detector), getFocusYWebPx(detector)));
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            mWebView.loadUrl(String.format("javascript:onScaleEnd(%s, %s);",
+                    getFocusXWebPx(detector), getFocusYWebPx(detector)));
+        }
+
+    }
+
 }

@@ -22,6 +22,12 @@
     <dimen name="wide_subject_font_size">16sp</dimen>
     <dimen name="senders_font_size">18sp</dimen>
     <dimen name="subject_font_size">14sp</dimen>
+    <dimen name="folders_text_bottom_padding">4dip</dimen>
+    <dimen name="folders_top_margin">10sp</dimen>
+    <dimen name="star_top_margin">10sp</dimen>
+    <dimen name="attachment_margin_top">6sp</dimen>
+    <dimen name="folders_top_margin_wide">24sp</dimen>
+    <dimen name="folders_min_height">18dp</dimen>
     <dimen name="date_font_size">12sp</dimen>
     <dimen name="account_dropdown_dropdownwidth">274dip</dimen>
     <dimen name="compose_scrollview_width">700dp</dimen>
@@ -30,7 +36,7 @@
     <dimen name="max_total_folder_width_wide">64dip</dimen>
     <dimen name="color_block_width">32dip</dimen>
     <dimen name="color_block_height">6dip</dimen>
-    <dimen name="subject_width">0dip</dimen>
+    <dimen name="subject_width">204dip</dimen>
     <dimen name="folders_font_size">12sp</dimen>
     <dimen name="wide_senders_margin_top">0sp</dimen>
     <dimen name="wide_attachment_margin_top">2sp</dimen>
@@ -42,6 +48,7 @@
     <dimen name="move_slop">4dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">8dip</dimen>
+    <dimen name="folders_left_padding">4dip</dimen>
     <dimen name="triangle_width">15dip</dimen>
     <dimen name="conversation_page_gutter">16dp</dimen>
     <dimen name="conversation_message_content_margin_side">16dp</dimen>
@@ -85,7 +92,7 @@
     <dimen name="widget_margin_left">0dip</dimen>
     <dimen name="widget_margin_right">0dip</dimen>
     <dimen name="widget_margin_bottom">0dip</dimen>
-    <dimen name="conversation_item_height">70sp</dimen>
+    <dimen name="conversation_item_height">72sp</dimen>
     <dimen name="conversation_item_height_wide">64sp</dimen>
     <dimen name="search_view_width">400dip</dimen>
     <dimen name="titlebar_height">48dip</dimen>
@@ -103,4 +110,9 @@
     <dimen name="wait_padding">16dp</dimen>
     <dimen name="senders_textview_top_padding">-4dp</dimen>
     <dimen name="senders_textview_height">30dp</dimen>
+    <integer name="chips_max_lines">2</integer>
+    <dimen name="tile_letter_font_size">33dp</dimen>
+    <dimen name="tile_letter_font_size_med">16dp</dimen>
+    <dimen name="tile_letter_font_size_small">16dp</dimen>
+    <dimen name="tile_divider_width">1dp</dimen>
 </resources>

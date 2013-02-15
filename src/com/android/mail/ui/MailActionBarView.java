@@ -20,7 +20,9 @@ package com.android.mail.ui;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -63,6 +65,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         OnQueryTextListener, OnSuggestionListener, MenuItem.OnActionExpandListener,
         SubjectDisplayChanger {
 
+    // This is a private setting available starting JB MR1.1.
     private static final int DISPLAY_TITLE_MULTIPLE_LINES = 0x20;
 
     protected ActionBar mActionBar;
@@ -114,7 +117,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
-            mAccount = newAccount;
+            updateAccount(newAccount);
             mSpinner.setAccount(mAccount);
         }
     };
@@ -129,19 +132,37 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             v.post(new Runnable() {
                 @Override
                 public void run() {
-                    // Switch over to title mode when the first fragment asks for a subject
-                    // remainder. We assume that layout has happened by now, so the SnippetTextView
-                    // already has measurements it needs to calculate remainders, and it's safe to
-                    // switch over to TITLE mode to inherit standard system behaviors.
-                    setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | DISPLAY_TITLE_MULTIPLE_LINES);
+                    // Framework only started supporting multi-line action bars in JB MR1.1,
+                    // so on earlier versions, always use our custom action bar.
+                    if (actionBarReportsMultipleLineTitle(mActionBar)) {
+                        // Switch over to title mode when the first fragment asks for a subject
+                        // remainder. We assume that layout has happened by now, so the
+                        // SnippetTextView already has measurements it needs to calculate
+                        // remainders, and it's safe to switch over to TITLE mode to inherit
+                        // standard system behaviors.
+                        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE |
+                                DISPLAY_TITLE_MULTIPLE_LINES);
 
-                    // Work around a bug where the title's container is stuck GONE when a title is
-                    // set while in CUSTOM mode.
-                    mActionBar.setTitle(mActionBar.getTitle());
+                        // Work around a bug where the title's container is stuck GONE when a title
+                        // is set while in CUSTOM mode.
+                        mActionBar.setTitle(mActionBar.getTitle());
+                    }
                 }
             });
         }
     };
+
+    private static boolean actionBarReportsMultipleLineTitle(ActionBar bar) {
+        boolean reports = false;
+        try {
+            if (bar != null) {
+                reports = (ActionBar.class.getField("DISPLAY_TITLE_MULTIPLE_LINES") != null);
+            }
+        } catch (NoSuchFieldException e) {
+            // stay false
+        }
+        return reports;
+    }
 
     /** True if the application has more than one account. */
     private boolean mHasManyAccounts;
@@ -156,8 +177,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     public MailActionBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mShowConversationSubject = getResources().getBoolean(R.bool.show_conversation_subject);
-        mIsOnTablet = Utils.useTabletUI(context);
+        final Resources r = getResources();
+        mShowConversationSubject = r.getBoolean(R.bool.show_conversation_subject);
+        mIsOnTablet = Utils.useTabletUI(r);
     }
 
     // update the pager title strip as the Folder's conversation count changes
@@ -259,12 +281,24 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mFolderObserver = new FolderObserver();
         mController.registerFolderObserver(mFolderObserver);
         // We don't want to include the "Show all folders" menu item on tablet devices
-        final boolean showAllFolders = !Utils.useTabletUI(getContext());
-        mSpinnerAdapter = new AccountSpinnerAdapter(activity, getContext(), showAllFolders);
+        final Context context = getContext();
+        final boolean showAllFolders = !Utils.useTabletUI(context.getResources());
+        mSpinnerAdapter = new AccountSpinnerAdapter(activity, context, showAllFolders);
         mSpinner = (MailSpinner) findViewById(R.id.account_spinner);
         mSpinner.setAdapter(mSpinnerAdapter);
         mSpinner.setController(mController);
-        mAccount = mAccountObserver.initialize(activity.getAccountController());
+        updateAccount(mAccountObserver.initialize(activity.getAccountController()));
+    }
+
+    private void updateAccount(Account account) {
+        mAccount = account;
+        if (mAccount != null) {
+            ContentResolver resolver = mActivity.getActivityContext().getContentResolver();
+            Bundle bundle = new Bundle(1);
+            bundle.putParcelable(UIProvider.SetCurrentAccountColumns.ACCOUNT, account);
+            resolver.call(mAccount.uri, UIProvider.AccountCallMethods.SET_CURRENT_ACCOUNT,
+                    mAccount.uri.toString(), bundle);
+        }
     }
 
     /**

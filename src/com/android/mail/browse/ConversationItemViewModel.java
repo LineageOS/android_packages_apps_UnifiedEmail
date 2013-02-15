@@ -33,15 +33,16 @@ import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.util.LruCache;
 import android.util.Pair;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderList;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.UIProvider;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the view model for the conversation header. It includes all the
@@ -70,8 +71,7 @@ public class ConversationItemViewModel {
     boolean unread;
 
     // Date
-    String dateText;
-    Bitmap dateBackground;
+    SpannableString dateText;
 
     // Personal level
     Bitmap personalLevelBitmap;
@@ -89,9 +89,6 @@ public class ConversationItemViewModel {
     StaticLayout sendersDisplayLayout;
 
     boolean hasDraftMessage;
-
-    // Subject
-    SpannableStringBuilder subjectText;
 
     // View Width
     public int viewWidth;
@@ -113,7 +110,7 @@ public class ConversationItemViewModel {
 
     public boolean isInvite;
 
-    public SpannableString[] styledSenders;
+    public ArrayList<SpannableString> styledSenders;
 
     public SpannableStringBuilder styledSendersString;
 
@@ -123,7 +120,17 @@ public class ConversationItemViewModel {
 
     private String mContentDescription;
 
-    public TextView sendersTextView;
+    /**
+     * Email address corresponding to the senders that will be displayed in the
+     * senders field.
+     */
+    public ArrayList<String> displayableSenderEmails;
+
+    /**
+     * Display names corresponding to the email address corresponding to the
+     * senders that will be displayed in the senders field.
+     */
+    public ArrayList<String> displayableSenderNames;
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
@@ -217,13 +224,11 @@ public class ConversationItemViewModel {
     /**
      * Returns the hashcode to compare if the data in the header is valid.
      */
-    private static int getHashCode(Context context, String dateText, Object convInfo,
-            String rawFolders, boolean starred, boolean read, int priority, int sendingState) {
+    private static int getHashCode(Context context, SpannableString dateText, Object convInfo,
+            List<Folder> rawFolders, boolean starred, boolean read, int priority,
+            int sendingState) {
         if (dateText == null) {
             return -1;
-        }
-        if (TextUtils.isEmpty(rawFolders)) {
-            rawFolders = "";
         }
         return Objects.hashCode(convInfo, dateText, rawFolders, starred, read, priority,
                 sendingState);
@@ -245,9 +250,9 @@ public class ConversationItemViewModel {
      * Marks this header as having valid data and layout.
      */
     void validate(Context context) {
-        mDataHashCode = getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFoldersString(), conversation.starred, conversation.read,
-                conversation.priority, conversation.sendingState);
+        mDataHashCode = getHashCode(context, dateText,
+                getConvInfo(), conversation.getRawFolders(), conversation.starred,
+                conversation.read, conversation.priority, conversation.sendingState);
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -255,9 +260,9 @@ public class ConversationItemViewModel {
      * Returns if the data in this model is valid.
      */
     boolean isDataValid(Context context) {
-        return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFoldersString(), conversation.starred, conversation.read,
-                conversation.priority, conversation.sendingState);
+        return mDataHashCode == getHashCode(context, dateText,
+                getConvInfo(), conversation.getRawFolders(), conversation.starred,
+                conversation.read, conversation.priority, conversation.sendingState);
     }
 
     /**
@@ -349,9 +354,11 @@ public class ConversationItemViewModel {
             boolean isToday = DateUtils.isToday(conversation.dateMs);
             String date = DateUtils.getRelativeTimeSpanString(context, conversation.dateMs)
                     .toString();
+            String readString = context.getString(
+                    conversation.read ? R.string.read_string : R.string.unread_string);
             int res = isToday ? R.string.content_description_today : R.string.content_description;
             mContentDescription = context.getString(res, sender,
-                    conversation.subject, conversation.getSnippet(), date);
+                    conversation.subject, conversation.getSnippet(), date, readString);
         }
         return mContentDescription;
     }

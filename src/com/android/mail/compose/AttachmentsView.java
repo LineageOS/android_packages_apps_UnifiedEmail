@@ -226,6 +226,7 @@ class AttachmentsView extends LinearLayout {
         attachment.contentType = contentType;
         attachment.size = 0;
         attachment.contentUri = contentUri;
+        attachment.thumbnailUri = contentUri;
 
         Cursor metadataCursor = null;
         try {

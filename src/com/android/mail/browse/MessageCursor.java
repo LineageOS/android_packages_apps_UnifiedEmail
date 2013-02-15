@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
@@ -30,6 +31,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.CursorExtraKeys;
 import com.android.mail.providers.UIProvider.CursorStatus;
 import com.android.mail.ui.ConversationUpdater;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -58,6 +60,7 @@ public class MessageCursor extends CursorWrapper {
         Conversation getConversation();
         ConversationUpdater getListController();
         MessageCursor getMessageCursor();
+        Account getAccount();
     }
 
     /**
@@ -86,6 +89,10 @@ public class MessageCursor extends CursorWrapper {
 
         public Conversation getConversation() {
             return mController.getConversation();
+        }
+
+        public Account getAccount() {
+            return mController.getAccount();
         }
 
         /**

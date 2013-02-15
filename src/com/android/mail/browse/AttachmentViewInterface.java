@@ -17,10 +17,6 @@
 
 package com.android.mail.browse;
 
-import com.android.mail.providers.Attachment;
-
-import java.util.List;
-
 public interface AttachmentViewInterface {
 
     /**
@@ -32,7 +28,7 @@ public interface AttachmentViewInterface {
 
     /**
      * Allows the view to know when it should update its progress.
-     * @param showProgress true if the the view should show a determinate
+     * @param showDeterminateProgress true if the the view should show a determinate
      * progress value
      */
     public void updateProgress(boolean showDeterminateProgress);
@@ -42,9 +38,4 @@ public interface AttachmentViewInterface {
      * Called in {@link AttachmentActionHandler#updateStatus}.
      */
     public void onUpdateStatus();
-
-    /**
-     * Returns the list of attachments of which this view is a part.
-     */
-    public List<Attachment> getAttachments();
 }

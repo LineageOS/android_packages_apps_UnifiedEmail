@@ -21,6 +21,8 @@ var BLOCKED_SRC_ATTR = "blocked-src";
 // this is an Array, but we treat it like a Set and only insert unique items
 var gImageLoadElements = [];
 
+var gScaleInfo;
+
 /**
  * Returns the page offset of an element.
  *
@@ -57,6 +59,17 @@ function up(el, className) {
         parent = parent.parentNode;
     }
     return parent || null;
+}
+
+function getCachedValue(div, property, attrName) {
+    var value;
+    if (div.hasAttribute(attrName)) {
+        value = div.getAttribute(attrName);
+    } else {
+        value = div[property];
+        div.setAttribute(attrName, value);
+    }
+    return value;
 }
 
 function onToggleClick(e) {
@@ -334,20 +347,23 @@ function measurePositions() {
     window.mail.onWebContentGeometryChange(overlayTops, overlayBottoms);
 }
 
-function unblockImages(messageDomId) {
-    var i, images, imgCount, image, blockedSrc;
-    var msg = document.getElementById(messageDomId);
-    if (!msg) {
-        console.log("can't unblock, no matching message for id: " + messageDomId);
-        return;
-    }
-    images = msg.getElementsByTagName("img");
-    for (i = 0, imgCount = images.length; i < imgCount; i++) {
-        image = images[i];
-        blockedSrc = image.getAttribute(BLOCKED_SRC_ATTR);
-        if (blockedSrc) {
-            image.src = blockedSrc;
-            image.removeAttribute(BLOCKED_SRC_ATTR);
+function unblockImages(messageDomIds) {
+    var i, j, images, imgCount, image, blockedSrc;
+    for (j = 0, len = messageDomIds.length; j < len; j++) {
+        var messageDomId = messageDomIds[j];
+        var msg = document.getElementById(messageDomId);
+        if (!msg) {
+            console.log("can't unblock, no matching message for id: " + messageDomId);
+            continue;
+        }
+        images = msg.getElementsByTagName("img");
+        for (i = 0, imgCount = images.length; i < imgCount; i++) {
+            image = images[i];
+            blockedSrc = image.getAttribute(BLOCKED_SRC_ATTR);
+            if (blockedSrc) {
+                image.src = blockedSrc;
+                image.removeAttribute(BLOCKED_SRC_ATTR);
+            }
         }
     }
 }
@@ -443,6 +459,136 @@ function appendMessageHtml() {
     processQuotedText(msg, true /* showElided */);
     hideUnsafeImages(msg.getElementsByClassName("mail-message-content"));
     measurePositions();
+}
+
+function onScaleBegin(screenX, screenY) {
+//    console.log("JS got scaleBegin x/y=" + screenX + "/" + screenY);
+    var focusX = screenX + document.body.scrollLeft;
+    var focusY = screenY + document.body.scrollTop;
+    var i, len;
+    var msgDivs = document.getElementsByClassName("mail-message");
+    var msgDiv, msgBodyDiv;
+    var msgTop, msgDivTop, nextMsgTop;
+    var initialH;
+    var initialScale;
+    var scaledOriginX, scaledOriginY;
+    var translateX, translateY;
+    var origin;
+
+    gScaleInfo = undefined;
+
+    for (i = 0, len = msgDivs.length; i < len; i++) {
+        msgDiv = msgDivs[i];
+        msgTop = nextMsgTop ? nextMsgTop : getTotalOffset(msgDiv).top;
+        nextMsgTop = (i < len-1) ? getTotalOffset(msgDivs[i+1]).top : document.body.offsetHeight;
+        if (focusY >= msgTop && focusY < nextMsgTop) {
+            msgBodyDiv = msgDiv.children[1];
+            initialScale = msgBodyDiv.getAttribute("data-initial-scale") || 1.0;
+
+            msgDivTop = getTotalOffset(msgBodyDiv).top;
+
+            // TODO: correct only for no initial translation
+            // FIXME: wrong for initialScale > 1.0
+            scaledOriginX = focusX / initialScale;
+            scaledOriginY = (focusY - msgDivTop) / initialScale;
+
+            // TODO: is this still needed?
+            translateX = 0;
+            translateY = 0;
+
+            gScaleInfo = {
+                div: msgBodyDiv,
+                initialScale: initialScale,
+                initialScreenX: screenX,
+                initialScreenY: screenY,
+                originX: scaledOriginX,
+                originY: scaledOriginY,
+                translateX: translateX,
+                translateY: translateY,
+                initialH: getCachedValue(msgBodyDiv, "offsetHeight", "data-initial-height"),
+                minScale: Math.min(document.body.offsetWidth / msgBodyDiv.scrollWidth, 1.0),
+                currScale: initialScale,
+                currTranslateX: 0,
+                currTranslateY: 0
+            };
+
+            origin = scaledOriginX + "px " + scaledOriginY + "px";
+            msgBodyDiv.classList.add("zooming-focused");
+            msgBodyDiv.style.webkitTransformOrigin = origin;
+            msgBodyDiv.style.webkitTransform = "scale3d(" + initialScale + "," + initialScale
+                + ",1) translate3d(" + translateX + "px," + translateY + "px,0)";
+//            console.log("scaleBegin, h=" + gScaleInfo.initialH + " origin='" + origin + "'");
+            break;
+        }
+    }
+}
+
+function onScaleEnd(screenX, screenY) {
+    var msgBodyDiv;
+    var scale;
+    var h;
+    if (!gScaleInfo) {
+        return;
+    }
+
+//    console.log("JS got scaleEnd x/y=" + screenX + "/" + screenY);
+    msgBodyDiv = gScaleInfo.div;
+    scale = gScaleInfo.currScale;
+    msgBodyDiv.style.webkitTransformOrigin = "0 0";
+    // clear any translate
+    // switching to a 2D transform here re-renders the fonts more clearly, but introduces
+    // texture upload lag to any subsequent scale operation
+    // TODO: conditionalize this based on device GPU performance and/or body size/complexity?
+    if (true) {
+        msgBodyDiv.style.webkitTransform = "scale(" + gScaleInfo.currScale + ")";
+    } else {
+        msgBodyDiv.style.webkitTransform = "scale3d(" + scale + "," + scale + ",1)";
+    }
+    h = gScaleInfo.initialH * scale;
+//    console.log("onScaleEnd set h=" + h);
+    msgBodyDiv.style.height = h + "px";
+
+    // Use saved translateX/Y rather than calculating from screenX/Y because screenX/Y values
+    // from onScaleEnd only track focus of remaining pointers, which is not useful and leads
+    // to a perceived jump.
+    var deltaScrollX = (scale - 1) * gScaleInfo.originX - gScaleInfo.currTranslateX;
+    var deltaScrollY = (scale - 1) * gScaleInfo.originY - gScaleInfo.currTranslateY;
+//    console.log("JS adjusting scroll by x/y=" + deltaScrollX + "/" + deltaScrollY);
+
+    msgBodyDiv.classList.remove("zooming-focused");
+    msgBodyDiv.setAttribute("data-initial-scale", scale);
+
+    // TODO: is there a better way to make this more reliable?
+    window.setTimeout(function() {
+        window.scrollBy(deltaScrollX, deltaScrollY);
+    }, 10);
+}
+
+function onScale(relativeScale, screenX, screenY) {
+    var scale;
+    var translateX, translateY;
+    var transform;
+
+    if (!gScaleInfo) {
+        return;
+    }
+
+    scale = Math.max(gScaleInfo.initialScale * relativeScale, gScaleInfo.minScale);
+    if (scale > 4.0) {
+        scale = 4.0;
+    }
+    translateX = screenX - gScaleInfo.initialScreenX;
+    translateY = screenY - gScaleInfo.initialScreenY;
+    // TODO: clamp translation to prevent going beyond body edges
+    gScaleInfo.currScale = scale;
+    gScaleInfo.currTranslateX = translateX;
+    gScaleInfo.currTranslateY = translateY;
+    transform = "translate3d(" + translateX + "px," + translateY + "px,0) scale3d("
+        + scale + "," + scale + ",1) translate3d(" + gScaleInfo.translateX + "px,"
+        + gScaleInfo.translateY + "px,0)";
+    gScaleInfo.div.style.webkitTransform = transform;
+//    console.log("JS got scale=" + scale + " x/y=" + screenX + "/" + screenY
+//        + " transform='" + transform + "'");
 }
 
 // END Java->JavaScript handlers

@@ -42,16 +42,19 @@ public class AttachmentUtils {
      *         depending on its size.
      */
     public static String convertToHumanReadableSize(Context context, long size) {
+        final String count;
         if (size == 0) {
             return "";
-        } if (size < KILO) {
-            return size + context.getString(R.string.bytes);
+        } else if (size < KILO) {
+            count = String.valueOf(size);
+            return context.getString(R.string.bytes, count);
         } else if (size < MEGA) {
-            return (size / KILO) + context.getString(R.string.kilobytes);
+            count = String.valueOf(size / KILO);
+            return context.getString(R.string.kilobytes, count);
         } else {
             DecimalFormat onePlace = new DecimalFormat("0.#");
-            return onePlace.format((float) size / (float) MEGA)
-                    + context.getString(R.string.megabytes);
+            count = onePlace.format((float) size / (float) MEGA);
+            return context.getString(R.string.megabytes, count);
         }
     }
 

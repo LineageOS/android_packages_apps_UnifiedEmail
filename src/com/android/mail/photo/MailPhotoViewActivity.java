@@ -21,6 +21,7 @@ import android.app.ActionBar;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +37,7 @@ import com.android.mail.R;
 import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
+import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
@@ -61,6 +63,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         super.onCreate(savedInstanceState);
 
         mActionHandler = new AttachmentActionHandler(this, null);
+        mActionHandler.initialize(getFragmentManager());
     }
 
     @Override
@@ -163,15 +166,12 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      * Adjusts the activity title and subtitle to reflect the image name and size.
      */
     @Override
-    protected void updateActionBar(PhotoViewFragment fragment) {
-        super.updateActionBar(fragment);
+    protected void updateActionBar() {
+        super.updateActionBar();
 
         final Attachment attachment = getCurrentAttachment();
-
         final ActionBar actionBar = getActionBar();
-        String subtitle =
-                AttachmentUtils.convertToHumanReadableSize(this, attachment.size);
-
+        final String size = AttachmentUtils.convertToHumanReadableSize(this, attachment.size);
 
         // update the status
         // There are 3 states
@@ -179,36 +179,39 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         //      2. Saving...
         //      3. Default, Attachment Size
         if (attachment.isSavedToExternal()) {
-            actionBar.setSubtitle(
-                    getResources().getString(R.string.saved) + " " + subtitle);
+            actionBar.setSubtitle(getResources().getString(R.string.saved, size));
         } else if (attachment.isDownloading() &&
                 attachment.destination == AttachmentDestination.EXTERNAL) {
                 actionBar.setSubtitle(R.string.saving);
         } else {
-            actionBar.setSubtitle(subtitle);
+            actionBar.setSubtitle(size);
         }
-
         updateActionItems();
     }
 
     @Override
-    public void onFragmentVisible(PhotoViewFragment fragment) {
+    public void onFragmentVisible(Fragment fragment) {
         super.onFragmentVisible(fragment);
-
         final Attachment attachment = getCurrentAttachment();
-        updateProgressAndEmptyViews(fragment, attachment);
+        if (attachment.state == AttachmentState.PAUSED) {
+            mActionHandler.setAttachment(attachment);
+            mActionHandler.startDownloadingAttachment(attachment.destination);
+        }
     }
 
+    @Override
+    public void onCursorChanged(PhotoViewFragment fragment, Cursor cursor) {
+        super.onCursorChanged(fragment, cursor);
+        updateProgressAndEmptyViews(fragment, new Attachment(cursor));
+    }
 
     /**
      * Updates the empty views of the fragment based upon the current
      * state of the attachment.
      * @param fragment the current fragment
-     * @param attachment the current {@link Attachment}
      */
     private void updateProgressAndEmptyViews(
-            PhotoViewFragment fragment, final Attachment attachment) {
-
+            final PhotoViewFragment fragment, final Attachment attachment) {
         final ProgressBarWrapper progressBar = fragment.getPhotoProgressBar();
         final TextView emptyText = fragment.getEmptyText();
         final ImageView retryButton = fragment.getRetryButton();
@@ -223,7 +226,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         }
 
         // If the download failed, show the empty text and retry button
-        if (attachment.downloadFailed()) {
+        if (attachment.isDownloadFailed()) {
             emptyText.setText(R.string.photo_load_failed);
             emptyText.setVisibility(View.VISIBLE);
             retryButton.setVisibility(View.VISIBLE);
@@ -231,7 +234,6 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
                 @Override
                 public void onClick(View view) {
                     downloadAttachment();
-                    progressBar.setVisibility(View.VISIBLE);
                 }
             });
             progressBar.setVisibility(View.GONE);
@@ -325,7 +327,6 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
     /**
      * Helper method to get the currently visible attachment.
-     * @return
      */
     protected Attachment getCurrentAttachment() {
         final Cursor cursor = getCursorAtProperPosition();

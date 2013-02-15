@@ -16,34 +16,56 @@
 
 package com.android.mail.providers;
 
-import android.text.TextUtils;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.common.base.Objects;
 
-import java.util.regex.Pattern;
-
-public class MessageInfo {
+public class MessageInfo implements Parcelable {
     public static final String SENDER_LIST_TOKEN_ELIDED = " .. ";
-    public static final String MSG_DIVIDER = "^****^";
-    private static final Pattern MSG_DIVIDER_REGEX = Pattern.compile("\\^\\*\\*\\*\\*\\^");
 
     public boolean read;
     public boolean starred;
     public String sender;
+    public String senderEmail;
     public int priority;
 
     public MessageInfo() {
     }
 
-    public MessageInfo(boolean isRead, boolean isStarred, String senderString, int p) {
-        set(isRead, isStarred, senderString, p);
+    public MessageInfo(boolean isRead, boolean isStarred, String senderString, int p,
+            String email) {
+        set(isRead, isStarred, senderString, p, email);
     }
 
-    public void set(boolean isRead, boolean isStarred, String senderString, int p) {
+    private MessageInfo(Parcel in) {
+        read = (in.readInt() != 0);
+        starred = (in.readInt() != 0);
+        sender = in.readString();
+        priority = in.readInt();
+        senderEmail = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(read ? 1 : 0);
+        dest.writeInt(starred ? 1 : 0);
+        dest.writeString(sender);
+        dest.writeInt(priority);
+        dest.writeString(senderEmail);
+    }
+
+    public void set(boolean isRead, boolean isStarred, String senderString, int p, String email) {
         read = isRead;
         starred = isStarred;
         sender = senderString;
         priority = p;
+        senderEmail = email;
     }
 
     public boolean markRead(boolean isRead) {
@@ -54,34 +76,23 @@ public class MessageInfo {
         return false;
     }
 
-    public static String toString(MessageInfo info) {
-        final StringBuilder builder = new StringBuilder();
-        createAsString(builder, info.read, info.starred, info.sender, info.priority);
-        return builder.toString();
-    }
-
-    public static MessageInfo fromString(String inString) {
-        String[] split = TextUtils.split(inString, MSG_DIVIDER_REGEX);
-        int read = Integer.parseInt(split[0]);
-        int starred = Integer.parseInt(split[1]);
-        String senders = ConversationInfo.unescapeValue(split[2]);
-        int priority = Integer.parseInt(split[3]);
-        return new MessageInfo(read != 0, starred != 0, senders, priority);
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hashCode(read, starred, sender);
+        return Objects.hashCode(read, starred, sender, senderEmail);
     }
 
-    public static void createAsString(StringBuilder builder, boolean read,
-            boolean starred, String senderName, int priority) {
-        builder.append(read? 1 : 0);
-        builder.append(MSG_DIVIDER);
-        builder.append(starred ? 1 : 0);
-        builder.append(MSG_DIVIDER);
-        builder.append(ConversationInfo.escapeValue(senderName));
-        builder.append(MSG_DIVIDER);
-        builder.append(priority);
-    }
+    public static final Creator<MessageInfo> CREATOR = new Creator<MessageInfo>() {
+
+        @Override
+        public MessageInfo createFromParcel(Parcel source) {
+            return new MessageInfo(source);
+        }
+
+        @Override
+        public MessageInfo[] newArray(int size) {
+            return new MessageInfo[size];
+        }
+
+    };
+
 }

@@ -52,8 +52,8 @@ import com.android.mail.utils.DelayedTaskHandler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.android.common.html.parser.HtmlParser;
-import com.google.android.common.html.parser.HtmlTreeBuilder;
+
+import java.util.ArrayList;
 
 public class WidgetService extends RemoteViewsService {
     /**
@@ -361,10 +361,11 @@ public class WidgetService extends RemoteViewsService {
                 SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
 
                 if (conversation.conversationInfo != null) {
+                    ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
+                    SendersView.format(mContext, conversation.conversationInfo, "",
+                            MAX_SENDERS_LENGTH, senders, null, null, mAccount.name);
                     senderBuilder = ellipsizeStyledSenders(conversation.conversationInfo,
-                            MAX_SENDERS_LENGTH, SendersView.format(mContext,
-                                    conversation.conversationInfo, "", MAX_SENDERS_LENGTH,
-                                    new HtmlParser(), new HtmlTreeBuilder()));
+                            MAX_SENDERS_LENGTH, senders);
                 } else {
                     senderBuilder.append(conversation.senders);
                     senderBuilder.setSpan(conversation.read ? getReadStyle() : getUnreadStyle(), 0,
@@ -403,7 +404,7 @@ public class WidgetService extends RemoteViewsService {
         }
 
         private SpannableStringBuilder ellipsizeStyledSenders(ConversationInfo info, int maxChars,
-                SpannableString[] styledSenders) {
+                ArrayList<SpannableString> styledSenders) {
             SpannableStringBuilder builder = new SpannableStringBuilder();
             SpannableString prevSender = null;
             for (SpannableString sender : styledSenders) {

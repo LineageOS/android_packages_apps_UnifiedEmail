@@ -22,9 +22,6 @@ import android.text.TextUtils;
 import com.android.mail.providers.UIProvider.DraftType;
 import com.android.mail.providers.UIProvider.MessageColumns;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.List;
 
 /**
@@ -161,5 +158,6 @@ public class MessageModification {
     public static void putAttachments(ContentValues values, List<Attachment> attachments) {
         values.put(
                 MessageColumns.JOINED_ATTACHMENT_INFOS, Attachment.toJSONArray(attachments));
+        values.put(MessageColumns.ATTACHMENTS,  Attachment.toJSONArray(attachments));
     }
 }

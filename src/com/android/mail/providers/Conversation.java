@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class Conversation implements Parcelable {
     public static final int NO_POSITION = -1;
@@ -99,7 +100,7 @@ public class Conversation implements Parcelable {
     /**
      * @see UIProvider.ConversationColumns#RAW_FOLDERS
      */
-    private String rawFolders;
+    private FolderList rawFolders;
     /**
      * @see UIProvider.ConversationColumns#FLAGS
      */
@@ -151,7 +152,6 @@ public class Conversation implements Parcelable {
 
     private transient boolean viewed;
 
-    private ArrayList<Folder> cachedRawFolders;
     private ArrayList<Folder> cachedDisplayableFolders;
 
     private static String sSendersDelimeter;
@@ -188,7 +188,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(priority);
         dest.writeInt(read ? 1 : 0);
         dest.writeInt(starred ? 1 : 0);
-        dest.writeString(rawFolders);
+        dest.writeParcelable(rawFolders, 0);
         dest.writeInt(convFlags);
         dest.writeInt(personalLevel);
         dest.writeInt(spam ? 1 : 0);
@@ -196,12 +196,12 @@ public class Conversation implements Parcelable {
         dest.writeInt(muted ? 1 : 0);
         dest.writeInt(color);
         dest.writeParcelable(accountUri, 0);
-        dest.writeString(ConversationInfo.toString(conversationInfo));
+        dest.writeParcelable(conversationInfo, 0);
         dest.writeParcelable(conversationBaseUri, 0);
         dest.writeInt(isRemote ? 1 : 0);
     }
 
-    private Conversation(Parcel in) {
+    private Conversation(Parcel in, ClassLoader loader) {
         id = in.readLong();
         uri = in.readParcelable(null);
         subject = in.readString();
@@ -216,7 +216,7 @@ public class Conversation implements Parcelable {
         priority = in.readInt();
         read = (in.readInt() != 0);
         starred = (in.readInt() != 0);
-        rawFolders = in.readString();
+        rawFolders = in.readParcelable(loader);
         convFlags = in.readInt();
         personalLevel = in.readInt();
         spam = in.readInt() != 0;
@@ -226,7 +226,7 @@ public class Conversation implements Parcelable {
         accountUri = in.readParcelable(null);
         position = NO_POSITION;
         localDeleteOnUpdate = false;
-        conversationInfo = ConversationInfo.fromString(in.readString());
+        conversationInfo = in.readParcelable(loader);
         conversationBaseUri = in.readParcelable(null);
         isRemote = in.readInt() != 0;
     }
@@ -236,11 +236,17 @@ public class Conversation implements Parcelable {
         return "[conversation id=" + id + ", subject =" + subject + "]";
     }
 
-    public static final Creator<Conversation> CREATOR = new Creator<Conversation>() {
+    public static final ClassLoaderCreator<Conversation> CREATOR =
+            new ClassLoaderCreator<Conversation>() {
 
         @Override
         public Conversation createFromParcel(Parcel source) {
-            return new Conversation(source);
+            return new Conversation(source, null);
+        }
+
+        @Override
+        public Conversation createFromParcel(Parcel source, ClassLoader loader) {
+            return new Conversation(source, loader);
         }
 
         @Override
@@ -253,8 +259,7 @@ public class Conversation implements Parcelable {
     public static final Uri MOVE_CONVERSATIONS_URI = Uri.parse("content://moveconversations");
 
     /**
-     * The column that needs to be updated to change the read state of a
-     * conversation.
+     * The column that needs to be updated to change the folders for a conversation.
      */
     public static final String UPDATE_FOLDER_COLUMN = ConversationColumns.RAW_FOLDERS;
 
@@ -275,7 +280,8 @@ public class Conversation implements Parcelable {
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) != 0;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) != 0;
-            rawFolders = cursor.getString(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN);
+            rawFolders = FolderList.fromBlob(
+                    cursor.getBlob(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN));
             convFlags = cursor.getInt(UIProvider.CONVERSATION_FLAGS_COLUMN);
             personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
             spam = cursor.getInt(UIProvider.CONVERSATION_IS_SPAM_COLUMN) != 0;
@@ -286,8 +292,8 @@ public class Conversation implements Parcelable {
             accountUri = !TextUtils.isEmpty(account) ? Uri.parse(account) : null;
             position = NO_POSITION;
             localDeleteOnUpdate = false;
-            conversationInfo = ConversationInfo.fromString(cursor
-                    .getString(UIProvider.CONVERSATION_INFO_COLUMN));
+            conversationInfo = ConversationInfo.fromBlob(
+                    cursor.getBlob(UIProvider.CONVERSATION_INFO_COLUMN));
             final String conversationBase =
                     cursor.getString(UIProvider.CONVERSATION_BASE_URI_COLUMN);
             conversationBaseUri = !TextUtils.isEmpty(conversationBase) ?
@@ -308,7 +314,7 @@ public class Conversation implements Parcelable {
     public static Conversation create(long id, Uri uri, String subject, long dateMs,
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
-            boolean starred, String rawFolders, int convFlags, int personalLevel, boolean spam,
+            boolean starred, FolderList rawFolders, int convFlags, int personalLevel, boolean spam,
             boolean phishing, boolean muted, Uri accountUri, ConversationInfo conversationInfo,
             Uri conversationBase, boolean isRemote) {
 
@@ -342,37 +348,29 @@ public class Conversation implements Parcelable {
         return conversation;
     }
 
-    public ArrayList<Folder> getRawFolders() {
-        if (cachedRawFolders == null) {
-            // Create cached folders.
-            if (!TextUtils.isEmpty(rawFolders)) {
-                cachedRawFolders = Folder.getFoldersArray(rawFolders);
-            } else {
-                return new ArrayList<Folder>();
-            }
-        }
-        return cachedRawFolders;
+    /**
+     * Get the <strong>immutable</strong> list of {@link Folder}s for this conversation. To modify
+     * this list, make a new {@link FolderList} and use {@link #setRawFolders(FolderList)}.
+     *
+     * @return <strong>Immutable</strong> list of {@link Folder}s.
+     */
+    public List<Folder> getRawFolders() {
+        return rawFolders.folders;
     }
 
-    public void setRawFolders(String raw) {
+    public void setRawFolders(FolderList folders) {
         clearCachedFolders();
-        rawFolders = raw;
-    }
-
-    public String getRawFoldersString() {
-        return rawFolders;
+        rawFolders = folders;
     }
 
     private void clearCachedFolders() {
-        cachedRawFolders = null;
         cachedDisplayableFolders = null;
     }
 
     public ArrayList<Folder> getRawFoldersForDisplay(Folder ignoreFolder) {
-        ArrayList<Folder> folders = getRawFolders();
         if (cachedDisplayableFolders == null) {
             cachedDisplayableFolders = new ArrayList<Folder>();
-            for (Folder folder : folders) {
+            for (Folder folder : rawFolders.folders) {
                 // skip the ignoreFolder
                 if (ignoreFolder != null && ignoreFolder.equals(folder)) {
                     continue;
@@ -525,15 +523,20 @@ public class Conversation implements Parcelable {
     }
 
     /**
-     * Get the properly formatted subject and snippet string for display a conversation.
+     * Get the properly formatted subject and snippet string for display a
+     * conversation.
+     *
+     * @param context
+     * @param filteredSubject
+     * @param snippet
      */
-    public static SpannableStringBuilder getSubjectAndSnippetForDisplay(Context context,
+    public static String getSubjectAndSnippetForDisplay(Context context,
             String filteredSubject, String snippet) {
         if (sSubjectAndSnippet == null) {
             sSubjectAndSnippet = context.getString(R.string.subject_and_snippet);
         }
-        return new SpannableStringBuilder((!TextUtils.isEmpty(snippet)) ?
+        return (!TextUtils.isEmpty(snippet)) ?
                 String.format(sSubjectAndSnippet, filteredSubject, snippet)
-                : filteredSubject);
+                : filteredSubject;
     }
 }

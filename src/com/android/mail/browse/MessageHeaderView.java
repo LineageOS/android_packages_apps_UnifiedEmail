@@ -16,9 +16,14 @@
 
 package com.android.mail.browse;
 
+import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.AsyncQueryHandler;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Typeface;
 import android.provider.ContactsContract;
@@ -31,7 +36,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -56,15 +63,16 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.VeiledAddressMatcher;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
-        OnMenuItemClickListener, ConversationContainer.DetachListener {
+        OnLongClickListener, OnMenuItemClickListener, ConversationContainer.DetachListener {
 
     /**
      * Cap very long recipient lists during summary construction for efficiency.
@@ -184,6 +192,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private boolean mObservingContactInfo;
 
+    /**
+     * What I call myself? "me" in English, and internationalized correctly.
+     */
+    private final String mMyName;
+
     private final DataSetObserver mContactInfoObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
@@ -197,6 +210,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private AlertDialog mDetailsPopup;
 
+    private Dialog mEmailCopyPopup;
+    private String mCopyAddress;
+
+    private VeiledAddressMatcher mVeiledMatcher;
+
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
 
@@ -206,6 +224,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 int previousMessageHeaderItemHeight);
 
         void showExternalResources(Message msg);
+
+        void showExternalResources(String senderRawAddress);
     }
 
     public MessageHeaderView(Context context) {
@@ -220,6 +240,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         super(context, attrs, defStyle);
 
         mInflater = LayoutInflater.from(context);
+        mMyName = context.getString(R.string.me);
     }
 
     /**
@@ -268,6 +289,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             View v = findViewById(id);
             if (v != null) {
                 v.setOnClickListener(this);
+                v.setOnLongClickListener(this);
             }
         }
     }
@@ -282,6 +304,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     public void setCallbacks(MessageHeaderViewCallbacks callbacks) {
         mCallbacks = callbacks;
+    }
+
+    public void setVeiledMatcher(VeiledAddressMatcher matcher) {
+        mVeiledMatcher = matcher;
     }
 
     /**
@@ -415,8 +441,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mStarView.setContentDescription(getResources().getString(
                 mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
         mStarShown = true;
-        ArrayList<Folder> folders = mMessage.getConversation().getRawFolders();
-        for (Folder folder : folders) {
+        for (Folder folder : mMessage.getConversation().getRawFolders()) {
             if (folder.isTrash()) {
                 mStarShown = false;
                 break;
@@ -649,28 +674,56 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         childView.setLayoutParams(mlp);
     }
 
+    /**
+     * Render an email list for the expanded message details view.
+     * @param rowRes
+     * @param valueRes
+     * @param emails
+     * @param showViaDomain
+     * @param rootView
+     */
     private void renderEmailList(int rowRes, int valueRes, String[] emails, boolean showViaDomain,
             View rootView) {
         if (emails == null || emails.length == 0) {
             return;
         }
-        String[] formattedEmails = new String[emails.length];
+        final String[] formattedEmails = new String[emails.length];
+        final Resources res = getResources();
         for (int i = 0; i < emails.length; i++) {
-            Address e = getAddress(emails[i]);
-            String name = e.getName();
-            String addr = e.getAddress();
+            final Address email = getAddress(emails[i]);
+            String name = email.getName();
+            final String address = email.getAddress();
+            // Check if the address here is a veiled address.  If it is, we need to display an
+            // alternate layout
+            final boolean isVeiledAddress = mVeiledMatcher.isVeiledAddress(address);
+            final String addressShown;
+            if (isVeiledAddress) {
+                // Add the warning at the end of the name, and remove the address.  The alternate
+                // text cannot be put in the address part, because the address is made into a link,
+                // and the alternate human-readable text is not a link.
+                addressShown = "";
+                if (TextUtils.isEmpty(name)) {
+                    // Empty name and we will block out the address. Let's write something more
+                    // readable.
+                    name = res.getString(VeiledAddressMatcher.VEILED_ALTERNATE_TEXT_UNKNOWN_PERSON);
+                } else {
+                    name = name + res.getString(VeiledAddressMatcher.VEILED_ALTERNATE_TEXT);
+                }
+            } else {
+                addressShown = address;
+            }
             if (name == null || name.length() == 0) {
-                formattedEmails[i] = addr;
+                formattedEmails[i] = addressShown;
             } else {
                 // The one downside to having the showViaDomain here is that
                 // if the sender does not have a name, it will not show the via info
                 if (showViaDomain) {
-                    formattedEmails[i] = getResources().getString(
+                    formattedEmails[i] = res.getString(
                             R.string.address_display_format_with_via_domain,
-                            name, addr, mMessage.viaDomain);
+                            name, addressShown, mMessage.viaDomain);
                 } else {
-                    formattedEmails[i] = getResources().getString(R.string.address_display_format,
-                            name, addr);
+                    formattedEmails[i] = res.getString(R.string.address_display_format,
+                            name, addressShown);
                 }
             }
         }
@@ -684,19 +737,23 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private static class RecipientListsBuilder {
         private final Context mContext;
         private final String mMe;
+        private final String mMyName;
         private final SpannableStringBuilder mBuilder = new SpannableStringBuilder();
         private final CharSequence mComma;
         private final Map<String, Address> mAddressCache;
+        private final VeiledAddressMatcher mMatcher;
 
         int mRecipientCount = 0;
         boolean mFirst = true;
 
-        public RecipientListsBuilder(Context context, String me,
-                Map<String, Address> addressCache) {
+        public RecipientListsBuilder(Context context, String me, String myName,
+                Map<String, Address> addressCache, VeiledAddressMatcher matcher) {
             mContext = context;
             mMe = me;
+            mMyName = myName;
             mComma = mContext.getText(R.string.enumeration_comma);
             mAddressCache = addressCache;
+            mMatcher = matcher;
         }
 
         public void append(String[] recipients, int headingRes) {
@@ -730,9 +787,20 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             final int len = Math.min(maxToCopy, rawAddrs.length);
             boolean first = true;
             for (int i = 0; i < len; i++) {
-                Address email = getAddress(mAddressCache, rawAddrs[i]);
-                String name = (mMe.equals(email.getAddress())) ? mContext.getString(R.string.me)
-                        : email.getSimplifiedName();
+                final Address email = getAddress(mAddressCache, rawAddrs[i]);
+                final String emailAddress = email.getAddress();
+                final String name;
+                if (mMatcher.isVeiledAddress(emailAddress)) {
+                    if (TextUtils.isEmpty(email.getName())) {
+                        // Let's write something more readable.
+                        name = mContext.getString(VeiledAddressMatcher.VEILED_SUMMARY_UNKNOWN);
+                    } else {
+                        name = email.getSimplifiedName();
+                    }
+                } else {
+                    // Not a veiled address, show first part of email, or "me".
+                    name = mMe.equals(emailAddress) ? mMyName : email.getSimplifiedName();
+                }
 
                 // duplicate TextUtils.join() logic to minimize temporary
                 // allocations, and because we need to support spans
@@ -753,10 +821,12 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     @VisibleForTesting
-    static CharSequence getRecipientSummaryText(Context context, String me, String[] to,
-            String[] cc, String[] bcc, Map<String, Address> addressCache) {
+    static CharSequence getRecipientSummaryText(Context context, String me, String myName,
+            String[] to, String[] cc, String[] bcc, Map<String, Address> addressCache,
+            VeiledAddressMatcher matcher) {
 
-        RecipientListsBuilder builder = new RecipientListsBuilder(context, me, addressCache);
+        final RecipientListsBuilder builder =
+                new RecipientListsBuilder(context, me, myName, addressCache, matcher);
 
         builder.append(to, R.string.to_heading);
         builder.append(cc, R.string.cc_heading);
@@ -818,6 +888,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         onClick(v, v.getId());
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        return onLongClick(v.getId());
+    }
+
     /**
      * Handles clicks on either views or menu items. View parameter can be null
      * for menu item clicks.
@@ -831,6 +906,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         boolean handled = true;
 
         switch (id) {
+            case android.R.id.button1:
+                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(
+                        Context.CLIPBOARD_SERVICE);
+                clipboard.setPrimaryClip(ClipData.newPlainText("", mCopyAddress));
+                if(mEmailCopyPopup!=null) {
+                    mEmailCopyPopup.dismiss();
+                }
+                break;
             case R.id.reply:
                 ComposeActivity.reply(getContext(), getAccount(), mMessage);
                 break;
@@ -880,6 +963,30 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 break;
         }
         return handled;
+    }
+
+    /**
+     * Handles long click on message upper header to show dialog for copying
+     * the email address. Does not consume the click, otherwise.
+     */
+    private boolean onLongClick(int id) {
+        if (id == R.id.upper_header) {
+            if(isExpanded()) {
+                mCopyAddress = mSender.getAddress();
+                mEmailCopyPopup = new Dialog(getContext());
+                mEmailCopyPopup.setTitle(mCopyAddress);
+                mEmailCopyPopup.setContentView(R.layout.copy_chip_dialog_layout);
+                mEmailCopyPopup.setCancelable(true);
+                mEmailCopyPopup.setCanceledOnTouchOutside(true);
+                Button button =
+                      (Button)mEmailCopyPopup.findViewById(android.R.id.button1);
+                button.setOnClickListener(this);
+                button.setText(R.string.copy_email);
+                mEmailCopyPopup.show();
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setExpandable(boolean expandable) {
@@ -1020,11 +1127,19 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                     this, false);
             addView(v);
             v.setOnClickListener(this);
-            v.setTag(SHOW_IMAGE_PROMPT_ONCE);
 
             mImagePromptView = v;
         }
         mImagePromptView.setVisibility(VISIBLE);
+
+        ImageView descriptionViewIcon =
+                (ImageView) mImagePromptView.findViewById(R.id.show_pictures_icon);
+        descriptionViewIcon.setContentDescription(
+                getResources().getString(R.string.show_images));
+        TextView descriptionView =
+                (TextView) mImagePromptView.findViewById(R.id.show_pictures_text);
+        descriptionView.setText(R.string.show_images);
+        mImagePromptView.setTag(SHOW_IMAGE_PROMPT_ONCE);
     }
 
     /**
@@ -1088,6 +1203,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             case SHOW_IMAGE_PROMPT_ALWAYS:
                 mMessage.markAlwaysShowImages(getQueryHandler(), 0 /* token */, null /* cookie */);
 
+                if (mCallbacks != null) {
+                    mCallbacks.showExternalResources(mMessage.getFrom());
+                }
+
                 mShowImagePrompt = false;
                 v.setTag(null);
                 v.setVisibility(GONE);
@@ -1119,7 +1238,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (!mCollapsedDetailsValid) {
             if (mMessageHeaderItem.recipientSummaryText == null) {
                 mMessageHeaderItem.recipientSummaryText = getRecipientSummaryText(getContext(),
-                        getAccount().name, mTo, mCc, mBcc, mAddressCache);
+                        getAccount().name, mMyName, mTo, mCc, mBcc, mAddressCache, mVeiledMatcher);
             }
             ((TextView) findViewById(R.id.recipients_summary))
                     .setText(mMessageHeaderItem.recipientSummaryText);
@@ -1163,9 +1282,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                     .setText(mMessageHeaderItem.timestampLong);
             renderEmailList(R.id.replyto_row, R.id.replyto_value, mReplyTo, false,
                     mExpandedDetailsView);
-            if (mMessage.viaDomain != null) {
-                renderEmailList(R.id.from_row, R.id.from_value, mFrom, true, mExpandedDetailsView);
-            }
+            renderEmailList(R.id.from_row, R.id.from_value, mFrom, mMessage.viaDomain != null,
+                    mExpandedDetailsView);
             renderEmailList(R.id.to_row, R.id.to_value, mTo, false, mExpandedDetailsView);
             renderEmailList(R.id.cc_row, R.id.cc_value, mCc, false, mExpandedDetailsView);
             renderEmailList(R.id.bcc_row, R.id.bcc_value, mBcc, false, mExpandedDetailsView);
