@@ -150,27 +150,6 @@ public final class MailPrefs extends VersionedPrefs {
         getEditor().apply();
     }
 
-    /**
-     * Returns a boolean indicating whether the What's New dialog should be shown
-     * @param context Context
-     * @return Boolean indicating whether the What's New dialogs should be shown
-     */
-    public boolean getShouldShowWhatsNew(final Context context) {
-        // Get the last versionCode from the last time that the whats new dialogs has been shown
-        final int lastShownVersion =
-                getSharedPreferences().getInt(PreferenceKeys.WHATS_NEW_LAST_SHOWN_VERSION, 0);
-
-        // Get the last version the What's New dialog was updated
-        final int lastUpdatedVersion =
-                context.getResources().getInteger(R.integer.whats_new_last_updated);
-
-        return lastUpdatedVersion > lastShownVersion;
-    }
-
-    public void setHasShownWhatsNew(final int version) {
-        getEditor().putInt(PreferenceKeys.WHATS_NEW_LAST_SHOWN_VERSION, version).apply();
-    }
-
     /** If <code>true</code>, we should default all replies to "reply all" rather than "reply" */
     public boolean getDefaultReplyAll() {
         return getSharedPreferences().getBoolean(PreferenceKeys.DEFAULT_REPLY_ALL, false);
