@@ -177,7 +177,7 @@ public final class ConversationCursor implements Cursor {
         synchronized (mCacheMapLock) {
             try {
                 // Create new ConversationCursor
-                LogUtils.i(LOG_TAG, "Create: initial creation");
+                LogUtils.d(LOG_TAG, "Create: initial creation");
                 setCursor(doQuery(mInitialConversationLimit));
             } finally {
                 // If we used a limit, queue up a query without limit
@@ -224,7 +224,7 @@ public final class ConversationCursor implements Cursor {
                 notifyRefreshReady();
             }
         } else {
-            LogUtils.i(LOG_TAG, "[checkNotifyUI: %s%s",
+            LogUtils.d(LOG_TAG, "[checkNotifyUI: %s%s",
                     (mPaused ? "Paused " : ""), (mDeferSync ? "Defer" : ""));
         }
     }
@@ -390,7 +390,7 @@ public final class ConversationCursor implements Cursor {
                 if (values != null) {
                     Long updateTime = values.getAsLong(UPDATE_TIME_COLUMN);
                     if (updateTime != null && ((now - updateTime) < REQUERY_ALLOWANCE_TIME)) {
-                        LogUtils.i(LOG_TAG, "IN resetCursor, keep recent changes to %s", key);
+                        LogUtils.d(LOG_TAG, "IN resetCursor, keep recent changes to %s", key);
                         withinTimeWindow = true;
                     } else if (updateTime == null) {
                         LogUtils.e(LOG_TAG, "null updateTime from mCacheMap for key: %s", key);
@@ -402,7 +402,7 @@ public final class ConversationCursor implements Cursor {
                             // cache entry
                             mDeletedCount--;
                             removed = true;
-                            LogUtils.i(LOG_TAG,
+                            LogUtils.d(LOG_TAG,
                                     "IN resetCursor, sDeletedCount decremented to: %d by %s",
                                     mDeletedCount, key);
                         }
@@ -507,7 +507,7 @@ public final class ConversationCursor implements Cursor {
             if (!mListeners.contains(listener)) {
                 mListeners.add(listener);
             } else {
-                LogUtils.i(LOG_TAG, "Ignoring duplicate add of listener");
+                LogUtils.d(LOG_TAG, "Ignoring duplicate add of listener");
             }
         }
     }
@@ -839,9 +839,11 @@ public final class ConversationCursor implements Cursor {
             boolean ret = mUnderlyingCursor.moveToNext();
             if (!ret) {
                 mPosition = getCount();
-                // STOPSHIP
-                LogUtils.i(LOG_TAG, "*** moveToNext returns false; pos = %d, und = %d, del = %d",
-                        mPosition, mUnderlyingCursor.getPosition(), mDeletedCount);
+                if (DEBUG) {
+                    LogUtils.i(LOG_TAG, "*** moveToNext returns false: pos = %d, und = %d" +
+                            ", del = %d", mPosition, mUnderlyingCursor.getPosition(),
+                            mDeletedCount);
+                }
                 return false;
             }
             if (getCachedValue(DELETED_COLUMN_INDEX) instanceof Integer) continue;
@@ -907,7 +909,7 @@ public final class ConversationCursor implements Cursor {
         // But we don't want to return true on a subsequent "move to first", which we would if we
         // check pos vs mPosition first
         if (mUnderlyingCursor.getPosition() == -1) {
-            LogUtils.i(LOG_TAG, "*** Underlying cursor position is -1 asking to move from %d to %d",
+            LogUtils.d(LOG_TAG, "*** Underlying cursor position is -1 asking to move from %d to %d",
                     mPosition, pos);
         }
         if (pos == 0) {
@@ -928,8 +930,9 @@ public final class ConversationCursor implements Cursor {
             return true;
         } else if ((pos >= 0) && (mPosition - pos) > pos) {
             // Optimization if it's easier to move forward to position instead of backward
-            // STOPSHIP (Remove logging)
-            LogUtils.i(LOG_TAG, "*** Move from %d to %d, starting from first", mPosition, pos);
+            if (DEBUG) {
+                LogUtils.i(LOG_TAG, "*** Move from %d to %d, starting from first", mPosition, pos);
+            }
             moveToFirst();
             return moveToPosition(pos);
         } else {
@@ -1266,7 +1269,7 @@ public final class ConversationCursor implements Cursor {
     }
 
     void setMostlyDead(String uriString, Conversation conv) {
-        LogUtils.i(LOG_TAG, "[Mostly dead, deferring: %s] ", uriString);
+        LogUtils.d(LOG_TAG, "[Mostly dead, deferring: %s] ", uriString);
         cacheValue(uriString,
                 UIProvider.ConversationColumns.FLAGS, Conversation.FLAG_MOSTLY_DEAD);
         conv.convFlags |= Conversation.FLAG_MOSTLY_DEAD;
@@ -1277,7 +1280,7 @@ public final class ConversationCursor implements Cursor {
     void commitMostlyDead(Conversation conv) {
         conv.convFlags &= ~Conversation.FLAG_MOSTLY_DEAD;
         mMostlyDead.remove(conv);
-        LogUtils.i(LOG_TAG, "[All dead: %s]", conv.uri);
+        LogUtils.d(LOG_TAG, "[All dead: %s]", conv.uri);
         if (mMostlyDead.isEmpty()) {
             mDeferSync = false;
             checkNotifyUI();
