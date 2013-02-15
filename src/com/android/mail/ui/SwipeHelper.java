@@ -45,7 +45,8 @@ public class SwipeHelper {
     private static final boolean CONSTRAIN_SWIPE = true;
     private static final boolean FADE_OUT_DURING_SWIPE = true;
     private static final boolean DISMISS_IF_SWIPED_FAR_ENOUGH = true;
-    private static final boolean LOG_SWIPE_DISMISS_VELOCITY = false; // STOPSHIP - DEBUG ONLY
+    // Turn on for debugging only during development.
+    private static final boolean LOG_SWIPE_DISMISS_VELOCITY = false;
 
     public static final int X = 0;
     public static final int Y = 1;
