@@ -31,7 +31,7 @@ import com.android.mail.providers.Folder;
  */
 public final class MailPrefs {
 
-    public static final boolean SHOW_EXPERIMENTAL_PREFS = false;
+    public static final boolean SHOW_EXPERIMENTAL_PREFS = true;
 
     // TODO: support account-specific prefs. probably just use a different prefs name instead of
     // prepending every key.
