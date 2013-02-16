@@ -151,7 +151,7 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
             }
             mErrorActionButton.setText(actionTextResourceId);
 
-        } else if (mLoadMoreUri != null) {
+        } else if (mLoadMoreUri != null && cursor.getCount() < mFolder.totalCount) {
             mLoading.setVisibility(View.GONE);
             mNetworkError.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.VISIBLE);
