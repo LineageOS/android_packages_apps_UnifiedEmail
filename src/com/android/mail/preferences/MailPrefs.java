@@ -35,6 +35,9 @@ import java.util.Set;
  * This will serve as an eventual replacement for Gmail's Persistence class.
  */
 public final class MailPrefs extends VersionedPrefs {
+
+    public static final boolean SHOW_EXPERIMENTAL_PREFS = false;
+
     private static final String PREFS_NAME = "UnifiedEmail";
 
     private static MailPrefs sInstance;
@@ -47,7 +50,6 @@ public final class MailPrefs extends VersionedPrefs {
 
         /** Hidden preference to indicate what version a "What's New" dialog was last shown for. */
         public static final String WHATS_NEW_LAST_SHOWN_VERSION = "whats-new-last-shown-version";
-        public static final String ENABLE_CONVLIST_PHOTOS = "enable-convlist-photos";
 
         /**
          * A boolean that, if <code>true</code>, means we should default all replies to "reply all"
@@ -66,6 +68,12 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(DEFAULT_REPLY_ALL)
                 .add(CONVERSATION_LIST_SWIPE_ACTION)
                 .build();
+
+        private static final String ENABLE_FTS = "enable-fts";
+        private static final String ENABLE_CHIP_DRAG_AND_DROP = "enable-chip-drag-and-drop";
+        public static final String ENABLE_CONVLIST_PHOTOS = "enable-convlist-photos";
+        public static final String ENABLE_WHOOSH_ZOOM = "enable-whoosh-zoom";
+
     }
 
     public static final class ConversationListSwipeActions {
@@ -125,16 +133,40 @@ public final class MailPrefs extends VersionedPrefs {
                 null);
     }
 
+    @SuppressWarnings("unused")
+    public boolean fullTextSearchEnabled() {
+        // If experimental preferences are not enabled, return true.
+        return !SHOW_EXPERIMENTAL_PREFS || getSharedPreferences().getBoolean(
+                PreferenceKeys.ENABLE_FTS, true);
+    }
+
+    @SuppressWarnings("unused")
+    public boolean chipDragAndDropEnabled() {
+        // If experimental preferences are not enabled, return false.
+        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
+                PreferenceKeys.ENABLE_CHIP_DRAG_AND_DROP, false);
+    }
+
     /**
      * Get whether to show the experimental inline contact photos in the
      * conversation list.
      */
+    @SuppressWarnings("unused")
     public boolean areConvListPhotosEnabled() {
-        return getSharedPreferences().getBoolean(PreferenceKeys.ENABLE_CONVLIST_PHOTOS, false);
+        // If experimental preferences are not enabled, return false.
+        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
+                PreferenceKeys.ENABLE_CONVLIST_PHOTOS, false);
     }
 
     public void setConvListPhotosEnabled(final boolean enabled) {
         getEditor().putBoolean(PreferenceKeys.ENABLE_CONVLIST_PHOTOS, enabled).apply();
+    }
+
+    @SuppressWarnings("unused")
+    public boolean isWhooshZoomEnabled() {
+        // If experimental preferences are not enabled, return false.
+        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
+                PreferenceKeys.ENABLE_WHOOSH_ZOOM, false);
     }
 
     private static String createWidgetPreferenceValue(Account account, Folder folder) {
