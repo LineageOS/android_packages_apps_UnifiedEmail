@@ -377,6 +377,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    public UpOrBackController getUpOrBackController() {
+        return mController;
+    }
+
+    @Override
     public void onFooterViewErrorActionClick(Folder folder, int errorStatus) {
         mController.onFooterViewErrorActionClick(folder, errorStatus);
     }
