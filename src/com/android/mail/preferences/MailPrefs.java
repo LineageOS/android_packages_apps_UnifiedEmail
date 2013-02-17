@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public final class MailPrefs extends VersionedPrefs {
 
-    public static final boolean SHOW_EXPERIMENTAL_PREFS = false;
+    public static final boolean SHOW_EXPERIMENTAL_PREFS = true;
 
     private static final String PREFS_NAME = "UnifiedEmail";
 
