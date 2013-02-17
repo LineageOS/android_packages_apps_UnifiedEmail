@@ -49,6 +49,10 @@
   public <methods>;
 }
 
+-keepclasseswithmembers class com.android.mail.ui.ConversationViewFragment$MessageJsBridge {
+  public <methods>;
+}
+
 -keepclasseswithmembers class com.android.mail.ui.TwoPaneLayout {
   *** setFoldersLeft(...);
   *** setListBitmapLeft(...);
