@@ -365,6 +365,12 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
+    public UpOrBackController getUpOrBackController() {
+        // Unsupported
+        return null;
+    }
+
+    @Override
     public boolean isAccessibilityEnabled() {
         // Unsupported
         return true;
