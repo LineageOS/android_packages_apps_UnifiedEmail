@@ -205,7 +205,7 @@ public class AttachmentActionHandler {
 
         final Uri uri = Utils.normalizeUri(mAttachment.contentUri);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-        intent.setType(Utils.normalizeMimeType(mAttachment.contentType));
+        intent.setType(Utils.normalizeMimeType(mAttachment.name, mAttachment.contentType));
 
         try {
             mContext.startActivity(intent);
