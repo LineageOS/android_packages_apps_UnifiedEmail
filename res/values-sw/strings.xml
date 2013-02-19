@@ -106,7 +106,7 @@
     <string name="attachment_text" msgid="5544874374971562759">"Maandishi"</string>
     <string name="attachment_application_msword" msgid="2326909450865637910">"Hati"</string>
     <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"Wasilisho"</string>
-    <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Lohojedwali"</string>
+    <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Lahajedwali"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"Faili <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Hakiki"</string>
