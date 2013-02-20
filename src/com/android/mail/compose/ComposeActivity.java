@@ -2115,6 +2115,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 } catch (FileNotFoundException e) {
                     LogUtils.e(LOG_TAG, e, "Exception attempting to open attachment");
                     fileDescriptor = null;
+                } catch (SecurityException e) {
+                    // We have encountered a security exception when attempting to open the file
+                    // specified by the content uri.  If the attachment has been cached, this
+                    // isn't a problem, as even through the original permission may have been
+                    // revoked, we have cached the file.  This will happen when saving/sending
+                    // a previously saved draft.
+                    // TODO(markwei): Expose whether the attachment has been cached through the
+                    // attachment object.  This would allow us to limit when the log is made, as
+                    // if the attachment has been cached, this really isn't an error
+                    LogUtils.e(LOG_TAG, e, "Security Exception attempting to open attachment");
+                    // Just set the file descriptor to null, as the underlying provider needs
+                    // to handle the file descriptor not being set.
+                    fileDescriptor = null;
                 }
 
                 if (fileDescriptor != null) {
