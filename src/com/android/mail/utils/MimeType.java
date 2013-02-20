@@ -74,6 +74,7 @@ public class MimeType {
         // content type is not known.  Changing the provider to return null,
         // breaks other areas that will need to be fixed in a later CL.
         // Bug 2922948 has been written up to track this
+        contentType = MimeType.inferMimeType(name, contentType);
         if (contentType == null || contentType.length() == 0 ||
                 NULL_ATTACHMENT_CONTENT_TYPE.equals(contentType)) {
             LogUtils.d(LOG_TAG, "Attachment with null content type. '%s", contentUri);
