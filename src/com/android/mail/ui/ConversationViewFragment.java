@@ -100,6 +100,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
 
+    private static final boolean ENABLE_CSS_ZOOM = false;
+
     /**
      * Difference in the height of the message header whose details have been expanded/collapsed
      */
@@ -1053,7 +1055,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             if (overviewMode) {
                 settings.setDisplayZoomControls(false);
             }
-            listener = overviewMode ? null : new CssScaleInterceptor();
+            listener = ENABLE_CSS_ZOOM && !overviewMode ? new CssScaleInterceptor() : null;
         }
         mWebView.setOnScaleGestureListener(listener);
     }
