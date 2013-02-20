@@ -219,7 +219,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 }
                 // If we can view or play with an on-device app,
                 // view or play.
-                else if (MimeType.isViewable(getContext(), mAttachment.contentUri,
+                else if (MimeType.isViewable(getContext(), mAttachment.contentUri, mAttachment.name,
                                 mAttachment.contentType)) {
                     mActionHandler.showAttachment(AttachmentDestination.CACHE);
                 }
@@ -276,7 +276,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         Utils.setIntentDataAndTypeAndNormalize(
-                intent, mAttachment.contentUri, mAttachment.contentType);
+                intent, mAttachment.contentUri, mAttachment.name, mAttachment.contentType);
         try {
             getContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {
