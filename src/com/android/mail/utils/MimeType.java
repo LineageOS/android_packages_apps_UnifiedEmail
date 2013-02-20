@@ -67,7 +67,8 @@ public class MimeType {
     /**
      * Returns whether or not an attachment of the specified type is viewable.
      */
-    public static boolean isViewable(Context context, Uri contentUri, String contentType) {
+    public static boolean isViewable(
+            Context context, Uri contentUri, String name, String contentType) {
         // The provider returns a contentType of "null" instead of null, when the
         // content type is not known.  Changing the provider to return null,
         // breaks other areas that will need to be fixed in a later CL.
@@ -88,9 +89,9 @@ public class MimeType {
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
         if (contentUri != null) {
-            Utils.setIntentDataAndTypeAndNormalize(mimetypeIntent, contentUri, contentType);
+            Utils.setIntentDataAndTypeAndNormalize(mimetypeIntent, contentUri, name, contentType);
         } else {
-            Utils.setIntentTypeAndNormalize(mimetypeIntent, contentType);
+            Utils.setIntentTypeAndNormalize(mimetypeIntent, name, contentType);
         }
 
         PackageManager manager;
