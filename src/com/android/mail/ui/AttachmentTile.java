@@ -38,6 +38,7 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.MimeType;
 
 /**
  * Base class for attachment tiles that handles the work of fetching and displaying the bitmaps for
@@ -67,7 +68,8 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
      * @return true if the attachment should be rendered as a tile
      */
     public static boolean isTiledAttachment(final Attachment attachment) {
-        return ImageUtils.isImageMimeType(attachment.contentType);
+        return ImageUtils.isImageMimeType(
+                MimeType.inferMimeType(attachment.name, attachment.contentType));
     }
 
     public AttachmentTile(Context context) {
