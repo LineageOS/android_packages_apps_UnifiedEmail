@@ -68,8 +68,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
      * @return true if the attachment should be rendered as a tile
      */
     public static boolean isTiledAttachment(final Attachment attachment) {
-        return ImageUtils.isImageMimeType(
-                MimeType.inferMimeType(attachment.name, attachment.contentType));
+        return ImageUtils.isImageMimeType(attachment.getContentType());
     }
 
     public AttachmentTile(Context context) {
@@ -115,12 +114,12 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
         mAttachmentPreviewCache = attachmentPreviewCache;
 
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
-                " contentUri=%s MIME=%s", attachment.name, attachment.state,
+                " contentUri=%s MIME=%s", attachment.getName(), attachment.state,
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
-                attachment.contentType);
+                attachment.getContentType());
 
-        if (prevAttachment == null || !TextUtils.equals(attachment.name, prevAttachment.name)) {
-            mTitle.setText(attachment.name);
+        if (prevAttachment == null || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
+            mTitle.setText(attachment.getName());
         }
 
         if (prevAttachment == null || attachment.size != prevAttachment.size) {

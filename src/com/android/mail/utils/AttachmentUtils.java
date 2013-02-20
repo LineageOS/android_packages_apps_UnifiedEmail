@@ -68,15 +68,14 @@ public class AttachmentUtils {
         // try to get a friendly name for the exact mime type
         // then try to show a friendly name for the mime family
         // finally, give up and just show the file extension
-        String displayType = getMimeTypeDisplayName(context, attachment.contentType);
-        int index = !TextUtils.isEmpty(attachment.contentType) ? attachment.contentType
-                .indexOf('/') : -1;
+        final String contentType = attachment.getContentType();
+        String displayType = getMimeTypeDisplayName(context, contentType);
+        int index = !TextUtils.isEmpty(contentType) ? contentType.indexOf('/') : -1;
         if (displayType == null && index > 0) {
-            displayType = getMimeTypeDisplayName(context,
-                    attachment.contentType.substring(0, index));
+            displayType = getMimeTypeDisplayName(context, contentType.substring(0, index));
         }
         if (displayType == null) {
-            String extension = Utils.getFileExtension(attachment.name);
+            String extension = Utils.getFileExtension(attachment.getName());
             // show '$EXTENSION File' for unknown file types
             if (extension != null && extension.length() > 1 && extension.indexOf('.') == 0) {
                 displayType = context.getString(R.string.attachment_unknown,
