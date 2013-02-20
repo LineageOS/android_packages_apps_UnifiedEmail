@@ -918,7 +918,8 @@ public class Utils {
    /**
     * (copied from {@link Intent#normalizeMimeType(String)} for pre-J)
     *
-    * Normalize a MIME data type.
+    * Normalize a MIME data type. The MIME type will be inferred from the
+    * file name if it is generic.
     *
     * <p>A normalized MIME type has white-space trimmed,
     * content-type parameters removed, and is lower-case.
@@ -937,7 +938,7 @@ public class Utils {
     * @see {@link #setType}
     * @see {@link #setTypeAndNormalize}
     */
-   public static String normalizeMimeType(String type) {
+   public static String normalizeMimeType(String name, String type) {
        if (type == null) {
            return null;
        }
@@ -948,7 +949,7 @@ public class Utils {
        if (semicolonIndex != -1) {
            type = type.substring(0, semicolonIndex);
        }
-       return type;
+       return MimeType.inferMimeType(name, type);
    }
 
    /**
@@ -985,12 +986,13 @@ public class Utils {
        return uri.buildUpon().scheme(lowerScheme).build();
    }
 
-   public static Intent setIntentTypeAndNormalize(Intent intent, String type) {
-       return intent.setType(normalizeMimeType(type));
+   public static Intent setIntentTypeAndNormalize(Intent intent, String name, String type) {
+       return intent.setType(normalizeMimeType(name, type));
    }
 
-   public static Intent setIntentDataAndTypeAndNormalize(Intent intent, Uri data, String type) {
-       return intent.setDataAndType(normalizeUri(data), normalizeMimeType(type));
+   public static Intent setIntentDataAndTypeAndNormalize(
+           Intent intent, Uri data, String name, String type) {
+       return intent.setDataAndType(normalizeUri(data), normalizeMimeType(name, type));
    }
 
    public static int getTransparentColor(int color) {
