@@ -15,6 +15,8 @@
  */
 package com.android.mail;
 
+import com.android.mail.utils.StorageLowState;
+
 import android.app.IntentService;
 import android.content.Intent;
 
@@ -41,6 +43,13 @@ public class MailIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(final Intent intent) {
-        // UnifiedEmail does not handle any of these at the moment
+        // The storage_low state is recorded centrally even though no handler might be present to
+        // change application state based on state changes.
+        final String action = intent.getAction();
+        if (Intent.ACTION_DEVICE_STORAGE_LOW.equals(action)) {
+            StorageLowState.setIsStorageLow(true);
+        } else if (Intent.ACTION_DEVICE_STORAGE_OK.equals(action)) {
+            StorageLowState.setIsStorageLow(false);
+        }
     }
 }
