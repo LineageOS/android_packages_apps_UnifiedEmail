@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -26,7 +25,6 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
-import android.view.ActionMode;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -36,10 +34,10 @@ import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.mail.compose.ComposeActivity;
-import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
+import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
@@ -226,6 +224,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         if (enabled != mAccessibilityEnabled) {
             onAccessibilityStateChanged(enabled);
         }
+        // App has resumed, re-check the top-level storage situation.
+        StorageLowState.checkStorageLowMode(this);
     }
 
     @Override
