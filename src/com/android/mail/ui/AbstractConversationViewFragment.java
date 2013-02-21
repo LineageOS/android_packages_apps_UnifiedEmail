@@ -118,6 +118,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     private long mLoadingShownTime = -1;
 
+    private boolean mIsDetached;
+
     private final Runnable mDelayedShow = new FragmentRunnable("mDelayedShow") {
         @Override
         public void go() {
@@ -143,6 +145,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      */
     private static final String BUNDLE_USER_VISIBLE =
             AbstractConversationViewFragment.class.getName() + "uservisible";
+
+    private static final String BUNDLE_DETACHED =
+            AbstractConversationViewFragment.class.getName() + "detached";
 
     public static Bundle makeBasicArgs(Account account, Folder folder) {
         Bundle args = new Bundle();
@@ -220,6 +225,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         if (savedState != null) {
             mViewState = savedState.getParcelable(BUNDLE_VIEW_STATE);
             mUserVisible = savedState.getBoolean(BUNDLE_USER_VISIBLE);
+            mIsDetached = savedState.getBoolean(BUNDLE_DETACHED, false);
         } else {
             mViewState = getNewViewState();
         }
@@ -416,6 +422,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             outState.putParcelable(BUNDLE_VIEW_STATE, mViewState);
         }
         outState.putBoolean(BUNDLE_USER_VISIBLE, mUserVisible);
+        outState.putBoolean(BUNDLE_DETACHED, mIsDetached);
     }
 
     @Override
@@ -471,7 +478,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
                 // We have no messages: exit conversation view.
                 if (messageCursor.getCount() == 0
-                        && !CursorStatus.isWaitingForResults(messageCursor.getStatus())) {
+                        && (!CursorStatus.isWaitingForResults(messageCursor.getStatus())
+                                || mIsDetached)) {
                     if (mUserVisible) {
                         onError();
                     } else {
@@ -524,14 +532,16 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         // TODO(mindyp): handle ERROR status by showing an error
         // message to the user that there are no messages in
         // this conversation
-        mHandler.post(new FragmentRunnable("onError") {
+        popOut();
+    }
 
+    private void popOut() {
+        mHandler.post(new FragmentRunnable("popOut") {
             @Override
             public void go() {
                 mActivity.getListHandler()
                 .onConversationSelected(null, true /* inLoaderCallbacks */);
             }
-
         });
     }
 
@@ -786,6 +796,18 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                 AutoFitPromptDialogFragment.newInstance(mAccount.updateSettingsUri)
                         .show(getFragmentManager(), AutoFitPromptDialogFragment.FRAGMENT_TAG);
             }
+        }
+    }
+
+    public void onDetachedModeEntered() {
+        // If we have no messages, then we have nothing to display, so leave this view.
+        // Otherwise, just set the detached flag.
+        final Cursor messageCursor = getMessageCursor();
+
+        if (messageCursor == null || messageCursor.getCount() == 0) {
+            popOut();
+        } else {
+            mIsDetached = true;
         }
     }
 }
