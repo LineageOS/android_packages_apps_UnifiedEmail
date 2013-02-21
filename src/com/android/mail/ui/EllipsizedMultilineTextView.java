@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -72,7 +73,7 @@ public class EllipsizedMultilineTextView extends TextView {
         }
 
         setEllipsize(null);
-        setText(text, TextView.BufferType.SPANNABLE);
+        setText(text);
 
         if (avail == ALL_AVAILABLE) {
             return text;
@@ -89,17 +90,41 @@ public class EllipsizedMultilineTextView extends TextView {
             return text;
         }
 
-        final CharSequence remainder = TextUtils.ellipsize(
-                text.subSequence(layout.getLineStart(mMaxLines - 1), text.length()), getPaint(),
-                avail, TextUtils.TruncateAt.END);
+        // find the last line of text and chop it according to available space
+        final int lastLineStart = layout.getLineStart(mMaxLines - 1);
+        final CharSequence remainder = TextUtils.ellipsize(text.subSequence(lastLineStart,
+                text.length()), getPaint(), avail, TextUtils.TruncateAt.END);
 
-        SpannableStringBuilder builder = new SpannableStringBuilder();
+        // assemble just the text portion, without spans
+        final SpannableStringBuilder builder = new SpannableStringBuilder();
 
-        builder.append(text, 0, layout.getLineStart(mMaxLines - 1));
+        builder.append(text.toString(), 0, lastLineStart);
+
         if (!TextUtils.isEmpty(remainder)) {
-            builder.append(remainder);
+            builder.append(remainder.toString());
         }
-        setText(builder, TextView.BufferType.SPANNABLE);
+
+        // Now copy the original spans into the assembled string, modified for any ellipsizing.
+        //
+        // Merely assembling the Spanned pieces together would result in duplicate CharacterStyle
+        // spans in the assembled version if a CharacterStyle spanned across the lastLineStart
+        // offset.
+        if (text instanceof Spanned) {
+            final Spanned s = (Spanned) text;
+            final Object[] spans = s.getSpans(0, s.length(), Object.class);
+            final int destLen = builder.length();
+            for (int i = 0; i < spans.length; i++) {
+                final Object span = spans[i];
+                final int start = s.getSpanStart(span);
+                final int end = s.getSpanEnd(span);
+                final int flags = s.getSpanFlags(span);
+                if (start <= destLen) {
+                    builder.setSpan(span, start, Math.min(end, destLen), flags);
+                }
+            }
+        }
+
+        setText(builder);
 
         return builder;
     }
