@@ -25,6 +25,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.android.mail.browse.MessageAttachmentBar;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
@@ -91,8 +92,17 @@ public class Attachment implements Parcelable {
 
     /**
      * Shareable, openable uri for this attachment
+     * <p>
      * content:// Gmail.getAttachmentDefaultUri() if origin is SERVER_ATTACHMENT
-     * content:// uri pointing to the content to be uploaded if origin is LOCAL_FILE
+     * <p>
+     * content:// uri pointing to the content to be uploaded if origin is
+     * LOCAL_FILE
+     * <p>
+     * file:// uri pointing to an EXTERNAL apk file. The package manager only
+     * handles file:// uris not content:// uris. We do the same workaround in
+     * {@link MessageAttachmentBar#onClick(android.view.View)} and
+     * UiProvider#getUiAttachmentsCursorForUIAttachments().
+     *
      * @see AttachmentColumns#CONTENT_URI
      */
     public Uri contentUri;

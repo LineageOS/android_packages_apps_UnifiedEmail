@@ -141,7 +141,7 @@ public final class TwoPaneController extends AbstractActivityController {
     public void showFolderList() {
         // On two-pane layouts, showing the folder list takes you to the top level of the
         // application, which is the same as pressing the Up button
-        onUpPressed();
+        handleUpPress();
     }
 
     @Override
@@ -282,7 +282,7 @@ public final class TwoPaneController extends AbstractActivityController {
             return;
         }
         if (conversation == null) {
-            onBackPressed();
+            handleBackPress();
             return;
         }
         // If conversation list is not visible, then the user cannot see the CAB mode, so exit it.
@@ -361,15 +361,15 @@ public final class TwoPaneController extends AbstractActivityController {
      * 3) If the user is in conversation list mode, there is no up.
      */
     @Override
-    public boolean onUpPressed() {
+    public boolean handleUpPress() {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.CONVERSATION) {
-            mActivity.onBackPressed();
+            handleBackPress();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             if (mLayout.isConversationListCollapsed()
                     || (ConversationListContext.isSearchResult(mConvListContext) && !Utils.
                             showTwoPaneSearchResults(mActivity.getApplicationContext()))) {
-                onBackPressed();
+                handleBackPress();
             } else {
                 mActivity.finish();
             }
@@ -382,7 +382,7 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public boolean onBackPressed() {
+    public boolean handleBackPress() {
         // Clear any visible undo bars.
         mToastBar.hide(false);
         popView(false);

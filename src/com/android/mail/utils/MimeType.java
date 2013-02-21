@@ -69,7 +69,6 @@ public class MimeType {
      */
     public static boolean isViewable(
             Context context, Uri contentUri, String name, String contentType) {
-        LogUtils.d(LOG_TAG, "Checking is viewable for type: %s, uri: '%s", contentType, contentUri);
         // The provider returns a contentType of "null" instead of null, when the
         // content type is not known.  Changing the provider to return null,
         // breaks other areas that will need to be fixed in a later CL.

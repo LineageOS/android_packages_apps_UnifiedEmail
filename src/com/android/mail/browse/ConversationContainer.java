@@ -299,6 +299,29 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
     }
 
+    /**
+     * Return an overlay view for the given adapter item, or null if no matching view is currently
+     * visible. This can happen as you scroll away from an overlay view.
+     *
+     */
+    public View getViewForItem(ConversationOverlayItem item) {
+        View result = null;
+        int adapterPos = -1;
+        for (int i = 0, len = mOverlayAdapter.getCount(); i < len; i++) {
+            if (mOverlayAdapter.getItem(i) == item) {
+                adapterPos = i;
+                break;
+            }
+        }
+        if (adapterPos != -1) {
+            final OverlayView overlay = mOverlayViews.get(adapterPos);
+            if (overlay != null) {
+                result = overlay.view;
+            }
+        }
+        return result;
+    }
+
     private void clearOverlays() {
         for (int i = 0, len = mOverlayViews.size(); i < len; i++) {
             detachOverlay(mOverlayViews.valueAt(i));
@@ -835,6 +858,19 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             }
         }
         return null;
+    }
+
+    /**
+     * Return a collection of all currently visible overlay views, in no particular order.
+     * Please don't mess with them too badly (e.g. remove from parent).
+     *
+     */
+    public List<View> getOverlayViews() {
+        final List<View> views = Lists.newArrayList();
+        for (int i = 0, len = mOverlayViews.size(); i < len; i++) {
+            views.add(mOverlayViews.valueAt(i).view);
+        }
+        return views;
     }
 
     /**

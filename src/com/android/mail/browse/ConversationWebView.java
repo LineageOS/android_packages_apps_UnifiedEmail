@@ -25,7 +25,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
-import android.webkit.WebView;
 
 import com.android.mail.R;
 import com.android.mail.utils.LogTag;
@@ -34,7 +33,7 @@ import com.android.mail.utils.LogUtils;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public class ConversationWebView extends WebView implements ScrollNotifier {
+public class ConversationWebView extends MailWebView implements ScrollNotifier {
     /** The initial delay when rendering in hardware layer. */
     private final int mWebviewInitialDelay;
 
@@ -140,16 +139,7 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
         mVisible = visible;
     }
 
-    // NARROW_COLUMNS reflow can trigger the document to change size, so notify interested parties.
-    public interface ContentSizeChangeListener {
-        void onHeightChange(int h);
-    }
-
-    private ContentSizeChangeListener mSizeChangeListener;
-
     private ScaleGestureDetector mScaleDetector;
-
-    private int mCachedContentHeight;
 
     private final int mViewportWidth;
     private final float mDensity;
@@ -189,10 +179,6 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
         mScrollListeners.remove(l);
     }
 
-    public void setContentSizeChangeListener(ContentSizeChangeListener l) {
-        mSizeChangeListener = l;
-    }
-
     public void setOnScaleGestureListener(OnScaleGestureListener l) {
         if (l == null) {
             mScaleDetector = null;
@@ -202,54 +188,11 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
     }
 
     @Override
-    public int computeVerticalScrollRange() {
-        return super.computeVerticalScrollRange();
-    }
-
-    @Override
-    public int computeVerticalScrollOffset() {
-        return super.computeVerticalScrollOffset();
-    }
-
-    @Override
-    public int computeVerticalScrollExtent() {
-        return super.computeVerticalScrollExtent();
-    }
-
-    @Override
-    public int computeHorizontalScrollRange() {
-        return super.computeHorizontalScrollRange();
-    }
-
-    @Override
-    public int computeHorizontalScrollOffset() {
-        return super.computeHorizontalScrollOffset();
-    }
-
-    @Override
-    public int computeHorizontalScrollExtent() {
-        return super.computeHorizontalScrollExtent();
-    }
-
-    @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
 
         for (ScrollListener listener : mScrollListeners) {
             listener.onNotifierScroll(l, t);
-        }
-    }
-
-    @Override
-    public void invalidate() {
-        super.invalidate();
-
-        if (mSizeChangeListener != null) {
-            final int contentHeight = getContentHeight();
-            if (contentHeight != mCachedContentHeight) {
-                mCachedContentHeight = contentHeight;
-                mSizeChangeListener.onHeightChange(contentHeight);
-            }
         }
     }
 

@@ -18,12 +18,16 @@
 package com.android.mail.ui;
 
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.graphics.Picture;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,10 +35,12 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ScaleGestureDetector;
-import android.view.View;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
+import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -56,19 +62,23 @@ import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
-import com.android.mail.browse.ConversationWebView.ContentSizeChangeListener;
+import com.android.mail.browse.MailWebView.ContentSizeChangeListener;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView;
+import com.android.mail.browse.MessageView;
 import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
+import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ConversationViewState.ExpansionState;
+import com.android.mail.ui.UpOrBackController.UpOrBackHandler;
+import com.android.mail.utils.HardwareLayerEnabler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -85,10 +95,12 @@ import java.util.Set;
  */
 public final class ConversationViewFragment extends AbstractConversationViewFragment implements
         SuperCollapsedBlock.OnClickListener,
-        OnLayoutChangeListener {
+        OnLayoutChangeListener, UpOrBackHandler {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
+
+    private static final boolean ENABLE_CSS_ZOOM = false;
 
     /**
      * Difference in the height of the message header whose details have been expanded/collapsed
@@ -114,6 +126,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
      */
     private final int LOAD_WAIT_UNTIL_VISIBLE = 2;
 
+    private final float WHOOSH_SCALE_MINIMUM = 0.1f;
+
     private ConversationContainer mConversationContainer;
 
     private ConversationWebView mWebView;
@@ -122,13 +136,23 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private View mNewMessageBar;
 
+    private View mMessageGroup;
+    private View mMessageInnerGroup;
+    private MessageView mMessageView;
+    private MessageHeaderView mWhooshHeader;
+    private Runnable mOnMessageLoadComplete;
+    private boolean mMessageViewIsLoading;
+    private float mMessageScrollXFraction;
+    private float mMessageScrollYFraction;
+    private boolean mIgnoreOnScaleCalls = false;
+    private long mMessageViewLoadStartMs;
+    private final MessageJsBridge mMessageJsBridge = new MessageJsBridge();
+
     private HtmlConversationTemplates mTemplates;
 
     private final MailJsBridge mJsBridge = new MailJsBridge();
 
     private final WebViewClient mWebViewClient = new ConversationWebViewClient();
-
-    private final ScaleInterceptor mScaleInterceptor = new ScaleInterceptor();
 
     private ConversationViewAdapter mAdapter;
 
@@ -264,10 +288,12 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         // set up snap header (the adapter usually does this with the other ones)
         final MessageHeaderView snapHeader = mConversationContainer.getSnapHeader();
-        snapHeader.initialize(dateBuilder, this, mAddressCache);
-        snapHeader.setCallbacks(this);
-        snapHeader.setContactInfoSource(getContactInfoSource());
-        snapHeader.setVeiledMatcher(mActivity.getAccountController().getVeiledAddressMatcher());
+        initHeaderView(snapHeader, dateBuilder);
+
+        mWhooshHeader = (MessageHeaderView) mMessageGroup.findViewById(R.id.whoosh_header);
+        initHeaderView(mWhooshHeader, dateBuilder);
+        mWhooshHeader.setSnappy(true);
+        mWhooshHeader.setExpandable(false);
 
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
 
@@ -303,6 +329,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             new SetCookieTask(getContext(), mConversation.conversationBaseUri,
                     mAccount.accoutCookieQueryUri).execute();
         }
+    }
+
+    private void initHeaderView(MessageHeaderView headerView, FormattedDateBuilder dateBuilder) {
+        headerView.initialize(dateBuilder, this, mAddressCache);
+        headerView.setCallbacks(this);
+        headerView.setContactInfoSource(getContactInfoSource());
+        headerView.setVeiledMatcher(mActivity.getAccountController().getVeiledAddressMatcher());
     }
 
     @Override
@@ -350,14 +383,15 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mWebView.setUseSoftwareLayer(!mEnableContentReadySignal);
         mWebView.onUserVisibilityChanged(isUserVisible());
         mWebView.setWebViewClient(mWebViewClient);
-        mWebView.setWebChromeClient(new WebChromeClient() {
+        final WebChromeClient wcc = new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 LogUtils.i(LOG_TAG, "JS: %s (%s:%d)", consoleMessage.message(),
                         consoleMessage.sourceId(), consoleMessage.lineNumber());
                 return true;
             }
-        });
+        };
+        mWebView.setWebChromeClient(wcc);
 
         final WebSettings settings = mWebView.getSettings();
 
@@ -379,10 +413,83 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         textZoom = (int) (textZoom * fontScale);
         settings.setTextZoom(textZoom);
 
+        mMessageGroup = rootView.findViewById(R.id.message_group);
+        mMessageInnerGroup = mMessageGroup.findViewById(R.id.message_inner_group);
+        mMessageView = (MessageView) mMessageGroup.findViewById(R.id.message_view);
+        mMessageGroup.findViewById(R.id.message_view_close).setOnClickListener(
+                new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismissWhooshMode();
+            }
+        });
+        mMessageView.setWebChromeClient(wcc);
+        mMessageView.setContentSizeChangeListener(new ContentSizeChangeListener() {
+            @Override
+            public void onHeightChange(final int h) {
+                if (h == 0 || !mMessageViewIsLoading) {
+                    return;
+                }
+                mMessageViewIsLoading = false;
+                getHandler().post(new FragmentRunnable("MessageView.onHeightChange") {
+                    @Override
+                    public void go() {
+                        LogUtils.i(LOG_TAG, "message view content height=%d initialScrollX/Y=%s/%s",
+                                h, mMessageScrollXFraction, mMessageScrollYFraction);
+
+                        // restore scroll position within the message in conversation view
+                        final int hSlack = mMessageView.computeHorizontalScrollRange()
+                                - mMessageView.computeHorizontalScrollExtent();
+                        final int vSlack = mMessageView.computeVerticalScrollRange()
+                                - mMessageView.computeVerticalScrollExtent();
+                        final int x = Math.round(hSlack * mMessageScrollXFraction);
+                        final int y = Math.round(vSlack * mMessageScrollYFraction);
+                        mMessageView.scrollTo(x, y);
+                    }
+                });
+            }
+        });
+        mMessageView.getSettings().setJavaScriptEnabled(true);
+        mMessageView.addJavascriptInterface(mMessageJsBridge, "mail");
+
         mViewsCreated = true;
         mWebViewLoadedData = false;
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        final ControllableActivity activity = (ControllableActivity) getActivity();
+        if (activity != null) {
+            activity.getUpOrBackController().addUpOrBackHandler(this);
+        }
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (mMessageGroup.getVisibility() == View.VISIBLE) {
+            dismissWhooshMode();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onUpPressed() {
+        return false;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        final ControllableActivity activity = (ControllableActivity) getActivity();
+        if (activity != null) {
+            activity.getUpOrBackController().removeUpOrBackHandler(this);
+        }
     }
 
     @Override
@@ -680,10 +787,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
-        // If the conversation has specified a base uri, use it here, use mBaseUri
-        final String conversationBaseUri = mConversation.conversationBaseUri != null ?
-                mConversation.conversationBaseUri.toString() : mBaseUri;
-        return mTemplates.endConversation(mBaseUri, conversationBaseUri, 320,
+        // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
+        return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
                 mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount));
     }
 
@@ -914,7 +1019,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private void ensureContentSizeChangeListener() {
         if (mWebViewSizeChangeListener == null) {
-            mWebViewSizeChangeListener = new ConversationWebView.ContentSizeChangeListener() {
+            mWebViewSizeChangeListener = new ContentSizeChangeListener() {
                 @Override
                 public void onHeightChange(int h) {
                     // When WebKit says the DOM height has changed, re-measure
@@ -939,12 +1044,35 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         final boolean overviewMode = isOverviewMode(mAccount);
         final WebSettings settings = mWebView.getSettings();
         settings.setUseWideViewPort(overviewMode);
-        settings.setSupportZoom(overviewMode);
-        settings.setBuiltInZoomControls(overviewMode);
-        if (overviewMode) {
-            settings.setDisplayZoomControls(false);
+
+        final OnScaleGestureListener listener;
+
+        if (MailPrefs.get(getContext()).isWhooshZoomEnabled()) {
+            listener = new WhooshScaleInterceptor();
+        } else {
+            settings.setSupportZoom(overviewMode);
+            settings.setBuiltInZoomControls(overviewMode);
+            if (overviewMode) {
+                settings.setDisplayZoomControls(false);
+            }
+            listener = ENABLE_CSS_ZOOM && !overviewMode ? new CssScaleInterceptor() : null;
         }
-        mWebView.setOnScaleGestureListener(overviewMode ? null : mScaleInterceptor);
+        mWebView.setOnScaleGestureListener(listener);
+    }
+
+    private void dismissWhooshMode() {
+        mMessageGroup.animate().alpha(0f).scaleX(0.8f).scaleY(0.8f).setDuration(200)
+            .setListener(new HardwareLayerEnabler(mMessageGroup) {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mMessageGroup.setVisibility(View.GONE);
+                    mMessageView.clearView();
+                    mMessageGroup.setAlpha(1f);
+                    mMessageGroup.setScaleX(1f);
+                    mMessageGroup.setScaleY(1f);
+                }
+            });
     }
 
     private class ConversationWebViewClient extends AbstractConversationWebViewClient {
@@ -1097,6 +1225,46 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.getScrollYPercent");
                 return 0f;
             }
+        }
+    }
+
+    /**
+     * This is a minimal version of {@link MailJsBridge}, above, that enables the single-message
+     * WebView to use the same JavaScript code.
+     *
+     * NOTE: all public methods must be listed in the proguard flags so that they can be accessed
+     * via reflection and not stripped.
+     *
+     */
+    private class MessageJsBridge {
+        @SuppressWarnings("unused")
+        @JavascriptInterface
+        public void onContentReady() {
+            getHandler().post(new FragmentRunnable("onMessageContentReady") {
+                @Override
+                public void go() {
+                    if (mMessageViewLoadStartMs != 0) {
+                        LogUtils.i(LOG_TAG, "IN MESSAGEVIEW.onContentReady, f=%s vis=%s t=%sms",
+                                ConversationViewFragment.this,
+                                isUserVisible(),
+                                (SystemClock.uptimeMillis() - mMessageViewLoadStartMs));
+                    }
+                    // TODO: remove me if PictureListener works well enough on ICS
+                }
+            });
+        }
+
+        @SuppressWarnings("unused")
+        @JavascriptInterface
+        public float getScrollYPercent() {
+            return 0f;
+        }
+
+        @SuppressWarnings("unused")
+        @JavascriptInterface
+        public void onWebContentGeometryChange(final String[] overlayTopStrs,
+                final String[] overlayBottomStrs) {
+            // no-op
         }
     }
 
@@ -1361,7 +1529,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mDiff = (expanded ? 1 : -1) * Math.abs(i.getHeight() - heightBefore);
     }
 
-    private class ScaleInterceptor implements OnScaleGestureListener {
+    private class CssScaleInterceptor implements OnScaleGestureListener {
 
         private float getFocusXWebPx(ScaleGestureDetector detector) {
             return (detector.getFocusX() - mSideMarginPx) / mWebView.getInitialScale();
@@ -1390,6 +1558,208 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         public void onScaleEnd(ScaleGestureDetector detector) {
             mWebView.loadUrl(String.format("javascript:onScaleEnd(%s, %s);",
                     getFocusXWebPx(detector), getFocusYWebPx(detector)));
+        }
+
+    }
+
+    private class WhooshScaleInterceptor implements OnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            final float scale = detector.getScaleFactor();
+            if (mIgnoreOnScaleCalls || Math.abs(scale - 1.0f) < WHOOSH_SCALE_MINIMUM) {
+                return false;
+            }
+
+            loadSingleMessageView(scale > 1, (int) detector.getFocusX(),
+                    (int) detector.getFocusY());
+
+            // Ignore subsequent onScale() calls
+            mIgnoreOnScaleCalls = true;
+            return false;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            mIgnoreOnScaleCalls = false;
+        }
+
+        private void loadSingleMessageView(boolean isZoomingIn, int focusX, int focusY) {
+            // TODO: make isWide determination per-message
+            final boolean isWide = mWebView.computeHorizontalScrollRange() >
+                    mWebView.computeHorizontalScrollExtent();
+
+            // if the conversation already fits-width, disable zooming out
+            // anymore since entire page
+            // already fits on screen.
+            if (!isWide && !isZoomingIn) {
+                return;
+            }
+            if (isOverviewMode(mAccount)) {
+                if (!isZoomingIn) {
+                    return;
+                }
+            }
+
+            // find the message under focusX/focusY
+            final int y = focusY + mWebView.getScrollY();
+
+            // assuming positioning has happened by now...
+            int msgBottom = mWebView.computeVerticalScrollRange();
+            MessageHeaderItem msgItem = null;
+
+            for (int i = 0, len = mAdapter.getCount(); i < len; i++) {
+                final ConversationOverlayItem item = mAdapter.getItem(i);
+
+                if (y < item.getTop()) {
+                    // focus must have been on the last-seen item.
+                    msgBottom = item.getTop();
+                    break;
+                }
+
+                if (item instanceof MessageHeaderItem && item.canBecomeSnapHeader()) {
+                    msgItem = (MessageHeaderItem) item;
+                }
+            }
+
+            if (msgItem == null) {
+                LogUtils.w(LOG_TAG, "ignoring scaleBegin on y=%d, no matching message.", y);
+                return;
+            }
+
+            // save off scroll position to be restored later in onHeightChange()
+            // TODO: need to take into account focus position, too
+            if (mWebView.getScrollX() > 0) {
+                mMessageScrollXFraction = (float) mWebView.computeHorizontalScrollOffset()
+                        / (mWebView.computeHorizontalScrollRange() -
+                        mWebView.computeHorizontalScrollExtent());
+            } else {
+                mMessageScrollXFraction = 0f;
+            }
+
+            final int msgBodyTop = msgItem.getTop() + msgItem.getHeight();
+            if (msgBodyTop < mWebView.getScrollY()) {
+                mMessageScrollYFraction = ((float) mWebView.getScrollY() - msgBodyTop) /
+                        (msgBottom - msgBodyTop - mWebView.computeVerticalScrollExtent());
+            } else {
+                mMessageScrollYFraction = 0f;
+            }
+
+            final boolean safeForImages = msgItem.getMessage().alwaysShowImages
+                    || msgItem.getShowImages();
+
+            // render the single message HTML
+            mTemplates.startConversation(mWebView.screenPxToWebPx(mSideMarginPx), 0);
+            mTemplates.appendMessageHtml(msgItem.getMessage(), true /* expanded */,
+                    safeForImages, 0, 0);
+            final String html = mTemplates.endConversation(mBaseUri,
+                    mConversation.getBaseUri(mBaseUri), 0, 0, false, false);
+
+            mMessageView.loadDataWithBaseURL(mBaseUri, html, "text/html", "utf-8", null);
+            mMessageViewLoadStartMs = SystemClock.uptimeMillis();
+            mMessageView.setInitialScale(isZoomingIn ? 200 : 1);
+
+            mMessageViewIsLoading = true;
+
+            mMessageGroup.setVisibility(View.VISIBLE);
+            mMessageGroup.setBackgroundColor(0);
+
+            final float scaleOut;
+            if (isZoomingIn) {
+                scaleOut = 1.15f;
+            } else {
+                scaleOut = 0.85f;
+            }
+
+            final int offsetBy = Math.max(0, msgItem.getTop() - mWebView.getScrollY());
+
+            final Interpolator curve = new DecelerateInterpolator(2.5f);
+
+            mWebView.setPivotX(focusX);
+            mWebView.setPivotY(focusY);
+            mWebView.animate().scaleX(scaleOut).scaleY(scaleOut).alpha(0.3f)
+                    .translationY(-offsetBy * 1.2f)
+                    .setDuration(300).setInterpolator(curve)
+                    .setListener(new HardwareLayerEnabler(mWebView));
+
+            msgItem.bindView(mWhooshHeader, false /* measureOnly */);
+            mWhooshHeader.setTranslationY(offsetBy);
+
+            mWhooshHeader.animate().translationY(0).setDuration(300).setInterpolator(curve);
+
+            // immediately hide the message's header view, if present
+            final View zoomingHeader = mConversationContainer.getViewForItem(msgItem);
+
+            final List<View> otherOverlays = mConversationContainer.getOverlayViews();
+            if (zoomingHeader != null) {
+                otherOverlays.remove(zoomingHeader);
+                zoomingHeader.setVisibility(View.INVISIBLE);
+            }
+            for (View v : otherOverlays) {
+                v.animate().alpha(0f).setDuration(150).setInterpolator(curve)
+                        .setListener(new HardwareLayerEnabler(v));
+            }
+
+            // WebView seems to have some optimizations to not draw or load if completely
+            // transparent. Start with some non-zero opacity.
+            mMessageInnerGroup.setAlpha(0.01f);
+
+            final AnimatorListener fadeIn = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mMessageInnerGroup.setLayerType(View.LAYER_TYPE_NONE, null);
+                    if (zoomingHeader != null) {
+                        zoomingHeader.setVisibility(View.VISIBLE);
+                    }
+                    mWebView.animate().cancel();
+                    mWebView.setTranslationY(0);
+                    mWebView.setAlpha(1f);
+                    mWebView.setScaleX(1f);
+                    mWebView.setScaleY(1f);
+                    mMessageGroup.setBackgroundColor(0xffffffff);
+                    for (View v : otherOverlays) {
+                        v.animate().cancel();
+                        v.setAlpha(1f);
+                    }
+                }
+            };
+            mOnMessageLoadComplete = new FragmentRunnable("onMessageLoadComplete") {
+                @Override
+                public void go() {
+                    mWhooshHeader.animate().cancel();
+                    mWhooshHeader.setTranslationY(0);
+                    mMessageInnerGroup.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                    mMessageInnerGroup.setAlpha(0.3f);
+                    mMessageInnerGroup.animate().alpha(1f).setInterpolator(curve)
+                            .setDuration(150).setListener(fadeIn);
+                }
+            };
+
+            setupPictureListener();
+        }
+
+        @SuppressWarnings("deprecation")
+        private void setupPictureListener() {
+            mMessageView.setPictureListener(new WebView.PictureListener() {
+                @Override
+                public void onNewPicture(WebView view, Picture picture) {
+                    LogUtils.w(LOG_TAG, "MessageView.onNewPicture, t=%s",
+                            SystemClock.uptimeMillis() - mMessageViewLoadStartMs);
+                    mMessageView.setPictureListener(null);
+
+                    if (mOnMessageLoadComplete != null) {
+                        mOnMessageLoadComplete.run();
+                    }
+                }
+            });
         }
 
     }

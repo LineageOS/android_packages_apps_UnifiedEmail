@@ -98,6 +98,7 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -347,6 +348,8 @@ public abstract class AbstractActivityController implements ActivityController {
      * and false if it acts on the currently selected conversation
      */
     private boolean mDialogFromSelectedSet;
+
+    private final Deque<UpOrBackHandler> mUpOrBackHandlers = Lists.newLinkedList();
 
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
@@ -1001,6 +1004,42 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
         }
         return handled;
+    }
+
+    @Override
+    public final boolean onUpPressed() {
+        for (UpOrBackHandler h : mUpOrBackHandlers) {
+            if (h.onUpPressed()) {
+                return true;
+            }
+        }
+        return handleUpPress();
+    }
+
+    @Override
+    public final boolean onBackPressed() {
+        for (UpOrBackHandler h : mUpOrBackHandlers) {
+            if (h.onBackPressed()) {
+                return true;
+            }
+        }
+        return handleBackPress();
+    }
+
+    protected abstract boolean handleBackPress();
+    protected abstract boolean handleUpPress();
+
+    @Override
+    public void addUpOrBackHandler(UpOrBackHandler handler) {
+        if (mUpOrBackHandlers.contains(handler)) {
+            return;
+        }
+        mUpOrBackHandlers.addFirst(handler);
+    }
+
+    @Override
+    public void removeUpOrBackHandler(UpOrBackHandler handler) {
+        mUpOrBackHandlers.remove(handler);
     }
 
     @Override

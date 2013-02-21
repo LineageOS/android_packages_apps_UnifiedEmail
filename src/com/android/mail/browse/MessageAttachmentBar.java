@@ -211,6 +211,10 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
                 // If we can install, install.
                 if (MimeType.isInstallable(mAttachment.contentType)) {
+                    // Save to external because the package manager only handles
+                    // file:// uris not content:// uris. We do the same
+                    // workaround in
+                    // UiProvider#getUiAttachmentsCursorForUIAttachments()
                     mActionHandler.showAttachment(AttachmentDestination.EXTERNAL);
                 }
                 // If we can view or play with an on-device app,
