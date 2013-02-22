@@ -790,8 +790,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.hasAttachments = attachments != null && attachments.size() > 0;
         message.attachmentListUri = null;
         message.messageFlags = 0;
-        message.saveUri = null;
-        message.sendUri = null;
         message.alwaysShowImages = false;
         message.attachmentsJson = Attachment.toJSONArray(attachments);
         CharSequence quotedText = mQuotedTextView.getQuotedText();
@@ -1960,29 +1958,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 if (updateExistingMessage) {
                     sendOrSaveMessage.mValues.put(BaseColumns._ID, messageIdToSave);
 
-                    final Bundle result = callAccountSendSaveMethod(resolver,
+                    callAccountSendSaveMethod(resolver,
                             selectedAccount.account, accountMethod, sendOrSaveMessage);
-                    if (result == null) {
-                        // TODO(pwestbro): Once Email supports the call api, remove this block
-                        // If null was returned, then the provider didn't handle the call method
-                        final Uri updateUri = Uri.parse(sendOrSaveMessage.mSave ?
-                                message.saveUri : message.sendUri);
-                        resolver.update(updateUri, sendOrSaveMessage.mValues, null, null);
-                    }
                 } else {
-                    final Uri messageUri;
+                    Uri messageUri = null;
                     final Bundle result = callAccountSendSaveMethod(resolver,
                             selectedAccount.account, accountMethod, sendOrSaveMessage);
                     if (result != null) {
                         // If a non-null value was returned, then the provider handled the call
                         // method
                         messageUri = result.getParcelable(UIProvider.MessageColumns.URI);
-                    } else {
-                        // TODO(pwestbro): Once Email supports the call api, remove this block
-                        messageUri = resolver.insert(
-                                sendOrSaveMessage.mSave ? selectedAccount.account.saveDraftUri
-                                        : selectedAccount.account.sendMessageUri,
-                                sendOrSaveMessage.mValues);
                     }
                     if (sendOrSaveMessage.mSave && messageUri != null) {
                         final Cursor messageCursor = resolver.query(messageUri,

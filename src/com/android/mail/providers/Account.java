@@ -81,23 +81,6 @@ public class Account extends android.accounts.Account implements Parcelable {
     public String accountFromAddresses;
 
     /**
-     * The content provider uri that can be used to save (insert) new draft
-     * messages for this account. NOTE: This might be better to be an update
-     * operation on the messageUri.
-     */
-    @Deprecated
-    public final Uri saveDraftUri;
-
-    /**
-     * The content provider uri that can be used to send a message for this
-     * account.
-     * NOTE: This might be better to be an update operation on the
-     * messageUri.
-     */
-    @Deprecated
-    public final Uri sendMessageUri;
-
-    /**
      * The content provider uri that can be used to expunge message from this
      * account. NOTE: This might be better to be an update operation on the
      * messageUri.
@@ -209,8 +192,6 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
             json.put(UIProvider.AccountColumns.SEARCH_URI, searchUri);
             json.put(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
-            json.put(UIProvider.AccountColumns.SAVE_DRAFT_URI, saveDraftUri);
-            json.put(UIProvider.AccountColumns.SEND_MAIL_URI, sendMessageUri);
             json.put(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
             json.put(UIProvider.AccountColumns.UNDO_URI, undoUri);
             json.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
@@ -291,8 +272,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         searchUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SEARCH_URI));
         accountFromAddresses = json.optString(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES,
                 "");
-        saveDraftUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SAVE_DRAFT_URI));
-        sendMessageUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SEND_MAIL_URI));
         expungeMessageUri = Utils.getValidUri(json
                 .optString(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI));
         undoUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.UNDO_URI));
@@ -340,8 +319,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         fullFolderListUri = in.readParcelable(null);
         searchUri = in.readParcelable(null);
         accountFromAddresses = in.readString();
-        saveDraftUri = in.readParcelable(null);
-        sendMessageUri = in.readParcelable(null);
         expungeMessageUri = in.readParcelable(null);
         undoUri = in.readParcelable(null);
         settingsIntentUri = in.readParcelable(null);
@@ -390,10 +367,6 @@ public class Account extends android.accounts.Account implements Parcelable {
                 cursor.getColumnIndex(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI)));
         searchUri = Utils.getValidUri(
                 cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.SEARCH_URI)));
-        saveDraftUri = Utils.getValidUri(
-                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.SAVE_DRAFT_URI)));
-        sendMessageUri = Utils.getValidUri(
-                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.SEND_MAIL_URI)));
         expungeMessageUri = Utils.getValidUri(cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI)));
         undoUri = Utils.getValidUri(
@@ -480,8 +453,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(fullFolderListUri, 0);
         dest.writeParcelable(searchUri, 0);
         dest.writeString(accountFromAddresses);
-        dest.writeParcelable(saveDraftUri, 0);
-        dest.writeParcelable(sendMessageUri, 0);
         dest.writeParcelable(expungeMessageUri, 0);
         dest.writeParcelable(undoUri, 0);
         dest.writeParcelable(settingsIntentUri, 0);
@@ -525,9 +496,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(",searchUri=");
         sb.append(searchUri);
         sb.append(",saveDraftUri=");
-        sb.append(saveDraftUri);
-        sb.append(",sendMessageUri=");
-        sb.append(sendMessageUri);
         sb.append(",expungeMessageUri=");
         sb.append(expungeMessageUri);
         sb.append(",undoUri=");
@@ -576,8 +544,6 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(fullFolderListUri, other.fullFolderListUri) &&
                 Objects.equal(searchUri, other.searchUri) &&
                 Objects.equal(accountFromAddresses, other.accountFromAddresses) &&
-                Objects.equal(saveDraftUri, other.saveDraftUri) &&
-                Objects.equal(sendMessageUri, other.sendMessageUri) &&
                 Objects.equal(expungeMessageUri, other.expungeMessageUri) &&
                 Objects.equal(undoUri, other.undoUri) &&
                 Objects.equal(settingsIntentUri, other.settingsIntentUri) &&
@@ -618,12 +584,11 @@ public class Account extends android.accounts.Account implements Parcelable {
     public int hashCode() {
         return super.hashCode()
                 ^ Objects.hashCode(name, type, capabilities, providerVersion, uri, folderListUri,
-                        fullFolderListUri, searchUri, accountFromAddresses, saveDraftUri,
-                        sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri,
-                        helpIntentUri, sendFeedbackIntentUri, reauthenticationIntentUri, syncStatus,
-                        composeIntentUri, mimeType, recentFolderListUri, color,
-                        defaultRecentFolderListUri, viewIntentProxyUri, accoutCookieQueryUri,
-                        updateSettingsUri);
+                        fullFolderListUri, searchUri, accountFromAddresses, expungeMessageUri,
+                        undoUri, settingsIntentUri, helpIntentUri, sendFeedbackIntentUri,
+                        reauthenticationIntentUri, syncStatus, composeIntentUri, mimeType,
+                        recentFolderListUri, color, defaultRecentFolderListUri, viewIntentProxyUri,
+                        accoutCookieQueryUri, updateSettingsUri);
     }
 
     /**
@@ -735,8 +700,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         map.put(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
         map.put(UIProvider.AccountColumns.SEARCH_URI, searchUri);
         map.put(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
-        map.put(UIProvider.AccountColumns.SAVE_DRAFT_URI, saveDraftUri);
-        map.put(UIProvider.AccountColumns.SEND_MAIL_URI, sendMessageUri);
         map.put(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
         map.put(UIProvider.AccountColumns.UNDO_URI, undoUri);
         map.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);

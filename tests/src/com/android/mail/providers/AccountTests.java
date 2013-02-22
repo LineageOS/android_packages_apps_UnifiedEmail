@@ -31,8 +31,6 @@ public class AccountTests extends AndroidTestCase {
         dest.writeString("foldersList");
         dest.writeString("searchUri");
         dest.writeString("fromAddresses");
-        dest.writeString("saveDraftUri");
-        dest.writeString("sendMessageUri");
         dest.writeString("expungeMessageUri");
         dest.writeString("undoUri");
         dest.writeString("settingIntentUri");
@@ -48,8 +46,6 @@ public class AccountTests extends AndroidTestCase {
         assertEquals(outAccount.uri, account.uri);
         assertEquals(outAccount.folderListUri, account.folderListUri);
         assertEquals(outAccount.searchUri, account.searchUri);
-        assertEquals(outAccount.saveDraftUri, account.saveDraftUri);
-        assertEquals(outAccount.sendMessageUri, account.sendMessageUri);
         assertEquals(outAccount.expungeMessageUri, account.expungeMessageUri);
     }
 }
