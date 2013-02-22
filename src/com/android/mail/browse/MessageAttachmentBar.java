@@ -119,7 +119,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
                 attachment.getContentType());
 
-        if (prevAttachment == null || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
+        if (prevAttachment == null
+                || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
             mTitle.setText(attachment.getName());
         }
 

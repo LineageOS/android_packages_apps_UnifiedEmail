@@ -118,7 +118,8 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
                 attachment.getContentType());
 
-        if (prevAttachment == null || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
+        if (prevAttachment == null
+                || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
             mTitle.setText(attachment.getName());
         }
 
