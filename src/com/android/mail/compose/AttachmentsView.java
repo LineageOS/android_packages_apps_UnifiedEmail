@@ -37,6 +37,8 @@ import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.MimeType;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
@@ -50,7 +52,7 @@ import java.util.ArrayList;
 class AttachmentsView extends LinearLayout {
     private static final String LOG_TAG = LogTag.getLogTag();
 
-    private ArrayList<Attachment> mAttachments;
+    private final ArrayList<Attachment> mAttachments;
     private AttachmentAddedOrDeletedListener mChangeListener;
     private AttachmentTileGrid mTileGrid;
     private LinearLayout mAttachmentLayout;
@@ -222,8 +224,7 @@ class AttachmentsView extends LinearLayout {
 
         final Attachment attachment = new Attachment();
         attachment.uri = null; // URI will be assigned by the provider upon send/save
-        attachment.name = null;
-        attachment.contentType = contentType;
+        attachment.setName(null);
         attachment.size = 0;
         attachment.contentUri = contentUri;
         attachment.thumbnailUri = contentUri;
@@ -236,7 +237,7 @@ class AttachmentsView extends LinearLayout {
             if (metadataCursor != null) {
                 try {
                     if (metadataCursor.moveToNext()) {
-                        attachment.name = metadataCursor.getString(0);
+                        attachment.setName(metadataCursor.getString(0));
                         attachment.size = metadataCursor.getInt(1);
                     }
                 } finally {
@@ -255,7 +256,7 @@ class AttachmentsView extends LinearLayout {
                 metadataCursor = getOptionalColumn(contentResolver, contentUri,
                         OpenableColumns.DISPLAY_NAME);
                 if (metadataCursor != null && metadataCursor.moveToNext()) {
-                    attachment.name = metadataCursor.getString(0);
+                    attachment.setName(metadataCursor.getString(0));
                 }
             } finally {
                 if (metadataCursor != null) metadataCursor.close();
@@ -278,10 +279,11 @@ class AttachmentsView extends LinearLayout {
             throw new AttachmentFailureException("Security Exception from attachment uri", e);
         }
 
-        if (attachment.name == null) {
-            attachment.name = contentUri.getLastPathSegment();
+        if (attachment.getName() == null) {
+            attachment.setName(contentUri.getLastPathSegment());
         }
 
+        attachment.setContentType(contentType);
         return attachment;
     }
 

@@ -55,7 +55,7 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
         final int width = holder.getThumbnailWidth();
         final int height = holder.getThumbnailHeight();
         if (attachment == null || width == 0 || height == 0
-                || !ImageUtils.isImageMimeType(attachment.contentType)) {
+                || !ImageUtils.isImageMimeType(attachment.getContentType())) {
             holder.setThumbnailToDefault();
             return;
         }

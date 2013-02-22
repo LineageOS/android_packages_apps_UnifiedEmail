@@ -52,7 +52,7 @@ public class Attachment implements Parcelable {
     /**
      * Attachment file name. See {@link AttachmentColumns#NAME}.
      */
-    public String name;
+    private String name;
 
     /**
      * Attachment size in bytes. See {@link AttachmentColumns#SIZE}.
@@ -73,7 +73,8 @@ public class Attachment implements Parcelable {
      *
      * @see AttachmentColumns#CONTENT_TYPE
      */
-    public String contentType;
+    private String contentType;
+    private String inferredContentType;
 
     /**
      * @see AttachmentColumns#STATE
@@ -267,7 +268,7 @@ public class Attachment implements Parcelable {
     }
 
     public boolean isInstallable() {
-        return MimeType.isInstallable(contentType);
+        return MimeType.isInstallable(getContentType());
     }
 
     public boolean shouldShowProgress() {
@@ -298,6 +299,33 @@ public class Attachment implements Parcelable {
                     : uri.buildUpon().clearQuery().build();
         }
         return mIdentifierUri;
+    }
+
+    public String getContentType() {
+        if (TextUtils.isEmpty(inferredContentType)) {
+            inferredContentType = MimeType.inferMimeType(name, contentType);
+        }
+        return inferredContentType;
+    }
+
+    public void setContentType(String contentType) {
+        if (!TextUtils.equals(this.contentType, contentType)) {
+            this.inferredContentType = null;
+            this.contentType = contentType;
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean setName(String name) {
+        if (!TextUtils.equals(this.name, name)) {
+            this.inferredContentType = null;
+            this.name = name;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -377,9 +405,9 @@ public class Attachment implements Parcelable {
         return TextUtils.join("|", Lists.newArrayList(
                 partId == null ? "" : partId,
                 name == null ? "" : name.replaceAll("[|\n]", ""),
-                contentType,
+                getContentType(),
                 String.valueOf(size),
-                contentType,
+                getContentType(),
                 contentUri != null ? SERVER_ATTACHMENT : LOCAL_FILE,
                 contentUri));
     }

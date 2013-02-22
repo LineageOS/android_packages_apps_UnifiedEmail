@@ -152,8 +152,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
 
     @Override
     public void viewAttachment() {
-        if (ImageUtils.isImageMimeType(
-                Utils.normalizeMimeType(mAttachment.name, mAttachment.contentType))) {
+        if (ImageUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.getContentType()))) {
             final PhotoViewIntentBuilder builder =
                     Intents.newPhotoViewIntentBuilder(getContext(), MailPhotoViewActivity.class);
             builder
@@ -168,8 +167,8 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        Utils.setIntentDataAndTypeAndNormalize(intent, mAttachment.contentUri, mAttachment.name,
-                mAttachment.contentType);
+        Utils.setIntentDataAndTypeAndNormalize(
+                intent, mAttachment.contentUri, mAttachment.getContentType());
         try {
             getContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {
