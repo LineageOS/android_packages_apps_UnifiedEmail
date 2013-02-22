@@ -182,6 +182,10 @@ public class ViewMode {
         return mode == CONVERSATION || mode == SEARCH_RESULTS_CONVERSATION;
     }
 
+    public boolean isWaitingForSync() {
+        return mMode == WAITING_FOR_ACCOUNT_INITIALIZATION;
+    }
+
     /**
      * Restoring from a saved state restores only the mode. It does not restore the listeners of
      * this object.
