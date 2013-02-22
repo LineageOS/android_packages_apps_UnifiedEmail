@@ -108,7 +108,8 @@ public final class OnePaneController extends AbstractActivityController {
     public void resetActionBarIcon() {
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.CONVERSATION_LIST
-                && inInbox(mAccount, mConvListContext)) {
+                && inInbox(mAccount, mConvListContext)
+                || mViewMode.isWaitingForSync()) {
             mActionBarView.removeBackButton();
         } else {
             mActionBarView.setBackButton();
