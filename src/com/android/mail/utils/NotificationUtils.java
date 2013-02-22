@@ -376,11 +376,15 @@ public class NotificationUtils {
             final boolean getAttention) {
         boolean ignoreUnobtrusiveSetting = false;
 
+        final int notificationId = getNotificationId(account.name, folder);
+
         // Update the notification map
         final NotificationMap notificationMap = getNotificationMap(context);
         final NotificationKey key = new NotificationKey(account, folder);
         if (unreadCount == 0) {
             notificationMap.remove(key);
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
+                    .cancel(notificationId);
         } else {
             if (!notificationMap.containsKey(key)) {
                 // This account previously didn't have any unread mail; ignore the "unobtrusive
@@ -398,7 +402,6 @@ public class NotificationUtils {
                     getAttention);
         }
 
-        final int notificationId = getNotificationId(account.name, folder);
         if (NotificationActionUtils.sUndoNotifications.get(notificationId) == null) {
             validateNotifications(context, folder, account, getAttention, ignoreUnobtrusiveSetting,
                     key);
