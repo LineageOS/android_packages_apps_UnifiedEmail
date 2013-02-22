@@ -129,8 +129,6 @@ public class UIProvider {
             .put(AccountColumns.FULL_FOLDER_LIST_URI, String.class)
             .put(AccountColumns.SEARCH_URI, String.class)
             .put(AccountColumns.ACCOUNT_FROM_ADDRESSES, String.class)
-            .put(AccountColumns.SAVE_DRAFT_URI, String.class)
-            .put(AccountColumns.SEND_MAIL_URI, String.class)
             .put(AccountColumns.EXPUNGE_MESSAGE_URI, String.class)
             .put(AccountColumns.UNDO_URI, String.class)
             .put(AccountColumns.SETTINGS_INTENT_URI, String.class)
@@ -341,22 +339,6 @@ public class UIProvider {
          * custom from addresses for this account or null if there are none.
          */
         public static final String ACCOUNT_FROM_ADDRESSES = "accountFromAddresses";
-
-        /**
-         * This string column contains the content provider uri that can be used to save (insert)
-         * new draft messages for this account. NOTE: This might be better to
-         * be an update operation on the messageUri.
-         */
-        @Deprecated
-        public static final String SAVE_DRAFT_URI = "saveDraftUri";
-
-        /**
-         * This string column contains the content provider uri that can be used to send
-         * a message for this account.
-         * NOTE: This might be better to be an update operation on the messageUri.
-         */
-        @Deprecated
-        public static final String SEND_MAIL_URI = "sendMailUri";
 
         /**
          * This string column contains the content provider uri that can be used
@@ -1298,8 +1280,6 @@ public class UIProvider {
         MessageColumns.ATTACHMENT_LIST_URI,
         MessageColumns.MESSAGE_FLAGS,
         MessageColumns.JOINED_ATTACHMENT_INFOS,
-        MessageColumns.SAVE_MESSAGE_URI,
-        MessageColumns.SEND_MESSAGE_URI,
         MessageColumns.ALWAYS_SHOW_IMAGES,
         MessageColumns.READ,
         MessageColumns.SEEN,
@@ -1346,22 +1326,20 @@ public class UIProvider {
     public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 19;
     public static final int MESSAGE_FLAGS_COLUMN = 20;
     public static final int MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN = 21;
-    public static final int MESSAGE_SAVE_URI_COLUMN = 22;
-    public static final int MESSAGE_SEND_URI_COLUMN = 23;
-    public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 24;
-    public static final int MESSAGE_READ_COLUMN = 25;
-    public static final int MESSAGE_SEEN_COLUMN = 26;
-    public static final int MESSAGE_STARRED_COLUMN = 27;
-    public static final int QUOTED_TEXT_OFFSET_COLUMN = 28;
-    public static final int MESSAGE_ATTACHMENTS_COLUMN = 29;
-    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 30;
-    public static final int MESSAGE_ACCOUNT_URI_COLUMN = 31;
-    public static final int MESSAGE_EVENT_INTENT_COLUMN = 32;
-    public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 33;
-    public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 34;
-    public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 35;
-    public static final int MESSAGE_VIA_DOMAIN_COLUMN = 36;
-    public static final int MESSAGE_IS_SENDING_COLUMN = 37;
+    public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 22;
+    public static final int MESSAGE_READ_COLUMN = 23;
+    public static final int MESSAGE_SEEN_COLUMN = 24;
+    public static final int MESSAGE_STARRED_COLUMN = 25;
+    public static final int QUOTED_TEXT_OFFSET_COLUMN = 26;
+    public static final int MESSAGE_ATTACHMENTS_COLUMN = 27;
+    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 28;
+    public static final int MESSAGE_ACCOUNT_URI_COLUMN = 29;
+    public static final int MESSAGE_EVENT_INTENT_COLUMN = 30;
+    public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 31;
+    public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 32;
+    public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 33;
+    public static final int MESSAGE_VIA_DOMAIN_COLUMN = 34;
+    public static final int MESSAGE_IS_SENDING_COLUMN = 35;
 
     public static final class CursorStatus {
         // The cursor is actively loading more data
@@ -1505,19 +1483,6 @@ public class UIProvider {
          */
         @Deprecated
         public static final String JOINED_ATTACHMENT_INFOS = "joinedAttachmentInfos";
-        /**
-         * This string column contains the content provider URI for saving this
-         * message.
-         */
-        @Deprecated
-        public static final String SAVE_MESSAGE_URI = "saveMessageUri";
-        /**
-         * This string column contains content provider URI for sending this
-         * message.
-         */
-        @Deprecated
-        public static final String SEND_MESSAGE_URI = "sendMessageUri";
-
         /**
          * This integer column represents whether the user has specified that images should always
          * be shown.  The value of "1" indicates that the user has specified that images should be

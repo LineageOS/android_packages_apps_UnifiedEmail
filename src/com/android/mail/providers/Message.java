@@ -132,16 +132,6 @@ public class Message implements Parcelable {
      */
     public long messageFlags;
     /**
-     * @see UIProvider.MessageColumns#SAVE_MESSAGE_URI
-     */
-    @Deprecated
-    public String saveUri;
-    /**
-     * @see UIProvider.MessageColumns#SEND_MESSAGE_URI
-     */
-    @Deprecated
-    public String sendUri;
-    /**
      * @see UIProvider.MessageColumns#ALWAYS_SHOW_IMAGES
      */
     public boolean alwaysShowImages;
@@ -243,8 +233,6 @@ public class Message implements Parcelable {
         dest.writeInt(hasAttachments ? 1 : 0);
         dest.writeParcelable(attachmentListUri, 0);
         dest.writeLong(messageFlags);
-        dest.writeString(saveUri);
-        dest.writeString(sendUri);
         dest.writeInt(alwaysShowImages ? 1 : 0);
         dest.writeInt(quotedTextOffset);
         dest.writeString(attachmentsJson);
@@ -279,8 +267,6 @@ public class Message implements Parcelable {
         hasAttachments = in.readInt() != 0;
         attachmentListUri = in.readParcelable(null);
         messageFlags = in.readLong();
-        saveUri = in.readString();
-        sendUri = in.readString();
         alwaysShowImages = in.readInt() != 0;
         quotedTextOffset = in.readInt();
         attachmentsJson = in.readString();
@@ -346,10 +332,6 @@ public class Message implements Parcelable {
             attachmentListUri = hasAttachments && !TextUtils.isEmpty(attachmentsUri) ? Uri
                     .parse(attachmentsUri) : null;
             messageFlags = cursor.getLong(UIProvider.MESSAGE_FLAGS_COLUMN);
-            saveUri = cursor
-                    .getString(UIProvider.MESSAGE_SAVE_URI_COLUMN);
-            sendUri = cursor
-                    .getString(UIProvider.MESSAGE_SEND_URI_COLUMN);
             alwaysShowImages = cursor.getInt(UIProvider.MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN) != 0;
             read = cursor.getInt(UIProvider.MESSAGE_READ_COLUMN) != 0;
             seen = cursor.getInt(UIProvider.MESSAGE_SEEN_COLUMN) != 0;
