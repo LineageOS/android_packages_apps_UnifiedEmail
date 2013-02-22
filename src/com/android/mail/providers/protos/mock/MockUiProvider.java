@@ -357,8 +357,6 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES, replyFroms.toString());
         accountMap.put(AccountColumns.FOLDER_LIST_URI, Uri.parse(accountUri + "/folders"));
         accountMap.put(AccountColumns.SEARCH_URI, Uri.parse(accountUri + "/search"));
-        accountMap.put(AccountColumns.SAVE_DRAFT_URI, Uri.parse(accountUri + "/saveDraft"));
-        accountMap.put(AccountColumns.SEND_MAIL_URI, Uri.parse(accountUri + "/sendMail"));
         accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI,
                 Uri.parse(accountUri + "/expungeMessage"));
         accountMap.put(AccountColumns.UNDO_URI, Uri.parse(accountUri + "/undo"));
@@ -468,8 +466,6 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.FULL_FOLDER_LIST_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEARCH_URI), 0);
         dest.writeString((String) accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES));
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SAVE_DRAFT_URI), 0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEND_MAIL_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.UNDO_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SETTINGS_INTENT_URI), 0);
