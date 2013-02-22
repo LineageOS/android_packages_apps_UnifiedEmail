@@ -115,12 +115,12 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         mSaveClicked = !attachment.isDownloading() ? false : mSaveClicked;
 
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
-                " contentUri=%s MIME=%s", attachment.name, attachment.state,
+                " contentUri=%s MIME=%s", attachment.getName(), attachment.state,
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
-                attachment.contentType);
+                attachment.getContentType());
 
-        if (prevAttachment == null || !TextUtils.equals(attachment.name, prevAttachment.name)) {
-            mTitle.setText(attachment.name);
+        if (prevAttachment == null || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
+            mTitle.setText(attachment.getName());
         }
 
         if (prevAttachment == null || attachment.size != prevAttachment.size) {
@@ -210,7 +210,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 // overflow items.
 
                 // If we can install, install.
-                if (MimeType.isInstallable(mAttachment.contentType)) {
+                if (MimeType.isInstallable(mAttachment.getContentType())) {
                     // Save to external because the package manager only handles
                     // file:// uris not content:// uris. We do the same
                     // workaround in
@@ -219,8 +219,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 }
                 // If we can view or play with an on-device app,
                 // view or play.
-                else if (MimeType.isViewable(getContext(), mAttachment.contentUri, mAttachment.name,
-                                mAttachment.contentType)) {
+                else if (MimeType.isViewable(
+                        getContext(), mAttachment.contentUri, mAttachment.getContentType())) {
                     mActionHandler.showAttachment(AttachmentDestination.CACHE);
                 }
                 // If we can only preview the attachment, preview.
@@ -230,7 +230,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 // Otherwise, if we cannot do anything, show the info dialog.
                 else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    int dialogMessage = MimeType.isBlocked(mAttachment.contentType)
+                    int dialogMessage = MimeType.isBlocked(mAttachment.getContentType())
                             ? R.string.attachment_type_blocked : R.string.no_application_found;
                     builder.setTitle(R.string.more_info_attachment)
                            .setMessage(dialogMessage)
@@ -276,7 +276,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         Utils.setIntentDataAndTypeAndNormalize(
-                intent, mAttachment.contentUri, mAttachment.name, mAttachment.contentType);
+                intent, mAttachment.contentUri, mAttachment.getContentType());
         try {
             getContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {
