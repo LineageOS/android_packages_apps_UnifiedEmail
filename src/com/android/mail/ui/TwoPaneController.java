@@ -253,7 +253,7 @@ public final class TwoPaneController extends AbstractActivityController {
     public void resetActionBarIcon() {
         // On two-pane, the back button is only removed in the conversation list mode, and shown
         // for every other condition.
-        if (mViewMode.isListMode()) {
+        if (mViewMode.isListMode() || mViewMode.isWaitingForSync()) {
             mActionBarView.removeBackButton();
         } else {
             mActionBarView.setBackButton();
