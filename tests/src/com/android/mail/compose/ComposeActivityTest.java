@@ -122,6 +122,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
                 currentAccount.account, null);
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -154,6 +155,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
                 currentAccount.account, null);
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -192,6 +194,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
                 currentAccount.account, null);
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -214,6 +217,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final String refMessageFromAccount = refMessage.getFrom();
 
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
                 String[] to = activity.getToAddresses();
@@ -237,6 +241,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final String refReplyToAccount = refMessage.getReplyTo();
 
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
                 String[] to = activity.getToAddresses();
@@ -262,6 +267,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         refMessage.setFrom("Account Test <account1@mockuiprovider.com>");
         refMessage.setTo("test1@gmail.com");
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
                 String[] to = activity.getToAddresses();
@@ -287,6 +293,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         refMessage.setFrom("Account Test <account1@mockuiprovider.com>");
         refMessage.setTo("test1@gmail.com, test2@gmail.com");
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -314,6 +321,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         refMessage.setTo("test1@gmail.com, test2@gmail.com");
         refMessage.setCc("testcc@gmail.com");
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -340,6 +348,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final String refMessageFromAccount = refMessage.getFrom();
 
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -364,6 +373,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final String refReplyToAccount = refMessage.getReplyTo();
 
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -410,6 +420,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final String refMessageFromAccount = refMessage.getFrom();
 
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -440,6 +451,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final Account account = mAccount;
 
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.FORWARD);
                 String[] to = activity.getToAddresses();
@@ -459,6 +471,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final Account account = mAccount;
 
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.COMPOSE);
                 String[] to = activity.getToAddresses();
@@ -483,6 +496,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final Account account = mAccount;
 
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
                 String[] to = activity.getToAddresses();
@@ -520,6 +534,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 null);
 
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
                 String[] to = activity.getToAddresses();
@@ -559,6 +574,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
                 currentAccount.account, null);
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -601,6 +617,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
                 currentAccount.account, null);
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
                 String[] to = activity.getToAddresses();
@@ -621,12 +638,12 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     private String createAttachmentsJson() {
         Attachment attachment1 = new Attachment();
         attachment1.contentUri = Uri.parse("www.google.com");
-        attachment1.contentType = "img/jpeg";
-        attachment1.name = "attachment1";
+        attachment1.setContentType("img/jpeg");
+        attachment1.setName("attachment1");
         Attachment attachment2 = new Attachment();
         attachment2.contentUri = Uri.parse("www.google.com");
-        attachment2.contentType = "img/jpeg";
-        attachment2.name = "attachment2";
+        attachment2.setContentType("img/jpeg");
+        attachment2.setName("attachment2");
         JSONArray attachments = new JSONArray();
         try {
             attachments.put(attachment1.toJSON());
@@ -647,6 +664,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.mRefMessage = refMessage;
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
@@ -681,6 +699,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.mRefMessage = refMessage;
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
@@ -719,6 +738,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.mRefMessage = refMessage;
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
@@ -764,6 +784,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         refMessage.attachmentsJson = createAttachmentsJson();
         final ComposeActivity activity = mActivity;
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 activity.mRefMessage = refMessage;
                 activity.initAttachments(refMessage);

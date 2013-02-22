@@ -74,7 +74,7 @@ public class AttachmentProgressDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
         mDialog = new ProgressDialog(getActivity());
         mDialog.setTitle(R.string.fetching_attachment);
-        mDialog.setMessage(mAttachment.name);
+        mDialog.setMessage(mAttachment.getName());
         mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mDialog.setIndeterminate(true);
         mDialog.setMax(mAttachment.size);
