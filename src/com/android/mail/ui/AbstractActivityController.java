@@ -1510,6 +1510,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // stop listening to the cursor on e.g. configuration changes
         if (mConversationListCursor != null) {
             mConversationListCursor.removeListener(this);
+            mConversationListCursor = null;
         }
         // unregister the ViewPager's observer on the conversation cursor
         mPagerController.onDestroy();
