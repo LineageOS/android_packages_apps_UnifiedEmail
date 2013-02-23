@@ -15,21 +15,39 @@
  */
 package com.android.mail.utils;
 
-import com.google.common.collect.ImmutableMap;
-
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Attachment;
 
+import com.google.common.collect.ImmutableMap;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.File;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 public class AttachmentUtils {
+    private static final String LOG_TAG = LogTag.getLogTag();
+
     private static final int KILO = 1024;
     private static final int MEGA = KILO * KILO;
+
+    /** Any IO reads should be limited to this timeout */
+    private static final long READ_TIMEOUT = 3600 * 1000;
+
+    private static final float MIN_CACHE_THRESHOLD = 0.25f;
+    private static final int MIN_CACHE_AVAILABLE_SPACE_BYTES = 100 * 1024 * 1024;
 
     /**
      * Singleton map of MIME->friendly description
@@ -132,10 +150,110 @@ public class AttachmentUtils {
     }
 
     public static String getIdentifier(final Attachment attachment) {
-        Uri uri = attachment.contentUri;
+        final Uri uri = attachment.contentUri;
         if (uri != null) {
             return uri.toString();
         }
         return null;
+    }
+
+
+    /**
+     * Cache the file specified by the given attachment.  This will attempt to use any
+     * {@link ParcelFileDescriptor} in the Bundle parameter
+     * @param context
+     * @param attachment  Attachment to be cached
+     * @param attachmentFds optional {@link Bundle} containing {@link ParcelFileDescriptor} if the
+     *        caller has opened the files
+     * @return String file path for the cached attachment
+     */
+    // TODO(pwestbro): Once the attachment has a field for the cached path, this method should be
+    // changed to update the attachment, and return a boolean indicating that the attachment has
+    // been cached.
+    public static String cacheAttachmentUri(Context context, Attachment attachment,
+            Bundle attachmentFds) {
+        final File cacheDir = context.getCacheDir();
+
+        final long totalSpace = cacheDir.getTotalSpace();
+        if (attachment.size > 0) {
+            final long usableSpace = cacheDir.getUsableSpace() - attachment.size;
+            if (isLowSpace(totalSpace, usableSpace)) {
+                LogUtils.w(LOG_TAG, "Low memory (%d/%d). Can't cache attachment %s",
+                        usableSpace, totalSpace, attachment);
+                return null;
+            }
+        }
+        InputStream inputStream = null;
+        FileOutputStream outputStream = null;
+        File file = null;
+        try {
+            final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-kk:mm:ss");
+            file = File.createTempFile(dateFormat.format(new Date()), ".attachment", cacheDir);
+            final ParcelFileDescriptor fileDescriptor = attachmentFds != null
+                    && attachment.contentUri != null ? (ParcelFileDescriptor) attachmentFds
+                    .getParcelable(attachment.contentUri.toString())
+                    : null;
+            if (fileDescriptor != null) {
+                // Get the input stream from the file descriptor
+                inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+            } else {
+                // Attempt to open the file
+                inputStream = context.getContentResolver().openInputStream(attachment.contentUri);
+            }
+            outputStream = new FileOutputStream(file);
+            final long now = SystemClock.elapsedRealtime();
+            final byte[] bytes = new byte[1024];
+            while (true) {
+                int len = inputStream.read(bytes);
+                if (len <= 0) {
+                    break;
+                }
+                outputStream.write(bytes, 0, len);
+                if (SystemClock.elapsedRealtime() - now > READ_TIMEOUT) {
+                    throw new IOException("Timed out reading attachment data");
+                }
+            }
+            outputStream.flush();
+            String cachedFileUri = file.getAbsolutePath();
+            LogUtils.d(LOG_TAG, "Cached %s to %s", attachment.contentUri, cachedFileUri);
+
+            final long usableSpace = cacheDir.getUsableSpace();
+            if (isLowSpace(totalSpace, usableSpace)) {
+                file.delete();
+                LogUtils.w(LOG_TAG, "Low memory (%d/%d). Can't cache attachment %s",
+                        usableSpace, totalSpace, attachment);
+                cachedFileUri = null;
+            }
+
+            return cachedFileUri;
+        } catch (IOException e) {
+            // Catch any exception here to allow for unexpected failures during caching se we don't
+            // leave app in inconsistent state as we call this method outside of a transaction for
+            // performance reasons.
+            LogUtils.e(LOG_TAG, e, "Failed to cache attachment %s", attachment);
+            if (file != null) {
+                file.delete();
+            }
+            return null;
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                LogUtils.w(LOG_TAG, e, "Failed to close stream");
+            }
+        }
+    }
+
+    private static boolean isLowSpace(long totalSpace, long usableSpace) {
+        // For caching attachments we want to enable caching if there is
+        // more than 100MB available, or if 25% of total space is free on devices
+        // where the cache partition is < 400MB.
+        return usableSpace <
+                Math.min(totalSpace * MIN_CACHE_THRESHOLD, MIN_CACHE_AVAILABLE_SPACE_BYTES);
     }
 }
