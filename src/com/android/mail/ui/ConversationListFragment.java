@@ -510,6 +510,16 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        final ConversationCursor conversationCursor = getConversationListCursor();
+        if (conversationCursor != null) {
+            conversationCursor.handleNotificationActions();
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
     }

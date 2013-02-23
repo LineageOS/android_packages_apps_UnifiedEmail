@@ -52,7 +52,7 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
                 account.supportsCapability(AccountCapabilities.INITIAL_CONVERSATION_LIMIT);
         // Initialize the state of the conversation cursor
         mConversationCursor = new ConversationCursor(
-                activity, mUri, mInitialConversationLimit, mName);
+                activity, mUri, mInitialConversationLimit, name);
         addLoader();
     }
 
