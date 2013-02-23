@@ -664,7 +664,7 @@ public class Utils {
                 Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.setDataAndType(conversation.uri, account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
-        intent.putExtra(Utils.EXTRA_FOLDER, Folder.toString(folder));
+        intent.putExtra(Utils.EXTRA_FOLDER, folder);
         intent.putExtra(Utils.EXTRA_CONVERSATION, conversation);
         return intent;
     }
@@ -687,7 +687,7 @@ public class Utils {
                 | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.setDataAndType(folder.uri, account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
-        intent.putExtra(Utils.EXTRA_FOLDER, Folder.toString(folder));
+        intent.putExtra(Utils.EXTRA_FOLDER, folder);
         return intent;
     }
 

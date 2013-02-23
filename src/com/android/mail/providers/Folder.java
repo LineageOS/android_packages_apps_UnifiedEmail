@@ -29,8 +29,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -39,7 +37,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * A folder is a collection of conversations, and perhaps other folders.
@@ -54,7 +51,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
     // TODO: remove this once we figure out which folder is returning a "null" string as the
     // conversation list uri
     private static final String NULL_STRING_URI = "null";
-    private static final String LOG_TAG = LogTag.getLogTag();
 
     // Try to match the order of members with the order of constants in UIProvider.
 
@@ -167,11 +163,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
 
     /** An immutable, empty conversation list */
     public static final Collection<Folder> EMPTY = Collections.emptyList();
-
-    @Deprecated
-    public static final String SPLITTER = "^*^";
-    @Deprecated
-    private static final Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
 
     // TODO: we desperately need a Builder here
     public Folder(int id, String persistentId, Uri uri, String name, int capabilities,
@@ -306,13 +297,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return folders;
     }
 
-    private static Uri getValidUri(String uri) {
-        if (TextUtils.isEmpty(uri)) {
-            return null;
-        }
-        return Uri.parse(uri);
-    }
-
     /**
      * Constructor that leaves everything uninitialized.
      */
@@ -330,7 +314,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return new Folder();
     }
 
-    @SuppressWarnings("hiding")
     public static final ClassLoaderCreator<Folder> CREATOR = new ClassLoaderCreator<Folder>() {
         @Override
         public Folder createFromParcel(Parcel source) {
@@ -431,119 +414,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
 
     public int getForegroundColor(int defaultColor) {
         return TextUtils.isEmpty(fgColor) ? defaultColor : Integer.parseInt(fgColor);
-    }
-
-    @Deprecated
-    public static Folder fromString(String inString) {
-        if (TextUtils.isEmpty(inString)) {
-            return null;
-        }
-        final Folder f = new Folder();
-        int indexOf = inString.indexOf(SPLITTER);
-        int id = -1;
-        if (indexOf != -1) {
-            id = Integer.valueOf(inString.substring(0, indexOf));
-        } else {
-            // If no separator was found, we can't parse this folder and the
-            // TextUtils.split call would also fail. Return null.
-            LogUtils.w(LOG_TAG, "Problem parsing folderId: original string: %s", inString);
-            return null;
-        }
-        final String[] split = TextUtils.split(inString, SPLITTER_REGEX);
-        if (split.length < 21) {
-            return null;
-        }
-        f.id = id;
-        int index = 1;
-        f.persistentId = split[index++];
-        f.uri = Folder.getValidUri(split[index++]);
-        f.name = split[index++];
-        f.hasChildren = Integer.parseInt(split[index++]) != 0;
-        f.capabilities = Integer.parseInt(split[index++]);
-        f.syncWindow = Integer.parseInt(split[index++]);
-        f.conversationListUri = getValidUri(split[index++]);
-        f.childFoldersListUri = getValidUri(split[index++]);
-        f.unreadCount = Integer.parseInt(split[index++]);
-        f.totalCount = Integer.parseInt(split[index++]);
-        f.refreshUri = getValidUri(split[index++]);
-        f.syncStatus = Integer.parseInt(split[index++]);
-        f.lastSyncResult = Integer.parseInt(split[index++]);
-        f.type = Integer.parseInt(split[index++]);
-        f.iconResId = Integer.parseInt(split[index++]);
-        f.bgColor = split[index++];
-        f.fgColor = split[index++];
-        f.loadMoreUri = getValidUri(split[index++]);
-        f.hierarchicalDesc = split[index++];
-        f.parent = Folder.fromString(split[index++]);
-        return f;
-    }
-
-    /**
-     * Create a string representation of a folder.
-     */
-    @Deprecated
-    public static String createAsString(int id, String persistentId, Uri uri, String name,
-            boolean hasChildren, int capabilities, int syncWindow, Uri convListUri,
-            Uri childFoldersListUri, int unreadCount, int totalCount, Uri refreshUri,
-            int syncStatus, int lastSyncResult, int type, long iconResId, String bgColor,
-            String fgColor, Uri loadMore, String hierarchicalDesc, Folder parent) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(id);
-        builder.append(SPLITTER);
-        builder.append(persistentId != null ? persistentId : "");
-        builder.append(SPLITTER);
-        builder.append(uri != null ? uri : "");
-        builder.append(SPLITTER);
-        builder.append(name != null ? name : "");
-        builder.append(SPLITTER);
-        builder.append(hasChildren ? 1 : 0);
-        builder.append(SPLITTER);
-        builder.append(capabilities);
-        builder.append(SPLITTER);
-        builder.append(syncWindow);
-        builder.append(SPLITTER);
-        builder.append(convListUri != null ? convListUri : "");
-        builder.append(SPLITTER);
-        builder.append(childFoldersListUri != null ? childFoldersListUri : "");
-        builder.append(SPLITTER);
-        builder.append(unreadCount);
-        builder.append(SPLITTER);
-        builder.append(totalCount);
-        builder.append(SPLITTER);
-        builder.append(refreshUri != null ? refreshUri : "");
-        builder.append(SPLITTER);
-        builder.append(syncStatus);
-        builder.append(SPLITTER);
-        builder.append(lastSyncResult);
-        builder.append(SPLITTER);
-        builder.append(type);
-        builder.append(SPLITTER);
-        builder.append(iconResId);
-        builder.append(SPLITTER);
-        builder.append(bgColor != null ? bgColor : "");
-        builder.append(SPLITTER);
-        builder.append(fgColor != null ? fgColor : "");
-        builder.append(SPLITTER);
-        builder.append(loadMore != null ? loadMore : "");
-        builder.append(SPLITTER);
-        builder.append(hierarchicalDesc != null ? hierarchicalDesc : "");
-        builder.append(SPLITTER);
-        if (parent != null) {
-            builder.append(Folder.toString(parent));
-        } else {
-            builder.append("");
-        }
-        return builder.toString();
-    }
-
-    @Deprecated
-    public static String toString(Folder folder) {
-        return createAsString(folder.id, folder.persistentId, folder.uri, folder.name,
-                folder.hasChildren, folder.capabilities, folder.syncWindow,
-                folder.conversationListUri, folder.childFoldersListUri, folder.unreadCount,
-                folder.totalCount, folder.refreshUri, folder.syncStatus, folder.lastSyncResult,
-                folder.type, folder.iconResId, folder.bgColor, folder.fgColor, folder.loadMoreUri,
-                folder.hierarchicalDesc, folder.parent);
     }
 
     /**
