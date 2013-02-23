@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -47,6 +48,9 @@ import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.ui.ConversationListFragment;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.NotificationActionUtils;
+import com.android.mail.utils.NotificationActionUtils.NotificationAction;
+import com.android.mail.utils.NotificationActionUtils.NotificationActionType;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
@@ -123,6 +127,8 @@ public final class ConversationCursor implements Cursor {
     private boolean mInitialConversationLimit = false;
     /** A list of mostly-dead items */
     private final List<Conversation> mMostlyDead = Lists.newArrayList();
+    /** A list of items pending removal from a notification action. These may be undone later. */
+    private final Set<Conversation> mNotificationTempDeleted = Sets.newHashSet();
     /** The name of the loader */
     private final String mName;
     /** Column names for this cursor */
@@ -148,6 +154,8 @@ public final class ConversationCursor implements Cursor {
     private Uri qUri;
     private String[] qProjection;
 
+    private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
+
     private void setCursor(UnderlyingCursorWrapper cursor) {
         // If we have an existing underlying cursor, make sure it's closed
         if (mUnderlyingCursor != null) {
@@ -158,6 +166,9 @@ public final class ConversationCursor implements Cursor {
         mRefreshReady = false;
         mRefreshTask = null;
         resetCursor(cursor);
+
+        resetNotificationActions();
+        handleNotificationActions();
     }
 
     public ConversationCursor(Activity activity, Uri uri, boolean initialConversationLimit,
@@ -168,7 +179,18 @@ public final class ConversationCursor implements Cursor {
         mName = name;
         qProjection = UIProvider.CONVERSATION_PROJECTION;
         mCursorObserver = new CursorObserver(new Handler(Looper.getMainLooper()));
+
+        NotificationActionUtils.registerUndoNotificationObserver(mUndoNotificationObserver);
     }
+
+    private final DataSetObserver mUndoNotificationObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+
+            handleNotificationActions();
+        }
+    };
 
     /**
      * Create a ConversationCursor; this should be called by the ListActivity using that cursor
@@ -519,6 +541,8 @@ public final class ConversationCursor implements Cursor {
         synchronized(mListeners) {
             mListeners.remove(listener);
         }
+
+        NotificationActionUtils.unregisterUndoNotificationObserver(mUndoNotificationObserver);
     }
 
     /**
@@ -728,6 +752,8 @@ public final class ConversationCursor implements Cursor {
                 listener.onDataSetChanged();
             }
         }
+
+        handleNotificationActions();
     }
 
     /**
@@ -1896,5 +1922,88 @@ public final class ConversationCursor implements Cursor {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    private void resetNotificationActions() {
+        final boolean changed = !mNotificationTempDeleted.isEmpty();
+
+        for (final Conversation conversation : mNotificationTempDeleted) {
+            sProvider.undeleteLocal(conversation.uri, this);
+        }
+
+        mNotificationTempDeleted.clear();
+
+        if (changed) {
+            mMainThreadHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataChanged();
+                }
+            });
+        }
+    }
+
+    /**
+     * If a destructive notification action was triggered, but has not yet been processed because an
+     * "Undo" action is available, we do not want to show the conversation in the list.
+     */
+    public void handleNotificationActions() {
+        final SparseArrayCompat<NotificationAction> undoNotifications =
+                NotificationActionUtils.sUndoNotifications;
+
+        final Set<Conversation> undoConversations =
+                Sets.newHashSetWithExpectedSize(undoNotifications.size());
+
+        boolean changed = false;
+
+        for (int i = 0; i < undoNotifications.size(); i++) {
+            final NotificationAction notificationAction =
+                    undoNotifications.get(undoNotifications.keyAt(i));
+
+            // We only care about notifications that were for this folder or if the action was
+            // delete
+            final Folder folder = notificationAction.getFolder();
+            final boolean deleteAction =
+                    notificationAction.getNotificationActionType() == NotificationActionType.DELETE;
+
+            if (folder.conversationListUri.equals(qUri) || deleteAction) {
+                // We only care about destructive actions
+                if (notificationAction.getNotificationActionType().getIsDestructive()) {
+                    final Conversation conversation = notificationAction.getConversation();
+
+                    undoConversations.add(conversation);
+
+                    if (!mNotificationTempDeleted.contains(conversation)) {
+                        sProvider.deleteLocal(conversation.uri, this);
+                        mNotificationTempDeleted.add(conversation);
+
+                        changed = true;
+                    }
+                }
+            }
+        }
+
+        // Remove any conversations from the temporary deleted state if they no longer have an undo
+        // notification
+        final Iterator<Conversation> iterator = mNotificationTempDeleted.iterator();
+        while (iterator.hasNext()) {
+            final Conversation conversation = iterator.next();
+
+            if (!undoConversations.contains(conversation)) {
+                sProvider.undeleteLocal(conversation.uri, this);
+                iterator.remove();
+
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            mMainThreadHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataChanged();
+                }
+            });
+        }
     }
 }
