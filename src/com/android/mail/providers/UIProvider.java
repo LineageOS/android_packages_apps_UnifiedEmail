@@ -1279,7 +1279,6 @@ public class UIProvider {
         MessageColumns.HAS_ATTACHMENTS,
         MessageColumns.ATTACHMENT_LIST_URI,
         MessageColumns.MESSAGE_FLAGS,
-        MessageColumns.JOINED_ATTACHMENT_INFOS,
         MessageColumns.ALWAYS_SHOW_IMAGES,
         MessageColumns.READ,
         MessageColumns.SEEN,
@@ -1325,21 +1324,20 @@ public class UIProvider {
     public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 18;
     public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 19;
     public static final int MESSAGE_FLAGS_COLUMN = 20;
-    public static final int MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN = 21;
-    public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 22;
-    public static final int MESSAGE_READ_COLUMN = 23;
-    public static final int MESSAGE_SEEN_COLUMN = 24;
-    public static final int MESSAGE_STARRED_COLUMN = 25;
-    public static final int QUOTED_TEXT_OFFSET_COLUMN = 26;
-    public static final int MESSAGE_ATTACHMENTS_COLUMN = 27;
-    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 28;
-    public static final int MESSAGE_ACCOUNT_URI_COLUMN = 29;
-    public static final int MESSAGE_EVENT_INTENT_COLUMN = 30;
-    public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 31;
-    public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 32;
-    public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 33;
-    public static final int MESSAGE_VIA_DOMAIN_COLUMN = 34;
-    public static final int MESSAGE_IS_SENDING_COLUMN = 35;
+    public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 21;
+    public static final int MESSAGE_READ_COLUMN = 22;
+    public static final int MESSAGE_SEEN_COLUMN = 23;
+    public static final int MESSAGE_STARRED_COLUMN = 24;
+    public static final int QUOTED_TEXT_OFFSET_COLUMN = 25;
+    public static final int MESSAGE_ATTACHMENTS_COLUMN = 26;
+    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 27;
+    public static final int MESSAGE_ACCOUNT_URI_COLUMN = 28;
+    public static final int MESSAGE_EVENT_INTENT_COLUMN = 29;
+    public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 30;
+    public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 31;
+    public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 32;
+    public static final int MESSAGE_VIA_DOMAIN_COLUMN = 33;
+    public static final int MESSAGE_IS_SENDING_COLUMN = 34;
 
     public static final class CursorStatus {
         // The cursor is actively loading more data
@@ -1475,14 +1473,6 @@ public class UIProvider {
          * This long column is a bit field of flags defined in {@link MessageFlags}.
          */
         public static final String MESSAGE_FLAGS = "messageFlags";
-        /**
-         * This string column contains a specially formatted string representing all
-         * attachments that we added to a message that is being sent or saved.
-         *
-         * TODO: remove this and use {@link #ATTACHMENTS} instead
-         */
-        @Deprecated
-        public static final String JOINED_ATTACHMENT_INFOS = "joinedAttachmentInfos";
         /**
          * This integer column represents whether the user has specified that images should always
          * be shown.  The value of "1" indicates that the user has specified that images should be
