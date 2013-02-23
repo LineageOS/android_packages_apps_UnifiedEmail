@@ -23,13 +23,13 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 import android.widget.RemoteViews;
 
@@ -59,8 +59,8 @@ public class NotificationActionUtils {
      * If an {@link NotificationAction} exists here for a given notification key, then we should
      * display this undo notification rather than an email notification.
      */
-    public static final SparseArrayCompat<NotificationAction> sUndoNotifications =
-            new SparseArrayCompat<NotificationAction>();
+    public static final ObservableSparseArrayCompat<NotificationAction> sUndoNotifications =
+            new ObservableSparseArrayCompat<NotificationAction>();
 
     /**
      * If an undo notification is displayed, its timestamp
@@ -70,7 +70,7 @@ public class NotificationActionUtils {
     public static final SparseLongArray sNotificationTimestamps = new SparseLongArray();
 
     public enum NotificationActionType {
-        ARCHIVE_REMOVE_LABEL("archive", R.drawable.ic_menu_archive_holo_dark,
+        ARCHIVE_REMOVE_LABEL("archive", true, R.drawable.ic_menu_archive_holo_dark,
                 R.drawable.ic_menu_remove_label_holo_dark, R.string.notification_action_archive,
                 R.string.notification_action_remove_label, new ActionToggler() {
             @Override
@@ -79,15 +79,18 @@ public class NotificationActionUtils {
                 return folder == null || folder.type == FolderType.INBOX;
             }
         }),
-        DELETE("delete", R.drawable.ic_menu_delete_holo_dark, R.string.notification_action_delete),
-        MARK_READ("mark_read", R.drawable.ic_menu_mark_read_holo_dark,
+        DELETE("delete", true, R.drawable.ic_menu_delete_holo_dark,
+                R.string.notification_action_delete),
+        MARK_READ("mark_read", false, R.drawable.ic_menu_mark_read_holo_dark,
                 R.string.notification_action_mark_read),
-        REPLY("reply", R.drawable.ic_reply_holo_dark, R.string.notification_action_reply),
-        REPLY_ALL("reply_all", R.drawable.ic_reply_all_holo_dark,
+        REPLY("reply", false, R.drawable.ic_reply_holo_dark, R.string.notification_action_reply),
+        REPLY_ALL("reply_all", false, R.drawable.ic_reply_all_holo_dark,
                 R.string.notification_action_reply_all),
-        FORWARD("forward", R.drawable.ic_forward_holo_dark, R.string.notification_action_forward);
+        FORWARD("forward", false, R.drawable.ic_forward_holo_dark,
+                R.string.notification_action_forward);
 
         private final String mPersistedValue;
+        private final boolean mIsDestructive;
 
         private final int mActionIcon;
         private final int mActionIcon2;
@@ -120,9 +123,10 @@ public class NotificationActionUtils {
             sPersistedMapping = mapBuilder.build();
         }
 
-        private NotificationActionType(final String persistedValue, final int actionIcon,
-                final int displayString) {
+        private NotificationActionType(final String persistedValue, final boolean isDestructive,
+                final int actionIcon, final int displayString) {
             mPersistedValue = persistedValue;
+            mIsDestructive = isDestructive;
             mActionIcon = actionIcon;
             mActionIcon2 = -1;
             mDisplayString = displayString;
@@ -130,10 +134,11 @@ public class NotificationActionUtils {
             mActionToggler = null;
         }
 
-        private NotificationActionType(final String persistedValue, final int actionIcon,
-                final int actionIcon2, final int displayString, final int displayString2,
-                final ActionToggler actionToggler) {
+        private NotificationActionType(final String persistedValue, final boolean isDestructive,
+                final int actionIcon, final int actionIcon2, final int displayString,
+                final int displayString2, final ActionToggler actionToggler) {
             mPersistedValue = persistedValue;
+            mIsDestructive = isDestructive;
             mActionIcon = actionIcon;
             mActionIcon2 = actionIcon2;
             mDisplayString = displayString;
@@ -147,6 +152,10 @@ public class NotificationActionUtils {
 
         public String getPersistedValue() {
             return mPersistedValue;
+        }
+
+        public boolean getIsDestructive() {
+            return mIsDestructive;
         }
 
         public int getActionIconResId(final Folder folder, final Conversation conversation,
@@ -765,5 +774,13 @@ public class NotificationActionUtils {
         final Intent intent = new Intent(MailIntentService.ACTION_RESEND_NOTIFICATIONS);
         intent.setPackage(context.getPackageName()); // Make sure we only deliver this to ourself
         context.startService(intent);
+    }
+
+    public static void registerUndoNotificationObserver(final DataSetObserver observer) {
+        sUndoNotifications.getDataSetObservable().registerObserver(observer);
+    }
+
+    public static void unregisterUndoNotificationObserver(final DataSetObserver observer) {
+        sUndoNotifications.getDataSetObservable().unregisterObserver(observer);
     }
 }
