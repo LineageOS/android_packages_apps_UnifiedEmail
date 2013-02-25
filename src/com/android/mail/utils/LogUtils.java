@@ -60,7 +60,7 @@ public class LogUtils {
      * Used to enable/disable logging that we don't want included in
      * production releases.
      */
-    private static final int MAX_ENABLED_LOG_LEVEL = DEBUG;
+    private static final int MAX_ENABLED_LOG_LEVEL = VERBOSE;
 
     private static Boolean sDebugLoggingEnabledForTests = null;
 
