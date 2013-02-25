@@ -87,6 +87,7 @@ import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
 import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
 
@@ -352,6 +353,17 @@ public abstract class AbstractActivityController implements ActivityController {
     private final Deque<UpOrBackHandler> mUpOrBackHandlers = Lists.newLinkedList();
 
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
+
+    private final DataSetObserver mUndoNotificationObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+
+            if (mConversationListCursor != null) {
+                mConversationListCursor.handleNotificationActions();
+            }
+        }
+    };
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -864,6 +876,8 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onStart() {
         mSafeToModifyFragments = true;
+
+        NotificationActionUtils.registerUndoNotificationObserver(mUndoNotificationObserver);
     }
 
     @Override
@@ -1511,6 +1525,8 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mEnableShareIntents != null) {
             mEnableShareIntents.cancel(true);
         }
+
+        NotificationActionUtils.unregisterUndoNotificationObserver(mUndoNotificationObserver);
     }
 
     @Override
@@ -1518,7 +1534,6 @@ public abstract class AbstractActivityController implements ActivityController {
         // stop listening to the cursor on e.g. configuration changes
         if (mConversationListCursor != null) {
             mConversationListCursor.removeListener(this);
-            mConversationListCursor = null;
         }
         // unregister the ViewPager's observer on the conversation cursor
         mPagerController.onDestroy();
