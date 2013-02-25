@@ -179,18 +179,7 @@ public final class ConversationCursor implements Cursor {
         mName = name;
         qProjection = UIProvider.CONVERSATION_PROJECTION;
         mCursorObserver = new CursorObserver(new Handler(Looper.getMainLooper()));
-
-        NotificationActionUtils.registerUndoNotificationObserver(mUndoNotificationObserver);
     }
-
-    private final DataSetObserver mUndoNotificationObserver = new DataSetObserver() {
-        @Override
-        public void onChanged() {
-            super.onChanged();
-
-            handleNotificationActions();
-        }
-    };
 
     /**
      * Create a ConversationCursor; this should be called by the ListActivity using that cursor
@@ -541,8 +530,6 @@ public final class ConversationCursor implements Cursor {
         synchronized(mListeners) {
             mListeners.remove(listener);
         }
-
-        NotificationActionUtils.unregisterUndoNotificationObserver(mUndoNotificationObserver);
     }
 
     /**
