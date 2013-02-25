@@ -64,7 +64,7 @@ class AttachmentComposeView extends LinearLayout implements AttachmentDeletionIn
     }
 
     private void populateAttachmentData(Context context) {
-        ((TextView) findViewById(R.id.attachment_name)).setText(mAttachment.name);
+        ((TextView) findViewById(R.id.attachment_name)).setText(mAttachment.getName());
 
         if (mAttachment.size > 0) {
             ((TextView) findViewById(R.id.attachment_size)).

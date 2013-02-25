@@ -690,31 +690,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void createSubject(final boolean isUnread, boolean activated) {
         final String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.getSnippet();
-
-        SpannableStringBuilder subjectText = new SpannableStringBuilder(
+        final SpannableStringBuilder displayedStringBuilder = new SpannableStringBuilder(
                 Conversation.getSubjectAndSnippetForDisplay(mContext, subject, snippet));
 
-        int secondLineMaxWidth = EllipsizedMultilineTextView.ALL_AVAILABLE;
-        if (!ConversationItemViewCoordinates.isWideMode(mMode) && mCoordinates.showFolders
-                && mHeader.folderDisplayer != null && mHeader.folderDisplayer.hasVisibleFolders()) {
-            secondLineMaxWidth = mCoordinates.subjectWidth - Math.min(
-                    ConversationItemViewCoordinates.getFoldersWidth(mContext, mMode),
-                    mHeader.folderDisplayer.measureFolders(mMode)) - sFoldersLeftPadding;
-        }
-        EllipsizedMultilineTextView subjectLayout = mSubjectTextView;
-        int subjectWidth = mCoordinates.subjectWidth;
-        int subjectHeight =
-                (int) (subjectLayout.getLineHeight() * 2 + subjectLayout.getPaint().descent());
-        subjectLayout.measure(
-                MeasureSpec.makeMeasureSpec(subjectWidth, MeasureSpec.EXACTLY), subjectHeight);
-        subjectLayout.layout(0, 0, subjectWidth, subjectHeight);
-
-        final CharSequence displayedText = subjectLayout.setText(subjectText, secondLineMaxWidth);
-
-        final SpannableStringBuilder displayedStringBuilder =
-                new SpannableStringBuilder(displayedText);
-        int subjectTextLength =
-                Math.min(displayedText.length(), Math.min(subjectText.length(), subject.length()));
+        // since spans affect text metrics, add spans to the string before measure/layout or fancy
+        // ellipsizing
+        final int subjectTextLength = (subject != null) ? subject.length() : 0;
         if (!TextUtils.isEmpty(subject)) {
             displayedStringBuilder.setSpan(TextAppearanceSpan.wrap(
                     isUnread ? sSubjectTextUnreadSpan : sSubjectTextReadSpan), 0, subjectTextLength,
@@ -724,20 +705,33 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             final int startOffset = subjectTextLength;
             // Start after the end of the subject text; since the subject may be
             // "" or null, this could start at the 0th character in the subectText string
-            if (startOffset < displayedText.length()) {
-                displayedStringBuilder.setSpan(ForegroundColorSpan.wrap(
-                        isUnread ? sSnippetTextUnreadSpan : sSnippetTextReadSpan), startOffset,
-                        displayedText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+            displayedStringBuilder.setSpan(ForegroundColorSpan.wrap(
+                    isUnread ? sSnippetTextUnreadSpan : sSnippetTextReadSpan), startOffset,
+                    displayedStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (isActivated() && showActivatedText()) {
-            displayedStringBuilder.setSpan(sActivatedTextSpan, 0, displayedText.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        } else {
-            displayedStringBuilder.removeSpan(sActivatedTextSpan);
+            displayedStringBuilder.setSpan(sActivatedTextSpan, 0, displayedStringBuilder.length(),
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
-        subjectLayout.setText(displayedStringBuilder);
+        final int secondLineMaxWidth;
+        if (!ConversationItemViewCoordinates.isWideMode(mMode) && mCoordinates.showFolders
+                && mHeader.folderDisplayer != null && mHeader.folderDisplayer.hasVisibleFolders()) {
+            secondLineMaxWidth = mCoordinates.subjectWidth - Math.min(
+                    ConversationItemViewCoordinates.getFoldersWidth(mContext, mMode),
+                    mHeader.folderDisplayer.measureFolders(mMode)) - sFoldersLeftPadding;
+        } else {
+            secondLineMaxWidth = EllipsizedMultilineTextView.ALL_AVAILABLE;
+        }
+        final int subjectWidth = mCoordinates.subjectWidth;
+        final int subjectHeight = (int) (mSubjectTextView.getLineHeight() * 2 +
+                mSubjectTextView.getPaint().descent());
+        mSubjectTextView.measure(
+                MeasureSpec.makeMeasureSpec(subjectWidth, MeasureSpec.EXACTLY), subjectHeight);
+        mSubjectTextView.layout(0, 0, subjectWidth, subjectHeight);
+
+        final CharSequence displayedText = displayedStringBuilder;
+        mSubjectTextView.setText(displayedStringBuilder, secondLineMaxWidth);
     }
 
     /**
