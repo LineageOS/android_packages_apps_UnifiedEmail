@@ -71,7 +71,7 @@ public class ConversationItemViewModel {
     boolean unread;
 
     // Date
-    SpannableString dateText;
+    CharSequence dateText;
 
     // Personal level
     Bitmap personalLevelBitmap;
@@ -224,7 +224,7 @@ public class ConversationItemViewModel {
     /**
      * Returns the hashcode to compare if the data in the header is valid.
      */
-    private static int getHashCode(Context context, SpannableString dateText, Object convInfo,
+    private static int getHashCode(Context context, CharSequence dateText, Object convInfo,
             List<Folder> rawFolders, boolean starred, boolean read, int priority,
             int sendingState) {
         if (dateText == null) {
