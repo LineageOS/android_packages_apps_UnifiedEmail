@@ -123,7 +123,7 @@ public class FolderPreferences extends VersionedPrefs {
     @Override
     protected boolean canBackup(final String key) {
         if (mPersistentId == null) {
-            LogUtils.w(LOG_TAG, "Cannot back up folder '%s' because it has no persistent id",
+            LogUtils.d(LOG_TAG, "Cannot back up folder '%s' because it has no persistent id",
                     getSharedPreferencesName());
             return false;
         }
