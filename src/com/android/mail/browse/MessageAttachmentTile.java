@@ -41,6 +41,7 @@ import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentRendition;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
+import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -201,8 +202,13 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
     @Override
     public void thumbnailLoadFailed() {
         super.thumbnailLoadFailed();
-        mActionHandler.startDownloadingAttachment(
-                AttachmentDestination.CACHE, AttachmentRendition.SIMPLE, 0, false);
+
+        if (AttachmentUtils.canDownloadAttachment(getContext(), null)) {
+            // Download if there is network. This check prevents the attachment
+            // download from failing and making the error toast show
+            mActionHandler.startDownloadingAttachment(
+                    AttachmentDestination.CACHE, AttachmentRendition.SIMPLE, 0, false);
+        }
     }
 
     /**
