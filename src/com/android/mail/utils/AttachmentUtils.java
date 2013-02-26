@@ -17,7 +17,10 @@ package com.android.mail.utils;
 
 import com.google.common.collect.ImmutableMap;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -131,11 +134,30 @@ public class AttachmentUtils {
         return sDisplayNameMap.get(type);
     }
 
-    public static String getIdentifier(final Attachment attachment) {
-        Uri uri = attachment.contentUri;
-        if (uri != null) {
-            return uri.toString();
+    /**
+     * Checks if the attachment can be downloaded with the current network
+     * connection.
+     *
+     * @param attachment the attachment to be checked
+     * @return true if the attachment can be downloaded.
+     */
+    public static boolean canDownloadAttachment(Context context, Attachment attachment) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        if (info == null) {
+            return false;
+        } else if (info.isConnected()) {
+            if (info.getType() != ConnectivityManager.TYPE_MOBILE) {
+                // not mobile network
+                return true;
+            } else {
+                // mobile network
+                Long maxBytes = DownloadManager.getMaxBytesOverMobile(context);
+                return maxBytes == null || attachment == null || attachment.size <= maxBytes;
+            }
+        } else {
+            return false;
         }
-        return null;
     }
 }

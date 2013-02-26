@@ -38,7 +38,6 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.MimeType;
 
 /**
  * Base class for attachment tiles that handles the work of fetching and displaying the bitmaps for
@@ -260,7 +259,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
         }
 
         public AttachmentPreview(Attachment attachment, Bitmap preview) {
-            this.attachmentIdentifier = AttachmentUtils.getIdentifier(attachment);
+            this.attachmentIdentifier = attachment.getIdentifierUri().toString();
             this.preview = preview;
         }
     }
