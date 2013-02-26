@@ -291,7 +291,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         //   else
         //     'detach' the conversation view from the cursor, keeping the current item as-is but
         //     disabling swipe (effectively the same as singleton mode)
-        if (mController != null && !mDetachedMode) {
+        if (mController != null && !mDetachedMode && mPager != null) {
             final Conversation currConversation = mController.getCurrentConversation();
             final int pos = getConversationPosition(currConversation);
             final Cursor cursor = getCursor();
@@ -304,9 +304,17 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                         currConversation.uri);
 
                 final int currentItem = mPager.getCurrentItem();
-                LogUtils.i(LOG_TAG, "currentItem: %d", currentItem);
-                ((AbstractConversationViewFragment) getFragmentAt(currentItem))
-                        .onDetachedModeEntered();
+
+                final AbstractConversationViewFragment fragment =
+                        (AbstractConversationViewFragment) getFragmentAt(currentItem);
+
+                if (fragment != null) {
+                    fragment.onDetachedModeEntered();
+                } else {
+                    LogUtils.e(LOG_TAG,
+                            "CPA: notifyDataSetChanged: fragment null, current item: %d",
+                            currentItem);
+                }
             } else {
                 // notify unaffected fragment items of the change, so they can re-render
                 // (the change may have been to the labels for a single conversation, for example)
