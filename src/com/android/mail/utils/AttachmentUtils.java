@@ -15,7 +15,12 @@
  */
 package com.android.mail.utils;
 
+import com.google.common.collect.ImmutableMap;
+
+import android.app.DownloadManager;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -149,15 +154,6 @@ public class AttachmentUtils {
         return sDisplayNameMap.get(type);
     }
 
-    public static String getIdentifier(final Attachment attachment) {
-        final Uri uri = attachment.contentUri;
-        if (uri != null) {
-            return uri.toString();
-        }
-        return null;
-    }
-
-
     /**
      * Cache the file specified by the given attachment.  This will attempt to use any
      * {@link ParcelFileDescriptor} in the Bundle parameter
@@ -255,5 +251,32 @@ public class AttachmentUtils {
         // where the cache partition is < 400MB.
         return usableSpace <
                 Math.min(totalSpace * MIN_CACHE_THRESHOLD, MIN_CACHE_AVAILABLE_SPACE_BYTES);
+    }
+
+    /**
+     * Checks if the attachment can be downloaded with the current network
+     * connection.
+     *
+     * @param attachment the attachment to be checked
+     * @return true if the attachment can be downloaded.
+     */
+    public static boolean canDownloadAttachment(Context context, Attachment attachment) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        if (info == null) {
+            return false;
+        } else if (info.isConnected()) {
+            if (info.getType() != ConnectivityManager.TYPE_MOBILE) {
+                // not mobile network
+                return true;
+            } else {
+                // mobile network
+                Long maxBytes = DownloadManager.getMaxBytesOverMobile(context);
+                return maxBytes == null || attachment == null || attachment.size <= maxBytes;
+            }
+        } else {
+            return false;
+        }
     }
 }

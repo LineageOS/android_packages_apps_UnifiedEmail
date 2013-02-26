@@ -44,12 +44,12 @@ import java.util.List;
  * Acts as a grid composed of {@link AttachmentTile}s.
  */
 public class AttachmentTileGrid extends FrameLayout implements AttachmentPreviewCache {
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
     private Uri mAttachmentsListUri;
     private final int mTileMinSize;
     private int mColumnCount;
     private List<Attachment> mAttachments;
-    private HashMap<String, AttachmentPreview> mAttachmentPreviews;
+    private final HashMap<String, AttachmentPreview> mAttachmentPreviews;
     private FragmentManager mFragmentManager;
 
     public AttachmentTileGrid(Context context, AttributeSet attrs) {
@@ -220,7 +220,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
      */
     @Override
     public void set(Attachment attachment, Bitmap preview) {
-        final String attachmentIdentifier = AttachmentUtils.getIdentifier(attachment);
+        final String attachmentIdentifier = attachment.getIdentifierUri().toString();
         if (attachmentIdentifier != null) {
             mAttachmentPreviews.put(
                     attachmentIdentifier, new AttachmentPreview(attachment, preview));
@@ -232,7 +232,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
      */
     @Override
     public Bitmap get(Attachment attachment) {
-        final String attachmentIdentifier = AttachmentUtils.getIdentifier(attachment);
+        final String attachmentIdentifier = attachment.getIdentifierUri().toString();
         if (attachmentIdentifier != null) {
             final AttachmentPreview attachmentPreview = mAttachmentPreviews.get(
                     attachmentIdentifier);
