@@ -311,7 +311,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                 if (fragment != null) {
                     fragment.onDetachedModeEntered();
                 } else {
-                    LogUtils.e(LOG_TAG,
+                    LogUtils.wtf(LOG_TAG,
                             "CPA: notifyDataSetChanged: fragment null, current item: %d",
                             currentItem);
                 }
