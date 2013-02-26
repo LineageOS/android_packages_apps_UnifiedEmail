@@ -303,7 +303,9 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                 LogUtils.i(LOG_TAG, "CPA: current conv is gone, reverting to detached mode. c=%s",
                         currConversation.uri);
 
-                ((AbstractConversationViewFragment) getFragmentAt(mPager.getCurrentItem()))
+                final int currentItem = mPager.getCurrentItem();
+                LogUtils.i(LOG_TAG, "currentItem: %d", currentItem);
+                ((AbstractConversationViewFragment) getFragmentAt(currentItem))
                         .onDetachedModeEntered();
             } else {
                 // notify unaffected fragment items of the change, so they can re-render
