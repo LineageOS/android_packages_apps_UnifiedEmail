@@ -118,7 +118,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         if (ACTION_UPDATE_WIDGET.equals(action)) {
             final int widgetId = intent.getIntExtra(EXTRA_WIDGET_ID, -1);
             final Account account = Account.newinstance(intent.getStringExtra(EXTRA_ACCOUNT));
-            Folder folder = Folder.fromString(intent.getStringExtra(EXTRA_FOLDER));
+            final Folder folder = intent.getParcelableExtra(EXTRA_FOLDER);
             if (widgetId != -1 && account != null && folder != null) {
                 updateWidgetInternal(context, widgetId, account, folder);
             }
@@ -259,7 +259,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         updateWidgetIntent.setType(account.mimeType);
         updateWidgetIntent.putExtra(EXTRA_WIDGET_ID, appWidgetId);
         updateWidgetIntent.putExtra(EXTRA_ACCOUNT, account.serialize());
-        updateWidgetIntent.putExtra(EXTRA_FOLDER, Folder.toString(folder));
+        updateWidgetIntent.putExtra(EXTRA_FOLDER, folder);
 
         context.sendBroadcast(updateWidgetIntent);
     }

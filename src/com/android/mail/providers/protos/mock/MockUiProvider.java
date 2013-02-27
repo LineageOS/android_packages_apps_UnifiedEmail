@@ -28,6 +28,7 @@ import android.text.Html;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderList;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.ReplyFromAccount;
@@ -216,34 +217,30 @@ public final class MockUiProvider extends ContentProvider {
         conversationMap.put(ConversationColumns.STARRED, 0);
         conversationMap.put(ConversationColumns.CONVERSATION_INFO,
                 generateConversationInfo(messageCount, draftCount));
-        Folder[] folders = new Folder[3];
-        StringBuilder foldersString = new StringBuilder();
-        for (int i = 0; i < folders.length; i++) {
-            folders[i] = Folder.newUnsafeInstance();
-            folders[i].name = "folder" + i;
+        final List<Folder> folders = new ArrayList<Folder>(3);
+        for (int i = 0; i < 3; i++) {
+            final Folder folder = Folder.newUnsafeInstance();
+            folder.name = "folder" + i;
             switch (i) {
                 case 0:
-                    folders[i].bgColor = "#fff000";
+                    folder.bgColor = "#fff000";
                     break;
                 case 1:
-                    folders[i].bgColor = "#0000FF";
+                    folder.bgColor = "#0000FF";
                     break;
                 case 2:
-                    folders[i].bgColor = "#FFFF00";
+                    folder.bgColor = "#FFFF00";
                     break;
                 default:
-                    folders[i].bgColor = null;
+                    folder.bgColor = null;
                     break;
             }
 
+            folders.add(folder);
+
         }
-        for (int i = 0; i < folders.length; i++) {
-            foldersString.append(Folder.toString(folders[i]));
-            if (i < folders.length - 1) {
-                foldersString.append(",");
-            }
-        }
-        conversationMap.put(ConversationColumns.RAW_FOLDERS, foldersString.toString());
+        final FolderList folderList = FolderList.copyOf(folders);
+        conversationMap.put(ConversationColumns.RAW_FOLDERS, folderList);
         return conversationMap;
     }
 
