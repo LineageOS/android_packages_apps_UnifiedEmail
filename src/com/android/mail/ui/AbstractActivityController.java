@@ -1498,8 +1498,7 @@ public abstract class AbstractActivityController implements ActivityController {
             outState.putParcelable(SAVED_DETACHED_CONV_URI, mDetachedConvUri);
         }
         mSafeToModifyFragments = false;
-        outState.putString(SAVED_HIERARCHICAL_FOLDER,
-                (mFolderListFolder != null) ? Folder.toString(mFolderListFolder) : null);
+        outState.putParcelable(SAVED_HIERARCHICAL_FOLDER, mFolderListFolder);
     }
 
     /**
@@ -1655,10 +1654,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
             }
         }
-        final String folderString = savedState.getString(SAVED_HIERARCHICAL_FOLDER, null);
-        if (!TextUtils.isEmpty(folderString)) {
-            mFolderListFolder = Folder.fromString(folderString);
-        }
+        mFolderListFolder = savedState.getParcelable(SAVED_HIERARCHICAL_FOLDER);
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
             convListFragment.getAnimatedAdapter().onRestoreInstanceState(savedState);
@@ -1700,8 +1696,7 @@ public abstract class AbstractActivityController implements ActivityController {
             } else {
                 mViewMode.enterConversationListMode();
             }
-            final Folder folder = intent.hasExtra(Utils.EXTRA_FOLDER) ?
-                    Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER)) : null;
+            final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
             if (folder != null) {
                 onFolderChanged(folder);
                 handled = true;

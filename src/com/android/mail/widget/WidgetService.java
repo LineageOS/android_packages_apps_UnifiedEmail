@@ -120,7 +120,7 @@ public class WidgetService extends RemoteViewsService {
         final Intent intent = new Intent(context, serviceClass);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.putExtra(BaseWidgetProvider.EXTRA_ACCOUNT, account.serialize());
-        intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER, Folder.toString(folder));
+        intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER, folder);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         remoteViews.setRemoteAdapter(R.id.conversation_list, intent);
         // Open mail app when click on header
@@ -218,7 +218,7 @@ public class WidgetService extends RemoteViewsService {
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
-            mFolder = Folder.fromString(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
+            mFolder = intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER);
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(context,
                     mAccount);
             mService = service;
