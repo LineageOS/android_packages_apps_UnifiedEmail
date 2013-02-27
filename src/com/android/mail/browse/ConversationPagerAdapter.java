@@ -25,6 +25,7 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 
 import com.android.mail.R;
@@ -85,6 +86,13 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
      */
     private ViewPager mPager;
     private boolean mSanitizedHtml;
+
+    /**
+     * The URI of the detached conversation. We use this to mark new CVFs as detached if they are
+     * created after this is set. This is to fix b/8185448. This is not needed in UR9 due changes in
+     * CursorStatus.isWaitingForResults().
+     */
+    private String mDetachedUri = null;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -176,7 +184,10 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             c = new Conversation(cursor);
             c.position = position;
         }
-        final Fragment f = getConversationViewFragment(c);
+        final AbstractConversationViewFragment f = getConversationViewFragment(c);
+        if (TextUtils.equals(mDetachedUri, c.uri.toString())) {
+            f.onDetachedModeEntered();
+        }
         LogUtils.d(LOG_TAG, "IN PagerAdapter.getItem, frag=%s subj=%s", f, c.subject);
         return f;
     }
@@ -315,6 +326,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                             "CPA: notifyDataSetChanged: fragment null, current item: %d",
                             currentItem);
                 }
+
+                mDetachedUri = currConversation.uri.toString();
             } else {
                 // notify unaffected fragment items of the change, so they can re-render
                 // (the change may have been to the labels for a single conversation, for example)
