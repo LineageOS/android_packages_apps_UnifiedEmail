@@ -211,14 +211,9 @@ public class ConversationPagerController {
      * {@link #hide(boolean)}.
      */
     public void stopListening() {
-        // Disabled since we have to call notifyDataSetChanged() every time the count
-        // of the adapter changes.  The easiest change is to remove this optimization and
-        // allow for jank in rare cases: when the conversation cursor changes count during
-        // the transition back to conversation list.
-        // This comment and associated code will be removed in a subsequent cleanup cl.
-        // if (mPagerAdapter != null) {
-        //     mPagerAdapter.setActivityController(null);
-        // }
+        if (mPagerAdapter != null) {
+            mPagerAdapter.stopListening();
+        }
     }
 
     private void setupPageMargin(Context c) {
