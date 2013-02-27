@@ -123,6 +123,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sActivatedTextColor;
     private static int sSendersTextColorRead;
     private static int sSendersTextColorUnread;
+    private static int sDateTextColor;
     private static int sTouchSlop;
     private static int sStandardScaledDimen;
     private static int sShrinkAnimationDuration;
@@ -179,7 +180,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private DividedImageCanvas mContactImagesHolder;
     private boolean mConvListPhotosEnabled;
     private static int sFoldersLeftPadding;
-    private static TextAppearanceSpan sDateTextAppearance;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static ForegroundColorSpan sSnippetTextUnreadSpan;
@@ -390,6 +390,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_unread));
             sSnippetTextReadSpan =
                     new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_read));
+            sDateTextColor = res.getColor(R.color.date_text_color);
             sTouchSlop = res.getDimensionPixelSize(R.dimen.touch_slop);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
@@ -404,7 +405,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     (R.dimen.senders_textview_height);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
             sFoldersLeftPadding = res.getDimensionPixelSize(R.dimen.folders_left_padding);
-            sDateTextAppearance = new TextAppearanceSpan(mContext, R.style.DateTextAppearance);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
         }
 
@@ -603,15 +603,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             SendersView.formatSenders(mHeader, getContext());
         }
 
-        SpannableString spannableDate = new SpannableString(DateUtils.getRelativeTimeSpanString(
-                mContext, mHeader.conversation.dateMs));
-        spannableDate.setSpan(sDateTextAppearance, 0, spannableDate.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        mHeader.dateText = spannableDate;
-        mDateTextView.setText(spannableDate, TextView.BufferType.SPANNABLE);
-        int width = MeasureSpec.makeMeasureSpec(mCoordinates.dateWidth, MeasureSpec.EXACTLY);
-        mDateTextView.measure(width, mCoordinates.dateHeight);
-        mDateTextView.layout(0, 0, mCoordinates.dateWidth, mCoordinates.dateHeight);
+        mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
+                mHeader.conversation.dateMs);
 
         if (mHeader.isLayoutValid(mContext)) {
             pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
@@ -680,10 +673,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 mHeader.styledSendersString.removeSpan(sActivatedTextSpan);
             }
 
-            sendersTextView.setText(mHeader.styledSendersString, TextView.BufferType.SPANNABLE);
-            int width = MeasureSpec.makeMeasureSpec(mSendersWidth, MeasureSpec.EXACTLY);
-            sendersTextView.measure(width, sSendersTextViewHeight);
+            final int w = MeasureSpec.makeMeasureSpec(mSendersWidth, MeasureSpec.EXACTLY);
+            final int h = MeasureSpec.makeMeasureSpec(sSendersTextViewHeight, MeasureSpec.EXACTLY);
+            sendersTextView.measure(w, h);
             sendersTextView.layout(0, 0, mSendersWidth, sSendersTextViewHeight);
+            sendersTextView.setText(mHeader.styledSendersString);
         }
     }
 
@@ -727,10 +721,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         final int subjectHeight = (int) (mSubjectTextView.getLineHeight() * 2 +
                 mSubjectTextView.getPaint().descent());
         mSubjectTextView.measure(
-                MeasureSpec.makeMeasureSpec(subjectWidth, MeasureSpec.EXACTLY), subjectHeight);
+                MeasureSpec.makeMeasureSpec(subjectWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(subjectHeight, MeasureSpec.EXACTLY));
         mSubjectTextView.layout(0, 0, subjectWidth, subjectHeight);
 
-        final CharSequence displayedText = displayedStringBuilder;
         mSubjectTextView.setText(displayedStringBuilder, secondLineMaxWidth);
     }
 
@@ -1095,9 +1089,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         // Date.
-        canvas.save();
-        drawDate(canvas);
-        canvas.restore();
+        sPaint.setTextSize(mCoordinates.dateFontSize);
+        sPaint.setTypeface(Typeface.DEFAULT);
+        sPaint.setColor(sDateTextColor);
+        drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateY - mCoordinates.dateAscent,
+                sPaint);
 
         // Paper clip icon.
         if (mHeader.paperclip != null) {
@@ -1132,11 +1128,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mContactImagesHolder.draw(canvas);
     }
 
-    private void drawDate(Canvas canvas) {
-        canvas.translate(mDateX, mCoordinates.dateY - mCoordinates.dateAscent);
-        mDateTextView.draw(canvas);
-    }
-
     private void drawSubject(Canvas canvas) {
         canvas.translate(mCoordinates.subjectX, mCoordinates.subjectY + sSendersTextViewTopPadding);
         mSubjectTextView.draw(canvas);
@@ -1159,6 +1150,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     private Bitmap getStarBitmap() {
         return mHeader.conversation.starred ? STAR_ON : STAR_OFF;
+    }
+
+    private void drawText(Canvas canvas, CharSequence s, int x, int y, TextPaint paint) {
+        canvas.drawText(s, 0, s.length(), x, y, paint);
     }
 
     /**

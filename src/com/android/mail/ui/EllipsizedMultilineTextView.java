@@ -19,8 +19,10 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.text.Layout;
+import android.text.Layout.Alignment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.StaticLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -33,8 +35,6 @@ public class EllipsizedMultilineTextView extends TextView {
 
     public static final int ALL_AVAILABLE = -1;
     private int mMaxLines;
-    private int mLastWSpec;
-    private int mLastHSpec;
 
     public EllipsizedMultilineTextView(Context context) {
         this(context, null);
@@ -48,14 +48,6 @@ public class EllipsizedMultilineTextView extends TextView {
     public void setMaxLines(int maxlines) {
         super.setMaxLines(maxlines);
         mMaxLines = maxlines;
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        mLastWSpec = widthMeasureSpec;
-        mLastHSpec = heightMeasureSpec;
     }
 
     /**
@@ -81,13 +73,9 @@ public class EllipsizedMultilineTextView extends TextView {
         Layout layout = getLayout();
 
         if (layout == null) {
-            measure(mLastWSpec, mLastHSpec);
-            layout = getLayout();
-        }
-
-        if (layout == null) {
-            // Bail
-            return text;
+            final int w = getWidth() - getCompoundPaddingLeft() - getCompoundPaddingRight();
+            layout = new StaticLayout(text, 0, text.length(), getPaint(), w, Alignment.ALIGN_NORMAL,
+                    1.0f, 0f, false);
         }
 
         // find the last line of text and chop it according to available space

@@ -227,6 +227,7 @@
         <item name="android:textSize">@dimen/date_font_size</item>
         <item name="android:lines">1</item>
         <item name="android:layout_marginRight">14dip</item>
+        <item name="android:layout_marginTop">10sp</item>
     </style>
 
     <style name="DateStyleImages" parent="@style/DateStyle">
@@ -582,8 +583,4 @@
     <style name="SendingTextAppearance" parent="@style/DraftTextAppearance">
     </style>
 
-    <style name="DateTextAppearance">
-        <item name="android:textColor">@color/senders_text_color_read</item>
-        <item name="android:textSize">@dimen/date_font_size</item>
-    </style>
 </resources>
