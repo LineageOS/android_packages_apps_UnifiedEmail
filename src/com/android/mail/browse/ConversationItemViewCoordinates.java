@@ -120,8 +120,6 @@ public class ConversationItemViewCoordinates {
     float contactImagesY;
 
     int dateTextWidth;
-    int dateWidth;
-    int dateHeight;
 
     // Cache to save Coordinates based on view width.
     private static SparseArray<ConversationItemViewCoordinates> sCache =
@@ -433,8 +431,6 @@ public class ConversationItemViewCoordinates {
             coordinates.dateXEnd = getX(date) + date.getWidth();
             coordinates.dateY = getY(date);
             coordinates.dateFontSize = (int) date.getTextSize();
-            coordinates.dateWidth = date.getWidth();
-            coordinates.dateHeight = date.getHeight();
             sPaint.setTextSize(coordinates.dateFontSize);
             coordinates.dateAscent = (int) sPaint.ascent();
 
