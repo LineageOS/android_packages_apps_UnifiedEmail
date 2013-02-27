@@ -86,6 +86,29 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     private ViewPager mPager;
     private boolean mSanitizedHtml;
 
+    /**
+     * The URI of the detached conversation. We use this to mark new CVFs as detached if they are
+     * created after this is set. This is to fix b/8185448. This is not needed in UR9 due changes in
+     * CursorStatus.isWaitingForResults().
+     */
+    private String mDetachedUri = null;
+
+    private boolean mStopListeningMode = false;
+
+    /**
+     * After {@link #stopListening()} is called, this contains the last-known count of this adapter.
+     * We keep this around and use it in lieu of the Cursor's true count until imminent destruction
+     * to satisfy two opposing requirements:
+     * <ol>
+     * <li>The ViewPager always likes to know about all dataset changes via notifyDatasetChanged.
+     * <li>Destructive changes during pager destruction (e.g. mode transition from conversation mode
+     * to list mode) must be ignored, or else ViewPager will shift focus onto a neighboring
+     * conversation and <b>mark it read</b>.
+     * </ol>
+     *
+     */
+    private int mLastKnownCount;
+
     private static final String LOG_TAG = LogTag.getLogTag();
 
     private static final String BUNDLE_DETACHED_MODE =
@@ -191,6 +214,10 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
 
     @Override
     public int getCount() {
+        if (mStopListeningMode) {
+            return mLastKnownCount;
+        }
+
         final Cursor cursor = getCursor();
         if (isPagingDisabled(cursor)) {
             LogUtils.d(LOG_TAG, "IN CPA.getCount, returning 1 (effective singleton). cursor=%s",
@@ -386,12 +413,12 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     }
 
     public void setActivityController(ActivityController controller) {
-        if (mController != null) {
+        if (mController != null && !mStopListeningMode) {
             mController.unregisterConversationListObserver(mListObserver);
             mController.unregisterFolderObserver(mFolderObserver);
         }
         mController = controller;
-        if (mController != null) {
+        if (mController != null && !mStopListeningMode) {
             mController.registerConversationListObserver(mListObserver);
             mController.registerFolderObserver(mFolderObserver);
 
@@ -400,6 +427,21 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             // We're being torn down; do not notify.
             // Let the pager controller manage pager lifecycle.
         }
+    }
+
+    /**
+     * See {@link ConversationPagerController#stopListening()}.
+     */
+    public void stopListening() {
+        // disable the observer, but save off the current count, in case the Pager asks for it
+        // from now until imminent destruction
+        mStopListeningMode = true;
+
+        if (mController != null) {
+            mController.unregisterConversationListObserver(mListObserver);
+            mController.unregisterFolderObserver(mFolderObserver);
+        }
+        mLastKnownCount = getCount();
     }
 
     @Override
