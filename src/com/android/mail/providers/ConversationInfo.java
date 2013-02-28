@@ -140,4 +140,20 @@ public class ConversationInfo implements Parcelable {
 
     };
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[ConversationInfo object: messageCount = ");
+        builder.append(messageCount);
+        builder.append(", draftCount = ");
+        builder.append(draftCount);
+        builder.append(", firstSnippet= ");
+        builder.append(firstSnippet);
+        builder.append(", firstUnreadSnippet = ");
+        builder.append(firstUnreadSnippet);
+        builder.append(", messageInfos = ");
+        builder.append(messageInfos.toString());
+        builder.append("]");
+        return builder.toString();
+    }
 }
