@@ -95,4 +95,16 @@ public class MessageInfo implements Parcelable {
 
     };
 
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("[MessageInfo: read = ");
+        builder.append(read);
+        builder.append(", sender = ");
+        builder.append(sender);
+        builder.append(", senderEmail = ");
+        builder.append(senderEmail);
+        builder.append("]");
+        return builder.toString();
+    }
 }

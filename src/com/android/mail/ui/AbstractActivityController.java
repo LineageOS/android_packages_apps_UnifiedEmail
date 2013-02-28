@@ -1094,7 +1094,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // to conversation unread)
         conv.read = false;
         if (mConversationListCursor == null) {
-            LogUtils.d(LOG_TAG, "deferring markConversationMessagesUnread for id=%d", conv.id);
+            LogUtils.d(LOG_TAG, "markConversationMessagesUnread(id=%d), deferring", conv.id);
 
             mConversationListLoadFinishedCallbacks.add(new LoadFinishedCallback() {
                 @Override
@@ -1104,27 +1104,36 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
             });
         } else {
+            LogUtils.d(LOG_TAG, "markConversationMessagesUnread(id=%d), performing", conv.id);
             doMarkConversationMessagesUnread(conv, unreadMessageUris, originalConversationInfo);
         }
     }
 
     private void doMarkConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
             byte[] originalConversationInfo) {
-        LogUtils.d(LOG_TAG, "performing markConversationMessagesUnread for id=%d", conv.id);
-        // only do a granular 'mark unread' if a subset of messages are unread
+        // Only do a granular 'mark unread' if a subset of messages are unread
         final int unreadCount = (unreadMessageUris == null) ? 0 : unreadMessageUris.size();
         final int numMessages = conv.getNumMessages();
         final boolean subsetIsUnread = (numMessages > 1 && unreadCount > 0
                 && unreadCount < numMessages);
 
+        LogUtils.d(LOG_TAG, "markConversationMessagesUnread(id=%d (subject=%))"
+                + ", numMessages=%d, unreadCount=%d, subsetIsUnread=%b",
+                conv.id, conv.subject, numMessages, unreadCount, subsetIsUnread);
         if (!subsetIsUnread) {
             // Conversations are neither marked read, nor viewed, and we don't want to show
             // the next conversation.
+            LogUtils.d(LOG_TAG, ". . doing full mark unread");
             markConversationsRead(Collections.singletonList(conv), false, false, false);
         } else {
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+                final ConversationInfo info = ConversationInfo.fromBlob(originalConversationInfo);
+                LogUtils.d(LOG_TAG, ". . doing subset mark unread, originalConversationInfo = %s",
+                        info);
+            }
             mConversationListCursor.setConversationColumn(conv.uri, ConversationColumns.READ, 0);
 
-            // locally update conversation's conversationInfo to revert to original version
+            // Locally update conversation's conversationInfo to revert to original version
             if (originalConversationInfo != null) {
                 mConversationListCursor.setConversationColumn(conv.uri,
                         ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
@@ -1140,8 +1149,9 @@ public abstract class AbstractActivityController implements ActivityController {
                 ops.add(ContentProviderOperation.newUpdate(messageUri)
                         .withValue(UIProvider.MessageColumns.READ, 0)
                         .build());
+                LogUtils.d(LOG_TAG, ". . Adding op: read=0, uri=%s", messageUri);
             }
-
+            LogUtils.d(LOG_TAG, ". . operations = %s", ops);
             new ContentProviderTask() {
                 @Override
                 protected void onPostExecute(Result result) {
@@ -1155,7 +1165,10 @@ public abstract class AbstractActivityController implements ActivityController {
     public void markConversationsRead(final Collection<Conversation> targets, final boolean read,
             final boolean viewed) {
         if (mConversationListCursor == null) {
-            LogUtils.d(LOG_TAG, "deferring markConversationsRead");
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+                LogUtils.d(LOG_TAG, "markConversationsRead(targets=%s), deferring",
+                        targets.toArray());
+            }
             mConversationListLoadFinishedCallbacks.add(new LoadFinishedCallback() {
                 @Override
                 public void onLoadFinished() {
@@ -1201,8 +1214,7 @@ public abstract class AbstractActivityController implements ActivityController {
             if (info != null) {
                 boolean changed = info.markRead(read);
                 if (changed) {
-                    value.put(ConversationColumns.CONVERSATION_INFO,
-                            info.toBlob());
+                    value.put(ConversationColumns.CONVERSATION_INFO, info.toBlob());
                 }
             }
             opList.add(mConversationListCursor.getOperationForConversation(
@@ -1885,8 +1897,9 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void setCurrentConversation(Conversation conversation) {
         // The controller should come out of detached mode if a new conversation is viewed, or if
-        if (conversation == null || (mDetachedConvUri != null
-                && !mDetachedConvUri.equals(conversation.uri))) {
+        // we are going back to conversation list mode.
+        if (mDetachedConvUri != null && (conversation == null
+                || !mDetachedConvUri.equals(conversation.uri))) {
             clearDetachedMode();
         }
 
@@ -3344,8 +3357,8 @@ public abstract class AbstractActivityController implements ActivityController {
         final ConversationListFragment frag = getConversationListFragment();
         if (frag != null) {
             frag.setChoiceNone();
-        } else {
-            // How did we ever land here? Detached mode, and no CLF???
+        } else if (mIsTablet) {
+            // How did we ever land here? Detached mode, and no CLF on tablet???
             LogUtils.e(LOG_TAG, "AAC.setDetachedMode(): CLF = null!");
         }
         mDetachedConvUri = mCurrentConversation.uri;
@@ -3356,9 +3369,9 @@ public abstract class AbstractActivityController implements ActivityController {
         final ConversationListFragment frag = getConversationListFragment();
         if (frag != null) {
             frag.revertChoiceMode();
-        } else {
-            // How did we ever land here? Detached mode, and no CLF???
-            LogUtils.e(LOG_TAG, "AAC.clearDetachedMode(): CLF = null!");
+        } else if (mIsTablet) {
+            // How did we ever land here? Detached mode, and no CLF on tablet???
+            LogUtils.e(LOG_TAG, "AAC.clearDetachedMode(): CLF = null on tablet!");
         }
         mDetachedConvUri = null;
     }
