@@ -32,7 +32,7 @@ import java.util.ArrayList;
 /**
  * Simple utility class to make an asynchronous {@link ContentProvider} request expressed as
  * a list of {@link ContentProviderOperation}s. As with all {@link AsyncTask}s, subclasses should
- * override {@link #onPostExecute(Result)} to handle success/failure.
+ * override {@link #onPostExecute(Object)} to handle success/failure.
  *
  * @see InsertTask
  * @see UpdateTask
@@ -48,30 +48,45 @@ public class ContentProviderTask extends AsyncTask<Void, Void, ContentProviderTa
     private static final String LOG_TAG = LogTag.getLogTag();
 
     public static class Result {
-        Exception exception;
-        ContentProviderResult[] results;
+        public final Exception exception;
+        public final ContentProviderResult[] results;
 
-        private Result() {}
-
-        private void setSuccess(ContentProviderResult[] success) {
-            exception = null;
-            results = success;
+        /**
+         * Create a new result.
+         * @param exception
+         * @param results
+         */
+        private Result(Exception exception, ContentProviderResult[] results) {
+            this.exception = exception;
+            this.results = results;
         }
 
-        private void setFailure(Exception failure) {
-            results = null;
-            exception = failure;
+        /**
+         * Create a new success result.
+         * @param success
+         * @return
+         */
+        private static Result newSuccess(ContentProviderResult[] success) {
+            return new Result(null, success);
+        }
+
+        /**
+         * Create a new failure result.
+         * @param failure
+         */
+        private static Result newFailure(Exception failure) {
+            return new Result(failure, null);
         }
     }
 
     @Override
     protected Result doInBackground(Void... params) {
-        Result result = new Result();
+        Result result;
             try {
-                result.setSuccess(mResolver.applyBatch(mAuthority, mOps));
+                result = Result.newSuccess(mResolver.applyBatch(mAuthority, mOps));
             } catch (Exception e) {
                 LogUtils.w(LOG_TAG, e, "exception executing ContentProviderOperationsTask");
-                result.setFailure(e);
+                result = Result.newFailure(e);
             }
         return result;
     }
