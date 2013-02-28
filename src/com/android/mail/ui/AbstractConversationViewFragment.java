@@ -225,6 +225,16 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
     }
 
+    @Override
+    public String toString() {
+        // log extra info at DEBUG level or finer
+        final String s = super.toString();
+        if (!LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG) || mConversation == null) {
+            return s;
+        }
+        return "(" + s + " conv=" + mConversation + ")";
+    }
+
     protected abstract WebView getWebView();
 
     public void instantiateProgressIndicators(View rootView) {

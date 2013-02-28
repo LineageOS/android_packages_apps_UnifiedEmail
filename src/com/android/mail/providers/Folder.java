@@ -29,6 +29,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -51,6 +53,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     // TODO: remove this once we figure out which folder is returning a "null" string as the
     // conversation list uri
     private static final String NULL_STRING_URI = "null";
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     // Try to match the order of members with the order of constants in UIProvider.
 
@@ -348,6 +351,21 @@ public class Folder implements Parcelable, Comparable<Folder> {
     @Override
     public int hashCode() {
         return uri == null ? 0 : uri.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        // log extra info at DEBUG level or finer
+        final StringBuilder sb = new StringBuilder("[folder id=");
+        sb.append(id);
+        if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+            sb.append(", uri=");
+            sb.append(uri);
+            sb.append(", name=");
+            sb.append(name);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     @Override
