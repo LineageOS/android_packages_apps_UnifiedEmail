@@ -128,8 +128,8 @@ public class ConversationPagerController {
         mPagerAdapter.setPager(mPager);
         LogUtils.d(LOG_TAG, "IN CPC.show, adapter=%s", mPagerAdapter);
 
-        LogUtils.d(LOG_TAG, "init pager adapter, count=%d initial=%s", mPagerAdapter.getCount(),
-                initialConversation.subject);
+        LogUtils.d(LOG_TAG, "init pager adapter, count=%d initialConv=%s", mPagerAdapter.getCount(),
+                initialConversation);
         mPager.setAdapter(mPagerAdapter);
 
         if (!ENABLE_SINGLETON_INITIAL_LOAD) {

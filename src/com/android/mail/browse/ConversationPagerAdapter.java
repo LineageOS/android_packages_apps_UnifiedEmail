@@ -192,8 +192,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             c = new Conversation(cursor);
             c.position = position;
         }
-        final Fragment f = getConversationViewFragment(c);
-        LogUtils.d(LOG_TAG, "IN PagerAdapter.getItem, frag=%s subj=%s", f, c.subject);
+        final AbstractConversationViewFragment f = getConversationViewFragment(c);
+        LogUtils.d(LOG_TAG, "IN PagerAdapter.getItem, frag=%s conv=%s", f, c);
         return f;
     }
 
@@ -394,8 +394,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         int result = POSITION_NONE;
         final int pos = cursor.getConversationPosition(conv.id);
         if (pos >= 0) {
-            LogUtils.d(LOG_TAG, "pager adapter found repositioned convo '%s' at pos=%d",
-                    conv.subject, pos);
+            LogUtils.d(LOG_TAG, "pager adapter found repositioned convo %s at pos=%d",
+                    conv, pos);
             result = pos;
         }
 
@@ -461,7 +461,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         }
         final Conversation c = new Conversation(cursor);
         c.position = position;
-        LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s", c.subject);
+        LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s", c);
         mController.setCurrentConversation(c);
     }
 

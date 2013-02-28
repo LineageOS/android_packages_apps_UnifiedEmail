@@ -998,16 +998,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         return positions;
     }
 
-    @Override
-    public String toString() {
-        // log extra info at DEBUG level or finer
-        final String s = super.toString();
-        if (!LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG) || mConversation == null) {
-            return s;
-        }
-        return "(" + s + " subj=" + mConversation.subject + ")";
-    }
-
     private Address getAddress(String rawFrom) {
         Address addr = mAddressCache.get(rawFrom);
         if (addr == null) {

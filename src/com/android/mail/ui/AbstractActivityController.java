@@ -97,6 +97,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -1120,9 +1121,9 @@ public abstract class AbstractActivityController implements ActivityController {
         final boolean subsetIsUnread = (numMessages > 1 && unreadCount > 0
                 && unreadCount < numMessages);
 
-        LogUtils.d(LOG_TAG, "markConversationMessagesUnread(id=%d (subject=%))"
+        LogUtils.d(LOG_TAG, "markConversationMessagesUnread(conv=%s)"
                 + ", numMessages=%d, unreadCount=%d, subsetIsUnread=%b",
-                conv.id, conv.subject, numMessages, unreadCount, subsetIsUnread);
+                conv, numMessages, unreadCount, subsetIsUnread);
         if (!subsetIsUnread) {
             // Conversations are neither marked read, nor viewed, and we don't want to show
             // the next conversation.
@@ -1161,7 +1162,8 @@ public abstract class AbstractActivityController implements ActivityController {
                     if (result.exception != null) {
                         LogUtils.e(LOG_TAG, result.exception, "ContentProviderTask() ERROR.");
                     } else {
-                        LogUtils.d(LOG_TAG, "ContentProviderTask(): success %s", result.results);
+                        LogUtils.d(LOG_TAG, "ContentProviderTask(): success %s",
+                                Arrays.toString(result.results));
                     }
                 }
             }.run(mResolver, authority, ops);
