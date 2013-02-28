@@ -1145,7 +1145,11 @@ public abstract class AbstractActivityController implements ActivityController {
             new ContentProviderTask() {
                 @Override
                 protected void onPostExecute(Result result) {
-                    // TODO: handle errors?
+                    if (result.exception != null) {
+                        LogUtils.e(LOG_TAG, result.exception, "ContentProviderTask() ERROR.");
+                    } else {
+                        LogUtils.d(LOG_TAG, "ContentProviderTask(): success %s", result.results);
+                    }
                 }
             }.run(mResolver, authority, ops);
         }
