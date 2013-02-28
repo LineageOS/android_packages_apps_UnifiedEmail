@@ -67,7 +67,7 @@
         <item>Forward</item>
     </string-array>
         <!-- Formatting string for the subject when it contains a reply or forward identifier. Do not translate.-->
-    <string name="formatted_subject"><xliff:g id="prefix">%1$s</xliff:g> <xliff:g id="subject">%2$s</xliff:g></string>
+    <string name="formatted_subject" translatable="false"><xliff:g id="prefix">%1$s</xliff:g> <xliff:g id="subject">%2$s</xliff:g></string>
     <!-- Compose screen, prefixed to the subject of a message when replying to it (if not already present). Do not translate. -->
     <string name="reply_subject_label" translatable="false">Re:</string>
     <!-- Compose screen, Prefix to forwarded message subject. Do not translate. -->
