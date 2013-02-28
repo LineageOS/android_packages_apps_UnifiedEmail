@@ -227,8 +227,8 @@ public class MessageCursor extends CursorWrapper {
 
     public String getDebugDump() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("conv subj='%s' status=%d messages:\n",
-                mController.getConversation().subject, getStatus()));
+        sb.append(String.format("conv='%s' status=%d messages:\n",
+                mController.getConversation(), getStatus()));
         int pos = -1;
         while (moveToPosition(++pos)) {
             final ConversationMessage m = getMessage();
