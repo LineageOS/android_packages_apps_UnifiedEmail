@@ -1089,7 +1089,7 @@ public final class ConversationCursor implements Cursor {
 
         @Override
         public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-            throw new IllegalStateException("Unexpected call to ConversationProvider.delete");
+            throw new IllegalStateException("Unexpected call to ConversationProvider.update");
         }
 
         @Override
@@ -1625,6 +1625,10 @@ public final class ConversationCursor implements Cursor {
      */
     public int updateInt(Context context, Collection<Conversation> conversations,
             String columnName, int value) {
+        if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+            LogUtils.d(LOG_TAG, "ConversationCursor.updateInt(conversations=%s, columnName=%s)",
+                    conversations.toArray(), columnName);
+        }
         ContentValues cv = new ContentValues();
         cv.put(columnName, value);
         return updateValues(context, conversations, cv);
