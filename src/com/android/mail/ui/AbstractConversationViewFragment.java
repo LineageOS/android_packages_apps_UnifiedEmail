@@ -39,6 +39,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Browser;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -390,6 +391,22 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (!isUserVisible()) {
+            // Unclear how this is happening. Current theory is that this fragment was scheduled
+            // to be removed, but the remove transaction failed. When the Activity is later
+            // restored, the FragmentManager restores this fragment, but Fragment.mMenuVisible is
+            // stuck at its initial value (true), which makes this zombie fragment eligible for
+            // menu item clicks.
+            //
+            // Work around this by relying on the (properly restored) extra user visible hint.
+            LogUtils.e(LOG_TAG,
+                    "ACVF ignoring onOptionsItemSelected b/c userVisibleHint is false. f=%s", this);
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+                Log.e(LOG_TAG, Utils.dumpFragment(this));  // the dump has '%' chars in it...
+            }
+            return false;
+        }
+
         boolean handled = false;
         switch (item.getItemId()) {
             case R.id.inside_conversation_unread:
