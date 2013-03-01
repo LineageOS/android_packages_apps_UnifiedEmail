@@ -74,6 +74,7 @@
     <string name="forward" msgid="6822914459902983767">"Yönlendir"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Oluştur"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Klasörleri değiştir"</string>
+    <string name="menu_move_to" msgid="9138296669516358542">"Taşı"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Klasör ayarları"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Klasörler"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Senkronize et ve bildir"</string>
@@ -367,12 +368,8 @@
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
-    <!-- no translation found for label_notification_ticker (1684732605316462621) -->
-    <skip />
-    <!-- no translation found for new_messages (4419173946074516420) -->
-    <skip />
-    <!-- no translation found for single_new_message_notification_title (4138237430881084155) -->
-    <skip />
-    <!-- no translation found for silent_ringtone (5856834572357761687) -->
-    <skip />
+    <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
+    <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> yeni ileti"</string>
+    <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="silent_ringtone" msgid="5856834572357761687">"Sessiz"</string>
 </resources>
