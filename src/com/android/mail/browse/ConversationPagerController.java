@@ -37,6 +37,7 @@ import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SubjectDisplayChanger;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * A simple controller for a {@link ViewPager} of conversations.
@@ -128,6 +129,7 @@ public class ConversationPagerController {
         mPagerAdapter.setPager(mPager);
         LogUtils.d(LOG_TAG, "IN CPC.show, adapter=%s", mPagerAdapter);
 
+        Utils.sConvLoadTimer.mark("pager init");
         LogUtils.d(LOG_TAG, "init pager adapter, count=%d initialConv=%s", mPagerAdapter.getCount(),
                 initialConversation);
         mPager.setAdapter(mPagerAdapter);
@@ -140,6 +142,7 @@ public class ConversationPagerController {
                 mPager.setCurrentItem(initialPos);
             }
         }
+        Utils.sConvLoadTimer.mark("pager setAdapter");
 
         mShown = true;
     }

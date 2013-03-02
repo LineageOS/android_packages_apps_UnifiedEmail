@@ -59,6 +59,7 @@ import android.webkit.WebView;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.compose.ComposeActivity;
+import com.android.mail.perf.SimpleTimer;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -120,6 +121,10 @@ public class Utils {
     private static final int SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH = 600;
 
     private static final String LOG_TAG = LogTag.getLogTag();
+
+    public static final boolean ENABLE_CONV_LOAD_TIMER = false;
+    public static final SimpleTimer sConvLoadTimer =
+            new SimpleTimer(ENABLE_CONV_LOAD_TIMER).withSessionName("ConvLoadTimer");
 
     public static boolean isRunningJellybeanOrLater() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;

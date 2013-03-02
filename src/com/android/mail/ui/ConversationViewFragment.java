@@ -589,6 +589,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             LogUtils.i(LOG_TAG,
                     "SHOWCONV: CVF is user-visible, immediately loading conversation (%s)", this);
             reason = LOAD_NOW;
+            timerMark("CVF.showConversation");
         } else {
             final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
                     || (mConversation.isRemote
@@ -638,6 +639,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     private void revealConversation() {
+        timerMark("revealing conversation");
         dismissLoadingStatus(mOnProgressDismiss);
     }
 
@@ -647,6 +649,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private void renderConversation(MessageCursor messageCursor) {
         final String convHtml = renderMessageBodies(messageCursor, mEnableContentReadySignal);
+        timerMark("rendered conversation");
 
         if (DEBUG_DUMP_CONVERSATION_HTML) {
             java.io.FileWriter fw = null;
@@ -814,6 +817,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         mTemplates.appendMessageHtml(msg, expanded, safeForImages,
                 mWebView.screenPxToWebPx(headerPx), mWebView.screenPxToWebPx(footerPx));
+        timerMark("rendered message");
     }
 
     private String renderCollapsedHeaders(MessageCursor cursor,
@@ -1341,6 +1345,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
         } else {
             LogUtils.i(LOG_TAG, "CONV RENDER: initial render. (%s)", this);
+            timerMark("message cursor load finished");
         }
 
         // if layout hasn't happened, delay render
