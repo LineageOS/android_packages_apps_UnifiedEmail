@@ -1810,6 +1810,10 @@ public abstract class AbstractActivityController implements ActivityController {
      * {@link #onLoadFinished(Loader, Cursor)}
      */
     protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
+        if (conversation != null) {
+            Utils.sConvLoadTimer.start();
+        }
+
         // Set the current conversation just in case it wasn't already set.
         setCurrentConversation(conversation);
         // Add the folder that we were viewing to the recent folders list.
