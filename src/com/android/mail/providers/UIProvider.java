@@ -602,6 +602,7 @@ public class UIProvider {
         FolderColumns.SYNC_WINDOW,
         FolderColumns.CONVERSATION_LIST_URI,
         FolderColumns.CHILD_FOLDERS_LIST_URI,
+        FolderColumns.UNSEEN_COUNT,
         FolderColumns.UNREAD_COUNT,
         FolderColumns.TOTAL_COUNT,
         FolderColumns.REFRESH_URI,
@@ -609,6 +610,7 @@ public class UIProvider {
         FolderColumns.LAST_SYNC_RESULT,
         FolderColumns.TYPE,
         FolderColumns.ICON_RES_ID,
+        FolderColumns.NOTIFICATION_ICON_RES_ID,
         FolderColumns.BG_COLOR,
         FolderColumns.FG_COLOR,
         FolderColumns.LOAD_MORE_URI,
@@ -624,17 +626,19 @@ public class UIProvider {
     public static final int FOLDER_SYNC_WINDOW_COLUMN = 6;
     public static final int FOLDER_CONVERSATION_LIST_URI_COLUMN = 7;
     public static final int FOLDER_CHILD_FOLDERS_LIST_COLUMN = 8;
-    public static final int FOLDER_UNREAD_COUNT_COLUMN = 9;
-    public static final int FOLDER_TOTAL_COUNT_COLUMN = 10;
-    public static final int FOLDER_REFRESH_URI_COLUMN = 11;
-    public static final int FOLDER_SYNC_STATUS_COLUMN = 12;
-    public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 13;
-    public static final int FOLDER_TYPE_COLUMN = 14;
-    public static final int FOLDER_ICON_RES_ID_COLUMN = 15;
-    public static final int FOLDER_BG_COLOR_COLUMN = 16;
-    public static final int FOLDER_FG_COLOR_COLUMN = 17;
-    public static final int FOLDER_LOAD_MORE_URI_COLUMN = 18;
-    public static final int FOLDER_HIERARCHICAL_DESC_COLUMN = 19;
+    public static final int FOLDER_UNSEEN_COUNT_COLUMN = 9;
+    public static final int FOLDER_UNREAD_COUNT_COLUMN = 10;
+    public static final int FOLDER_TOTAL_COUNT_COLUMN = 11;
+    public static final int FOLDER_REFRESH_URI_COLUMN = 12;
+    public static final int FOLDER_SYNC_STATUS_COLUMN = 13;
+    public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 14;
+    public static final int FOLDER_TYPE_COLUMN = 15;
+    public static final int FOLDER_ICON_RES_ID_COLUMN = 16;
+    public static final int FOLDER_NOTIFICATION_ICON_RES_ID_COLUMN = 17;
+    public static final int FOLDER_BG_COLOR_COLUMN = 18;
+    public static final int FOLDER_FG_COLOR_COLUMN = 19;
+    public static final int FOLDER_LOAD_MORE_URI_COLUMN = 20;
+    public static final int FOLDER_HIERARCHICAL_DESC_COLUMN = 21;
 
     public static final class FolderType {
         /** A user defined label. */
@@ -657,6 +661,8 @@ public class UIProvider {
         public static final int OTHER_PROVIDER_FOLDER = 8;
         /** All mail folder **/
         public static final int ALL_MAIL = 9;
+        /** Gmail's inbox sections **/
+        public static final int INBOX_SECTION = 10;
     }
 
     public static final class FolderCapabilities {
@@ -763,7 +769,13 @@ public class UIProvider {
          * list of child folders of this folder.
          */
         public static final String CHILD_FOLDERS_LIST_URI = "childFoldersListUri";
-
+        /**
+         * This int column contains the current unseen count for the folder, if known.
+         */
+        public static final String UNSEEN_COUNT = "unseenCount";
+        /**
+         * This int column contains the current unread count for the folder.
+         */
         public static final String UNREAD_COUNT = "unreadCount";
 
         public static final String TOTAL_COUNT = "totalCount";
@@ -783,9 +795,14 @@ public class UIProvider {
          */
         public static final String LAST_SYNC_RESULT  = "lastSyncResult";
         /**
-         * This long column contains the icon res id for this folder, or 0 if there is none.
+         * This int column contains the icon res id for this folder, or 0 if there is none.
          */
         public static final String ICON_RES_ID = "iconResId";
+        /**
+         * This int column contains the notification icon res id for this folder, or 0 if there is
+         * none.
+         */
+        public static final String NOTIFICATION_ICON_RES_ID = "notificationIconResId";
         /**
          * This int column contains the type of the folder. Zero is default.
          */

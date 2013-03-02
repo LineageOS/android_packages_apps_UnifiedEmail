@@ -75,7 +75,8 @@ public class NotificationActionUtils {
             @Override
             public boolean shouldDisplayPrimary(final Folder folder,
                     final Conversation conversation, final Message message) {
-                return folder == null || folder.type == FolderType.INBOX;
+                return folder == null || folder.type == FolderType.INBOX
+                        || folder.type == FolderType.INBOX_SECTION;
             }
         }),
         DELETE("delete", true, R.drawable.ic_menu_delete_holo_dark,
@@ -221,7 +222,7 @@ public class NotificationActionUtils {
         final List<NotificationActionType> sortedActions =
                 new ArrayList<NotificationActionType>(unsortedActions.size());
 
-        if (folder.type == FolderType.INBOX) {
+        if (folder.type == FolderType.INBOX || folder.type == FolderType.INBOX_SECTION) {
             // Inbox
             /*
              * Action 1: Archive, Delete, Mute, Mark read, Add star, Mark important, Reply, Reply
@@ -494,7 +495,8 @@ public class NotificationActionUtils {
         public int getActionTextResId() {
             switch (mNotificationActionType) {
                 case ARCHIVE_REMOVE_LABEL:
-                    if (mFolder.type == FolderType.INBOX) {
+                    if (mFolder.type == FolderType.INBOX
+                            || mFolder.type == FolderType.INBOX_SECTION) {
                         return R.string.notification_action_undo_archive;
                     } else {
                         return R.string.notification_action_undo_remove_label;
@@ -668,7 +670,7 @@ public class NotificationActionUtils {
 
         switch (destructAction) {
             case ARCHIVE_REMOVE_LABEL: {
-                if (folder.type == FolderType.INBOX) {
+                if (folder.type == FolderType.INBOX || folder.type == FolderType.INBOX_SECTION) {
                     // Inbox, so archive
                     final ContentValues values = new ContentValues(1);
                     values.put(UIProvider.ConversationOperations.OPERATION_KEY,

@@ -74,7 +74,7 @@ public class FolderPreferences extends VersionedPrefs {
 
     /**
      * @param account The account name. This must never change for the account.
-     * @param folder The folder name. This must never change for the folder.
+     * @param folder The folder
      */
     public FolderPreferences(final Context context, final String account, final Folder folder,
             final boolean useInboxDefaultNotificationSettings) {
