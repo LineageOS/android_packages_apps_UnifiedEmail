@@ -50,6 +50,7 @@ import android.text.TextUtils.SimpleStringSplitter;
 import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
 import android.util.Pair;
+import android.util.SparseArray;
 
 import com.android.mail.EmailAddress;
 import com.android.mail.MailIntentService;
@@ -81,16 +82,7 @@ public class NotificationUtils {
     /** Contains a list of <(account, label), unread conversations> */
     private static NotificationMap sActiveNotificationMap = null;
 
-    /**
-     * Cached default large icon for notifications when the sender doesn't have
-     * a contact photo.
-     */
-    public static Bitmap sDefaultSingleNotifIcon;
-
-    /**
-     * Cached default large icon for notifications for multiple new conversations.
-     */
-    public static Bitmap sMultipleNotifIcon;
+    private static final SparseArray<Bitmap> sNotificationIcons = new SparseArray<Bitmap>();
 
     private static TextAppearanceSpan sNotificationUnreadStyleSpan;
     private static CharacterStyle sNotificationReadStyleSpan;
@@ -623,21 +615,28 @@ public class NotificationUtils {
         return intent;
     }
 
-    private static Bitmap getDefaultNotificationIcon(Context context, boolean multipleNew) {
+    private static Bitmap getDefaultNotificationIcon(
+            final Context context, final Folder folder, final boolean multipleNew) {
         final Bitmap icon;
-        if (multipleNew) {
-            if (sMultipleNotifIcon == null) {
-                sMultipleNotifIcon = BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.ic_notification_multiple_mail_holo_dark);
-            }
-            icon = sMultipleNotifIcon;
+        if (folder.notificationIconResId != 0) {
+            icon = getIcon(context, folder.notificationIconResId);
+        } else if (multipleNew) {
+            icon = getIcon(context, R.drawable.ic_notification_multiple_mail_holo_dark);
         } else {
-            if (sDefaultSingleNotifIcon == null) {
-                sDefaultSingleNotifIcon = BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.ic_contact_picture);
-            }
-            icon = sDefaultSingleNotifIcon;
+            icon = getIcon(context, R.drawable.ic_contact_picture);
         }
+        return icon;
+    }
+
+    private static Bitmap getIcon(final Context context, final int resId) {
+        final Bitmap cachedIcon = sNotificationIcons.get(resId);
+        if (cachedIcon != null) {
+            return cachedIcon;
+        }
+
+        final Bitmap icon = BitmapFactory.decodeResource(context.getResources(), resId);
+        sNotificationIcons.put(resId, icon);
+
         return icon;
     }
 
@@ -666,7 +665,7 @@ public class NotificationUtils {
 
             // Use the default notification icon
             notification.setLargeIcon(
-                    getDefaultNotificationIcon(context, true /* multiple new messages */));
+                    getDefaultNotificationIcon(context, folder, true /* multiple new messages */));
 
             // The ticker initially start as the new messages string.
             notificationTicker = newMessagesString;
@@ -777,7 +776,7 @@ public class NotificationUtils {
                     fromAddress = message.getFrom();
                     from = getDisplayableSender(fromAddress);
                     notification.setLargeIcon(
-                            getContactIcon(context, getSenderAddress(fromAddress)));
+                            getContactIcon(context, getSenderAddress(fromAddress), folder));
                 }
 
                 // Assume that the last message in this conversation is unread
@@ -824,7 +823,8 @@ public class NotificationUtils {
                     notification.setSubText(isInbox ? notificationAccount : notificationLabelName);
 
                     if (multipleUnseenThread) {
-                        notification.setLargeIcon(getDefaultNotificationIcon(context, true));
+                        notification.setLargeIcon(
+                                getDefaultNotificationIcon(context, folder, true));
                     }
                     final NotificationCompat.BigTextStyle bigText =
                             new NotificationCompat.BigTextStyle(notification);
@@ -1463,7 +1463,8 @@ public class NotificationUtils {
         return contactIds;
     }
 
-    private static Bitmap getContactIcon(Context context, String senderAddress) {
+    private static Bitmap getContactIcon(
+            Context context, String senderAddress, final Folder folder) {
         if (senderAddress == null) {
             return null;
         }
@@ -1509,7 +1510,7 @@ public class NotificationUtils {
         }
         if (icon == null) {
             // icon should be the default gmail icon.
-            icon = getDefaultNotificationIcon(context, false /* single new message */);
+            icon = getDefaultNotificationIcon(context, folder, false /* single new message */);
         }
         return icon;
     }

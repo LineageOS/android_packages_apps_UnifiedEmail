@@ -491,7 +491,7 @@ public final class FolderListFragment extends ListFragment implements
                     }
                 }
                 Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
-                Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_box));
+                Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_icon));
                 return folderItemView;
             }
         }
@@ -726,7 +726,8 @@ public final class FolderListFragment extends ListFragment implements
                     folderItemView.overrideUnreadCount(mCurrentFolderForUnreadCheck.unreadCount);
                 }
             }
-            Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.folder_box));
+            Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.color_block));
+            Folder.setIcon(folder, (ImageView) folderItemView.findViewById(R.id.folder_icon));
             return folderItemView;
         }
 

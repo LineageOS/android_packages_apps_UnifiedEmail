@@ -488,7 +488,7 @@ public class Conversation implements Parcelable {
         }
     }
 
-    private String getSendersDelimeter(Context context) {
+    private static String getSendersDelimeter(Context context) {
         if (sSendersDelimeter == null) {
             sSendersDelimeter = context.getResources().getString(R.string.senders_split_token);
         }
@@ -558,8 +558,14 @@ public class Conversation implements Parcelable {
         if (sSubjectAndSnippet == null) {
             sSubjectAndSnippet = context.getString(R.string.subject_and_snippet);
         }
-        return (!TextUtils.isEmpty(snippet)) ?
-                String.format(sSubjectAndSnippet, filteredSubject, snippet)
-                : filteredSubject;
+        if (TextUtils.isEmpty(filteredSubject) && TextUtils.isEmpty(snippet)) {
+            return "";
+        } else if (TextUtils.isEmpty(filteredSubject)) {
+            return snippet;
+        } else if (TextUtils.isEmpty(snippet)) {
+            return filteredSubject;
+        }
+
+        return String.format(sSubjectAndSnippet, filteredSubject, snippet);
     }
 }
