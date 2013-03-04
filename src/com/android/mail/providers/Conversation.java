@@ -22,11 +22,12 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ import java.util.List;
 
 public class Conversation implements Parcelable {
     public static final int NO_POSITION = -1;
+
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private static final String EMPTY_STRING = "";
 
@@ -233,7 +236,15 @@ public class Conversation implements Parcelable {
 
     @Override
     public String toString() {
-        return "[conversation id=" + id + ", subject =" + subject + "]";
+        // log extra info at DEBUG level or finer
+        final StringBuilder sb = new StringBuilder("[conversation id=");
+        sb.append(id);
+        if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+            sb.append(", subject=");
+            sb.append(subject);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     public static final ClassLoaderCreator<Conversation> CREATOR =

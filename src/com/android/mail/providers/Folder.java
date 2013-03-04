@@ -359,6 +359,21 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     @Override
+    public String toString() {
+        // log extra info at DEBUG level or finer
+        final StringBuilder sb = new StringBuilder("[folder id=");
+        sb.append(id);
+        if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+            sb.append(", uri=");
+            sb.append(uri);
+            sb.append(", name=");
+            sb.append(name);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    @Override
     public int compareTo(Folder other) {
         return name.compareToIgnoreCase(other.name);
     }
