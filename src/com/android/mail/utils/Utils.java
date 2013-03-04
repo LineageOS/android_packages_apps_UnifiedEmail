@@ -22,6 +22,7 @@ import com.google.android.common.html.parser.HtmlTree;
 import com.google.android.common.html.parser.HtmlTreeBuilder;
 import com.google.common.collect.Maps;
 
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -68,6 +69,9 @@ import com.android.mail.ui.FeedbackEnabledActivity;
 
 import org.json.JSONObject;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Locale;
 import java.util.Map;
 
@@ -1020,6 +1024,12 @@ public class Utils {
 
     public static boolean isEmpty(Uri uri) {
         return uri == null || uri.equals(Uri.EMPTY);
+    }
+
+    public static String dumpFragment(Fragment f) {
+        final StringWriter sw = new StringWriter();
+        f.dump("", new FileDescriptor(), new PrintWriter(sw), new String[0]);
+        return sw.toString();
     }
 
     /**
