@@ -45,7 +45,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -57,6 +57,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
+import com.android.mail.MailLogService;
 import com.android.mail.R;
 import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
@@ -172,6 +173,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /** A {@link android.content.BroadcastReceiver} that suppresses new e-mail notifications. */
     private SuppressNotificationReceiver mNewEmailReceiver = null;
 
+    /** Handler for all our local runnables. */
     protected Handler mHandler = new Handler();
 
     /**
@@ -217,6 +219,9 @@ public abstract class AbstractActivityController implements ActivityController {
                     count, mObservers.size());
         }
     };
+
+    /** Runnable that checks the logging level to enable/disable the logging service. */
+    private Runnable mLogServiceChecker = null;
 
     /**
      * Interface for actions that are deferred until after a load completes. This is for handling
@@ -828,9 +833,57 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onConversationVisibilityChanged(boolean visible) {
     }
 
+    /**
+     * Initialize development time logging. This can potentially log a lot of PII, and we don't want
+     * to turn it on for shipped versions.
+     */
+    private void initializeDevLoggingService() {
+        if (!MailLogService.DEBUG_ENABLED) {
+            return;
+        }
+        // Check every 5 minutes.
+        final int WAIT_TIME = 5 * 60 * 1000;
+        // Start a runnable that periodically checks the log level and starts/stops the service.
+        mLogServiceChecker = new Runnable() {
+            /** True if currently logging. */
+            private boolean mCurrentlyLogging = false;
+
+            /**
+             * If the logging level has been changed since the previous run, start or stop the
+             * service.
+             */
+            private void startOrStopService() {
+                // If the log level is already high, start the service.
+                final Intent i = new Intent(mContext, MailLogService.class);
+                final boolean loggingEnabled = MailLogService.isLoggingLevelHighEnough();
+                if (mCurrentlyLogging == loggingEnabled) {
+                    // No change since previous run, just return;
+                    return;
+                }
+                if (loggingEnabled) {
+                    LogUtils.e(LOG_TAG, "Starting MailLogService");
+                    mContext.startService(i);
+                } else {
+                    LogUtils.e(LOG_TAG, "Stopping MailLogService");
+                    mContext.stopService(i);
+                }
+                mCurrentlyLogging = loggingEnabled;
+            }
+
+            @Override
+            public void run() {
+                startOrStopService();
+                mHandler.postDelayed(this, WAIT_TIME);
+            }
+        };
+        // Start the runnable right away.
+        mHandler.post(mLogServiceChecker);
+    }
+
     @Override
     public boolean onCreate(Bundle savedState) {
         initializeActionBar();
+        initializeDevLoggingService();
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
         mResolver = mActivity.getContentResolver();
@@ -1557,6 +1610,8 @@ public abstract class AbstractActivityController implements ActivityController {
         mActionBarView.onDestroy();
         mRecentFolderList.destroy();
         mDestroyed = true;
+        mHandler.removeCallbacks(mLogServiceChecker);
+        mLogServiceChecker = null;
     }
 
     /**
@@ -1805,7 +1860,8 @@ public abstract class AbstractActivityController implements ActivityController {
      * Show the conversation provided in the arguments. It is safe to pass a null conversation
      * object, which is a signal to back out of conversation view mode.
      * Child classes must call super.showConversation() <b>before</b> their own implementations.
-     * @param conversation
+     * @param conversation the conversation to be shown, or null if we want to back out to list
+     *                     mode.
      * @param inLoaderCallbacks true if the method is called as a result of
      * {@link #onLoadFinished(Loader, Cursor)}
      */
@@ -1814,6 +1870,8 @@ public abstract class AbstractActivityController implements ActivityController {
             Utils.sConvLoadTimer.start();
         }
 
+        MailLogService.log("AbstractActivityController", "showConversation(" + conversation + " )"
+                + "");
         // Set the current conversation just in case it wasn't already set.
         setCurrentConversation(conversation);
         // Add the folder that we were viewing to the recent folders list.
