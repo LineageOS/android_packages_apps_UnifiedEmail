@@ -216,6 +216,13 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     @Override
     public int getCount() {
         if (mStopListeningMode) {
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+                final Cursor cursor = getCursor();
+                LogUtils.d(LOG_TAG,
+                        "IN CPA.getCount stopListeningMode, returning lastKnownCount=%d."
+                        + " cursor=%s real count=%s", mLastKnownCount, cursor,
+                        (cursor != null) ? cursor.getCount() : "N/A");
+            }
             return mLastKnownCount;
         }
 
@@ -438,13 +445,14 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     public void stopListening() {
         // disable the observer, but save off the current count, in case the Pager asks for it
         // from now until imminent destruction
-        mStopListeningMode = true;
 
         if (mController != null) {
             mController.unregisterConversationListObserver(mListObserver);
             mController.unregisterFolderObserver(mFolderObserver);
         }
         mLastKnownCount = getCount();
+        mStopListeningMode = true;
+        LogUtils.d(LOG_TAG, "CPA.stopListening, recording lastKnownCount=%d", mLastKnownCount);
     }
 
     @Override
