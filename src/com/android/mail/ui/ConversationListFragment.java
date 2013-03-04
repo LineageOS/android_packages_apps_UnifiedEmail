@@ -359,6 +359,15 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     @Override
+    public String toString() {
+        final String s = super.toString();
+        if (mViewContext == null) {
+            return s;
+        }
+        return "(" + s + " folder=" + mViewContext.folder + ")";
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = rootView.findViewById(R.id.empty_view);
