@@ -222,7 +222,7 @@ public class Attachment implements Parcelable {
             final JSONObject jsonObject = toJSON();
             // Add some additional fields that are helpful when debugging issues
             jsonObject.put("partId", partId);
-            return jsonObject.toString().replaceAll("[,{]", "$0\n");
+            return jsonObject.toString();
         } catch (JSONException e) {
             LogUtils.e(LOG_TAG, e, "JSONException in toString");
             return super.toString();
