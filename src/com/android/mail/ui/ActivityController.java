@@ -186,9 +186,9 @@ public interface ActivityController extends LayoutListener,
     void onSaveInstanceState(Bundle outState);
 
     /**
-     * @see android.app.Activity#onSearchRequested()
+     * Begin a search with the given query string.
      */
-    void onSearchRequested(String query);
+    void executeSearch(String query);
 
     /**
      * Called by the Mail activity on Activity stop.
