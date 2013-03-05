@@ -859,7 +859,7 @@ public class Utils {
      */
     public static void sendFeedback(FeedbackEnabledActivity activity, Account account,
             boolean reportingProblem) {
-        if (account != null && account.sendFeedbackIntentUri != null) {
+        if (activity != null && account != null && account.sendFeedbackIntentUri != null) {
             final Bundle optionalExtras = new Bundle(2);
             optionalExtras.putBoolean(
                     UIProvider.SendFeedbackExtras.EXTRA_REPORTING_PROBLEM, reportingProblem);
@@ -878,19 +878,22 @@ public class Utils {
         final View rootView = currentView != null ? currentView.getRootView() : null;
         if (rootView != null) {
             rootView.setDrawingCacheEnabled(true);
-            final Bitmap originalBitmap =
-                    rootView.getDrawingCache().copy(Bitmap.Config.RGB_565, false);
-            double originalHeight = originalBitmap.getHeight();
-            double originalWidth = originalBitmap.getWidth();
-            int newHeight = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
-            int newWidth = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
-            double scaleX, scaleY;
-            scaleX = newWidth  / originalWidth;
-            scaleY = newHeight / originalHeight;
-            final double scale = Math.min(scaleX, scaleY);
-            newWidth = (int)Math.round(originalWidth * scale);
-            newHeight = (int)Math.round(originalHeight * scale);
-            return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+            final Bitmap drawingCache = rootView.getDrawingCache();
+            // Null check to avoid NPE discovered from monkey crash:
+            if (drawingCache != null) {
+                final Bitmap originalBitmap = drawingCache.copy(Bitmap.Config.RGB_565, false);
+                double originalHeight = originalBitmap.getHeight();
+                double originalWidth = originalBitmap.getWidth();
+                int newHeight = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
+                int newWidth = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
+                double scaleX, scaleY;
+                scaleX = newWidth  / originalWidth;
+                scaleY = newHeight / originalHeight;
+                final double scale = Math.min(scaleX, scaleY);
+                newWidth = (int)Math.round(originalWidth * scale);
+                newHeight = (int)Math.round(originalHeight * scale);
+                return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+            }
         }
         return null;
     }
