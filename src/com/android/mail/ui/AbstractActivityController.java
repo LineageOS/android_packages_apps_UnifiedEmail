@@ -2059,7 +2059,13 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void unregisterConversationListObserver(DataSetObserver observer) {
-        mConversationListObservable.unregisterObserver(observer);
+        try {
+            mConversationListObservable.unregisterObserver(observer);
+        } catch (IllegalStateException e) {
+            // Log instead of crash
+            LogUtils.e(LOG_TAG, e, "unregisterConversationListObserver called for an observer that "
+                    + "hasn't been registered");
+        }
     }
 
     @Override
@@ -2069,7 +2075,13 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void unregisterFolderObserver(DataSetObserver observer) {
-        mFolderObservable.unregisterObserver(observer);
+        try {
+            mFolderObservable.unregisterObserver(observer);
+        } catch (IllegalStateException e) {
+            // Log instead of crash
+            LogUtils.e(LOG_TAG, e, "unregisterFolderObserver called for an observer that "
+                    + "hasn't been registered");
+        }
     }
 
     @Override
@@ -2079,7 +2091,13 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void unregisterConversationLoadedObserver(DataSetObserver observer) {
-        mPagerController.unregisterConversationLoadedObserver(observer);
+        try {
+            mPagerController.unregisterConversationLoadedObserver(observer);
+        } catch (IllegalStateException e) {
+            // Log instead of crash
+            LogUtils.e(LOG_TAG, e, "unregisterConversationLoadedObserver called for an observer "
+                    + "that hasn't been registered");
+        }
     }
 
     /**
