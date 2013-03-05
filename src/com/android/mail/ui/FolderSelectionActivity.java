@@ -252,11 +252,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public boolean onSearchRequested(String query) {
-        return false;
-    }
-
-    @Override
     public ConversationSelectionSet getSelectedSet() {
         return null;
     }

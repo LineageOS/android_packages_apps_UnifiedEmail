@@ -199,6 +199,12 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mSubjectView = (SnippetTextView) findViewById(R.id.conversation_subject);
     }
 
+    public void expandSearch() {
+        if (mSearch != null) {
+            mSearch.expandActionView();
+        }
+    }
+
     /**
      * Close the search view if it is expanded.
      */
@@ -538,7 +544,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             mSearch.collapseActionView();
             mSearchWidget.setQuery("", false);
         }
-        mActivity.onSearchRequested(query.trim());
+        mController.executeSearch(query.trim());
         return true;
     }
 
@@ -620,7 +626,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 query = query.substring(0, start) + query.substring(start + queryText.length());
             }
         }
-        mController.onSearchRequested(query.trim());
+        mController.executeSearch(query.trim());
         return true;
     }
 
