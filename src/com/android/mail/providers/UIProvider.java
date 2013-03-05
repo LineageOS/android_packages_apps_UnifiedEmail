@@ -1371,6 +1371,11 @@ public class UIProvider {
          */
         public static final String EXTRA_ERROR = "cursor_error";
 
+
+        /**
+         * This integer column contains the total message count for this folder.
+         */
+        public static final String EXTRA_TOTAL_COUNT = "cursor_total_count";
     }
 
     public static final class AccountCursorExtraKeys {
