@@ -440,6 +440,12 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
      * See {@link ConversationPagerController#stopListening()}.
      */
     public void stopListening() {
+        if (mStopListeningMode) {
+            // Do nothing since we're already in stop listening mode.  This avoids repeated
+            // unregister observer calls.
+            return;
+        }
+
         // disable the observer, but save off the current count, in case the Pager asks for it
         // from now until imminent destruction
 
