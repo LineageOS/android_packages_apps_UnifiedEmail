@@ -121,11 +121,6 @@ public interface RestrictedActivity {
     void onBackPressed();
 
     /**
-     * @see android.app.Activity#onSearchRequested()
-     */
-    public boolean onSearchRequested(String query);
-
-    /**
      * @see android.app.Activity#setContentView(int)
      */
     void setContentView(int layoutResId);

@@ -1520,7 +1520,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onSearchRequested(String query) {
+    public void executeSearch(String query) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, query);
@@ -2698,8 +2698,8 @@ public abstract class AbstractActivityController implements ActivityController {
             return;
         }
         if (mAccount.supportsCapability(UIProvider.AccountCapabilities.LOCAL_SEARCH)
-                | mAccount.supportsCapability(UIProvider.AccountCapabilities.SERVER_SEARCH)) {
-            onSearchRequested(mActionBarView.getQuery());
+                || mAccount.supportsCapability(UIProvider.AccountCapabilities.SERVER_SEARCH)) {
+            mActionBarView.expandSearch();
         } else {
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
                     .getString(R.string.search_unsupported), Toast.LENGTH_SHORT).show();

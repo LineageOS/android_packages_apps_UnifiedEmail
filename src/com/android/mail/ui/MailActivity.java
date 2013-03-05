@@ -235,12 +235,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public boolean onSearchRequested(String query) {
-        mController.onSearchRequested(query);
-        return true;
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         mController.onStart();
