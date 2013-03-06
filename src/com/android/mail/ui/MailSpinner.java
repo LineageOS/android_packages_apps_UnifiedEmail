@@ -40,13 +40,14 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
     private final ListPopupWindow mListPopupWindow;
     private AccountSpinnerAdapter mSpinnerAdapter;
     private Account mAccount;
-    private Folder mFolder;
     private ActivityController mController;
     private final TextView mAccountName;
     private final TextView mFolderName;
     private final TextView mFolderCount;
     private final LinearLayout mContainer;
 
+    // Created through view inflation.
+    @SuppressWarnings("unused")
     public MailSpinner(Context context) {
         this(context, null);
     }
@@ -60,12 +61,11 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
         mListPopupWindow = new ListPopupWindow(context);
         mListPopupWindow.setOnItemClickListener(this);
         mListPopupWindow.setAnchorView(this);
-        int dropDownWidth = context.getResources().getDimensionPixelSize(
+        final int dropDownWidth = context.getResources().getDimensionPixelSize(
                 R.dimen.account_dropdown_dropdownwidth);
         mListPopupWindow.setWidth(dropDownWidth);
         mListPopupWindow.setModal(true);
-        addView(LayoutInflater.from(getContext()).inflate(R.layout.account_switch_spinner_item,
-                null));
+        addView(LayoutInflater.from(context).inflate(R.layout.account_switch_spinner_item, null));
         mAccountName = (TextView) findViewById(R.id.account_second);
         mFolderName = (TextView) findViewById(R.id.account_first);
         mFolderCount = (TextView) findViewById(R.id.account_unread);
@@ -82,7 +82,9 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
      * Changes the enabled state of the spinner. Not called {@link #setEnabled(boolean)} because
      * that is an existing method on views.
      *
-     * @param enabled
+     * @param enabled true if the spinner allows touch events, and shows a little triangle on the
+     *                bottom right indicating that it is a spinner. False if it is just a view
+     *                showing the account name.
      */
     public final void changeEnabledState(boolean enabled) {
         setEnabled(enabled);
@@ -100,11 +102,10 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
         }
     }
 
-    public void setFolder(Folder f) {
-        mFolder = f;
-        if (mFolder != null) {
-            mFolderName.setText(mFolder.name);
-            int unreadCount = Utils.getFolderUnreadDisplayCount(mFolder);
+    public void setFolder(Folder folder) {
+        if (folder != null) {
+            mFolderName.setText(folder.name);
+            final int unreadCount = Utils.getFolderUnreadDisplayCount(folder);
             mFolderCount.setText(Utils.getUnreadCountString(getContext(), unreadCount));
             mFolderCount.setContentDescription(Utils.formatPlural(getContext(),
                     R.plurals.unread_mail_count, unreadCount));
@@ -112,7 +113,7 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
             if (mSpinnerAdapter != null) {
                 // Update the spinner with this current folder, as it could change the recent items
                 // that are shown.
-                mSpinnerAdapter.setCurrentFolder(mFolder);
+                mSpinnerAdapter.setCurrentFolder(folder);
             }
         }
     }

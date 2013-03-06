@@ -52,7 +52,6 @@ import com.android.mail.providers.SearchRecentSuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -169,6 +168,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     /** True if the application has more than one account. */
     private boolean mHasManyAccounts;
 
+    // Created via view inflation.
+    @SuppressWarnings("unused")
     public MailActionBarView(Context context) {
         this(context, null);
     }
@@ -275,14 +276,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         return modeMenu[mMode];
     }
 
-    public void handleRestore(Bundle savedInstanceState) {
-    }
-
-    public void handleSaveInstanceState(Bundle outState) {
-    }
-
     public void initialize(ControllableActivity activity, ActivityController callback,
-            ViewMode viewMode, ActionBar actionBar, RecentFolderList recentFolders) {
+            ActionBar actionBar) {
         mActionBar = actionBar;
         mController = callback;
         mActivity = activity;
@@ -318,7 +313,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     /**
      * Sets the array of accounts to the value provided here.
-     * @param accounts
+     * @param accounts array of all accounts on the device.
      */
     public void setAccounts(Account[] accounts) {
         mSpinnerAdapter.setAccountArray(accounts);
@@ -332,7 +327,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * On tablet, we enable the spinner when the Folder list is NOT visible: In conversation view,
      * and search conversation view.
      */
-    private final void enableDisableSpinnner() {
+    private void enableDisableSpinnner() {
         // Spinner is always shown on phone, and it is enabled by default, so don't mess with it.
         // By default the drawable is set in the XML layout, and the view is enabled.
         if (!mIsOnTablet) {
@@ -417,7 +412,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Close the search query entry field to avoid keyboard events, and to restore the actionbar
      * to non-search mode.
      */
-    private final void closeSearchField() {
+    private void closeSearchField() {
         if (mSearch == null) {
             return;
         }
@@ -570,14 +565,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     private void onRefreshStopped() {
         setRefreshInProgress(false);
-    }
-
-    /**
-     * Get the query text the user entered in the search widget, or empty string
-     * if there is none.
-     */
-    public String getQuery() {
-        return mSearchWidget != null ? mSearchWidget.getQuery().toString() : "";
     }
 
     // Next two methods are called when search suggestions are clicked.
