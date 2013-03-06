@@ -28,7 +28,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -66,10 +65,6 @@ public final class OnePaneController extends AbstractActivityController {
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
 
-    /**
-     * @param activity
-     * @param viewMode
-     */
     public OnePaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
     }
@@ -118,30 +113,24 @@ public final class OnePaneController extends AbstractActivityController {
 
     /**
      * Returns true if the candidate URI is the URI for the default inbox for the given account.
-     * @param candidate
-     * @param account
-     * @return
+     * @param candidate the URI to check
+     * @param account the account whose default Inbox the candidate might be
+     * @return true if the candidate is indeed the default inbox for the given account.
      */
-    private static final boolean isDefaultInbox(Uri candidate, Account account) {
-        if (candidate == null || account == null) {
-            return false;
-        }
-        final Uri inboxUri = Settings.getDefaultInboxUri(account.settings);
-        return candidate.equals(account.settings.defaultInbox);
+    private static boolean isDefaultInbox(Uri candidate, Account account) {
+        return (candidate != null && account != null)
+                && candidate.equals(account.settings.defaultInbox);
     }
 
     /**
      * Returns true if the user is currently in the conversation list view, viewing the default
      * inbox.
-     * @return
+     * @return true if user is in conversation list mode, viewing the default inbox.
      */
     private static boolean inInbox(final Account account, final ConversationListContext context) {
         // If we don't have valid state, then we are not in the inbox.
-        if (account == null || context == null || context.folder == null
-                || account.settings == null) {
-            return false;
-        }
-        return !ConversationListContext.isSearchResult(context)
+        return !(account == null || context == null || context.folder == null
+                || account.settings == null) && !ConversationListContext.isSearchResult(context)
                 && isDefaultInbox(context.folder.uri, account);
     }
 
@@ -308,9 +297,9 @@ public final class OnePaneController extends AbstractActivityController {
      * Replace the content_pane with the fragment specified here. The tag is specified so that
      * the {@link ActivityController} can look up the fragments through the
      * {@link android.app.FragmentManager}.
-     * @param fragment
-     * @param transition
-     * @param tag
+     * @param fragment the new fragment to put
+     * @param transition the transition to show
+     * @param tag a tag for the fragment manager.
      * @return transaction ID returned when the transition is committed.
      */
     private int replaceFragment(Fragment fragment, int transition, String tag) {
