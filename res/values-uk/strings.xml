@@ -372,4 +372,5 @@
     <string name="new_messages" msgid="4419173946074516420">"Нових повідомлень: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Без звуку"</string>
+    <string name="inbox_unseen_banner" msgid="4561582938706814621">"НОВИХ: <xliff:g id="NUMBER">%d</xliff:g>"</string>
 </resources>
