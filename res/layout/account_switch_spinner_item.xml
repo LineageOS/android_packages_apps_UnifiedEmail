@@ -56,6 +56,8 @@
             android:orientation="vertical"
             android:gravity="center_vertical"
             android:background="@drawable/spinner_ab_holo_light"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
             style="@style/AccountSpinnerStyle">
             <TextView
                 android:id="@+id/account_first"
