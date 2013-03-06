@@ -789,13 +789,13 @@
     <string name="notification_action_preference_summary_not_set">Not set</string>
 
     <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
-    <string name="veiled_address"></string>
+    <string name="veiled_address"/>
     <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
-    <string name="veiled_alternate_text"></string>
+    <string name="veiled_alternate_text"/>
     <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
-    <string name="veiled_alternate_text_unknown_person"></string>
+    <string name="veiled_alternate_text_unknown_person"/>
     <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
-    <string name="veiled_summary_unknown_person"></string>
+    <string name="veiled_summary_unknown_person"/>
 
     <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
     <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
