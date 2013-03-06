@@ -208,33 +208,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         this.parent = parent;
     }
 
-    public Folder(Parcel in, ClassLoader loader) {
-        id = in.readInt();
-        persistentId = in.readString();
-        uri = in.readParcelable(loader);
-        name = in.readString();
-        capabilities = in.readInt();
-        // 1 for true, 0 for false.
-        hasChildren = in.readInt() == 1;
-        syncWindow = in.readInt();
-        conversationListUri = in.readParcelable(loader);
-        childFoldersListUri = in.readParcelable(loader);
-        unseenCount = in.readInt();
-        unreadCount = in.readInt();
-        totalCount = in.readInt();
-        refreshUri = in.readParcelable(loader);
-        syncStatus = in.readInt();
-        lastSyncResult = in.readInt();
-        type = in.readInt();
-        iconResId = in.readInt();
-        notificationIconResId = in.readInt();
-        bgColor = in.readString();
-        fgColor = in.readString();
-        loadMoreUri = in.readParcelable(loader);
-        hierarchicalDesc = in.readString();
-        parent = in.readParcelable(loader);
-     }
-
     public Folder(Cursor cursor) {
         id = cursor.getInt(UIProvider.FOLDER_ID_COLUMN);
         persistentId = cursor.getString(UIProvider.FOLDER_PERSISTENT_ID_COLUMN);
@@ -266,6 +239,33 @@ public class Folder implements Parcelable, Comparable<Folder> {
         hierarchicalDesc = cursor.getString(UIProvider.FOLDER_HIERARCHICAL_DESC_COLUMN);
         parent = null;
     }
+
+    public Folder(Parcel in, ClassLoader loader) {
+        id = in.readInt();
+        persistentId = in.readString();
+        uri = in.readParcelable(loader);
+        name = in.readString();
+        capabilities = in.readInt();
+        // 1 for true, 0 for false.
+        hasChildren = in.readInt() == 1;
+        syncWindow = in.readInt();
+        conversationListUri = in.readParcelable(loader);
+        childFoldersListUri = in.readParcelable(loader);
+        unseenCount = in.readInt();
+        unreadCount = in.readInt();
+        totalCount = in.readInt();
+        refreshUri = in.readParcelable(loader);
+        syncStatus = in.readInt();
+        lastSyncResult = in.readInt();
+        type = in.readInt();
+        iconResId = in.readInt();
+        notificationIconResId = in.readInt();
+        bgColor = in.readString();
+        fgColor = in.readString();
+        loadMoreUri = in.readParcelable(loader);
+        hierarchicalDesc = in.readString();
+        parent = in.readParcelable(loader);
+     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
