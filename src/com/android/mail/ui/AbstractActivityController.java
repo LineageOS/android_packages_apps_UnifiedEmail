@@ -45,7 +45,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -331,10 +330,6 @@ public abstract class AbstractActivityController implements ActivityController {
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
     private DestructiveAction mPendingDestruction;
     protected AsyncRefreshTask mFolderSyncTask;
-    // Task for setting any share intents for the account to enabled.
-    // This gets cancelled if the user kills the app before it finishes, and
-    // will just run the next time the user opens the app.
-    private AsyncTask<String, Void, Void> mEnableShareIntents;
     private Folder mFolderListFolder;
     private boolean mIsDragHappening;
     private int mShowUndoBarDelay;
@@ -420,14 +415,11 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Check if the fragment is attached to an activity and has a root view.
-     * @param in
+     * @param in fragment to be checked
      * @return true if the fragment is valid, false otherwise
      */
-    private static final boolean isValidFragment(Fragment in) {
-        if (in == null || in.getActivity() == null || in.getView() == null) {
-            return false;
-        }
-        return true;
+    private static boolean isValidFragment(Fragment in) {
+        return !(in == null || in.getActivity() == null || in.getView() == null);
     }
 
     /**
@@ -619,7 +611,8 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Sets the folder state without changing view mode and without creating a list fragment, if
      * possible.
-     * @param folder
+     * @param folder the folder whose list of conversations are to be shown
+     * @param query the query string for a list of conversations matching a search
      */
     private void setListContext(Folder folder, String query) {
         updateFolder(folder);
@@ -636,7 +629,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param folder the folder to change to
      * @param query if non-null, this represents the search string that the folder represents.
      */
-    private final void changeFolder(Folder folder, String query) {
+    private void changeFolder(Folder folder, String query) {
         if (!Objects.equal(mFolder, folder)) {
             commitDestructiveActions(false);
         }
@@ -697,9 +690,9 @@ public abstract class AbstractActivityController implements ActivityController {
      * Marks the {@link #mFolderChanged} value if the newFolder is different from the existing
      * {@link #mFolder}. This should be called immediately <b>before</b> assigning newFolder to
      * mFolder.
-     * @param newFolder
+     * @param newFolder the new folder we are switching to.
      */
-    private final void setHasFolderChanged(final Folder newFolder) {
+    private void setHasFolderChanged(final Folder newFolder) {
         // We should never try to assign a null folder. But in the rare event that we do, we should
         // only set the bit when we have a valid folder, and null is not valid.
         if (newFolder == null) {
@@ -809,7 +802,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Inform the conversation cursor that there has been a visibility change.
-     * @param visible
+     * @param visible true if the conversation list is visible, false otherwise.
      */
     protected synchronized void informCursorVisiblity(boolean visible) {
         if (mConversationListCursor != null) {
@@ -1498,11 +1491,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Requests that the action be performed and the UI state is updated to reflect the new change.
-     * @param target
-     * @param action
+     * @param action the action to be performed, specified as a menu id: R.id.archive, ...
      */
-    private void requestUpdate(final Collection<Conversation> target,
-            final DestructiveAction action) {
+    private void requestUpdate(final DestructiveAction action) {
         action.performAction();
         refreshConversationList();
     }
@@ -1592,10 +1583,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onStop() {
-        if (mEnableShareIntents != null) {
-            mEnableShareIntents.cancel(true);
-        }
-
         NotificationActionUtils.unregisterUndoNotificationObserver(mUndoNotificationObserver);
     }
 
@@ -1667,7 +1654,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Set the account, and carry out all the account-related changes that rely on this.
-     * @param account
+     * @param account new account to set to.
      */
     private void setAccount(Account account) {
         if (account == null) {
@@ -1701,7 +1688,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * method from the parent class, since it performs important UI
      * initialization.
      *
-     * @param savedState
+     * @param savedState previous state
      */
     @Override
     public void onRestoreInstanceState(Bundle savedState) {
@@ -1752,7 +1739,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * Handle an intent to open the app. This method is called only when there is no saved state,
      * so we need to set state that wasn't set before. It is correct to change the viewmode here
      * since it has not been previously set.
-     * @param intent
+     * @param intent intent passed to the activity.
      */
     private void handleIntent(Intent intent) {
         boolean handled = false;
@@ -1832,7 +1819,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * triggering {@link ConversationSetObserver} callbacks as our selection set changes.
      *
      */
-    private final void restoreSelectedConversations(Bundle savedState) {
+    private void restoreSelectedConversations(Bundle savedState) {
         if (savedState == null) {
             mSelectedSet.clear();
             return;
@@ -1852,7 +1839,7 @@ public abstract class AbstractActivityController implements ActivityController {
         return mActionBarView;
     }
 
-    private final void showConversation(Conversation conversation) {
+    private void showConversation(Conversation conversation) {
         showConversation(conversation, false /* inLoaderCallbacks */);
     }
 
@@ -1912,7 +1899,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * Use the instance variable and the wait fragment's tag to get the wait fragment.  This is
      * far superior to using the value of mWaitFragment, which might be invalid or might refer
      * to a fragment after it has been destroyed.
-     * @return
+     * @return a wait fragment that is already attached to the activity, if one exists
      */
     protected final WaitFragment getWaitFragment() {
         final FragmentManager manager = mActivity.getFragmentManager();
@@ -1963,7 +1950,8 @@ public abstract class AbstractActivityController implements ActivityController {
      * Set the current conversation. This is the conversation on which all actions are performed.
      * Do not modify mCurrentConversation except through this method, which makes it easy to
      * perform common actions associated with changing the current conversation.
-     * @param conversation
+     * @param conversation new conversation to view. Passing null indicates that we are backing
+     *                     out to conversation list mode.
      */
     @Override
     public void setCurrentConversation(Conversation conversation) {
@@ -2103,8 +2091,8 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Returns true if the number of accounts is different, or if the current account has been
      * removed from the device
-     * @param accountCursor
-     * @return
+     * @param accountCursor the cursor which points to all the accounts.
+     * @return true if the number of accounts is changed or current account missing from the list.
      */
     private boolean accountsUpdated(Cursor accountCursor) {
         // Check to see if the current account hasn't been set, or the account cursor is empty
@@ -2385,9 +2373,9 @@ public abstract class AbstractActivityController implements ActivityController {
         private final boolean mIsSelectedSet;
 
         /**
-         * Create a listener object. action is one of four constants: R.id.y_button (archive),
+         * Create a listener object.
+         * @param action action is one of four constants: R.id.y_button (archive),
          * R.id.delete , R.id.mute, and R.id.report_spam.
-         * @param action
          * @param target Conversation that we want to apply the action to.
          * @param isBatch whether the conversations are in the currently selected batch set.
          */
@@ -2541,7 +2529,7 @@ public abstract class AbstractActivityController implements ActivityController {
         } else {
             folderChange = getFolderChange(target, folderOps, isDestructive,
                     batch, showUndo);
-            requestUpdate(target, folderChange);
+            requestUpdate(folderChange);
         }
     }
 
@@ -2626,7 +2614,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * If the Conversation List Fragment is visible, updates the fragment.
      */
-    private final void updateConversationListFragment() {
+    private void updateConversationListFragment() {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             refreshConversationList();
@@ -2861,7 +2849,6 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             refreshConversationList();
             mSelectedSet.clear();
-            return;
         }
     }
 
@@ -2875,7 +2862,6 @@ public abstract class AbstractActivityController implements ActivityController {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
             convListFragment.requestDelete(R.id.change_folder, conversations,
                     new DroppedInStarredAction(conversations, mFolder, folder));
-            return;
         }
     }
 
@@ -2952,7 +2938,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * Check if the fragment given here is visible. Checking {@link Fragment#isVisible()} is
      * insufficient because that doesn't check if the window is currently in focus or not.
      */
-    private final boolean isFragmentVisible(Fragment in) {
+    private boolean isFragmentVisible(Fragment in) {
         return in != null && in.isVisible() && mActivity.hasWindowFocus();
     }
 
@@ -2961,9 +2947,8 @@ public abstract class AbstractActivityController implements ActivityController {
 
         @Override
         public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
-            Loader<ConversationCursor> result = new ConversationCursorLoader((Activity) mActivity,
+            return new ConversationCursorLoader((Activity) mActivity,
                     mAccount, mFolder.conversationListUri, mFolder.name);
-            return result;
         }
 
         @Override
@@ -3012,7 +2997,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Updates controller state based on search results and shows first conversation if required.
      */
-    private final void perhapsShowFirstSearchResult() {
+    private void perhapsShowFirstSearchResult() {
         if (mCurrentConversation == null) {
             // Shown for search results in two-pane mode only.
             mHaveSearchResults = Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
@@ -3032,7 +3017,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * next destructive action..
      * @param nextAction the next destructive action to be performed. This can be null.
      */
-    private final void destroyPending(DestructiveAction nextAction) {
+    private void destroyPending(DestructiveAction nextAction) {
         // If there is a pending action, perform that first.
         if (mPendingDestruction != null) {
             mPendingDestruction.performAction();
@@ -3044,14 +3029,13 @@ public abstract class AbstractActivityController implements ActivityController {
      * Register a destructive action with the controller. This performs the previous destructive
      * action as a side effect. This method is final because we don't want the child classes to
      * embellish this method any more.
-     * @param action
+     * @param action the action to register.
      */
-    private final void registerDestructiveAction(DestructiveAction action) {
+    private void registerDestructiveAction(DestructiveAction action) {
         // TODO(viki): This is not a good idea. The best solution is for clients to request a
         // destructive action from the controller and for the controller to own the action. This is
         // a half-way solution while refactoring DestructiveAction.
         destroyPending(action);
-        return;
     }
 
     @Override
@@ -3075,7 +3059,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param target the conversations to act upon.
      * @return a {@link DestructiveAction} that performs the specified action.
      */
-    private final DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
+    private DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
             boolean batch) {
         return new ConversationAction(action, target, batch);
     }
@@ -3097,7 +3081,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         /**
          * Create a new folder destruction object to act on the given conversations.
-         * @param target
+         * @param target conversations to act upon.
          */
         private FolderDestruction(final Collection<Conversation> target,
                 final Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
@@ -3179,9 +3163,8 @@ public abstract class AbstractActivityController implements ActivityController {
     public final DestructiveAction getDeferredFolderChange(Collection<Conversation> target,
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
             boolean showUndo) {
-        final DestructiveAction da = new FolderDestruction(target, folders, isDestructive, isBatch,
+        return new FolderDestruction(target, folders, isDestructive, isBatch,
                 showUndo, R.id.change_folder);
-        return da;
     }
 
     @Override
@@ -3427,8 +3410,8 @@ public abstract class AbstractActivityController implements ActivityController {
      * Sets the listener for the positive action on a confirmation dialog.  Since only a single
      * confirmation dialog can be shown, this overwrites the previous listener.  It is safe to
      * unset the listener; in which case action should be set to -1.
-     * @param listener
-     * @param action
+     * @param listener the listener that will perform the task for this dialog's positive action.
+     * @param action the action that created this dialog.
      */
     private void setListener(AlertDialog.OnClickListener listener, final int action){
         mDialogListener = listener;
