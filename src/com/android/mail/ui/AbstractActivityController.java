@@ -484,7 +484,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 && Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction());
         mActionBarView = (MailActionBarView) inflater.inflate(
                 isSearch ? R.layout.search_actionbar_view : R.layout.actionbar_view, null);
-        mActionBarView.initialize(mActivity, this, mViewMode, actionBar, mRecentFolderList);
+        mActionBarView.initialize(mActivity, this, actionBar);
     }
 
     /**
