@@ -352,12 +352,12 @@
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"新機能"</string>
     <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"メッセージの自動サイズ調整"</string>
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"横長のメッセージが画面に合わせて自動で調整され、拡大することもできます。このオプションをオフにするには、[設定] &gt; [全般設定]を選択します。"</string>
-    <string name="notification_action_reply" msgid="6015299134424685297">"返信する"</string>
-    <string name="notification_action_reply_all" msgid="20020468410400912">"全員に返信する"</string>
-    <string name="notification_action_forward" msgid="7252777659544972497">"転送する"</string>
-    <string name="notification_action_archive" msgid="81978513898440040">"アーカイブする"</string>
-    <string name="notification_action_remove_label" msgid="5852730267411032291">"ラベルを削除する"</string>
-    <string name="notification_action_delete" msgid="327773454111551791">"削除する"</string>
+    <string name="notification_action_reply" msgid="6015299134424685297">"返信"</string>
+    <string name="notification_action_reply_all" msgid="20020468410400912">"全員に返信"</string>
+    <string name="notification_action_forward" msgid="7252777659544972497">"転送"</string>
+    <string name="notification_action_archive" msgid="81978513898440040">"アーカイブ"</string>
+    <string name="notification_action_remove_label" msgid="5852730267411032291">"ラベルを削除"</string>
+    <string name="notification_action_delete" msgid="327773454111551791">"削除"</string>
     <string name="notification_action_mark_read" msgid="4351952818740163225">"既読にする"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"アーカイブ済み"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"ラベル削除済み"</string>
