@@ -37,6 +37,7 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -213,8 +214,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         @Override
-        public void loadConversationFolders(Conversation conv, Folder ignoreFolder) {
-            super.loadConversationFolders(conv, ignoreFolder);
+        public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri) {
+            super.loadConversationFolders(conv, ignoreFolderUri);
 
             mFoldersCount = mFoldersSortedSet.size();
             mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
@@ -569,7 +570,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             } else {
                 mHeader.folderDisplayer.reset();
             }
-            mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation, mDisplayedFolder);
+            mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation,
+                    mDisplayedFolder.uri);
         }
 
         if (mSelectedConversationSet != null) {

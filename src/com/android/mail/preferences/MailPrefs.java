@@ -22,10 +22,9 @@ import com.google.common.collect.ImmutableSet;
 import android.content.Context;
 
 import com.android.mail.MailIntentService;
-import com.android.mail.R;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.widget.BaseWidgetProvider;
 
 import java.util.Set;
 
@@ -46,7 +45,6 @@ public final class MailPrefs extends VersionedPrefs {
         private static final String MIGRATED_VERSION = "migrated-version";
 
         public static final String WIDGET_ACCOUNT_PREFIX = "widget-account-";
-        public static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
 
         /** Hidden preference to indicate what version a "What's New" dialog was last shown for. */
         public static final String WHATS_NEW_LAST_SHOWN_VERSION = "whats-new-last-shown-version";
@@ -123,9 +121,9 @@ public final class MailPrefs extends VersionedPrefs {
         return getSharedPreferences().contains(PreferenceKeys.WIDGET_ACCOUNT_PREFIX + appWidgetId);
     }
 
-    public void configureWidget(int appWidgetId, Account account, Folder folder) {
+    public void configureWidget(int appWidgetId, Account account, final String folderUri) {
         getEditor().putString(PreferenceKeys.WIDGET_ACCOUNT_PREFIX + appWidgetId,
-                createWidgetPreferenceValue(account, folder)).apply();
+                createWidgetPreferenceValue(account, folderUri)).apply();
     }
 
     public String getWidgetConfiguration(int appWidgetId) {
@@ -169,9 +167,9 @@ public final class MailPrefs extends VersionedPrefs {
                 PreferenceKeys.ENABLE_WHOOSH_ZOOM, false);
     }
 
-    private static String createWidgetPreferenceValue(Account account, Folder folder) {
-        return account.uri.toString() +
-                PreferenceKeys.ACCOUNT_FOLDER_PREFERENCE_SEPARATOR + folder.uri.toString();
+    private static String createWidgetPreferenceValue(Account account, String folderUri) {
+        return account.uri.toString() + BaseWidgetProvider.ACCOUNT_FOLDER_PREFERENCE_SEPARATOR
+                + folderUri;
 
     }
 

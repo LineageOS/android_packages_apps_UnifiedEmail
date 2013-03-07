@@ -97,7 +97,6 @@ public class Utils {
     public static final String EXTRA_FOLDER_URI = "folderUri";
     public static final String EXTRA_COMPOSE_URI = "composeUri";
     public static final String EXTRA_CONVERSATION = "conversationUri";
-    public static final String EXTRA_FOLDER = "folder";
 
     /** Extra tag for debugging the blank fragment problem. */
     public static final String VIEW_DEBUGGING_TAG = "MailBlankFragment";
@@ -668,14 +667,14 @@ public class Utils {
      * @return
      */
     public static Intent createViewConversationIntent(final Context context,
-            Conversation conversation, Folder folder, Account account) {
+            Conversation conversation, final Uri folderUri, Account account) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.setDataAndType(appendVersionQueryParameter(context, conversation.uri),
                 account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
-        intent.putExtra(Utils.EXTRA_FOLDER, folder);
+        intent.putExtra(Utils.EXTRA_FOLDER_URI, folderUri);
         intent.putExtra(Utils.EXTRA_CONVERSATION, conversation);
         return intent;
     }
@@ -687,19 +686,19 @@ public class Utils {
      * @param account
      * @return
      */
-    public static Intent createViewFolderIntent(final Context context, Folder folder,
+    public static Intent createViewFolderIntent(final Context context, final Uri folderUri,
             Account account) {
-        if (folder == null || account == null) {
-            LogUtils.wtf(
-                    LOG_TAG, "Utils.createViewFolderIntent(%s,%s): Bad input", folder, account);
+        if (folderUri == null || account == null) {
+            LogUtils.wtf(LOG_TAG, "Utils.createViewFolderIntent(%s,%s): Bad input", folderUri,
+                    account);
             return null;
         }
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        intent.setDataAndType(appendVersionQueryParameter(context, folder.uri), account.mimeType);
+        intent.setDataAndType(appendVersionQueryParameter(context, folderUri), account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
-        intent.putExtra(Utils.EXTRA_FOLDER, folder);
+        intent.putExtra(Utils.EXTRA_FOLDER_URI, folderUri);
         return intent;
     }
 

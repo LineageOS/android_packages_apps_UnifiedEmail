@@ -21,6 +21,7 @@ import com.android.mail.utils.LogTag;
 import com.google.common.collect.Sets;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
@@ -54,9 +55,9 @@ public class FolderDisplayer {
      * @param foldersString string containing serialized folders to display.
      * @param ignoreFolder (optional) folder to omit from the displayed set
      */
-    public void loadConversationFolders(Conversation conv, Folder ignoreFolder) {
+    public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri) {
         mFoldersSortedSet.clear();
-        mFoldersSortedSet.addAll(conv.getRawFoldersForDisplay(ignoreFolder));
+        mFoldersSortedSet.addAll(conv.getRawFoldersForDisplay(ignoreFolderUri));
     }
 
     /**
