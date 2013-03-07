@@ -28,7 +28,6 @@ import android.provider.Settings;
 import com.android.mail.MailIntentService;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils.NotificationActionType;
 
 import java.util.LinkedHashSet;
@@ -123,8 +122,6 @@ public class FolderPreferences extends VersionedPrefs {
     @Override
     protected boolean canBackup(final String key) {
         if (mPersistentId == null) {
-            LogUtils.d(LOG_TAG, "Cannot back up folder '%s' because it has no persistent id",
-                    getSharedPreferencesName());
             return false;
         }
 
