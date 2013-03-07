@@ -428,6 +428,8 @@ public class Conversation implements Parcelable {
                 starred = (Integer) val != 0;
             } else if (ConversationColumns.SEEN.equals(key)) {
                 seen = (Integer) val != 0;
+            } else if (ConversationColumns.RAW_FOLDERS.equals(key)) {
+                rawFolders = FolderList.fromBlob((byte[]) val);
             } else if (ConversationColumns.VIEWED.equals(key)) {
                 // ignore. this is not read from the cursor, either.
             } else {
