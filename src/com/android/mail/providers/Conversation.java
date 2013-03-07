@@ -426,6 +426,8 @@ public class Conversation implements Parcelable {
                 convFlags = (Integer) val;
             } else if (ConversationColumns.STARRED.equals(key)) {
                 starred = (Integer) val != 0;
+            } else if (ConversationColumns.SEEN.equals(key)) {
+                seen = (Integer) val != 0;
             } else if (ConversationColumns.VIEWED.equals(key)) {
                 // ignore. this is not read from the cursor, either.
             } else {
