@@ -99,10 +99,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         super.onActivityCreated(savedInstanceState);
         mConversationHeaderView.setCallbacks(this, this);
         mConversationHeaderView.setFoldersVisible(false);
-        final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
-        if (sdc != null) {
-            sdc.setSubject(mConversation.subject);
-        }
         mConversationHeaderView.setSubject(mConversation.subject);
         mMessageHeaderView.setContactInfoSource(getContactInfoSource());
         mMessageHeaderView.setCallbacks(this);

@@ -626,12 +626,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private void startConversationLoad() {
         mWebView.setVisibility(View.VISIBLE);
         getLoaderManager().initLoader(MESSAGE_LOADER, Bundle.EMPTY, getMessageLoaderCallbacks());
-        if (isUserVisible()) {
-            final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
-            if (sdc != null) {
-                sdc.setSubject(mConversation.subject);
-            }
-        }
         // TODO(mindyp): don't show loading status for a previously rendered
         // conversation. Ielieve this is better done by making sure don't show loading status
         // until XX ms have passed without loading completed.
