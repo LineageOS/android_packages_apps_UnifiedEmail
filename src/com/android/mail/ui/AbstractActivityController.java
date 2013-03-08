@@ -1742,7 +1742,6 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param intent intent passed to the activity.
      */
     private void handleIntent(Intent intent) {
-        boolean handled = false;
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                 setAccount(Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT)));
@@ -1756,31 +1755,8 @@ public abstract class AbstractActivityController implements ActivityController {
             } else {
                 mViewMode.enterConversationListMode();
             }
-            final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
-            if (folder != null) {
-                onFolderChanged(folder);
-                handled = true;
-            }
 
-            if (isConversationMode) {
-                // Open the conversation.
-                LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
-                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                final Conversation conversation =
-                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
-                if (conversation != null && conversation.position < 0) {
-                    // Set the position to 0 on this conversation, as we don't know where it is
-                    // in the list
-                    conversation.position = 0;
-                }
-                showConversation(conversation);
-                handled = true;
-            }
-
-            if (!handled) {
-                // We have an account, but nothing else: load the default inbox.
-                loadAccountInbox();
-            }
+            new FolderChangedAsyncTask(mContext, intent).execute((Void[]) null);
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                 mHaveSearchResults = false;
@@ -1804,6 +1780,69 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         if (mAccount != null) {
             restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
+        }
+    }
+
+    private class FolderChangedAsyncTask extends AsyncTask<Void, Void, Folder> {
+        private final Context mContext;
+        private final Intent mIntent;
+
+        public FolderChangedAsyncTask(final Context context, final Intent intent) {
+            mContext = context;
+            mIntent = intent;
+        }
+
+        @Override
+        protected Folder doInBackground(final Void... params) {
+            final Uri folderUri = mIntent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
+
+            final Cursor folderCursor =
+                    mContext.getContentResolver().query(folderUri, UIProvider.FOLDERS_PROJECTION,
+                            null, null, null);
+
+            Folder folder = null;
+
+            try {
+                if (folderCursor.moveToFirst()) {
+                    folder = new Folder(folderCursor);
+                }
+            } finally {
+                folderCursor.close();
+            }
+
+            return folder;
+        }
+
+        @Override
+        protected void onPostExecute(final Folder folder) {
+            boolean handled = false;
+
+            if (folder != null) {
+                onFolderChanged(folder);
+                handled = true;
+            }
+
+            final boolean isConversationMode = mIntent.hasExtra(Utils.EXTRA_CONVERSATION);
+
+            if (isConversationMode) {
+                // Open the conversation.
+                LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
+                        mIntent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
+                final Conversation conversation =
+                        mIntent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
+                if (conversation != null && conversation.position < 0) {
+                    // Set the position to 0 on this conversation, as we don't know where it is
+                    // in the list
+                    conversation.position = 0;
+                }
+                showConversation(conversation);
+                handled = true;
+            }
+
+            if (!handled) {
+                // We have an account, but nothing else: load the default inbox.
+                loadAccountInbox();
+            }
         }
     }
 
