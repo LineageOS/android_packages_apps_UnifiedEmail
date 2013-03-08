@@ -136,10 +136,6 @@ function normalizeAllMessageWidths() {
     var contentValues;
     var isEmpty;
 
-    if (!NORMALIZE_MESSAGE_WIDTHS) {
-        return;
-    }
-
     expandedBodyDivs = document.querySelectorAll(".expanded > .mail-message-content");
 
     isEmpty = isConversationEmpty(expandedBodyDivs);
@@ -169,10 +165,6 @@ function normalizeElementWidths(elements) {
     var documentWidth;
     var newZoom, oldZoom;
 
-    if (!NORMALIZE_MESSAGE_WIDTHS) {
-        return;
-    }
-
     documentWidth = document.body.offsetWidth;
 
     for (i = 0; i < elements.length; i++) {
@@ -183,8 +175,64 @@ function normalizeElementWidths(elements) {
             el.style.zoom = 1;
         }
         newZoom = documentWidth / el.scrollWidth;
-        el.style.zoom = newZoom;
+        if (ENABLE_MUNGE_TABLES) {
+            mungeTables(el, documentWidth, el.scrollWidth);
+        }
+        newZoom = documentWidth / el.scrollWidth;
+        if (NORMALIZE_MESSAGE_WIDTHS) {
+            el.style.zoom = newZoom;
+        }
     }
+}
+
+function mungeTables(el, docWidth, elWidth) {
+    var nodes;
+    var i, len;
+    var newWidth;
+    var wStr;
+    var touched = false;
+    if (elWidth <= docWidth) {
+        return;
+    }
+    // first find tables with widths and strip them of widths
+    nodes = el.querySelectorAll("table[width]");
+    for (i = 0, len = nodes.length; i < len; i++) {
+        if (nodes[i].hasAttribute("width")) {
+            nodes[i].removeAttribute("width");
+            touched = true;
+        }
+    }
+    if (touched) {
+        newWidth = el.scrollWidth;
+        console.log("ran table munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
+            + " docW=" + docWidth);
+        if (newWidth <= docWidth) {
+            return;
+        }
+    }
+
+    // OK, that wasn't enough. Try munging all divs with inline styles where the width
+    // is wider than docWidth, and change it to be a max-width.
+    touched = false;
+    nodes = el.querySelectorAll("div[style]");
+    for (i = 0, len = nodes.length; i < len; i++) {
+        wStr = nodes[i].style.width;
+        if (wStr && wStr.slice(0, -2) > docWidth) {
+            nodes[i].style.width = "";
+            nodes[i].style.maxWidth = wStr;
+            touched = true;
+        }
+    }
+    if (touched) {
+        newWidth = el.scrollWidth;
+        console.log("ran div-width munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
+            + " docW=" + docWidth);
+        if (newWidth <= docWidth) {
+            return;
+        }
+    }
+
+    // TODO: consider reversing changes that didn't help
 }
 
 function hideAllUnsafeImages() {

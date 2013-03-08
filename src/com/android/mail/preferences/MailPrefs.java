@@ -71,6 +71,7 @@ public final class MailPrefs extends VersionedPrefs {
         private static final String ENABLE_CHIP_DRAG_AND_DROP = "enable-chip-drag-and-drop";
         public static final String ENABLE_CONVLIST_PHOTOS = "enable-convlist-photos";
         public static final String ENABLE_WHOOSH_ZOOM = "enable-whoosh-zoom";
+        public static final String ENABLE_MUNGE_TABLES = "enable-munge-tables";
 
     }
 
@@ -165,6 +166,13 @@ public final class MailPrefs extends VersionedPrefs {
         // If experimental preferences are not enabled, return false.
         return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
                 PreferenceKeys.ENABLE_WHOOSH_ZOOM, false);
+    }
+
+    @SuppressWarnings("unused")
+    public boolean shouldMungeTables() {
+        // If experimental preferences are not enabled, return false.
+        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
+                PreferenceKeys.ENABLE_MUNGE_TABLES, true);
     }
 
     private static String createWidgetPreferenceValue(Account account, String folderUri) {
