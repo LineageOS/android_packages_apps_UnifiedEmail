@@ -768,8 +768,10 @@ public class NotificationUtils {
             boolean multipleUnseenThread = false;
             String from = null;
             try {
-                cursor = context.getContentResolver().query(conversation.messageListUri,
-                        UIProvider.MESSAGE_PROJECTION, null, null, null);
+                final Uri uri = conversation.messageListUri.buildUpon().appendQueryParameter(
+                        UIProvider.LABEL_QUERY_PARAMETER, folder.persistentId).build();
+                cursor = context.getContentResolver().query(uri, UIProvider.MESSAGE_PROJECTION,
+                        null, null, null);
                 messageCursor = new MessageCursor(cursor);
                 // Use the information from the last sender in the conversation that triggered
                 // this notification.
