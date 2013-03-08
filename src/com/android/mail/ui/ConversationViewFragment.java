@@ -386,8 +386,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         final WebChromeClient wcc = new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                LogUtils.i(LOG_TAG, "JS: %s (%s:%d)", consoleMessage.message(),
-                        consoleMessage.sourceId(), consoleMessage.lineNumber());
+                LogUtils.i(LOG_TAG, "JS: %s (%s:%d) f=%s", consoleMessage.message(),
+                        consoleMessage.sourceId(), consoleMessage.lineNumber(),
+                        ConversationViewFragment.this);
                 return true;
             }
         };
@@ -786,7 +787,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
-                mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount));
+                mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount),
+                MailPrefs.get(getContext()).shouldMungeTables());
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
@@ -1646,7 +1648,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             mTemplates.appendMessageHtml(msgItem.getMessage(), true /* expanded */,
                     safeForImages, 0, 0);
             final String html = mTemplates.endConversation(mBaseUri,
-                    mConversation.getBaseUri(mBaseUri), 0, 0, false, false);
+                    mConversation.getBaseUri(mBaseUri), 0, 0, false, false, false);
 
             mMessageView.loadDataWithBaseURL(mBaseUri, html, "text/html", "utf-8", null);
             mMessageViewLoadStartMs = SystemClock.uptimeMillis();

@@ -181,7 +181,8 @@ public class HtmlConversationTemplates {
     }
 
     public String endConversation(String docBaseUri, String conversationBaseUri, int viewWidth,
-            int viewportWidth, boolean enableContentReadySignal, boolean normalizeMessageWidths) {
+            int viewportWidth, boolean enableContentReadySignal, boolean normalizeMessageWidths,
+            boolean enableMungeTables) {
         if (!mInProgress) {
             throw new IllegalStateException("must call startConversation first");
         }
@@ -190,7 +191,8 @@ public class HtmlConversationTemplates {
 
         append(sConversationLower, contentReadyClass, mContext.getString(R.string.hide_elided),
                 mContext.getString(R.string.show_elided), docBaseUri, conversationBaseUri,
-                viewWidth, viewportWidth, enableContentReadySignal, normalizeMessageWidths);
+                viewWidth, viewportWidth, enableContentReadySignal, normalizeMessageWidths,
+                enableMungeTables);
 
         mInProgress = false;
 
