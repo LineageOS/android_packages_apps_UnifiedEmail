@@ -1516,7 +1516,7 @@ public class NotificationUtils {
     }
 
     private static String getMessageBodyWithoutElidedText(final Message message) {
-        return getMessageBodyWithoutElidedText(message.bodyText);
+        return getMessageBodyWithoutElidedText(message.getBodyAsHtml());
     }
 
     public static String getMessageBodyWithoutElidedText(String html) {
