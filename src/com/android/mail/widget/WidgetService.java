@@ -124,7 +124,7 @@ public class WidgetService extends RemoteViewsService {
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         remoteViews.setRemoteAdapter(R.id.conversation_list, intent);
         // Open mail app when click on header
-        final Intent mailIntent = Utils.createViewFolderIntent(folder, account);
+        final Intent mailIntent = Utils.createViewFolderIntent(context, folder, account);
         PendingIntent clickIntent = PendingIntent.getActivity(context, 0, mailIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_header, clickIntent);
@@ -381,8 +381,8 @@ public class WidgetService extends RemoteViewsService {
                         filterTag(conversation.subject));
 
                 // On click intent.
-                remoteViews.setOnClickFillInIntent(R.id.widget_conversation,
-                        Utils.createViewConversationIntent(conversation, mFolder, mAccount));
+                remoteViews.setOnClickFillInIntent(R.id.widget_conversation, Utils
+                        .createViewConversationIntent(mContext, conversation, mFolder, mAccount));
 
                 return remoteViews;
             }
@@ -445,7 +445,7 @@ public class WidgetService extends RemoteViewsService {
             view.setTextViewText(
                     R.id.loading_text, mContext.getText(R.string.view_more_conversations));
             view.setOnClickFillInIntent(R.id.widget_loading,
-                    Utils.createViewFolderIntent(mFolder, mAccount));
+                    Utils.createViewFolderIntent(mContext, mFolder, mAccount));
             return view;
         }
 
