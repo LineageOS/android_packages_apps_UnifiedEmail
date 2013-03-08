@@ -458,12 +458,12 @@ public class Conversation implements Parcelable {
         cachedDisplayableFolders = null;
     }
 
-    public ArrayList<Folder> getRawFoldersForDisplay(Folder ignoreFolder) {
+    public ArrayList<Folder> getRawFoldersForDisplay(final Uri ignoreFolderUri) {
         if (cachedDisplayableFolders == null) {
             cachedDisplayableFolders = new ArrayList<Folder>();
             for (Folder folder : rawFolders.folders) {
                 // skip the ignoreFolder
-                if (ignoreFolder != null && ignoreFolder.equals(folder)) {
+                if (ignoreFolderUri != null && ignoreFolderUri.equals(folder.uri)) {
                     continue;
                 }
                 cachedDisplayableFolders.add(folder);

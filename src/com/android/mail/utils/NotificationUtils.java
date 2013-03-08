@@ -605,14 +605,15 @@ public class NotificationUtils {
         final Intent intent;
 
         if (cursor == null) {
-            intent = Utils.createViewFolderIntent(context, folder, account);
+            intent = Utils.createViewFolderIntent(context, folder.uri, account);
         } else {
             // A conversation cursor has been specified, so this intent is intended to be go
             // directly to the one new conversation
 
             // Get the Conversation object
             final Conversation conversation = new Conversation(cursor);
-            intent = Utils.createViewConversationIntent(context, conversation, folder, account);
+            intent = Utils.createViewConversationIntent(context, conversation, folder.uri,
+                    account);
         }
 
         return intent;

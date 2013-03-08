@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -47,12 +48,14 @@ import java.util.Set;
 
 public abstract class BaseWidgetProvider extends AppWidgetProvider {
     public static final String EXTRA_ACCOUNT = "account";
-    public static final String EXTRA_FOLDER = "folder";
+    public static final String EXTRA_FOLDER_URI = "folder-uri";
+    public static final String EXTRA_FOLDER_CONVERSATION_LIST_URI = "folder-conversation-list-uri";
+    public static final String EXTRA_FOLDER_DISPLAY_NAME = "folder-display-name";
     public static final String EXTRA_UNREAD = "unread";
     public static final String EXTRA_UPDATE_ALL_WIDGETS = "update-all-widgets";
     public static final String WIDGET_ACCOUNT_PREFIX = "widget-account-";
 
-    static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
+    public static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
 
 
     protected static final String ACTION_UPDATE_WIDGET = "com.android.mail.ACTION_UPDATE_WIDGET";
@@ -118,9 +121,14 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         if (ACTION_UPDATE_WIDGET.equals(action)) {
             final int widgetId = intent.getIntExtra(EXTRA_WIDGET_ID, -1);
             final Account account = Account.newinstance(intent.getStringExtra(EXTRA_ACCOUNT));
-            final Folder folder = intent.getParcelableExtra(EXTRA_FOLDER);
-            if (widgetId != -1 && account != null && folder != null) {
-                updateWidgetInternal(context, widgetId, account, folder);
+            final Uri folderUri = intent.getParcelableExtra(EXTRA_FOLDER_URI);
+            final Uri folderConversationListUri =
+                    intent.getParcelableExtra(EXTRA_FOLDER_CONVERSATION_LIST_URI);
+            final String folderDisplayName = intent.getStringExtra(EXTRA_FOLDER_DISPLAY_NAME);
+
+            if (widgetId != -1 && account != null && folderUri != null) {
+                updateWidgetInternal(context, widgetId, account, folderUri,
+                        folderConversationListUri, folderDisplayName);
             }
         } else if (Utils.ACTION_NOTIFY_DATASET_CHANGED.equals(action)) {
             // Receive notification for a certain account.
@@ -173,55 +181,75 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         // Update each of the widgets with a remote adapter
-        ContentResolver resolver = context.getContentResolver();
-        for (int i = 0; i < appWidgetIds.length; ++i) {
-            // Get the account for this widget from preference
-            final String accountFolder = MailPrefs.get(context).getWidgetConfiguration(
-                    appWidgetIds[i]);
-            String accountUri = null;
-            Uri folderUri = null;
-            if (!TextUtils.isEmpty(accountFolder)) {
-                final String[] parsedInfo = TextUtils.split(accountFolder,
-                        ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
-                if (parsedInfo.length == 2) {
-                    accountUri = parsedInfo[0];
-                    folderUri = Uri.parse(parsedInfo[1]);
-                } else {
-                    accountUri = accountFolder;
-                    folderUri =  Uri.EMPTY;
-                }
-            }
-            // account will be null the first time a widget is created. This is
-            // OK, as isAccountValid will return false, allowing the widget to
-            // be configured.
 
-            // Lookup the account by URI.
-            Account account = null;
-            if (!TextUtils.isEmpty(accountUri)) {
-                account = getAccountObject(context, accountUri);
-            }
-            if (Utils.isEmpty(folderUri) && account != null) {
-                folderUri = account.settings.defaultInbox;
-            }
-            Folder folder = null;
-            if (!Utils.isEmpty(folderUri)) {
-                Cursor folderCursor = null;
-                try {
-                    folderCursor = resolver.query(folderUri,
-                            UIProvider.FOLDERS_PROJECTION, null, null, null);
-                    if (folderCursor != null) {
+        new BulkUpdateAsyncTask(context, appWidgetIds).execute((Void[]) null);
+    }
+
+    private class BulkUpdateAsyncTask extends AsyncTask<Void, Void, Void> {
+        private final Context mContext;
+        private final int[] mAppWidgetIds;
+
+        public BulkUpdateAsyncTask(final Context context, final int[] appWidgetIds) {
+            mContext = context;
+            mAppWidgetIds = appWidgetIds;
+        }
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            for (int i = 0; i < mAppWidgetIds.length; ++i) {
+                // Get the account for this widget from preference
+                final String accountFolder = MailPrefs.get(mContext).getWidgetConfiguration(
+                        mAppWidgetIds[i]);
+                String accountUri = null;
+                Uri folderUri = null;
+                if (!TextUtils.isEmpty(accountFolder)) {
+                    final String[] parsedInfo = TextUtils.split(accountFolder,
+                            ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
+                    if (parsedInfo.length == 2) {
+                        accountUri = parsedInfo[0];
+                        folderUri = Uri.parse(parsedInfo[1]);
+                    } else {
+                        accountUri = accountFolder;
+                        folderUri =  Uri.EMPTY;
+                    }
+                }
+                // account will be null the first time a widget is created. This is
+                // OK, as isAccountValid will return false, allowing the widget to
+                // be configured.
+
+                // Lookup the account by URI.
+                Account account = null;
+                if (!TextUtils.isEmpty(accountUri)) {
+                    account = getAccountObject(mContext, accountUri);
+                }
+                if (Utils.isEmpty(folderUri) && account != null) {
+                    folderUri = account.settings.defaultInbox;
+                }
+
+                Folder folder = null;
+
+                if (folderUri != null) {
+                    final Cursor folderCursor =
+                            mContext.getContentResolver().query(folderUri,
+                                    UIProvider.FOLDERS_PROJECTION, null, null, null);
+
+                    try {
                         if (folderCursor.moveToFirst()) {
                             folder = new Folder(folderCursor);
                         }
-                    }
-                } finally {
-                    if (folderCursor != null) {
+                    } finally {
                         folderCursor.close();
                     }
                 }
+
+                updateWidgetInternal(mContext, mAppWidgetIds[i], account, folderUri,
+                        folder == null ? null : folder.conversationListUri, folder == null ? null
+                                : folder.name);
             }
-            updateWidgetInternal(context, appWidgetIds[i], account, folder);
+
+            return null;
         }
+
     }
 
     protected Account getAccountObject(Context context, String accountUri) {
@@ -248,10 +276,11 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
      * Update the widget appWidgetId with the given account and folder
      */
     public static void updateWidget(Context context, int appWidgetId, Account account,
-                Folder folder) {
-        if (account == null || folder == null) {
+            final Uri folderUri, final Uri folderConversationListUri,
+            final String folderDisplayName) {
+        if (account == null || folderUri == null) {
             LogUtils.e(LOG_TAG,
-                    "Missing account or folder.  account: %s folder %s", account, folder);
+                    "Missing account or folder.  account: %s folder %s", account, folderUri);
             return;
         }
         final Intent updateWidgetIntent = new Intent(ACTION_UPDATE_WIDGET);
@@ -259,17 +288,20 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         updateWidgetIntent.setType(account.mimeType);
         updateWidgetIntent.putExtra(EXTRA_WIDGET_ID, appWidgetId);
         updateWidgetIntent.putExtra(EXTRA_ACCOUNT, account.serialize());
-        updateWidgetIntent.putExtra(EXTRA_FOLDER, folder);
+        updateWidgetIntent.putExtra(EXTRA_FOLDER_URI, folderUri);;
+        updateWidgetIntent.putExtra(EXTRA_FOLDER_CONVERSATION_LIST_URI, folderConversationListUri);
+        updateWidgetIntent.putExtra(EXTRA_FOLDER_DISPLAY_NAME, folderDisplayName);
 
         context.sendBroadcast(updateWidgetIntent);
     }
 
     protected void updateWidgetInternal(Context context, int appWidgetId, Account account,
-                Folder folder) {
+            final Uri folderUri, final Uri folderConversationListUri,
+            final String folderDisplayName) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
         final boolean isAccountValid = isAccountValid(context, account);
 
-        if (!isAccountValid || folder == null) {
+        if (!isAccountValid || folderUri == null) {
             // Widget has not been configured yet
             remoteViews.setViewVisibility(R.id.widget_folder, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_account, View.GONE);
@@ -291,7 +323,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             remoteViews.setOnClickPendingIntent(R.id.widget_configuration, clickIntent);
         } else {
             // Set folder to a space here to avoid flicker.
-            configureValidAccountWidget(context, remoteViews, appWidgetId, account, folder, " ");
+            configureValidAccountWidget(context, remoteViews, appWidgetId, account, folderUri,
+                    folderConversationListUri, folderDisplayName == null ? " " : folderDisplayName);
 
         }
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, remoteViews);
@@ -310,9 +343,10 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
     }
 
     protected void configureValidAccountWidget(Context context, RemoteViews remoteViews,
-                int appWidgetId, Account account, Folder folder, String folderDisplayName) {
+            int appWidgetId, Account account, final Uri folderUri,
+            final Uri folderConversationListUri, String folderDisplayName) {
         WidgetService.configureValidAccountWidget(context, remoteViews, appWidgetId, account,
-                folder, folderDisplayName, WidgetService.class);
+                folderUri, folderConversationListUri, folderDisplayName, WidgetService.class);
     }
 
     private final void migrateAllLegacyWidgetInformation(Context context) {
@@ -334,5 +368,4 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
      * Abstract method allowing extending classes to perform widget migration
      */
     protected abstract void migrateLegacyWidgetInformation(Context context, int widgetId);
-
 }
