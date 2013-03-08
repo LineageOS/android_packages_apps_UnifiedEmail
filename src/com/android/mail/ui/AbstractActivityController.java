@@ -31,7 +31,6 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -67,6 +66,9 @@ import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.SyncErrorDialogFragment;
 import com.android.mail.compose.ComposeActivity;
+import com.android.mail.content.CursorCreator;
+import com.android.mail.content.ObjectCursor;
+import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
@@ -295,6 +297,11 @@ public abstract class AbstractActivityController implements ActivityController {
     private final ConversationListLoaderCallbacks mListCursorCallbacks =
             new ConversationListLoaderCallbacks();
 
+    /** Object that listens to all LoaderCallbacks that result in {@link Folder} creation. */
+    private final FolderLoads mFolderCallbacks = new FolderLoads();
+    /** Object that listens to all LoaderCallbacks that result in {@link Account} creation. */
+    private final AccountLoads mAccountCallbacks = new AccountLoads();
+
     private final DataSetObservable mFolderObservable = new DataSetObservable();
 
     /**
@@ -313,6 +320,9 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final int LOADER_ACCOUNT_INBOX = 5;
     private static final int LOADER_SEARCH = 6;
     private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
+    /** Loader for showing the initial folder/conversation at app start. */
+    public static final int LOADER_FIRST_FOLDER = 8;
+
     /**
      * Guaranteed to be the last loader ID used by the activity. Loaders are owned by Activity or
      * fragments, and within an activity, loader IDs need to be unique. A hack to ensure that the
@@ -350,6 +360,9 @@ public abstract class AbstractActivityController implements ActivityController {
      * and false if it acts on the currently selected conversation
      */
     private boolean mDialogFromSelectedSet;
+
+    /** Which conversation to show, if started from widget/notification. */
+    private Conversation mConversationToShow = null;
 
     private final Deque<UpOrBackHandler> mUpOrBackHandlers = Lists.newLinkedList();
 
@@ -600,7 +613,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final Bundle args = new Bundle();
         args.putString(ConversationListContext.EXTRA_SEARCH_QUERY, intent
                 .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
-        mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, this);
+        mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, mFolderCallbacks);
     }
 
     @Override
@@ -683,7 +696,7 @@ public abstract class AbstractActivityController implements ActivityController {
     // field in the account.
     @Override
     public void loadAccountInbox() {
-        restartOptionalLoader(LOADER_ACCOUNT_INBOX);
+        restartOptionalLoader(LOADER_ACCOUNT_INBOX, mFolderCallbacks, Bundle.EMPTY);
     }
 
     /**
@@ -741,21 +754,21 @@ public abstract class AbstractActivityController implements ActivityController {
         // previous loader's instance and data upon configuration change (e.g. rotation).
         // If there was not already an instance of the loader, init it.
         if (lm.getLoader(LOADER_FOLDER_CURSOR) == null) {
-            lm.initLoader(LOADER_FOLDER_CURSOR, null, this);
+            lm.initLoader(LOADER_FOLDER_CURSOR, Bundle.EMPTY, mFolderCallbacks);
         } else {
-            lm.restartLoader(LOADER_FOLDER_CURSOR, null, this);
+            lm.restartLoader(LOADER_FOLDER_CURSOR, Bundle.EMPTY, mFolderCallbacks);
         }
         // In this case, we are starting from no folder, which would occur
         // the first time the app was launched or on orientation changes.
         // We want to attach to an existing loader, if available.
         if (wasNull || lm.getLoader(LOADER_CONVERSATION_LIST) == null) {
-            lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
+            lm.initLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY, mListCursorCallbacks);
         } else {
             // However, if there was an existing folder AND we have changed
             // folders, we want to restart the loader to get the information
             // for the newly selected folder
             lm.destroyLoader(LOADER_CONVERSATION_LIST);
-            lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
+            lm.initLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY, mListCursorCallbacks);
         }
     }
 
@@ -781,8 +794,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 // We were waiting for the user to create an account
                 if (resultCode == Activity.RESULT_OK) {
                     // restart the loader to get the updated list of accounts
-                    mActivity.getLoaderManager().initLoader(
-                            LOADER_ACCOUNT_CURSOR, null, this);
+                    mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, Bundle.EMPTY,
+                            mAccountCallbacks);
                 } else {
                     // The user failed to create an account, just exit the app
                     mActivity.finish();
@@ -916,7 +929,8 @@ public abstract class AbstractActivityController implements ActivityController {
             handleIntent(intent);
         }
         // Create the accounts loader; this loads the account switch spinner.
-        mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
+        mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, Bundle.EMPTY,
+                mAccountCallbacks);
         return true;
     }
 
@@ -929,7 +943,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onRestart() {
-        DialogFragment fragment = (DialogFragment)
+        final DialogFragment fragment = (DialogFragment)
                 mFragmentManager.findFragmentByTag(SYNC_ERROR_DIALOG_FRAGMENT_TAG);
         if (fragment != null) {
             fragment.dismiss();
@@ -1674,10 +1688,10 @@ public abstract class AbstractActivityController implements ActivityController {
         mAccount = account;
         // Only change AAC state here. Do *not* modify any other object's state. The object
         // should listen on account changes.
-        restartOptionalLoader(LOADER_RECENT_FOLDERS);
+        restartOptionalLoader(LOADER_RECENT_FOLDERS, mFolderCallbacks, Bundle.EMPTY);
         mActivity.invalidateOptionsMenu();
         disableNotificationsOnAccountChange(mAccount);
-        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
+        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR, mAccountCallbacks, Bundle.EMPTY);
         // The Mail instance can be null during test runs.
         final MailAppProvider instance = MailAppProvider.getInstance();
         if (instance != null) {
@@ -1763,8 +1777,13 @@ public abstract class AbstractActivityController implements ActivityController {
             } else {
                 mViewMode.enterConversationListMode();
             }
-
-            new FolderChangedAsyncTask(mContext, intent).execute((Void[]) null);
+            // Put the folder and conversation, and ask the loader to create this folder.
+            final Bundle args = new Bundle();
+            args.putParcelable(Utils.EXTRA_FOLDER_URI,
+                    intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI));
+            args.putParcelable(Utils.EXTRA_CONVERSATION,
+                    intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
+            restartOptionalLoader(LOADER_FIRST_FOLDER, mFolderCallbacks, args);
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                 mHaveSearchResults = false;
@@ -1787,70 +1806,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
         }
         if (mAccount != null) {
-            restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
-        }
-    }
-
-    private class FolderChangedAsyncTask extends AsyncTask<Void, Void, Folder> {
-        private final Context mContext;
-        private final Intent mIntent;
-
-        public FolderChangedAsyncTask(final Context context, final Intent intent) {
-            mContext = context;
-            mIntent = intent;
-        }
-
-        @Override
-        protected Folder doInBackground(final Void... params) {
-            final Uri folderUri = mIntent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
-
-            final Cursor folderCursor =
-                    mContext.getContentResolver().query(folderUri, UIProvider.FOLDERS_PROJECTION,
-                            null, null, null);
-
-            Folder folder = null;
-
-            try {
-                if (folderCursor.moveToFirst()) {
-                    folder = new Folder(folderCursor);
-                }
-            } finally {
-                folderCursor.close();
-            }
-
-            return folder;
-        }
-
-        @Override
-        protected void onPostExecute(final Folder folder) {
-            boolean handled = false;
-
-            if (folder != null) {
-                onFolderChanged(folder);
-                handled = true;
-            }
-
-            final boolean isConversationMode = mIntent.hasExtra(Utils.EXTRA_CONVERSATION);
-
-            if (isConversationMode) {
-                // Open the conversation.
-                LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
-                        mIntent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                final Conversation conversation =
-                        mIntent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
-                if (conversation != null && conversation.position < 0) {
-                    // Set the position to 0 on this conversation, as we don't know where it is
-                    // in the list
-                    conversation.position = 0;
-                }
-                showConversation(conversation);
-                handled = true;
-            }
-
-            if (!handled) {
-                // We have an account, but nothing else: load the default inbox.
-                loadAccountInbox();
-            }
+            restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR, mAccountCallbacks, Bundle.EMPTY);
         }
     }
 
@@ -1897,7 +1853,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param conversation the conversation to be shown, or null if we want to back out to list
      *                     mode.
      * @param inLoaderCallbacks true if the method is called as a result of
-     * {@link #onLoadFinished(Loader, Cursor)}
+     * onLoadFinished(Loader, Cursor) on any callback.
      */
     protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
         if (conversation != null) {
@@ -2022,54 +1978,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case LOADER_ACCOUNT_CURSOR:
-                return new CursorLoader(mContext, MailAppProvider.getAccountsUri(),
-                        UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-            case LOADER_FOLDER_CURSOR:
-                final CursorLoader loader = new CursorLoader(mContext, mFolder.uri,
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
-                loader.setUpdateThrottle(mFolderItemUpdateDelayMs);
-                return loader;
-            case LOADER_RECENT_FOLDERS:
-                if (mAccount != null && mAccount.recentFolderListUri != null) {
-                    return new CursorLoader(mContext, mAccount.recentFolderListUri,
-                            UIProvider.FOLDERS_PROJECTION, null, null, null);
-                }
-                break;
-            case LOADER_ACCOUNT_INBOX:
-                final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
-                final Uri inboxUri = defaultInbox.equals(Uri.EMPTY) ?
-                    mAccount.folderListUri : defaultInbox;
-                LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri);
-                if (inboxUri != null) {
-                    return new CursorLoader(mContext, inboxUri, UIProvider.FOLDERS_PROJECTION, null,
-                            null, null);
-                }
-                break;
-            case LOADER_SEARCH:
-                return Folder.forSearchResults(mAccount,
-                        args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
-                        mActivity.getActivityContext());
-            case LOADER_ACCOUNT_UPDATE_CURSOR:
-                return new CursorLoader(mContext, mAccount.uri, UIProvider.ACCOUNTS_PROJECTION,
-                        null, null, null);
-            default:
-                LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: %d", id);
-        }
-        return null;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    /**
      * {@link LoaderManager} currently has a bug in
      * {@link LoaderManager#restartLoader(int, Bundle, android.app.LoaderManager.LoaderCallbacks)}
      * where, if a previous onCreateLoader returned a null loader, this method will NPE. Work around
@@ -2080,11 +1988,14 @@ public abstract class AbstractActivityController implements ActivityController {
      * give the controller a chance to invalidate UI corresponding the prior loader result.
      *
      * @param id loader ID to safely restart
+     * @param handler the LoaderCallback which will handle this loader ID.
+     * @param args arguments, if any, to be passed to the loader. Use {@link Bundle#EMPTY} if no
+     *             arguments need to be specified.
      */
-    private void restartOptionalLoader(int id) {
+    private void restartOptionalLoader(int id, LoaderManager.LoaderCallbacks handler, Bundle args) {
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(id);
-        lm.restartLoader(id, Bundle.EMPTY, this);
+        lm.restartLoader(id, args, handler);
     }
 
     @Override
@@ -2141,7 +2052,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param accountCursor the cursor which points to all the accounts.
      * @return true if the number of accounts is changed or current account missing from the list.
      */
-    private boolean accountsUpdated(Cursor accountCursor) {
+    private boolean accountsUpdated(ObjectCursor<Account> accountCursor) {
         // Check to see if the current account hasn't been set, or the account cursor is empty
         if (mAccount == null || !accountCursor.moveToFirst()) {
             return true;
@@ -2179,7 +2090,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param accounts cursor into the AccountCache
      * @return true if the update was successful, false otherwise
      */
-    private boolean updateAccounts(Cursor accounts) {
+    private boolean updateAccounts(ObjectCursor<Account> accounts) {
         if (accounts == null || !accounts.moveToFirst()) {
             return false;
         }
@@ -2258,148 +2169,6 @@ public abstract class AbstractActivityController implements ActivityController {
             mNewEmailReceiver.activate(mContext, this);
         }
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // We want to reinitialize only if we haven't ever been initialized, or
-        // if the current account has vanished.
-        if (data == null) {
-            LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", loader.getId());
-        }
-        switch (loader.getId()) {
-            case LOADER_ACCOUNT_CURSOR:
-                if (data == null) {
-                    // Nothing useful to do if we have no valid data.
-                    break;
-                }
-                if (data.getCount() == 0) {
-                    // If an empty cursor is returned, the MailAppProvider is indicating that
-                    // no accounts have been specified.  We want to navigate to the "add account"
-                    // activity that will handle the intent returned by the MailAppProvider
-
-                    // If the MailAppProvider believes that all accounts have been loaded, and the
-                    // account list is still empty, we want to prompt the user to add an account
-                    final Bundle extras = data.getExtras();
-                    final boolean accountsLoaded =
-                            extras.getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
-
-                    if (accountsLoaded) {
-                        final Intent noAccountIntent = MailAppProvider.getNoAccountIntent(mContext);
-                        if (noAccountIntent != null) {
-                            mActivity.startActivityForResult(noAccountIntent,
-                                    ADD_ACCOUNT_REQUEST_CODE);
-                        }
-                    }
-                } else {
-                    final boolean accountListUpdated = accountsUpdated(data);
-                    if (!isLoaderInitialized || accountListUpdated) {
-                        isLoaderInitialized = updateAccounts(data);
-                    }
-                }
-                break;
-            case LOADER_ACCOUNT_UPDATE_CURSOR:
-                // We have gotten an update for current account.
-
-                // Make sure that this is an update for the current account
-                if (data != null && data.moveToFirst()) {
-                    final Account updatedAccount = new Account(data);
-
-                    if (updatedAccount.uri.equals(mAccount.uri)) {
-                        // Keep a reference to the previous settings object
-                        final Settings previousSettings = mAccount.settings;
-
-                        // Update the controller's reference to the current account
-                        mAccount = updatedAccount;
-                        LogUtils.d(LOG_TAG, "AbstractActivityController.onLoadFinished(): "
-                                + "mAccount = %s", mAccount.uri);
-
-                        // Only notify about a settings change if something differs
-                        if (!Objects.equal(mAccount.settings, previousSettings)) {
-                            mAccountObservers.notifyChanged();
-                        }
-                        perhapsEnterWaitMode();
-                    } else {
-                        LogUtils.e(LOG_TAG, "Got update for account: %s with current account: %s",
-                                updatedAccount.uri, mAccount.uri);
-                        // We need to restart the loader, so the correct account information will
-                        // be returned
-                        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
-                    }
-                }
-                break;
-            case LOADER_FOLDER_CURSOR:
-                // Check status of the cursor.
-                if (data != null && data.moveToFirst()) {
-                    final Folder folder = new Folder(data);
-                    LogUtils.d(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
-                    setHasFolderChanged(folder);
-                    mFolder = folder;
-                    mFolderObservable.notifyChanged();
-                } else {
-                    LogUtils.d(LOG_TAG, "Unable to get the folder %s",
-                            mFolder != null ? mAccount.name : "");
-                }
-                break;
-            case LOADER_RECENT_FOLDERS:
-                // Few recent folders and we are running on a phone? Populate the default recents.
-                // The number of default recent folders is at least 2: every provider has at
-                // least two folders, and the recent folder count never decreases. Having a single
-                // recent folder is an erroneous case, and we can gracefully recover by populating
-                // default recents. The default recents will not stomp on the existing value: it
-                // will be shown in addition to the default folders: the max number of recent
-                // folders is more than 1+num(defaultRecents).
-                if (data != null && data.getCount() <= 1 && !mIsTablet) {
-                    final class PopulateDefault extends AsyncTask<Uri, Void, Void> {
-                        @Override
-                        protected Void doInBackground(Uri... uri) {
-                            // Asking for an update on the URI and ignore the result.
-                            final ContentResolver resolver = mContext.getContentResolver();
-                            resolver.update(uri[0], null, null, null);
-                            return null;
-                        }
-                    }
-                    final Uri uri = mAccount.defaultRecentFolderListUri;
-                    LogUtils.v(LOG_TAG, "Default recents at %s", uri);
-                    new PopulateDefault().execute(uri);
-                    break;
-                }
-                LogUtils.v(LOG_TAG, "Reading recent folders from the cursor.");
-                loadRecentFolders(data);
-                break;
-            case LOADER_ACCOUNT_INBOX:
-                if (data != null && !data.isClosed() && data.moveToFirst()) {
-                    Folder inbox = new Folder(data);
-                    onFolderChanged(inbox);
-                    // Just want to get the inbox, don't care about updates to it
-                    // as this will be tracked by the folder change listener.
-                    mActivity.getLoaderManager().destroyLoader(LOADER_ACCOUNT_INBOX);
-                } else {
-                    LogUtils.d(LOG_TAG, "Unable to get the account inbox for account %s",
-                            mAccount != null ? mAccount.name : "");
-                }
-                break;
-            case LOADER_SEARCH:
-                if (data != null && data.getCount() > 0) {
-                    data.moveToFirst();
-                    final Folder search = new Folder(data);
-                    updateFolder(search);
-                    mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
-                            mActivity.getIntent()
-                                    .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
-                    showConversationList(mConvListContext);
-                    mActivity.invalidateOptionsMenu();
-                    mHaveSearchResults = search.totalCount > 0;
-                    mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
-                } else {
-                    LogUtils.e(LOG_TAG, "Null or empty cursor returned by LOADER_SEARCH loader");
-                }
-                break;
-        }
-    }
-
 
     /**
      * Destructive actions on Conversations. This class should only be created by controllers, and
@@ -2701,15 +2470,6 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mConversationListRefreshTask != null) {
             mConversationListRefreshTask.cancel();
             mConversationListRefreshTask = null;
-        }
-    }
-
-    private void loadRecentFolders(Cursor data) {
-        mRecentFolderList.loadFromUiProvider(data);
-        if (isAnimating()) {
-            mRecentsDataUpdated = true;
-        } else {
-            mRecentFolderObservers.notifyChanged();
         }
     }
 
@@ -3038,6 +2798,270 @@ public abstract class AbstractActivityController implements ActivityController {
                 mTracker.onCursorUpdated();
                 mConversationListObservable.notifyChanged();
             }
+        }
+    }
+
+    /**
+     * Class to perform {@link LoaderManager.LoaderCallbacks} for creating {@link Folder} objects.
+     */
+    private class FolderLoads implements LoaderManager.LoaderCallbacks<ObjectCursor<Folder>> {
+        @Override
+        public Loader<ObjectCursor<Folder>> onCreateLoader(int id, Bundle args) {
+            final String[] everything = UIProvider.FOLDERS_PROJECTION;
+            switch (id) {
+                case LOADER_FOLDER_CURSOR:
+                    LogUtils.d(LOG_TAG, "LOADER_FOLDER_CURSOR created");
+                    final ObjectCursorLoader<Folder> loader = new
+                            ObjectCursorLoader<Folder>(
+                            mContext, mFolder.uri, everything, Folder.FACTORY);
+                    loader.setUpdateThrottle(mFolderItemUpdateDelayMs);
+                    return loader;
+                case LOADER_RECENT_FOLDERS:
+                    LogUtils.d(LOG_TAG, "LOADER_RECENT_FOLDERS created");
+                    if (mAccount != null && mAccount.recentFolderListUri != null) {
+                        return new ObjectCursorLoader<Folder>(mContext,
+                                mAccount.recentFolderListUri, everything, Folder.FACTORY);
+                    }
+                    break;
+                case LOADER_ACCOUNT_INBOX:
+                    LogUtils.d(LOG_TAG, "LOADER_ACCOUNT_INBOX created");
+                    final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
+                    final Uri inboxUri = defaultInbox.equals(Uri.EMPTY) ?
+                            mAccount.folderListUri : defaultInbox;
+                    LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri);
+                    if (inboxUri != null) {
+                        return new ObjectCursorLoader<Folder>(mContext, inboxUri,
+                                everything, Folder.FACTORY);
+                    }
+                    break;
+                case LOADER_SEARCH:
+                    LogUtils.d(LOG_TAG, "LOADER_SEARCH created");
+                    return Folder.forSearchResults(mAccount,
+                            args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
+                            mActivity.getActivityContext());
+                case LOADER_FIRST_FOLDER:
+                    LogUtils.d(LOG_TAG, "LOADER_FIRST_FOLDER created");
+                    final Uri folderUri = args.getParcelable(Utils.EXTRA_FOLDER_URI);
+                    mConversationToShow = args.getParcelable(Utils.EXTRA_CONVERSATION);
+                    if (mConversationToShow != null && mConversationToShow.position < 0){
+                        mConversationToShow.position = 0;
+                    }
+                    return new ObjectCursorLoader<Folder>(mContext, folderUri,
+                            everything, Folder.FACTORY);
+                default:
+                    LogUtils.wtf(LOG_TAG, "FolderLoads.onCreateLoader(%d) for invalid id", id);
+                    return null;
+            }
+            return null;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
+            if (data == null) {
+                LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", loader.getId());
+            }
+            switch (loader.getId()) {
+                case LOADER_FOLDER_CURSOR:
+                    if (data != null && data.moveToFirst()) {
+                        final Folder folder = data.getModel();
+                        setHasFolderChanged(folder);
+                        mFolder = folder;
+                        mFolderObservable.notifyChanged();
+                    } else {
+                        LogUtils.d(LOG_TAG, "Unable to get the folder %s",
+                                mFolder != null ? mAccount.name : "");
+                    }
+                    break;
+                case LOADER_RECENT_FOLDERS:
+                    // Few recent folders and we are running on a phone? Populate the default
+                    // recents. The number of default recent folders is at least 2: every provider
+                    // has at least two folders, and the recent folder count never decreases.
+                    // Having a single recent folder is an erroneous case, and we can gracefully
+                    // recover by populating default recents. The default recents will not stomp on
+                    // the existing value: it will be shown in addition to the default folders:
+                    // the max number of recent folders is more than 1+num(defaultRecents).
+                    if (data != null && data.getCount() <= 1 && !mIsTablet) {
+                        final class PopulateDefault extends AsyncTask<Uri, Void, Void> {
+                            @Override
+                            protected Void doInBackground(Uri... uri) {
+                                // Asking for an update on the URI and ignore the result.
+                                final ContentResolver resolver = mContext.getContentResolver();
+                                resolver.update(uri[0], null, null, null);
+                                return null;
+                            }
+                        }
+                        final Uri uri = mAccount.defaultRecentFolderListUri;
+                        LogUtils.v(LOG_TAG, "Default recents at %s", uri);
+                        new PopulateDefault().execute(uri);
+                        break;
+                    }
+                    LogUtils.v(LOG_TAG, "Reading recent folders from the cursor.");
+                    mRecentFolderList.loadFromUiProvider(data);
+                    if (isAnimating()) {
+                        mRecentsDataUpdated = true;
+                    } else {
+                        mRecentFolderObservers.notifyChanged();
+                    }
+                    break;
+                case LOADER_ACCOUNT_INBOX:
+                    if (data != null && !data.isClosed() && data.moveToFirst()) {
+                        final Folder inbox = data.getModel();
+                        onFolderChanged(inbox);
+                        // Just want to get the inbox, don't care about updates to it
+                        // as this will be tracked by the folder change listener.
+                        mActivity.getLoaderManager().destroyLoader(LOADER_ACCOUNT_INBOX);
+                    } else {
+                        LogUtils.d(LOG_TAG, "Unable to get the account inbox for account %s",
+                                mAccount != null ? mAccount.name : "");
+                    }
+                    break;
+                case LOADER_SEARCH:
+                    if (data != null && data.getCount() > 0) {
+                        data.moveToFirst();
+                        final Folder search = data.getModel();
+                        updateFolder(search);
+                        mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
+                                mActivity.getIntent()
+                                        .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
+                        showConversationList(mConvListContext);
+                        mActivity.invalidateOptionsMenu();
+                        mHaveSearchResults = search.totalCount > 0;
+                        mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
+                    } else {
+                        LogUtils.e(LOG_TAG, "Null/empty cursor returned by LOADER_SEARCH loader");
+                    }
+                    break;
+                case LOADER_FIRST_FOLDER:
+                    if (data == null || data.getCount() <=0 || !data.moveToFirst()) {
+                        return;
+                    }
+                    final Folder folder = data.getModel();
+                    boolean handled = false;
+                    if (folder != null) {
+                        onFolderChanged(folder);
+                        handled = true;
+                    }
+                    if (mConversationToShow != null) {
+                        // Open the conversation.
+                        showConversation(mConversationToShow);
+                        handled = true;
+                    }
+                    if (!handled) {
+                        // We have an account, but nothing else: load the default inbox.
+                        loadAccountInbox();
+                    }
+                    mConversationToShow = null;
+                    // And don't run this anymore.
+                    mActivity.getLoaderManager().destroyLoader(LOADER_FIRST_FOLDER);
+                    break;
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ObjectCursor<Folder>> loader) {
+        }
+    }
+
+    /**
+     * Class to perform {@link LoaderManager.LoaderCallbacks} for creating {@link Account} objects.
+     */
+    private class AccountLoads implements LoaderManager.LoaderCallbacks<ObjectCursor<Account>> {
+        final String[] mProjection = UIProvider.ACCOUNTS_PROJECTION;
+        final CursorCreator<Account> mFactory = Account.FACTORY;
+
+        @Override
+        public Loader<ObjectCursor<Account>> onCreateLoader(int id, Bundle args) {
+            switch (id) {
+                case LOADER_ACCOUNT_CURSOR:
+                    LogUtils.d(LOG_TAG,  "LOADER_ACCOUNT_CURSOR created");
+                    return new ObjectCursorLoader<Account>(mContext,
+                            MailAppProvider.getAccountsUri(), mProjection, mFactory);
+                case LOADER_ACCOUNT_UPDATE_CURSOR:
+                    LogUtils.d(LOG_TAG,  "LOADER_ACCOUNT_UPDATE_CURSOR created");
+                    return new ObjectCursorLoader<Account>(mContext, mAccount.uri, mProjection,
+                            mFactory);
+                default:
+                    LogUtils.wtf(LOG_TAG, "Got an id  (%d) that I cannot create!", id);
+                    break;
+            }
+            return null;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ObjectCursor<Account>> loader,
+                ObjectCursor<Account> data) {
+            if (data == null) {
+                LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", loader.getId());
+            }
+            switch (loader.getId()) {
+                case LOADER_ACCOUNT_CURSOR:
+                    if (data == null) {
+                        // Nothing useful to do if we have no valid data.
+                        break;
+                    }
+                    if (data.getCount() == 0) {
+                        // If an empty cursor is returned, the MailAppProvider is indicating that
+                        // no accounts have been specified.  We want to navigate to the
+                        // "add account" activity that will handle the intent returned by the
+                        // MailAppProvider
+
+                        // If the MailAppProvider believes that all accounts have been loaded,
+                        // and the account list is still empty, we want to prompt the user to add
+                        // an account.
+                        final Bundle extras = data.getExtras();
+                        final boolean accountsLoaded =
+                                extras.getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
+
+                        if (accountsLoaded) {
+                            final Intent noAccountIntent = MailAppProvider.getNoAccountIntent
+                                    (mContext);
+                            if (noAccountIntent != null) {
+                                mActivity.startActivityForResult(noAccountIntent,
+                                        ADD_ACCOUNT_REQUEST_CODE);
+                            }
+                        }
+                    } else {
+                        final boolean accountListUpdated = accountsUpdated(data);
+                        if (!isLoaderInitialized || accountListUpdated) {
+                            isLoaderInitialized = updateAccounts(data);
+                        }
+                    }
+                    break;
+                case LOADER_ACCOUNT_UPDATE_CURSOR:
+                    // We have received an update for current account.
+
+                    // Make sure that this is an update for the current account
+                    if (data != null && data.moveToFirst()) {
+                        final Account updatedAccount = data.getModel();
+
+                        if (updatedAccount.uri.equals(mAccount.uri)) {
+                            // Keep a reference to the previous settings object
+                            final Settings previousSettings = mAccount.settings;
+
+                            // Update the controller's reference to the current account
+                            mAccount = updatedAccount;
+                            LogUtils.d(LOG_TAG, "AbstractActivityController.onLoadFinished(): "
+                                    + "mAccount = %s", mAccount.uri);
+
+                            // Only notify about a settings change if something differs
+                            if (!Objects.equal(mAccount.settings, previousSettings)) {
+                                mAccountObservers.notifyChanged();
+                            }
+                            perhapsEnterWaitMode();
+                        } else {
+                            LogUtils.e(LOG_TAG, "Got update for account: %s with current account:"
+                                    + " %s", updatedAccount.uri, mAccount.uri);
+                            // We need to restart the loader, so the correct account information
+                            // will be returned.
+                            restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR, this, Bundle.EMPTY);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ObjectCursor<Account>> loader) {
         }
     }
 
@@ -3494,5 +3518,4 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         mDetachedConvUri = null;
     }
-
 }
