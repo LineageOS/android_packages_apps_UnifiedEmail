@@ -131,7 +131,7 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void showFolderList() {
+    public void loadFolderList() {
         // On two-pane layouts, showing the folder list takes you to the top level of the
         // application, which is the same as pressing the Up button
         handleUpPress();
