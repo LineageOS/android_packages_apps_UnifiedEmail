@@ -185,7 +185,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                  * account, calculate the human readable name of the folder and
                  * use it as the shortcut name, etc...
                  */
-                final Intent clickIntent = Utils.createViewFolderIntent(mSelectedFolder,
+                final Intent clickIntent = Utils.createViewFolderIntent(this, mSelectedFolder,
                         mAccount);
                 resultIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, clickIntent);
                 resultIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,

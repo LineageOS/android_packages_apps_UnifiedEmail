@@ -15,14 +15,6 @@
  */
 package com.android.mail.utils;
 
-import com.google.android.common.html.parser.HTML;
-import com.google.android.common.html.parser.HTML4;
-import com.google.android.common.html.parser.HtmlDocument;
-import com.google.android.common.html.parser.HtmlTree;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -66,6 +58,13 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.NotificationActionUtils.NotificationAction;
+import com.google.android.common.html.parser.HTML;
+import com.google.android.common.html.parser.HTML4;
+import com.google.android.common.html.parser.HtmlDocument;
+import com.google.android.common.html.parser.HtmlTree;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -482,6 +481,8 @@ public class NotificationUtils {
             final Intent cancelNotificationIntent =
                     new Intent(MailIntentService.ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS);
             cancelNotificationIntent.setPackage(context.getPackageName());
+            cancelNotificationIntent.setData(Utils.appendVersionQueryParameter(context,
+                    folder.uri));
             cancelNotificationIntent.putExtra(MailIntentService.ACCOUNT_EXTRA, account);
             cancelNotificationIntent.putExtra(MailIntentService.FOLDER_EXTRA, folder);
 
@@ -511,12 +512,14 @@ public class NotificationUtils {
             if (unreadCount > 0) {
                 // How can I order this properly?
                 if (cursor.moveToNext()) {
-                    Intent notificationIntent = createViewConversationIntent(account, folder, null);
+                    Intent notificationIntent = createViewConversationIntent(context, account,
+                            folder, null);
 
                     // Launch directly to the conversation, if the
                     // number of unseen conversations == 1
                     if (unseenCount == 1) {
-                        notificationIntent = createViewConversationIntent(account, folder, cursor);
+                        notificationIntent = createViewConversationIntent(context, account, folder,
+                                cursor);
                     }
 
                     if (notificationIntent == null) {
@@ -591,8 +594,8 @@ public class NotificationUtils {
     /**
      * @return an {@link Intent} which, if launched, will display the corresponding conversation
      */
-    private static Intent createViewConversationIntent(final Account account, final Folder folder,
-            final Cursor cursor) {
+    private static Intent createViewConversationIntent(final Context context, final Account account,
+            final Folder folder, final Cursor cursor) {
         if (folder == null || account == null) {
             LogUtils.e(LOG_TAG, "Null account or folder.  account: %s folder: %s",
                     account, folder);
@@ -602,14 +605,14 @@ public class NotificationUtils {
         final Intent intent;
 
         if (cursor == null) {
-            intent = Utils.createViewFolderIntent(folder, account);
+            intent = Utils.createViewFolderIntent(context, folder, account);
         } else {
             // A conversation cursor has been specified, so this intent is intended to be go
             // directly to the one new conversation
 
             // Get the Conversation object
             final Conversation conversation = new Conversation(cursor);
-            intent = Utils.createViewConversationIntent(conversation, folder, account);
+            intent = Utils.createViewConversationIntent(context, conversation, folder, account);
         }
 
         return intent;
