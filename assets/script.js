@@ -24,6 +24,13 @@ var gImageLoadElements = [];
 var gScaleInfo;
 
 /**
+ * Only revert transforms that do an imperfect job of shrinking content if they fail
+ * to shrink by this much. Expressed as a ratio of:
+ * (original width difference : width difference after transforms);
+ */
+TRANSFORM_MINIMUM_EFFECTIVE_RATIO = 0.75;
+
+/**
  * Returns the page offset of an element.
  *
  * @param {Element} element The element to return the page offset for.
@@ -188,38 +195,27 @@ function normalizeElementWidths(elements) {
 function mungeTables(el, docWidth, elWidth) {
     var nodes;
     var i, len;
-    var newWidth;
+    var newWidth = elWidth;
     var wStr;
-    var touched = false;
+    var touched;
+    var actionLog = [];
+    var node;
+    var start;
     if (elWidth <= docWidth) {
         return;
     }
-    // first find tables with widths and strip them of widths
-    nodes = el.querySelectorAll("table[width]");
-    for (i = 0, len = nodes.length; i < len; i++) {
-        if (nodes[i].hasAttribute("width")) {
-            nodes[i].removeAttribute("width");
-            touched = true;
-        }
-    }
-    if (touched) {
-        newWidth = el.scrollWidth;
-        console.log("ran table munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
-            + " docW=" + docWidth);
-        if (newWidth <= docWidth) {
-            return;
-        }
-    }
 
-    // OK, that wasn't enough. Try munging all divs with inline styles where the width
+    start = Date.now();
+    // Try munging all divs with inline styles where the width
     // is wider than docWidth, and change it to be a max-width.
     touched = false;
     nodes = el.querySelectorAll("div[style]");
     for (i = 0, len = nodes.length; i < len; i++) {
-        wStr = nodes[i].style.width;
+        node = nodes[i];
+        wStr = node.style.width;
         if (wStr && wStr.slice(0, -2) > docWidth) {
-            nodes[i].style.width = "";
-            nodes[i].style.maxWidth = wStr;
+            node.style.width = "";
+            node.style.maxWidth = wStr;
             touched = true;
         }
     }
@@ -228,11 +224,88 @@ function mungeTables(el, docWidth, elWidth) {
         console.log("ran div-width munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
             + " docW=" + docWidth);
         if (newWidth <= docWidth) {
+            console.log("munger succeeded, elapsed time=" + (Date.now() - start));
             return;
         }
     }
 
-    // TODO: consider reversing changes that didn't help
+    // OK, that wasn't enough. Find tables with widths and override their widths.
+    touched = addClassToElements(el.querySelectorAll("table"), shouldMungeTable, "munged",
+        actionLog);
+    if (touched) {
+        newWidth = el.scrollWidth;
+        console.log("ran table munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
+            + " docW=" + docWidth);
+        if (newWidth <= docWidth) {
+            console.log("munger succeeded, elapsed time=" + (Date.now() - start));
+            return;
+        }
+    }
+
+    // OK, that wasn't enough. Try munging all <td> to override any width and nowrap set.
+    touched = addClassToElements(el.querySelectorAll("td"), null /* mungeAll */, "munged",
+        actionLog);
+    if (touched) {
+        newWidth = el.scrollWidth;
+        console.log("ran td munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
+            + " docW=" + docWidth);
+        if (newWidth <= docWidth) {
+            console.log("munger succeeded, elapsed time=" + (Date.now() - start));
+            return;
+        }
+    }
+
+    // OK, that wasn't enough. Try further munging all <td> to override text wrapping.
+    touched = addClassToElements(el.querySelectorAll("td"), null /* mungeAll */, "munged2",
+        actionLog);
+    if (touched) {
+        newWidth = el.scrollWidth;
+        console.log("ran td munger2 on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
+            + " docW=" + docWidth);
+        if (newWidth <= docWidth) {
+            console.log("munger succeeded, elapsed time=" + (Date.now() - start));
+            return;
+        }
+    }
+
+    // If the transformations shrank the width significantly enough, leave them in place.
+    // We figure that in those cases, the benefits outweight the risk of rendering artifacts.
+    //
+    // TODO: this is a risky transform that should not be attempted on sufficiently complex mail.
+    // (TBD how to measure that)
+    if ((elWidth - newWidth) / (elWidth - docWidth) > TRANSFORM_MINIMUM_EFFECTIVE_RATIO) {
+        console.log("transform(s) deemed effective enough. elapsed time="
+            + (Date.now() - start));
+        return;
+    }
+
+    // reverse all changes if the width is STILL not narrow enough
+    // (except the width->maxWidth change, which is not particularly destructive)
+    for (i = 0, len = actionLog.length; i < len; i++) {
+        actionLog[i][0].classList.remove(actionLog[i][1]);
+    }
+    if (actionLog.length > 0) {
+        console.log("all mungers failed, changes reversed. elapsed time=" + (Date.now() - start));
+    }
+}
+
+function addClassToElements(nodes, conditionFn, classToAdd, actionLog) {
+    var i, len;
+    var node;
+    var added = false;
+    for (i = 0, len = nodes.length; i < len; i++) {
+        node = nodes[i];
+        if (!conditionFn || conditionFn(node)) {
+            node.classList.add(classToAdd);
+            added = true;
+            actionLog.push([node, classToAdd]);
+        }
+    }
+    return added;
+}
+
+function shouldMungeTable(table) {
+    return table.hasAttribute("width") || table.style.width;
 }
 
 function hideAllUnsafeImages() {
