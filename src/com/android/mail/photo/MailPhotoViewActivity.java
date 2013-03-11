@@ -233,12 +233,11 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
                 @Override
                 public void onClick(View view) {
                     downloadAttachment();
+                    emptyText.setVisibility(View.GONE);
+                    retryButton.setVisibility(View.GONE);
                 }
             });
             progressBar.setVisibility(View.GONE);
-        } else {
-            emptyText.setVisibility(View.GONE);
-            retryButton.setVisibility(View.GONE);
         }
     }
 
