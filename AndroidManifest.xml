@@ -143,12 +143,6 @@
         <provider android:name="com.android.mail.providers.SuggestionsProvider"
             android:authorities="com.android.mail.suggestionsprovider" />
 
-        <receiver android:name=".providers.protos.boot.AccountReceiver">
-          <intent-filter>
-              <action android:name="com.android.mail.providers.protos.boot.intent.ACTION_PROVIDER_CREATED" />
-          </intent-filter>
-        </receiver>
-
         <service android:name=".compose.EmptyService"/>
 
         <!-- Widget -->
