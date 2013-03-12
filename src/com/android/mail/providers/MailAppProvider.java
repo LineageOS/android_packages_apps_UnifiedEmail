@@ -27,18 +27,18 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.Loader.OnLoadCompleteListener;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.android.mail.R;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
-import com.android.mail.providers.protos.boot.AccountReceiver;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MatrixCursorWithExtra;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -86,7 +86,6 @@ public abstract class MailAppProvider extends ContentProvider
     private ContentResolver mResolver;
     private static String sAuthority;
     private static MailAppProvider sInstance;
-    private final static Set<Uri> PENDING_ACCOUNT_URIS = Sets.newHashSet();
 
     private volatile boolean mAccountsFullyLoaded = false;
 
@@ -141,24 +140,19 @@ public abstract class MailAppProvider extends ContentProvider
     @Override
     public boolean onCreate() {
         sAuthority = getAuthority();
+        sInstance = this;
         mResolver = getContext().getContentResolver();
-
-        final Intent intent = new Intent(AccountReceiver.ACTION_PROVIDER_CREATED);
-        getContext().sendBroadcast(intent);
 
         // Load the previously saved account list
         loadCachedAccountList();
 
-        synchronized (PENDING_ACCOUNT_URIS) {
-            sInstance = this;
+        final Resources res = getContext().getResources();
+        // Load the uris for the account list
+        final String[] accountQueryUris = res.getStringArray(R.array.account_providers);
 
-            // Handle the case where addAccountsForUriAsync was called before
-            // this Provider instance was created
-            final Set<Uri> urisToQery = ImmutableSet.copyOf(PENDING_ACCOUNT_URIS);
-            PENDING_ACCOUNT_URIS.clear();
-            for (Uri accountQueryUri : urisToQery) {
-                addAccountsForUriAsync(accountQueryUri);
-            }
+        for (String accountQueryUri : accountQueryUris) {
+            final Uri uri = Uri.parse(accountQueryUri);
+            addAccountsForUriAsync(uri);
         }
 
         return true;
@@ -166,9 +160,7 @@ public abstract class MailAppProvider extends ContentProvider
 
     @Override
     public void shutdown() {
-        synchronized (PENDING_ACCOUNT_URIS) {
-            sInstance = null;
-        }
+        sInstance = null;
 
         for (CursorLoader loader : mCursorLoaderMap.values()) {
             loader.stopLoading();
@@ -243,15 +235,8 @@ public abstract class MailAppProvider extends ContentProvider
      * @param resolver
      * @param accountsQueryUri
      */
-    public static void addAccountsForUriAsync(Uri accountsQueryUri) {
-        synchronized (PENDING_ACCOUNT_URIS) {
-            final MailAppProvider instance = getInstance();
-            if (instance != null) {
-                instance.startAccountsLoader(accountsQueryUri);
-            } else {
-                PENDING_ACCOUNT_URIS.add(accountsQueryUri);
-            }
-        }
+    private void addAccountsForUriAsync(Uri accountsQueryUri) {
+        startAccountsLoader(accountsQueryUri);
     }
 
     /**
