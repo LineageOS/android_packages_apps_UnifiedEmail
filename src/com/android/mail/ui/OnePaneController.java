@@ -59,6 +59,8 @@ public final class OnePaneController extends AbstractActivityController {
     private static final String CONVERSATION_LIST_NEVER_SHOWN_KEY = "conversation-list-never-shown";
     /** Key to store {@link #mInbox}. */
     private final static String SAVED_INBOX_KEY = "m-inbox";
+    /** Set to true to show sections/recent inbox in drawer, false otherwise*/
+    private final static boolean SECTIONS_AND_RECENT_FOLDERS_ENABLED = true;
 
     private static final int INVALID_ID = -1;
     private boolean mConversationListVisible = false;
@@ -311,8 +313,10 @@ public final class OnePaneController extends AbstractActivityController {
          * Adding this will enable back stack to labels: mLastFolderListTransactionId =
          */
         replaceFragment(
-                FolderListFragment.newInstance(null, mAccount.folderListUri, false),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.drawer_pullout);
+                FolderListFragment.newInstance(null, mAccount.folderListUri,
+                        SECTIONS_AND_RECENT_FOLDERS_ENABLED),
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST,
+                R.id.drawer_pullout);
 
         /*
          * TODO(shahrk): Move or remove this
@@ -428,8 +432,9 @@ public final class OnePaneController extends AbstractActivityController {
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(FolderListFragment.newInstance(
-                    top, top.childFoldersListUri, false),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
+                    top, top.childFoldersListUri, SECTIONS_AND_RECENT_FOLDERS_ENABLED),
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST,
+                    R.id.content_pane);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
         } else {
