@@ -1032,7 +1032,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 ComposeActivity.compose(mActivity.getActivityContext(), mAccount);
                 break;
             case R.id.show_all_folders:
-                showFolderList();
+                toggleFolderListState();
                 break;
             case R.id.refresh:
                 requestFolderRefresh();
@@ -1068,6 +1068,14 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
         }
         return handled;
+    }
+
+    /**
+     * Stand-in method overriden in OnePaneController for toggling the state
+     * of the drawer.
+     */
+    protected void toggleFolderListState() {
+        //Implemented in OnePaneController.java
     }
 
     @Override

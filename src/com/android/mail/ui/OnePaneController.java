@@ -23,6 +23,11 @@ import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.LayoutParams;
+import android.util.Log;
+import android.view.ViewGroup;
+
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
@@ -64,6 +69,8 @@ public final class OnePaneController extends AbstractActivityController {
     private Folder mInbox;
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
+    private DrawerLayout mDrawerContainer;
+    private ViewGroup mDrawerPullout;
 
     public OnePaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
@@ -134,15 +141,22 @@ public final class OnePaneController extends AbstractActivityController {
                 && isDefaultInbox(context.folder.uri, account);
     }
 
+    /**
+     * On account change, carry out super implementation, load FolderListFragment
+     * into drawer (to avoid repetitive calls to replaceFragment).
+     */
     @Override
     public void onAccountChanged(Account account) {
         super.onAccountChanged(account);
         mConversationListNeverShown = true;
+        loadFolderList();
     }
 
     @Override
     public boolean onCreate(Bundle savedInstanceState) {
         mActivity.setContentView(R.layout.one_pane_activity);
+        mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
+        mDrawerPullout = (ViewGroup) mDrawerContainer.findViewById(R.id.drawer_pullout);
         // The parent class sets the correct viewmode and starts the application off.
         return super.onCreate(savedInstanceState);
     }
@@ -155,7 +169,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onViewModeChanged(int newMode) {
         super.onViewModeChanged(newMode);
-
+        mDrawerContainer.closeDrawers();
         // When entering conversation list mode, hide and clean up any currently visible
         // conversation.
         if (ViewMode.isListMode(newMode)) {
@@ -186,12 +200,12 @@ public final class OnePaneController extends AbstractActivityController {
             // Maintain fragment transaction history so we can get back to the
             // fragment used to launch this list.
             mLastConversationListTransactionId = replaceFragment(conversationListFragment,
-                    transition, TAG_CONVERSATION_LIST);
+                    transition, TAG_CONVERSATION_LIST, R.id.content_pane);
         } else {
             // If going to the inbox, clear the folder list transaction history.
             mInbox = listContext.folder;
             mLastInboxConversationListTransactionId = replaceFragment(conversationListFragment,
-                    transition, TAG_CONVERSATION_LIST);
+                    transition, TAG_CONVERSATION_LIST, R.id.content_pane);
             mLastFolderListTransactionId = INVALID_ID;
 
             // If we ever to to the inbox, we want to unset the transation id for any other
@@ -244,7 +258,8 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void showWaitForInitialization() {
         super.showWaitForInitialization();
-        replaceFragment(getWaitFragment(), FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
+        replaceFragment(getWaitFragment(), FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT,
+                R.id.content_pane);
     }
 
     @Override
@@ -274,23 +289,59 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    /**
+     * Loads the FolderListFragment into the drawer pullout FrameLayout.
+     * TODO(shahrk): Clean up and move out drawer calls if necessary
+     */
     @Override
-    public void showFolderList() {
+    public void loadFolderList() {
         if (mAccount == null) {
             LogUtils.e(LOG_TAG, "Null account in showFolderList");
             return;
         }
+
         // Null out the currently selected folder; we have nothing selected the
         // first time the user enters the folder list
+        // TODO(shahrk): Tweak the function call for nested folders?
         setHierarchyFolder(null);
-        mViewMode.enterFolderListMode();
-        enableCabMode();
-        mLastFolderListTransactionId = replaceFragment(
+
+        /*
+         * TODO(shahrk): Drawer addition/support
+         * Take out view mode changes: mViewMode.enterFolderListMode(); enableCabMode();
+         * Adding this will enable back stack to labels: mLastFolderListTransactionId =
+         */
+        replaceFragment(
                 FolderListFragment.newInstance(null, mAccount.folderListUri, false),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
-        mConversationListVisible = false;
-        onConversationVisibilityChanged(false);
-        onConversationListVisibilityChanged(false);
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.drawer_pullout);
+
+        /*
+         * TODO(shahrk): Move or remove this
+         * Don't make the list invisible as of right now:
+         * mConversationListVisible = false;
+         * onConversationVisibilityChanged(false);
+         * onConversationListVisibilityChanged(false);
+         */
+    }
+
+    /**
+     * Toggles the drawer pullout. If it was open (Fully extended), the
+     * drawer will be closed. Otherwise, the drawer will be opened. This should
+     * only be called when used with a toggle item. Other cases should be handled
+     * explicitly with just closeDrawers() or openDrawer(View drawerView);
+     */
+    @Override
+    protected void toggleFolderListState() {
+        if(mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+            mDrawerContainer.closeDrawers();
+        } else {
+            mDrawerContainer.openDrawer(mDrawerPullout);
+        }
+        return;
+    }
+
+    public void onFolderChanged(Folder folder) {
+        mDrawerContainer.closeDrawers();
+        super.onFolderChanged(folder);
     }
 
     /**
@@ -300,32 +351,41 @@ public final class OnePaneController extends AbstractActivityController {
      * @param fragment the new fragment to put
      * @param transition the transition to show
      * @param tag a tag for the fragment manager.
+     * @param anchor ID of view to replace fragment in
      * @return transaction ID returned when the transition is committed.
      */
-    private int replaceFragment(Fragment fragment, int transition, String tag) {
+    private int replaceFragment(Fragment fragment, int transition, String tag, int anchor) {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.setTransition(transition);
-        fragmentTransaction.replace(R.id.content_pane, fragment, tag);
+        fragmentTransaction.replace(anchor, fragment, tag);
         return fragmentTransaction.commitAllowingStateLoss();
     }
 
     /**
      * Back works as follows:
-     * 1) If the user is in the folder list view, go back
+     * 1) If the drawer is pulled out (Or mid-drag), close it - handled.
+     * 2) If the user is in the folder list view, go back
      * to the account default inbox.
-     * 2) If the user is in a conversation list
+     * 3) If the user is in a conversation list
      * that is not the inbox AND:
      *  a) they got there by going through the folder
      *  list view, go back to the folder list view.
      *  b) they got there by using some other means (account dropdown), go back to the inbox.
-     * 3) If the user is in a conversation, go back to the conversation list they were last in.
-     * 4) If the user is in the conversation list for the default account inbox,
+     * 4) If the user is in a conversation, go back to the conversation list they were last in.
+     * 5) If the user is in the conversation list for the default account inbox,
      * back exits the app.
      */
     @Override
     public boolean handleBackPress() {
         final int mode = mViewMode.getMode();
+
+        if (mDrawerContainer.isDrawerVisible(mDrawerPullout)) {
+            mDrawerContainer.closeDrawers();
+            return true;
+        }
+
+        //TODO(shahrk): Remove the folder list standalone view
         if (mode == ViewMode.FOLDER_LIST) {
             final Folder hierarchyFolder = getHierarchyFolder();
             final FolderListFragment folderListFragment = getFolderListFragment();
@@ -369,13 +429,13 @@ public final class OnePaneController extends AbstractActivityController {
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(FolderListFragment.newInstance(
                     top, top.childFoldersListUri, false),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
         } else {
             // Otherwise, clear the selected folder and go back to whatever the
             // last folder list displayed was.
-            showFolderList();
+            loadFolderList();
         }
     }
 
@@ -409,7 +469,7 @@ public final class OnePaneController extends AbstractActivityController {
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(
                     FolderListFragment.newInstance(folder, folder.childFoldersListUri, false),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
         } else {
