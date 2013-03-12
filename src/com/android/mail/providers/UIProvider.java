@@ -1811,12 +1811,15 @@ public class UIProvider {
          */
         public static final int BEST = 1;
 
+        private static final String SIMPLE_STRING = "SIMPLE";
+        private static final String BEST_STRING = "BEST";
+
         public static int parseRendition(String rendition) {
-            return rendition.equalsIgnoreCase("BEST") ? BEST : SIMPLE;
+            return TextUtils.equals(rendition, SIMPLE_STRING) ? SIMPLE : BEST;
         }
 
         public static String toString(int rendition) {
-            return rendition == BEST ? "BEST" : "SIMPLE";
+            return rendition == BEST ? BEST_STRING : SIMPLE_STRING;
         }
     }
 
