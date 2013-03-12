@@ -836,19 +836,26 @@ public class NotificationUtils {
                             new NotificationCompat.BigTextStyle(notification);
 
                     // Seek the message cursor to the first unread message
-                    messageCursor.moveToPosition(firstUnseenMessagePos);
-                    final Message message = messageCursor.getMessage();
-                    bigText.bigText(getSingleMessageBigText(context,
-                            conversation.subject, message));
+                    final Message message;
+                    if (messageCursor.moveToPosition(firstUnseenMessagePos)) {
+                        message = messageCursor.getMessage();
+                        bigText.bigText(getSingleMessageBigText(context,
+                                conversation.subject, message));
+                    } else {
+                        LogUtils.e(LOG_TAG, "Failed to load message");
+                        message = null;
+                    }
 
-                    final Set<String> notificationActions =
-                            folderPreferences.getNotificationActions();
+                    if (message != null) {
+                        final Set<String> notificationActions =
+                                folderPreferences.getNotificationActions();
 
-                    final int notificationId = getNotificationId(notificationAccount, folder);
+                        final int notificationId = getNotificationId(notificationAccount, folder);
 
-                    NotificationActionUtils.addNotificationActions(context, notificationIntent,
-                            notification, account, conversation, message, folder,
-                            notificationId, when, notificationActions);
+                        NotificationActionUtils.addNotificationActions(context, notificationIntent,
+                                notification, account, conversation, message, folder,
+                                notificationId, when, notificationActions);
+                    }
                 } else {
                     // For an old-style notification
 
