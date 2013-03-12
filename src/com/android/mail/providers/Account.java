@@ -24,6 +24,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.android.mail.content.CursorCreator;
+import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.SyncStatus;
@@ -405,7 +407,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      * @param cursor cursor pointing to the list of accounts
      * @return the array of all accounts stored at this cursor.
      */
-    public static Account[] getAllAccounts(Cursor cursor) {
+    public static Account[] getAllAccounts(ObjectCursor<Account> cursor) {
         final int initialLength = cursor.getCount();
         if (initialLength <= 0 || !cursor.moveToFirst()) {
             // Return zero length account array rather than null
@@ -415,7 +417,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         final Account[] allAccounts = new Account[initialLength];
         int i = 0;
         do {
-            allAccounts[i++] = new Account(cursor);
+            allAccounts[i++] = cursor.getModel();
         } while (cursor.moveToNext());
         // Ensure that the length of the array is accurate
         assert (i == initialLength);
@@ -745,4 +747,19 @@ public class Account extends android.accounts.Account implements Parcelable {
 
         return map;
     }
+
+    /**
+     * Public object that knows how to construct Accounts given Cursors.
+     */
+    public final static CursorCreator<Account> FACTORY = new CursorCreator<Account>() {
+        @Override
+        public Account createFromCursor(Cursor c) {
+            return new Account(c);
+        }
+
+        @Override
+        public String toString() {
+            return "Account CursorCreator";
+        }
+    };
 }
