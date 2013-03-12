@@ -36,7 +36,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
@@ -90,6 +89,7 @@ import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
+import com.android.mail.utils.Observable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
 
@@ -204,25 +204,12 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected ConversationCursor mConversationListCursor;
-    private final DataSetObservable mConversationListObservable = new DataSetObservable() {
-        @Override
-        public void registerObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.registerObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.register(List)Observer: %s before=%d after=%d", observer,
-                    count, mObservers.size());
-        }
-        @Override
-        public void unregisterObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.unregisterObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.unregister(List)Observer: %s before=%d after=%d", observer,
-                    count, mObservers.size());
-        }
-    };
+    private final DataSetObservable mConversationListObservable = new Observable("List");
 
     /** Runnable that checks the logging level to enable/disable the logging service. */
     private Runnable mLogServiceChecker = null;
+    /** List of all accounts currently known to the controller. */
+    private Account[] mAllAccounts;
 
     /**
      * Interface for actions that are deferred until after a load completes. This is for handling
@@ -240,40 +227,11 @@ public abstract class AbstractActivityController implements ActivityController {
     private RefreshTimerTask mConversationListRefreshTask;
 
     /** Listeners that are interested in changes to the current account. */
-    private final DataSetObservable mAccountObservers = new DataSetObservable() {
-        @Override
-        public void registerObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.registerObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.register(Account)Observer: %s before=%d after=%d",
-                    observer, count, mObservers.size());
-        }
-        @Override
-        public void unregisterObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.unregisterObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.unregister(Account)Observer: %s before=%d after=%d",
-                    observer, count, mObservers.size());
-        }
-    };
-
+    private final DataSetObservable mAccountObservers = new Observable("Account");
     /** Listeners that are interested in changes to the recent folders. */
-    private final DataSetObservable mRecentFolderObservers = new DataSetObservable() {
-        @Override
-        public void registerObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.registerObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.register(RecentFolder)Observer: %s before=%d after=%d",
-                    observer, count, mObservers.size());
-        }
-        @Override
-        public void unregisterObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.unregisterObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.unregister(RecentFolder)Observer: %s before=%d after=%d",
-                    observer, count, mObservers.size());
-        }
-    };
+    private final DataSetObservable mRecentFolderObservers = new Observable("RecentFolder");
+    /** Listeners that are interested in changes to the list of all accounts. */
+    private final DataSetObservable mAllAccountObservers = new Observable("AllAccounts");
 
     /**
      * Selected conversations, if any.
@@ -602,6 +560,21 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void unregisterAccountObserver(DataSetObserver obs) {
         mAccountObservers.unregisterObserver(obs);
+    }
+
+    @Override
+    public void registerAllAccountObserver(DataSetObserver observer) {
+        mAllAccountObservers.registerObserver(observer);
+    }
+
+    @Override
+    public void unregisterAllAccountObserver(DataSetObserver observer) {
+        mAllAccountObservers.unregisterObserver(observer);
+    }
+
+    @Override
+    public Account[] getAllAccounts() {
+        return mAllAccounts;
     }
 
     @Override
@@ -2147,8 +2120,11 @@ public abstract class AbstractActivityController implements ActivityController {
         if (accountChanged) {
             onAccountChanged(newAccount);
         }
+
         // Whether we have updated the current account or not, we need to update the list of
         // accounts in the ActionBar.
+        mAllAccounts = allAccounts;
+        mAllAccountObservers.notifyChanged();
         mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
     }
