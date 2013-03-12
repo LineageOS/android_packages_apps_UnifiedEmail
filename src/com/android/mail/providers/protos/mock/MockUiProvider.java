@@ -387,6 +387,7 @@ public final class MockUiProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        MockUiProvider.initializeMockProvider();
         return true;
     }
 
