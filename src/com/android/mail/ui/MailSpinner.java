@@ -147,7 +147,7 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
                 dismiss = true;
                 break;
             case AccountSpinnerAdapter.TYPE_ALL_FOLDERS:
-                mController.showFolderList();
+                mController.loadFolderList();
                 dismiss = true;
                 break;
             case AccountSpinnerAdapter.TYPE_HEADER:
