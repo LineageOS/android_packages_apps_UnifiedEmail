@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
+import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Folder;
@@ -141,7 +142,8 @@ public final class RecentFolderList {
 
     /**
      * Change the current account. When a cursor over the recent folders for this account is
-     * available, the client <b>must</b> call {@link #loadFromUiProvider(Cursor)} with the updated
+     * available, the client <b>must</b> call {@link
+     * #loadFromUiProvider(com.android.mail.content.ObjectCursor)} with the updated
      * cursor. Till then, the recent account list will be empty.
      * @param account the new current account
      */
@@ -158,7 +160,7 @@ public final class RecentFolderList {
      * Load the account information from the UI provider given the cursor over the recent folders.
      * @param c a cursor over the recent folders.
      */
-    public void loadFromUiProvider(Cursor c) {
+    public void loadFromUiProvider(ObjectCursor<Folder> c) {
         if (mAccount == null || c == null) {
             LogUtils.e(TAG, "RecentFolderList.loadFromUiProvider: bad input. mAccount=%s,cursor=%s",
                     mAccount, c);
@@ -173,7 +175,7 @@ public final class RecentFolderList {
         // This enables older values to fall off the LRU cache. Also, read all values, just in case
         // there are duplicates in the cursor.
         do {
-            final Folder folder = new Folder(c);
+            final Folder folder = c.getModel();
             final RecentFolderListEntry entry = new RecentFolderListEntry(folder);
             mFolderCache.putElement(folder.uri.toString(), entry);
             LogUtils.v(TAG, "Account %s, Recent: %s", mAccount.name, folder.name);

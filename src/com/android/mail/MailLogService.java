@@ -52,7 +52,7 @@ public class MailLogService extends Service {
      * This is the top level flag that enables this service.
      * STOPSHIP: Turn to false before a release.
      */
-    public static boolean DEBUG_ENABLED = false;
+    public static boolean DEBUG_ENABLED = true;
 
     /** The tag which needs to be turned to DEBUG to get logging going. */
     protected static final String LOG_TAG = LogTag.getLogTag();

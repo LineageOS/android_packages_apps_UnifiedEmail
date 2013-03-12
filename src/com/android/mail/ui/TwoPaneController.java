@@ -188,11 +188,10 @@ public final class TwoPaneController extends AbstractActivityController {
             createFolderListFragment(folder, folder.childFoldersListUri);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
-            super.onFolderSelected(folder);
         } else {
             setHierarchyFolder(folder);
-            super.onFolderSelected(folder);
         }
+        super.onFolderSelected(folder);
     }
 
     private void goUpFolderHierarchy(Folder current) {

@@ -29,6 +29,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.android.mail.content.CursorCreator;
+import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -240,6 +242,21 @@ public class Folder implements Parcelable, Comparable<Folder> {
         parent = null;
     }
 
+    /**
+     * Public object that knows how to construct Folders given Cursors.
+     */
+    public static final CursorCreator<Folder> FACTORY = new CursorCreator<Folder>() {
+        @Override
+        public Folder createFromCursor(Cursor c) {
+            return new Folder(c);
+        }
+
+        @Override
+        public String toString() {
+            return "Folder CursorCreator";
+        }
+    };
+
     public Folder(Parcel in, ClassLoader loader) {
         id = in.readInt();
         persistentId = in.readString();
@@ -299,13 +316,14 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Construct a folder that queries for search results. Do not call on the UI
      * thread.
      */
-    public static CursorLoader forSearchResults(Account account, String query, Context context) {
+    public static ObjectCursorLoader<Folder> forSearchResults(Account account, String query,
+            Context context) {
         if (account.searchUri != null) {
-            Builder searchBuilder = account.searchUri.buildUpon();
+            final Builder searchBuilder = account.searchUri.buildUpon();
             searchBuilder.appendQueryParameter(UIProvider.SearchQueryParameters.QUERY, query);
-            Uri searchUri = searchBuilder.build();
-            return new CursorLoader(context, searchUri, UIProvider.FOLDERS_PROJECTION, null, null,
-                    null);
+            final Uri searchUri = searchBuilder.build();
+            return new ObjectCursorLoader<Folder>(context, searchUri, UIProvider.FOLDERS_PROJECTION,
+                    FACTORY);
         }
         return null;
     }
