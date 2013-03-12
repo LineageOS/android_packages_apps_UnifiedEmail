@@ -18,6 +18,7 @@ package com.android.mail.ui;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.content.Context;
+import android.os.Handler;
 import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -38,8 +39,13 @@ public class ActionableToastBar extends LinearLayout {
     private boolean mHidden = false;
     private Animator mShowAnimation;
     private Animator mHideAnimation;
+    private final Runnable mRunnable;
+    private final Handler mFadeOutHandler;
     private final int mBottomMarginSizeInConversation;
     private final int mBottomMarginSize;
+
+    /** How long toast will last in ms */
+    private static final long TOAST_LIFETIME = 15*1000L;
 
     /** Icon for the description. */
     private ImageView mActionDescriptionIcon;
@@ -63,6 +69,15 @@ public class ActionableToastBar extends LinearLayout {
 
     public ActionableToastBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mFadeOutHandler = new Handler();
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(!mHidden) {
+                    hide(true);
+                }
+            }
+        };
         mBottomMarginSize = context.getResources()
                 .getDimensionPixelSize(R.dimen.toast_bar_bottom_margin);
         mBottomMarginSizeInConversation = context.getResources().getDimensionPixelSize(
@@ -113,6 +128,8 @@ public class ActionableToastBar extends LinearLayout {
         if (!mHidden && !replaceVisibleToast) {
             return;
         }
+        // Remove any running delayed animations first
+        mFadeOutHandler.removeCallbacks(mRunnable);
 
         mOperation = op;
 
@@ -138,6 +155,9 @@ public class ActionableToastBar extends LinearLayout {
 
         mHidden = false;
         getShowAnimation().start();
+
+        // Set up runnable to execute hide toast once delay is completed
+        mFadeOutHandler.postDelayed(mRunnable, TOAST_LIFETIME);
     }
 
     public ToastBarOperation getOperation() {
@@ -149,6 +169,7 @@ public class ActionableToastBar extends LinearLayout {
      */
     public void hide(boolean animate) {
         mHidden = true;
+        mFadeOutHandler.removeCallbacks(mRunnable);
         if (getVisibility() == View.VISIBLE) {
             mActionDescriptionView.setText("");
             mActionButton.setOnClickListener(null);
@@ -224,6 +245,13 @@ public class ActionableToastBar extends LinearLayout {
     public boolean isAnimating() {
         return mShowAnimation != null && mShowAnimation.isStarted();
     }
+
+    @Override
+    public void onDetachedFromWindow() {
+        mFadeOutHandler.removeCallbacks(mRunnable);
+        super.onDetachedFromWindow();
+    }
+
     /**
      * Classes that wish to perform some action when the action button is clicked
      * should implement this interface.
