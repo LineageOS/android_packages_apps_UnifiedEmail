@@ -20,7 +20,6 @@ import com.android.mail.utils.LogTag;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -80,20 +79,12 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
         if (inner != null) {
             // Ensure the cursor window is filled
             inner.getCount();
-            registerContentObserver(inner, mObserver);
+            inner.registerContentObserver(mObserver);
         }
         // Modifications to the ObjectCursor, create an Object Cursor and fill the cache.
         final ObjectCursor<T> cursor = new ObjectCursor<T>(inner, mFactory);
         cursor.fillCache();
         return cursor;
-    }
-
-    /**
-     * Registers an observer to get notifications from the content provider
-     * when the cursor needs to be refreshed.
-     */
-    void registerContentObserver(Cursor cursor, ContentObserver observer) {
-        cursor.registerContentObserver(mObserver);
     }
 
     /* Runs on the UI thread */
