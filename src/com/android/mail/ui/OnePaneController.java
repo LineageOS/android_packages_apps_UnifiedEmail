@@ -24,8 +24,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.DrawerLayout.LayoutParams;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.android.mail.ConversationListContext;
@@ -146,8 +144,8 @@ public final class OnePaneController extends AbstractActivityController {
      * into drawer (to avoid repetitive calls to replaceFragment).
      */
     @Override
-    public void onAccountChanged(Account account) {
-        super.onAccountChanged(account);
+    public void changeAccount(Account account) {
+        super.changeAccount(account);
         mConversationListNeverShown = true;
         loadFolderList();
     }

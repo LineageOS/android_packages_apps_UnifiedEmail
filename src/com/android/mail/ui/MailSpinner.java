@@ -134,7 +134,7 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
                     mController.loadAccountInbox();
                 } else {
                     // Switching accounts.
-                    mController.onAccountChanged(account);
+                    mController.changeAccount(account);
                 }
                 dismiss = true;
                 break;
