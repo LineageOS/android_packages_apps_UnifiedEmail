@@ -66,7 +66,7 @@ public class Settings implements Parcelable {
     public final int messageTextSize;
     public final int snapHeaders;
     public final int replyBehavior;
-    public final boolean showCheckboxes;
+    public final boolean hideCheckboxes;
     public final boolean confirmDelete;
     public final boolean confirmArchive;
     public final boolean confirmSend;
@@ -101,7 +101,7 @@ public class Settings implements Parcelable {
         messageTextSize = MessageTextSize.NORMAL;
         snapHeaders = SnapHeaderValue.ALWAYS;
         replyBehavior = DefaultReplyBehavior.REPLY;
-        showCheckboxes = false;
+        hideCheckboxes = false;
         confirmDelete = false;
         confirmArchive = false;
         confirmSend = false;
@@ -122,7 +122,7 @@ public class Settings implements Parcelable {
         messageTextSize = inParcel.readInt();
         snapHeaders = inParcel.readInt();
         replyBehavior = inParcel.readInt();
-        showCheckboxes = inParcel.readInt() != 0;
+        hideCheckboxes = inParcel.readInt() != 0;
         confirmDelete = inParcel.readInt() != 0;
         confirmArchive = inParcel.readInt() != 0;
         confirmSend = inParcel.readInt() != 0;
@@ -148,8 +148,8 @@ public class Settings implements Parcelable {
                 cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS));
         replyBehavior = cursor.getInt(
                 cursor.getColumnIndex(UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR));
-        showCheckboxes = cursor.getInt(cursor.getColumnIndex(
-                UIProvider.AccountColumns.SettingsColumns.SHOW_CHECKBOXES)) != 0;
+        hideCheckboxes = cursor.getInt(cursor.getColumnIndex(
+                UIProvider.AccountColumns.SettingsColumns.HIDE_CHECKBOXES)) != 0;
         confirmDelete = cursor.getInt(cursor.getColumnIndex(
                 UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE)) != 0;
         confirmArchive = cursor.getInt(cursor.getColumnIndex(
@@ -186,8 +186,8 @@ public class Settings implements Parcelable {
                 sDefault.snapHeaders);
         replyBehavior = json.optInt(AccountColumns.SettingsColumns.REPLY_BEHAVIOR,
                 sDefault.replyBehavior);
-        showCheckboxes = json.optBoolean(AccountColumns.SettingsColumns.SHOW_CHECKBOXES,
-                sDefault.showCheckboxes);
+        hideCheckboxes = json.optBoolean(AccountColumns.SettingsColumns.HIDE_CHECKBOXES,
+                sDefault.hideCheckboxes);
         confirmDelete = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_DELETE,
                 sDefault.confirmDelete);
         confirmArchive = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE,
@@ -241,7 +241,7 @@ public class Settings implements Parcelable {
             json.put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, messageTextSize);
             json.put(AccountColumns.SettingsColumns.SNAP_HEADERS, snapHeaders);
             json.put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
-            json.put(AccountColumns.SettingsColumns.SHOW_CHECKBOXES, showCheckboxes);
+            json.put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES, hideCheckboxes);
             json.put(AccountColumns.SettingsColumns.CONFIRM_DELETE, confirmDelete);
             json.put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, confirmArchive);
             json.put(AccountColumns.SettingsColumns.CONFIRM_SEND, confirmSend);
@@ -311,7 +311,7 @@ public class Settings implements Parcelable {
         dest.writeInt(messageTextSize);
         dest.writeInt(snapHeaders);
         dest.writeInt(replyBehavior);
-        dest.writeInt(showCheckboxes ? 1 : 0);
+        dest.writeInt(hideCheckboxes ? 1 : 0);
         dest.writeInt(confirmDelete ? 1 : 0);
         dest.writeInt(confirmArchive? 1 : 0);
         dest.writeInt(confirmSend? 1 : 0);
@@ -404,7 +404,7 @@ public class Settings implements Parcelable {
                 && messageTextSize == that.messageTextSize
                 && snapHeaders == that.snapHeaders
                 && replyBehavior == that.replyBehavior
-                && showCheckboxes == that.showCheckboxes
+                && hideCheckboxes == that.hideCheckboxes
                 && confirmDelete == that.confirmDelete
                 && confirmArchive == that.confirmArchive
                 && confirmSend == that.confirmSend
@@ -433,7 +433,7 @@ public class Settings implements Parcelable {
     private final int calculateHashCode() {
         return super.hashCode()
                 ^ Objects.hashCode(signature, mAutoAdvance, mTransientAutoAdvance, messageTextSize,
-                        snapHeaders, replyBehavior, showCheckboxes, confirmDelete, confirmArchive,
+                        snapHeaders, replyBehavior, hideCheckboxes, confirmDelete, confirmArchive,
                         confirmSend, defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
                         priorityArrowsEnabled, setupIntentUri, conversationViewMode,
                         veiledAddressPattern);

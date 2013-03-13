@@ -726,7 +726,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         map.put(AccountColumns.SettingsColumns.SNAP_HEADERS, settings.snapHeaders);
         map.put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, settings.replyBehavior);
         map.put(
-                AccountColumns.SettingsColumns.SHOW_CHECKBOXES, settings.showCheckboxes ? 1 : 0);
+                AccountColumns.SettingsColumns.HIDE_CHECKBOXES, settings.hideCheckboxes ? 1 : 0);
         map.put(AccountColumns.SettingsColumns.CONFIRM_DELETE, settings.confirmDelete ? 1 : 0);
         map.put(
                 AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, settings.confirmArchive ? 1 : 0);
