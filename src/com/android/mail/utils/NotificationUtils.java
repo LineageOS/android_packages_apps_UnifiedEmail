@@ -708,11 +708,14 @@ public class NotificationUtils {
                                     UIProvider.MESSAGE_PROJECTION, null, null, null);
                             messageCursor = new MessageCursor(cursor);
 
-                            String from = null;
+                            String from = "";
                             String fromAddress = "";
                             if (messageCursor.moveToPosition(messageCursor.getCount() - 1)) {
                                 final Message message = messageCursor.getMessage();
                                 fromAddress = message.getFrom();
+                                if (fromAddress == null) {
+                                    fromAddress = "";
+                                }
                                 from = getDisplayableSender(fromAddress);
                             }
                             while (messageCursor.moveToPosition(messageCursor.getPosition() - 1)) {
