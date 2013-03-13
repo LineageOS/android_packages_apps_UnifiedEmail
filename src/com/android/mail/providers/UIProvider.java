@@ -149,7 +149,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, Integer.class)
             .put(AccountColumns.SettingsColumns.SNAP_HEADERS, Integer.class)
             .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, Integer.class)
-            .put(AccountColumns.SettingsColumns.SHOW_CHECKBOXES, Integer.class)
+            .put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_DELETE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)
@@ -472,9 +472,9 @@ public class UIProvider {
 
             /**
              * Integer column containing the user's specified checkbox preference. A
-             * non zero value means to show checkboxes.
+             * non zero value means to hide checkboxes.
              */
-            public static final String SHOW_CHECKBOXES = "show_checkboxes";
+            public static final String HIDE_CHECKBOXES = "hide_checkboxes";
 
             /**
              * Integer column containing the user's specified confirm delete preference value.
