@@ -372,7 +372,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mActivity.invalidateOptionsMenu();
         // Check if we are either on a phone, or in Conversation mode on tablet. For these, the
         // recent folders is enabled.
-        if (!mIsOnTablet || mMode == ViewMode.CONVERSATION) {
+        if (mIsOnTablet || mMode == ViewMode.CONVERSATION) {
             mSpinnerAdapter.enableRecentFolders();
         } else {
             mSpinnerAdapter.disableRecentFolders();
