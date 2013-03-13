@@ -54,6 +54,18 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
     public ObjectCursorLoader(Context context, Uri uri, String[] projection,
             CursorCreator<T> factory) {
         super(context);
+
+        /*
+         * If these are null, it's going to crash anyway in loadInBackground(), but this stack trace
+         * is much more useful.
+         */
+        if (uri == null) {
+            throw new NullPointerException("The uri cannot be null");
+        }
+        if (factory == null) {
+            throw new NullPointerException("The factory cannot be null");
+        }
+
         mObserver = new ForceLoadContentObserver();
         mUri = uri;
         mProjection = projection;
