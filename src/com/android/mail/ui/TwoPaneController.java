@@ -163,8 +163,8 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onAccountChanged(Account account) {
-        super.onAccountChanged(account);
+    public void changeAccount(Account account) {
+        super.changeAccount(account);
         renderFolderList();
     }
 

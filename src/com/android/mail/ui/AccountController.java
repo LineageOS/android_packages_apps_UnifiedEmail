@@ -70,6 +70,6 @@ public interface AccountController {
      *
      * @param account the account to change to.
      */
-    void onAccountChanged(Account account);
+    void changeAccount(Account account);
 
 }

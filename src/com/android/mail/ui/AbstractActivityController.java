@@ -504,7 +504,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onAccountChanged(Account account) {
+    public void changeAccount(Account account) {
         // Is the account or account settings different from the existing account?
         final boolean firstLoad = mAccount == null;
         final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
@@ -514,7 +514,7 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         // We also don't want to do anything if the new account is null
         if (account == null) {
-            LogUtils.e(LOG_TAG, "AAC.onAccountChanged(null) called.");
+            LogUtils.e(LOG_TAG, "AAC.changeAccount(null) called.");
             return;
         }
         final String accountName = account.name;
@@ -2118,7 +2118,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
         }
         if (accountChanged) {
-            onAccountChanged(newAccount);
+            changeAccount(newAccount);
         }
 
         // Whether we have updated the current account or not, we need to update the list of
