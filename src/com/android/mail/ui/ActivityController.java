@@ -42,8 +42,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  */
 public interface ActivityController extends LayoutListener,
         ModeChangeListener, ConversationListCallbacks,
-        FolderChangeListener, AccountChangeListener,
-        ConversationSetObserver, ConversationListener,
+        FolderChangeListener, ConversationSetObserver, ConversationListener,
         FolderListFragment.FolderListSelectionListener, HelpCallback, UndoListener,
         ConversationUpdater, ErrorListener, FolderController, AccountController,
         ConversationPositionTracker.Callbacks, ConversationListFooterView.FooterViewClickListener,

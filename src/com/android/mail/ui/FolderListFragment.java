@@ -358,7 +358,7 @@ public final class FolderListFragment extends ListFragment implements
                 // Account, so switch.
                 folder = null;
                 final Account account = mCursorAdapter.getFullAccount(folderItem);
-                mAccountChanger.onAccountChanged(account);
+                mAccountChanger.changeAccount(account);
             } else {
                 // Folder type, so change folders only.
                 folder = mCursorAdapter.getFullFolder(folderItem);
