@@ -20,6 +20,7 @@ import com.android.mail.R;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
@@ -131,10 +132,19 @@ public class FolderItemView extends RelativeLayout {
         }
     }
 
+    public void bind(Account account, DropHandler dropHandler) {
+        mFolder = null;
+        mDropHandler = dropHandler;
+        mFolderTextView.setText(account.name);
+        mFolderParentIcon.setVisibility(View.GONE);
+        mUnreadCountTextView.setVisibility(View.GONE);
+        setUnseenCount(Color.BLACK, 0);
+    }
+
     /**
      * Sets the unread count, taking care to hide/show the textview if the count is zero/non-zero.
      */
-    private final void setUnreadCount(int count) {
+    private void setUnreadCount(int count) {
         mUnreadCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
         if (count > 0) {
             mUnreadCountTextView.setText(Utils.getUnreadCountString(getContext(), count));
@@ -144,7 +154,7 @@ public class FolderItemView extends RelativeLayout {
     /**
      * Sets the unseen count, taking care to hide/show the textview if the count is zero/non-zero.
      */
-    private final void setUnseenCount(final int color, final int count) {
+    private void setUnseenCount(final int color, final int count) {
         mUnseenCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
         if (count > 0) {
             mUnseenCountTextView.setBackgroundColor(color);
