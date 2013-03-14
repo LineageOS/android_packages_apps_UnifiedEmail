@@ -42,8 +42,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  */
 public interface ActivityController extends LayoutListener,
         ModeChangeListener, ConversationListCallbacks,
-        FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
-        ConversationSetObserver, ConversationListener,
+        FolderChangeListener, ConversationSetObserver, ConversationListener,
         FolderListFragment.FolderListSelectionListener, HelpCallback, UndoListener,
         ConversationUpdater, ErrorListener, FolderController, AccountController,
         ConversationPositionTracker.Callbacks, ConversationListFooterView.FooterViewClickListener,
@@ -217,9 +216,10 @@ public interface ActivityController extends LayoutListener,
     public void showWaitForInitialization();
 
     /**
-     * Show the folder list associated with the currently selected account.
+     * Load the folder list into the drawer fragment. Only handled by
+     * OnePaneController on account change.
      */
-    void showFolderList();
+    void loadFolderList();
 
     /**
      * Handle a touch event.

@@ -116,21 +116,19 @@ public class UIProvider {
      * required to respect this query parameter
      */
     public static final String LIST_PARAMS_QUERY_PARAMETER = "listParams";
+    public static final String LABEL_QUERY_PARAMETER = "label";
+    public static final String SEEN_QUERY_PARAMETER = "seen";
 
-    public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
+    public static final Map<String, Class<?>> ACCOUNTS_COLUMNS_NO_CAPABILITIES =
             new ImmutableMap.Builder<String, Class<?>>()
-            // order matters! (ImmutableMap.Builder preserves insertion order)
-            .put(BaseColumns._ID, Integer.class)
+            .put(AccountColumns._ID, Integer.class)
             .put(AccountColumns.NAME, String.class)
             .put(AccountColumns.PROVIDER_VERSION, Integer.class)
             .put(AccountColumns.URI, String.class)
-            .put(AccountColumns.CAPABILITIES, Integer.class)
             .put(AccountColumns.FOLDER_LIST_URI, String.class)
             .put(AccountColumns.FULL_FOLDER_LIST_URI, String.class)
             .put(AccountColumns.SEARCH_URI, String.class)
             .put(AccountColumns.ACCOUNT_FROM_ADDRESSES, String.class)
-            .put(AccountColumns.SAVE_DRAFT_URI, String.class)
-            .put(AccountColumns.SEND_MAIL_URI, String.class)
             .put(AccountColumns.EXPUNGE_MESSAGE_URI, String.class)
             .put(AccountColumns.UNDO_URI, String.class)
             .put(AccountColumns.SETTINGS_INTENT_URI, String.class)
@@ -167,57 +165,19 @@ public class UIProvider {
             .put(AccountColumns.UPDATE_SETTINGS_URI, String.class)
             .build();
 
-    // pull out the (ordered!) keyset from above to form the projection
-    public static final String[] ACCOUNTS_PROJECTION = ACCOUNTS_COLUMNS.keySet()
-            .toArray(new String[ACCOUNTS_COLUMNS.size()]);
+    public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
+            new ImmutableMap.Builder<String, Class<?>>()
+            .putAll(ACCOUNTS_COLUMNS_NO_CAPABILITIES)
+            .put(AccountColumns.CAPABILITIES, Integer.class)
+            .build();
 
-    public static final int ACCOUNT_ID_COLUMN = 0;
-    public static final int ACCOUNT_NAME_COLUMN = 1;
-    public static final int ACCOUNT_PROVIDER_VERISON_COLUMN = 2;
-    public static final int ACCOUNT_URI_COLUMN = 3;
-    public static final int ACCOUNT_CAPABILITIES_COLUMN = 4;
-    public static final int ACCOUNT_FOLDER_LIST_URI_COLUMN = 5;
-    public static final int ACCOUNT_FULL_FOLDER_LIST_URI_COLUMN = 6;
-    public static final int ACCOUNT_SEARCH_URI_COLUMN = 7;
-    public static final int ACCOUNT_FROM_ADDRESSES_COLUMN = 8;
-    public static final int ACCOUNT_SAVE_DRAFT_URI_COLUMN = 9;
-    public static final int ACCOUNT_SEND_MESSAGE_URI_COLUMN = 10;
-    public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 11;
-    public static final int ACCOUNT_UNDO_URI_COLUMN = 12;
-    public static final int ACCOUNT_SETTINGS_INTENT_URI_COLUMN = 13;
-    public static final int ACCOUNT_SYNC_STATUS_COLUMN = 14;
-    public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 15;
-    public static final int ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN = 16;
-    public static final int ACCOUNT_REAUTHENTICATION_INTENT_URI_COLUMN = 17;
-    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 18;
-    public static final int ACCOUNT_MIME_TYPE_COLUMN = 19;
-    public static final int ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN = 20;
-    public static final int ACCOUNT_COLOR_COLUMN = 21;
-    public static final int ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN = 22;
-    public static final int ACCOUNT_MANUAL_SYNC_URI_COLUMN = 23;
-    public static final int ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN = 24;
-    public static final int ACCOUNT_COOKIE_QUERY_URI_COLUMN = 25;
+    // pull out the keyset from above to form the projection
+    public static final String[] ACCOUNTS_PROJECTION =
+            ACCOUNTS_COLUMNS.keySet().toArray(new String[ACCOUNTS_COLUMNS.size()]);
 
-    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 26;
-    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 27;
-    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 28;
-    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 29;
-    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 30;
-    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 31;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 32;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 33;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 34;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 35;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN = 36;
-    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 37;
-    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 38;
-    public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 39;
-    public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 40;
-    public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 41;
-    public static final int ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN = 42;
-    public static final int ACCOUNT_SETTINGS_VEILED_ADDRESS_PATTERN_COLUMN = 43;
-
-    public static final int ACCOUNT_UPDATE_SETTINGS_URI_COLUMN = 44;
+    public static final
+            String[] ACCOUNTS_PROJECTION_NO_CAPABILITIES = ACCOUNTS_COLUMNS_NO_CAPABILITIES.keySet()
+                    .toArray(new String[ACCOUNTS_COLUMNS_NO_CAPABILITIES.size()]);
 
     public static final class AccountCapabilities {
         /**
@@ -323,7 +283,7 @@ public class UIProvider {
         public static final int DISCARD_CONVERSATION_DRAFTS = 0x100000;
     }
 
-    public static final class AccountColumns {
+    public static final class AccountColumns implements BaseColumns {
         /**
          * This string column contains the human visible name for the account.
          */
@@ -379,22 +339,6 @@ public class UIProvider {
          * custom from addresses for this account or null if there are none.
          */
         public static final String ACCOUNT_FROM_ADDRESSES = "accountFromAddresses";
-
-        /**
-         * This string column contains the content provider uri that can be used to save (insert)
-         * new draft messages for this account. NOTE: This might be better to
-         * be an update operation on the messageUri.
-         */
-        @Deprecated
-        public static final String SAVE_DRAFT_URI = "saveDraftUri";
-
-        /**
-         * This string column contains the content provider uri that can be used to send
-         * a message for this account.
-         * NOTE: This might be better to be an update operation on the messageUri.
-         */
-        @Deprecated
-        public static final String SEND_MAIL_URI = "sendMailUri";
 
         /**
          * This string column contains the content provider uri that can be used
@@ -596,91 +540,6 @@ public class UIProvider {
         }
     }
 
-    /**
-     * Map to go from account column name to account column. Can only be used through
-     * {@link #getAccountColumn(String)}.
-     */
-    private static final ImmutableMap<String, Integer> ACCOUNT_TO_ID_MAP =
-            new ImmutableMap.Builder<String, Integer>()
-            .put(BaseColumns._ID, ACCOUNT_ID_COLUMN)
-            .put(AccountColumns.NAME, ACCOUNT_NAME_COLUMN)
-            .put(AccountColumns.TYPE, -1)
-            .put(AccountColumns.PROVIDER_VERSION, ACCOUNT_PROVIDER_VERISON_COLUMN)
-            .put(AccountColumns.URI, ACCOUNT_URI_COLUMN)
-            .put(AccountColumns.CAPABILITIES, ACCOUNT_CAPABILITIES_COLUMN)
-            .put(AccountColumns.FOLDER_LIST_URI, ACCOUNT_FOLDER_LIST_URI_COLUMN)
-            .put(AccountColumns.FULL_FOLDER_LIST_URI, ACCOUNT_FULL_FOLDER_LIST_URI_COLUMN)
-            .put(AccountColumns.SEARCH_URI, ACCOUNT_SEARCH_URI_COLUMN)
-            .put(AccountColumns.ACCOUNT_FROM_ADDRESSES, ACCOUNT_FROM_ADDRESSES_COLUMN)
-            .put(AccountColumns.SAVE_DRAFT_URI, ACCOUNT_SAVE_DRAFT_URI_COLUMN)
-            .put(AccountColumns.SEND_MAIL_URI, ACCOUNT_SEND_MESSAGE_URI_COLUMN)
-            .put(AccountColumns.EXPUNGE_MESSAGE_URI, ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN)
-            .put(AccountColumns.UNDO_URI, ACCOUNT_UNDO_URI_COLUMN)
-            .put(AccountColumns.SETTINGS_INTENT_URI, ACCOUNT_SETTINGS_INTENT_URI_COLUMN)
-            .put(AccountColumns.HELP_INTENT_URI, ACCOUNT_HELP_INTENT_URI_COLUMN)
-            .put(AccountColumns.SEND_FEEDBACK_INTENT_URI, ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN)
-            .put(AccountColumns.REAUTHENTICATION_INTENT_URI,
-                    ACCOUNT_REAUTHENTICATION_INTENT_URI_COLUMN)
-            .put(AccountColumns.SYNC_STATUS, ACCOUNT_SYNC_STATUS_COLUMN)
-            .put(AccountColumns.COMPOSE_URI, ACCOUNT_COMPOSE_INTENT_URI_COLUMN)
-            .put(AccountColumns.MIME_TYPE, ACCOUNT_MIME_TYPE_COLUMN)
-            .put(AccountColumns.RECENT_FOLDER_LIST_URI, ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN)
-            .put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
-                    ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN)
-            .put(AccountColumns.COLOR, ACCOUNT_COLOR_COLUMN)
-            .put(AccountColumns.MANUAL_SYNC_URI, ACCOUNT_MANUAL_SYNC_URI_COLUMN)
-            .put(AccountColumns.VIEW_INTENT_PROXY_URI, ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN)
-            .put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, ACCOUNT_COOKIE_QUERY_URI_COLUMN)
-            .put(AccountColumns.SettingsColumns.SIGNATURE, ACCOUNT_SETTINGS_SIGNATURE_COLUMN)
-            .put(AccountColumns.SettingsColumns.AUTO_ADVANCE, ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN)
-            .put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE,
-                    ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN)
-            .put(AccountColumns.SettingsColumns.SNAP_HEADERS,ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN)
-            .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR,
-                    ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN)
-            .put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES,
-                    ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN)
-            .put(AccountColumns.SettingsColumns.CONFIRM_DELETE,
-                    ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN)
-            .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE,
-                    ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN)
-            .put(AccountColumns.SettingsColumns.CONFIRM_SEND,
-                    ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN)
-            .put(AccountColumns.SettingsColumns.DEFAULT_INBOX,
-                    ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN)
-            .put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME,
-                    ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN)
-            .put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
-                    ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN)
-            .put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
-                    ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN)
-            .put(AccountColumns.SettingsColumns.SWIPE, ACCOUNT_SETTINGS_SWIPE_COLUMN)
-            .put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
-                    ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN)
-            .put(AccountColumns.SettingsColumns.SETUP_INTENT_URI,
-                    ACCOUNT_SETTINGS_SETUP_INTENT_URI)
-            .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
-                    ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN)
-            .put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN,
-                    ACCOUNT_SETTINGS_VEILED_ADDRESS_PATTERN_COLUMN)
-            .put(AccountColumns.UPDATE_SETTINGS_URI, ACCOUNT_UPDATE_SETTINGS_URI_COLUMN)
-            .build();
-
-    /**
-     * Returns the column number for a given column name. The column numbers are guaranteed to be
-     * unique for distinct column names. Column names are values from {@link AccountColumns} while
-     * columns are integers.
-     * @param columnName
-     * @return
-     */
-    public static final int getAccountColumn(String columnName) {
-        final Integer id = ACCOUNT_TO_ID_MAP.get(columnName);
-        if (id == null) {
-            return -1;
-        }
-        return id.intValue();
-    }
-
     public static final String[] ACCOUNT_COOKIE_PROJECTION = {
         AccountCookieColumns.COOKIE
     };
@@ -735,6 +594,7 @@ public class UIProvider {
 
     public static final String[] FOLDERS_PROJECTION = {
         BaseColumns._ID,
+        FolderColumns.PERSISTENT_ID,
         FolderColumns.URI,
         FolderColumns.NAME,
         FolderColumns.HAS_CHILDREN,
@@ -742,6 +602,7 @@ public class UIProvider {
         FolderColumns.SYNC_WINDOW,
         FolderColumns.CONVERSATION_LIST_URI,
         FolderColumns.CHILD_FOLDERS_LIST_URI,
+        FolderColumns.UNSEEN_COUNT,
         FolderColumns.UNREAD_COUNT,
         FolderColumns.TOTAL_COUNT,
         FolderColumns.REFRESH_URI,
@@ -749,6 +610,7 @@ public class UIProvider {
         FolderColumns.LAST_SYNC_RESULT,
         FolderColumns.TYPE,
         FolderColumns.ICON_RES_ID,
+        FolderColumns.NOTIFICATION_ICON_RES_ID,
         FolderColumns.BG_COLOR,
         FolderColumns.FG_COLOR,
         FolderColumns.LOAD_MORE_URI,
@@ -756,24 +618,27 @@ public class UIProvider {
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
-    public static final int FOLDER_URI_COLUMN = 1;
-    public static final int FOLDER_NAME_COLUMN = 2;
-    public static final int FOLDER_HAS_CHILDREN_COLUMN = 3;
-    public static final int FOLDER_CAPABILITIES_COLUMN = 4;
-    public static final int FOLDER_SYNC_WINDOW_COLUMN = 5;
-    public static final int FOLDER_CONVERSATION_LIST_URI_COLUMN = 6;
-    public static final int FOLDER_CHILD_FOLDERS_LIST_COLUMN = 7;
-    public static final int FOLDER_UNREAD_COUNT_COLUMN = 8;
-    public static final int FOLDER_TOTAL_COUNT_COLUMN = 9;
-    public static final int FOLDER_REFRESH_URI_COLUMN = 10;
-    public static final int FOLDER_SYNC_STATUS_COLUMN = 11;
-    public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 12;
-    public static final int FOLDER_TYPE_COLUMN = 13;
-    public static final int FOLDER_ICON_RES_ID_COLUMN = 14;
-    public static final int FOLDER_BG_COLOR_COLUMN = 15;
-    public static final int FOLDER_FG_COLOR_COLUMN = 16;
-    public static final int FOLDER_LOAD_MORE_URI_COLUMN = 17;
-    public static final int FOLDER_HIERARCHICAL_DESC_COLUMN = 18;
+    public static final int FOLDER_PERSISTENT_ID_COLUMN = 1;
+    public static final int FOLDER_URI_COLUMN = 2;
+    public static final int FOLDER_NAME_COLUMN = 3;
+    public static final int FOLDER_HAS_CHILDREN_COLUMN = 4;
+    public static final int FOLDER_CAPABILITIES_COLUMN = 5;
+    public static final int FOLDER_SYNC_WINDOW_COLUMN = 6;
+    public static final int FOLDER_CONVERSATION_LIST_URI_COLUMN = 7;
+    public static final int FOLDER_CHILD_FOLDERS_LIST_COLUMN = 8;
+    public static final int FOLDER_UNSEEN_COUNT_COLUMN = 9;
+    public static final int FOLDER_UNREAD_COUNT_COLUMN = 10;
+    public static final int FOLDER_TOTAL_COUNT_COLUMN = 11;
+    public static final int FOLDER_REFRESH_URI_COLUMN = 12;
+    public static final int FOLDER_SYNC_STATUS_COLUMN = 13;
+    public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 14;
+    public static final int FOLDER_TYPE_COLUMN = 15;
+    public static final int FOLDER_ICON_RES_ID_COLUMN = 16;
+    public static final int FOLDER_NOTIFICATION_ICON_RES_ID_COLUMN = 17;
+    public static final int FOLDER_BG_COLOR_COLUMN = 18;
+    public static final int FOLDER_FG_COLOR_COLUMN = 19;
+    public static final int FOLDER_LOAD_MORE_URI_COLUMN = 20;
+    public static final int FOLDER_HIERARCHICAL_DESC_COLUMN = 21;
 
     public static final class FolderType {
         /** A user defined label. */
@@ -796,6 +661,8 @@ public class UIProvider {
         public static final int OTHER_PROVIDER_FOLDER = 8;
         /** All mail folder **/
         public static final int ALL_MAIL = 9;
+        /** Gmail's inbox sections **/
+        public static final int INBOX_SECTION = 10;
     }
 
     public static final class FolderCapabilities {
@@ -856,9 +723,20 @@ public class UIProvider {
          * the report phishing functionality.
          */
         public static final int REPORT_PHISHING = 0x2000;
+
+        /**
+         * The flag indicates that the user has the ability to move conversations
+         * from this folder.
+         */
+        public static final int ALLOWS_REMOVE_CONVERSATION = 0x4000;
     }
 
     public static final class FolderColumns {
+        /**
+         * This string column contains an id for the folder that is constant across devices, or
+         * null if there is no constant id.
+         */
+        public static final String PERSISTENT_ID = "persistentId";
         /**
          * This string column contains the uri of the folder.
          */
@@ -891,7 +769,13 @@ public class UIProvider {
          * list of child folders of this folder.
          */
         public static final String CHILD_FOLDERS_LIST_URI = "childFoldersListUri";
-
+        /**
+         * This int column contains the current unseen count for the folder, if known.
+         */
+        public static final String UNSEEN_COUNT = "unseenCount";
+        /**
+         * This int column contains the current unread count for the folder.
+         */
         public static final String UNREAD_COUNT = "unreadCount";
 
         public static final String TOTAL_COUNT = "totalCount";
@@ -911,9 +795,14 @@ public class UIProvider {
          */
         public static final String LAST_SYNC_RESULT  = "lastSyncResult";
         /**
-         * This long column contains the icon res id for this folder, or 0 if there is none.
+         * This int column contains the icon res id for this folder, or 0 if there is none.
          */
         public static final String ICON_RES_ID = "iconResId";
+        /**
+         * This int column contains the notification icon res id for this folder, or 0 if there is
+         * none.
+         */
+        public static final String NOTIFICATION_ICON_RES_ID = "notificationIconResId";
         /**
          * This int column contains the type of the folder. Zero is default.
          */
@@ -963,6 +852,7 @@ public class UIProvider {
         ConversationColumns.SENDING_STATE,
         ConversationColumns.PRIORITY,
         ConversationColumns.READ,
+        ConversationColumns.SEEN,
         ConversationColumns.STARRED,
         ConversationColumns.RAW_FOLDERS,
         ConversationColumns.FLAGS,
@@ -992,18 +882,19 @@ public class UIProvider {
     public static final int CONVERSATION_SENDING_STATE_COLUMN = 10;
     public static final int CONVERSATION_PRIORITY_COLUMN = 11;
     public static final int CONVERSATION_READ_COLUMN = 12;
-    public static final int CONVERSATION_STARRED_COLUMN = 13;
-    public static final int CONVERSATION_RAW_FOLDERS_COLUMN = 14;
-    public static final int CONVERSATION_FLAGS_COLUMN = 15;
-    public static final int CONVERSATION_PERSONAL_LEVEL_COLUMN = 16;
-    public static final int CONVERSATION_IS_SPAM_COLUMN = 17;
-    public static final int CONVERSATION_IS_PHISHING_COLUMN = 18;
-    public static final int CONVERSATION_MUTED_COLUMN = 19;
-    public static final int CONVERSATION_COLOR_COLUMN = 20;
-    public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 21;
-    public static final int CONVERSATION_SENDER_INFO_COLUMN = 22;
-    public static final int CONVERSATION_BASE_URI_COLUMN = 23;
-    public static final int CONVERSATION_REMOTE_COLUMN = 24;
+    public static final int CONVERSATION_SEEN_COLUMN = 13;
+    public static final int CONVERSATION_STARRED_COLUMN = 14;
+    public static final int CONVERSATION_RAW_FOLDERS_COLUMN = 15;
+    public static final int CONVERSATION_FLAGS_COLUMN = 16;
+    public static final int CONVERSATION_PERSONAL_LEVEL_COLUMN = 17;
+    public static final int CONVERSATION_IS_SPAM_COLUMN = 18;
+    public static final int CONVERSATION_IS_PHISHING_COLUMN = 19;
+    public static final int CONVERSATION_MUTED_COLUMN = 20;
+    public static final int CONVERSATION_COLOR_COLUMN = 21;
+    public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 22;
+    public static final int CONVERSATION_SENDER_INFO_COLUMN = 23;
+    public static final int CONVERSATION_BASE_URI_COLUMN = 24;
+    public static final int CONVERSATION_REMOTE_COLUMN = 25;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -1109,6 +1000,12 @@ public class UIProvider {
          * This int column indicates whether the conversation has been read
          */
         public static String READ = "read";
+
+        /**
+         * This int column indicates whether the conversation has been seen
+         */
+        public static String SEEN = "seen";
+
         /**
          * This int column indicates whether the conversation has been starred
          */
@@ -1399,11 +1296,9 @@ public class UIProvider {
         MessageColumns.HAS_ATTACHMENTS,
         MessageColumns.ATTACHMENT_LIST_URI,
         MessageColumns.MESSAGE_FLAGS,
-        MessageColumns.JOINED_ATTACHMENT_INFOS,
-        MessageColumns.SAVE_MESSAGE_URI,
-        MessageColumns.SEND_MESSAGE_URI,
         MessageColumns.ALWAYS_SHOW_IMAGES,
         MessageColumns.READ,
+        MessageColumns.SEEN,
         MessageColumns.STARRED,
         MessageColumns.QUOTE_START_POS,
         MessageColumns.ATTACHMENTS,
@@ -1446,22 +1341,20 @@ public class UIProvider {
     public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 18;
     public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 19;
     public static final int MESSAGE_FLAGS_COLUMN = 20;
-    public static final int MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN = 21;
-    public static final int MESSAGE_SAVE_URI_COLUMN = 22;
-    public static final int MESSAGE_SEND_URI_COLUMN = 23;
-    public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 24;
-    public static final int MESSAGE_READ_COLUMN = 25;
-    public static final int MESSAGE_STARRED_COLUMN = 26;
-    public static final int QUOTED_TEXT_OFFSET_COLUMN = 27;
-    public static final int MESSAGE_ATTACHMENTS_COLUMN = 28;
-    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 29;
-    public static final int MESSAGE_ACCOUNT_URI_COLUMN = 30;
-    public static final int MESSAGE_EVENT_INTENT_COLUMN = 31;
-    public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 32;
-    public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 33;
-    public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 34;
-    public static final int MESSAGE_VIA_DOMAIN_COLUMN = 35;
-    public static final int MESSAGE_IS_SENDING_COLUMN = 36;
+    public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 21;
+    public static final int MESSAGE_READ_COLUMN = 22;
+    public static final int MESSAGE_SEEN_COLUMN = 23;
+    public static final int MESSAGE_STARRED_COLUMN = 24;
+    public static final int QUOTED_TEXT_OFFSET_COLUMN = 25;
+    public static final int MESSAGE_ATTACHMENTS_COLUMN = 26;
+    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 27;
+    public static final int MESSAGE_ACCOUNT_URI_COLUMN = 28;
+    public static final int MESSAGE_EVENT_INTENT_COLUMN = 29;
+    public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 30;
+    public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 31;
+    public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 32;
+    public static final int MESSAGE_VIA_DOMAIN_COLUMN = 33;
+    public static final int MESSAGE_IS_SENDING_COLUMN = 34;
 
     public static final class CursorStatus {
         // The cursor is actively loading more data
@@ -1495,6 +1388,11 @@ public class UIProvider {
          */
         public static final String EXTRA_ERROR = "cursor_error";
 
+
+        /**
+         * This integer column contains the total message count for this folder.
+         */
+        public static final String EXTRA_TOTAL_COUNT = "cursor_total_count";
     }
 
     public static final class AccountCursorExtraKeys {
@@ -1598,27 +1496,6 @@ public class UIProvider {
          */
         public static final String MESSAGE_FLAGS = "messageFlags";
         /**
-         * This string column contains a specially formatted string representing all
-         * attachments that we added to a message that is being sent or saved.
-         *
-         * TODO: remove this and use {@link #ATTACHMENTS} instead
-         */
-        @Deprecated
-        public static final String JOINED_ATTACHMENT_INFOS = "joinedAttachmentInfos";
-        /**
-         * This string column contains the content provider URI for saving this
-         * message.
-         */
-        @Deprecated
-        public static final String SAVE_MESSAGE_URI = "saveMessageUri";
-        /**
-         * This string column contains content provider URI for sending this
-         * message.
-         */
-        @Deprecated
-        public static final String SEND_MESSAGE_URI = "sendMessageUri";
-
-        /**
          * This integer column represents whether the user has specified that images should always
          * be shown.  The value of "1" indicates that the user has specified that images should be
          * shown, while the value of "0" indicates that the user should be prompted before loading
@@ -1630,6 +1507,11 @@ public class UIProvider {
          * This boolean column indicates whether the message has been read
          */
         public static String READ = "read";
+
+        /**
+         * This boolean column indicates whether the message has been seen
+         */
+        public static String SEEN = "seen";
 
         /**
          * This boolean column indicates whether the message has been starred

@@ -480,6 +480,12 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         return mUserVisible;
     }
 
+    protected void timerMark(String msg) {
+        if (isUserVisible()) {
+            Utils.sConvLoadTimer.mark(msg);
+        }
+    }
+
     private class MessageLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
         @Override

@@ -17,7 +17,6 @@
 package com.android.mail.widget;
 
 import com.android.mail.R;
-import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderDisplayer;
@@ -27,6 +26,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
@@ -66,11 +66,11 @@ public class WidgetConversationViewBuilder {
          * Load Conversation Labels
          */
         @Override
-        public void loadConversationFolders(Conversation conv, Folder ignoreFolder) {
-            super.loadConversationFolders(conv, ignoreFolder);
+        public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri) {
+            super.loadConversationFolders(conv, ignoreFolderUri);
         }
 
-        private int getFolderViewId(int position) {
+        private static int getFolderViewId(int position) {
             switch (position) {
                 case 0:
                     return R.id.widget_folder_0;
@@ -111,7 +111,7 @@ public class WidgetConversationViewBuilder {
     /*
      * Get font sizes and bitmaps from Resources
      */
-    public WidgetConversationViewBuilder(Context context, Account account) {
+    public WidgetConversationViewBuilder(Context context) {
         mContext = context;
         Resources res = context.getResources();
 
@@ -131,7 +131,7 @@ public class WidgetConversationViewBuilder {
     /*
      * Add size, color and style to a given text
      */
-    private CharSequence addStyle(CharSequence text, int size, int color) {
+    private static CharSequence addStyle(CharSequence text, int size, int color) {
         SpannableStringBuilder builder = new SpannableStringBuilder(text);
         builder.setSpan(
                 new AbsoluteSizeSpan(size), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -145,9 +145,8 @@ public class WidgetConversationViewBuilder {
     /*
      * Return the full View
      */
-    public RemoteViews getStyledView(CharSequence status, CharSequence date,
-            Conversation conversation, Folder currentFolder, SpannableStringBuilder senders,
-            String filteredSubject) {
+    public RemoteViews getStyledView(CharSequence date, Conversation conversation,
+            final Uri folderUri, SpannableStringBuilder senders, String filteredSubject) {
 
         final boolean isUnread = !conversation.read;
         String snippet = conversation.getSnippet();
@@ -195,7 +194,7 @@ public class WidgetConversationViewBuilder {
         }
         if (mContext.getResources().getBoolean(R.bool.display_folder_colors_in_widget)) {
             mFolderDisplayer = new WidgetFolderDisplayer(mContext);
-            mFolderDisplayer.loadConversationFolders(conversation, currentFolder);
+            mFolderDisplayer.loadConversationFolders(conversation, folderUri);
             mFolderDisplayer.displayFolders(remoteViews);
         }
 

@@ -32,6 +32,8 @@
         android:background="@drawable/spinner_ab_holo_light"
         android:duplicateParentState="false"
         android:layout_alignParentLeft="true"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
         style="@style/AccountSpinnerStyle">
         <TextView
             android:id="@+id/account_first"

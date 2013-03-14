@@ -67,7 +67,7 @@
         <item>Forward</item>
     </string-array>
         <!-- Formatting string for the subject when it contains a reply or forward identifier. Do not translate.-->
-    <string name="formatted_subject"><xliff:g id="prefix">%1$s</xliff:g> <xliff:g id="subject">%2$s</xliff:g></string>
+    <string name="formatted_subject" translatable="false"><xliff:g id="prefix">%1$s</xliff:g> <xliff:g id="subject">%2$s</xliff:g></string>
     <!-- Compose screen, prefixed to the subject of a message when replying to it (if not already present). Do not translate. -->
     <string name="reply_subject_label" translatable="false">Re:</string>
     <!-- Compose screen, Prefix to forwarded message subject. Do not translate. -->
@@ -149,6 +149,8 @@
     <string name="menu_compose">Compose</string>
     <!-- Menu item: change the folders for this conversation. -->
     <string name="menu_change_folders">Change folders</string>
+    <!-- Menu item: moves to folders for selected conversation(s). [CHAR LIMIT = 30] -->
+    <string name="menu_move_to">Move to</string>
     <!-- Menu item: manages the folders for this account. [CHAR LIMIT = 30] -->
     <string name="menu_manage_folders">Folder settings</string>
     <!-- Title for the Folder list screen. [CHAR LIMIT = 30] -->
@@ -787,11 +789,26 @@
     <string name="notification_action_preference_summary_not_set">Not set</string>
 
     <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
-    <string name="veiled_address"></string>
+    <string name="veiled_address"/>
     <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
-    <string name="veiled_alternate_text"></string>
+    <string name="veiled_alternate_text"/>
     <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
-    <string name="veiled_alternate_text_unknown_person"></string>
+    <string name="veiled_alternate_text_unknown_person"/>
     <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
-    <string name="veiled_summary_unknown_person"></string>
+    <string name="veiled_summary_unknown_person"/>
+
+    <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
+    <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
+
+    <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
+    <string name="new_messages"><xliff:g id="count">%1$d</xliff:g> new messages</string>
+
+    <!-- Format string used when displaying the title of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
+    <string name="single_new_message_notification_title"><xliff:g id="sender">%1$s</xliff:g>: <xliff:g id="subject">%2$s</xliff:g></string>
+
+    <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
+    <string name="silent_ringtone">Silent</string>
+
+    <!-- Label list screen, banner for number of unseen messages [CHAR LIMIT=15]  -->
+    <string name="inbox_unseen_banner"><xliff:g id="number" example="7">%d</xliff:g> NEW</string>
 </resources>

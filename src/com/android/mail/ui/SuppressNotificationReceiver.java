@@ -35,7 +35,7 @@ import android.text.TextUtils;
 
 
 /**
- * A simple {@code BroadcastReceiver} which supresses new e-mail notifications for a given folder.
+ * A simple {@code BroadcastReceiver} which suppresses new e-mail notifications for a given folder.
  */
 public class SuppressNotificationReceiver extends BroadcastReceiver {
     private static final String LOG_TAG = LogTag.getLogTag();
@@ -45,7 +45,7 @@ public class SuppressNotificationReceiver extends BroadcastReceiver {
     private String mMimeType;
 
     /**
-     * Registers this receiver to supress the new mail notifications for a given folder so
+     * Registers this receiver to suppress the new mail notifications for a given folder so
      * that other {@code BroadcastReceiver}s don't receive them.
      */
     public boolean activate(Context context, AbstractActivityController controller) {

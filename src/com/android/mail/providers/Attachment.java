@@ -201,16 +201,16 @@ public class Attachment implements Parcelable {
     public JSONObject toJSON() throws JSONException {
         final JSONObject result = new JSONObject();
 
-        result.putOpt(AttachmentColumns.NAME, name);
-        result.putOpt(AttachmentColumns.SIZE, size);
-        result.putOpt(AttachmentColumns.URI, stringify(uri));
-        result.putOpt(AttachmentColumns.CONTENT_TYPE, contentType);
-        result.putOpt(AttachmentColumns.STATE, state);
-        result.putOpt(AttachmentColumns.DESTINATION, destination);
-        result.putOpt(AttachmentColumns.DOWNLOADED_SIZE, downloadedSize);
-        result.putOpt(AttachmentColumns.CONTENT_URI, stringify(contentUri));
-        result.putOpt(AttachmentColumns.THUMBNAIL_URI, stringify(thumbnailUri));
-        result.putOpt(AttachmentColumns.PREVIEW_INTENT_URI, stringify(previewIntentUri));
+        result.put(AttachmentColumns.NAME, name);
+        result.put(AttachmentColumns.SIZE, size);
+        result.put(AttachmentColumns.URI, stringify(uri));
+        result.put(AttachmentColumns.CONTENT_TYPE, contentType);
+        result.put(AttachmentColumns.STATE, state);
+        result.put(AttachmentColumns.DESTINATION, destination);
+        result.put(AttachmentColumns.DOWNLOADED_SIZE, downloadedSize);
+        result.put(AttachmentColumns.CONTENT_URI, stringify(contentUri));
+        result.put(AttachmentColumns.THUMBNAIL_URI, stringify(thumbnailUri));
+        result.put(AttachmentColumns.PREVIEW_INTENT_URI, stringify(previewIntentUri));
         result.put(AttachmentColumns.PROVIDER_DATA, providerData);
 
         return result;
@@ -222,7 +222,12 @@ public class Attachment implements Parcelable {
             final JSONObject jsonObject = toJSON();
             // Add some additional fields that are helpful when debugging issues
             jsonObject.put("partId", partId);
-            return jsonObject.toString();
+            try {
+                // pretty print the provider data
+                jsonObject.put(AttachmentColumns.PROVIDER_DATA, new JSONObject(providerData));
+            } catch (JSONException e) {
+            }
+            return jsonObject.toString(4);
         } catch (JSONException e) {
             LogUtils.e(LOG_TAG, e, "JSONException in toString");
             return super.toString();

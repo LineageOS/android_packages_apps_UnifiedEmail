@@ -45,9 +45,31 @@ public interface AccountController {
      */
     Account getAccount();
 
+
+    /**
+     * Registers to receive changes to the list of accounts, and obtain the current list.
+     */
+    void registerAllAccountObserver(DataSetObserver observer);
+
+    /**
+     * Removes a listener from receiving account list changes.
+     */
+    void unregisterAllAccountObserver(DataSetObserver observer);
+
+    /** Returns a list of all accounts currently known. */
+    Account[] getAllAccounts();
+
     /**
      * Returns an object that can check veiled addresses.
      * @return
      */
     VeiledAddressMatcher getVeiledAddressMatcher();
+
+    /**
+     * Handles selecting an account from within the {@link FolderListFragment}.
+     *
+     * @param account the account to change to.
+     */
+    void changeAccount(Account account);
+
 }

@@ -114,4 +114,5 @@
     <!-- Whether to show the priority indicator inline with the senders in conversation list view -->
     <bool name="inline_personal_level">true</bool>
 
+    <integer name="swipe_senders_length">25</integer>
 </resources>

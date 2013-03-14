@@ -29,8 +29,6 @@
         android:id="@+id/account_spinner"
         android:layout_height="match_parent"
         style="@style/AccountSwitchSpinnerItem"
-        android:focusableInTouchMode="false"
-        android:focusable="false"
         android:clickable="true"/>
 
     <include layout="@layout/actionbar_subject" />

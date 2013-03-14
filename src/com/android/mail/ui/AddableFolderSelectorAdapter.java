@@ -43,6 +43,8 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
                 if (type == UIProvider.FolderType.INBOX || type == UIProvider.FolderType.DEFAULT) {
                     folder[UIProvider.FOLDER_ID_COLUMN] = folderCursor
                             .getLong(UIProvider.FOLDER_ID_COLUMN);
+                    folder[UIProvider.FOLDER_PERSISTENT_ID_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_PERSISTENT_ID_COLUMN);
                     folder[UIProvider.FOLDER_URI_COLUMN] = folderCursor
                             .getString(UIProvider.FOLDER_URI_COLUMN);
                     folder[UIProvider.FOLDER_NAME_COLUMN] = folderCursor
@@ -57,6 +59,8 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
                             .getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN);
                     folder[UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN] = folderCursor
                             .getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN);
+                    folder[UIProvider.FOLDER_UNSEEN_COUNT_COLUMN] = folderCursor
+                            .getInt(UIProvider.FOLDER_UNSEEN_COUNT_COLUMN);
                     folder[UIProvider.FOLDER_UNREAD_COUNT_COLUMN] = folderCursor
                             .getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
                     folder[UIProvider.FOLDER_TOTAL_COUNT_COLUMN] = folderCursor
@@ -69,7 +73,9 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
                             .getInt(UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN);
                     folder[UIProvider.FOLDER_TYPE_COLUMN] = type;
                     folder[UIProvider.FOLDER_ICON_RES_ID_COLUMN] = folderCursor
-                            .getLong(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
+                            .getInt(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
+                    folder[UIProvider.FOLDER_NOTIFICATION_ICON_RES_ID_COLUMN] = folderCursor
+                            .getInt(UIProvider.FOLDER_NOTIFICATION_ICON_RES_ID_COLUMN);
                     folder[UIProvider.FOLDER_BG_COLOR_COLUMN] = folderCursor
                             .getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
                     folder[UIProvider.FOLDER_FG_COLOR_COLUMN] = folderCursor

@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -96,6 +97,10 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#READ
      */
     public boolean read;
+    /**
+     * @see UIProvider.ConversationColumns#SEEN
+     */
+    public boolean seen;
     /**
      * @see UIProvider.ConversationColumns#STARRED
      */
@@ -190,6 +195,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(sendingState);
         dest.writeInt(priority);
         dest.writeInt(read ? 1 : 0);
+        dest.writeInt(seen ? 1 : 0);
         dest.writeInt(starred ? 1 : 0);
         dest.writeParcelable(rawFolders, 0);
         dest.writeInt(convFlags);
@@ -218,6 +224,7 @@ public class Conversation implements Parcelable {
         sendingState = in.readInt();
         priority = in.readInt();
         read = (in.readInt() != 0);
+        seen = (in.readInt() != 0);
         starred = (in.readInt() != 0);
         rawFolders = in.readParcelable(loader);
         convFlags = in.readInt();
@@ -290,6 +297,7 @@ public class Conversation implements Parcelable {
             sendingState = cursor.getInt(UIProvider.CONVERSATION_SENDING_STATE_COLUMN);
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) != 0;
+            seen = cursor.getInt(UIProvider.CONVERSATION_SEEN_COLUMN) != 0;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) != 0;
             rawFolders = FolderList.fromBlob(
                     cursor.getBlob(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN));
@@ -319,15 +327,52 @@ public class Conversation implements Parcelable {
         }
     }
 
+    public Conversation(Conversation other) {
+        if (other == null) {
+            return;
+        }
+
+        id = other.id;
+        uri = other.uri;
+        dateMs = other.dateMs;
+        subject = other.subject;
+        hasAttachments = other.hasAttachments;
+        messageListUri = other.messageListUri;
+        sendingState = other.sendingState;
+        priority = other.priority;
+        read = other.read;
+        seen = other.seen;
+        starred = other.starred;
+        rawFolders = other.rawFolders; // FolderList is immutable, shallow copy is OK
+        convFlags = other.convFlags;
+        personalLevel = other.personalLevel;
+        spam = other.spam;
+        phishing = other.phishing;
+        muted = other.muted;
+        color = other.color;
+        accountUri = other.accountUri;
+        position = other.position;
+        localDeleteOnUpdate = other.localDeleteOnUpdate;
+        // although ConversationInfo is mutable (see ConversationInfo.markRead), applyCachedValues
+        // will overwrite this if cached changes exist anyway, so a shallow copy is OK
+        conversationInfo = other.conversationInfo;
+        conversationBaseUri = other.conversationBaseUri;
+        snippet = other.snippet;
+        senders = other.senders;
+        numMessages = other.numMessages;
+        numDrafts = other.numDrafts;
+        isRemote = other.isRemote;
+    }
+
     public Conversation() {
     }
 
     public static Conversation create(long id, Uri uri, String subject, long dateMs,
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
-            boolean starred, FolderList rawFolders, int convFlags, int personalLevel, boolean spam,
-            boolean phishing, boolean muted, Uri accountUri, ConversationInfo conversationInfo,
-            Uri conversationBase, boolean isRemote) {
+            boolean seen, boolean starred, FolderList rawFolders, int convFlags, int personalLevel,
+            boolean spam, boolean phishing, boolean muted, Uri accountUri,
+            ConversationInfo conversationInfo, Uri conversationBase, boolean isRemote) {
 
         final Conversation conversation = new Conversation();
 
@@ -344,6 +389,7 @@ public class Conversation implements Parcelable {
         conversation.sendingState = sendingState;
         conversation.priority = priority;
         conversation.read = read;
+        conversation.seen = seen;
         conversation.starred = starred;
         conversation.rawFolders = rawFolders;
         conversation.convFlags = convFlags;
@@ -357,6 +403,40 @@ public class Conversation implements Parcelable {
         conversation.conversationBaseUri = conversationBase;
         conversation.isRemote = isRemote;
         return conversation;
+    }
+
+    /**
+     * Apply any column values from the given {@link ContentValues} (where column names are the
+     * keys) to this conversation.
+     *
+     */
+    public void applyCachedValues(ContentValues values) {
+        if (values == null) {
+            return;
+        }
+        for (String key : values.keySet()) {
+            final Object val = values.get(key);
+            LogUtils.i(LOG_TAG, "Conversation: applying cached value to col=%s val=%s", key,
+                    val);
+            if (ConversationColumns.READ.equals(key)) {
+                read = (Integer) val != 0;
+            } else if (ConversationColumns.CONVERSATION_INFO.equals(key)) {
+                conversationInfo = ConversationInfo.fromBlob((byte[]) val);
+            } else if (ConversationColumns.FLAGS.equals(key)) {
+                convFlags = (Integer) val;
+            } else if (ConversationColumns.STARRED.equals(key)) {
+                starred = (Integer) val != 0;
+            } else if (ConversationColumns.SEEN.equals(key)) {
+                seen = (Integer) val != 0;
+            } else if (ConversationColumns.RAW_FOLDERS.equals(key)) {
+                rawFolders = FolderList.fromBlob((byte[]) val);
+            } else if (ConversationColumns.VIEWED.equals(key)) {
+                // ignore. this is not read from the cursor, either.
+            } else {
+                LogUtils.e(LOG_TAG, new UnsupportedOperationException(),
+                        "unsupported cached conv value in col=%s", key);
+            }
+        }
     }
 
     /**
@@ -378,12 +458,12 @@ public class Conversation implements Parcelable {
         cachedDisplayableFolders = null;
     }
 
-    public ArrayList<Folder> getRawFoldersForDisplay(Folder ignoreFolder) {
+    public ArrayList<Folder> getRawFoldersForDisplay(final Uri ignoreFolderUri) {
         if (cachedDisplayableFolders == null) {
             cachedDisplayableFolders = new ArrayList<Folder>();
             for (Folder folder : rawFolders.folders) {
                 // skip the ignoreFolder
-                if (ignoreFolder != null && ignoreFolder.equals(folder)) {
+                if (ignoreFolderUri != null && ignoreFolderUri.equals(folder.uri)) {
                     continue;
                 }
                 cachedDisplayableFolders.add(folder);
@@ -480,7 +560,7 @@ public class Conversation implements Parcelable {
         }
     }
 
-    private String getSendersDelimeter(Context context) {
+    private static String getSendersDelimeter(Context context) {
         if (sSendersDelimeter == null) {
             sSendersDelimeter = context.getResources().getString(R.string.senders_split_token);
         }
@@ -550,8 +630,14 @@ public class Conversation implements Parcelable {
         if (sSubjectAndSnippet == null) {
             sSubjectAndSnippet = context.getString(R.string.subject_and_snippet);
         }
-        return (!TextUtils.isEmpty(snippet)) ?
-                String.format(sSubjectAndSnippet, filteredSubject, snippet)
-                : filteredSubject;
+        if (TextUtils.isEmpty(filteredSubject) && TextUtils.isEmpty(snippet)) {
+            return "";
+        } else if (TextUtils.isEmpty(filteredSubject)) {
+            return snippet;
+        } else if (TextUtils.isEmpty(snippet)) {
+            return filteredSubject;
+        }
+
+        return String.format(sSubjectAndSnippet, filteredSubject, snippet);
     }
 }

@@ -386,8 +386,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         final WebChromeClient wcc = new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                LogUtils.i(LOG_TAG, "JS: %s (%s:%d)", consoleMessage.message(),
-                        consoleMessage.sourceId(), consoleMessage.lineNumber());
+                LogUtils.i(LOG_TAG, "JS: %s (%s:%d) f=%s", consoleMessage.message(),
+                        consoleMessage.sourceId(), consoleMessage.lineNumber(),
+                        ConversationViewFragment.this);
                 return true;
             }
         };
@@ -589,6 +590,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             LogUtils.i(LOG_TAG,
                     "SHOWCONV: CVF is user-visible, immediately loading conversation (%s)", this);
             reason = LOAD_NOW;
+            timerMark("CVF.showConversation");
         } else {
             final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
                     || (mConversation.isRemote
@@ -625,12 +627,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private void startConversationLoad() {
         mWebView.setVisibility(View.VISIBLE);
         getLoaderManager().initLoader(MESSAGE_LOADER, Bundle.EMPTY, getMessageLoaderCallbacks());
-        if (isUserVisible()) {
-            final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
-            if (sdc != null) {
-                sdc.setSubject(mConversation.subject);
-            }
-        }
         // TODO(mindyp): don't show loading status for a previously rendered
         // conversation. Ielieve this is better done by making sure don't show loading status
         // until XX ms have passed without loading completed.
@@ -638,6 +634,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     private void revealConversation() {
+        timerMark("revealing conversation");
         dismissLoadingStatus(mOnProgressDismiss);
     }
 
@@ -647,6 +644,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private void renderConversation(MessageCursor messageCursor) {
         final String convHtml = renderMessageBodies(messageCursor, mEnableContentReadySignal);
+        timerMark("rendered conversation");
 
         if (DEBUG_DUMP_CONVERSATION_HTML) {
             java.io.FileWriter fw = null;
@@ -789,7 +787,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
-                mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount));
+                mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount),
+                MailPrefs.get(getContext()).shouldMungeTables());
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
@@ -814,6 +813,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         mTemplates.appendMessageHtml(msg, expanded, safeForImages,
                 mWebView.screenPxToWebPx(headerPx), mWebView.screenPxToWebPx(footerPx));
+        timerMark("rendered message");
     }
 
     private String renderCollapsedHeaders(MessageCursor cursor,
@@ -1341,6 +1341,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
         } else {
             LogUtils.i(LOG_TAG, "CONV RENDER: initial render. (%s)", this);
+            timerMark("message cursor load finished");
         }
 
         // if layout hasn't happened, delay render
@@ -1647,7 +1648,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             mTemplates.appendMessageHtml(msgItem.getMessage(), true /* expanded */,
                     safeForImages, 0, 0);
             final String html = mTemplates.endConversation(mBaseUri,
-                    mConversation.getBaseUri(mBaseUri), 0, 0, false, false);
+                    mConversation.getBaseUri(mBaseUri), 0, 0, false, false, false);
 
             mMessageView.loadDataWithBaseURL(mBaseUri, html, "text/html", "utf-8", null);
             mMessageViewLoadStartMs = SystemClock.uptimeMillis();
