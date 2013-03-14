@@ -1335,7 +1335,7 @@ public class UIProvider {
     public static final int MESSAGE_BODY_HTML_COLUMN = 12;
     public static final int MESSAGE_BODY_TEXT_COLUMN = 13;
     public static final int MESSAGE_EMBEDS_EXTERNAL_RESOURCES_COLUMN = 14;
-    public static final int MESSAGE_REF_MESSAGE_ID_COLUMN = 15;
+    public static final int MESSAGE_REF_MESSAGE_URI_COLUMN = 15;
     public static final int MESSAGE_DRAFT_TYPE_COLUMN = 16;
     public static final int MESSAGE_APPEND_REF_MESSAGE_CONTENT_COLUMN = 17;
     public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 18;
