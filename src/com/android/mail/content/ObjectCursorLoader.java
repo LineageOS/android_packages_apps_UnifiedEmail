@@ -145,11 +145,10 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
     }
 
     @Override
-    public boolean cancelLoad() {
-        if (mCursor != null && !mCursor.isClosed()) {
-            mCursor.close();
+    public void onCanceled(ObjectCursor<T> cursor) {
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
         }
-        return super.cancelLoad();
     }
 
     @Override
