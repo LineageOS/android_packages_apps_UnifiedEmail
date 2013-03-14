@@ -72,6 +72,7 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String ENABLE_CONVLIST_PHOTOS = "enable-convlist-photos";
         public static final String ENABLE_WHOOSH_ZOOM = "enable-whoosh-zoom";
         public static final String ENABLE_MUNGE_TABLES = "enable-munge-tables";
+        public static final String ENABLE_MUNGE_IMAGES = "enable-munge-images";
         public static final String ENABLE_SECTIONED_INBOX_EXPERIMENT = "enable-sectioned-inbox";
 
     }
@@ -174,6 +175,13 @@ public final class MailPrefs extends VersionedPrefs {
         // If experimental preferences are not enabled, return false.
         return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
                 PreferenceKeys.ENABLE_MUNGE_TABLES, true);
+    }
+
+    @SuppressWarnings("unused")
+    public boolean shouldMungeImages() {
+        // If experimental preferences are not enabled, return false.
+        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
+                PreferenceKeys.ENABLE_MUNGE_IMAGES, true);
     }
 
     private static String createWidgetPreferenceValue(Account account, String folderUri) {

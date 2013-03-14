@@ -785,10 +785,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
+        final MailPrefs prefs = MailPrefs.get(getContext());
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
                 mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount),
-                MailPrefs.get(getContext()).shouldMungeTables());
+                prefs.shouldMungeTables(), prefs.shouldMungeImages());
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
@@ -1648,7 +1649,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             mTemplates.appendMessageHtml(msgItem.getMessage(), true /* expanded */,
                     safeForImages, 0, 0);
             final String html = mTemplates.endConversation(mBaseUri,
-                    mConversation.getBaseUri(mBaseUri), 0, 0, false, false, false);
+                    mConversation.getBaseUri(mBaseUri), 0, 0, false, false, false, false);
 
             mMessageView.loadDataWithBaseURL(mBaseUri, html, "text/html", "utf-8", null);
             mMessageViewLoadStartMs = SystemClock.uptimeMillis();
