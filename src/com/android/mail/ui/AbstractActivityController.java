@@ -1835,8 +1835,7 @@ public abstract class AbstractActivityController implements ActivityController {
             Utils.sConvLoadTimer.start();
         }
 
-        MailLogService.log("AbstractActivityController", "showConversation(" + conversation + " )"
-                + "");
+        MailLogService.log("AbstractActivityController", "showConversation(%s)", conversation);
         // Set the current conversation just in case it wasn't already set.
         setCurrentConversation(conversation);
         // Add the folder that we were viewing to the recent folders list.
