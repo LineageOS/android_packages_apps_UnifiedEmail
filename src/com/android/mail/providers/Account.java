@@ -18,12 +18,16 @@ package com.android.mail.providers;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.android.mail.content.CursorCreator;
+import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.SyncStatus;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -35,7 +39,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Account extends android.accounts.Account implements Parcelable {
     private static final String SETTINGS_KEY = "settings";
@@ -75,23 +81,6 @@ public class Account extends android.accounts.Account implements Parcelable {
      * The custom from addresses for this account or null if there are none.
      */
     public String accountFromAddresses;
-
-    /**
-     * The content provider uri that can be used to save (insert) new draft
-     * messages for this account. NOTE: This might be better to be an update
-     * operation on the messageUri.
-     */
-    @Deprecated
-    public final Uri saveDraftUri;
-
-    /**
-     * The content provider uri that can be used to send a message for this
-     * account.
-     * NOTE: This might be better to be an update operation on the
-     * messageUri.
-     */
-    @Deprecated
-    public final Uri sendMessageUri;
 
     /**
      * The content provider uri that can be used to expunge message from this
@@ -205,8 +194,6 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
             json.put(UIProvider.AccountColumns.SEARCH_URI, searchUri);
             json.put(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
-            json.put(UIProvider.AccountColumns.SAVE_DRAFT_URI, saveDraftUri);
-            json.put(UIProvider.AccountColumns.SEND_MAIL_URI, sendMessageUri);
             json.put(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
             json.put(UIProvider.AccountColumns.UNDO_URI, undoUri);
             json.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
@@ -287,8 +274,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         searchUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SEARCH_URI));
         accountFromAddresses = json.optString(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES,
                 "");
-        saveDraftUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SAVE_DRAFT_URI));
-        sendMessageUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SEND_MAIL_URI));
         expungeMessageUri = Utils.getValidUri(json
                 .optString(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI));
         undoUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.UNDO_URI));
@@ -336,8 +321,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         fullFolderListUri = in.readParcelable(null);
         searchUri = in.readParcelable(null);
         accountFromAddresses = in.readString();
-        saveDraftUri = in.readParcelable(null);
-        sendMessageUri = in.readParcelable(null);
         expungeMessageUri = in.readParcelable(null);
         undoUri = in.readParcelable(null);
         settingsIntentUri = in.readParcelable(null);
@@ -365,47 +348,56 @@ public class Account extends android.accounts.Account implements Parcelable {
     }
 
     public Account(Cursor cursor) {
-        super(cursor.getString(UIProvider.ACCOUNT_NAME_COLUMN), "unknown");
-        accountFromAddresses = cursor.getString(UIProvider.ACCOUNT_FROM_ADDRESSES_COLUMN);
-        capabilities = cursor.getInt(UIProvider.ACCOUNT_CAPABILITIES_COLUMN);
-        providerVersion = cursor.getInt(UIProvider.ACCOUNT_PROVIDER_VERISON_COLUMN);
-        uri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_URI_COLUMN));
-        folderListUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_FOLDER_LIST_URI_COLUMN));
-        fullFolderListUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_FULL_FOLDER_LIST_URI_COLUMN));
-        searchUri = Utils.getValidUri(cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN));
-        saveDraftUri = Utils
-                .getValidUri(cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN));
-        sendMessageUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN));
-        expungeMessageUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN));
-        undoUri = Utils.getValidUri(cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN));
-        settingsIntentUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN));
-        helpIntentUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN));
-        sendFeedbackIntentUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN));
-        reauthenticationIntentUri = Utils.getValidUri(
-                cursor.getString(UIProvider.ACCOUNT_REAUTHENTICATION_INTENT_URI_COLUMN));
-        syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
-        composeIntentUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN));
-        mimeType = cursor.getString(UIProvider.ACCOUNT_MIME_TYPE_COLUMN);
-        recentFolderListUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN));
-        color = cursor.getInt(UIProvider.ACCOUNT_COLOR_COLUMN);
-        defaultRecentFolderListUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN));
-        manualSyncUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_MANUAL_SYNC_URI_COLUMN));
-        viewIntentProxyUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN));
-        accoutCookieQueryUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_COOKIE_QUERY_URI_COLUMN));
-        updateSettingsUri = Utils.getValidUri(cursor
-                .getString(UIProvider.ACCOUNT_UPDATE_SETTINGS_URI_COLUMN));
+        super(cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.NAME)), "unknown");
+        accountFromAddresses = cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES));
+
+        final int capabilitiesColumnIndex =
+                cursor.getColumnIndex(UIProvider.AccountColumns.CAPABILITIES);
+        if (capabilitiesColumnIndex != -1) {
+            capabilities = cursor.getInt(capabilitiesColumnIndex);
+        } else {
+            capabilities = 0;
+        }
+
+        providerVersion =
+                cursor.getInt(cursor.getColumnIndex(UIProvider.AccountColumns.PROVIDER_VERSION));
+        uri = Uri.parse(cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.URI)));
+        folderListUri = Uri.parse(
+                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.FOLDER_LIST_URI)));
+        fullFolderListUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI)));
+        searchUri = Utils.getValidUri(
+                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.SEARCH_URI)));
+        expungeMessageUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI)));
+        undoUri = Utils.getValidUri(
+                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.UNDO_URI)));
+        settingsIntentUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SETTINGS_INTENT_URI)));
+        helpIntentUri = Utils.getValidUri(
+                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.HELP_INTENT_URI)));
+        sendFeedbackIntentUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI)));
+        reauthenticationIntentUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.REAUTHENTICATION_INTENT_URI)));
+        syncStatus = cursor.getInt(cursor.getColumnIndex(UIProvider.AccountColumns.SYNC_STATUS));
+        composeIntentUri = Utils.getValidUri(
+                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.COMPOSE_URI)));
+        mimeType = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.MIME_TYPE));
+        recentFolderListUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI)));
+        color = cursor.getInt(cursor.getColumnIndex(UIProvider.AccountColumns.COLOR));
+        defaultRecentFolderListUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI)));
+        manualSyncUri = Utils.getValidUri(
+                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.MANUAL_SYNC_URI)));
+        viewIntentProxyUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI)));
+        accoutCookieQueryUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI)));
+        updateSettingsUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.UPDATE_SETTINGS_URI)));
         settings = new Settings(cursor);
     }
 
@@ -415,7 +407,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      * @param cursor cursor pointing to the list of accounts
      * @return the array of all accounts stored at this cursor.
      */
-    public static Account[] getAllAccounts(Cursor cursor) {
+    public static Account[] getAllAccounts(ObjectCursor<Account> cursor) {
         final int initialLength = cursor.getCount();
         if (initialLength <= 0 || !cursor.moveToFirst()) {
             // Return zero length account array rather than null
@@ -425,7 +417,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         final Account[] allAccounts = new Account[initialLength];
         int i = 0;
         do {
-            allAccounts[i++] = new Account(cursor);
+            allAccounts[i++] = cursor.getModel();
         } while (cursor.moveToNext());
         // Ensure that the length of the array is accurate
         assert (i == initialLength);
@@ -463,8 +455,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(fullFolderListUri, 0);
         dest.writeParcelable(searchUri, 0);
         dest.writeString(accountFromAddresses);
-        dest.writeParcelable(saveDraftUri, 0);
-        dest.writeParcelable(sendMessageUri, 0);
         dest.writeParcelable(expungeMessageUri, 0);
         dest.writeParcelable(undoUri, 0);
         dest.writeParcelable(settingsIntentUri, 0);
@@ -508,9 +498,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(",searchUri=");
         sb.append(searchUri);
         sb.append(",saveDraftUri=");
-        sb.append(saveDraftUri);
-        sb.append(",sendMessageUri=");
-        sb.append(sendMessageUri);
         sb.append(",expungeMessageUri=");
         sb.append(expungeMessageUri);
         sb.append(",undoUri=");
@@ -559,8 +546,6 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(fullFolderListUri, other.fullFolderListUri) &&
                 Objects.equal(searchUri, other.searchUri) &&
                 Objects.equal(accountFromAddresses, other.accountFromAddresses) &&
-                Objects.equal(saveDraftUri, other.saveDraftUri) &&
-                Objects.equal(sendMessageUri, other.sendMessageUri) &&
                 Objects.equal(expungeMessageUri, other.expungeMessageUri) &&
                 Objects.equal(undoUri, other.undoUri) &&
                 Objects.equal(settingsIntentUri, other.settingsIntentUri) &&
@@ -601,12 +586,11 @@ public class Account extends android.accounts.Account implements Parcelable {
     public int hashCode() {
         return super.hashCode()
                 ^ Objects.hashCode(name, type, capabilities, providerVersion, uri, folderListUri,
-                        fullFolderListUri, searchUri, accountFromAddresses, saveDraftUri,
-                        sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri,
-                        helpIntentUri, sendFeedbackIntentUri, reauthenticationIntentUri, syncStatus,
-                        composeIntentUri, mimeType, recentFolderListUri, color,
-                        defaultRecentFolderListUri, viewIntentProxyUri, accoutCookieQueryUri,
-                        updateSettingsUri);
+                        fullFolderListUri, searchUri, accountFromAddresses, expungeMessageUri,
+                        undoUri, settingsIntentUri, helpIntentUri, sendFeedbackIntentUri,
+                        reauthenticationIntentUri, syncStatus, composeIntentUri, mimeType,
+                        recentFolderListUri, color, defaultRecentFolderListUri, viewIntentProxyUri,
+                        accoutCookieQueryUri, updateSettingsUri);
     }
 
     /**
@@ -699,4 +683,83 @@ public class Account extends android.accounts.Account implements Parcelable {
         }
         return -1;
     }
+
+    /**
+     * Creates a {@link Map} where the column name is the key and the value is the value, which can
+     * be used for populating a {@link MatrixCursor}.
+     */
+    public Map<String, Object> getMatrixCursorValueMap() {
+        // ImmutableMap.Builder does not allow null values
+        final Map<String, Object> map = new HashMap<String, Object>();
+
+        map.put(UIProvider.AccountColumns._ID, 0);
+        map.put(UIProvider.AccountColumns.NAME, name);
+        map.put(UIProvider.AccountColumns.TYPE, type);
+        map.put(UIProvider.AccountColumns.PROVIDER_VERSION, providerVersion);
+        map.put(UIProvider.AccountColumns.URI, uri);
+        map.put(UIProvider.AccountColumns.CAPABILITIES, capabilities);
+        map.put(UIProvider.AccountColumns.FOLDER_LIST_URI, folderListUri);
+        map.put(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
+        map.put(UIProvider.AccountColumns.SEARCH_URI, searchUri);
+        map.put(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
+        map.put(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
+        map.put(UIProvider.AccountColumns.UNDO_URI, undoUri);
+        map.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
+        map.put(UIProvider.AccountColumns.HELP_INTENT_URI, helpIntentUri);
+        map.put(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI, sendFeedbackIntentUri);
+        map.put(
+                UIProvider.AccountColumns.REAUTHENTICATION_INTENT_URI, reauthenticationIntentUri);
+        map.put(UIProvider.AccountColumns.SYNC_STATUS, syncStatus);
+        map.put(UIProvider.AccountColumns.COMPOSE_URI, composeIntentUri);
+        map.put(UIProvider.AccountColumns.MIME_TYPE, mimeType);
+        map.put(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI, recentFolderListUri);
+        map.put(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
+                defaultRecentFolderListUri);
+        map.put(UIProvider.AccountColumns.MANUAL_SYNC_URI, manualSyncUri);
+        map.put(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI, viewIntentProxyUri);
+        map.put(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
+        map.put(UIProvider.AccountColumns.COLOR, color);
+        map.put(UIProvider.AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
+        map.put(AccountColumns.SettingsColumns.SIGNATURE, settings.signature);
+        map.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, settings.getAutoAdvanceSetting());
+        map.put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, settings.messageTextSize);
+        map.put(AccountColumns.SettingsColumns.SNAP_HEADERS, settings.snapHeaders);
+        map.put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, settings.replyBehavior);
+        map.put(
+                AccountColumns.SettingsColumns.HIDE_CHECKBOXES, settings.hideCheckboxes ? 1 : 0);
+        map.put(AccountColumns.SettingsColumns.CONFIRM_DELETE, settings.confirmDelete ? 1 : 0);
+        map.put(
+                AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, settings.confirmArchive ? 1 : 0);
+        map.put(AccountColumns.SettingsColumns.CONFIRM_SEND, settings.confirmSend ? 1 : 0);
+        map.put(AccountColumns.SettingsColumns.DEFAULT_INBOX, settings.defaultInbox);
+        map.put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, settings.defaultInboxName);
+        map.put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
+                settings.forceReplyFromDefault ? 1 : 0);
+        map.put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE, settings.maxAttachmentSize);
+        map.put(AccountColumns.SettingsColumns.SWIPE, settings.swipe);
+        map.put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
+                settings.priorityArrowsEnabled ? 1 : 0);
+        map.put(AccountColumns.SettingsColumns.SETUP_INTENT_URI, settings.setupIntentUri);
+        map.put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
+                settings.conversationViewMode);
+        map.put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN,
+                settings.veiledAddressPattern);
+
+        return map;
+    }
+
+    /**
+     * Public object that knows how to construct Accounts given Cursors.
+     */
+    public final static CursorCreator<Account> FACTORY = new CursorCreator<Account>() {
+        @Override
+        public Account createFromCursor(Cursor c) {
+            return new Account(c);
+        }
+
+        @Override
+        public String toString() {
+            return "Account CursorCreator";
+        }
+    };
 }

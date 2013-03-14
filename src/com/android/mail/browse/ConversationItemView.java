@@ -37,6 +37,7 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -213,8 +214,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         @Override
-        public void loadConversationFolders(Conversation conv, Folder ignoreFolder) {
-            super.loadConversationFolders(conv, ignoreFolder);
+        public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri) {
+            super.loadConversationFolders(conv, ignoreFolderUri);
 
             mFoldersCount = mFoldersSortedSet.size();
             mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
@@ -569,7 +570,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             } else {
                 mHeader.folderDisplayer.reset();
             }
-            mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation, mDisplayedFolder);
+            mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation,
+                    mDisplayedFolder.uri);
         }
 
         if (mSelectedConversationSet != null) {
@@ -587,7 +589,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mHeader.conversation.conversationInfo != null) {
             Context context = getContext();
             mHeader.messageInfoString = SendersView
-                    .createMessageInfo(context, mHeader.conversation);
+                    .createMessageInfo(context, mHeader.conversation, true);
             int maxChars = ConversationItemViewCoordinates.getSendersLength(context,
                     ConversationItemViewCoordinates.getMode(context, mActivity.getViewMode()),
                     mHeader.conversation.hasAttachments);
@@ -596,11 +598,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mHeader.styledSenders = new ArrayList<SpannableString>();
             SendersView.format(context, mHeader.conversation.conversationInfo,
                     mHeader.messageInfoString.toString(), maxChars, mHeader.styledSenders,
-                    mHeader.displayableSenderNames, mHeader.displayableSenderEmails, mAccount);
+                    mHeader.displayableSenderNames, mHeader.displayableSenderEmails, mAccount,
+                    true);
             // If we have displayable sendres, load their thumbnails
             loadSenderImages();
         } else {
-            SendersView.formatSenders(mHeader, getContext());
+            SendersView.formatSenders(mHeader, getContext(), true);
         }
 
         mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,

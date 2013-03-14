@@ -35,11 +35,6 @@
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
-    <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
-    <item android:id="@+id/folder_options"
-        android:title="@string/menu_folder_options"
-        android:showAsAction="never"  />
-
     <item android:id="@+id/settings"
         android:title="@string/menu_settings"
         android:showAsAction="never" />

@@ -111,6 +111,7 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
         mErrorStatus = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
                 extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
                 : UIProvider.LastSyncResult.SUCCESS;
+        final int totalCount = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_TOTAL_COUNT);
         if (UIProvider.CursorStatus.isWaitingForResults(cursorStatus)) {
             mLoading.setVisibility(View.VISIBLE);
             mNetworkError.setVisibility(View.GONE);
@@ -151,7 +152,7 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
             }
             mErrorActionButton.setText(actionTextResourceId);
 
-        } else if (mLoadMoreUri != null) {
+        } else if (mLoadMoreUri != null && cursor.getCount() < totalCount) {
             mLoading.setVisibility(View.GONE);
             mNetworkError.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.VISIBLE);

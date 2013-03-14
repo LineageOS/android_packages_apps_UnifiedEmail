@@ -27,18 +27,18 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.Loader.OnLoadCompleteListener;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.android.mail.R;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
-import com.android.mail.providers.protos.boot.AccountReceiver;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MatrixCursorWithExtra;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -86,7 +86,6 @@ public abstract class MailAppProvider extends ContentProvider
     private ContentResolver mResolver;
     private static String sAuthority;
     private static MailAppProvider sInstance;
-    private final static Set<Uri> PENDING_ACCOUNT_URIS = Sets.newHashSet();
 
     private volatile boolean mAccountsFullyLoaded = false;
 
@@ -141,24 +140,19 @@ public abstract class MailAppProvider extends ContentProvider
     @Override
     public boolean onCreate() {
         sAuthority = getAuthority();
+        sInstance = this;
         mResolver = getContext().getContentResolver();
-
-        final Intent intent = new Intent(AccountReceiver.ACTION_PROVIDER_CREATED);
-        getContext().sendBroadcast(intent);
 
         // Load the previously saved account list
         loadCachedAccountList();
 
-        synchronized (PENDING_ACCOUNT_URIS) {
-            sInstance = this;
+        final Resources res = getContext().getResources();
+        // Load the uris for the account list
+        final String[] accountQueryUris = res.getStringArray(R.array.account_providers);
 
-            // Handle the case where addAccountsForUriAsync was called before
-            // this Provider instance was created
-            final Set<Uri> urisToQery = ImmutableSet.copyOf(PENDING_ACCOUNT_URIS);
-            PENDING_ACCOUNT_URIS.clear();
-            for (Uri accountQueryUri : urisToQery) {
-                addAccountsForUriAsync(accountQueryUri);
-            }
+        for (String accountQueryUri : accountQueryUris) {
+            final Uri uri = Uri.parse(accountQueryUri);
+            addAccountsForUriAsync(uri);
         }
 
         return true;
@@ -166,9 +160,7 @@ public abstract class MailAppProvider extends ContentProvider
 
     @Override
     public void shutdown() {
-        synchronized (PENDING_ACCOUNT_URIS) {
-            sInstance = null;
-        }
+        sInstance = null;
 
         for (CursorLoader loader : mCursorLoaderMap.values()) {
             loader.stopLoading();
@@ -199,149 +191,13 @@ public abstract class MailAppProvider extends ContentProvider
         for (AccountCacheEntry accountEntry : accountList) {
             final Account account = accountEntry.mAccount;
             final MatrixCursor.RowBuilder builder = cursor.newRow();
+            final Map<String, Object> accountValues = account.getMatrixCursorValueMap();
 
             for (final String columnName : resultProjection) {
-                final int column = UIProvider.getAccountColumn(columnName);
-                switch (column) {
-                    case UIProvider.ACCOUNT_ID_COLUMN:
-                        builder.add(Integer.valueOf(0));
-                        break;
-                    case UIProvider.ACCOUNT_NAME_COLUMN:
-                        builder.add(account.name);
-                        break;
-                    case UIProvider.ACCOUNT_PROVIDER_VERISON_COLUMN:
-                        // TODO fix this
-                        builder.add(Integer.valueOf(account.providerVersion));
-                        break;
-                    case UIProvider.ACCOUNT_URI_COLUMN:
-                        builder.add(account.uri);
-                        break;
-                    case UIProvider.ACCOUNT_CAPABILITIES_COLUMN:
-                        builder.add(Integer.valueOf(account.capabilities));
-                        break;
-                    case UIProvider.ACCOUNT_FOLDER_LIST_URI_COLUMN:
-                        builder.add(account.folderListUri);
-                        break;
-                    case UIProvider.ACCOUNT_FULL_FOLDER_LIST_URI_COLUMN:
-                        builder.add(account.fullFolderListUri);
-                        break;
-                    case UIProvider.ACCOUNT_SEARCH_URI_COLUMN:
-                        builder.add(account.searchUri);
-                        break;
-                    case UIProvider.ACCOUNT_FROM_ADDRESSES_COLUMN:
-                        builder.add(account.accountFromAddresses);
-                        break;
-                    case UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN:
-                        builder.add(account.saveDraftUri);
-                        break;
-                    case UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN:
-                        builder.add(account.sendMessageUri);
-                        break;
-                    case UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN:
-                        builder.add(account.expungeMessageUri);
-                        break;
-                    case UIProvider.ACCOUNT_UNDO_URI_COLUMN:
-                        builder.add(account.undoUri);
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN:
-                        builder.add(account.settingsIntentUri);
-                        break;
-                    case UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN:
-                        builder.add(account.helpIntentUri);
-                        break;
-                    case UIProvider.ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN:
-                        builder.add(account.sendFeedbackIntentUri);
-                        break;
-                    case UIProvider.ACCOUNT_REAUTHENTICATION_INTENT_URI_COLUMN:
-                        builder.add(account.reauthenticationIntentUri);
-                        break;
-                    case UIProvider.ACCOUNT_SYNC_STATUS_COLUMN:
-                        builder.add(Integer.valueOf(account.syncStatus));
-                        break;
-                    case UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN:
-                        builder.add(account.composeIntentUri);
-                        break;
-                    case UIProvider.ACCOUNT_MIME_TYPE_COLUMN:
-                        builder.add(account.mimeType);
-                        break;
-                    case UIProvider.ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN:
-                        builder.add(account.recentFolderListUri);
-                        break;
-                    case UIProvider.ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN:
-                        builder.add(account.defaultRecentFolderListUri);
-                        break;
-                    case UIProvider.ACCOUNT_MANUAL_SYNC_URI_COLUMN:
-                        builder.add(account.manualSyncUri);
-                        break;
-                    case UIProvider.ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN:
-                        builder.add(account.viewIntentProxyUri);
-                        break;
-                    case UIProvider.ACCOUNT_COOKIE_QUERY_URI_COLUMN:
-                        builder.add(account.accoutCookieQueryUri);
-                        break;
-                    case UIProvider.ACCOUNT_COLOR_COLUMN:
-                        builder.add(account.color);
-                        break;
-
-                    case UIProvider.ACCOUNT_SETTINGS_SIGNATURE_COLUMN:
-                        builder.add(account.settings.signature);
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.getAutoAdvanceSetting()));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.messageTextSize));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.replyBehavior));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.hideCheckboxes ? 1 : 0));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.confirmDelete ? 1 : 0));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.confirmArchive ? 1 : 0));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.confirmSend ? 1 : 0));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN:
-                        builder.add(account.settings.defaultInbox);
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN:
-                        builder.add(account.settings.defaultInboxName);
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.snapHeaders));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.forceReplyFromDefault ? 1 : 0));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN:
-                        builder.add(account.settings.maxAttachmentSize);
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_SWIPE_COLUMN:
-                        builder.add(account.settings.swipe);
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN:
-                        builder.add(Integer.valueOf(account.settings.priorityArrowsEnabled ? 1 : 0));
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_SETUP_INTENT_URI:
-                        builder.add(account.settings.setupIntentUri);
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN:
-                        builder.add(account.settings.conversationViewMode);
-                        break;
-                    case UIProvider.ACCOUNT_SETTINGS_VEILED_ADDRESS_PATTERN_COLUMN:
-                        builder.add(account.settings.veiledAddressPattern);
-                        break;
-                    case UIProvider.ACCOUNT_UPDATE_SETTINGS_URI_COLUMN:
-                        builder.add(account.updateSettingsUri);
-                        break;
-                    default:
-                        throw new IllegalStateException("Column not found: " + columnName);
+                if (accountValues.containsKey(columnName)) {
+                    builder.add(accountValues.get(columnName));
+                } else {
+                    throw new IllegalStateException("Unexpected column: " + columnName);
                 }
             }
         }
@@ -379,15 +235,8 @@ public abstract class MailAppProvider extends ContentProvider
      * @param resolver
      * @param accountsQueryUri
      */
-    public static void addAccountsForUriAsync(Uri accountsQueryUri) {
-        synchronized (PENDING_ACCOUNT_URIS) {
-            final MailAppProvider instance = getInstance();
-            if (instance != null) {
-                instance.startAccountsLoader(accountsQueryUri);
-            } else {
-                PENDING_ACCOUNT_URIS.add(accountsQueryUri);
-            }
-        }
+    private void addAccountsForUriAsync(Uri accountsQueryUri) {
+        startAccountsLoader(accountsQueryUri);
     }
 
     /**

@@ -216,8 +216,13 @@ public class MessageCursor extends CursorWrapper {
         return mStatus;
     }
 
+    /**
+     * Returns true if the cursor is fully loaded. Returns false if the cursor is expected to get
+     * new messages.
+     * @return
+     */
     public boolean isLoaded() {
-        return getStatus() >= CursorStatus.LOADED || getCount() > 0; // FIXME: remove count hack
+        return !CursorStatus.isWaitingForResults(getStatus());
     }
 
     public String getDebugDump() {

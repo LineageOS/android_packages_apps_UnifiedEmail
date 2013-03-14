@@ -41,29 +41,22 @@ public final class TwoPaneController extends AbstractActivityController {
     private TwoPaneLayout mLayout;
     private Conversation mConversationToShow;
 
-    /**
-     * @param activity
-     * @param viewMode
-     */
     public TwoPaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
     }
 
     /**
      * Display the conversation list fragment.
-     * @param show
      */
-    private void initializeConversationListFragment(boolean show) {
-        if (show) {
-            if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
-                if (shouldEnterSearchConvMode()) {
-                    mViewMode.enterSearchResultsConversationMode();
-                } else {
-                    mViewMode.enterSearchResultsListMode();
-                }
+    private void initializeConversationListFragment() {
+        if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
+            if (shouldEnterSearchConvMode()) {
+                mViewMode.enterSearchResultsConversationMode();
             } else {
-                mViewMode.enterConversationListMode();
+                mViewMode.enterSearchResultsListMode();
             }
+        } else {
+            mViewMode.enterConversationListMode();
         }
         renderConversationList();
     }
@@ -134,11 +127,11 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public void showConversationList(ConversationListContext listContext) {
         super.showConversationList(listContext);
-        initializeConversationListFragment(true);
+        initializeConversationListFragment();
     }
 
     @Override
-    public void showFolderList() {
+    public void loadFolderList() {
         // On two-pane layouts, showing the folder list takes you to the top level of the
         // application, which is the same as pressing the Up button
         handleUpPress();
@@ -158,8 +151,7 @@ public final class TwoPaneController extends AbstractActivityController {
         // notifications upon animation completion:
         // (onConversationVisibilityChanged, onConversationListVisibilityChanged)
         mViewMode.addListener(mLayout);
-        final boolean isParentInitialized = super.onCreate(savedState);
-        return isParentInitialized;
+        return super.onCreate(savedState);
     }
 
     @Override
@@ -171,8 +163,8 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onAccountChanged(Account account) {
-        super.onAccountChanged(account);
+    public void changeAccount(Account account) {
+        super.changeAccount(account);
         renderFolderList();
     }
 
@@ -196,11 +188,10 @@ public final class TwoPaneController extends AbstractActivityController {
             createFolderListFragment(folder, folder.childFoldersListUri);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
-            super.onFolderSelected(folder);
         } else {
             setHierarchyFolder(folder);
-            super.onFolderSelected(folder);
         }
+        super.onFolderSelected(folder);
     }
 
     private void goUpFolderHierarchy(Folder current) {
@@ -253,7 +244,7 @@ public final class TwoPaneController extends AbstractActivityController {
     public void resetActionBarIcon() {
         // On two-pane, the back button is only removed in the conversation list mode, and shown
         // for every other condition.
-        if (mViewMode.isListMode()) {
+        if (mViewMode.isListMode() || mViewMode.isWaitingForSync()) {
             mActionBarView.removeBackButton();
         } else {
             mActionBarView.setBackButton();
@@ -263,7 +254,7 @@ public final class TwoPaneController extends AbstractActivityController {
     /**
      * Enable or disable the CAB mode based on the visibility of the conversation list fragment.
      */
-    private final void enableOrDisableCab() {
+    private void enableOrDisableCab() {
         if (mLayout.isConversationListCollapsed()) {
             disableCabMode();
         } else {
@@ -296,7 +287,7 @@ public final class TwoPaneController extends AbstractActivityController {
         mConversationToShow = conversation;
 
         final int mode = mViewMode.getMode();
-        boolean changedMode = false;
+        final boolean changedMode;
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             changedMode = mViewMode.enterSearchResultsConversationMode();
         } else {

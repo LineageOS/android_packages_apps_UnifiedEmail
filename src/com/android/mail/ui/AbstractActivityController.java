@@ -31,13 +31,11 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
@@ -45,7 +43,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
-import android.text.TextUtils;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -57,6 +54,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
+import com.android.mail.MailLogService;
 import com.android.mail.R;
 import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
@@ -67,6 +65,9 @@ import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.SyncErrorDialogFragment;
 import com.android.mail.compose.ComposeActivity;
+import com.android.mail.content.CursorCreator;
+import com.android.mail.content.ObjectCursor;
+import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
@@ -88,6 +89,7 @@ import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
+import com.android.mail.utils.Observable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
 
@@ -172,6 +174,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /** A {@link android.content.BroadcastReceiver} that suppresses new e-mail notifications. */
     private SuppressNotificationReceiver mNewEmailReceiver = null;
 
+    /** Handler for all our local runnables. */
     protected Handler mHandler = new Handler();
 
     /**
@@ -201,22 +204,12 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected ConversationCursor mConversationListCursor;
-    private final DataSetObservable mConversationListObservable = new DataSetObservable() {
-        @Override
-        public void registerObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.registerObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.register(List)Observer: %s before=%d after=%d", observer,
-                    count, mObservers.size());
-        }
-        @Override
-        public void unregisterObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.unregisterObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.unregister(List)Observer: %s before=%d after=%d", observer,
-                    count, mObservers.size());
-        }
-    };
+    private final DataSetObservable mConversationListObservable = new Observable("List");
+
+    /** Runnable that checks the logging level to enable/disable the logging service. */
+    private Runnable mLogServiceChecker = null;
+    /** List of all accounts currently known to the controller. */
+    private Account[] mAllAccounts;
 
     /**
      * Interface for actions that are deferred until after a load completes. This is for handling
@@ -234,40 +227,11 @@ public abstract class AbstractActivityController implements ActivityController {
     private RefreshTimerTask mConversationListRefreshTask;
 
     /** Listeners that are interested in changes to the current account. */
-    private final DataSetObservable mAccountObservers = new DataSetObservable() {
-        @Override
-        public void registerObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.registerObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.register(Account)Observer: %s before=%d after=%d",
-                    observer, count, mObservers.size());
-        }
-        @Override
-        public void unregisterObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.unregisterObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.unregister(Account)Observer: %s before=%d after=%d",
-                    observer, count, mObservers.size());
-        }
-    };
-
+    private final DataSetObservable mAccountObservers = new Observable("Account");
     /** Listeners that are interested in changes to the recent folders. */
-    private final DataSetObservable mRecentFolderObservers = new DataSetObservable() {
-        @Override
-        public void registerObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.registerObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.register(RecentFolder)Observer: %s before=%d after=%d",
-                    observer, count, mObservers.size());
-        }
-        @Override
-        public void unregisterObserver(DataSetObserver observer) {
-            final int count = mObservers.size();
-            super.unregisterObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.unregister(RecentFolder)Observer: %s before=%d after=%d",
-                    observer, count, mObservers.size());
-        }
-    };
+    private final DataSetObservable mRecentFolderObservers = new Observable("RecentFolder");
+    /** Listeners that are interested in changes to the list of all accounts. */
+    private final DataSetObservable mAllAccountObservers = new Observable("AllAccounts");
 
     /**
      * Selected conversations, if any.
@@ -291,6 +255,11 @@ public abstract class AbstractActivityController implements ActivityController {
     private final ConversationListLoaderCallbacks mListCursorCallbacks =
             new ConversationListLoaderCallbacks();
 
+    /** Object that listens to all LoaderCallbacks that result in {@link Folder} creation. */
+    private final FolderLoads mFolderCallbacks = new FolderLoads();
+    /** Object that listens to all LoaderCallbacks that result in {@link Account} creation. */
+    private final AccountLoads mAccountCallbacks = new AccountLoads();
+
     private final DataSetObservable mFolderObservable = new DataSetObservable();
 
     /**
@@ -309,6 +278,9 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final int LOADER_ACCOUNT_INBOX = 5;
     private static final int LOADER_SEARCH = 6;
     private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
+    /** Loader for showing the initial folder/conversation at app start. */
+    public static final int LOADER_FIRST_FOLDER = 8;
+
     /**
      * Guaranteed to be the last loader ID used by the activity. Loaders are owned by Activity or
      * fragments, and within an activity, loader IDs need to be unique. A hack to ensure that the
@@ -326,10 +298,6 @@ public abstract class AbstractActivityController implements ActivityController {
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
     private DestructiveAction mPendingDestruction;
     protected AsyncRefreshTask mFolderSyncTask;
-    // Task for setting any share intents for the account to enabled.
-    // This gets cancelled if the user kills the app before it finishes, and
-    // will just run the next time the user opens the app.
-    private AsyncTask<String, Void, Void> mEnableShareIntents;
     private Folder mFolderListFolder;
     private boolean mIsDragHappening;
     private int mShowUndoBarDelay;
@@ -350,6 +318,9 @@ public abstract class AbstractActivityController implements ActivityController {
      * and false if it acts on the currently selected conversation
      */
     private boolean mDialogFromSelectedSet;
+
+    /** Which conversation to show, if started from widget/notification. */
+    private Conversation mConversationToShow = null;
 
     private final Deque<UpOrBackHandler> mUpOrBackHandlers = Lists.newLinkedList();
 
@@ -415,14 +386,11 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Check if the fragment is attached to an activity and has a root view.
-     * @param in
+     * @param in fragment to be checked
      * @return true if the fragment is valid, false otherwise
      */
-    private static final boolean isValidFragment(Fragment in) {
-        if (in == null || in.getActivity() == null || in.getView() == null) {
-            return false;
-        }
-        return true;
+    private static boolean isValidFragment(Fragment in) {
+        return !(in == null || in.getActivity() == null || in.getView() == null);
     }
 
     /**
@@ -479,7 +447,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 && Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction());
         mActionBarView = (MailActionBarView) inflater.inflate(
                 isSearch ? R.layout.search_actionbar_view : R.layout.actionbar_view, null);
-        mActionBarView.initialize(mActivity, this, mViewMode, actionBar, mRecentFolderList);
+        mActionBarView.initialize(mActivity, this, actionBar);
     }
 
     /**
@@ -536,7 +504,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onAccountChanged(Account account) {
+    public void changeAccount(Account account) {
         // Is the account or account settings different from the existing account?
         final boolean firstLoad = mAccount == null;
         final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
@@ -546,7 +514,7 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         // We also don't want to do anything if the new account is null
         if (account == null) {
-            LogUtils.e(LOG_TAG, "AAC.onAccountChanged(null) called.");
+            LogUtils.e(LOG_TAG, "AAC.changeAccount(null) called.");
             return;
         }
         final String accountName = account.name;
@@ -595,6 +563,21 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
+    public void registerAllAccountObserver(DataSetObserver observer) {
+        mAllAccountObservers.registerObserver(observer);
+    }
+
+    @Override
+    public void unregisterAllAccountObserver(DataSetObserver observer) {
+        mAllAccountObservers.unregisterObserver(observer);
+    }
+
+    @Override
+    public Account[] getAllAccounts() {
+        return mAllAccounts;
+    }
+
+    @Override
     public Account getAccount() {
         return mAccount;
     }
@@ -603,7 +586,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final Bundle args = new Bundle();
         args.putString(ConversationListContext.EXTRA_SEARCH_QUERY, intent
                 .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
-        mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, this);
+        mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, mFolderCallbacks);
     }
 
     @Override
@@ -614,7 +597,8 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Sets the folder state without changing view mode and without creating a list fragment, if
      * possible.
-     * @param folder
+     * @param folder the folder whose list of conversations are to be shown
+     * @param query the query string for a list of conversations matching a search
      */
     private void setListContext(Folder folder, String query) {
         updateFolder(folder);
@@ -631,7 +615,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param folder the folder to change to
      * @param query if non-null, this represents the search string that the folder represents.
      */
-    private final void changeFolder(Folder folder, String query) {
+    private void changeFolder(Folder folder, String query) {
         if (!Objects.equal(mFolder, folder)) {
             commitDestructiveActions(false);
         }
@@ -685,16 +669,16 @@ public abstract class AbstractActivityController implements ActivityController {
     // field in the account.
     @Override
     public void loadAccountInbox() {
-        restartOptionalLoader(LOADER_ACCOUNT_INBOX);
+        restartOptionalLoader(LOADER_ACCOUNT_INBOX, mFolderCallbacks, Bundle.EMPTY);
     }
 
     /**
      * Marks the {@link #mFolderChanged} value if the newFolder is different from the existing
      * {@link #mFolder}. This should be called immediately <b>before</b> assigning newFolder to
      * mFolder.
-     * @param newFolder
+     * @param newFolder the new folder we are switching to.
      */
-    private final void setHasFolderChanged(final Folder newFolder) {
+    private void setHasFolderChanged(final Folder newFolder) {
         // We should never try to assign a null folder. But in the rare event that we do, we should
         // only set the bit when we have a valid folder, and null is not valid.
         if (newFolder == null) {
@@ -743,21 +727,21 @@ public abstract class AbstractActivityController implements ActivityController {
         // previous loader's instance and data upon configuration change (e.g. rotation).
         // If there was not already an instance of the loader, init it.
         if (lm.getLoader(LOADER_FOLDER_CURSOR) == null) {
-            lm.initLoader(LOADER_FOLDER_CURSOR, null, this);
+            lm.initLoader(LOADER_FOLDER_CURSOR, Bundle.EMPTY, mFolderCallbacks);
         } else {
-            lm.restartLoader(LOADER_FOLDER_CURSOR, null, this);
+            lm.restartLoader(LOADER_FOLDER_CURSOR, Bundle.EMPTY, mFolderCallbacks);
         }
         // In this case, we are starting from no folder, which would occur
         // the first time the app was launched or on orientation changes.
         // We want to attach to an existing loader, if available.
         if (wasNull || lm.getLoader(LOADER_CONVERSATION_LIST) == null) {
-            lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
+            lm.initLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY, mListCursorCallbacks);
         } else {
             // However, if there was an existing folder AND we have changed
             // folders, we want to restart the loader to get the information
             // for the newly selected folder
             lm.destroyLoader(LOADER_CONVERSATION_LIST);
-            lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
+            lm.initLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY, mListCursorCallbacks);
         }
     }
 
@@ -783,8 +767,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 // We were waiting for the user to create an account
                 if (resultCode == Activity.RESULT_OK) {
                     // restart the loader to get the updated list of accounts
-                    mActivity.getLoaderManager().initLoader(
-                            LOADER_ACCOUNT_CURSOR, null, this);
+                    mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, Bundle.EMPTY,
+                            mAccountCallbacks);
                 } else {
                     // The user failed to create an account, just exit the app
                     mActivity.finish();
@@ -804,7 +788,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Inform the conversation cursor that there has been a visibility change.
-     * @param visible
+     * @param visible true if the conversation list is visible, false otherwise.
      */
     protected synchronized void informCursorVisiblity(boolean visible) {
         if (mConversationListCursor != null) {
@@ -828,9 +812,57 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onConversationVisibilityChanged(boolean visible) {
     }
 
+    /**
+     * Initialize development time logging. This can potentially log a lot of PII, and we don't want
+     * to turn it on for shipped versions.
+     */
+    private void initializeDevLoggingService() {
+        if (!MailLogService.DEBUG_ENABLED) {
+            return;
+        }
+        // Check every 5 minutes.
+        final int WAIT_TIME = 5 * 60 * 1000;
+        // Start a runnable that periodically checks the log level and starts/stops the service.
+        mLogServiceChecker = new Runnable() {
+            /** True if currently logging. */
+            private boolean mCurrentlyLogging = false;
+
+            /**
+             * If the logging level has been changed since the previous run, start or stop the
+             * service.
+             */
+            private void startOrStopService() {
+                // If the log level is already high, start the service.
+                final Intent i = new Intent(mContext, MailLogService.class);
+                final boolean loggingEnabled = MailLogService.isLoggingLevelHighEnough();
+                if (mCurrentlyLogging == loggingEnabled) {
+                    // No change since previous run, just return;
+                    return;
+                }
+                if (loggingEnabled) {
+                    LogUtils.e(LOG_TAG, "Starting MailLogService");
+                    mContext.startService(i);
+                } else {
+                    LogUtils.e(LOG_TAG, "Stopping MailLogService");
+                    mContext.stopService(i);
+                }
+                mCurrentlyLogging = loggingEnabled;
+            }
+
+            @Override
+            public void run() {
+                startOrStopService();
+                mHandler.postDelayed(this, WAIT_TIME);
+            }
+        };
+        // Start the runnable right away.
+        mHandler.post(mLogServiceChecker);
+    }
+
     @Override
     public boolean onCreate(Bundle savedState) {
         initializeActionBar();
+        initializeDevLoggingService();
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
         mResolver = mActivity.getContentResolver();
@@ -870,7 +902,8 @@ public abstract class AbstractActivityController implements ActivityController {
             handleIntent(intent);
         }
         // Create the accounts loader; this loads the account switch spinner.
-        mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
+        mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, Bundle.EMPTY,
+                mAccountCallbacks);
         return true;
     }
 
@@ -883,7 +916,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onRestart() {
-        DialogFragment fragment = (DialogFragment)
+        final DialogFragment fragment = (DialogFragment)
                 mFragmentManager.findFragmentByTag(SYNC_ERROR_DIALOG_FRAGMENT_TAG);
         if (fragment != null) {
             fragment.dismiss();
@@ -986,7 +1019,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 ComposeActivity.compose(mActivity.getActivityContext(), mAccount);
                 break;
             case R.id.show_all_folders:
-                showFolderList();
+                toggleFolderListState();
                 break;
             case R.id.refresh:
                 requestFolderRefresh();
@@ -1006,10 +1039,13 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.manage_folders_item:
                 Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
                 break;
+            case R.id.move_to:
+                /* fall through */
             case R.id.change_folder:
                 final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
                         mActivity.getActivityContext(), mAccount, this,
-                        Conversation.listOf(mCurrentConversation), false, mFolder);
+                        Conversation.listOf(mCurrentConversation), false, mFolder,
+                        id == R.id.move_to);
                 if (dialog != null) {
                     dialog.show();
                 }
@@ -1019,6 +1055,14 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
         }
         return handled;
+    }
+
+    /**
+     * Stand-in method overriden in OnePaneController for toggling the state
+     * of the drawer.
+     */
+    protected void toggleFolderListState() {
+        //Implemented in OnePaneController.java
     }
 
     @Override
@@ -1210,6 +1254,11 @@ public abstract class AbstractActivityController implements ActivityController {
         for (final Conversation target : targets) {
             final ContentValues value = new ContentValues();
             value.put(ConversationColumns.READ, read);
+
+            // We never want to mark unseen here, but we do want to mark it seen
+            if (read || markViewed) {
+                value.put(ConversationColumns.SEEN, Boolean.TRUE);
+            }
 
             // The mark read/unread/viewed operations do not show an undo bar
             value.put(ConversationOperations.Parameters.SUPPRESS_UNDO, true);
@@ -1437,11 +1486,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Requests that the action be performed and the UI state is updated to reflect the new change.
-     * @param target
-     * @param action
+     * @param action the action to be performed, specified as a menu id: R.id.archive, ...
      */
-    private void requestUpdate(final Collection<Conversation> target,
-            final DestructiveAction action) {
+    private void requestUpdate(final DestructiveAction action) {
         action.performAction();
         refreshConversationList();
     }
@@ -1508,8 +1555,7 @@ public abstract class AbstractActivityController implements ActivityController {
             outState.putParcelable(SAVED_DETACHED_CONV_URI, mDetachedConvUri);
         }
         mSafeToModifyFragments = false;
-        outState.putString(SAVED_HIERARCHICAL_FOLDER,
-                (mFolderListFolder != null) ? Folder.toString(mFolderListFolder) : null);
+        outState.putParcelable(SAVED_HIERARCHICAL_FOLDER, mFolderListFolder);
     }
 
     /**
@@ -1532,10 +1578,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onStop() {
-        if (mEnableShareIntents != null) {
-            mEnableShareIntents.cancel(true);
-        }
-
         NotificationActionUtils.unregisterUndoNotificationObserver(mUndoNotificationObserver);
     }
 
@@ -1550,6 +1592,8 @@ public abstract class AbstractActivityController implements ActivityController {
         mActionBarView.onDestroy();
         mRecentFolderList.destroy();
         mDestroyed = true;
+        mHandler.removeCallbacks(mLogServiceChecker);
+        mLogServiceChecker = null;
     }
 
     /**
@@ -1605,7 +1649,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Set the account, and carry out all the account-related changes that rely on this.
-     * @param account
+     * @param account new account to set to.
      */
     private void setAccount(Account account) {
         if (account == null) {
@@ -1617,10 +1661,10 @@ public abstract class AbstractActivityController implements ActivityController {
         mAccount = account;
         // Only change AAC state here. Do *not* modify any other object's state. The object
         // should listen on account changes.
-        restartOptionalLoader(LOADER_RECENT_FOLDERS);
+        restartOptionalLoader(LOADER_RECENT_FOLDERS, mFolderCallbacks, Bundle.EMPTY);
         mActivity.invalidateOptionsMenu();
         disableNotificationsOnAccountChange(mAccount);
-        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
+        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR, mAccountCallbacks, Bundle.EMPTY);
         // The Mail instance can be null during test runs.
         final MailAppProvider instance = MailAppProvider.getInstance();
         if (instance != null) {
@@ -1639,7 +1683,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * method from the parent class, since it performs important UI
      * initialization.
      *
-     * @param savedState
+     * @param savedState previous state
      */
     @Override
     public void onRestoreInstanceState(Bundle savedState) {
@@ -1665,10 +1709,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
             }
         }
-        final String folderString = savedState.getString(SAVED_HIERARCHICAL_FOLDER, null);
-        if (!TextUtils.isEmpty(folderString)) {
-            mFolderListFolder = Folder.fromString(folderString);
-        }
+        mFolderListFolder = savedState.getParcelable(SAVED_HIERARCHICAL_FOLDER);
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
             convListFragment.getAnimatedAdapter().onRestoreInstanceState(savedState);
@@ -1693,10 +1734,9 @@ public abstract class AbstractActivityController implements ActivityController {
      * Handle an intent to open the app. This method is called only when there is no saved state,
      * so we need to set state that wasn't set before. It is correct to change the viewmode here
      * since it has not been previously set.
-     * @param intent
+     * @param intent intent passed to the activity.
      */
     private void handleIntent(Intent intent) {
-        boolean handled = false;
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                 setAccount(Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT)));
@@ -1710,32 +1750,15 @@ public abstract class AbstractActivityController implements ActivityController {
             } else {
                 mViewMode.enterConversationListMode();
             }
-            final Folder folder = intent.hasExtra(Utils.EXTRA_FOLDER) ?
-                    Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER)) : null;
-            if (folder != null) {
-                onFolderChanged(folder);
-                handled = true;
-            }
-
-            if (isConversationMode) {
-                // Open the conversation.
-                LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
-                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                final Conversation conversation =
-                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
-                if (conversation != null && conversation.position < 0) {
-                    // Set the position to 0 on this conversation, as we don't know where it is
-                    // in the list
-                    conversation.position = 0;
-                }
-                showConversation(conversation);
-                handled = true;
-            }
-
-            if (!handled) {
-                // We have an account, but nothing else: load the default inbox.
-                loadAccountInbox();
-            }
+            // Put the folder and conversation, and ask the loader to create this folder.
+            final Bundle args = new Bundle();
+            final Uri folderUri = intent.hasExtra(Utils.EXTRA_FOLDER_URI)
+                    ? (Uri) intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI)
+                    : mAccount.settings.defaultInbox;
+            args.putParcelable(Utils.EXTRA_FOLDER_URI, folderUri);
+            args.putParcelable(Utils.EXTRA_CONVERSATION,
+                    intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
+            restartOptionalLoader(LOADER_FIRST_FOLDER, mFolderCallbacks, args);
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                 mHaveSearchResults = false;
@@ -1758,7 +1781,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
         }
         if (mAccount != null) {
-            restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
+            restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR, mAccountCallbacks, Bundle.EMPTY);
         }
     }
 
@@ -1774,7 +1797,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * triggering {@link ConversationSetObserver} callbacks as our selection set changes.
      *
      */
-    private final void restoreSelectedConversations(Bundle savedState) {
+    private void restoreSelectedConversations(Bundle savedState) {
         if (savedState == null) {
             mSelectedSet.clear();
             return;
@@ -1794,7 +1817,7 @@ public abstract class AbstractActivityController implements ActivityController {
         return mActionBarView;
     }
 
-    private final void showConversation(Conversation conversation) {
+    private void showConversation(Conversation conversation) {
         showConversation(conversation, false /* inLoaderCallbacks */);
     }
 
@@ -1802,11 +1825,18 @@ public abstract class AbstractActivityController implements ActivityController {
      * Show the conversation provided in the arguments. It is safe to pass a null conversation
      * object, which is a signal to back out of conversation view mode.
      * Child classes must call super.showConversation() <b>before</b> their own implementations.
-     * @param conversation
+     * @param conversation the conversation to be shown, or null if we want to back out to list
+     *                     mode.
      * @param inLoaderCallbacks true if the method is called as a result of
-     * {@link #onLoadFinished(Loader, Cursor)}
+     * onLoadFinished(Loader, Cursor) on any callback.
      */
     protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
+        if (conversation != null) {
+            Utils.sConvLoadTimer.start();
+        }
+
+        MailLogService.log("AbstractActivityController", "showConversation(" + conversation + " )"
+                + "");
         // Set the current conversation just in case it wasn't already set.
         setCurrentConversation(conversation);
         // Add the folder that we were viewing to the recent folders list.
@@ -1847,7 +1877,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * Use the instance variable and the wait fragment's tag to get the wait fragment.  This is
      * far superior to using the value of mWaitFragment, which might be invalid or might refer
      * to a fragment after it has been destroyed.
-     * @return
+     * @return a wait fragment that is already attached to the activity, if one exists
      */
     protected final WaitFragment getWaitFragment() {
         final FragmentManager manager = mActivity.getFragmentManager();
@@ -1898,7 +1928,8 @@ public abstract class AbstractActivityController implements ActivityController {
      * Set the current conversation. This is the conversation on which all actions are performed.
      * Do not modify mCurrentConversation except through this method, which makes it easy to
      * perform common actions associated with changing the current conversation.
-     * @param conversation
+     * @param conversation new conversation to view. Passing null indicates that we are backing
+     *                     out to conversation list mode.
      */
     @Override
     public void setCurrentConversation(Conversation conversation) {
@@ -1922,54 +1953,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case LOADER_ACCOUNT_CURSOR:
-                return new CursorLoader(mContext, MailAppProvider.getAccountsUri(),
-                        UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-            case LOADER_FOLDER_CURSOR:
-                final CursorLoader loader = new CursorLoader(mContext, mFolder.uri,
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
-                loader.setUpdateThrottle(mFolderItemUpdateDelayMs);
-                return loader;
-            case LOADER_RECENT_FOLDERS:
-                if (mAccount != null && mAccount.recentFolderListUri != null) {
-                    return new CursorLoader(mContext, mAccount.recentFolderListUri,
-                            UIProvider.FOLDERS_PROJECTION, null, null, null);
-                }
-                break;
-            case LOADER_ACCOUNT_INBOX:
-                final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
-                final Uri inboxUri = defaultInbox.equals(Uri.EMPTY) ?
-                    mAccount.folderListUri : defaultInbox;
-                LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri);
-                if (inboxUri != null) {
-                    return new CursorLoader(mContext, inboxUri, UIProvider.FOLDERS_PROJECTION, null,
-                            null, null);
-                }
-                break;
-            case LOADER_SEARCH:
-                return Folder.forSearchResults(mAccount,
-                        args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
-                        mActivity.getActivityContext());
-            case LOADER_ACCOUNT_UPDATE_CURSOR:
-                return new CursorLoader(mContext, mAccount.uri, UIProvider.ACCOUNTS_PROJECTION,
-                        null, null, null);
-            default:
-                LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: %d", id);
-        }
-        return null;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    /**
      * {@link LoaderManager} currently has a bug in
      * {@link LoaderManager#restartLoader(int, Bundle, android.app.LoaderManager.LoaderCallbacks)}
      * where, if a previous onCreateLoader returned a null loader, this method will NPE. Work around
@@ -1980,11 +1963,14 @@ public abstract class AbstractActivityController implements ActivityController {
      * give the controller a chance to invalidate UI corresponding the prior loader result.
      *
      * @param id loader ID to safely restart
+     * @param handler the LoaderCallback which will handle this loader ID.
+     * @param args arguments, if any, to be passed to the loader. Use {@link Bundle#EMPTY} if no
+     *             arguments need to be specified.
      */
-    private void restartOptionalLoader(int id) {
+    private void restartOptionalLoader(int id, LoaderManager.LoaderCallbacks handler, Bundle args) {
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(id);
-        lm.restartLoader(id, Bundle.EMPTY, this);
+        lm.restartLoader(id, args, handler);
     }
 
     @Override
@@ -2038,10 +2024,10 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Returns true if the number of accounts is different, or if the current account has been
      * removed from the device
-     * @param accountCursor
-     * @return
+     * @param accountCursor the cursor which points to all the accounts.
+     * @return true if the number of accounts is changed or current account missing from the list.
      */
-    private boolean accountsUpdated(Cursor accountCursor) {
+    private boolean accountsUpdated(ObjectCursor<Account> accountCursor) {
         // Check to see if the current account hasn't been set, or the account cursor is empty
         if (mAccount == null || !accountCursor.moveToFirst()) {
             return true;
@@ -2057,8 +2043,8 @@ public abstract class AbstractActivityController implements ActivityController {
         // the cursor.
         boolean foundCurrentAccount = false;
         do {
-            final Uri accountUri =
-                    Uri.parse(accountCursor.getString(UIProvider.ACCOUNT_URI_COLUMN));
+            final Uri accountUri = Uri.parse(accountCursor.getString(
+                    accountCursor.getColumnIndex(UIProvider.AccountColumns.URI)));
             if (!foundCurrentAccount && mAccount.uri.equals(accountUri)) {
                 foundCurrentAccount = true;
             }
@@ -2079,7 +2065,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param accounts cursor into the AccountCache
      * @return true if the update was successful, false otherwise
      */
-    private boolean updateAccounts(Cursor accounts) {
+    private boolean updateAccounts(ObjectCursor<Account> accounts) {
         if (accounts == null || !accounts.moveToFirst()) {
             return false;
         }
@@ -2132,10 +2118,13 @@ public abstract class AbstractActivityController implements ActivityController {
             }
         }
         if (accountChanged) {
-            onAccountChanged(newAccount);
+            changeAccount(newAccount);
         }
+
         // Whether we have updated the current account or not, we need to update the list of
         // accounts in the ActionBar.
+        mAllAccounts = allAccounts;
+        mAllAccountObservers.notifyChanged();
         mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
     }
@@ -2160,148 +2149,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // We want to reinitialize only if we haven't ever been initialized, or
-        // if the current account has vanished.
-        if (data == null) {
-            LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", loader.getId());
-        }
-        switch (loader.getId()) {
-            case LOADER_ACCOUNT_CURSOR:
-                if (data == null) {
-                    // Nothing useful to do if we have no valid data.
-                    break;
-                }
-                if (data.getCount() == 0) {
-                    // If an empty cursor is returned, the MailAppProvider is indicating that
-                    // no accounts have been specified.  We want to navigate to the "add account"
-                    // activity that will handle the intent returned by the MailAppProvider
-
-                    // If the MailAppProvider believes that all accounts have been loaded, and the
-                    // account list is still empty, we want to prompt the user to add an account
-                    final Bundle extras = data.getExtras();
-                    final boolean accountsLoaded =
-                            extras.getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
-
-                    if (accountsLoaded) {
-                        final Intent noAccountIntent = MailAppProvider.getNoAccountIntent(mContext);
-                        if (noAccountIntent != null) {
-                            mActivity.startActivityForResult(noAccountIntent,
-                                    ADD_ACCOUNT_REQUEST_CODE);
-                        }
-                    }
-                } else {
-                    final boolean accountListUpdated = accountsUpdated(data);
-                    if (!isLoaderInitialized || accountListUpdated) {
-                        isLoaderInitialized = updateAccounts(data);
-                    }
-                }
-                break;
-            case LOADER_ACCOUNT_UPDATE_CURSOR:
-                // We have gotten an update for current account.
-
-                // Make sure that this is an update for the current account
-                if (data != null && data.moveToFirst()) {
-                    final Account updatedAccount = new Account(data);
-
-                    if (updatedAccount.uri.equals(mAccount.uri)) {
-                        // Keep a reference to the previous settings object
-                        final Settings previousSettings = mAccount.settings;
-
-                        // Update the controller's reference to the current account
-                        mAccount = updatedAccount;
-                        LogUtils.d(LOG_TAG, "AbstractActivityController.onLoadFinished(): "
-                                + "mAccount = %s", mAccount.uri);
-
-                        // Only notify about a settings change if something differs
-                        if (!Objects.equal(mAccount.settings, previousSettings)) {
-                            mAccountObservers.notifyChanged();
-                        }
-                        perhapsEnterWaitMode();
-                    } else {
-                        LogUtils.e(LOG_TAG, "Got update for account: %s with current account: %s",
-                                updatedAccount.uri, mAccount.uri);
-                        // We need to restart the loader, so the correct account information will
-                        // be returned
-                        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
-                    }
-                }
-                break;
-            case LOADER_FOLDER_CURSOR:
-                // Check status of the cursor.
-                if (data != null && data.moveToFirst()) {
-                    final Folder folder = new Folder(data);
-                    LogUtils.d(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
-                    setHasFolderChanged(folder);
-                    mFolder = folder;
-                    mFolderObservable.notifyChanged();
-                } else {
-                    LogUtils.d(LOG_TAG, "Unable to get the folder %s",
-                            mFolder != null ? mAccount.name : "");
-                }
-                break;
-            case LOADER_RECENT_FOLDERS:
-                // Few recent folders and we are running on a phone? Populate the default recents.
-                // The number of default recent folders is at least 2: every provider has at
-                // least two folders, and the recent folder count never decreases. Having a single
-                // recent folder is an erroneous case, and we can gracefully recover by populating
-                // default recents. The default recents will not stomp on the existing value: it
-                // will be shown in addition to the default folders: the max number of recent
-                // folders is more than 1+num(defaultRecents).
-                if (data != null && data.getCount() <= 1 && !mIsTablet) {
-                    final class PopulateDefault extends AsyncTask<Uri, Void, Void> {
-                        @Override
-                        protected Void doInBackground(Uri... uri) {
-                            // Asking for an update on the URI and ignore the result.
-                            final ContentResolver resolver = mContext.getContentResolver();
-                            resolver.update(uri[0], null, null, null);
-                            return null;
-                        }
-                    }
-                    final Uri uri = mAccount.defaultRecentFolderListUri;
-                    LogUtils.v(LOG_TAG, "Default recents at %s", uri);
-                    new PopulateDefault().execute(uri);
-                    break;
-                }
-                LogUtils.v(LOG_TAG, "Reading recent folders from the cursor.");
-                loadRecentFolders(data);
-                break;
-            case LOADER_ACCOUNT_INBOX:
-                if (data != null && !data.isClosed() && data.moveToFirst()) {
-                    Folder inbox = new Folder(data);
-                    onFolderChanged(inbox);
-                    // Just want to get the inbox, don't care about updates to it
-                    // as this will be tracked by the folder change listener.
-                    mActivity.getLoaderManager().destroyLoader(LOADER_ACCOUNT_INBOX);
-                } else {
-                    LogUtils.d(LOG_TAG, "Unable to get the account inbox for account %s",
-                            mAccount != null ? mAccount.name : "");
-                }
-                break;
-            case LOADER_SEARCH:
-                if (data != null && data.getCount() > 0) {
-                    data.moveToFirst();
-                    final Folder search = new Folder(data);
-                    updateFolder(search);
-                    mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
-                            mActivity.getIntent()
-                                    .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
-                    showConversationList(mConvListContext);
-                    mActivity.invalidateOptionsMenu();
-                    mHaveSearchResults = search.totalCount > 0;
-                    mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
-                } else {
-                    LogUtils.e(LOG_TAG, "Null or empty cursor returned by LOADER_SEARCH loader");
-                }
-                break;
-        }
-    }
-
-
-    /**
      * Destructive actions on Conversations. This class should only be created by controllers, and
      * clients should only require {@link DestructiveAction}s, not specific implementations of the.
      * Only the controllers should know what kind of destructive actions are being created.
@@ -2320,9 +2167,9 @@ public abstract class AbstractActivityController implements ActivityController {
         private final boolean mIsSelectedSet;
 
         /**
-         * Create a listener object. action is one of four constants: R.id.y_button (archive),
+         * Create a listener object.
+         * @param action action is one of four constants: R.id.y_button (archive),
          * R.id.delete , R.id.mute, and R.id.report_spam.
-         * @param action
          * @param target Conversation that we want to apply the action to.
          * @param isBatch whether the conversations are in the currently selected batch set.
          */
@@ -2476,7 +2323,7 @@ public abstract class AbstractActivityController implements ActivityController {
         } else {
             folderChange = getFolderChange(target, folderOps, isDestructive,
                     batch, showUndo);
-            requestUpdate(target, folderChange);
+            requestUpdate(folderChange);
         }
     }
 
@@ -2561,7 +2408,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * If the Conversation List Fragment is visible, updates the fragment.
      */
-    private final void updateConversationListFragment() {
+    private void updateConversationListFragment() {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             refreshConversationList();
@@ -2601,15 +2448,6 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mConversationListRefreshTask != null) {
             mConversationListRefreshTask.cancel();
             mConversationListRefreshTask = null;
-        }
-    }
-
-    private void loadRecentFolders(Cursor data) {
-        mRecentFolderList.loadFromUiProvider(data);
-        if (isAnimating()) {
-            mRecentsDataUpdated = true;
-        } else {
-            mRecentFolderObservers.notifyChanged();
         }
     }
 
@@ -2796,7 +2634,6 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             refreshConversationList();
             mSelectedSet.clear();
-            return;
         }
     }
 
@@ -2810,7 +2647,6 @@ public abstract class AbstractActivityController implements ActivityController {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
             convListFragment.requestDelete(R.id.change_folder, conversations,
                     new DroppedInStarredAction(conversations, mFolder, folder));
-            return;
         }
     }
 
@@ -2887,7 +2723,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * Check if the fragment given here is visible. Checking {@link Fragment#isVisible()} is
      * insufficient because that doesn't check if the window is currently in focus or not.
      */
-    private final boolean isFragmentVisible(Fragment in) {
+    private boolean isFragmentVisible(Fragment in) {
         return in != null && in.isVisible() && mActivity.hasWindowFocus();
     }
 
@@ -2896,9 +2732,8 @@ public abstract class AbstractActivityController implements ActivityController {
 
         @Override
         public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
-            Loader<ConversationCursor> result = new ConversationCursorLoader((Activity) mActivity,
+            return new ConversationCursorLoader((Activity) mActivity,
                     mAccount, mFolder.conversationListUri, mFolder.name);
-            return result;
         }
 
         @Override
@@ -2945,9 +2780,273 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
+     * Class to perform {@link LoaderManager.LoaderCallbacks} for creating {@link Folder} objects.
+     */
+    private class FolderLoads implements LoaderManager.LoaderCallbacks<ObjectCursor<Folder>> {
+        @Override
+        public Loader<ObjectCursor<Folder>> onCreateLoader(int id, Bundle args) {
+            final String[] everything = UIProvider.FOLDERS_PROJECTION;
+            switch (id) {
+                case LOADER_FOLDER_CURSOR:
+                    LogUtils.d(LOG_TAG, "LOADER_FOLDER_CURSOR created");
+                    final ObjectCursorLoader<Folder> loader = new
+                            ObjectCursorLoader<Folder>(
+                            mContext, mFolder.uri, everything, Folder.FACTORY);
+                    loader.setUpdateThrottle(mFolderItemUpdateDelayMs);
+                    return loader;
+                case LOADER_RECENT_FOLDERS:
+                    LogUtils.d(LOG_TAG, "LOADER_RECENT_FOLDERS created");
+                    if (mAccount != null && mAccount.recentFolderListUri != null) {
+                        return new ObjectCursorLoader<Folder>(mContext,
+                                mAccount.recentFolderListUri, everything, Folder.FACTORY);
+                    }
+                    break;
+                case LOADER_ACCOUNT_INBOX:
+                    LogUtils.d(LOG_TAG, "LOADER_ACCOUNT_INBOX created");
+                    final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
+                    final Uri inboxUri = defaultInbox.equals(Uri.EMPTY) ?
+                            mAccount.folderListUri : defaultInbox;
+                    LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri);
+                    if (inboxUri != null) {
+                        return new ObjectCursorLoader<Folder>(mContext, inboxUri,
+                                everything, Folder.FACTORY);
+                    }
+                    break;
+                case LOADER_SEARCH:
+                    LogUtils.d(LOG_TAG, "LOADER_SEARCH created");
+                    return Folder.forSearchResults(mAccount,
+                            args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
+                            mActivity.getActivityContext());
+                case LOADER_FIRST_FOLDER:
+                    LogUtils.d(LOG_TAG, "LOADER_FIRST_FOLDER created");
+                    final Uri folderUri = args.getParcelable(Utils.EXTRA_FOLDER_URI);
+                    mConversationToShow = args.getParcelable(Utils.EXTRA_CONVERSATION);
+                    if (mConversationToShow != null && mConversationToShow.position < 0){
+                        mConversationToShow.position = 0;
+                    }
+                    return new ObjectCursorLoader<Folder>(mContext, folderUri,
+                            everything, Folder.FACTORY);
+                default:
+                    LogUtils.wtf(LOG_TAG, "FolderLoads.onCreateLoader(%d) for invalid id", id);
+                    return null;
+            }
+            return null;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
+            if (data == null) {
+                LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", loader.getId());
+            }
+            switch (loader.getId()) {
+                case LOADER_FOLDER_CURSOR:
+                    if (data != null && data.moveToFirst()) {
+                        final Folder folder = data.getModel();
+                        setHasFolderChanged(folder);
+                        mFolder = folder;
+                        mFolderObservable.notifyChanged();
+                    } else {
+                        LogUtils.d(LOG_TAG, "Unable to get the folder %s",
+                                mFolder != null ? mAccount.name : "");
+                    }
+                    break;
+                case LOADER_RECENT_FOLDERS:
+                    // Few recent folders and we are running on a phone? Populate the default
+                    // recents. The number of default recent folders is at least 2: every provider
+                    // has at least two folders, and the recent folder count never decreases.
+                    // Having a single recent folder is an erroneous case, and we can gracefully
+                    // recover by populating default recents. The default recents will not stomp on
+                    // the existing value: it will be shown in addition to the default folders:
+                    // the max number of recent folders is more than 1+num(defaultRecents).
+                    if (data != null && data.getCount() <= 1 && !mIsTablet) {
+                        final class PopulateDefault extends AsyncTask<Uri, Void, Void> {
+                            @Override
+                            protected Void doInBackground(Uri... uri) {
+                                // Asking for an update on the URI and ignore the result.
+                                final ContentResolver resolver = mContext.getContentResolver();
+                                resolver.update(uri[0], null, null, null);
+                                return null;
+                            }
+                        }
+                        final Uri uri = mAccount.defaultRecentFolderListUri;
+                        LogUtils.v(LOG_TAG, "Default recents at %s", uri);
+                        new PopulateDefault().execute(uri);
+                        break;
+                    }
+                    LogUtils.v(LOG_TAG, "Reading recent folders from the cursor.");
+                    mRecentFolderList.loadFromUiProvider(data);
+                    if (isAnimating()) {
+                        mRecentsDataUpdated = true;
+                    } else {
+                        mRecentFolderObservers.notifyChanged();
+                    }
+                    break;
+                case LOADER_ACCOUNT_INBOX:
+                    if (data != null && !data.isClosed() && data.moveToFirst()) {
+                        final Folder inbox = data.getModel();
+                        onFolderChanged(inbox);
+                        // Just want to get the inbox, don't care about updates to it
+                        // as this will be tracked by the folder change listener.
+                        mActivity.getLoaderManager().destroyLoader(LOADER_ACCOUNT_INBOX);
+                    } else {
+                        LogUtils.d(LOG_TAG, "Unable to get the account inbox for account %s",
+                                mAccount != null ? mAccount.name : "");
+                    }
+                    break;
+                case LOADER_SEARCH:
+                    if (data != null && data.getCount() > 0) {
+                        data.moveToFirst();
+                        final Folder search = data.getModel();
+                        updateFolder(search);
+                        mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
+                                mActivity.getIntent()
+                                        .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
+                        showConversationList(mConvListContext);
+                        mActivity.invalidateOptionsMenu();
+                        mHaveSearchResults = search.totalCount > 0;
+                        mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
+                    } else {
+                        LogUtils.e(LOG_TAG, "Null/empty cursor returned by LOADER_SEARCH loader");
+                    }
+                    break;
+                case LOADER_FIRST_FOLDER:
+                    if (data == null || data.getCount() <=0 || !data.moveToFirst()) {
+                        return;
+                    }
+                    final Folder folder = data.getModel();
+                    boolean handled = false;
+                    if (folder != null) {
+                        onFolderChanged(folder);
+                        handled = true;
+                    }
+                    if (mConversationToShow != null) {
+                        // Open the conversation.
+                        showConversation(mConversationToShow);
+                        handled = true;
+                    }
+                    if (!handled) {
+                        // We have an account, but nothing else: load the default inbox.
+                        loadAccountInbox();
+                    }
+                    mConversationToShow = null;
+                    // And don't run this anymore.
+                    mActivity.getLoaderManager().destroyLoader(LOADER_FIRST_FOLDER);
+                    break;
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ObjectCursor<Folder>> loader) {
+        }
+    }
+
+    /**
+     * Class to perform {@link LoaderManager.LoaderCallbacks} for creating {@link Account} objects.
+     */
+    private class AccountLoads implements LoaderManager.LoaderCallbacks<ObjectCursor<Account>> {
+        final String[] mProjection = UIProvider.ACCOUNTS_PROJECTION;
+        final CursorCreator<Account> mFactory = Account.FACTORY;
+
+        @Override
+        public Loader<ObjectCursor<Account>> onCreateLoader(int id, Bundle args) {
+            switch (id) {
+                case LOADER_ACCOUNT_CURSOR:
+                    LogUtils.d(LOG_TAG,  "LOADER_ACCOUNT_CURSOR created");
+                    return new ObjectCursorLoader<Account>(mContext,
+                            MailAppProvider.getAccountsUri(), mProjection, mFactory);
+                case LOADER_ACCOUNT_UPDATE_CURSOR:
+                    LogUtils.d(LOG_TAG,  "LOADER_ACCOUNT_UPDATE_CURSOR created");
+                    return new ObjectCursorLoader<Account>(mContext, mAccount.uri, mProjection,
+                            mFactory);
+                default:
+                    LogUtils.wtf(LOG_TAG, "Got an id  (%d) that I cannot create!", id);
+                    break;
+            }
+            return null;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ObjectCursor<Account>> loader,
+                ObjectCursor<Account> data) {
+            if (data == null) {
+                LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", loader.getId());
+            }
+            switch (loader.getId()) {
+                case LOADER_ACCOUNT_CURSOR:
+                    if (data == null) {
+                        // Nothing useful to do if we have no valid data.
+                        break;
+                    }
+                    if (data.getCount() == 0) {
+                        // If an empty cursor is returned, the MailAppProvider is indicating that
+                        // no accounts have been specified.  We want to navigate to the
+                        // "add account" activity that will handle the intent returned by the
+                        // MailAppProvider
+
+                        // If the MailAppProvider believes that all accounts have been loaded,
+                        // and the account list is still empty, we want to prompt the user to add
+                        // an account.
+                        final Bundle extras = data.getExtras();
+                        final boolean accountsLoaded =
+                                extras.getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
+
+                        if (accountsLoaded) {
+                            final Intent noAccountIntent = MailAppProvider.getNoAccountIntent
+                                    (mContext);
+                            if (noAccountIntent != null) {
+                                mActivity.startActivityForResult(noAccountIntent,
+                                        ADD_ACCOUNT_REQUEST_CODE);
+                            }
+                        }
+                    } else {
+                        final boolean accountListUpdated = accountsUpdated(data);
+                        if (!isLoaderInitialized || accountListUpdated) {
+                            isLoaderInitialized = updateAccounts(data);
+                        }
+                    }
+                    break;
+                case LOADER_ACCOUNT_UPDATE_CURSOR:
+                    // We have received an update for current account.
+
+                    // Make sure that this is an update for the current account
+                    if (data != null && data.moveToFirst()) {
+                        final Account updatedAccount = data.getModel();
+
+                        if (updatedAccount.uri.equals(mAccount.uri)) {
+                            // Keep a reference to the previous settings object
+                            final Settings previousSettings = mAccount.settings;
+
+                            // Update the controller's reference to the current account
+                            mAccount = updatedAccount;
+                            LogUtils.d(LOG_TAG, "AbstractActivityController.onLoadFinished(): "
+                                    + "mAccount = %s", mAccount.uri);
+
+                            // Only notify about a settings change if something differs
+                            if (!Objects.equal(mAccount.settings, previousSettings)) {
+                                mAccountObservers.notifyChanged();
+                            }
+                            perhapsEnterWaitMode();
+                        } else {
+                            LogUtils.e(LOG_TAG, "Got update for account: %s with current account:"
+                                    + " %s", updatedAccount.uri, mAccount.uri);
+                            // We need to restart the loader, so the correct account information
+                            // will be returned.
+                            restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR, this, Bundle.EMPTY);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ObjectCursor<Account>> loader) {
+        }
+    }
+
+    /**
      * Updates controller state based on search results and shows first conversation if required.
      */
-    private final void perhapsShowFirstSearchResult() {
+    private void perhapsShowFirstSearchResult() {
         if (mCurrentConversation == null) {
             // Shown for search results in two-pane mode only.
             mHaveSearchResults = Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
@@ -2967,7 +3066,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * next destructive action..
      * @param nextAction the next destructive action to be performed. This can be null.
      */
-    private final void destroyPending(DestructiveAction nextAction) {
+    private void destroyPending(DestructiveAction nextAction) {
         // If there is a pending action, perform that first.
         if (mPendingDestruction != null) {
             mPendingDestruction.performAction();
@@ -2979,14 +3078,13 @@ public abstract class AbstractActivityController implements ActivityController {
      * Register a destructive action with the controller. This performs the previous destructive
      * action as a side effect. This method is final because we don't want the child classes to
      * embellish this method any more.
-     * @param action
+     * @param action the action to register.
      */
-    private final void registerDestructiveAction(DestructiveAction action) {
+    private void registerDestructiveAction(DestructiveAction action) {
         // TODO(viki): This is not a good idea. The best solution is for clients to request a
         // destructive action from the controller and for the controller to own the action. This is
         // a half-way solution while refactoring DestructiveAction.
         destroyPending(action);
-        return;
     }
 
     @Override
@@ -3010,7 +3108,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param target the conversations to act upon.
      * @return a {@link DestructiveAction} that performs the specified action.
      */
-    private final DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
+    private DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
             boolean batch) {
         return new ConversationAction(action, target, batch);
     }
@@ -3032,7 +3130,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         /**
          * Create a new folder destruction object to act on the given conversations.
-         * @param target
+         * @param target conversations to act upon.
          */
         private FolderDestruction(final Collection<Conversation> target,
                 final Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
@@ -3114,9 +3212,8 @@ public abstract class AbstractActivityController implements ActivityController {
     public final DestructiveAction getDeferredFolderChange(Collection<Conversation> target,
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
             boolean showUndo) {
-        final DestructiveAction da = new FolderDestruction(target, folders, isDestructive, isBatch,
+        return new FolderDestruction(target, folders, isDestructive, isBatch,
                 showUndo, R.id.change_folder);
-        return da;
     }
 
     @Override
@@ -3362,8 +3459,8 @@ public abstract class AbstractActivityController implements ActivityController {
      * Sets the listener for the positive action on a confirmation dialog.  Since only a single
      * confirmation dialog can be shown, this overwrites the previous listener.  It is safe to
      * unset the listener; in which case action should be set to -1.
-     * @param listener
-     * @param action
+     * @param listener the listener that will perform the task for this dialog's positive action.
+     * @param action the action that created this dialog.
      */
     private void setListener(AlertDialog.OnClickListener listener, final int action){
         mDialogListener = listener;
@@ -3399,5 +3496,4 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         mDetachedConvUri = null;
     }
-
 }
