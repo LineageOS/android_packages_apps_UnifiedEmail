@@ -24,7 +24,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.DataSetObserver;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -98,6 +97,7 @@ public final class FolderListFragment extends ListFragment implements
     private FolderObserver mFolderObserver = null;
     /** Listen for account changes. */
     private AccountObserver mAccountObserver = null;
+
     /** Listen to changes to list of all accounts */
     private AllAccountObserver mAllAccountObserver = null;
     /**
@@ -113,37 +113,6 @@ public final class FolderListFragment extends ListFragment implements
 
     /** List of all accounts currently known */
     private Account[] mAllAccounts;
-
-    /**
-     * Listens to folder changes from the controller and updates state accordingly.
-     */
-    private final class FolderObserver extends DataSetObserver {
-        @Override
-        public void onChanged() {
-            if (mActivity == null) {
-                return;
-            }
-            final FolderController controller = mActivity.getFolderController();
-            if (controller == null) {
-                return;
-            }
-            setSelectedFolder(controller.getFolder());
-        }
-    }
-
-    private final class AccountObserver extends DataSetObserver {
-        @Override
-        public void onChanged() {
-            if (mActivity == null) {
-                return;
-            }
-            final AccountController controller = mActivity.getAccountController();
-            if (controller == null) {
-                return;
-            }
-            setSelectedAccount(controller.getAccount());
-        }
-    }
 
     private final class AllAccountObserver extends DataSetObserver {
         @Override
@@ -214,18 +183,26 @@ public final class FolderListFragment extends ListFragment implements
         mConversationListCallback = mActivity.getListHandler();
         final FolderController controller = mActivity.getFolderController();
         // Listen to folder changes in the future
-        mFolderObserver = new FolderObserver();
+        mFolderObserver = new FolderObserver() {
+            @Override
+            public void onChanged(Folder newFolder) {
+                setSelectedFolder(newFolder);
+            }
+        };
         if (controller != null) {
             // Only register for selected folder updates if we have a controller.
-            controller.registerFolderObserver(mFolderObserver);
-            mCurrentFolderForUnreadCheck = controller.getFolder();
+            mCurrentFolderForUnreadCheck = mFolderObserver.initialize(controller);
         }
         final AccountController accountController = mActivity.getAccountController();
+        mAccountObserver = new AccountObserver() {
+            @Override
+            public void onChanged(Account newAccount) {
+                setSelectedAccount(newAccount);
+            }
+        };
         if (accountController != null) {
             // Current account and its observer.
-            mAccountObserver = new AccountObserver();
-            accountController.registerAccountObserver(mAccountObserver);
-            mCurrentAccount = accountController.getAccount();
+            mCurrentAccount = mAccountObserver.initialize(accountController);
             // List of all accounts and its observer.
             mAllAccountObserver = new AllAccountObserver();
             accountController.registerAllAccountObserver(mAllAccountObserver);
@@ -320,18 +297,15 @@ public final class FolderListFragment extends ListFragment implements
         // Clear the adapter.
         setListAdapter(null);
         if (mFolderObserver != null) {
-            final FolderController controller = mActivity.getFolderController();
-            if (controller != null) {
-                controller.unregisterFolderObserver(mFolderObserver);
-                mFolderObserver = null;
-            }
+            mFolderObserver.unregisterAndDestroy();
+            mFolderObserver = null;
+        }
+        if (mAccountObserver != null) {
+            mAccountObserver.unregisterAndDestroy();
+            mAccountObserver = null;
         }
         final AccountController controller = mActivity.getAccountController();
         if (controller != null) {
-            if (mAccountObserver != null) {
-                controller.unregisterAccountObserver(mAccountObserver);
-                mAccountObserver = null;
-            }
             if (mAllAccountObserver != null) {
                 controller.unregisterAllAccountObserver(mAllAccountObserver);
                 mAllAccountObserver = null;

@@ -232,6 +232,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private final DataSetObservable mRecentFolderObservers = new Observable("RecentFolder");
     /** Listeners that are interested in changes to the list of all accounts. */
     private final DataSetObservable mAllAccountObservers = new Observable("AllAccounts");
+    /** Listeners that are interested in changes to the current folder. */
+    private final DataSetObservable mFolderObservable = new Observable("CurrentFolder");
 
     /**
      * Selected conversations, if any.
@@ -259,8 +261,6 @@ public abstract class AbstractActivityController implements ActivityController {
     private final FolderLoads mFolderCallbacks = new FolderLoads();
     /** Object that listens to all LoaderCallbacks that result in {@link Account} creation. */
     private final AccountLoads mAccountCallbacks = new AccountLoads();
-
-    private final DataSetObservable mFolderObservable = new DataSetObservable();
 
     /**
      * Matched addresses that must be shielded from users because they are temporary. Even though
