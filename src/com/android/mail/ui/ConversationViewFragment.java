@@ -83,10 +83,12 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -192,6 +194,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private boolean mWebViewLoadedData;
 
     private long mWebViewLoadStartMs;
+
+    private final Map<String, String> mMessageTransforms = Maps.newHashMap();
 
     private final DataSetObserver mLoadedObserver = new DataSetObserver() {
         @Override
@@ -1216,6 +1220,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.getScrollYPercent");
                 return 0f;
             }
+        }
+
+        @SuppressWarnings("unused")
+        @JavascriptInterface
+        public void onMessageTransform(String messageDomId, String transformText) {
+            LogUtils.i(LOG_TAG, "TRANSFORM: (%s) %s", messageDomId, transformText);
+            mMessageTransforms.put(messageDomId, transformText);
         }
     }
 
