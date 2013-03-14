@@ -174,10 +174,9 @@ public final class OnePaneController extends AbstractActivityController {
      */
     private void resetAndLoadDrawer() {
         if(mDrawerContainer.isDrawerVisible(mDrawerPullout)) {
-            mDrawerContainer.setDrawerListener(new DrawerLayout.SimpleDrawerListener(){
+            mDrawerContainer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
                 @Override
-                public void onDrawerClosed(View drawerView)
-                {
+                public void onDrawerClosed(View drawerView) {
                     loadFolderList();
                     mDrawerContainer.setDrawerListener(null);
                 }
