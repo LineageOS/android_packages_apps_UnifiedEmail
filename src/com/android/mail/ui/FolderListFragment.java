@@ -37,9 +37,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.providers.Folder;
-import com.android.mail.providers.RecentFolderObserver;
-import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.*;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -63,8 +61,10 @@ public final class FolderListFragment extends ListFragment implements
     private boolean mIsSectioned;
     /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
     private ArrayList<Integer> mExcludedFolderTypes;
-    /** Callback into the parent */
-    private FolderListSelectionListener mListener;
+    /** Object that changes folders on our behalf. */
+    private FolderListSelectionListener mFolderChanger;
+    /** Object that changes accounts on our behalf */
+    private AccountController mAccountChanger;
 
     /** The currently selected folder (the folder being viewed).  This is never null. */
     private Uri mSelectedFolderUri = Uri.EMPTY;
@@ -77,8 +77,6 @@ public final class FolderListFragment extends ListFragment implements
     private Folder mParentFolder;
 
     private static final int FOLDER_LOADER_ID = 0;
-    public static final int MODE_DEFAULT = 0;
-    public static final int MODE_PICK = 1;
     /** Key to store {@link #mParentFolder}. */
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
     /** Key to store {@link #mFolderListUri}. */
@@ -97,14 +95,23 @@ public final class FolderListFragment extends ListFragment implements
     private View mEmptyView;
     /** Observer to wait for changes to the current folder so we can change the selected folder */
     private FolderObserver mFolderObserver = null;
+    /** Listen for account changes. */
+    private AccountObserver mAccountObserver = null;
+    /** Listen to changes to list of all accounts */
+    private AllAccountObserver mAllAccountObserver = null;
     /**
      * Type of currently selected folder: {@link FolderListAdapter.Item#FOLDER_SYSTEM},
      * {@link FolderListAdapter.Item#FOLDER_RECENT} or {@link FolderListAdapter.Item#FOLDER_USER}.
      */
-    // Setting to NOT_A_FOLDER = leaving uninitialized.
-    private int mSelectedFolderType = FolderListAdapter.Item.NOT_A_FOLDER;
+    // Setting to INERT_HEADER = leaving uninitialized.
+    private int mSelectedFolderType = FolderListAdapter.Item.INERT_HEADER;
     private Cursor mFutureData;
     private ConversationListCallbacks mConversationListCallback;
+    /** The current account according to the controller */
+    private Account mCurrentAccount;
+
+    /** List of all accounts currently known */
+    private Account[] mAllAccounts;
 
     /**
      * Listens to folder changes from the controller and updates state accordingly.
@@ -123,6 +130,33 @@ public final class FolderListFragment extends ListFragment implements
         }
     }
 
+    private final class AccountObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            if (mActivity == null) {
+                return;
+            }
+            final AccountController controller = mActivity.getAccountController();
+            if (controller == null) {
+                return;
+            }
+            setSelectedAccount(controller.getAccount());
+        }
+    }
+
+    private final class AllAccountObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            if (mActivity == null) {
+                return;
+            }
+            final AccountController controller = mActivity.getAccountController();
+            if (controller == null) {
+                return;
+            }
+            mAllAccounts = controller.getAllAccounts();
+        }
+    }
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
@@ -185,8 +219,21 @@ public final class FolderListFragment extends ListFragment implements
             controller.registerFolderObserver(mFolderObserver);
             mCurrentFolderForUnreadCheck = controller.getFolder();
         }
+        final AccountController accountController = mActivity.getAccountController();
+        if (accountController != null) {
+            // Current account and its observer.
+            mAccountObserver = new AccountObserver();
+            accountController.registerAccountObserver(mAccountObserver);
+            mCurrentAccount = accountController.getAccount();
+            // List of all accounts and its observer.
+            mAllAccountObserver = new AllAccountObserver();
+            accountController.registerAllAccountObserver(mAllAccountObserver);
+            mAllAccounts = accountController.getAllAccounts();
 
-        mListener = mActivity.getFolderListSelectionListener();
+            mAccountChanger = accountController;
+        }
+
+        mFolderChanger = mActivity.getFolderListSelectionListener();
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
             return;
@@ -197,7 +244,7 @@ public final class FolderListFragment extends ListFragment implements
             mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
             selectedFolder = mActivity.getHierarchyFolder();
         } else {
-            mCursorAdapter = new FolderListAdapter(R.layout.folder_item, mIsSectioned);
+            mCursorAdapter = new FolderListAdapter(mIsSectioned);
             selectedFolder = controller == null ? null : controller.getFolder();
         }
         // Is the selected folder fresher than the one we have restored from a bundle?
@@ -272,10 +319,21 @@ public final class FolderListFragment extends ListFragment implements
         // Clear the adapter.
         setListAdapter(null);
         if (mFolderObserver != null) {
-            FolderController controller = mActivity.getFolderController();
+            final FolderController controller = mActivity.getFolderController();
             if (controller != null) {
                 controller.unregisterFolderObserver(mFolderObserver);
                 mFolderObserver = null;
+            }
+        }
+        final AccountController controller = mActivity.getAccountController();
+        if (controller != null) {
+            if (mAccountObserver != null) {
+                controller.unregisterAccountObserver(mAccountObserver);
+                mAccountObserver = null;
+            }
+            if (mAllAccountObserver != null) {
+                controller.unregisterAllAccountObserver(mAllAccountObserver);
+                mAllAccountObserver = null;
             }
         }
         super.onDestroyView();
@@ -283,20 +341,29 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        viewFolder(position);
+        viewFolderOrChangeAccount(position);
     }
 
     /**
      * Display the conversation list from the folder at the position given.
-     * @param position
+     * @param position a zero indexed position into the list.
      */
-    private void viewFolder(int position) {
+    private void viewFolderOrChangeAccount(int position) {
         final Object item = getListAdapter().getItem(position);
         final Folder folder;
         if (item instanceof FolderListAdapter.Item) {
             final FolderListAdapter.Item folderItem = (FolderListAdapter.Item) item;
-            folder = mCursorAdapter.getFullFolder(folderItem);
-            mSelectedFolderType = folderItem.mFolderType;
+            // Could be a folder or an account.
+            if (mCursorAdapter.getItemType(folderItem) == FolderListAdapter.Item.VIEW_ACCOUNT) {
+                // Account, so switch.
+                folder = null;
+                final Account account = mCursorAdapter.getFullAccount(folderItem);
+                mAccountChanger.changeAccount(account);
+            } else {
+                // Folder type, so change folders only.
+                folder = mCursorAdapter.getFullFolder(folderItem);
+                mSelectedFolderType = folderItem.mFolderType;
+            }
         } else if (item instanceof Folder) {
             folder = (Folder) item;
         } else {
@@ -309,7 +376,7 @@ public final class FolderListFragment extends ListFragment implements
             // update its parent!
             folder.parent = folder.equals(mParentFolder) ? null : mParentFolder;
             // Go to the conversation list for this folder.
-            mListener.onFolderSelected(folder);
+            mFolderChanger.onFolderSelected(folder);
         } else {
             LogUtils.d(LOG_TAG, "FolderListFragment unable to get a full fledged folder" +
                     " to hand to the listener for position %d", position);
@@ -360,8 +427,16 @@ public final class FolderListFragment extends ListFragment implements
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
         /** Update the folder list cursor with the cursor given here. */
         void setCursor(Cursor cursor);
-        /** Get the cursor associated with this adapter **/
+        /**
+         * Given an item, find the type of the item, which is either {@link
+         * FolderListAdapter.Item#VIEW_FOLDER} or {@link FolderListAdapter.Item#VIEW_ACCOUNT}
+         * @return the type of the item.
+         */
+        int getItemType(FolderListAdapter.Item item);
+        /** Get the folder associated with this item **/
         Folder getFullFolder(FolderListAdapter.Item item);
+        /** Get the account associated with this item **/
+        Account getFullAccount(FolderListAdapter.Item item);
         /** Remove all observers and destroy the object. */
         void destroy();
         /** Notifies the adapter that the data has changed. */
@@ -389,41 +464,67 @@ public final class FolderListFragment extends ListFragment implements
         /** Cursor into the folder list. This might be null. */
         private Cursor mCursor = null;
 
-        /** A union of either a folder or a resource string */
+        /** An account, a system folder, a recent folder, or a header (a resource string) */
         private class Item {
             public int mPosition;
             public final Folder mFolder;
+            public final Account mAccount;
             public final int mResource;
-            /** Either {@link #VIEW_FOLDER} or {@link #VIEW_HEADER} */
+            /** Either {@link #VIEW_ACCOUNT}, {@link #VIEW_FOLDER} or {@link #VIEW_HEADER} */
             public final int mType;
             /** A normal folder, also a child, if a parent is specified. */
             private static final int VIEW_FOLDER = 0;
             /** A text-label which serves as a header in sectioned lists. */
             private static final int VIEW_HEADER = 1;
+            /** An account object, which allows switching accounts rather than folders. */
+            private static final int VIEW_ACCOUNT = 2;
 
             /**
              * Either {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or {@link #FOLDER_USER} when
-             * {@link #mType} is {@link #VIEW_FOLDER}, and {@link #NOT_A_FOLDER} otherwise.
+             * {@link #mType} is {@link #VIEW_FOLDER}, or an {@link #ACCOUNT} in the case of
+             * accounts, and {@link #INERT_HEADER} otherwise.
              */
             public final int mFolderType;
-            private static final int NOT_A_FOLDER = 0;
+            /** An unclickable text-header visually separating the different types. */
+            private static final int INERT_HEADER = 0;
+            /** A system-defined folder: Inbox/Drafts, ...*/
             private static final int FOLDER_SYSTEM = 1;
+            /** A folder from whom a conversation was recently viewed */
             private static final int FOLDER_RECENT = 2;
+            /** A user created folder */
             private static final int FOLDER_USER = 3;
+            /** An entry for the accounts the user has on the device. */
+            private static final int ACCOUNT = 4;
+            /** User has more than two accounts, this will expand all the accounts. */
+//            private static final int MORE_ACCOUNTS = 5;
 
             /**
              * Create a folder item with the given type.
-             * @param folder
+             * @param folder a folder that this item represents
              * @param folderType one of {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or
              * {@link #FOLDER_USER}
              */
             private Item(Folder folder, int folderType, int cursorPosition) {
                 mFolder = folder;
+                mAccount = null;
                 mResource = -1;
                 mType = VIEW_FOLDER;
                 mFolderType = folderType;
                 mPosition = cursorPosition;
             }
+
+            /**
+             * Creates an item from an account.
+             * @param account an account that this item represents.
+             */
+            private Item(Account account) {
+                mFolder = null;
+                mType = VIEW_ACCOUNT;
+                mResource = -1;
+                mFolderType = ACCOUNT;
+                mAccount = account;
+            }
+
             /**
              * Create a header item with a string resource.
              * @param resource the string resource: R.string.all_folders_heading
@@ -432,24 +533,66 @@ public final class FolderListFragment extends ListFragment implements
                 mFolder = null;
                 mResource = resource;
                 mType = VIEW_HEADER;
-                mFolderType = NOT_A_FOLDER;
+                mFolderType = INERT_HEADER;
+                mAccount = null;
             }
 
-            private final View getView(int position, View convertView, ViewGroup parent) {
-                if (mType == VIEW_FOLDER) {
-                    return getFolderView(position, convertView, parent);
-                } else {
-                    return getHeaderView(position, convertView, parent);
+            private View getView(int position, View convertView, ViewGroup parent) {
+                final View result;
+                switch (mType) {
+                    case VIEW_FOLDER:
+                        result = getFolderView(position, convertView, parent);
+                        break;
+                    case VIEW_HEADER:
+                        result = getHeaderView(position, convertView, parent);
+                        break;
+                    case VIEW_ACCOUNT:
+                        result = getAccountView(position, convertView, parent);
+                        break;
+                    default:
+                        LogUtils.wtf(LOG_TAG, "Item.getView(%d) for an invalid type!", mType);
+                        result = null;
                 }
+                return result;
+            }
+
+            /**
+             * Return a view for an account object.
+             * @param position a zero indexed position in to the list.
+             * @param convertView a view, possibly null, to be recycled.
+             * @param parent the parent viewgroup to attach to.
+             * @return a view to display at this position.
+             */
+            private View getAccountView(int position, View convertView, ViewGroup parent) {
+                // Shoe-horn an account object into a Folder Item for now.
+                // TODO(viki): Stop this ugly shoe-horning and use a real layout.
+                final FolderItemView folderItemView;
+                if (convertView != null) {
+                    folderItemView = (FolderItemView) convertView;
+                } else {
+                    folderItemView =
+                            (FolderItemView) mInflater.inflate(R.layout.folder_item, null, false);
+                }
+                // Temporary. Ideally we want a totally different item.
+                folderItemView.bind(mAccount, mActivity);
+                if (mListView != null) {
+                    final boolean isSelected = false;
+                    mListView.setItemChecked(position, isSelected);
+                }
+                View v = folderItemView.findViewById(R.id.color_block);
+                v.setBackgroundColor(mAccount.color);
+                v = folderItemView.findViewById(R.id.folder_icon);
+                v.setVisibility(View.GONE);
+                return folderItemView;
             }
 
             /**
              * Returns a text divider between sections.
-             * @param convertView
-             * @param parent
+             * @param convertView a previous view, perhaps null
+             * @param parent the parent of this view
              * @return a text header at the given position.
              */
-            private final View getHeaderView(int position, View convertView, ViewGroup parent) {
+            private View getHeaderView(int position, View convertView, ViewGroup parent) {
                 final TextView headerView;
                 if (convertView != null) {
                     headerView = (TextView) convertView;
@@ -464,12 +607,12 @@ public final class FolderListFragment extends ListFragment implements
             /**
              * Return a folder: either a parent folder or a normal (child or flat)
              * folder.
-             * @param position
-             * @param convertView
-             * @param parent
+             * @param position a zero indexed position into the top level list.
+             * @param convertView a view, possibly null, to be recycled.
+             * @param parent the parent hosting this view.
              * @return a view showing a folder at the given position.
              */
-            private final View getFolderView(int position, View convertView, ViewGroup parent) {
+            private View getFolderView(int position, View convertView, ViewGroup parent) {
                 final FolderItemView folderItemView;
                 if (convertView != null) {
                     folderItemView = (FolderItemView) convertView;
@@ -491,7 +634,7 @@ public final class FolderListFragment extends ListFragment implements
                     }
                 }
                 Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
-                Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_box));
+                Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_icon));
                 return folderItemView;
             }
         }
@@ -499,10 +642,9 @@ public final class FolderListFragment extends ListFragment implements
         /**
          * Creates a {@link FolderListAdapter}.This is a flat folder list of all the folders for the
          * given account.
-         * @param layout
          * @param isSectioned TODO(viki):
          */
-        public FolderListAdapter(int layout, boolean isSectioned) {
+        public FolderListAdapter(boolean isSectioned) {
             super();
             mInflater = LayoutInflater.from(mActivity.getActivityContext());
             mIsSectioned = isSectioned;
@@ -521,8 +663,8 @@ public final class FolderListFragment extends ListFragment implements
 
         @Override
         public int getViewTypeCount() {
-            // Headers and folders
-            return 2;
+            // Accounts, headers and folders
+            return 3;
         }
 
         @Override
@@ -549,10 +691,10 @@ public final class FolderListFragment extends ListFragment implements
 
         /**
          * Returns all the recent folders from the list given here. Safe to call with a null list.
-         * @param recentList
+         * @param recentList a list of all recently accessed folders.
          * @return a valid list of folders, which are all recent folders.
          */
-        private final List<Folder> getRecentFolders(RecentFolderList recentList) {
+        private List<Folder> getRecentFolders(RecentFolderList recentList) {
             final List<Folder> folderList = new ArrayList<Folder>();
             if (recentList == null) {
                 return folderList;
@@ -576,6 +718,12 @@ public final class FolderListFragment extends ListFragment implements
                 return;
             }
             mItemList.clear();
+            if (mAllAccounts != null) {
+                // Add the accounts at the top.
+                for (final Account c: mAllAccounts){
+                    mItemList.add(new Item(c));
+                }
+            }
             if (!mIsSectioned) {
                 // Adapter for a flat list. Everything is a FOLDER_USER, and there are no headers.
                 do {
@@ -654,6 +802,11 @@ public final class FolderListFragment extends ListFragment implements
         }
 
         @Override
+        public int getItemType(Item item) {
+            return item.mType;
+        }
+
+        @Override
         public Folder getFullFolder(Item folderItem) {
             if (folderItem.mFolderType == Item.FOLDER_RECENT) {
                 return folderItem.mFolder;
@@ -670,6 +823,11 @@ public final class FolderListFragment extends ListFragment implements
                     return null;
                 }
             }
+        }
+
+        @Override
+        public Account getFullAccount(Item item) {
+            return item.mAccount;
         }
     }
 
@@ -726,7 +884,8 @@ public final class FolderListFragment extends ListFragment implements
                     folderItemView.overrideUnreadCount(mCurrentFolderForUnreadCheck.unreadCount);
                 }
             }
-            Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.folder_box));
+            Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.color_block));
+            Folder.setIcon(folder, (ImageView) folderItemView.findViewById(R.id.folder_icon));
             return folderItemView;
         }
 
@@ -753,6 +912,12 @@ public final class FolderListFragment extends ListFragment implements
         }
 
         @Override
+        public int getItemType(FolderListAdapter.Item item) {
+            // Always returns folders for now.
+            return FolderListAdapter.Item.VIEW_FOLDER;
+        }
+
+        @Override
         public Folder getFullFolder(FolderListAdapter.Item folderItem) {
             int pos = folderItem.mPosition;
             if (mCursor == null || mCursor.isClosed()) {
@@ -766,6 +931,11 @@ public final class FolderListFragment extends ListFragment implements
             } else {
                 return null;
             }
+        }
+
+        @Override
+        public Account getFullAccount(FolderListAdapter.Item item) {
+            return null;
         }
     }
 
@@ -781,7 +951,7 @@ public final class FolderListFragment extends ListFragment implements
         }
         // If the current folder changed, we don't have a selected folder type anymore.
         if (!folder.uri.equals(mSelectedFolderUri)) {
-            mSelectedFolderType = FolderListAdapter.Item.NOT_A_FOLDER;
+            mSelectedFolderType = FolderListAdapter.Item.INERT_HEADER;
         }
         mCurrentFolderForUnreadCheck = folder;
         mSelectedFolderUri = folder.uri;
@@ -793,15 +963,23 @@ public final class FolderListFragment extends ListFragment implements
 
     /**
      * Sets the selected folder type safely.
-     * @param folder
+     * @param folder folder to set to.
      */
     private void setSelectedFolderType(Folder folder) {
         // If it is set already, assume it is correct.
-        if (mSelectedFolderType != FolderListAdapter.Item.NOT_A_FOLDER) {
+        if (mSelectedFolderType != FolderListAdapter.Item.INERT_HEADER) {
             return;
         }
         mSelectedFolderType = folder.isProviderFolder() ? FolderListAdapter.Item.FOLDER_SYSTEM
                 : FolderListAdapter.Item.FOLDER_USER;
+    }
+
+    /**
+     * Sets the current account to the one provided here.
+     * @param account the current account to set to.
+     */
+    private void setSelectedAccount(Account account){
+        mCurrentAccount = account;
     }
 
     public interface FolderListSelectionListener {

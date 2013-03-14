@@ -43,8 +43,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         conv.addMessage(info);
         ArrayList<SpannableString> strings = new ArrayList<SpannableString>();
         ArrayList<String> emailDisplays = null;
-        SendersView
-                .format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays, null);
+        SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
+                null, false);
         assertEquals(1, strings.size());
         assertEquals(strings.get(0).toString(), "me");
 
@@ -52,8 +52,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         MessageInfo info2 = new MessageInfo(read, starred, "", -1, null);
         strings.clear();
         conv2.addMessage(info2);
-        SendersView
-                .format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays, null);
+        SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
+                null, false);
         assertEquals(1, strings.size());
         assertEquals(strings.get(0).toString(), "me");
 
@@ -63,8 +63,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         MessageInfo info4 = new MessageInfo(read, starred, "", -1, null);
         conv3.addMessage(info4);
         strings.clear();
-        SendersView
-                .format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays, null);
+        SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
+                null, false);
         assertEquals(1, strings.size());
         assertEquals(strings.get(0).toString(), "me");
     }
@@ -80,8 +80,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         conv.addMessage(info);
         MessageInfo info2 = new MessageInfo(read, starred, sender, -1, null);
         conv.addMessage(info2);
-        SendersView
-                .format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays, null);
+        SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
+                null, false);
         // We actually don't remove the item, we just set it to null, so count
         // just the non-null items.
         int count = 0;

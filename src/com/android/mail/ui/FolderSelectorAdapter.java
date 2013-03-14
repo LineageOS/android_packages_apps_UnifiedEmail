@@ -228,7 +228,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
             display.setText(folderDisplay);
         }
         colorBlock = view.findViewById(R.id.color_block);
-        iconView = (ImageView) view.findViewById(R.id.folder_box);
+        iconView = (ImageView) view.findViewById(R.id.folder_icon);
         Folder.setFolderBlockColor(folder, colorBlock);
         Folder.setIcon(folder, iconView);
         return view;

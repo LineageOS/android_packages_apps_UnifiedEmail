@@ -26,11 +26,11 @@ import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -59,12 +59,12 @@ import android.webkit.WebView;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.compose.ComposeActivity;
+import com.android.mail.perf.SimpleTimer;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
-import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.FeedbackEnabledActivity;
 
 import org.json.JSONObject;
@@ -97,7 +97,6 @@ public class Utils {
     public static final String EXTRA_FOLDER_URI = "folderUri";
     public static final String EXTRA_COMPOSE_URI = "composeUri";
     public static final String EXTRA_CONVERSATION = "conversationUri";
-    public static final String EXTRA_FOLDER = "folder";
 
     /** Extra tag for debugging the blank fragment problem. */
     public static final String VIEW_DEBUGGING_TAG = "MailBlankFragment";
@@ -119,7 +118,13 @@ public class Utils {
 
     private static final int SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH = 600;
 
+    private static final String APP_VERSION_QUERY_PARAMETER = "appVersion";
+
     private static final String LOG_TAG = LogTag.getLogTag();
+
+    public static final boolean ENABLE_CONV_LOAD_TIMER = false;
+    public static final SimpleTimer sConvLoadTimer =
+            new SimpleTimer(ENABLE_CONV_LOAD_TIMER).withSessionName("ConvLoadTimer");
 
     public static boolean isRunningJellybeanOrLater() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
@@ -661,14 +666,15 @@ public class Utils {
      * @param account
      * @return
      */
-    public static Intent createViewConversationIntent(Conversation conversation, Folder folder,
-            Account account) {
+    public static Intent createViewConversationIntent(final Context context,
+            Conversation conversation, final Uri folderUri, Account account) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        intent.setDataAndType(conversation.uri, account.mimeType);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        intent.setDataAndType(appendVersionQueryParameter(context, conversation.uri),
+                account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
-        intent.putExtra(Utils.EXTRA_FOLDER, Folder.toString(folder));
+        intent.putExtra(Utils.EXTRA_FOLDER_URI, folderUri);
         intent.putExtra(Utils.EXTRA_CONVERSATION, conversation);
         return intent;
     }
@@ -680,18 +686,19 @@ public class Utils {
      * @param account
      * @return
      */
-    public static Intent createViewFolderIntent(Folder folder, Account account) {
-        if (folder == null || account == null) {
-            LogUtils.wtf(
-                    LOG_TAG, "Utils.createViewFolderIntent(%s,%s): Bad input", folder, account);
+    public static Intent createViewFolderIntent(final Context context, final Uri folderUri,
+            Account account) {
+        if (folderUri == null || account == null) {
+            LogUtils.wtf(LOG_TAG, "Utils.createViewFolderIntent(%s,%s): Bad input", folderUri,
+                    account);
             return null;
         }
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        intent.setDataAndType(folder.uri, account.mimeType);
+        intent.setDataAndType(appendVersionQueryParameter(context, folderUri), account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
-        intent.putExtra(Utils.EXTRA_FOLDER, Folder.toString(folder));
+        intent.putExtra(Utils.EXTRA_FOLDER_URI, folderUri);
         return intent;
     }
 
@@ -825,17 +832,18 @@ public class Utils {
      * Show the settings screen for the supplied account.
      */
      public static void showFolderSettings(Context context, Account account, Folder folder) {
-         if (account == null || folder == null) {
-             LogUtils.e(LOG_TAG, "Invalid attempt to show folder settings. account: %s folder: %s",
-                     account, folder);
-             return;
-         }
-         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
+        if (account == null || folder == null) {
+            LogUtils.e(LOG_TAG, "Invalid attempt to show folder settings. account: %s folder: %s",
+                    account, folder);
+            return;
+        }
+        final Intent settingsIntent = new Intent(Intent.ACTION_EDIT,
+                appendVersionQueryParameter(context, account.settingsIntentUri));
 
-         settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
-         settingsIntent.putExtra(EditSettingsExtras.EXTRA_FOLDER, folder);
-         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-         context.startActivity(settingsIntent);
+        settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
+        settingsIntent.putExtra(EditSettingsExtras.EXTRA_FOLDER, folder);
+        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        context.startActivity(settingsIntent);
     }
 
     /**
@@ -859,7 +867,7 @@ public class Utils {
      */
     public static void sendFeedback(FeedbackEnabledActivity activity, Account account,
             boolean reportingProblem) {
-        if (activity != null && account != null && account.sendFeedbackIntentUri != null) {
+        if (activity != null && account != null && !isEmpty(account.sendFeedbackIntentUri)) {
             final Bundle optionalExtras = new Bundle(2);
             optionalExtras.putBoolean(
                     UIProvider.SendFeedbackExtras.EXTRA_REPORTING_PROBLEM, reportingProblem);
@@ -1227,5 +1235,20 @@ public class Utils {
             final Context context, final Account account, final Uri messageUri) {
         final Intent intent = ComposeActivity.createForwardIntent(context, account, messageUri);
         return intent;
+    }
+
+    public static Uri appendVersionQueryParameter(final Context context, final Uri uri) {
+        int appVersion = 0;
+
+        try {
+            final PackageInfo packageInfo =
+                    context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            appVersion = packageInfo.versionCode;
+        } catch (final NameNotFoundException e) {
+            LogUtils.wtf(LOG_TAG, e, "Couldn't find our own PackageInfo");
+        }
+
+        return uri.buildUpon().appendQueryParameter(APP_VERSION_QUERY_PARAMETER,
+                Integer.toString(appVersion)).build();
     }
 }

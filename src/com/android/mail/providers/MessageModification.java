@@ -156,8 +156,6 @@ public class MessageModification {
     }
 
     public static void putAttachments(ContentValues values, List<Attachment> attachments) {
-        values.put(
-                MessageColumns.JOINED_ATTACHMENT_INFOS, Attachment.toJSONArray(attachments));
         values.put(MessageColumns.ATTACHMENTS,  Attachment.toJSONArray(attachments));
     }
 }

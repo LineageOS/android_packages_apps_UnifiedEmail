@@ -20,7 +20,9 @@ import com.android.mail.R;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -30,6 +32,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.DragEvent;
@@ -58,6 +61,7 @@ public class FolderItemView extends RelativeLayout {
     private Folder mFolder;
     private TextView mFolderTextView;
     private TextView mUnreadCountTextView;
+    private TextView mUnseenCountTextView;
     private DropHandler mDropHandler;
     private ImageView mFolderParentIcon;
 
@@ -107,6 +111,7 @@ public class FolderItemView extends RelativeLayout {
         }
         mFolderTextView = (TextView)findViewById(R.id.name);
         mUnreadCountTextView = (TextView)findViewById(R.id.unread);
+        mUnseenCountTextView = (TextView)findViewById(R.id.unseen);
         mBackground = getBackground();
         mInitialFolderTextColor = mFolderTextView.getTextColors();
         mInitialUnreadCountTextColor = mUnreadCountTextView.getTextColors();
@@ -118,17 +123,43 @@ public class FolderItemView extends RelativeLayout {
         mDropHandler = dropHandler;
         mFolderTextView.setText(folder.name);
         mFolderParentIcon.setVisibility(mFolder.hasChildren ? View.VISIBLE : View.GONE);
-        setUnreadCount(Utils.getFolderUnreadDisplayCount(mFolder));
+        if (folder.type == FolderType.INBOX_SECTION && mFolder.unseenCount > 0) {
+            mUnreadCountTextView.setVisibility(View.GONE);
+            setUnseenCount(mFolder.getBackgroundColor(Color.BLACK), mFolder.unseenCount);
+        } else {
+            mUnseenCountTextView.setVisibility(View.GONE);
+            setUnreadCount(Utils.getFolderUnreadDisplayCount(mFolder));
+        }
+    }
+
+    public void bind(Account account, DropHandler dropHandler) {
+        mFolder = null;
+        mDropHandler = dropHandler;
+        mFolderTextView.setText(account.name);
+        mFolderParentIcon.setVisibility(View.GONE);
+        mUnreadCountTextView.setVisibility(View.GONE);
+        setUnseenCount(Color.BLACK, 0);
     }
 
     /**
      * Sets the unread count, taking care to hide/show the textview if the count is zero/non-zero.
-     * @param count
      */
-    private final void setUnreadCount(int count) {
+    private void setUnreadCount(int count) {
         mUnreadCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
         if (count > 0) {
             mUnreadCountTextView.setText(Utils.getUnreadCountString(getContext(), count));
+        }
+    }
+
+    /**
+     * Sets the unseen count, taking care to hide/show the textview if the count is zero/non-zero.
+     */
+    private void setUnseenCount(final int color, final int count) {
+        mUnseenCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+        if (count > 0) {
+            mUnseenCountTextView.setBackgroundColor(color);
+            mUnseenCountTextView.setText(
+                    getContext().getString(R.string.inbox_unseen_banner, count));
         }
     }
 
