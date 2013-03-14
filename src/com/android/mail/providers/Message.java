@@ -110,7 +110,7 @@ public class Message implements Parcelable {
     /**
      * @see UIProvider.MessageColumns#REF_MESSAGE_ID
      */
-    public String refMessageId;
+    public Uri refMessageUri;
     /**
      * @see UIProvider.MessageColumns#DRAFT_TYPE
      */
@@ -227,7 +227,7 @@ public class Message implements Parcelable {
         dest.writeString(bodyHtml);
         dest.writeString(bodyText);
         dest.writeInt(embedsExternalResources ? 1 : 0);
-        dest.writeString(refMessageId);
+        dest.writeParcelable(refMessageUri, 0);
         dest.writeInt(draftType);
         dest.writeInt(appendRefMessageContent ? 1 : 0);
         dest.writeInt(hasAttachments ? 1 : 0);
@@ -261,7 +261,7 @@ public class Message implements Parcelable {
         bodyHtml = in.readString();
         bodyText = in.readString();
         embedsExternalResources = in.readInt() != 0;
-        refMessageId = in.readString();
+        refMessageUri = in.readParcelable(null);
         draftType = in.readInt();
         appendRefMessageContent = in.readInt() != 0;
         hasAttachments = in.readInt() != 0;
@@ -322,7 +322,10 @@ public class Message implements Parcelable {
             bodyText = cursor.getString(UIProvider.MESSAGE_BODY_TEXT_COLUMN);
             embedsExternalResources = cursor
                     .getInt(UIProvider.MESSAGE_EMBEDS_EXTERNAL_RESOURCES_COLUMN) != 0;
-            refMessageId = cursor.getString(UIProvider.MESSAGE_REF_MESSAGE_ID_COLUMN);
+            final String refMessageUriStr =
+                    cursor.getString(UIProvider.MESSAGE_REF_MESSAGE_URI_COLUMN);
+            refMessageUri = !TextUtils.isEmpty(refMessageUriStr) ?
+                    Uri.parse(refMessageUriStr) : null;
             draftType = cursor.getInt(UIProvider.MESSAGE_DRAFT_TYPE_COLUMN);
             appendRefMessageContent = cursor
                     .getInt(UIProvider.MESSAGE_APPEND_REF_MESSAGE_CONTENT_COLUMN) != 0;
