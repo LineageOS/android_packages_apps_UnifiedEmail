@@ -24,6 +24,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.mail.ConversationListContext;
@@ -149,7 +150,7 @@ public final class OnePaneController extends AbstractActivityController {
     public void changeAccount(Account account) {
         super.changeAccount(account);
         mConversationListNeverShown = true;
-        loadFolderList();
+        resetAndLoadDrawer();
     }
 
     @Override
@@ -166,10 +167,35 @@ public final class OnePaneController extends AbstractActivityController {
         return mConversationListVisible;
     }
 
+    /**
+     * If drawer is open/visible (even partially), close it and replace the
+     * folder fragment upon closing the drawer. Otherwise, the drawer is closed
+     * and we can replace the folder list fragment without concern.
+     */
+    private void resetAndLoadDrawer() {
+        if(mDrawerContainer.isDrawerVisible(mDrawerPullout)) {
+            mDrawerContainer.setDrawerListener(new DrawerLayout.SimpleDrawerListener(){
+                @Override
+                public void onDrawerClosed(View drawerView)
+                {
+                    loadFolderList();
+                    mDrawerContainer.setDrawerListener(null);
+                }
+            });
+            mDrawerContainer.closeDrawers();
+        } else {
+            loadFolderList();
+        }
+    }
+
     @Override
     public void onViewModeChanged(int newMode) {
         super.onViewModeChanged(newMode);
-        mDrawerContainer.closeDrawers();
+
+        // When view mode changes, we should wait for drawer to close and
+        // repopulate folders.
+        resetAndLoadDrawer();
+
         // When entering conversation list mode, hide and clean up any currently visible
         // conversation.
         if (ViewMode.isListMode(newMode)) {
