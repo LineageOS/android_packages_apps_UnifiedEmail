@@ -71,11 +71,12 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
             // Currently, the number of adapters are assumed to match the
             // number of headers in the string array.
             mAdapter.addSection(new SystemFolderSelectorAdapter(context, foldersCursor,
-                    R.layout.single_folders_view, null, mCurrentFolder));
+                    R.layout.single_folders_view, headers[0], mCurrentFolder));
 
             // TODO(mindyp): we currently do not support frequently moved to
             // folders, at headers[1]; need to define what that means.*/
-            mAdapter.addSection(new HierarchicalFolderSelectorAdapter(context,
+            // TODO(pwestbro): determine if we need to call filterFolders
+            mAdapter.addSection(new UserFolderHierarchicalFolderSelectorAdapter(context,
                     AddableFolderSelectorAdapter.filterFolders(foldersCursor),
                     R.layout.single_folders_view, headers[2], mCurrentFolder));
             mBuilder.setAdapter(mAdapter, SingleFolderSelectionDialog.this);

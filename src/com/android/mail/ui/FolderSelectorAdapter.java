@@ -211,9 +211,9 @@ public class FolderSelectorAdapter extends BaseAdapter {
         if (view == null) {
             view = mInflater.inflate(mLayout, parent, false);
         }
-        FolderRow row = (FolderRow) getItem(position);
-        Folder folder = row.getFolder();
-        String folderDisplay = !TextUtils.isEmpty(folder.hierarchicalDesc) ?
+        final FolderRow row = (FolderRow) getItem(position);
+        final Folder folder = row.getFolder();
+        final String folderDisplay = !TextUtils.isEmpty(folder.hierarchicalDesc) ?
                 folder.hierarchicalDesc : folder.name;
         checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
         display = (TextView) view.findViewById(R.id.folder_name);
