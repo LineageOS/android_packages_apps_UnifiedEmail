@@ -274,21 +274,6 @@ function transformContent(el, docWidth, elWidth) {
         }
     }
 
-    // OK, that wasn't enough. Try further munging all <td> to override text wrapping.
-    //
-    // TODO: this is a risky transform that should not be attempted on sufficiently complex mail.
-    // (TBD how to measure that)
-    touched = addClassToElements(nodes, null /* mungeAll */, "munged2", actionLog);
-    if (touched) {
-        newWidth = el.scrollWidth;
-        console.log("ran td munger2 on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
-            + " docW=" + docWidth);
-        if (newWidth <= docWidth) {
-            console.log("munger succeeded, elapsed time=" + (Date.now() - start));
-            return;
-        }
-    }
-
     // If the transformations shrank the width significantly enough, leave them in place.
     // We figure that in those cases, the benefits outweight the risk of rendering artifacts.
     if ((elWidth - newWidth) / (elWidth - docWidth) > TRANSFORM_MINIMUM_EFFECTIVE_RATIO) {
