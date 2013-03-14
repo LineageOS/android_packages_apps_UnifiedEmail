@@ -30,6 +30,8 @@ var gScaleInfo;
  */
 TRANSFORM_MINIMUM_EFFECTIVE_RATIO = 0.7;
 
+var gTransformText = {};
+
 /**
  * Returns the page offset of an element.
  *
@@ -201,12 +203,23 @@ function transformContent(el, docWidth, elWidth) {
     // entry := [ undoFunction, undoFunctionThis, undoFunctionParamArray ]
     var actionLog = [];
     var node;
+    var done = false;
+    var msgId;
+    var transformText;
+    var existingText;
+    var textElement;
     var start;
     if (elWidth <= docWidth) {
         return;
     }
 
     start = Date.now();
+
+    if (el.parentElement.classList.contains("mail-message")) {
+        msgId = el.parentElement.id;
+        transformText = "[origW=" + elWidth + "/" + docWidth;
+    }
+
     // Try munging all divs or textareas with inline styles where the width
     // is wider than docWidth, and change it to be a max-width.
     touched = false;
@@ -216,58 +229,97 @@ function transformContent(el, docWidth, elWidth) {
         newWidth = el.scrollWidth;
         console.log("ran div-width munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
             + " docW=" + docWidth);
+        if (msgId) {
+            transformText += " DIV:newW=" + newWidth;
+        }
         if (newWidth <= docWidth) {
-            console.log("munger succeeded, elapsed time=" + (Date.now() - start));
-            return;
+            done = true;
         }
     }
 
-    // OK, that wasn't enough. Find images with widths and override their widths.
-    nodes = ENABLE_MUNGE_IMAGES ? el.querySelectorAll("img") : [];
-    touched = transformImages(nodes, docWidth, actionLog);
-    if (touched) {
-        newWidth = el.scrollWidth;
-        console.log("ran img munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
-            + " docW=" + docWidth);
-        if (newWidth <= docWidth) {
-            console.log("munger succeeded, elapsed time=" + (Date.now() - start));
-            return;
+    if (!done) {
+        // OK, that wasn't enough. Find images with widths and override their widths.
+        nodes = ENABLE_MUNGE_IMAGES ? el.querySelectorAll("img") : [];
+        touched = transformImages(nodes, docWidth, actionLog);
+        if (touched) {
+            newWidth = el.scrollWidth;
+            console.log("ran img munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
+                + " docW=" + docWidth);
+            if (msgId) {
+                transformText += " IMG:newW=" + newWidth;
+            }
+            if (newWidth <= docWidth) {
+                done = true;
+            }
         }
     }
 
-    // OK, that wasn't enough. Find tables with widths and override their widths.
-    nodes = ENABLE_MUNGE_TABLES ? el.querySelectorAll("table") : [];
-    touched = addClassToElements(nodes, shouldMungeTable, "munged",
-        actionLog);
-    if (touched) {
-        newWidth = el.scrollWidth;
-        console.log("ran table munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
-            + " docW=" + docWidth);
-        if (newWidth <= docWidth) {
-            console.log("munger succeeded, elapsed time=" + (Date.now() - start));
-            return;
+    if (!done) {
+        // OK, that wasn't enough. Find tables with widths and override their widths.
+        nodes = ENABLE_MUNGE_TABLES ? el.querySelectorAll("table") : [];
+        touched = addClassToElements(nodes, shouldMungeTable, "munged",
+            actionLog);
+        if (touched) {
+            newWidth = el.scrollWidth;
+            console.log("ran table munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
+                + " docW=" + docWidth);
+            if (msgId) {
+                transformText += " TABLE:newW=" + newWidth;
+            }
+            if (newWidth <= docWidth) {
+                done = true;
+            }
         }
     }
 
-    // OK, that wasn't enough. Try munging all <td> to override any width and nowrap set.
-    nodes = ENABLE_MUNGE_TABLES ? el.querySelectorAll("td") : [];
-    touched = addClassToElements(nodes, null /* mungeAll */, "munged",
-        actionLog);
-    if (touched) {
-        newWidth = el.scrollWidth;
-        console.log("ran td munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
-            + " docW=" + docWidth);
-        if (newWidth <= docWidth) {
-            console.log("munger succeeded, elapsed time=" + (Date.now() - start));
-            return;
+    if (!done) {
+        // OK, that wasn't enough. Try munging all <td> to override any width and nowrap set.
+        nodes = ENABLE_MUNGE_TABLES ? el.querySelectorAll("td") : [];
+        touched = addClassToElements(nodes, null /* mungeAll */, "munged",
+            actionLog);
+        if (touched) {
+            newWidth = el.scrollWidth;
+            console.log("ran td munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
+                + " docW=" + docWidth);
+            if (msgId) {
+                transformText += " TD:newW=" + newWidth;
+            }
+            if (newWidth <= docWidth) {
+                done = true;
+            }
         }
     }
 
     // If the transformations shrank the width significantly enough, leave them in place.
     // We figure that in those cases, the benefits outweight the risk of rendering artifacts.
-    if ((elWidth - newWidth) / (elWidth - docWidth) > TRANSFORM_MINIMUM_EFFECTIVE_RATIO) {
-        console.log("transform(s) deemed effective enough. elapsed time="
-            + (Date.now() - start));
+    if (!done && (elWidth - newWidth) / (elWidth - docWidth) >
+            TRANSFORM_MINIMUM_EFFECTIVE_RATIO) {
+        console.log("transform(s) deemed effective enough");
+        done = true;
+    }
+
+    if (done) {
+        if (msgId) {
+            transformText += "]";
+            existingText = gTransformText[msgId];
+            if (!existingText) {
+                transformText = "Message transforms: " + transformText;
+            } else {
+                transformText = existingText + " " + transformText;
+            }
+            gTransformText[msgId] = transformText;
+            window.mail.onMessageTransform(msgId, transformText);
+            textElement = el.firstChild;
+            if (!textElement.classList || !textElement.classList.contains("transform-text")) {
+                textElement = document.createElement("div");
+                textElement.classList.add("transform-text");
+                textElement.style.fontSize = "10px";
+                textElement.style.color = "#ccc";
+                el.insertBefore(textElement, el.firstChild);
+            }
+            textElement.innerHTML = transformText + "<br>";
+        }
+        console.log("munger(s) succeeded, elapsed time=" + (Date.now() - start));
         return;
     }
 
