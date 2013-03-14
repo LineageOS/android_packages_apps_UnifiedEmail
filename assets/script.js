@@ -299,6 +299,9 @@ function addClassToElements(nodes, conditionFn, classToAdd, actionLog) {
     for (i = 0, len = nodes.length; i < len; i++) {
         node = nodes[i];
         if (!conditionFn || conditionFn(node)) {
+            if (node.classList.contains(classToAdd)) {
+                continue;
+            }
             node.classList.add(classToAdd);
             added = true;
             actionLog.push([node.classList.remove, node.classList, [classToAdd]]);
