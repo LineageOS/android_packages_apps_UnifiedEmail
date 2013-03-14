@@ -116,8 +116,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
-        AttachmentAddedOrDeletedListener, OnAccountChangedListener, LoaderManager.LoaderCallbacks<Cursor>,
-        TextView.OnEditorActionListener, FeedbackEnabledActivity {
+        AttachmentAddedOrDeletedListener, OnAccountChangedListener,
+        LoaderManager.LoaderCallbacks<Cursor>, TextView.OnEditorActionListener,
+        FeedbackEnabledActivity {
     // Identifiers for which type of composition this is
     protected static final int COMPOSE = -1;
     protected static final int REPLY = 0;
@@ -205,6 +206,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_MESSAGE = "extraMessage";
     private static final int REFERENCE_MESSAGE_LOADER = 0;
     private static final int LOADER_ACCOUNT_CURSOR = 1;
+    private static final int INIT_DRAFT_USING_REFERENCE_MESSAGE = 2;
     private static final String EXTRA_SELECTED_ACCOUNT = "selectedAccount";
     private static final String TAG_WAIT = "wait-fragment";
     private static final String MIME_TYPE_PHOTO = "image/*";
@@ -262,6 +264,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private RecipientTextWatcher mCcListener;
     private RecipientTextWatcher mBccListener;
     private Uri mRefMessageUri;
+    private boolean mShowQuotedText = false;
     private Bundle mSavedInstanceState;
 
 
@@ -366,7 +369,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Intent intent = getIntent();
         Message message;
         ArrayList<AttachmentPreview> previews;
-        boolean showQuotedText = false;
+        mShowQuotedText = false;
         int action;
         // Check for any of the possibly supplied accounts.;
         Account account = null;
@@ -418,14 +421,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         if (mRefMessageUri != null) {
-            // We have a referenced message that we must look up.
-            getLoaderManager().initLoader(REFERENCE_MESSAGE_LOADER, null, this);
+            mShowQuotedText = true;
+            mComposeMode = action;
+            getLoaderManager().initLoader(INIT_DRAFT_USING_REFERENCE_MESSAGE, null, this);
             return;
         } else if (message != null && action != EDIT_DRAFT) {
             initFromDraftMessage(message);
             initQuotedTextFromRefMessage(mRefMessage, action);
             showCcBcc(savedInstanceState);
-            showQuotedText = message.appendRefMessageContent;
+            mShowQuotedText = message.appendRefMessageContent;
         } else if (action == EDIT_DRAFT) {
             initFromDraftMessage(message);
             boolean showBcc = !TextUtils.isEmpty(message.getBcc());
@@ -447,17 +451,29 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     action = COMPOSE;
                     break;
             }
-            initQuotedTextFromRefMessage(mRefMessage, action);
-            showQuotedText = message.appendRefMessageContent;
+            LogUtils.d(LOG_TAG, "Previous draft had action type: %d", action);
+
+            mShowQuotedText = message.appendRefMessageContent;
+            if (message.refMessageUri != null) {
+                // If we're editing an existing draft that was in reference to an existing message,
+                // still need to load that original message since we might need to refer to the
+                // original sender and recipients if user switches "reply <-> reply-all".
+                mRefMessageUri = message.refMessageUri;
+                mComposeMode = action;
+                getLoaderManager().initLoader(REFERENCE_MESSAGE_LOADER, null, this);
+                return;
+            }
         } else if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
             if (mRefMessage != null) {
                 initFromRefMessage(action);
-                showQuotedText = true;
+                mShowQuotedText = true;
             }
         } else {
             initFromExtras(intent);
         }
-        finishSetup(action, intent, savedInstanceState, showQuotedText);
+
+        mComposeMode = action;
+        finishSetup(action, intent, savedInstanceState);
     }
 
     private void checkValidAccounts() {
@@ -541,8 +557,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return account;
     }
 
-    private void finishSetup(int action, Intent intent, Bundle savedInstanceState,
-            boolean showQuotedText) {
+    private void finishSetup(int action, Intent intent, Bundle savedInstanceState) {
         setFocus(action);
         if (action == COMPOSE) {
             mQuotedTextView.setVisibility(View.GONE);
@@ -553,7 +568,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (!hadSavedInstanceStateMessage(savedInstanceState)) {
             initAttachmentsFromIntent(intent);
         }
-        initActionBar(action);
+        initActionBar();
         initFromSpinner(savedInstanceState != null ? savedInstanceState : intent.getExtras(),
                 action);
 
@@ -565,7 +580,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         initChangeListeners();
         updateHideOrShowCcBcc();
-        updateHideOrShowQuotedText(showQuotedText);
+        updateHideOrShowQuotedText(mShowQuotedText);
 
         mRespondedInline = mSavedInstanceState != null ?
                 mSavedInstanceState.getBoolean(EXTRA_RESPONDED_INLINE) : false;
@@ -664,7 +679,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             addAttachmentAndUpdateView(data);
             mAddingAttachment = false;
         } else if (request == RESULT_CREATE_ACCOUNT) {
-                // We were waiting for the user to create an account
+            // We were waiting for the user to create an account
             if (result != RESULT_OK) {
                 finish();
             } else {
@@ -784,7 +799,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.bodyHtml = fullBody.toString();
         message.bodyText = mBodyView.getText().toString();
         message.embedsExternalResources = false;
-        message.refMessageId = mRefMessage != null ? mRefMessage.uri.toString() : null;
+        message.refMessageUri = mRefMessage != null ? mRefMessage.uri : null;
         message.appendRefMessageContent = mQuotedTextView.getQuotedTextIfIncluded() != null;
         ArrayList<Attachment> attachments = mAttachmentsView.getAttachments();
         message.hasAttachments = attachments != null && attachments.size() > 0;
@@ -1054,13 +1069,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mAttachmentsView.setAttachmentChangesListener(this);
     }
 
-    private void initActionBar(int action) {
-        mComposeMode = action;
+    private void initActionBar() {
+        LogUtils.d(LOG_TAG, "initializing action bar in ComposeActivity");
         ActionBar actionBar = getActionBar();
         if (actionBar == null) {
             return;
         }
-        if (action == ComposeActivity.COMPOSE) {
+        if (mComposeMode == ComposeActivity.COMPOSE) {
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             actionBar.setTitle(R.string.compose);
         } else {
@@ -1070,7 +1085,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             actionBar.setListNavigationCallbacks(mComposeModeAdapter, this);
-            switch (action) {
+            switch (mComposeMode) {
                 case ComposeActivity.REPLY:
                     actionBar.setSelectedNavigationItem(0);
                     break;
@@ -3078,6 +3093,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
+            case INIT_DRAFT_USING_REFERENCE_MESSAGE:
+                return new CursorLoader(this, mRefMessageUri, UIProvider.MESSAGE_PROJECTION, null,
+                        null, null);
             case REFERENCE_MESSAGE_LOADER:
                 return new CursorLoader(this, mRefMessageUri, UIProvider.MESSAGE_PROJECTION, null,
                         null, null);
@@ -3092,14 +3110,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         int id = loader.getId();
         switch (id) {
-            case REFERENCE_MESSAGE_LOADER:
+            case INIT_DRAFT_USING_REFERENCE_MESSAGE:
                 if (data != null && data.moveToFirst()) {
                     mRefMessage = new Message(data);
                     Intent intent = getIntent();
-                    int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
-                    initFromRefMessage(action);
-                    finishSetup(action, intent, null, true);
-                    if (action != FORWARD) {
+                    initFromRefMessage(mComposeMode);
+                    finishSetup(mComposeMode, intent, null);
+                    if (mComposeMode != FORWARD) {
                         String to = intent.getStringExtra(EXTRA_TO);
                         if (!TextUtils.isEmpty(to)) {
                             mRefMessage.setTo(null);
@@ -3112,6 +3129,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 } else {
                     finish();
                 }
+                break;
+            case REFERENCE_MESSAGE_LOADER:
+                // Only populate mRefMessage and leave other fields untouched.
+                if (data != null && data.moveToFirst()) {
+                    mRefMessage = new Message(data);
+                }
+                finishSetup(mComposeMode, getIntent(), mSavedInstanceState);
                 break;
             case LOADER_ACCOUNT_CURSOR:
                 if (data != null && data.moveToFirst()) {
