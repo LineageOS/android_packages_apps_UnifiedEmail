@@ -207,22 +207,11 @@ function transformContent(el, docWidth, elWidth) {
     }
 
     start = Date.now();
-    // Try munging all divs with inline styles where the width
+    // Try munging all divs or textareas with inline styles where the width
     // is wider than docWidth, and change it to be a max-width.
     touched = false;
-    nodes = ENABLE_MUNGE_TABLES ? el.querySelectorAll("div[style]") : [];
-    for (i = 0, len = nodes.length; i < len; i++) {
-        node = nodes[i];
-        wStr = node.style.width;
-        index = wStr ? wStr.indexOf("px") : -1;
-        if (index >= 0 && wStr.slice(0, index) > docWidth) {
-            node.style.width = "";
-            node.style.maxWidth = wStr;
-            touched = true;
-            // TODO: add this to the actionLog
-            // (not a huge deal if this is missing because it's fairly non-destructive)
-        }
-    }
+    nodes = ENABLE_MUNGE_TABLES ? el.querySelectorAll("div[style], textarea[style]") : [];
+    touched = transformBlockElements(nodes, docWidth, actionLog);
     if (touched) {
         newWidth = el.scrollWidth;
         console.log("ran div-width munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
@@ -310,6 +299,30 @@ function addClassToElements(nodes, conditionFn, classToAdd, actionLog) {
     return added;
 }
 
+function transformBlockElements(nodes, docWidth, actionLog) {
+    var i, len;
+    var node;
+    var wStr;
+    var index;
+    var touched = false;
+
+    for (i = 0, len = nodes.length; i < len; i++) {
+        node = nodes[i];
+        wStr = node.style.width || node.style.minWidth;
+        index = wStr ? wStr.indexOf("px") : -1;
+        if (index >= 0 && wStr.slice(0, index) > docWidth) {
+            saveStyleProperty(node, "width", actionLog);
+            saveStyleProperty(node, "minWidth", actionLog);
+            saveStyleProperty(node, "maxWidth", actionLog);
+            node.style.width = "100%";
+            node.style.minWidth = "";
+            node.style.maxWidth = wStr;
+            touched = true;
+        }
+    }
+    return touched;
+}
+
 function transformImages(nodes, docWidth, actionLog) {
     var i, len;
     var node;
@@ -322,19 +335,22 @@ function transformImages(nodes, docWidth, actionLog) {
         h = node.offsetHeight;
         // shrink w/h proportionally if the img is wider than available width
         if (w > docWidth) {
-            node.setAttribute("data-savedMaxWidth", node.style.maxWidth);
-            node.setAttribute("data-savedWidth", node.style.width);
-            node.setAttribute("data-savedHeight", node.style.height);
+            saveStyleProperty(node, "maxWidth", actionLog);
+            saveStyleProperty(node, "width", actionLog);
+            saveStyleProperty(node, "height", actionLog);
             node.style.maxWidth = docWidth + "px";
             node.style.width = "100%";
             node.style.height = "auto";
-            actionLog.push([undoSetProperty, node, ["maxWidth", "data-savedMaxWidth"]]);
-            actionLog.push([undoSetProperty, node, ["width", "data-savedWidth"]]);
-            actionLog.push([undoSetProperty, node, ["height", "data-savedHeight"]]);
             touched = true;
         }
     }
     return touched;
+}
+
+function saveStyleProperty(node, property, actionLog) {
+    var savedName = "data-" + property;
+    node.setAttribute(savedName, node.style[property]);
+    actionLog.push([undoSetProperty, node, [property, savedName]]);
 }
 
 function undoSetProperty(property, savedProperty) {
