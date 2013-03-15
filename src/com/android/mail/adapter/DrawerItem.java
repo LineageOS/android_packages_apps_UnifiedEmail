@@ -40,6 +40,8 @@ public class DrawerItem {
     public final Folder mFolder;
     public final Account mAccount;
     public final int mResource;
+    /** True if expand item view for expanding accounts. False otherwise */
+    public final boolean mIsExpandForAccount;
     /** Either {@link #VIEW_ACCOUNT}, {@link #VIEW_FOLDER} or {@link #VIEW_HEADER} */
     public final int mType;
     /** A normal folder, also a child, if a parent is specified. */
@@ -48,6 +50,9 @@ public class DrawerItem {
     public static final int VIEW_HEADER = 1;
     /** An account object, which allows switching accounts rather than folders. */
     public static final int VIEW_ACCOUNT = 2;
+    /** An expandable object for expanding/collapsing more of the list */
+    public static final int VIEW_MORE = 3;
+    /** TODO: On adding another type, be sure to change getViewTypes() */
 
     /** The parent activity */
     private final ControllableActivity mActivity;
@@ -56,7 +61,7 @@ public class DrawerItem {
     /**
      * Either {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or {@link #FOLDER_USER} when
      * {@link #mType} is {@link #VIEW_FOLDER}, or an {@link #ACCOUNT} in the case of
-     * accounts, and {@link #INERT_HEADER} otherwise.
+     * accounts, {@link #EXPAND} for expand blocks, and {@link #INERT_HEADER} otherwise.
      */
     public final int mFolderType;
     /** An unclickable text-header visually separating the different types. */
@@ -69,6 +74,8 @@ public class DrawerItem {
     public static final int FOLDER_USER = 3;
     /** An entry for the accounts the user has on the device. */
     public static final int ACCOUNT = 4;
+    /** A clickable block to expand list as requested */
+    public static final int EXPAND = 5;
 
     /** True if this view is enabled, false otherwise. */
     private boolean isEnabled = false;
@@ -89,6 +96,7 @@ public class DrawerItem {
         mType = VIEW_FOLDER;
         mFolderType = folderType;
         mPosition = cursorPosition;
+        mIsExpandForAccount = false;
     }
 
     /**
@@ -103,6 +111,7 @@ public class DrawerItem {
         mResource = -1;
         mFolderType = ACCOUNT;
         mAccount = account;
+        mIsExpandForAccount = false;
     }
 
     /**
@@ -117,6 +126,23 @@ public class DrawerItem {
         mType = VIEW_HEADER;
         mFolderType = INERT_HEADER;
         mAccount = null;
+        mIsExpandForAccount = false;
+    }
+
+    /**
+     * Creates an item for expanding or contracting for emails/items
+     * @param resource the string resource: R.string.folder_list_*
+     * @param isExpand true if "more" and false if "less"
+     */
+    public DrawerItem(ControllableActivity activity, int resource, boolean isExpandForAccount) {
+        mActivity = activity;
+        mInflater = LayoutInflater.from(mActivity.getActivityContext());
+        mFolder = null;
+        mType = VIEW_MORE;
+        mResource = resource;
+        mFolderType = EXPAND;
+        mAccount = null;
+        mIsExpandForAccount = isExpandForAccount;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -131,11 +157,23 @@ public class DrawerItem {
             case VIEW_ACCOUNT:
                 result = getAccountView(position, convertView, parent);
                 break;
+            case VIEW_MORE:
+                result = getExpandView(position, convertView, parent);
+                break;
             default:
                 LogUtils.wtf(LOG_TAG, "DrawerItem.getView(%d) for an invalid type!", mType);
                 result = null;
         }
         return result;
+    }
+
+    /**
+     * Book-keeping for how many different view types there are. Be sure to
+     * increment this appropriately once adding more types as drawer items
+     * @return number of different types of view items
+     */
+    public static int getViewTypes() {
+        return VIEW_MORE + 1;
     }
 
     /**
@@ -153,6 +191,9 @@ public class DrawerItem {
             case VIEW_ACCOUNT:
                 // Accounts are only enabled if they are not the current account.
                 return !currentAccountUri.equals(mAccount.uri);
+            case VIEW_MORE:
+                // 'Expand/Collapse' items are always enabled.
+                return true;
             default:
                 LogUtils.wtf(LOG_TAG, "DrawerItem.isItemEnabled() for invalid type %d", mType);
                 return false;
@@ -175,6 +216,9 @@ public class DrawerItem {
                 return (mFolderType == currentType) && mFolder.uri.equals(currentFolder.uri);
             case VIEW_ACCOUNT:
                 // Accounts are never highlighted
+                return false;
+            case VIEW_MORE:
+                // Expand/Collapse items are never highlighted
                 return false;
             default:
                 LogUtils.wtf(LOG_TAG, "DrawerItem.isHighlighted() for invalid type %d", mType);
@@ -246,6 +290,29 @@ public class DrawerItem {
         Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
         Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_icon));
         return folderItemView;
+    }
+
+    /**
+     * Return a view for the 'Expand/Collapse' item.
+     * @param position a zero indexed position into the top level list.
+     * @param convertView a view, possibly null, to be recycled.
+     * @param parent the parent hosting this view.
+     * @return a view showing an item for folder/account expansion at given position.
+     */
+    private View getExpandView(int position, View convertView, ViewGroup parent) {
+        final ViewGroup headerView;
+        if (convertView != null) {
+            headerView = (ViewGroup) convertView;
+        } else {
+            headerView = (ViewGroup) mInflater.inflate(
+                    R.layout.folder_expand_item, parent, false);
+        }
+        TextView direction =
+                (TextView)headerView.findViewById(R.id.folder_expand_text);
+        if(direction != null) {
+            direction.setText(mResource);
+        }
+        return headerView;
     }
 }
 
