@@ -18,7 +18,6 @@
 package com.android.mail.providers;
 
 import android.content.Context;
-import android.content.CursorLoader;
 import android.database.Cursor;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
@@ -176,6 +175,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
      */
     public Folder parent;
 
+    /**
+     * The time at which the last message was received.
+     */
+    public long lastMessageTimestamp;
+
     /** An immutable, empty conversation list */
     public static final Collection<Folder> EMPTY = Collections.emptyList();
 
@@ -184,7 +188,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
             boolean hasChildren, int syncWindow, Uri conversationListUri, Uri childFoldersListUri,
             int unseenCount, int unreadCount, int totalCount, Uri refreshUri, int syncStatus,
             int lastSyncResult, int type, int iconResId, int notificationIconResId, String bgColor,
-            String fgColor, Uri loadMoreUri, String hierarchicalDesc, Folder parent) {
+            String fgColor, Uri loadMoreUri, String hierarchicalDesc, Folder parent,
+            final long lastMessageTimestamp) {
         this.id = id;
         this.persistentId = persistentId;
         this.uri = uri;
@@ -208,6 +213,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         this.loadMoreUri = loadMoreUri;
         this.hierarchicalDesc = hierarchicalDesc;
         this.parent = parent;
+        this.lastMessageTimestamp = lastMessageTimestamp;
     }
 
     public Folder(Cursor cursor) {
@@ -240,6 +246,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         loadMoreUri = !TextUtils.isEmpty(loadMore) ? Uri.parse(loadMore) : null;
         hierarchicalDesc = cursor.getString(UIProvider.FOLDER_HIERARCHICAL_DESC_COLUMN);
         parent = null;
+        lastMessageTimestamp = cursor.getLong(UIProvider.FOLDER_LAST_MESSAGE_TIMESTAMP_COLUMN);
     }
 
     /**
@@ -282,6 +289,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         loadMoreUri = in.readParcelable(loader);
         hierarchicalDesc = in.readString();
         parent = in.readParcelable(loader);
+        lastMessageTimestamp = in.readLong();
      }
 
     @Override
@@ -310,6 +318,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         dest.writeParcelable(loadMoreUri, 0);
         dest.writeString(hierarchicalDesc);
         dest.writeParcelable(parent, 0);
+        dest.writeLong(lastMessageTimestamp);
     }
 
     /**
@@ -625,6 +634,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         f.name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);
         f.iconResId = cursor.getInt(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
         f.notificationIconResId = cursor.getInt(UIProvider.FOLDER_NOTIFICATION_ICON_RES_ID_COLUMN);
+        f.lastMessageTimestamp = cursor.getLong(UIProvider.FOLDER_LAST_MESSAGE_TIMESTAMP_COLUMN);
         return f;
     }
 }
