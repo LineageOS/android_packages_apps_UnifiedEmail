@@ -1037,7 +1037,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     private static boolean isOverviewMode(Account acct) {
-        return acct.settings.conversationViewMode == UIProvider.ConversationViewMode.OVERVIEW;
+        return acct.settings.isOverviewMode();
     }
 
     private void setupOverviewMode() {

@@ -360,6 +360,19 @@ public class Settings implements Parcelable {
     }
 
     /**
+     * @return true if {@link UIProvider.ConversationViewMode.OVERVIEW} mode is set. In the event
+     * that the setting is not yet set, fall back to
+     * {@link UIProvider.ConversationViewMode.DEFAULT}.
+     */
+    public boolean isOverviewMode() {
+        final boolean isDefined = (conversationViewMode
+                != UIProvider.ConversationViewMode.UNDEFINED);
+        final int val = (conversationViewMode != UIProvider.ConversationViewMode.UNDEFINED) ?
+                conversationViewMode : UIProvider.ConversationViewMode.DEFAULT;
+        return (val == UIProvider.ConversationViewMode.OVERVIEW);
+    }
+
+    /**
      * Return the swipe setting for the settings provided. It is safe to pass this method
      * a null object. It always returns a valid {@link Swipe} setting.
      * @return the auto advance setting, a constant from {@link Swipe}
