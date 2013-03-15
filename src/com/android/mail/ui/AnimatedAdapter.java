@@ -24,6 +24,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
@@ -115,6 +117,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
     };
 
+    private final List<ConversationSpecialItemView> mSpecialViews;
+    private final SparseArray<ConversationSpecialItemView> mSpecialViewPositions;
+
     private final void setAccount(Account newAccount) {
         mAccount = newAccount;
         mPriorityMarkersEnabled = mAccount.settings.priorityArrowsEnabled;
@@ -130,6 +135,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public AnimatedAdapter(Context context, ConversationCursor cursor,
             ConversationSelectionSet batch, ControllableActivity activity,
             SwipeableListView listView) {
+        this(context, cursor, batch, activity, listView, null);
+    }
+
+    public AnimatedAdapter(Context context, ConversationCursor cursor,
+            ConversationSelectionSet batch, ControllableActivity activity,
+            SwipeableListView listView, final List<ConversationSpecialItemView> specialViews) {
         super(context, -1, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
@@ -146,6 +157,16 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                     context.getResources()
                         .getInteger(R.integer.dismiss_all_leavebehinds_long_delay);
         }
+        mSpecialViews =
+                specialViews == null ? new ArrayList<ConversationSpecialItemView>(0)
+                        : new ArrayList<ConversationSpecialItemView>(specialViews);
+        mSpecialViewPositions = new SparseArray<ConversationSpecialItemView>(mSpecialViews.size());
+
+        for (final ConversationSpecialItemView view : mSpecialViews) {
+            view.setAdapter(this);
+        }
+
+        updateSpecialViews();
     }
 
     public void cancelDismissCounter() {
@@ -169,7 +190,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public int getCount() {
-        final int count = super.getCount();
+        // mSpecialViewPositions only contains the views that are currently being displayed
+        final int specialViewCount = mSpecialViewPositions.size();
+
+        final int count = super.getCount() + specialViewCount;
         return mShowFooter ? count + 1 : count;
     }
 
@@ -231,7 +255,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public int getItemViewType(int position) {
         // Try to recycle views.
-        if (mShowFooter && position == super.getCount()) {
+        if (mShowFooter && position == getCount() - 1) {
             return TYPE_VIEW_FOOTER;
         } else if (hasLeaveBehinds() || isAnimating()) {
             // Setting as type -1 means the recycler won't take this view and
@@ -240,6 +264,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             // but its safer and cheaper than trying to determine individual
             // types. In a future release, use position/id map to try to make
             // this cleaner / faster to determine if the view is animating.
+            return TYPE_VIEW_DONT_RECYCLE;
+        } else if (mSpecialViewPositions.get(position) != null) {
+            // Don't recycle the special views
             return TYPE_VIEW_DONT_RECYCLE;
         }
         return TYPE_VIEW_CONVERSATION;
@@ -306,9 +333,16 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (mShowFooter && position == super.getCount()) {
+        if (mShowFooter && position == getCount() - 1) {
             return mFooter;
         }
+
+        // Check if this is a special view
+        final View specialView = (View) mSpecialViewPositions.get(position);
+        if (specialView != null) {
+            return specialView;
+        }
+
         ConversationCursor cursor = (ConversationCursor) getItem(position);
         final Conversation conv = cursor.getConversation();
         if (isPositionUndoing(conv.id)) {
@@ -347,6 +381,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 return fadeIn;
             }
         }
+
         if (convertView != null && !(convertView instanceof SwipeableConversationItemView)) {
             LogUtils.w(LOG_TAG, "Incorrect convert view received; nulling it out");
             convertView = newView(mContext, cursor, parent);
@@ -497,10 +532,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public long getItemId(int position) {
-        if (mShowFooter && position == super.getCount()) {
+        if (mShowFooter && position == getCount() - 1
+                || mSpecialViewPositions.get(position) != null) {
             return -1;
         }
-        return super.getItemId(position);
+        return super.getItemId(position - getPositionOffset(position));
     }
 
     private View getDeletingView(int position, Conversation conversation, ViewGroup parent,
@@ -559,10 +595,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public Object getItem(int position) {
-        if (mShowFooter && position == super.getCount()) {
+        if (mShowFooter && position == getCount() - 1) {
             return mFooter;
+        } else if (mSpecialViewPositions.get(position) != null) {
+            return mSpecialViewPositions.get(position);
         }
-        return super.getItem(position);
+        return super.getItem(position - getPositionOffset(position));
     }
 
     private boolean isPositionDeleting(long id) {
@@ -795,6 +833,69 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         LeaveBehindItem item = getLastLeaveBehindItem();
         if (item != null) {
             item.cancelFadeOutText();
+        }
+    }
+
+    private void updateSpecialViews() {
+        mSpecialViewPositions.clear();
+
+        for (int i = 0; i < mSpecialViews.size(); i++) {
+            final ConversationSpecialItemView specialView = mSpecialViews.get(i);
+            specialView.onUpdate(mAccount.name, mFolder, getConversationCursor());
+
+            if (specialView.getShouldDisplayInList()) {
+                mSpecialViewPositions.put(specialView.getPosition(), specialView);
+            }
+        }
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        updateSpecialViews();
+        super.notifyDataSetChanged();
+    }
+
+    @Override
+    public void changeCursor(final Cursor cursor) {
+        super.changeCursor(cursor);
+        updateSpecialViews();
+    }
+
+    @Override
+    public void changeCursorAndColumns(final Cursor c, final String[] from, final int[] to) {
+        super.changeCursorAndColumns(c, from, to);
+        updateSpecialViews();
+    }
+
+    @Override
+    public Cursor swapCursor(final Cursor c) {
+        final Cursor oldCursor = super.swapCursor(c);
+        updateSpecialViews();
+
+        return oldCursor;
+    }
+
+    /**
+     * Gets the offset for the given position in the underlying cursor, based on any special views
+     * that may be above it.
+     */
+    public int getPositionOffset(final int position) {
+        int offset = 0;
+
+        for (int i = 0; i < mSpecialViewPositions.size(); i++) {
+            final int key = mSpecialViewPositions.keyAt(i);
+            final ConversationSpecialItemView specialView = mSpecialViewPositions.get(key);
+            if (specialView.getPosition() <= position) {
+                offset++;
+            }
+        }
+
+        return offset;
+    }
+
+    public void cleanup() {
+        for (final ConversationSpecialItemView view : mSpecialViews) {
+            view.cleanup();
         }
     }
 }

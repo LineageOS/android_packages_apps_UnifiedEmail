@@ -371,4 +371,10 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         // Unsupported
         return true;
     }
+
+    @Override
+    public ConversationListHelper getConversationListHelper() {
+        // Unsupported
+        return null;
+    }
 }
