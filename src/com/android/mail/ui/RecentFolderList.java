@@ -18,7 +18,6 @@ package com.android.mail.ui;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
@@ -97,8 +96,8 @@ public final class RecentFolderList {
         /**
          * Create a new asynchronous task to store the recent folder list. Both the account
          * and the folder should be non-null.
-         * @param account
-         * @param folder
+         * @param account the current account for this folder.
+         * @param folder the folder which is to be stored.
          */
         public StoreRecent(Account account, Folder folder) {
             assert (account != null && folder != null);
@@ -124,7 +123,7 @@ public final class RecentFolderList {
     /**
      * Create a Recent Folder List from the given account. This will query the UIProvider to
      * retrieve the RecentFolderList from persistent storage (if any).
-     * @param context
+     * @param context the context for the activity
      */
     public RecentFolderList(Context context) {
         mFolderCache = new LruCache<String, RecentFolderListEntry>(
@@ -134,7 +133,7 @@ public final class RecentFolderList {
 
     /**
      * Initialize the {@link RecentFolderList} with a controllable activity.
-     * @param activity
+     * @param activity the underlying activity
      */
     public void initialize(ControllableActivity activity){
         setCurrentAccount(mAccountObserver.initialize(activity.getAccountController()));
