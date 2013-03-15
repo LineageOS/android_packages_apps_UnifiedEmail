@@ -26,4 +26,10 @@
     <item android:id="@+id/forward"
           android:icon="@drawable/ic_forward_holo_dark"
           android:title="@string/forward" />
+    <item android:id="@+id/report_rendering_problem"
+          android:icon="@drawable/ic_forward_holo_dark"
+          android:title="@string/report_rendering_problem" />
+    <item android:id="@+id/report_rendering_improvement"
+          android:icon="@drawable/ic_forward_holo_dark"
+          android:title="@string/report_rendering_improvement" />
 </menu>
