@@ -116,4 +116,9 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     void stopDragMode();
 
     boolean isAccessibilityEnabled();
+
+    /**
+     * Gets a helper to provide addition features in the conversation list. This may be null.
+     */
+    ConversationListHelper getConversationListHelper();
 }
