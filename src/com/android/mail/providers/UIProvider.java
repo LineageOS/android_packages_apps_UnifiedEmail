@@ -1931,6 +1931,7 @@ public class UIProvider {
          * require panning
          */
         public static final int READING = 1;
+        public static final int DEFAULT = OVERVIEW;
     }
 
     public static final class SnapHeaderValue {
