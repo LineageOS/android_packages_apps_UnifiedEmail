@@ -26,15 +26,6 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <com.android.mail.ui.MailSpinner
-        android:id="@+id/account_spinner"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        style="@style/PlainSpinnerDropdown"
-        android:focusableInTouchMode="false"
-        android:focusable="false"
-        android:clickable="true"/>
-
     <include layout="@layout/actionbar_subject" />
 
 </com.android.mail.ui.SearchMailActionBarView>
