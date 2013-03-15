@@ -2802,7 +2802,8 @@ public abstract class AbstractActivityController implements ActivityController {
                     return loader;
                 case LOADER_RECENT_FOLDERS:
                     LogUtils.d(LOG_TAG, "LOADER_RECENT_FOLDERS created");
-                    if (mAccount != null && mAccount.recentFolderListUri != null) {
+                    if (mAccount != null && mAccount.recentFolderListUri != null
+                            && !mAccount.recentFolderListUri.equals(Uri.EMPTY)) {
                         return new ObjectCursorLoader<Folder>(mContext,
                                 mAccount.recentFolderListUri, everything, Folder.FACTORY);
                     }
