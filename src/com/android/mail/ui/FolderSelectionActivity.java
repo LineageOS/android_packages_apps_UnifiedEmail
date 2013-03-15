@@ -110,7 +110,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     private void createFolderListFragment(Folder parent, Uri uri) {
         final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         final Fragment fragment = FolderListFragment.newInstance(parent, uri, false,
-                getExcludedFolderTypes());
+                getExcludedFolderTypes(), true);
         fragmentTransaction.replace(R.id.content_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }

@@ -60,6 +60,8 @@ public final class FolderListFragment extends ListFragment implements
     private Uri mFolderListUri;
     /** True if you want a sectioned FolderList, false otherwise. */
     private boolean mIsSectioned;
+    /** Is the current device using tablet UI (true if 2-pane, false if 1-pane) */
+    private boolean mIsTabletUI;
     /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
     private ArrayList<Integer> mExcludedFolderTypes;
     /** Object that changes folders on our behalf. */
@@ -84,6 +86,8 @@ public final class FolderListFragment extends ListFragment implements
     private static final String ARG_FOLDER_URI = "arg-folder-list-uri";
     /** Key to store {@link #mIsSectioned} */
     private static final String ARG_IS_SECTIONED = "arg-is-sectioned";
+    /** Key to store {@link #mIsTabletUI} */
+    private static final String ARG_IS_TABLET_UI = "arg-is-tablet-ui";
     /** Key to store {@link #mExcludedFolderTypes} */
     private static final String ARG_EXCLUDED_FOLDER_TYPES = "arg-excluded-folder-types";
     /** Should the {@link FolderListFragment} show less labels to begin with? */
@@ -170,21 +174,24 @@ public final class FolderListFragment extends ListFragment implements
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
-     * @param isSectioned TODO(viki):
+     * @param isSectioned True if sections should be shown for folder list
+     * @param isTabletUI True if two-pane layout, false if not
      */
     public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri,
-            boolean isSectioned) {
-        return newInstance(parentFolder, folderUri, isSectioned, null);
+            boolean isSectioned, boolean isTabletUI) {
+        return newInstance(parentFolder, folderUri, isSectioned, null, isTabletUI);
     }
 
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
-     * @param isSectioned TODO(viki):
+     * @param isSectioned True if sections should be shown for folder list
      * @param excludedFolderTypes A list of {@link FolderType}s to exclude from displaying
+     * @param isTabletUI True if two-pane layout, false if not
      */
     public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri,
-            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes) {
+            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes,
+            boolean isTabletUI) {
         final FolderListFragment fragment = new FolderListFragment();
         final Bundle args = new Bundle();
         if (parentFolder != null) {
@@ -192,6 +199,7 @@ public final class FolderListFragment extends ListFragment implements
         }
         args.putString(ARG_FOLDER_URI, folderUri.toString());
         args.putBoolean(ARG_IS_SECTIONED, isSectioned);
+        args.putBoolean(ARG_IS_TABLET_UI, isTabletUI);
         if (excludedFolderTypes != null) {
             args.putIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES, excludedFolderTypes);
         }
@@ -248,8 +256,11 @@ public final class FolderListFragment extends ListFragment implements
             selectedFolder = mActivity.getHierarchyFolder();
         } else {
             // Initiate FLA with accounts and folders collapsed in the list
-            mCursorAdapter = new FolderListAdapter(mIsSectioned, ARE_ITEMS_COLLAPSED,
-                    ARE_ITEMS_COLLAPSED);
+            // The second param is for whether folders should be collapsed
+            // The third param is for whether accounts should be collapsed
+            mCursorAdapter = new FolderListAdapter(mIsSectioned,
+                    !mIsTabletUI && ARE_ITEMS_COLLAPSED,
+                    !mIsTabletUI && ARE_ITEMS_COLLAPSED);
             selectedFolder = controller == null ? null : controller.getFolder();
         }
         // Is the selected folder fresher than the one we have restored from a bundle?
@@ -268,6 +279,7 @@ public final class FolderListFragment extends ListFragment implements
         mFolderListUri = Uri.parse(args.getString(ARG_FOLDER_URI));
         mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
         mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
+        mIsTabletUI = args.getBoolean(ARG_IS_TABLET_UI);
         mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
         final View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
