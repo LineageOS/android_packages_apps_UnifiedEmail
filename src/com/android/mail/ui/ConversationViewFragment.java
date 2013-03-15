@@ -965,6 +965,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 "javascript:unblockImages(['%s']);", TextUtils.join("','", messageDomIds));
         mWebView.loadUrl(url);
     }
+
+    @Override
+    public String getMessageTransforms(final Message msg) {
+        final String domId = mTemplates.getMessageDomId(msg);
+        return (domId == null) ? null : mMessageTransforms.get(domId);
+    }
+
     // END message header callbacks
 
     @Override
