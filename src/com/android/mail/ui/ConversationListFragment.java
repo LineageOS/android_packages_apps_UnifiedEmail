@@ -57,6 +57,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * The conversation list UI component.
@@ -264,8 +265,20 @@ public final class ConversationListFragment extends ListFragment implements
                 null);
         mFooterView.setClickListener(mActivity);
         final ConversationCursor conversationCursor = getConversationListCursor();
-        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(),
-                conversationCursor, mActivity.getSelectedSet(), mActivity, mListView);
+
+        final ConversationListHelper helper = mActivity.getConversationListHelper();
+        final List<ConversationSpecialItemView> specialItemViews =
+                helper != null ? helper.makeConversationListSpecialViews(getActivity(), mAccount,
+                        mActivity.getFolderListSelectionListener()) : null;
+        if (specialItemViews != null) {
+            // Attach to the LoaderManager
+            for (final ConversationSpecialItemView view : specialItemViews) {
+                view.bindLoaderManager(getLoaderManager());
+            }
+        }
+
+        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), conversationCursor,
+                        mActivity.getSelectedSet(), mActivity, mListView, specialItemViews);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mSelectedSet = mActivity.getSelectedSet();
@@ -446,6 +459,7 @@ public final class ConversationListFragment extends ListFragment implements
             mConversationCursorObserver = null;
         }
         mAccountObserver.unregisterAndDestroy();
+        getAnimatedAdapter().cleanup();
         super.onDestroyView();
     }
 
@@ -475,7 +489,7 @@ public final class ConversationListFragment extends ListFragment implements
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         // Ignore anything that is not a conversation item. Could be a footer.
         if (!(view instanceof ConversationItemView)) {
-            return true;
+            return false;
         }
         ((ConversationItemView) view).toggleCheckMarkOrBeginDrag();
         return true;
@@ -584,30 +598,40 @@ public final class ConversationListFragment extends ListFragment implements
 
     /**
      * View the message at the given position.
-     * @param position
+     *
+     * @param position The position of the conversation in the list (as opposed to its position in
+     *        the cursor)
      */
-    protected void viewConversation(int position) {
+    protected void viewConversation(final int position) {
         LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
-        setSelected(position, true);
-        final ConversationCursor cursor = getConversationListCursor();
-        if (cursor != null && cursor.moveToPosition(position)) {
-            final Conversation conv = new Conversation(cursor);
-            conv.position = position;
-            mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
-        }
+
+        final ConversationCursor cursor =
+                (ConversationCursor) getAnimatedAdapter().getItem(position);
+        final Conversation conv = cursor.getConversation();
+        /*
+         * The cursor position may be different than the position method parameter because of
+         * special views in the list.
+         */
+        conv.position = cursor.getPosition();
+        setSelected(conv.position, true);
+        mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
     }
 
     /**
      * Sets the selected conversation to the position given here.
-     * @param position
+     * @param position The position of the conversation in the cursor (as opposed to in the list)
      * @param different if the currently selected conversation is different from the one provided
      * here.  This is a difference in conversations, not a difference in positions. For example, a
      * conversation at position 2 can move to position 4 as a result of new mail.
      */
-    public void setSelected(int position, boolean different) {
+    public void setSelected(final int cursorPosition, boolean different) {
         if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE) {
             return;
         }
+
+        final int position =
+                cursorPosition + getAnimatedAdapter().getPositionOffset(cursorPosition);
+
         if (different) {
             mListView.smoothScrollToPosition(position);
         }

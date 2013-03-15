@@ -67,7 +67,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
      * to be static since the {@link ComposeActivity} needs to statically change the account name
      * and have the NFC message changed accordingly.
      */
-    private static String sAccountName = null;
+    protected static String sAccountName = null;
 
     /**
      * Create an NFC message (in the NDEF: Nfc Data Exchange Format) to instruct the recepient to
@@ -403,5 +403,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onAccessibilityStateChanged(boolean enabled) {
         mAccessibilityEnabled = enabled;
         mController.onAccessibilityStateChanged();
+    }
+
+    @Override
+    public ConversationListHelper getConversationListHelper() {
+        // Unsupported
+        return null;
     }
 }
