@@ -153,6 +153,18 @@
     <string name="menu_move_to">Move to</string>
     <!-- Menu item: manages the folders for this account. [CHAR LIMIT = 30] -->
     <string name="menu_manage_folders">Folder settings</string>
+    <!-- Menu item: report an email was not readable or poorly rendered -->
+    <string name="report_rendering_problem" translatable="false">Looks bad</string>
+    <!-- Menu item: report an email's readability has improved -->
+    <string name="report_rendering_improvement" translatable="false">Looks good</string>
+    <!-- Temporary text used for reporting rendering issues Googlers see in testing -->
+    <string name="report_rendering_problem_desc" translatable="false">
+        This message looks bad.
+    </string>
+    <!-- Temporary text used for reporting rendering improvements Googlers see in testing -->
+    <string name="report_rendering_improvement_desc" translatable="false">
+        This message looks good.
+    </string>
     <!-- Title for the Folder list screen. [CHAR LIMIT = 30] -->
     <string name="folder_list_title">Folders</string>
     <!-- action bar sub title for manage folder mode. [CHAR LIMIT = 30] -->

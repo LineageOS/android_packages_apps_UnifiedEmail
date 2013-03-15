@@ -38,8 +38,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Parcelable;
 import android.os.ParcelFileDescriptor;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.text.Editable;
 import android.text.Html;
@@ -70,6 +70,7 @@ import com.android.common.Rfc822Validator;
 import com.android.ex.chips.RecipientEditTextView;
 import com.android.mail.MailIntentService;
 import com.android.mail.R;
+import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.compose.AttachmentsView.AttachmentAddedOrDeletedListener;
 import com.android.mail.compose.AttachmentsView.AttachmentFailureException;
 import com.android.mail.compose.FromAddressSpinner.OnAccountChangedListener;
@@ -86,10 +87,10 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.DraftType;
+import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.ui.FeedbackEnabledActivity;
 import com.android.mail.ui.MailActivity;
 import com.android.mail.ui.WaitFragment;
-import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.ContentProviderTask;
@@ -283,14 +284,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Can be called from a non-UI thread.
      */
     public static void editDraft(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, EDIT_DRAFT);
+        launch(launcher, account, message, EDIT_DRAFT, null, null);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void compose(Context launcher, Account account) {
-        launch(launcher, account, null, COMPOSE);
+        launch(launcher, account, null, COMPOSE, null, null);
     }
 
     /**
@@ -325,24 +326,30 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Can be called from a non-UI thread.
      */
     public static void reply(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, REPLY);
+        launch(launcher, account, message, REPLY, null, null);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void replyAll(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, REPLY_ALL);
+        launch(launcher, account, message, REPLY_ALL, null, null);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void forward(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, FORWARD);
+        launch(launcher, account, message, FORWARD, null, null);
     }
 
-    private static void launch(Context launcher, Account account, Message message, int action) {
+    public static void reportRenderingFeedback(Context launcher, Account account, Message message,
+            String body) {
+        launch(launcher, account, message, FORWARD, "android-gmail-readability@google.com", body);
+    }
+
+    private static void launch(Context launcher, Account account, Message message, int action,
+            String toAddress, String body) {
         Intent intent = new Intent(launcher, ComposeActivity.class);
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(EXTRA_ACTION, action);
@@ -351,6 +358,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             intent.putExtra(ORIGINAL_DRAFT_MESSAGE, message);
         } else {
             intent.putExtra(EXTRA_IN_REFERENCE_TO_MESSAGE, message);
+        }
+        if (toAddress != null) {
+            intent.putExtra(EXTRA_TO, toAddress);
+        }
+        if (body != null) {
+            intent.putExtra(EXTRA_BODY, body);
         }
         launcher.startActivity(intent);
     }
@@ -1104,6 +1117,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void initFromRefMessage(int action) {
         setFieldsFromRefMessage(action);
+
+        // Check if To: address and email body needs to be prefilled based on extras.
+        // This is used for reporting rendering feedback.
+        if (MessageHeaderView.ENABLE_REPORT_RENDERING_PROBLEM) {
+            Intent intent = getIntent();
+            if (intent.getExtras() != null) {
+                String toAddresses = intent.getStringExtra(EXTRA_TO);
+                if (toAddresses != null) {
+                    addToAddresses(Arrays.asList(TextUtils.split(toAddresses, ",")));
+                }
+                String body = intent.getStringExtra(EXTRA_BODY);
+                if (body != null) {
+                    setBody(body, false /* withSignature */);
+                }
+            }
+        }
+
         if (mRefMessage != null) {
             // CC field only gets populated when doing REPLY_ALL.
             // BCC never gets auto-populated, unless the user is editing
