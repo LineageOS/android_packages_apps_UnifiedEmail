@@ -790,6 +790,11 @@ public final class ConversationListFragment extends ListFragment implements
             mListAdapter.notifyDataSetChanged();
         }
         mConversationCursorHash = newCursorHash;
+
+        if (newCursor != null) {
+            newCursor.markContentsSeen();
+        }
+
         // If a current conversation is available, and none is selected in the list, then ask
         // the list to select the current conversation.
         final Conversation conv = mCallbacks.getCurrentConversation();
