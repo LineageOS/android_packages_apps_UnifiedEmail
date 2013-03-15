@@ -120,19 +120,6 @@ public final class FolderListFragment extends ListFragment implements
     /** List of all accounts currently known */
     private Account[] mAllAccounts;
 
-    private final class AllAccountObserver extends DataSetObserver {
-        @Override
-        public void onChanged() {
-            if (mActivity == null) {
-                return;
-            }
-            final AccountController controller = mActivity.getAccountController();
-            if (controller == null) {
-                return;
-            }
-            mAllAccounts = controller.getAllAccounts();
-        }
-    }
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
@@ -214,10 +201,13 @@ public final class FolderListFragment extends ListFragment implements
             // Current account and its observer.
             mCurrentAccount = mAccountObserver.initialize(accountController);
             // List of all accounts and its observer.
-            mAllAccountObserver = new AllAccountObserver();
-            accountController.registerAllAccountObserver(mAllAccountObserver);
-            mAllAccounts = accountController.getAllAccounts();
-
+            mAllAccountObserver = new AllAccountObserver(){
+                @Override
+                public void onChanged(Account[] allAccounts) {
+                    mAllAccounts = allAccounts;
+                }
+            };
+            mAllAccounts = mAllAccountObserver.initialize(accountController);
             mAccountChanger = accountController;
         }
 
@@ -320,12 +310,9 @@ public final class FolderListFragment extends ListFragment implements
             mAccountObserver.unregisterAndDestroy();
             mAccountObserver = null;
         }
-        final AccountController controller = mActivity.getAccountController();
-        if (controller != null) {
-            if (mAllAccountObserver != null) {
-                controller.unregisterAllAccountObserver(mAllAccountObserver);
-                mAllAccountObserver = null;
-            }
+        if (mAllAccountObserver != null) {
+            mAllAccountObserver.unregisterAndDestroy();
+            mAllAccountObserver = null;
         }
         super.onDestroyView();
     }
