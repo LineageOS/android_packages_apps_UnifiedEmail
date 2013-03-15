@@ -35,12 +35,12 @@ import android.widget.ScrollView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter;
+import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.MessageCursor;
+import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView;
-import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
-import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
@@ -61,7 +61,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     private ConversationMessage mMessage;
     private ScrollView mScrollView;
 
-    private WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
+    private final WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
         @Override
         public void onPageFinished(WebView view, String url) {
             if (isUserVisible()) {
@@ -194,6 +194,11 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     @Override
     public void showExternalResources(final String rawSenderAddress) {
         mWebView.getSettings().setBlockNetworkImage(false);
+    }
+
+    @Override
+    public String getMessageTransforms(final Message msg) {
+        return null;
     }
 
     @Override
