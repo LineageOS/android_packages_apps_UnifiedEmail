@@ -32,6 +32,7 @@ import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -229,6 +230,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         void showExternalResources(String senderRawAddress);
 
+        boolean supportsMessageTransforms();
         String getMessageTransforms(Message msg);
     }
 
@@ -961,8 +963,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 }
                 final boolean defaultReplyAll = getAccount().settings.replyBehavior
                         == UIProvider.DefaultReplyBehavior.REPLY_ALL;
-                mPopup.getMenu().findItem(R.id.reply).setVisible(defaultReplyAll);
-                mPopup.getMenu().findItem(R.id.reply_all).setVisible(!defaultReplyAll);
+                final Menu m = mPopup.getMenu();
+                m.findItem(R.id.reply).setVisible(defaultReplyAll);
+                m.findItem(R.id.reply_all).setVisible(!defaultReplyAll);
+
+                final boolean reportRendering = ENABLE_REPORT_RENDERING_PROBLEM
+                    && mCallbacks.supportsMessageTransforms();
+                m.findItem(R.id.report_rendering_improvement).setVisible(reportRendering);
+                m.findItem(R.id.report_rendering_problem).setVisible(reportRendering);
 
                 mPopup.show();
                 break;
