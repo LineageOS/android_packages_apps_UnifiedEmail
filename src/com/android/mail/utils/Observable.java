@@ -19,9 +19,13 @@ package com.android.mail.utils;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 
+/**
+ * A Utility class to register observers and return logging and counts for the number of registered
+ * observers.
+ */
 public class Observable extends DataSetObservable {
     protected static final String LOG_TAG = LogTag.getLogTag();
-    final String mName;
+    private final String mName;
 
     public Observable(String name) {
         mName = name;
