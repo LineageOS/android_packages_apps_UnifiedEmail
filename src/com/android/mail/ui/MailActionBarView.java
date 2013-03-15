@@ -55,7 +55,6 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
-import android.widget.TextView;
 
 /**
  * View to manage the various states of the Mail Action Bar.
@@ -95,6 +94,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private MenuItem mRefreshItem;
     private MenuItem mFolderSettingsItem;
     private View mRefreshActionView;
+    /** True if the current device is a tablet, false otherwise. */
+    private boolean mIsOnTablet;
     private boolean mRefreshInProgress;
     private Conversation mCurrentConversation;
     private AllAccountObserver mAllAccountObserver;
@@ -175,6 +176,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         super(context, attrs, defStyle);
         final Resources r = getResources();
         mShowConversationSubject = r.getBoolean(R.bool.show_conversation_subject);
+        mIsOnTablet = Utils.useTabletUI(r);
     }
 
     @Override
@@ -289,9 +291,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             bundle.putParcelable(UIProvider.SetCurrentAccountColumns.ACCOUNT, account);
             resolver.call(mAccount.uri, UIProvider.AccountCallMethods.SET_CURRENT_ACCOUNT,
                     mAccount.uri.toString(), bundle);
-            if (mHaveMultipleAccounts && mActionBar != null) {
-                mActionBar.setSubtitle(account.name);
-            }
+            setFolderAndAccount();
         }
     }
 
@@ -309,7 +309,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     public void setFolder(Folder folder) {
         setRefreshInProgress(false);
         mFolder = folder;
-        updateFolder(folder);
+        setFolderAndAccount();
         mActivity.invalidateOptionsMenu();
     }
 
@@ -435,6 +435,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private void showNavList() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
         mSubjectView.setVisibility(View.GONE);
+        setFolderAndAccount();
     }
 
     /**
@@ -445,7 +446,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     protected void setSnippetMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_CUSTOM);
         mSubjectView.setVisibility(View.VISIBLE);
-
         mSubjectView.addOnLayoutChangeListener(mSnippetLayoutListener);
     }
 
@@ -569,8 +569,23 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         return true;
     }
 
-    private void updateFolder(Folder in) {
-        mActionBar.setTitle(in.name);
+    /**
+     * Uses the current state to update the current folder {@link #mFolder} and the current
+     * account {@link #mAccount} shown in the actionbar.
+     */
+    private void setFolderAndAccount() {
+        // Check if we should be changing the actionbar at all, and back off if not.
+        final boolean isShowingFolderAndAccount =
+                (mActionBar != null && (mIsOnTablet || ViewMode.isListMode(mMode)));
+        if (!isShowingFolderAndAccount) {
+            return;
+        }
+        if (mFolder != null) {
+            mActionBar.setTitle(mFolder.name);
+        }
+        if (mAccount != null && mHaveMultipleAccounts) {
+            mActionBar.setSubtitle(mAccount.name);
+        }
         // TODO(viki): Show unread count.
     }
 
@@ -578,7 +593,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Notify that the folder has changed.
      */
     public void onFolderUpdated(Folder folder) {
-        updateFolder(folder);
+        setFolderAndAccount();
         if (folder.isSyncInProgress()) {
             onRefreshStarted();
         } else {
