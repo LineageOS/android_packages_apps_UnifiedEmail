@@ -31,6 +31,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderObserver;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AbstractConversationViewFragment;
 import com.android.mail.ui.ActivityController;
@@ -44,7 +45,12 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         implements ViewPager.OnPageChangeListener {
 
     private final DataSetObserver mListObserver = new ListObserver();
-    private final DataSetObserver mFolderObserver = new FolderObserver();
+    private final FolderObserver mFolderObserver = new FolderObserver() {
+        @Override
+        public void onChanged(Folder newFolder) {
+            notifyDataSetChanged();
+        }
+    };
     private ActivityController mController;
     private final Bundle mCommonFragmentArgs;
     private final Conversation mInitialConversation;
@@ -427,7 +433,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         mController = controller;
         if (mController != null && !mStopListeningMode) {
             mController.registerConversationListObserver(mListObserver);
-            mController.registerFolderObserver(mFolderObserver);
+            mFolderObserver.initialize(mController);
 
             notifyDataSetChanged();
         } else {
@@ -451,7 +457,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
 
         if (mController != null) {
             mController.unregisterConversationListObserver(mListObserver);
-            mController.unregisterFolderObserver(mFolderObserver);
+            mFolderObserver.unregisterAndDestroy();
         }
         mLastKnownCount = getCount();
         mStopListeningMode = true;
@@ -482,14 +488,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     @Override
     public void onPageScrollStateChanged(int state) {
         // no-op
-    }
-
-    // update the pager title strip as the Folder's conversation count changes
-    private class FolderObserver extends DataSetObserver {
-        @Override
-        public void onChanged() {
-            notifyDataSetChanged();
-        }
     }
 
     // update the pager dataset as the Controller's cursor changes

@@ -43,6 +43,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderObserver;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
@@ -118,7 +119,7 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationListFooterView mFooterView;
     private View mEmptyView;
     private ErrorListener mErrorListener;
-    private DataSetObserver mFolderObserver;
+    private FolderObserver mFolderObserver;
     private DataSetObserver mConversationCursorObserver;
 
     private ConversationSelectionSet mSelectedSet;
@@ -139,21 +140,6 @@ public final class ConversationListFragment extends ListFragment implements
      */
     public ConversationListFragment() {
         super();
-    }
-
-    // update the pager title strip as the Folder's conversation count changes
-    private class FolderObserver extends DataSetObserver {
-        @Override
-        public void onChanged() {
-            if (mActivity == null) {
-                return;
-            }
-            final FolderController controller = mActivity.getFolderController();
-            if (controller == null) {
-                return;
-            }
-            onFolderUpdated(controller.getFolder());
-        }
     }
 
     private class ConversationCursorObserver extends DataSetObserver {
@@ -284,8 +270,13 @@ public final class ConversationListFragment extends ListFragment implements
         mSelectedSet = mActivity.getSelectedSet();
         mListView.setSelectionSet(mSelectedSet);
         mListAdapter.hideFooter();
-        mFolderObserver = new FolderObserver();
-        mActivity.getFolderController().registerFolderObserver(mFolderObserver);
+        mFolderObserver = new FolderObserver(){
+            @Override
+            public void onChanged(Folder newFolder) {
+                onFolderUpdated(newFolder);
+            }
+        };
+        mFolderObserver.initialize(mActivity.getFolderController());
         mConversationCursorObserver = new ConversationCursorObserver();
         mUpdater = mActivity.getConversationUpdater();
         mUpdater.registerConversationListObserver(mConversationCursorObserver);
@@ -451,7 +442,7 @@ public final class ConversationListFragment extends ListFragment implements
 
         mActivity.unsetViewModeListener(this);
         if (mFolderObserver != null) {
-            mActivity.getFolderController().unregisterFolderObserver(mFolderObserver);
+            mFolderObserver.unregisterAndDestroy();
             mFolderObserver = null;
         }
         if (mConversationCursorObserver != null) {

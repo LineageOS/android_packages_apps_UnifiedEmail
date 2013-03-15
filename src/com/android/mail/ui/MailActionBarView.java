@@ -48,6 +48,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderObserver;
 import com.android.mail.providers.SearchRecentSuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
@@ -113,7 +114,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
     };
     private final boolean mShowConversationSubject;
-    private DataSetObserver mFolderObserver;
+    private FolderObserver mFolderObserver;
 
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
@@ -183,14 +184,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         final Resources r = getResources();
         mShowConversationSubject = r.getBoolean(R.bool.show_conversation_subject);
         mIsOnTablet = Utils.useTabletUI(r);
-    }
-
-    // update the pager title strip as the Folder's conversation count changes
-    private class FolderObserver extends DataSetObserver {
-        @Override
-        public void onChanged() {
-            onFolderUpdated(mController.getFolder());
-        }
     }
 
     @Override
@@ -281,8 +274,13 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mActionBar = actionBar;
         mController = callback;
         mActivity = activity;
-        mFolderObserver = new FolderObserver();
-        mController.registerFolderObserver(mFolderObserver);
+        mFolderObserver = new FolderObserver() {
+            @Override
+            public void onChanged(Folder newFolder) {
+                onFolderUpdated(newFolder);
+            }
+        };
+        mFolderObserver.initialize(mController);
         // We don't want to include the "Show all folders" menu item on tablet devices
         final Context context = getContext();
         final boolean showAllFolders = !Utils.useTabletUI(context.getResources());
@@ -356,7 +354,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     public void onDestroy() {
         if (mFolderObserver != null) {
-            mController.unregisterFolderObserver(mFolderObserver);
+            mFolderObserver.unregisterAndDestroy();
             mFolderObserver = null;
         }
         mSpinnerAdapter.destroy();
