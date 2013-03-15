@@ -26,21 +26,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <RelativeLayout android:id="@+id/header"
+            <include layout="@layout/conversation_view_header"
+                android:id="@+id/conv_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <include layout="@layout/conversation_message_header"
+                android:id="@+id/message_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white">
-                <include layout="@layout/conversation_view_header"
-                    android:id="@+id/conv_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <include layout="@layout/conversation_message_header"
-                    android:id="@+id/message_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/conv_header" />
-            </RelativeLayout>
+                android:layout_below="@id/conv_header" />
             <!-- base WebView layer -->
             <WebView
                 android:id="@+id/webview"
@@ -54,12 +49,6 @@
                 android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
-    <FrameLayout
-            android:id="@+id/conversation_topmost_overlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <!-- TODO: scroll indicators go HERE on top of all other layers -->
-    </FrameLayout>
 
     <include layout="@layout/conversation_load_spinner"/>
 
