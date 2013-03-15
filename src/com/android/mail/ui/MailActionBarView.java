@@ -22,6 +22,7 @@ import com.android.mail.R;
 import com.android.mail.browse.SnippetTextView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
+import com.android.mail.providers.AllAccountObserver;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderObserver;
@@ -40,7 +41,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.SpannableString;
@@ -97,6 +97,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
     private Conversation mCurrentConversation;
+    private AllAccountObserver mAllAccountObserver;
+    private boolean mHaveMultipleAccounts = false;
 
     public static final String LOG_TAG = LogTag.getLogTag();
 
@@ -269,19 +271,25 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             }
         };
         mFolderObserver.initialize(mController);
+        mAllAccountObserver = new AllAccountObserver() {
+            @Override
+            public void onChanged(Account[] allAccounts) {
+                mHaveMultipleAccounts = (allAccounts.length > 1);
+            }
+        };
+        mAllAccountObserver.initialize(mController);
         updateAccount(mAccountObserver.initialize(activity.getAccountController()));
     }
 
     private void updateAccount(Account account) {
         mAccount = account;
-        // Always show the name: TODO(viki) Only show if multiple accounts.
         if (mAccount != null) {
             final ContentResolver resolver = mActivity.getActivityContext().getContentResolver();
             final Bundle bundle = new Bundle(1);
             bundle.putParcelable(UIProvider.SetCurrentAccountColumns.ACCOUNT, account);
             resolver.call(mAccount.uri, UIProvider.AccountCallMethods.SET_CURRENT_ACCOUNT,
                     mAccount.uri.toString(), bundle);
-            if (mActionBar != null) {
+            if (mHaveMultipleAccounts && mActionBar != null) {
                 mActionBar.setSubtitle(account.name);
             }
         }
@@ -309,6 +317,10 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (mFolderObserver != null) {
             mFolderObserver.unregisterAndDestroy();
             mFolderObserver = null;
+        }
+        if (mAllAccountObserver != null) {
+            mAllAccountObserver.unregisterAndDestroy();
+            mAllAccountObserver = null;
         }
         mAccountObserver.unregisterAndDestroy();
     }
@@ -440,7 +452,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private void setFoldersMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
         mActionBar.setTitle(R.string.folders);
-        mActionBar.setSubtitle(mAccount.name);
+        if (mHaveMultipleAccounts) {
+            mActionBar.setSubtitle(mAccount.name);
+        }
     }
 
     /**
