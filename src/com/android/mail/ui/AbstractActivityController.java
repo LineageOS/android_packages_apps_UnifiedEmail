@@ -465,11 +465,10 @@ public abstract class AbstractActivityController implements ActivityController {
         if (actionBar != null && mActionBarView != null) {
             actionBar.setCustomView(mActionBarView, new ActionBar.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            // Show a custom view and home icon, but remove the title
+            // Show a custom view and home icon, keep the title and subttitle
             final int mask = ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE
                     | ActionBar.DISPLAY_SHOW_HOME;
-            final int enabled = ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME;
-            actionBar.setDisplayOptions(enabled, mask);
+            actionBar.setDisplayOptions(mask, mask);
             mActionBarView.attach();
         }
         mViewMode.addListener(mActionBarView);
@@ -2131,7 +2130,6 @@ public abstract class AbstractActivityController implements ActivityController {
         // accounts in the ActionBar.
         mAllAccounts = allAccounts;
         mAllAccountObservers.notifyChanged();
-        mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
     }
 

@@ -17,6 +17,22 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.ConversationListContext;
+import com.android.mail.R;
+import com.android.mail.browse.SnippetTextView;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
+import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderObserver;
+import com.android.mail.providers.SearchRecentSuggestionsProvider;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
+
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -39,23 +55,7 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
-
-import com.android.mail.AccountSpinnerAdapter;
-import com.android.mail.ConversationListContext;
-import com.android.mail.R;
-import com.android.mail.browse.SnippetTextView;
-import com.android.mail.providers.Account;
-import com.android.mail.providers.AccountObserver;
-import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Folder;
-import com.android.mail.providers.FolderObserver;
-import com.android.mail.providers.SearchRecentSuggestionsProvider;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
+import android.widget.TextView;
 
 /**
  * View to manage the various states of the Mail Action Bar.
@@ -79,8 +79,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private int mMode = ViewMode.UNKNOWN;
 
     private MenuItem mSearch;
-    private AccountSpinnerAdapter mSpinnerAdapter;
-    private MailSpinner mSpinner;
     /**
      * The account currently being shown
      */
@@ -99,10 +97,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
     private Conversation mCurrentConversation;
-    /**
-     * True if we are running on tablet.
-     */
-    private final boolean mIsOnTablet;
 
     public static final String LOG_TAG = LogTag.getLogTag();
 
@@ -120,7 +114,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         @Override
         public void onChanged(Account newAccount) {
             updateAccount(newAccount);
-            mSpinner.setAccount(mAccount);
         }
     };
 
@@ -166,9 +159,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         return reports;
     }
 
-    /** True if the application has more than one account. */
-    private boolean mHasManyAccounts;
-
     // Created via view inflation.
     @SuppressWarnings("unused")
     public MailActionBarView(Context context) {
@@ -183,13 +173,11 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         super(context, attrs, defStyle);
         final Resources r = getResources();
         mShowConversationSubject = r.getBoolean(R.bool.show_conversation_subject);
-        mIsOnTablet = Utils.useTabletUI(r);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
         mSubjectView = (SnippetTextView) findViewById(R.id.conversation_subject);
     }
 
@@ -281,24 +269,21 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             }
         };
         mFolderObserver.initialize(mController);
-        // We don't want to include the "Show all folders" menu item on tablet devices
-        final Context context = getContext();
-        final boolean showAllFolders = !Utils.useTabletUI(context.getResources());
-        mSpinnerAdapter = new AccountSpinnerAdapter(activity, context, showAllFolders);
-        mSpinner = (MailSpinner) findViewById(R.id.account_spinner);
-        mSpinner.setAdapter(mSpinnerAdapter);
-        mSpinner.setController(mController);
         updateAccount(mAccountObserver.initialize(activity.getAccountController()));
     }
 
     private void updateAccount(Account account) {
         mAccount = account;
+        // Always show the name: TODO(viki) Only show if multiple accounts.
         if (mAccount != null) {
-            ContentResolver resolver = mActivity.getActivityContext().getContentResolver();
-            Bundle bundle = new Bundle(1);
+            final ContentResolver resolver = mActivity.getActivityContext().getContentResolver();
+            final Bundle bundle = new Bundle(1);
             bundle.putParcelable(UIProvider.SetCurrentAccountColumns.ACCOUNT, account);
             resolver.call(mAccount.uri, UIProvider.AccountCallMethods.SET_CURRENT_ACCOUNT,
                     mAccount.uri.toString(), bundle);
+            if (mActionBar != null) {
+                mActionBar.setSubtitle(account.name);
+            }
         }
     }
 
@@ -310,45 +295,13 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     /**
-     * Sets the array of accounts to the value provided here.
-     * @param accounts array of all accounts on the device.
-     */
-    public void setAccounts(Account[] accounts) {
-        mSpinnerAdapter.setAccountArray(accounts);
-        mHasManyAccounts = accounts.length > 1;
-        enableDisableSpinnner();
-    }
-
-    /**
-     * Changes the spinner state according to the following logic. On phone we always show recent
-     * labels: pre-populating if necessary. So on phone we always want to enable the spinner.
-     * On tablet, we enable the spinner when the Folder list is NOT visible: In conversation view,
-     * and search conversation view.
-     */
-    private void enableDisableSpinnner() {
-        // Spinner is always shown on phone, and it is enabled by default, so don't mess with it.
-        // By default the drawable is set in the XML layout, and the view is enabled.
-        if (!mIsOnTablet) {
-            return;
-        }
-        // We do not populate default recent folders on tablet, so we need to check that in the
-        // conversation mode we have some recent folders. If we don't have any, then we should
-        // disable the spinner.
-        final boolean hasRecentsInConvView = ViewMode.isConversationMode(mMode)
-                && mSpinnerAdapter.hasRecentFolders();
-        // More than one account, OR has recent folders in conversation view.
-        final boolean enabled = mHasManyAccounts || hasRecentsInConvView;
-        mSpinner.changeEnabledState(enabled);
-    }
-
-    /**
      * Called by the owner of the ActionBar to set the
      * folder that is currently being displayed.
      */
     public void setFolder(Folder folder) {
         setRefreshInProgress(false);
         mFolder = folder;
-        mSpinner.setFolder(folder);
+        updateFolder(folder);
         mActivity.invalidateOptionsMenu();
     }
 
@@ -357,25 +310,15 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             mFolderObserver.unregisterAndDestroy();
             mFolderObserver = null;
         }
-        mSpinnerAdapter.destroy();
         mAccountObserver.unregisterAndDestroy();
     }
 
     @Override
     public void onViewModeChanged(int newMode) {
         mMode = newMode;
-        // Always update the options menu and redraw. This will read the new mode and redraw
-        // the options menu.
-        enableDisableSpinnner();
         mActivity.invalidateOptionsMenu();
         // Check if we are either on a phone, or in Conversation mode on tablet. For these, the
         // recent folders is enabled.
-        if (mIsOnTablet || mMode == ViewMode.CONVERSATION) {
-            mSpinnerAdapter.enableRecentFolders();
-        } else {
-            mSpinnerAdapter.disableRecentFolders();
-        }
-
         switch (mMode) {
             case ViewMode.UNKNOWN:
                 closeSearchField();
@@ -478,8 +421,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Put the ActionBar in List navigation mode. This starts the spinner up if it is missing.
      */
     private void showNavList() {
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_CUSTOM);
-        mSpinner.setVisibility(View.VISIBLE);
+        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
         mSubjectView.setVisibility(View.GONE);
     }
 
@@ -490,7 +432,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     protected void setSnippetMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_CUSTOM);
-        mSpinner.setVisibility(View.GONE);
         mSubjectView.setVisibility(View.VISIBLE);
 
         mSubjectView.addOnLayoutChangeListener(mSnippetLayoutListener);
@@ -506,8 +447,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Set the actionbar mode to empty: no title, no custom content.
      */
     protected void setEmptyMode() {
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_CUSTOM);
-        mSpinner.setVisibility(View.GONE);
+        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
         mSubjectView.setVisibility(View.GONE);
     }
 
@@ -615,11 +555,16 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         return true;
     }
 
+    private void updateFolder(Folder in) {
+        mActionBar.setTitle(in.name);
+        // TODO(viki): Show unread count.
+    }
+
     /**
      * Notify that the folder has changed.
      */
     public void onFolderUpdated(Folder folder) {
-        mSpinner.onFolderUpdated(folder);
+        updateFolder(folder);
         if (folder.isSyncInProgress()) {
             onRefreshStarted();
         } else {
@@ -658,7 +603,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private void setTitleModeFlags(int enabledFlags) {
         final int mask = ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_CUSTOM | DISPLAY_TITLE_MULTIPLE_LINES;
-
         mActionBar.setDisplayOptions(enabledFlags, mask);
     }
 
