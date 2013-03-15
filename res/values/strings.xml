@@ -167,6 +167,10 @@
     </string>
     <!-- Title for the Folder list screen. [CHAR LIMIT = 30] -->
     <string name="folder_list_title">Folders</string>
+    <!-- Folder list item: show more folders. [CHAR LIMIT = 30] -->
+    <string name="folder_list_more">More</string>
+    <!-- Folder list item: show all accounts. [CHAR LIMIT = 30] -->
+    <string name="folder_list_show_all_accounts">More accounts</string>
     <!-- action bar sub title for manage folder mode. [CHAR LIMIT = 30] -->
     <string name="manage_folders_subtitle">Sync &amp; notify</string>
     <!-- Menu item: options for this folder. When source text cannot be translated within the char limit, please translate the shorter "Folder options" instead. [CHAR LIMIT = 30] -->
