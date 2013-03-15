@@ -16,13 +16,12 @@
 
 package com.android.mail.browse;
 
-import android.app.Dialog;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.AsyncQueryHandler;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Typeface;
@@ -36,9 +35,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -55,6 +52,7 @@ import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
+import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Folder;
@@ -64,7 +62,6 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
-
 import com.google.common.annotations.VisibleForTesting;
 
 import java.io.IOException;
@@ -98,6 +95,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     public static final int DEFAULT_MODE = 0;
 
     public static final int POPUP_MODE = 1;
+
+    // This is a debug only feature
+    public static final boolean ENABLE_REPORT_RENDERING_PROBLEM =
+            MailPrefs.SHOW_EXPERIMENTAL_PREFS;
 
     private MessageHeaderViewCallbacks mCallbacks;
 
@@ -227,6 +228,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         void showExternalResources(Message msg);
 
         void showExternalResources(String senderRawAddress);
+
+        String getMessageTransforms(Message msg);
     }
 
     public MessageHeaderView(Context context) {
@@ -929,6 +932,16 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 break;
             case R.id.forward:
                 ComposeActivity.forward(getContext(), getAccount(), mMessage);
+                break;
+            case R.id.report_rendering_problem:
+                String text = getContext().getString(R.string.report_rendering_problem_desc);
+                ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
+                    text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
+                break;
+            case R.id.report_rendering_improvement:
+                text = getContext().getString(R.string.report_rendering_improvement_desc);
+                ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
+                    text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
                 break;
             case R.id.star: {
                 final boolean newValue = !v.isSelected();
