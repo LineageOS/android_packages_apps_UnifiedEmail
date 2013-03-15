@@ -21,9 +21,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.SpannedString;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +42,6 @@ import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -100,12 +96,16 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mConversationHeaderView.setCallbacks(this, this);
         mConversationHeaderView.setFoldersVisible(false);
         mConversationHeaderView.setSubject(mConversation.subject);
+        mMessageHeaderView.initialize(mDateBuilder, this, mAddressCache);
+        mMessageHeaderView.setExpandMode(MessageHeaderView.POPUP_MODE);
+        mMessageHeaderView.setMessageDetailsVisibility(View.VISIBLE);
         mMessageHeaderView.setContactInfoSource(getContactInfoSource());
         mMessageHeaderView.setCallbacks(this);
         mMessageHeaderView.setExpandable(false);
         mMessageHeaderView.setVeiledMatcher(
                 ((ControllableActivity) getActivity()).getAccountController()
                         .getVeiledAddressMatcher());
+        mMessageFooterView.initialize(getLoaderManager(), getFragmentManager());
         getLoaderManager().initLoader(MESSAGE_LOADER, null, getMessageLoaderCallbacks());
         showLoadingStatus();
     }
@@ -161,16 +161,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight) {
-        // Do nothing.
-    }
-
-    @Override
-    public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight) {
-        // Do nothing.
-    }
-
-    @Override
     public void onConversationViewHeaderHeightChange(int newHeight) {
         // Do nothing.
     }
@@ -181,9 +171,23 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             return;
         }
         if (isUserVisible()) {
-            mScrollView.scrollTo(0, 0);
             onConversationSeen();
         }
+    }
+
+    @Override
+    public void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight) {
+        // Do nothing.
+    }
+
+    @Override
+    public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight) {
+        // Do nothing.
+    }
+
+    @Override
+    public void setMessageDetailsExpanded(MessageHeaderItem i, boolean expanded, int heightbefore) {
+        // Do nothing.
     }
 
     @Override
@@ -213,7 +217,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             // Activity is finishing, just bail.
             return;
         }
-        renderMessageBodies(newCursor, mEnableContentReadySignal);
+        renderMessageBodies(newCursor);
     }
 
     /**
@@ -221,35 +225,23 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
      * blocks, a conversation header), and return an HTML document with spacer
      * divs inserted for all overlays.
      */
-    private void renderMessageBodies(MessageCursor messageCursor,
-            boolean enableContentReadySignal) {
-        final StringBuilder convHtml = new StringBuilder();
-        String content;
-        if (messageCursor.moveToFirst()) {
-            content = messageCursor.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN);
-            if (TextUtils.isEmpty(content)) {
-                content = messageCursor.getString(UIProvider.MESSAGE_BODY_TEXT_COLUMN);
-                if (content != null) {
-                    content = Html.toHtml(new SpannedString(content));
-                }
-            }
-            convHtml.append(content);
-            mMessage = messageCursor.getMessage();
-            mWebView.getSettings().setBlockNetworkImage(!mMessage.alwaysShowImages);
-            mWebView.loadDataWithBaseURL(mBaseUri, convHtml.toString(), "text/html", "utf-8", null);
-            ConversationViewAdapter mAdapter = new ConversationViewAdapter(mActivity, null, null,
-                    null, null, null, null, null, null);
-            MessageHeaderItem item = mAdapter.newMessageHeaderItem(mMessage, true,
-                    mMessage.alwaysShowImages);
-            mMessageHeaderView.initialize(mDateBuilder, this, mAddressCache);
-            mMessageHeaderView.setExpandMode(MessageHeaderView.POPUP_MODE);
-            mMessageHeaderView.bind(item, false);
-            mMessageHeaderView.setMessageDetailsVisibility(View.VISIBLE);
-            if (mMessage.hasAttachments) {
-                mMessageFooterView.setVisibility(View.VISIBLE);
-                mMessageFooterView.initialize(getLoaderManager(), getFragmentManager());
-                mMessageFooterView.bind(item, false);
-            }
+    private void renderMessageBodies(MessageCursor messageCursor) {
+        if (!messageCursor.moveToFirst()) {
+            LogUtils.e(LOG_TAG, "unable to open message cursor");
+            return;
+        }
+        final ConversationMessage m = messageCursor.getMessage();
+        mMessage = messageCursor.getMessage();
+        mWebView.getSettings().setBlockNetworkImage(!mMessage.alwaysShowImages);
+        mWebView.loadDataWithBaseURL(mBaseUri, m.getBodyAsHtml(), "text/html", "utf-8", null);
+        final ConversationViewAdapter adapter = new ConversationViewAdapter(mActivity, null, null,
+                null, null, null, null, null, null);
+        final MessageHeaderItem item = adapter.newMessageHeaderItem(mMessage, true,
+                mMessage.alwaysShowImages);
+        mMessageHeaderView.bind(item, false);
+        if (mMessage.hasAttachments) {
+            mMessageFooterView.setVisibility(View.VISIBLE);
+            mMessageFooterView.bind(item, false);
         }
     }
 
@@ -262,8 +254,4 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         }
     }
 
-    @Override
-    public void setMessageDetailsExpanded(MessageHeaderItem i, boolean expanded, int heightbefore) {
-        // Do nothing.
-    }
 }

@@ -98,7 +98,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     protected String mBaseUri;
     protected Account mAccount;
     protected final Map<String, Address> mAddressCache = Maps.newHashMap();
-    protected boolean mEnableContentReadySignal;
     private MessageCursor mCursor;
     private Context mContext;
     /**
