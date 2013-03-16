@@ -202,17 +202,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         // base uri that us guaranteed to be unique for this conversation.
         mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
 
-        // On JB or newer, we use the 'webkitAnimationStart' DOM event to signal load complete
-        // Below JB, try to speed up initial render by having the webview do supplemental draws to
-        // custom a software canvas.
-        // TODO(mindyp):
-        //PAGE READINESS SIGNAL FOR JELLYBEAN AND NEWER
-        // Notify the app on 'webkitAnimationStart' of a simple dummy element with a simple no-op
-        // animation that immediately runs on page load. The app uses this as a signal that the
-        // content is loaded and ready to draw, since WebView delays firing this event until the
-        // layers are composited and everything is ready to draw.
-        // This signal does not seem to be reliable, so just use the old method for now.
-        mEnableContentReadySignal = false; //Utils.isRunningJellybeanOrLater();
         LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
         // Not really, we just want to get a crack to store a reference to the change_folder item
         setHasOptionsMenu(true);
