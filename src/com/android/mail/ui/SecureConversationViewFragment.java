@@ -201,6 +201,11 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
+    public boolean supportsMessageTransforms() {
+        return false;
+    }
+
+    @Override
     public String getMessageTransforms(final Message msg) {
         return null;
     }
