@@ -98,7 +98,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mConversationHeaderView.setSubject(mConversation.subject);
         mMessageHeaderView.initialize(mDateBuilder, this, mAddressCache);
         mMessageHeaderView.setExpandMode(MessageHeaderView.POPUP_MODE);
-        mMessageHeaderView.setMessageDetailsVisibility(View.VISIBLE);
         mMessageHeaderView.setContactInfoSource(getContactInfoSource());
         mMessageHeaderView.setCallbacks(this);
         mMessageHeaderView.setExpandable(false);
