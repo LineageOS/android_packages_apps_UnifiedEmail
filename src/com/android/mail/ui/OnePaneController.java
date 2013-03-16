@@ -608,7 +608,7 @@ public final class OnePaneController extends AbstractActivityController {
                                     convList != null ? convList.getAnimatedAdapter() : null),
                             0,
                             Utils.convertHtmlToPlainText
-                                (op.getDescription(mActivity.getActivityContext(), mFolder)),
+                                (op.getDescription(mActivity.getActivityContext())),
                             true, /* showActionIcon */
                             R.string.undo,
                             true,  /* replaceVisibleToast */
@@ -622,7 +622,7 @@ public final class OnePaneController extends AbstractActivityController {
                                 getUndoClickedListener(convList.getAnimatedAdapter()),
                                 0,
                                 Utils.convertHtmlToPlainText
-                                    (op.getDescription(mActivity.getActivityContext(), mFolder)),
+                                    (op.getDescription(mActivity.getActivityContext())),
                                 true, /* showActionIcon */
                                 R.string.undo,
                                 true,  /* replaceVisibleToast */

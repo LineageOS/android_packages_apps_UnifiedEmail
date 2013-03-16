@@ -23,7 +23,6 @@ import android.net.Uri;
 
 import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
@@ -142,15 +141,17 @@ public interface ConversationUpdater extends ConversationListCallbacks {
             boolean showUndo);
 
     /**
-     * Assign the target conversations to the given folders, and remove them from all other
-     * folders that they might be assigned to.
+     * Assign the target conversations to the given folders, and remove them from all other folders
+     * that they might be assigned to.
      * @param folders the folders to assign the conversations to.
      * @param target the conversations to act upon.
      * @param batch whether this is a batch operation
      * @param showUndo whether to show the undo bar
+     * @param isMoveTo <code>true</code> if this is a move operation, <code>false</code> if it is
+     *        some other type of folder change operation
      */
     public void assignFolder(Collection<FolderOperation> folders, Collection<Conversation> target,
-            boolean batch, boolean showUndo);
+            boolean batch, boolean showUndo, boolean isMoveTo);
 
     /**
      * Refreshes the conversation list, if one exists.

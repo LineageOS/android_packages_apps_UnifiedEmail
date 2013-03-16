@@ -96,7 +96,7 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
             // Remove the current folder and add the new folder.
             ops.add(new FolderOperation(mCurrentFolder, false));
             ops.add(new FolderOperation(folder, true));
-            mUpdater.assignFolder(ops, mTarget, mBatch, true);
+            mUpdater.assignFolder(ops, mTarget, mBatch, true /* showUndo */, true /* isMoveTo */);
             mDialog.dismiss();
         }
     }
