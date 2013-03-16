@@ -967,6 +967,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
+    public boolean supportsMessageTransforms() {
+        return true;
+    }
+
+    @Override
     public String getMessageTransforms(final Message msg) {
         final String domId = mTemplates.getMessageDomId(msg);
         return (domId == null) ? null : mMessageTransforms.get(domId);
