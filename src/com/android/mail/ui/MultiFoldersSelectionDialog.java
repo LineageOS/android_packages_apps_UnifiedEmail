@@ -30,7 +30,6 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.FolderSelectorAdapter.FolderRow;
 import com.android.mail.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -152,7 +151,8 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
                 if (mUpdater != null) {
-                    mUpdater.assignFolder(mOperations.values(), mTarget, mBatch, true);
+                    mUpdater.assignFolder(mOperations.values(), mTarget, mBatch,
+                            true /* showUndo */, false /* isMoveTo */);
                 }
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
