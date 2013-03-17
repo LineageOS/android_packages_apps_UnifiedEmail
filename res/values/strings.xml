@@ -456,6 +456,9 @@
         <item quantity="other">Changed folders.</item>
     </plurals>
 
+    <!-- Displayed after moving a conversation to a different folder. [CHAR LIMIT=100] -->
+    <string name="conversation_folder_moved">Moved to <xliff:g id="folderName">%1$s</xliff:g></string>
+
     <!-- Search Results: Text for header that is shown above search results [CHAR LIMIT=30] -->
     <string name="search_results_header">Results</string>
     <!-- Toast shown when the user taps the search hard key when viewing an account that does not support search [CHAR LIMIT=100] -->

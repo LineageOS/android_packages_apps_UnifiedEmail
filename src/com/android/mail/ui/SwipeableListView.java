@@ -196,7 +196,8 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         final Context context = getContext();
         final ToastBarOperation undoOp;
 
-        undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO, false);
+        undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO, false /* batch */,
+                mFolder);
         Conversation conv = target.getConversation();
         target.getConversation().position = findConversation(target, conv);
         final AnimatedAdapter adapter = getAnimatedAdapter();

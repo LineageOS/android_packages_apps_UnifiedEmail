@@ -2277,7 +2277,7 @@ public abstract class AbstractActivityController implements ActivityController {
                     @Override
                     public void run() {
                         onUndoAvailable(new ToastBarOperation(mTarget.size(), mAction,
-                                ToastBarOperation.UNDO, mIsSelectedSet));
+                                ToastBarOperation.UNDO, mIsSelectedSet, mFolder));
                     }
                 }, mShowUndoBarDelay);
             }
@@ -2304,7 +2304,8 @@ public abstract class AbstractActivityController implements ActivityController {
     // conversations to.
     @Override
     public final void assignFolder(Collection<FolderOperation> folderOps,
-            Collection<Conversation> target, boolean batch, boolean showUndo) {
+            Collection<Conversation> target, boolean batch, boolean showUndo,
+            final boolean isMoveTo) {
         // Actions are destructive only when the current folder can be assigned
         // to (which is the same as being able to un-assign a conversation from the folder) and
         // when the list of folders contains the current folder.
@@ -2321,12 +2322,40 @@ public abstract class AbstractActivityController implements ActivityController {
         // Update the UI elements depending no their visibility and availability
         // TODO(viki): Consolidate this into a single method requestDelete.
         if (isDestructive) {
+            /*
+             * If this is a MOVE operation, we want the action folder to be the destination folder.
+             * Otherwise, we want it to be the current folder.
+             *
+             * A set of folder operations is a move if there are exactly two operations: an add and
+             * a remove.
+             */
+            final Folder actionFolder;
+            if (folderOps.size() != 2) {
+                actionFolder = mFolder;
+            } else {
+                Folder addedFolder = null;
+                boolean hasRemove = false;
+                for (final FolderOperation folderOperation : folderOps) {
+                    if (folderOperation.mAdd) {
+                        addedFolder = folderOperation.mFolder;
+                    } else {
+                        hasRemove = true;
+                    }
+                }
+
+                if (hasRemove && addedFolder != null) {
+                    actionFolder = addedFolder;
+                } else {
+                    actionFolder = mFolder;
+                }
+            }
+
             folderChange = getDeferredFolderChange(target, folderOps, isDestructive,
-                    batch, showUndo);
+                    batch, showUndo, isMoveTo, actionFolder);
             delete(0, target, folderChange);
         } else {
             folderChange = getFolderChange(target, folderOps, isDestructive,
-                    batch, showUndo);
+                    batch, showUndo, false /* isMoveTo */, mFolder);
             requestUpdate(folderChange);
         }
     }
@@ -2602,8 +2631,9 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         // Drag and drop is destructive: we remove conversations from the
         // current folder.
-        final DestructiveAction action = getFolderChange(conversations, dragDropOperations,
-                isDestructive, true, true);
+        final DestructiveAction action =
+                getFolderChange(conversations, dragDropOperations, isDestructive,
+                        true /* isBatch */, true /* showUndo */, true /* isMoveTo */, folder);
         if (isDestructive) {
             delete(0, conversations, action);
         } else {
@@ -2671,7 +2701,7 @@ public abstract class AbstractActivityController implements ActivityController {
         @Override
         public void performAction() {
             ToastBarOperation undoOp = new ToastBarOperation(mConversations.size(),
-                    R.id.change_folder, ToastBarOperation.UNDO, true);
+                    R.id.change_folder, ToastBarOperation.UNDO, true /* batch */, mInitialFolder);
             onUndoAvailable(undoOp);
             ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
             ContentValues values = new ContentValues();
@@ -3132,20 +3162,23 @@ public abstract class AbstractActivityController implements ActivityController {
         private boolean mIsSelectedSet;
         private boolean mShowUndo;
         private int mAction;
+        private final Folder mActionFolder;
 
         /**
          * Create a new folder destruction object to act on the given conversations.
          * @param target conversations to act upon.
+         * @param actionFolder the {@link Folder} being acted upon, used for displaying the undo bar
          */
         private FolderDestruction(final Collection<Conversation> target,
                 final Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
-                boolean showUndo, int action) {
+                boolean showUndo, int action, final Folder actionFolder) {
             mTarget = ImmutableList.copyOf(target);
             mFolderOps.addAll(folders);
             mIsDestructive = isDestructive;
             mIsSelectedSet = isBatch;
             mShowUndo = showUndo;
             mAction = action;
+            mActionFolder = actionFolder;
         }
 
         @Override
@@ -3155,7 +3188,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             if (mIsDestructive && mShowUndo) {
                 ToastBarOperation undoOp = new ToastBarOperation(mTarget.size(), mAction,
-                        ToastBarOperation.UNDO, mIsSelectedSet);
+                        ToastBarOperation.UNDO, mIsSelectedSet, mActionFolder);
                 onUndoAvailable(undoOp);
             }
             // For each conversation, for each operation, add/ remove the
@@ -3207,18 +3240,18 @@ public abstract class AbstractActivityController implements ActivityController {
 
     public final DestructiveAction getFolderChange(Collection<Conversation> target,
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
-            boolean showUndo) {
+            boolean showUndo, final boolean isMoveTo, final Folder actionFolder) {
         final DestructiveAction da = getDeferredFolderChange(target, folders, isDestructive,
-                isBatch, showUndo);
+                isBatch, showUndo, isMoveTo, actionFolder);
         registerDestructiveAction(da);
         return da;
     }
 
     public final DestructiveAction getDeferredFolderChange(Collection<Conversation> target,
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
-            boolean showUndo) {
-        return new FolderDestruction(target, folders, isDestructive, isBatch,
-                showUndo, R.id.change_folder);
+            boolean showUndo, final boolean isMoveTo, final Folder actionFolder) {
+        return new FolderDestruction(target, folders, isDestructive, isBatch, showUndo,
+                isMoveTo ? R.id.move_folder : R.id.change_folder, actionFolder);
     }
 
     @Override
@@ -3228,7 +3261,7 @@ public abstract class AbstractActivityController implements ActivityController {
         Collection<FolderOperation> folderOps = new ArrayList<FolderOperation>();
         folderOps.add(new FolderOperation(toRemove, false));
         return new FolderDestruction(target, folderOps, isDestructive, isBatch,
-                showUndo, R.id.remove_folder);
+                showUndo, R.id.remove_folder, mFolder);
     }
 
     @Override
@@ -3315,7 +3348,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 false, /* showActionIcon */
                 actionTextResourceId,
                 replaceVisibleToast,
-                new ToastBarOperation(1, 0, ToastBarOperation.ERROR, false));
+                new ToastBarOperation(1, 0, ToastBarOperation.ERROR, false, folder));
     }
 
     private ActionClickedListener getRetryClickedListener(final Folder folder) {
