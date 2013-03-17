@@ -33,19 +33,25 @@ public class ToastBarOperation implements Parcelable {
     private final int mCount;
     private final boolean mBatch;
     private final int mType;
+    private final Folder mFolder;
 
     /**
      * Create a ToastBarOperation
      *
      * @param count Number of conversations this action would be applied to.
-     * @param menuId res id identifying the menu item tapped; used to determine
-     *            what action was performed
+     * @param menuId res id identifying the menu item tapped; used to determine what action was
+     *        performed
+     * @param operationFolder The {@link Folder} upon which the operation was run. This may be
+     *        <code>null</code>, but is required in {@link #getDescription(Context)} for certain
+     *        actions.
      */
-    public ToastBarOperation(int count, int menuId, int type, boolean batch) {
+    public ToastBarOperation(int count, int menuId, int type, boolean batch,
+            final Folder operationFolder) {
         mCount = count;
         mAction = menuId;
         mBatch = batch;
         mType = type;
+        mFolder = operationFolder;
     }
 
     public int getType() {
@@ -56,11 +62,12 @@ public class ToastBarOperation implements Parcelable {
         return mBatch;
     }
 
-    public ToastBarOperation(Parcel in) {
+    public ToastBarOperation(final Parcel in, final ClassLoader loader) {
         mCount = in.readInt();
         mAction = in.readInt();
         mBatch = in.readInt() != 0;
         mType = in.readInt();
+        mFolder = in.readParcelable(loader);
     }
 
     @Override
@@ -69,17 +76,24 @@ public class ToastBarOperation implements Parcelable {
         dest.writeInt(mAction);
         dest.writeInt(mBatch ? 1 : 0);
         dest.writeInt(mType);
+        dest.writeParcelable(mFolder, 0);
     }
 
-    public static final Creator<ToastBarOperation> CREATOR = new Creator<ToastBarOperation>() {
+    public static final ClassLoaderCreator<ToastBarOperation> CREATOR =
+            new ClassLoaderCreator<ToastBarOperation>() {
         @Override
-        public ToastBarOperation createFromParcel(Parcel source) {
-            return new ToastBarOperation(source);
+        public ToastBarOperation createFromParcel(final Parcel source) {
+            return createFromParcel(source, null);
         }
 
         @Override
-        public ToastBarOperation[] newArray(int size) {
+        public ToastBarOperation[] newArray(final int size) {
             return new ToastBarOperation[size];
+        }
+
+        @Override
+        public ToastBarOperation createFromParcel(final Parcel source, final ClassLoader loader) {
+            return new ToastBarOperation(source, loader);
         }
     };
 
@@ -87,17 +101,19 @@ public class ToastBarOperation implements Parcelable {
      * Get a string description of the operation that will be performed
      * when the user taps the undo bar.
      */
-    public String getDescription(Context context, Folder folder) {
+    public String getDescription(Context context) {
         int resId = -1;
         switch (mAction) {
             case R.id.delete:
                 resId = R.plurals.conversation_deleted;
                 break;
             case R.id.remove_folder:
-                return context.getString(R.string.folder_removed, folder.name);
+                return context.getString(R.string.folder_removed, mFolder.name);
             case R.id.change_folder:
                 resId = R.plurals.conversation_folder_changed;
                 break;
+            case R.id.move_folder:
+                return context.getString(R.string.conversation_folder_moved, mFolder.name);
             case R.id.archive:
                 resId = R.plurals.conversation_archived;
                 break;

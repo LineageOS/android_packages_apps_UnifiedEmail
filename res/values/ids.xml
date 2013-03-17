@@ -21,4 +21,5 @@
     <item type="id" name="reply_state" />
     <item type="id" name="manage_folders_item"/>
     <item type="id" name="contact_image" />
+    <item type="id" name="move_folder" />
 </resources>
