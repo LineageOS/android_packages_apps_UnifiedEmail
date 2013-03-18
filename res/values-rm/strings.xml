@@ -129,6 +129,10 @@
     <skip />
     <!-- no translation found for folder_list_title (4276644062440415214) -->
     <skip />
+    <!-- no translation found for folder_list_more (537172187223133825) -->
+    <skip />
+    <!-- no translation found for folder_list_show_all_accounts (8054807182336991835) -->
+    <skip />
     <!-- no translation found for manage_folders_subtitle (7702199674083260433) -->
     <skip />
     <!-- no translation found for menu_folder_options (8897520487430647932) -->
@@ -321,6 +325,8 @@
     <skip />
     <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
     <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
+    <!-- no translation found for conversation_folder_moved (297469098857964678) -->
+    <skip />
     <!-- no translation found for search_results_header (4669917471897026269) -->
     <skip />
     <!-- no translation found for search_unsupported (4654227193354052607) -->
