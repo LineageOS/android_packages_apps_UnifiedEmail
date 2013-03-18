@@ -103,12 +103,12 @@ public class DrawerItem {
      * Creates an item from an account.
      * @param account an account that this item represents.
      */
-    public DrawerItem(ControllableActivity activity, Account account) {
+    public DrawerItem(ControllableActivity activity, Account account, int count) {
         mActivity = activity;
         mInflater = LayoutInflater.from(mActivity.getActivityContext());
         mFolder = null;
         mType = VIEW_ACCOUNT;
-        mResource = -1;
+        mResource = count;
         mFolderType = ACCOUNT;
         mAccount = account;
         mIsExpandForAccount = false;
@@ -244,7 +244,7 @@ public class DrawerItem {
                     (FolderItemView) mInflater.inflate(R.layout.folder_item, null, false);
         }
         // Temporary. Ideally we want a totally different item.
-        folderItemView.bind(mAccount, mActivity);
+        folderItemView.bind(mAccount, mActivity, mResource);
         View v = folderItemView.findViewById(R.id.color_block);
         v.setBackgroundColor(mAccount.color);
         v = folderItemView.findViewById(R.id.folder_icon);
