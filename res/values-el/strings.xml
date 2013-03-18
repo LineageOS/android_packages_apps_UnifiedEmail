@@ -77,6 +77,10 @@
     <string name="menu_move_to" msgid="9138296669516358542">"Μετακίνηση σε"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Ρυθμίσεις φακέλων"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Φάκελοι"</string>
+    <!-- no translation found for folder_list_more (537172187223133825) -->
+    <skip />
+    <!-- no translation found for folder_list_show_all_accounts (8054807182336991835) -->
+    <skip />
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Συγχρονισμός και ειδοποίηση"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Ρυθμίσεις φακέλου..."</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Ρυθμίσεις Λογαριασμού"</string>
@@ -221,6 +225,8 @@
     <item quantity="one" msgid="4930161390461457462">"Αλλαγή φακέλου."</item>
     <item quantity="other" msgid="8918589141287976985">"Αλλαγή φακέλων."</item>
   </plurals>
+    <!-- no translation found for conversation_folder_moved (297469098857964678) -->
+    <skip />
     <string name="search_results_header" msgid="4669917471897026269">"Αποτελέσματα"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Η αναζήτηση δεν υποστηρίζεται σε αυτόν τον λογαριασμό."</string>
     <string name="searchMode" msgid="3329807422114758583">"Λειτουργία αναζήτησης"</string>
