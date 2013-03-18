@@ -132,13 +132,14 @@ public class FolderItemView extends RelativeLayout {
         }
     }
 
-    public void bind(Account account, DropHandler dropHandler) {
+    public void bind(Account account, DropHandler dropHandler, int count) {
         mFolder = null;
         mDropHandler = dropHandler;
         mFolderTextView.setText(account.name);
         mFolderParentIcon.setVisibility(View.GONE);
         mUnreadCountTextView.setVisibility(View.GONE);
         setUnseenCount(Color.BLACK, 0);
+        setUnreadCount(count);
     }
 
     /**
