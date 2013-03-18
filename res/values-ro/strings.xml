@@ -63,8 +63,8 @@
     <string name="report_spam" msgid="6467567747975393907">"Raportaţi ca spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Nu este spam"</string>
     <string name="report_phishing" msgid="5714205737453138338">"Raportaţi phishing"</string>
-    <string name="delete" msgid="844871204175957681">"Ştergeţi"</string>
-    <string name="discard_drafts" msgid="6862272443470085375">"Ştergeţi mesajele nefinalizate"</string>
+    <string name="delete" msgid="844871204175957681">"Ștergeţi"</string>
+    <string name="discard_drafts" msgid="6862272443470085375">"Ștergeţi mesajele nefinalizate"</string>
     <string name="next" msgid="4674401197968248302">"Mai vechi"</string>
     <string name="previous" msgid="309943944831349924">"Mai noi"</string>
     <string name="refresh" msgid="490989798005710951">"Actualizaţi"</string>
@@ -77,6 +77,10 @@
     <string name="menu_move_to" msgid="9138296669516358542">"Mutați în"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Setări pentru dosare"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Dosare"</string>
+    <!-- no translation found for folder_list_more (537172187223133825) -->
+    <skip />
+    <!-- no translation found for folder_list_show_all_accounts (8054807182336991835) -->
+    <skip />
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sincronizare şi notificare"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Setări pentru dosar"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Setările contului"</string>
@@ -167,16 +171,16 @@
     <string name="me" msgid="6480762904022198669">"eu"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Afişaţi toate dosarele"</string>
   <plurals name="confirm_delete_conversation">
-    <item quantity="one" msgid="3731948757247905508">"Ştergeţi această conversaţie?"</item>
-    <item quantity="other" msgid="930334208937121234">"Ştergeţi aceste <xliff:g id="COUNT">%1$d</xliff:g> (de) conversaţii?"</item>
+    <item quantity="one" msgid="3731948757247905508">"Ștergeţi această conversaţie?"</item>
+    <item quantity="other" msgid="930334208937121234">"Ștergeţi aceste <xliff:g id="COUNT">%1$d</xliff:g> (de) conversaţii?"</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
     <item quantity="one" msgid="2990537295519552069">"Arhivaţi această conversaţie?"</item>
     <item quantity="other" msgid="4713469868399246772">"Arhivaţi aceste <xliff:g id="COUNT">%1$d</xliff:g> (de) conversaţii?"</item>
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one" msgid="5974090449454432874">"Ştergeţi mesajele nefinalizate din conversaţie?"</item>
-    <item quantity="other" msgid="4173815457177336569">"Ştergeţi mesajele nefinalizate din <xliff:g id="COUNT">%1$d</xliff:g> conversaţii?"</item>
+    <item quantity="one" msgid="5974090449454432874">"Ștergeţi mesajele nefinalizate din conversaţie?"</item>
+    <item quantity="other" msgid="4173815457177336569">"Ștergeţi mesajele nefinalizate din <xliff:g id="COUNT">%1$d</xliff:g> conversaţii?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Renunţaţi la acest mesaj?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Se încarcă…"</string>
@@ -214,13 +218,15 @@
     <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost ştearsă."</item>
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost şterse."</item>
   </plurals>
-    <string name="deleted" msgid="2757349161107268029">"Ştearsă"</string>
+    <string name="deleted" msgid="2757349161107268029">"Ștearsă"</string>
     <string name="archived" msgid="7533995360704366325">"Arhivată"</string>
     <string name="folder_removed" msgid="1047474677580149436">"Eliminat din <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_folder_changed">
     <item quantity="one" msgid="4930161390461457462">"Dosar modificat."</item>
     <item quantity="other" msgid="8918589141287976985">"Dosare modificate."</item>
   </plurals>
+    <!-- no translation found for conversation_folder_moved (297469098857964678) -->
+    <skip />
     <string name="search_results_header" msgid="4669917471897026269">"Rezultate"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Căutarea nu este acceptată pentru acest cont."</string>
     <string name="searchMode" msgid="3329807422114758583">"Modul Căutare"</string>
