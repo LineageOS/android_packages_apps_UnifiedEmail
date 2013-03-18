@@ -456,6 +456,8 @@ public final class FolderListFragment extends ListFragment implements
         private final List<DrawerItem> mItemList = new ArrayList<DrawerItem>();
         /** Cursor into the folder list. This might be null. */
         private Cursor mCursor = null;
+        /** Watcher for tracking and receiving unread counts for mail */
+        private FolderWatcher mFolderWatcher = null;
         private boolean mShowLessFolders;
         private boolean mShowLessAccounts;
 
@@ -473,8 +475,13 @@ public final class FolderListFragment extends ListFragment implements
             } else {
                 mRecentFolders = null;
             }
+            mFolderWatcher = new FolderWatcher(mActivity, this);
             mShowLessFolders = showLess;
             mShowLessAccounts = showLessAccounts;
+            for (int i=0; i < mAllAccounts.length; i++) {
+                final Uri uri = mAllAccounts[i].settings.defaultInbox;
+                mFolderWatcher.startWatching(uri);
+            }
         }
 
         @Override
@@ -605,17 +612,24 @@ public final class FolderListFragment extends ListFragment implements
                 // TODO(shahrk): The logic here is messy and will be changed
                 //               to properly add/reflect on LRU/MRU account
                 //               changes similar to RecentFoldersList
-                if(mShowLessAccounts && mAllAccounts.length > MAX_ACCOUNTS) {
-                    mItemList.add(new DrawerItem(mActivity,
-                            R.string.folder_list_show_all_accounts, true));
-                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount));
+                int unreadCount;
+                if (mShowLessAccounts && mAllAccounts.length > MAX_ACCOUNTS) {
+                    mItemList.add(new DrawerItem(
+                            mActivity, R.string.folder_list_show_all_accounts, true));
+                    unreadCount = mFolderWatcher.get(
+                            mCurrentAccount.settings.defaultInbox).unreadCount;
+                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, unreadCount));
                 } else {
                     Uri currentAccountUri = getCurrentAccountUri();
-                    for (final Account c: mAllAccounts){
-                        if(!currentAccountUri.equals(c.uri))
-                            mItemList.add(new DrawerItem(mActivity, c));
+                    for (final Account c : mAllAccounts) {
+                        if (!currentAccountUri.equals(c.uri)) {
+                            unreadCount = mFolderWatcher.get(c.settings.defaultInbox).unreadCount;
+                            mItemList.add(new DrawerItem(mActivity, c, unreadCount));
+                        }
                     }
-                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount));
+                    unreadCount = mFolderWatcher.get(
+                            mCurrentAccount.settings.defaultInbox).unreadCount;
+                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, unreadCount));
                 }
             }
             if (!mIsSectioned) {
