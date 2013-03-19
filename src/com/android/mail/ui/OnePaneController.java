@@ -194,7 +194,7 @@ public final class OnePaneController extends AbstractActivityController {
         // When view mode changes, lock drawer if viewing search results or
         // waiting for sync. Afterward, reset drawer state and load the folder
         // fragment into the drawer pullout.
-        if (ViewMode.isSearchMode(newMode) || ViewMode.isWaitingForSync(newMode)) {
+        if (ViewMode.isSearchMode(newMode)) {
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
