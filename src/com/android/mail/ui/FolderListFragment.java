@@ -460,6 +460,8 @@ public final class FolderListFragment extends ListFragment implements
         private FolderWatcher mFolderWatcher = null;
         private boolean mShowLessFolders;
         private boolean mShowLessAccounts;
+        /** Track whether the accounts have folder watchers added to them yet */
+        private boolean mAccountsWatched;
 
         /**
          * Creates a {@link FolderListAdapter}.This is a flat folder list of all the folders for the
@@ -478,9 +480,21 @@ public final class FolderListFragment extends ListFragment implements
             mFolderWatcher = new FolderWatcher(mActivity, this);
             mShowLessFolders = showLess;
             mShowLessAccounts = showLessAccounts;
-            for (int i=0; i < mAllAccounts.length; i++) {
-                final Uri uri = mAllAccounts[i].settings.defaultInbox;
-                mFolderWatcher.startWatching(uri);
+            mAccountsWatched = false;
+            initFolderWatcher();
+        }
+
+        /**
+         * If accounts have not yet been added to folder watcher due to various
+         * null pointer issues, add them.
+         */
+        public void initFolderWatcher() {
+            if (!mAccountsWatched && mAllAccounts != null) {
+                for (int i = 0; i < mAllAccounts.length; i++) {
+                    final Uri uri = mAllAccounts[i].settings.defaultInbox;
+                    mFolderWatcher.startWatching(uri);
+                }
+                mAccountsWatched = true;
             }
         }
 
@@ -607,31 +621,36 @@ public final class FolderListFragment extends ListFragment implements
          */
         private void recalculateListFolders() {
             mItemList.clear();
+
             if (mAllAccounts != null) {
-                // Add the accounts at the top.
+                // Add the accounts at the top. Tell mFolderWatcher which
+                // folders to track in case accounts were null earlier on.
                 // TODO(shahrk): The logic here is messy and will be changed
-                //               to properly add/reflect on LRU/MRU account
-                //               changes similar to RecentFoldersList
+                // to properly add/reflect on LRU/MRU account
+                // changes similar to RecentFoldersList
+                int unreadCount;
+                initFolderWatcher();
+
                 if (mShowLessAccounts && mAllAccounts.length > MAX_ACCOUNTS) {
+                    // Add show all accounts block along with current accounts
                     mItemList.add(new DrawerItem(
                             mActivity, R.string.folder_list_show_all_accounts, true));
-                    final int unreadCount =
-                            getFolderUnreadCount(mCurrentAccount.settings.defaultInbox);
+                    unreadCount = getInboxUnreadCount(mCurrentAccount);
                     mItemList.add(new DrawerItem(mActivity, mCurrentAccount, unreadCount));
                 } else {
+                    // Add all accounts and then the current account
                     Uri currentAccountUri = getCurrentAccountUri();
-                    for (final Account c : mAllAccounts) {
-                        if (!currentAccountUri.equals(c.uri)) {
-                            final int otherAccountUnreadCount =
-                                    getFolderUnreadCount(c.settings.defaultInbox);
-                            mItemList.add(new DrawerItem(mActivity, c, otherAccountUnreadCount));
+                    for (final Account account : mAllAccounts) {
+                        if (!currentAccountUri.equals(account.uri)) {
+                            unreadCount = getInboxUnreadCount(account);
+                            mItemList.add(new DrawerItem(mActivity, account, unreadCount));
                         }
                     }
-                    final int accountUnreadCount =
-                            getFolderUnreadCount(mCurrentAccount.settings.defaultInbox);
-                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, accountUnreadCount));
+                    unreadCount = getInboxUnreadCount(mCurrentAccount);
+                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, unreadCount));
                 }
             }
+
             if (!mIsSectioned) {
                 // Adapter for a flat list. Everything is a FOLDER_USER, and there are no headers.
                 do {
@@ -706,9 +725,24 @@ public final class FolderListFragment extends ListFragment implements
             }
         }
 
-        private int getFolderUnreadCount(Uri folderUri) {
-            final Folder folder = mFolderWatcher.get(folderUri);
-            return folder != null ? folder.unreadCount : 0;
+        /**
+         * Given an account, get the unreadCount from the FolderWatcher.
+         *
+         * @param c Account to get inbox unread count from
+         * @return Default inbox unread count
+         */
+        public int getInboxUnreadCount(Account account) {
+            int unreadCount = 0;
+            Folder inbox = mFolderWatcher.get(account.settings.defaultInbox);
+
+            if (inbox != null) {
+                // If inbox is found, get updated count otherwise NPE can be
+                // thrown
+                unreadCount = inbox.unreadCount;
+            } else {
+                unreadCount = 0;
+            }
+            return unreadCount;
         }
 
         @Override
