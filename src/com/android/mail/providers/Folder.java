@@ -511,7 +511,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Returns a boolean indicating whether this Folder object has been initialized
      */
     public boolean isInitialized() {
-        return name != FOLDER_UNINITIALIZED && conversationListUri != null &&
+        return !name.equals(FOLDER_UNINITIALIZED) && conversationListUri != null &&
                 !NULL_STRING_URI.equals(conversationListUri.toString());
     }
 
