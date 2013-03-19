@@ -191,8 +191,14 @@ public final class OnePaneController extends AbstractActivityController {
     public void onViewModeChanged(int newMode) {
         super.onViewModeChanged(newMode);
 
-        // When view mode changes, we should wait for drawer to close and
-        // repopulate folders.
+        // When view mode changes, lock drawer if viewing search results or
+        // waiting for sync. Afterward, reset drawer state and load the folder
+        // fragment into the drawer pullout.
+        if (ViewMode.isSearchMode(newMode) || ViewMode.isWaitingForSync(newMode)) {
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
         resetAndLoadDrawer();
 
         // When entering conversation list mode, hide and clean up any currently visible
