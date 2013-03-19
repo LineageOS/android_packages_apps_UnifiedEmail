@@ -42,6 +42,7 @@ import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
@@ -1704,7 +1705,17 @@ public abstract class AbstractActivityController implements ActivityController {
             if (mAccount == null) {
                 return;
             }
-            final boolean isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
+            boolean isConversationMode;
+            try {
+                isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
+            } catch (BadParcelableException e) {
+                // If a previous version of Gmail had a PendingIntent for a conversation when the
+                // app upgrades, the system may not actually update the PendingIntent to the new
+                // format.  If we see one of these old intents, just treat it as a conversation list
+                // intent.
+                LogUtils.e(LOG_TAG, e, "Error parsing conversation");
+                isConversationMode = false;
+            }
             if (isConversationMode && mViewMode.getMode() == ViewMode.UNKNOWN) {
                 mViewMode.enterConversationMode();
             } else {
