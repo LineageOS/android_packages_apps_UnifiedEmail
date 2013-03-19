@@ -212,28 +212,26 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         }
 
         public void appendFolderSpans(SpannableStringBuilder sb) {
-            for (Folder f : mFoldersSortedSet) {
-                addSpan(sb, f);
+            for (final Folder f : mFoldersSortedSet) {
+                final int bgColor = Folder.getNonEmptyColor(f.bgColor, mDefaultBgColor);
+                final int fgColor = Folder.getNonEmptyColor(f.fgColor, mDefaultFgColor);
+                addSpan(sb, f.name, bgColor, fgColor);
             }
 
             if (mFoldersSortedSet.isEmpty()) {
-                final Folder addLabel = Folder.newUnsafeInstance();
                 final Resources r = mContext.getResources();
-                addLabel.name = r.getString(R.string.add_label);
-                addLabel.bgColor = ""
-                        + r.getColor(R.color.conv_header_add_label_background);
-                addLabel.fgColor = "" + r.getColor(R.color.conv_header_add_label_text);
-                addSpan(sb, addLabel);
+                final String name = r.getString(R.string.add_label);
+                final int bgColor = r.getColor(R.color.conv_header_add_label_background);
+                final int fgColor = r.getColor(R.color.conv_header_add_label_text);
+                addSpan(sb, name, bgColor, fgColor);
             }
         }
 
-        private void addSpan(SpannableStringBuilder sb, Folder folder) {
+        private void addSpan(SpannableStringBuilder sb, String name, int bgColor,
+                             int fgColor) {
             final int start = sb.length();
-            sb.append(folder.name);
+            sb.append(name);
             final int end = sb.length();
-
-            final int fgColor = folder.getForegroundColor(mDefaultFgColor);
-            final int bgColor = folder.getBackgroundColor(mDefaultBgColor);
 
             sb.setSpan(new BackgroundColorSpan(bgColor), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
