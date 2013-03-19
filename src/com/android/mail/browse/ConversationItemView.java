@@ -72,7 +72,6 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
-
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
 import com.android.mail.ui.EllipsizedMultilineTextView;
@@ -1220,6 +1219,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      * Toggle the check mark on this view and update the conversation or begin
      * drag, if drag is enabled.
      */
+    @Override
     public void toggleCheckMarkOrBeginDrag() {
         ViewMode mode = mActivity.getViewMode();
         if (!mTabletDevice || !mode.isListMode()) {
@@ -1267,9 +1267,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         postInvalidate(mCoordinates.starX, mCoordinates.starY, mCoordinates.starX
                 + starBitmap.getWidth(),
                 mCoordinates.starY + starBitmap.getHeight());
-        ConversationCursor cursor = (ConversationCursor)mAdapter.getCursor();
-        cursor.updateBoolean(mContext, mHeader.conversation, ConversationColumns.STARRED,
-                mHeader.conversation.starred);
+        ConversationCursor cursor = (ConversationCursor) mAdapter.getCursor();
+        if (cursor != null) {
+            cursor.updateBoolean(mContext, mHeader.conversation, ConversationColumns.STARRED,
+                    mHeader.conversation.starred);
+        }
     }
 
     private boolean isTouchInCheckmark(float x, float y) {
