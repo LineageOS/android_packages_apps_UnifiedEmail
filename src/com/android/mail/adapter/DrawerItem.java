@@ -212,8 +212,12 @@ public class DrawerItem {
             case VIEW_HEADER :
                 // Headers are never highlighted
                 return false;
-            case VIEW_FOLDER :
-                return (mFolderType == currentType) && mFolder.uri.equals(currentFolder.uri);
+            case VIEW_FOLDER:
+                // True if folder types and URIs are the same
+                if (currentFolder != null && mFolder != null) {
+                    return (mFolderType == currentType) && mFolder.uri.equals(currentFolder.uri);
+                }
+                return false;
             case VIEW_ACCOUNT:
                 // Accounts are never highlighted
                 return false;
