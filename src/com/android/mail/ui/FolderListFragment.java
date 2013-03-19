@@ -612,24 +612,24 @@ public final class FolderListFragment extends ListFragment implements
                 // TODO(shahrk): The logic here is messy and will be changed
                 //               to properly add/reflect on LRU/MRU account
                 //               changes similar to RecentFoldersList
-                int unreadCount;
                 if (mShowLessAccounts && mAllAccounts.length > MAX_ACCOUNTS) {
                     mItemList.add(new DrawerItem(
                             mActivity, R.string.folder_list_show_all_accounts, true));
-                    unreadCount = mFolderWatcher.get(
-                            mCurrentAccount.settings.defaultInbox).unreadCount;
+                    final int unreadCount =
+                            getFolderUnreadCount(mCurrentAccount.settings.defaultInbox);
                     mItemList.add(new DrawerItem(mActivity, mCurrentAccount, unreadCount));
                 } else {
                     Uri currentAccountUri = getCurrentAccountUri();
                     for (final Account c : mAllAccounts) {
                         if (!currentAccountUri.equals(c.uri)) {
-                            unreadCount = mFolderWatcher.get(c.settings.defaultInbox).unreadCount;
-                            mItemList.add(new DrawerItem(mActivity, c, unreadCount));
+                            final int otherAccountUnreadCount =
+                                    getFolderUnreadCount(c.settings.defaultInbox);
+                            mItemList.add(new DrawerItem(mActivity, c, otherAccountUnreadCount));
                         }
                     }
-                    unreadCount = mFolderWatcher.get(
-                            mCurrentAccount.settings.defaultInbox).unreadCount;
-                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, unreadCount));
+                    final int accountUnreadCount =
+                            getFolderUnreadCount(mCurrentAccount.settings.defaultInbox);
+                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, accountUnreadCount));
                 }
             }
             if (!mIsSectioned) {
@@ -704,6 +704,11 @@ public final class FolderListFragment extends ListFragment implements
                     }
                 }
             }
+        }
+
+        private int getFolderUnreadCount(Uri folderUri) {
+            final Folder folder = mFolderWatcher.get(folderUri);
+            return folder != null ? folder.unreadCount : 0;
         }
 
         @Override
