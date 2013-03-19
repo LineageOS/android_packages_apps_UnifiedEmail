@@ -34,6 +34,7 @@ import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -354,10 +355,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
 
     /**
      * Creates a new instance of a folder object that is <b>not</b> initialized.  The caller is
-     * expected to fill in the details. This resulting instance is not guaranteed to work
-     * correctly, and might break functionality.  Use at your own risk!!
+     * expected to fill in the details. Used only for testing.
      * @return a new instance of an unsafe folder.
      */
+    @VisibleForTesting
     public static Folder newUnsafeInstance() {
         return new Folder();
     }
@@ -473,11 +474,21 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     public int getBackgroundColor(int defaultColor) {
-        return TextUtils.isEmpty(bgColor) ? defaultColor : Integer.parseInt(bgColor);
+        return getNonEmptyColor(bgColor, defaultColor);
     }
 
     public int getForegroundColor(int defaultColor) {
-        return TextUtils.isEmpty(fgColor) ? defaultColor : Integer.parseInt(fgColor);
+        return getNonEmptyColor(fgColor, defaultColor);
+    }
+
+    /**
+     * Returns the candidate color if non-emptyp, or the default if the candidate is empty
+     * @param candidate
+     * @return
+     */
+    public static int getNonEmptyColor(String candidate, int defaultColor) {
+        return TextUtils.isEmpty(candidate) ? defaultColor : Integer.parseInt(candidate);
+
     }
 
     /**
@@ -620,7 +631,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * all the fields.
      */
     public static Folder getDeficientDisplayOnlyFolder(Cursor cursor) {
-        Folder f = Folder.newUnsafeInstance();
+        Folder f = new Folder();
         f.id = cursor.getInt(UIProvider.FOLDER_ID_COLUMN);
         f.uri = Utils.getValidUri(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
         f.totalCount = cursor.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
