@@ -728,7 +728,7 @@ public final class FolderListFragment extends ListFragment implements
         /**
          * Given an account, get the unreadCount from the FolderWatcher.
          *
-         * @param c Account to get inbox unread count from
+         * @param account Account to get inbox unread count from
          * @return Default inbox unread count
          */
         public int getInboxUnreadCount(Account account) {
