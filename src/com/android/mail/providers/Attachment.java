@@ -43,6 +43,11 @@ import java.util.List;
 
 public class Attachment implements Parcelable {
     public static final String LOG_TAG = LogTag.getLogTag();
+    /**
+     * Workaround for b/8070022 so that appending a null partId to the end of a
+     * uri wouldn't remove the trailing backslash
+     */
+    public static final String EMPTY_PART_ID = "empty";
 
     /**
      * Part id of the attachment.
