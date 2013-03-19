@@ -170,7 +170,7 @@ public class ViewMode {
         return isListMode(mMode);
     }
 
-    public static final boolean isListMode(int mode) {
+    public static boolean isListMode(final int mode) {
         return mode == CONVERSATION_LIST || mode == SEARCH_RESULTS_LIST;
     }
 
@@ -178,12 +178,20 @@ public class ViewMode {
         return isConversationMode(mMode);
     }
 
-    public static final boolean isConversationMode(int mode) {
+    public static boolean isConversationMode(final int mode) {
         return mode == CONVERSATION || mode == SEARCH_RESULTS_CONVERSATION;
     }
 
+    public static boolean isSearchMode(final int mode) {
+        return mode == SEARCH_RESULTS_LIST || mode == SEARCH_RESULTS_CONVERSATION;
+    }
+
     public boolean isWaitingForSync() {
-        return mMode == WAITING_FOR_ACCOUNT_INITIALIZATION;
+        return isWaitingForSync(mMode);
+    }
+
+    public static boolean isWaitingForSync(final int mode) {
+        return mode == WAITING_FOR_ACCOUNT_INITIALIZATION;
     }
 
     /**
