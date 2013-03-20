@@ -643,6 +643,7 @@ public class NotificationActionUtils {
     private static PendingIntent createUndoTimeoutPendingIntent(
             final Context context, final NotificationAction notificationAction) {
         final Intent intent = new Intent(NotificationActionIntentService.ACTION_UNDO_TIMEOUT);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(
                 NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION, notificationAction);
 
@@ -705,6 +706,7 @@ public class NotificationActionUtils {
     private static void markSeen(
             final Context context, final Folder folder, final Conversation conversation) {
         final Intent intent = new Intent(MailIntentService.ACTION_MARK_SEEN);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(MailIntentService.FOLDER_EXTRA, folder);
         intent.putExtra(MailIntentService.CONVERSATION_EXTRA, conversation);
 
