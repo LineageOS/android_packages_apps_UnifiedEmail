@@ -157,7 +157,7 @@ public class ConversationPagerController {
             mPager.setVisibility(View.GONE);
         }
 
-        mSubjectDisplayChanger.clearSubject();
+        mSubjectDisplayChanger.clearSubjectAndUpdate();
 
         LogUtils.d(LOG_TAG, "IN CPC.hide, clearing adapter and unregistering list observer");
         mPager.setAdapter(null);
