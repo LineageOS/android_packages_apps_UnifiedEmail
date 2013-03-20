@@ -31,9 +31,10 @@ public interface SubjectDisplayChanger {
     void setSubject(String subject);
 
     /**
-     * Clear the subject display.
+     * Clear the subject display and update the action bar to display the
+     * folder/account.
      */
-    void clearSubject();
+    void clearSubjectAndUpdate();
 
     /**
      * Fits the subject text into the view that will display it, and returns any text that
