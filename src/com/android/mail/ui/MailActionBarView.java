@@ -655,14 +655,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     @Override
-    public void clearSubject() {
+    public void clearSubjectAndUpdate() {
         if (!mShowConversationSubject) {
             return;
         }
-
-        mActionBar.setTitle(null);
-        mActionBar.setSubtitle(null);
+        // Wipe subject view text
         mSubjectView.setText(null);
+        // Set folder and account as title and subtitle
+        setFolderAndAccount();
     }
 
     @Override
