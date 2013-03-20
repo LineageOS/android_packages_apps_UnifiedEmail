@@ -1699,48 +1699,46 @@ public abstract class AbstractActivityController implements ActivityController {
     private void handleIntent(Intent intent) {
         boolean handled = false;
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-            if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
-                setAccount(Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT)));
-            }
-            if (mAccount == null) {
-                return;
-            }
-            boolean isConversationMode;
             try {
-                isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
+                if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
+                    setAccount(Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT)));
+                }
+                if (mAccount == null) {
+                    return;
+                }
+                boolean isConversationMode  = intent.hasExtra(Utils.EXTRA_CONVERSATION);
+                if (isConversationMode && mViewMode.getMode() == ViewMode.UNKNOWN) {
+                    mViewMode.enterConversationMode();
+                } else {
+                    mViewMode.enterConversationListMode();
+                }
+                final Folder folder = intent.hasExtra(Utils.EXTRA_FOLDER) ?
+                        Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER)) : null;
+                if (folder != null) {
+                    onFolderChanged(folder);
+                    handled = true;
+                }
+
+                if (isConversationMode) {
+                    // Open the conversation.
+                    LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
+                            intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
+                    final Conversation conversation =
+                            intent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
+                    if (conversation != null && conversation.position < 0) {
+                        // Set the position to 0 on this conversation, as we don't know where it is
+                        // in the list
+                        conversation.position = 0;
+                    }
+                    showConversation(conversation);
+                    handled = true;
+                }
             } catch (BadParcelableException e) {
                 // If a previous version of Gmail had a PendingIntent for a conversation when the
                 // app upgrades, the system may not actually update the PendingIntent to the new
-                // format.  If we see one of these old intents, just treat it as a conversation list
-                // intent.
-                LogUtils.e(LOG_TAG, e, "Error parsing conversation");
-                isConversationMode = false;
-            }
-            if (isConversationMode && mViewMode.getMode() == ViewMode.UNKNOWN) {
-                mViewMode.enterConversationMode();
-            } else {
-                mViewMode.enterConversationListMode();
-            }
-            final Folder folder = intent.hasExtra(Utils.EXTRA_FOLDER) ?
-                    Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER)) : null;
-            if (folder != null) {
-                onFolderChanged(folder);
-                handled = true;
-            }
-
-            if (isConversationMode) {
-                // Open the conversation.
-                LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
-                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                final Conversation conversation =
-                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
-                if (conversation != null && conversation.position < 0) {
-                    // Set the position to 0 on this conversation, as we don't know where it is
-                    // in the list
-                    conversation.position = 0;
-                }
-                showConversation(conversation);
-                handled = true;
+                // format.
+                LogUtils.e(LOG_TAG, e, "Error parsing intent");
+                return;
             }
 
             if (!handled) {
