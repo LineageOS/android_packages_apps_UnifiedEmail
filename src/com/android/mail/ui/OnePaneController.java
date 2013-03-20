@@ -110,9 +110,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void resetActionBarIcon() {
         final int mode = mViewMode.getMode();
-        if (mode == ViewMode.CONVERSATION_LIST
-                && inInbox(mAccount, mConvListContext)
-                || mViewMode.isWaitingForSync()) {
+        if (mViewMode.isWaitingForSync()) {
             mActionBarView.removeBackButton();
         } else {
             mActionBarView.setBackButton();
@@ -529,12 +527,21 @@ public final class OnePaneController extends AbstractActivityController {
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
-        } else if ((!inInbox(mAccount, mConvListContext) && mViewMode.isListMode())
+            // Not needed, the activity is going away anyway.
+            return true;
+        }
+        if (inInbox(mAccount, mConvListContext) && mViewMode.isListMode()) {
+            // Up affordance: show the drawer.
+            toggleFolderListState();
+            return true;
+        }
+        if (mViewMode.isListMode()
                 || mode == ViewMode.CONVERSATION
                 || mode == ViewMode.FOLDER_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             // Same as go back.
             handleBackPress();
+            return true;
         }
         return true;
     }
