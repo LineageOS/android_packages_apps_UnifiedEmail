@@ -644,27 +644,27 @@ public class UIProvider {
 
     public static final class FolderType {
         /** A user defined label. */
-        public static final int DEFAULT = 0;
+        public static final int DEFAULT = 1 << 0;
         /** A system defined inbox */
-        public static final int INBOX = 1;
+        public static final int INBOX = 1 << 1;
         /** A system defined containing mails to be edited before sending. */
-        public static final int DRAFT = 2;
+        public static final int DRAFT = 1 << 2;
         /** A system defined folder containing mails <b>to be</b> sent */
-        public static final int OUTBOX = 3;
+        public static final int OUTBOX = 1 << 3;
         /** A system defined folder containing sent mails */
-        public static final int SENT = 4;
+        public static final int SENT = 1 << 4;
         /** A system defined trash folder */
-        public static final int TRASH = 5;
+        public static final int TRASH = 1 << 5;
         /** A system defined spam folder */
-        public static final int SPAM = 6;
+        public static final int SPAM = 1 << 6;
         /** A system defined starred folder */
-        public static final int STARRED = 7;
+        public static final int STARRED = 1 << 7;
         /** Any other system label that we do not have a specific name for. */
-        public static final int OTHER_PROVIDER_FOLDER = 8;
+        public static final int OTHER_PROVIDER_FOLDER = 1 << 8;
         /** All mail folder **/
-        public static final int ALL_MAIL = 9;
+        public static final int ALL_MAIL = 1 << 9;
         /** Gmail's inbox sections **/
-        public static final int INBOX_SECTION = 10;
+        public static final int INBOX_SECTION = 1 << 10;
     }
 
     public static final class FolderCapabilities {

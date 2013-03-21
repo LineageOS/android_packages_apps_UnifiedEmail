@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.providers.UIProvider.FolderType;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -146,7 +145,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
     protected boolean meetsRequirements(Folder folder) {
         // We only want to show the non-Trash folders that can accept moved messages
         return folder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) &&
-                folder.type != FolderType.TRASH && !Objects.equal(folder, mExcludedFolder);
+                !folder.isTrash() && !Objects.equal(folder, mExcludedFolder);
     }
 
     @Override
