@@ -471,7 +471,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Return if the type of the folder matches a provider defined folder.
      */
     public boolean isProviderFolder() {
-        return isType(type & UIProvider.FolderType.DEFAULT);
+        return !isType(UIProvider.FolderType.DEFAULT);
     }
 
     public int getBackgroundColor(int defaultColor) {
