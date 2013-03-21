@@ -157,7 +157,8 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
                     0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
 
-        mFolderDisplayer.loadConversationFolders(conv, null /* ignoreFolder */);
+        mFolderDisplayer.loadConversationFolders(conv, null /* ignoreFolder */,
+                -1 /* ignoreFolderType */);
         mFolderDisplayer.appendFolderSpans(sb);
 
         mFoldersView.setText(sb);

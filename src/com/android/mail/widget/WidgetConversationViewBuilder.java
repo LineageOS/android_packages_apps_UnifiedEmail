@@ -66,8 +66,9 @@ public class WidgetConversationViewBuilder {
          * Load Conversation Labels
          */
         @Override
-        public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri) {
-            super.loadConversationFolders(conv, ignoreFolderUri);
+        public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri,
+                final int ignoreFolderType) {
+            super.loadConversationFolders(conv, ignoreFolderUri, ignoreFolderType);
         }
 
         private static int getFolderViewId(int position) {
@@ -146,7 +147,8 @@ public class WidgetConversationViewBuilder {
      * Return the full View
      */
     public RemoteViews getStyledView(CharSequence date, Conversation conversation,
-            final Uri folderUri, SpannableStringBuilder senders, String filteredSubject) {
+            final Uri folderUri, final int ignoreFolderType, SpannableStringBuilder senders,
+            String filteredSubject) {
 
         final boolean isUnread = !conversation.read;
         String snippet = conversation.getSnippet();
@@ -194,7 +196,7 @@ public class WidgetConversationViewBuilder {
         }
         if (mContext.getResources().getBoolean(R.bool.display_folder_colors_in_widget)) {
             mFolderDisplayer = new WidgetFolderDisplayer(mContext);
-            mFolderDisplayer.loadConversationFolders(conversation, folderUri);
+            mFolderDisplayer.loadConversationFolders(conversation, folderUri, ignoreFolderType);
             mFolderDisplayer.displayFolders(remoteViews);
         }
 

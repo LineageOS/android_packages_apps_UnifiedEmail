@@ -69,6 +69,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
@@ -213,8 +214,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         @Override
-        public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri) {
-            super.loadConversationFolders(conv, ignoreFolderUri);
+        public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri,
+                final int ignoreFolderType) {
+            super.loadConversationFolders(conv, ignoreFolderUri, ignoreFolderType);
 
             mFoldersCount = mFoldersSortedSet.size();
             mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
@@ -569,8 +571,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             } else {
                 mHeader.folderDisplayer.reset();
             }
+
+            final int ignoreFolderType;
+            if (mDisplayedFolder.isInbox()) {
+                ignoreFolderType = FolderType.INBOX;
+            } else {
+                ignoreFolderType = -1;
+            }
+
             mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation,
-                    mDisplayedFolder.uri);
+                    mDisplayedFolder.uri, ignoreFolderType);
         }
 
         if (mSelectedConversationSet != null) {
