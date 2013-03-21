@@ -45,6 +45,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.DelayedTaskHandler;
 import com.android.mail.utils.LogTag;
@@ -67,17 +68,17 @@ public class WidgetService extends RemoteViewsService {
     }
 
     protected void configureValidAccountWidget(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, final Uri folderUri,
+            int appWidgetId, Account account, final int folderType, final Uri folderUri,
             final Uri folderConversationListUri, String folderName) {
-        configureValidAccountWidget(context, remoteViews, appWidgetId, account, folderUri,
-                folderConversationListUri, folderName, WidgetService.class);
+        configureValidAccountWidget(context, remoteViews, appWidgetId, account, folderType,
+                folderUri, folderConversationListUri, folderName, WidgetService.class);
     }
 
     /**
      * Modifies the remoteView for the given account and folder.
      */
     public static void configureValidAccountWidget(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, final Uri folderUri,
+            int appWidgetId, Account account, final int folderType, final Uri folderUri,
             final Uri folderConversationListUri, String folderDisplayName, Class<?> widgetService) {
         remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
 
@@ -105,11 +106,11 @@ public class WidgetService extends RemoteViewsService {
         remoteViews.setEmptyView(R.id.conversation_list, R.id.empty_conversation_list);
 
         WidgetService.configureValidWidgetIntents(context, remoteViews, appWidgetId, account,
-                folderUri, folderConversationListUri, folderDisplayName, widgetService);
+                folderType, folderUri, folderConversationListUri, folderDisplayName, widgetService);
     }
 
     public static void configureValidWidgetIntents(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, final Uri folderUri,
+            int appWidgetId, Account account, final int folderType, final Uri folderUri,
             final Uri folderConversationListUri, final String folderDisplayName,
             Class<?> serviceClass) {
         remoteViews.setViewVisibility(R.id.widget_configuration, View.GONE);
@@ -119,6 +120,7 @@ public class WidgetService extends RemoteViewsService {
         final Intent intent = new Intent(context, serviceClass);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.putExtra(BaseWidgetProvider.EXTRA_ACCOUNT, account.serialize());
+        intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_TYPE, folderType);
         intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_URI, folderUri);
         intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_CONVERSATION_LIST_URI,
                 folderConversationListUri);
@@ -199,6 +201,7 @@ public class WidgetService extends RemoteViewsService {
         private final Context mContext;
         private final int mAppWidgetId;
         private final Account mAccount;
+        private final int mFolderType;
         private final Uri mFolderUri;
         private final Uri mFolderConversationListUri;
         private final String mFolderDisplayName;
@@ -221,6 +224,7 @@ public class WidgetService extends RemoteViewsService {
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
+            mFolderType = intent.getIntExtra(WidgetProvider.EXTRA_FOLDER_TYPE, FolderType.DEFAULT);
             mFolderUri = intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_URI);
             mFolderConversationListUri =
                     intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_CONVERSATION_LIST_URI);
@@ -239,8 +243,8 @@ public class WidgetService extends RemoteViewsService {
             // If the account of this widget has been removed, we want to update the widget to
             // "Tap to configure" mode.
             if (!mService.isWidgetConfigured(mContext, mAppWidgetId, mAccount)) {
-                BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderUri,
-                        mFolderConversationListUri, mFolderDisplayName);
+                BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
+                        mFolderUri, mFolderConversationListUri, mFolderDisplayName);
             }
 
             mFolderInformationShown = false;
@@ -380,10 +384,17 @@ public class WidgetService extends RemoteViewsService {
                 CharSequence date = DateUtils.getRelativeTimeSpanString(mContext,
                         conversation.dateMs);
 
+                final int ignoreFolderType;
+                if ((mFolderType & FolderType.INBOX) != 0) {
+                    ignoreFolderType = FolderType.INBOX;
+                } else {
+                    ignoreFolderType = -1;
+                }
+
                 // Load up our remote view.
-                RemoteViews remoteViews =
-                        mWidgetConversationViewBuilder.getStyledView(date, conversation,
-                                mFolderUri, senderBuilder, filterTag(conversation.subject));
+                RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(date,
+                        conversation, mFolderUri, ignoreFolderType, senderBuilder,
+                                filterTag(conversation.subject));
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,
@@ -500,7 +511,8 @@ public class WidgetService extends RemoteViewsService {
                     // widget update. This causes the folder name to be shown as blank if the state
                     // of the widget is restored.
                     mService.configureValidAccountWidget(mContext, remoteViews, mAppWidgetId,
-                            mAccount, mFolderUri, mFolderConversationListUri, folderName);
+                            mAccount, mFolderType, mFolderUri, mFolderConversationListUri,
+                            folderName);
                     appWidgetManager.updateAppWidget(mAppWidgetId, remoteViews);
                     mFolderInformationShown = true;
                 }

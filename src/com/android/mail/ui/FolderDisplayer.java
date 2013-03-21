@@ -26,6 +26,7 @@ import android.net.Uri;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider.FolderType;
 
 import java.util.SortedSet;
 
@@ -53,11 +54,13 @@ public class FolderDisplayer {
      * Configure the FolderDisplayer object by parsing the rawFolders string.
      *
      * @param foldersString string containing serialized folders to display.
-     * @param ignoreFolder (optional) folder to omit from the displayed set
+     * @param ignoreFolderUri (optional) folder to omit from the displayed set
+     * @param ignoreFolderType -1, or the {@link FolderType} to omit from the displayed set
      */
-    public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri) {
+    public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri,
+            final int ignoreFolderType) {
         mFoldersSortedSet.clear();
-        mFoldersSortedSet.addAll(conv.getRawFoldersForDisplay(ignoreFolderUri));
+        mFoldersSortedSet.addAll(conv.getRawFoldersForDisplay(ignoreFolderUri, ignoreFolderType));
     }
 
     /**
