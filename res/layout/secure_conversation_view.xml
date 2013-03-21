@@ -18,7 +18,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ScrollView android:id="@+id/scroll_view"
+    <com.android.mail.browse.MessageScrollView android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -37,18 +37,18 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/conv_header" />
             <!-- base WebView layer -->
-            <WebView
+            <com.android.mail.browse.MessageWebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1.0"/>
+                android:layout_weight="1.0" />
             <include layout="@layout/conversation_message_footer"
                 android:id="@+id/message_footer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
         </LinearLayout>
-    </ScrollView>
+    </com.android.mail.browse.MessageScrollView>
 
     <include layout="@layout/conversation_load_spinner"/>
 
