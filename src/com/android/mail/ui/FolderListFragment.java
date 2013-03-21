@@ -23,7 +23,6 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -655,7 +654,7 @@ public final class FolderListFragment extends ListFragment implements
                 // Adapter for a flat list. Everything is a FOLDER_USER, and there are no headers.
                 do {
                     final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
-                    if (mExcludedFolderTypes == null || !mExcludedFolderTypes.contains(f.type)) {
+                    if (!isFolderTypeExcluded(f.type)) {
                         mItemList.add(new DrawerItem(mActivity, f, DrawerItem.FOLDER_USER,
                                 mCursor.getPosition()));
                     }
@@ -672,7 +671,7 @@ public final class FolderListFragment extends ListFragment implements
             final List<DrawerItem> userFolderList = new ArrayList<DrawerItem>();
             do {
                 final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
-                if (mExcludedFolderTypes == null || !mExcludedFolderTypes.contains(f.type)) {
+                if (!isFolderTypeExcluded(f.type)) {
                     if (f.isProviderFolder()) {
                         mItemList.add(new DrawerItem(mActivity, f, DrawerItem.FOLDER_SYSTEM,
                                 mCursor.getPosition()));
@@ -694,7 +693,7 @@ public final class FolderListFragment extends ListFragment implements
             if (mExcludedFolderTypes != null) {
                 final Iterator<Folder> iterator = recentFolderList.iterator();
                 while (iterator.hasNext()) {
-                    if (mExcludedFolderTypes.contains(iterator.next().type)) {
+                    if (isFolderTypeExcluded(iterator.next().type)) {
                         iterator.remove();
                     }
                 }
@@ -967,5 +966,23 @@ public final class FolderListFragment extends ListFragment implements
      */
     public boolean showingHierarchy() {
         return mParentFolder != null;
+    }
+
+    /**
+     * Checks if the specified folder type bitmask contains a folder type that we want to exclude
+     * from displaying.
+     */
+    private boolean isFolderTypeExcluded(final int folderType) {
+        if (mExcludedFolderTypes == null) {
+            return false;
+        }
+
+        for (final int excludedType : mExcludedFolderTypes) {
+            if ((excludedType & folderType) != 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

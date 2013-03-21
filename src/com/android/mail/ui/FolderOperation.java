@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -72,7 +71,7 @@ public class FolderOperation {
             if (Objects.equal(op.mFolder.uri, folder.uri) && !op.mAdd) {
                 return true;
             }
-            if (folder.isTrash() && op.mFolder.type == UIProvider.FolderType.INBOX) {
+            if (folder.isTrash() && op.mFolder.isInbox()) {
                 return true;
             }
         }
