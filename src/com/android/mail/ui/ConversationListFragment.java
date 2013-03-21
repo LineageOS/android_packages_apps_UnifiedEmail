@@ -741,7 +741,7 @@ public final class ConversationListFragment extends ListFragment implements
             int action;
             mListView.enableSwipe(true);
             if (ConversationListContext.isSearchResult(mViewContext)
-                    || (mFolder != null && mFolder.type == FolderType.SPAM)) {
+                    || (mFolder != null && mFolder.isType(FolderType.SPAM))) {
                 action = R.id.delete;
             } else if (mFolder == null) {
                 action = R.id.remove_folder;

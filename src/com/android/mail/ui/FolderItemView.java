@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -123,7 +122,7 @@ public class FolderItemView extends RelativeLayout {
         mDropHandler = dropHandler;
         mFolderTextView.setText(folder.name);
         mFolderParentIcon.setVisibility(mFolder.hasChildren ? View.VISIBLE : View.GONE);
-        if (folder.type == FolderType.INBOX_SECTION && mFolder.unseenCount > 0) {
+        if (mFolder.isInbox() && mFolder.unseenCount > 0) {
             mUnreadCountTextView.setVisibility(View.GONE);
             setUnseenCount(mFolder.getBackgroundColor(Color.BLACK), mFolder.unseenCount);
         } else {

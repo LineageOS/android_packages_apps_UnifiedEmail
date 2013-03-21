@@ -2607,13 +2607,13 @@ public abstract class AbstractActivityController implements ActivityController {
         if (!supportsDrag(event, folder)) {
             return;
         }
-        if (folder.type == UIProvider.FolderType.STARRED) {
+        if (folder.isType(UIProvider.FolderType.STARRED)) {
             // Moving a conversation to the starred folder adds the star and
             // removes the current label
             handleDropInStarred(folder);
             return;
         }
-        if (mFolder.type == UIProvider.FolderType.STARRED) {
+        if (mFolder.isType(UIProvider.FolderType.STARRED)) {
             handleDragFromStarred(folder);
             return;
         }
