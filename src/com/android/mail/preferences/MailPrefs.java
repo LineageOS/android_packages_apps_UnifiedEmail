@@ -87,7 +87,6 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(DISPLAY_IMAGES)
                 .add(DISPLAY_IMAGES_PATTERNS)
                 .build();
-
     }
 
     public static final class ConversationListSwipeActions {

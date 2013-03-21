@@ -33,6 +33,7 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.ConversationCursorLoader;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -73,6 +74,27 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#HAS_ATTACHMENTS
      */
     public boolean hasAttachments;
+    /**
+     * Union of attachmentPreviewUri0 and attachmentPreviewUri1
+     */
+    public transient ArrayList<String> attachmentPreviews;
+    /**
+     * @see UIProvider.ConversationColumns#ATTACHMENT_PREVIEW_URI0
+     */
+    public String attachmentPreviewUri0;
+    /**
+     * @see UIProvider.ConversationColumns#ATTACHMENT_PREVIEW_URI1
+     */
+    public String attachmentPreviewUri1;
+    /**
+     * @see UIProvider.ConversationColumns#ATTACHMENT_PREVIEW_STATES
+     */
+    public int attachmentPreviewStates;
+    /**
+     * @see UIProvider.ConversationColumns#ATTACHMENT_PREVIEWS_COUNT
+     */
+    public int attachmentPreviewsCount;
+    public Uri attachmentPreviewsListUri;
     /**
      * @see UIProvider.ConversationColumns#MESSAGE_LIST_URI
      */
@@ -216,6 +238,11 @@ public class Conversation implements Parcelable {
         dest.writeParcelable(conversationInfo, 0);
         dest.writeParcelable(conversationBaseUri, 0);
         dest.writeInt(isRemote ? 1 : 0);
+        dest.writeString(attachmentPreviewUri0);
+        dest.writeString(attachmentPreviewUri1);
+        dest.writeInt(attachmentPreviewStates);
+        dest.writeInt(attachmentPreviewsCount);
+        dest.writeParcelable(attachmentPreviewsListUri, 0);
     }
 
     private Conversation(Parcel in, ClassLoader loader) {
@@ -247,6 +274,12 @@ public class Conversation implements Parcelable {
         conversationInfo = in.readParcelable(loader);
         conversationBaseUri = in.readParcelable(null);
         isRemote = in.readInt() != 0;
+        attachmentPreviews = null;
+        attachmentPreviewUri0 = in.readString();
+        attachmentPreviewUri1 = in.readString();
+        attachmentPreviewStates = in.readInt();
+        attachmentPreviewsCount = in.readInt();
+        attachmentPreviewsListUri = in.readParcelable(null);
     }
 
     @Override
@@ -330,6 +363,17 @@ public class Conversation implements Parcelable {
                 numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
             }
             isRemote = cursor.getInt(UIProvider.CONVERSATION_REMOTE_COLUMN) != 0;
+            attachmentPreviews = null;
+            attachmentPreviewUri0 = cursor.getString(
+                    UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_URI0_COLUMN);
+            attachmentPreviewUri1 = cursor.getString(
+                    UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_URI1_COLUMN);
+            attachmentPreviewStates = cursor.getInt(
+                    UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN);
+            attachmentPreviewsCount = cursor.getInt(
+                    UIProvider.CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN);
+            attachmentPreviewsListUri = Utils.getValidUri(cursor
+                    .getString(UIProvider.CONVERSATION_ATTACHMENT_PREVIEWS_LIST_URI_COLUMN));
         }
     }
 
@@ -368,18 +412,25 @@ public class Conversation implements Parcelable {
         numMessages = other.numMessages;
         numDrafts = other.numDrafts;
         isRemote = other.isRemote;
+        attachmentPreviews = null;
+        attachmentPreviewUri0 = other.attachmentPreviewUri0;
+        attachmentPreviewUri1 = other.attachmentPreviewUri1;
+        attachmentPreviewStates = other.attachmentPreviewStates;
+        attachmentPreviewsCount = other.attachmentPreviewsCount;
+        attachmentPreviewsListUri = other.attachmentPreviewsListUri;
     }
 
     public Conversation() {
     }
 
-    public static Conversation create(long id, Uri uri, String subject, long dateMs,
-            String snippet, boolean hasAttachment, Uri messageListUri, String senders,
+    public static Conversation create(long id, Uri uri, String subject, long dateMs, String snippet,
+            boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
             boolean seen, boolean starred, FolderList rawFolders, int convFlags, int personalLevel,
             boolean spam, boolean phishing, boolean muted, Uri accountUri,
-            ConversationInfo conversationInfo, Uri conversationBase, boolean isRemote) {
-
+            ConversationInfo conversationInfo, Uri conversationBase, boolean isRemote,
+            String attachmentPreviewUri0, String attachmentPreviewUri1, int attachmentPreviewStates,
+            int attachmentPreviewsCount, Uri attachmentPreviewsListUri) {
         final Conversation conversation = new Conversation();
 
         conversation.id = id;
@@ -408,6 +459,12 @@ public class Conversation implements Parcelable {
         conversation.conversationInfo = conversationInfo;
         conversation.conversationBaseUri = conversationBase;
         conversation.isRemote = isRemote;
+        conversation.attachmentPreviews = null;
+        conversation.attachmentPreviewUri0 = attachmentPreviewUri0;
+        conversation.attachmentPreviewUri1 = attachmentPreviewUri1;
+        conversation.attachmentPreviewStates = attachmentPreviewStates;
+        conversation.attachmentPreviewsCount = attachmentPreviewsCount;
+        conversation.attachmentPreviewsListUri = attachmentPreviewsListUri;
         return conversation;
     }
 
@@ -621,12 +678,17 @@ public class Conversation implements Parcelable {
         return conversationBaseUri != null ? conversationBaseUri.toString() : defaultValue;
     }
 
-    public int getAttachmentsCount() {
-        return getAttachments().size();
-    }
-
-    public ArrayList<String> getAttachments() {
-        return Lists.newArrayList();
+    public ArrayList<String> getAttachmentPreviewUris() {
+        if (attachmentPreviews == null) {
+            attachmentPreviews = Lists.newArrayListWithCapacity(2);
+            if (!TextUtils.isEmpty(attachmentPreviewUri0)) {
+                attachmentPreviews.add(attachmentPreviewUri0);
+            }
+            if (!TextUtils.isEmpty(attachmentPreviewUri1)) {
+                attachmentPreviews.add(attachmentPreviewUri1);
+            }
+        }
+        return attachmentPreviews;
     }
 
     /**

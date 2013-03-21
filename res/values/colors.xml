@@ -32,6 +32,9 @@
     <color name="date_text_color">@color/dark_gray_text_color</color>
     <color name="message_info_text_color">@color/gray_text_color</color>
     <color name="subject_text_color">#333333</color>
+    <!--todo:markwei get overflow badge and count color from channah-->
+    <color name="ap_overflow_badge_color">#aaeeeeee</color>
+    <color name="ap_overflow_text_color">@android:color/tertiary_text_light</color>
     <!-- a 'checked' item is in the conversation selection set. also the 'pressed' color. -->
     <!-- this is holo_blue_light @ 20% opacity -->
     <color name="checked_item_background_color">#cfe9f3</color>

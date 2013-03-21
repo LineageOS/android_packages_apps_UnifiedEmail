@@ -21,6 +21,8 @@ import android.graphics.Matrix;
 
 import com.android.mail.utils.LogUtils;
 
+import java.io.InputStream;
+
 /**
  * Provides static functions to decode bitmaps at the optimal size
  */
@@ -97,15 +99,15 @@ public class BitmapUtil {
     }
 
     /**
-     * Decode an image into a Bitmap, using sub-sampling if the desired dimensions call for it.
-     * Also applies a center-crop a la {@link android.widget.ImageView.ScaleType#CENTER_CROP}.
+     * Decode an image into a Bitmap, using sub-sampling if the hinted dimensions call for it.
+     * Does not crop to fit the hinted dimensions.
      *
      * @param src an encoded image
-     * @param w desired width in px
-     * @param h desired height in px
-     * @return an exactly-sized decoded Bitmap that is center-cropped.
+     * @param w hint width in px
+     * @param h hint height in px
+     * @return a decoded Bitmap that is not exactly sized to the hinted dimensions.
      */
-    public static Bitmap decodeByteArrayWithCenterCrop(byte[] src, int w, int h) {
+    public static Bitmap decodeByteArray(byte[] src, int w, int h) {
         try {
             // calculate sample size based on w/h
             final BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -116,12 +118,91 @@ public class BitmapUtil {
             }
             opts.inSampleSize = Math.min(opts.outWidth / w, opts.outHeight / h);
             opts.inJustDecodeBounds = false;
-            final Bitmap decoded = BitmapFactory.decodeByteArray(src, 0, src.length, opts);
+            return BitmapFactory.decodeByteArray(src, 0, src.length, opts);
+        } catch (Throwable t) {
+            LogUtils.w(PhotoManager.TAG, t, "unable to decode image");
+            return null;
+        }
+    }
+    /**
+     * Decode an input stream into a Bitmap, using sub-sampling if the hinted dimensions call for
+     * it. Does not crop to fit the hinted dimensions.
+     *
+     * @param factory a factory to retrieve fresh input streams from.
+     * @param w hint width in px
+     * @param h hint height in px
+     * @return a decoded Bitmap that is not exactly sized to the hinted dimensions.
+     */
+    public static Bitmap decodeStream(InputStreamFactory factory, int w, int h) {
+        try {
+            // calculate sample size based on w/h
+            final BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.inJustDecodeBounds = true;
+            InputStream src = factory.newInputStream();
+            BitmapFactory.decodeStream(src, null, opts);
+            if (src != null) {
+                src.close();
+            }
 
+            if (opts.mCancel || opts.outWidth == -1 || opts.outHeight == -1) {
+                return null;
+            }
+
+            opts.inSampleSize = Math.min(opts.outWidth / w, opts.outHeight / h);
+            opts.inJustDecodeBounds = false;
+            src = factory.newInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(src, null, opts);
+            if (src != null) {
+                src.close();
+            }
+            return bitmap;
+        } catch (Throwable t) {
+            LogUtils.w(PhotoManager.TAG, t, "unable to decode image");
+            return null;
+        }
+    }
+
+    /**
+     * Decode an image into a Bitmap, using sub-sampling if the desired dimensions call for it.
+     * Also applies a center-crop a la {@link android.widget.ImageView.ScaleType#CENTER_CROP}.
+     *
+     * @param src an encoded image
+     * @param w desired width in px
+     * @param h desired height in px
+     * @return an exactly-sized decoded Bitmap that is center-cropped.
+     */
+    public static Bitmap decodeByteArrayWithCenterCrop(byte[] src, int w, int h) {
+        try {
+            final Bitmap decoded = decodeByteArray(src, w, h);
             return centerCrop(decoded, w, h);
 
         } catch (Throwable t) {
-            LogUtils.w(PhotoManager.TAG, t, "unable to decode image");
+            LogUtils.w(PhotoManager.TAG, t, "unable to crop image");
+            return null;
+        }
+    }
+
+    /**
+     * Decode an input stream into a Bitmap, using sub-sampling if the desired dimensions call
+     * for it. Also applies a center-crop a la {@link android.widget.ImageView
+     * .ScaleType#CENTER_CROP}.
+     *
+     * @param factory a factory to retrieve fresh input streams from.
+     * @param w desired width in px
+     * @param h desired height in px
+     * @return an exactly-sized decoded Bitmap that is center-cropped.
+     */
+    public static Bitmap decodeStreamWithCenterCrop(InputStreamFactory factory, int w, int h) {
+        try {
+            final Bitmap decoded = decodeStream(factory, w, h);
+            //todo:markwei don't always CENTER_CROP
+            final Bitmap cropped = centerCrop(decoded, w, h);
+            LogUtils.d(PhotoManager.TAG, "Full decoded bitmap size %d bytes, cropped size %d bytes",
+                    decoded.getByteCount(), cropped.getByteCount());
+            return cropped;
+
+        } catch (Throwable t) {
+            LogUtils.w(PhotoManager.TAG, t, "unable to crop image");
             return null;
         }
     }
@@ -172,5 +253,9 @@ public class BitmapUtil {
         }
 
         return cropped;
+    }
+
+    public interface InputStreamFactory {
+        InputStream newInputStream();
     }
 }

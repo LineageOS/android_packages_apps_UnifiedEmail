@@ -30,8 +30,8 @@ import android.util.LruCache;
 
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -50,17 +51,44 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * Get the default image provider that draws while the photo is being
      * loaded.
      */
-    public abstract DefaultImageProvider getDefaultImageProvider();
+    protected abstract DefaultImageProvider getDefaultImageProvider();
 
     /**
      * Generate a hashcode unique to each request.
      */
-    public abstract long getHash(PhotoIdentifier id, ImageCanvas view);
+    protected abstract int getHash(PhotoIdentifier id, ImageCanvas view);
 
     /**
      * Return a specific implementation of PhotoLoaderThread.
      */
-    public abstract PhotoLoaderThread getLoaderThread(ContentResolver contentResolver);
+    protected abstract PhotoLoaderThread getLoaderThread(ContentResolver contentResolver);
+
+    /**
+     * Subclasses can implement this method to alert callbacks of the images' loading progress.
+     * @param request The original request made.
+     * @param success True if we successfully loaded the image from cache. False if we fell back
+     *                to the default image.
+     */
+    protected void onImageDrawn(Request request, boolean success) {
+        // Subclasses can choose to do something about this
+    }
+
+    /**
+     * Subclasses can implement this method to determine whether a previously loaded bitmap can
+     * be reused for a new canvas size.
+     * @param prevWidth The width of the previously loaded bitmap.
+     * @param prevHeight The height of the previously loaded bitmap.
+     * @param newWidth The width of the canvas this request is drawing on.
+     * @param newHeight The height of the canvas this request is drawing on.
+     * @return
+     */
+    protected boolean isSizeCompatible(int prevWidth, int prevHeight, int newWidth, int newHeight) {
+        return true;
+    }
+
+    protected final Context getContext() {
+        return mContext;
+    }
 
     static final String TAG = "PhotoManager";
     static final boolean DEBUG = false; // Don't submit with true
@@ -93,13 +121,17 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     /**
      * Maintains the state of a particular photo.
      */
-    private static class BitmapHolder {
+    protected static class BitmapHolder {
         byte[] bytes;
+        int width;
+        int height;
 
         volatile boolean fresh;
 
-        public BitmapHolder(byte[] bytes) {
+        public BitmapHolder(byte[] bytes, int width, int height) {
             this.bytes = bytes;
+            this.width = width;
+            this.height = height;
             this.fresh = true;
         }
 
@@ -111,6 +143,10 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             sb.append(bytes);
             sb.append(" size=");
             sb.append(bytes == null ? 0 : bytes.length);
+            sb.append(" width=");
+            sb.append(width);
+            sb.append(" height=");
+            sb.append(height);
             sb.append(" fresh=");
             sb.append(fresh);
             sb.append("}");
@@ -137,7 +173,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     private static final int HOLDER_CACHE_SIZE = 2000000;
 
     /** Cache size for {@link #sBitmapCache} for devices with "large" RAM. */
-    private static final int BITMAP_CACHE_SIZE = 36864 * 48; // 1728K
+    private static final int BITMAP_CACHE_SIZE = 1024 * 1024 * 8; // 8MB
 
     /** For debug: How many times we had to reload cached photo for a stale entry */
     private static final AtomicInteger sStaleCacheOverwrite = new AtomicInteger();
@@ -149,17 +185,6 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         final float cacheSizeAdjustment =
                 (MemoryUtils.getTotalMemorySize() >= MemoryUtils.LARGE_RAM_THRESHOLD) ?
                         1.0f : 0.5f;
-        final int bitmapCacheSize = (int) (cacheSizeAdjustment * BITMAP_CACHE_SIZE);
-        sBitmapCache = new LruCache<BitmapIdentifier, Bitmap>(bitmapCacheSize) {
-            @Override protected int sizeOf(BitmapIdentifier key, Bitmap value) {
-                return value.getByteCount();
-            }
-
-            @Override protected void entryRemoved(
-                    boolean evicted, BitmapIdentifier key, Bitmap oldValue, Bitmap newValue) {
-                if (DEBUG) dumpStats();
-            }
-        };
         final int holderCacheSize = (int) (cacheSizeAdjustment * HOLDER_CACHE_SIZE);
         sBitmapHolderCache = new LruCache<Object, BitmapHolder>(holderCacheSize) {
             @Override protected int sizeOf(Object key, BitmapHolder value) {
@@ -168,6 +193,17 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
 
             @Override protected void entryRemoved(
                     boolean evicted, Object key, BitmapHolder oldValue, BitmapHolder newValue) {
+                if (DEBUG) dumpStats();
+            }
+        };
+        final int bitmapCacheSize = (int) (cacheSizeAdjustment * BITMAP_CACHE_SIZE);
+        sBitmapCache = new LruCache<BitmapIdentifier, Bitmap>(bitmapCacheSize) {
+            @Override protected int sizeOf(BitmapIdentifier key, Bitmap value) {
+                return value.getByteCount();
+            }
+
+            @Override protected void entryRemoved(
+                    boolean evicted, BitmapIdentifier key, Bitmap oldValue, Bitmap newValue) {
                 if (DEBUG) dumpStats();
             }
         };
@@ -183,8 +219,8 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * encapsulated in a request. The request may swapped out before the photo
      * loading request is started.
      */
-    private final Map<Long, Request> mPendingRequests = Collections.synchronizedMap(
-            new HashMap<Long, Request>());
+    private final Map<Integer, Request> mPendingRequests = Collections.synchronizedMap(
+            new HashMap<Integer, Request>());
 
     /**
      * Handler for messages sent to the UI thread.
@@ -214,31 +250,53 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     }
 
     public void loadThumbnail(PhotoIdentifier id, ImageCanvas view) {
-        long hashCode = getHash(id, view);
-        DefaultImageProvider defaultProvider = getDefaultImageProvider();
-        if (!id.isValid()) {
-            // No photo is needed
-            defaultProvider.applyDefaultImage(id, view, -1);
-            mPendingRequests.remove(hashCode);
-        } else {
-            if (DEBUG)
-                LogUtils.v(TAG, "loadPhoto request: %s", id.getKey());
-            loadPhoto(hashCode, Request.create(id, defaultProvider, view));
-        }
+        loadThumbnail(id, view, null);
     }
 
-    private void loadPhoto(Long hashCode, Request request) {
-        if (DEBUG) LogUtils.v(TAG, "NEW IMAGE REQUEST key=%s r=%s thread=%s",
-                request.getKey(),
-                request,
-                Thread.currentThread());
+    /**
+     * Load an image
+     *
+     * @param dimensions    Preferred dimensions
+     */
+    public void loadThumbnail(PhotoIdentifier id, ImageCanvas view,
+            ImageCanvas.Dimensions dimensions) {
+        Utils.traceBeginSection("Load thumbnail");
+        DefaultImageProvider defaultProvider = getDefaultImageProvider();
+        Request request = new Request(id, defaultProvider, view, dimensions);
+        int hashCode = request.hashCode();
+
+        if (!id.isValid()) {
+            // No photo is needed
+            request.applyDefaultImage();
+            onImageDrawn(request, false);
+            mPendingRequests.remove(hashCode);
+        } else if (mPendingRequests.containsKey(hashCode)) {
+            LogUtils.d(TAG, "load request dropped for %s", id);
+        } else {
+            if (DEBUG) LogUtils.v(TAG, "loadPhoto request: %s", id.getKey());
+            loadPhoto(hashCode, request);
+        }
+        Utils.traceEndSection();
+    }
+
+    private void loadPhoto(int hashCode, Request request) {
+        if (DEBUG) {
+            LogUtils.v(TAG, "NEW IMAGE REQUEST key=%s r=%s thread=%s",
+                    request.getKey(),
+                    request,
+                    Thread.currentThread());
+        }
 
         boolean loaded = loadCachedPhoto(request, false);
         if (loaded) {
-            if (DEBUG) LogUtils.v(TAG, "image request, cache hit. request queue size=%s",
-                    mPendingRequests.size());
+            if (DEBUG) {
+                LogUtils.v(TAG, "image request, cache hit. request queue size=%s",
+                        mPendingRequests.size());
+            }
         } else {
-            if (DEBUG) LogUtils.d(TAG, "image request, cache miss: key=%s", request.getKey());
+            if (DEBUG) {
+                LogUtils.d(TAG, "image request, cache miss: key=%s", request.getKey());
+            }
             mPendingRequests.put(hashCode, request);
             if (!mPaused) {
                 // Send a request to start loading photos
@@ -251,14 +309,14 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * Remove photo from the supplied image view. This also cancels current pending load request
      * inside this photo manager.
      */
-    public void removePhoto(Long hash) {
-        Request r = mPendingRequests.get(hash);
+    public void removePhoto(int hashcode) {
+        Request r = mPendingRequests.remove(hashcode);
         if (r != null) {
-            mPendingRequests.remove(hash);
+            LogUtils.d(TAG, "removed request %s", r.getKey());
         }
     }
 
-    public void ensureLoaderThread() {
+    private void ensureLoaderThread() {
         if (mLoaderThread == null) {
             mLoaderThread = getLoaderThread(mContext.getContentResolver());
             mLoaderThread.start();
@@ -268,39 +326,79 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     /**
      * Checks if the photo is present in cache.  If so, sets the photo on the view.
      *
+     * @param request Determines which image to load from cache.
+     * @param afterLoaderThreadFinished Pass true if calling after the LoaderThread has run. Pass
+     *                                  false if the Loader Thread hasn't made any attempts to
+     *                                  load images yet.
      * @return false if the photo needs to be (re)loaded from the provider.
      */
-    private static boolean loadCachedPhoto(Request request, boolean fadeIn) {
-        final Bitmap decoded = sBitmapCache.get(request.bitmapKey);
-        if (decoded != null) {
-            if (DEBUG) LogUtils.v(TAG, "%s, key=%s decodedSize=%s r=%s thread=%s",
-                    fadeIn ? "DECODED IMG READ" : "DECODED IMG CACHE HIT",
-                    request.getKey(),
-                    decoded.getByteCount(),
-                    request,
-                    Thread.currentThread());
-            if (request.getView().getGeneration() == request.viewGeneration) {
-                request.getView().drawImage(decoded, request.getKey());
+    private boolean loadCachedPhoto(Request request, boolean afterLoaderThreadFinished) {
+        Utils.traceBeginSection("Load cached photo");
+        final Bitmap cached = getCachedPhoto(request.bitmapKey);
+        if (cached != null) {
+            if (DEBUG) {
+                LogUtils.v(TAG, "%s, key=%s decodedSize=%s thread=%s",
+                        afterLoaderThreadFinished ? "DECODED IMG READ"
+                                : "DECODED IMG CACHE HIT",
+                        request.getKey(),
+                        cached.getByteCount(),
+                        Thread.currentThread());
             }
+            if (request.getView().getGeneration() == request.viewGeneration) {
+                onImageDrawn(request, true);
+                request.getView().drawImage(cached, request.getKey());
+            }
+            Utils.traceEndSection();
             return true;
         }
 
-        BitmapHolder holder = sBitmapHolderCache.get(request.getKey());
-        if (holder == null) {
-            // The bitmap has not been loaded ==> show default avatar
-            request.applyDefaultImage();
-            return false;
+        // We couldn't load the requested image, so try to load a replacement.
+        // This removes the flicker from SIMPLE to BEST transition.
+        final Object replacementKey = request.getPhotoIdentifier().getKeyToShowInsteadOfDefault();
+        if (replacementKey != null) {
+            final BitmapIdentifier replacementBitmapKey = new BitmapIdentifier(replacementKey,
+                    request.bitmapKey.w, request.bitmapKey.h);
+            final Bitmap cachedReplacement = getCachedPhoto(replacementBitmapKey);
+            if (cachedReplacement != null) {
+                if (DEBUG) {
+                    LogUtils.v(TAG, "%s, key=%s decodedSize=%s thread=%s",
+                            afterLoaderThreadFinished ? "DECODED IMG READ"
+                                    : "DECODED IMG CACHE HIT",
+                            replacementKey,
+                            cachedReplacement.getByteCount(),
+                            Thread.currentThread());
+                }
+                if (request.getView().getGeneration() == request.viewGeneration) {
+                    onImageDrawn(request, true);
+                    request.getView().drawImage(cachedReplacement, request.getKey());
+                }
+                Utils.traceEndSection();
+                return false;
+            }
         }
 
-        if (holder.bytes == null) {
-            request.applyDefaultImage();
+        // We couldn't load any image, so draw a default image
+        request.applyDefaultImage();
+
+        final BitmapHolder holder = sBitmapHolderCache.get(request.getKey());
+        // Check if we loaded null bytes, which means we meant to not draw anything.
+        if (holder != null && holder.bytes == null) {
+            onImageDrawn(request, holder.fresh);
+            Utils.traceEndSection();
             return holder.fresh;
         }
-
-        // Requests that were enqueued and erroneously read too early may get here.
-        // The worker thread will eventually decode the bitmap and come right back here,
-        // so just sit tight.
+        Utils.traceEndSection();
         return false;
+    }
+
+    /**
+     * Takes care of retrieving the Bitmap from both the decoded and holder caches.
+     */
+    private Bitmap getCachedPhoto(BitmapIdentifier bitmapKey) {
+        Utils.traceBeginSection("Get cached photo");
+        final Bitmap cached = sBitmapCache.get(bitmapKey);
+        Utils.traceEndSection();
+        return cached;
     }
 
     /**
@@ -365,15 +463,16 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * photos still haven't been loaded, sends another request for image loading.
      */
     private void processLoadedImages() {
-        final List<Long> toRemove = Lists.newArrayList();
-        for (Long hash : mPendingRequests.keySet()) {
+        Utils.traceBeginSection("process loaded images");
+        final List<Integer> toRemove = Lists.newArrayList();
+        for (Integer hash : mPendingRequests.keySet()) {
             Request request = mPendingRequests.get(hash);
             boolean loaded = loadCachedPhoto(request, true);
             if (loaded) {
                 toRemove.add(hash);
             }
         }
-        for (Long key : toRemove) {
+        for (Integer key : toRemove) {
             mPendingRequests.remove(key);
         }
 
@@ -381,18 +480,21 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         //softenCache();
 
         if (!mPendingRequests.isEmpty()) {
+            LogUtils.d(TAG, "Finished loading batch. %d still have to be loaded.",
+                    mPendingRequests.size());
             requestLoading();
         }
+        Utils.traceEndSection();
     }
 
     /**
      * Stores the supplied bitmap in cache.
      */
-    private static void cacheBitmap(final Object key, final byte[] bytes) {
+    private static void cacheBitmapHolder(final String cacheKey, final BitmapHolder holder) {
         if (DEBUG) {
-            BitmapHolder prev = sBitmapHolderCache.get(key);
+            BitmapHolder prev = sBitmapHolderCache.get(cacheKey);
             if (prev != null && prev.bytes != null) {
-                LogUtils.d(TAG, "Overwriting cache: key=" + key
+                LogUtils.d(TAG, "Overwriting cache: key=" + cacheKey
                         + (prev.fresh ? " FRESH" : " stale"));
                 if (prev.fresh) {
                     sFreshCacheOverwrite.incrementAndGet();
@@ -400,12 +502,15 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                     sStaleCacheOverwrite.incrementAndGet();
                 }
             }
-            LogUtils.d(TAG, "Caching data: key=" + key + ", "
-                    + (bytes == null ? "<null>" : btk(bytes.length)));
+            LogUtils.d(TAG, "Caching data: key=" + cacheKey + ", "
+                    + (holder.bytes == null ? "<null>" : btk(holder.bytes.length)));
         }
-        BitmapHolder holder = new BitmapHolder(bytes);
 
-        sBitmapHolderCache.put(key, holder);
+        sBitmapHolderCache.put(cacheKey, holder);
+    }
+
+    protected static void cacheBitmap(final BitmapIdentifier bitmapKey, final Bitmap bitmap) {
+        sBitmapCache.put(bitmapKey, bitmap);
     }
 
     // ComponentCallbacks2
@@ -480,13 +585,27 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         return (divisor  == 0) ? 0 : (dividend / divisor);
     }
 
-    public interface PhotoIdentifier {
+    public static abstract class PhotoIdentifier implements Comparable<PhotoIdentifier> {
         /**
          * If this returns false, the PhotoManager will not attempt to load the
          * bitmap. Instead, the default image provider will be used.
          */
-        public boolean isValid();
-        public String getKey();
+        public abstract boolean isValid();
+
+        /**
+         * Identifies this request.
+         */
+        public abstract Object getKey();
+
+        /**
+         * Replacement key to try to load from cache instead of drawing the default image. This
+         * is useful when we've already loaded a SIMPLE rendition, and are now loading the BEST
+         * rendition. We want the BEST image to appear seamlessly on top of the existing SIMPLE
+         * image.
+         */
+        public Object getKeyToShowInsteadOfDefault() {
+            return null;
+        }
     }
 
     /**
@@ -498,7 +617,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
          * Return photos mapped from {@link Request#getKey()} to the photo for
          * that request.
          */
-        protected abstract Map<String, byte[]> loadPhotos(Collection<Request> requests);
+        protected abstract Map<String, BitmapHolder> loadPhotos(Collection<Request> requests);
 
         private static final int MESSAGE_LOAD_PHOTOS = 0;
 
@@ -545,18 +664,37 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             return true;
         }
 
+        /**
+         * Subclasses may specify the maximum number of requests to be given at a time to
+         * #loadPhotos(). For batch count N, the UI will be updated with up to N images at a time.
+         *
+         * @return A positive integer if you would like to limit the number of
+         *         items in a single batch.
+         */
+        protected int getMaxBatchCount() {
+            return -1;
+        }
+
         private void loadPhotosInBackground() {
+            Utils.traceBeginSection("pre processing");
             final Collection<Request> loadRequests = new HashSet<PhotoManager.Request>();
             final Collection<Request> decodeRequests = new HashSet<PhotoManager.Request>();
-            final List<Request> requests;
+            final PriorityQueue<Request> requests;
             synchronized (mPendingRequests) {
-                requests = ImmutableList.copyOf(mPendingRequests.values());
+                requests = new PriorityQueue<Request>(mPendingRequests.values());
             }
-            for (Request request : requests) {
-                final BitmapHolder holder = sBitmapHolderCache.get(request.getKey());
-                if (holder == null || holder.bytes == null || !holder.fresh) {
+
+            int batchCount = 0;
+            int maxBatchCount = getMaxBatchCount();
+            while (!requests.isEmpty()) {
+                Request request = requests.poll();
+                final BitmapHolder holder = sBitmapHolderCache
+                        .get(request.getKey());
+                if (holder == null || holder.bytes == null || !holder.fresh || !isSizeCompatible(
+                        holder.width, holder.height, request.bitmapKey.w, request.bitmapKey.h)) {
                     loadRequests.add(request);
                     decodeRequests.add(request);
+                    batchCount++;
                 } else {
                     // Even if the image load is already done, this particular decode configuration
                     // may not yet have run. Be sure to add it to the queue.
@@ -564,19 +702,34 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                         decodeRequests.add(request);
                     }
                 }
+                if (maxBatchCount > 0 && batchCount >= maxBatchCount) {
+                    break;
+                }
             }
-            final Map<String, byte[]> photosMap = loadPhotos(loadRequests);
-            if (DEBUG) LogUtils.d(TAG,
-                    "worker thread completed read request batch. inputN=%s outputN=%s",
-                    loadRequests.size(),
-                    photosMap.size());
-            for (String key : photosMap.keySet()) {
-                if (DEBUG) LogUtils.d(TAG,
-                        "worker thread completed read request key=%s byteCount=%s thread=%s",
-                        key,
-                        photosMap.get(key) == null ? 0 : photosMap.get(key).length,
-                        Thread.currentThread());
-                cacheBitmap(key, photosMap.get(key));
+            Utils.traceEndSection();
+
+            Utils.traceBeginSection("load photos");
+            // Ask subclass to do the actual loading
+            final Map<String, BitmapHolder> photosMap = loadPhotos(loadRequests);
+            Utils.traceEndSection();
+
+            if (DEBUG) {
+                LogUtils.d(TAG,
+                        "worker thread completed read request batch. inputN=%s outputN=%s",
+                        loadRequests.size(),
+                        photosMap.size());
+            }
+            Utils.traceBeginSection("post processing");
+            for (String cacheKey : photosMap.keySet()) {
+                if (DEBUG) {
+                    LogUtils.d(TAG,
+                            "worker thread completed read request key=%s byteCount=%s thread=%s",
+                            cacheKey,
+                            photosMap.get(cacheKey) == null ? 0
+                                    : photosMap.get(cacheKey).bytes.length,
+                            Thread.currentThread());
+                }
+                cacheBitmapHolder(cacheKey, photosMap.get(cacheKey));
             }
 
             for (Request r : decodeRequests) {
@@ -584,9 +737,10 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                     continue;
                 }
 
-                final String key = r.getKey();
-                final BitmapHolder holder = sBitmapHolderCache.get(key);
-                if (holder == null || holder.bytes == null || !holder.fresh) {
+                final Object cacheKey = r.getKey();
+                final BitmapHolder holder = sBitmapHolderCache.get(cacheKey);
+                if (holder == null || holder.bytes == null || !holder.fresh || !isSizeCompatible(
+                        holder.width, holder.height, r.bitmapKey.w, r.bitmapKey.h)) {
                     continue;
                 }
 
@@ -600,12 +754,17 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                 }
 
                 final Bitmap decoded = BitmapUtil.decodeByteArrayWithCenterCrop(src, w, h);
-                if (DEBUG) LogUtils.i(TAG,
-                        "worker thread completed decode bmpKey=%s decoded=%s holder=%s",
-                        r.bitmapKey, decoded, holder);
+                if (DEBUG) {
+                    LogUtils.i(TAG,
+                            "worker thread completed decode bmpKey=%s decoded=%s holder=%s",
+                            r.bitmapKey, decoded, holder);
+                }
 
-                sBitmapCache.put(r.bitmapKey, decoded);
+                if (decoded != null) {
+                    cacheBitmap(r.bitmapKey, decoded);
+                }
             }
+            Utils.traceEndSection();
 
             mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);
         }
@@ -639,6 +798,25 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         public final Object key;
         public final int w;
         public final int h;
+
+        // OK to be static as long as all Requests are created on the same
+        // thread
+        private static final ImageCanvas.Dimensions sWorkDims = new ImageCanvas.Dimensions();
+
+        public static BitmapIdentifier getBitmapKey(PhotoIdentifier id, ImageCanvas view,
+                ImageCanvas.Dimensions dimensions) {
+            final int width;
+            final int height;
+            if (dimensions != null) {
+                width = dimensions.width;
+                height = dimensions.height;
+            } else {
+                view.getDesiredDimensions(id.getKey(), sWorkDims);
+                width = sWorkDims.width;
+                height = sWorkDims.height;
+            }
+            return new BitmapIdentifier(id.getKey(), width, height);
+        }
 
         public BitmapIdentifier(Object key, int w, int h) {
             this.key = key;
@@ -684,43 +862,43 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     /**
      * A holder for a contact photo request.
      */
-    public static final class Request {
+    public final class Request implements Comparable<Request> {
         private final int mRequestedExtent;
         private final DefaultImageProvider mDefaultProvider;
         private final PhotoIdentifier mPhotoIdentifier;
         private final ImageCanvas mView;
         public final BitmapIdentifier bitmapKey;
         public final int viewGeneration;
-        // OK to be static as long as all Requests are created on the same thread
-        private static final ImageCanvas.Dimensions sWorkDims = new ImageCanvas.Dimensions();
 
-        private Request(PhotoIdentifier photoIdentifier, int requestedExtent,
-                DefaultImageProvider defaultProvider, ImageCanvas view) {
+        private Request(PhotoIdentifier photoIdentifier, DefaultImageProvider defaultProvider,
+                ImageCanvas view, ImageCanvas.Dimensions dimensions) {
             mPhotoIdentifier = photoIdentifier;
-            mRequestedExtent = requestedExtent;
+            mRequestedExtent = -1;
             mDefaultProvider = defaultProvider;
             mView = view;
             viewGeneration = view.getGeneration();
 
-            final String key = getKey();
-            // TODO: consider having the client pass in the desired width/height, which would be
-            // faster and more direct.
-            mView.getDesiredDimensions(key, sWorkDims);
-            bitmapKey = new BitmapIdentifier(key, sWorkDims.width, sWorkDims.height);
+            bitmapKey = BitmapIdentifier.getBitmapKey(photoIdentifier, mView, dimensions);
         }
 
         public ImageCanvas getView() {
             return mView;
         }
 
-        public static Request create(
-                PhotoIdentifier id, DefaultImageProvider defaultProvider, ImageCanvas view) {
-            return new Request(id, -1, defaultProvider, view);
+        public PhotoIdentifier getPhotoIdentifier() {
+            return mPhotoIdentifier;
+        }
+
+        /**
+         * @see PhotoIdentifier#getKey()
+         */
+        public Object getKey() {
+            return mPhotoIdentifier.getKey();
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(mRequestedExtent, mPhotoIdentifier, mView);
+            return getHash(mPhotoIdentifier, mView);
         }
 
         @Override
@@ -759,22 +937,23 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             return sb.toString();
         }
 
-        public String getKey() {
-            return mPhotoIdentifier.getKey();
-        }
-
         public void applyDefaultImage() {
-            final String key = getKey();
             if (mView.getGeneration() != viewGeneration) {
                 // This can legitimately happen when an ImageCanvas is reused and re-purposed to
                 // house a new set of images (e.g. by ListView recycling).
                 // Ignore this now-stale request.
-                if (DEBUG) LogUtils.d(TAG,
-                        "ImageCanvas skipping applyDefaultImage; no longer contains" +
-                        " item=%s canvas=%s", key, mView);
-                return;
+                if (DEBUG) {
+                    LogUtils.d(TAG,
+                            "ImageCanvas skipping applyDefaultImage; no longer contains" +
+                            " item=%s canvas=%s", getKey(), mView);
+                }
             }
             mDefaultProvider.applyDefaultImage(mPhotoIdentifier, mView, mRequestedExtent);
+        }
+
+        @Override
+        public int compareTo(Request another) {
+            return mPhotoIdentifier.compareTo(another.mPhotoIdentifier);
         }
     }
 }

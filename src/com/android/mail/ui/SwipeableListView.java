@@ -53,6 +53,10 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     private boolean mEnableSwipe = false;
 
     public static final String LOG_TAG = LogTag.getLogTag();
+    /**
+     * Set to false to prevent the FLING scroll state from pausing the photo manager loaders.
+     */
+    private final static boolean SCROLL_PAUSE_ENABLE = true;
 
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;
@@ -364,19 +368,14 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     @Override
-    public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
-        // Do nothing.
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+            int totalItemCount) {
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView arg0, int scrollState) {
-        switch (scrollState) {
-            case OnScrollListener.SCROLL_STATE_IDLE:
-                mScrolling = false;
-                break;
-            default:
-                mScrolling = true;
-        }
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        mScrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
+
         if (!mScrolling) {
             final Context c = getContext();
             if (c instanceof ControllableActivity) {
@@ -385,6 +384,10 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             } else {
                 LogUtils.wtf(LOG_TAG, "unexpected context=%s", c);
             }
+        }
+
+        if (SCROLL_PAUSE_ENABLE) {
+            ConversationItemView.setPhotoManagersPaused(mScrolling);
         }
     }
 

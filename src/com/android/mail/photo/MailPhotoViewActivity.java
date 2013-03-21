@@ -18,7 +18,9 @@
 package com.android.mail.photo;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -30,12 +32,14 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.ex.photo.Intents;
 import com.android.ex.photo.PhotoViewActivity;
 import com.android.ex.photo.fragments.PhotoViewFragment;
 import com.android.ex.photo.views.ProgressBarWrapper;
 import com.android.mail.R;
 import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.AttachmentUtils;
@@ -56,6 +60,25 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     private MenuItem mShareAllItem;
     private AttachmentActionHandler mActionHandler;
     private Menu mMenu;
+
+    /**
+     * Start a new MailPhotoViewActivity to view the given images.
+     * @param imageListUri The uri to query for the images that you want to view. The resulting
+     *                     cursor must have the columns as defined in
+     *                     {@link com.android.ex.photo.provider.PhotoContract.PhotoViewColumns}
+     * @param photoIndex The index of the photo to show first
+     */
+    public static void startMailPhotoViewActivity(Context context, Uri imageListUri,
+            int photoIndex) {
+        final Intents.PhotoViewIntentBuilder builder =
+                Intents.newPhotoViewIntentBuilder(context, MailPhotoViewActivity.class);
+        builder
+                .setPhotosUri(imageListUri.toString())
+                .setProjection(UIProvider.ATTACHMENT_PROJECTION)
+                .setPhotoIndex(photoIndex);
+
+        context.startActivity(builder.build());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
