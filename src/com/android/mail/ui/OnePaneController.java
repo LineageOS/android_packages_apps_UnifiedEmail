@@ -171,15 +171,19 @@ public final class OnePaneController extends AbstractActivityController {
      * and we can replace the folder list fragment without concern.
      */
     private void resetAndLoadDrawer() {
-        if(mDrawerContainer.isDrawerVisible(mDrawerPullout)) {
+        if (mDrawerContainer.isDrawerVisible(mDrawerPullout)) {
             mDrawerContainer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
                 @Override
                 public void onDrawerClosed(View drawerView) {
                     loadFolderList();
+                    // Remove listener and unlock drawer to avoid onDrawerClosed
+                    // being called again and for user to freely drag after load
                     mDrawerContainer.setDrawerListener(null);
+                    mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 }
             });
-            mDrawerContainer.closeDrawers();
+            // This will invoke closeDrawer as well to hide drawer to the left
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
             loadFolderList();
         }
