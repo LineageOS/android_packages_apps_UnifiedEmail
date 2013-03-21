@@ -39,6 +39,8 @@ import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
+import com.android.mail.browse.MessageScrollView;
+import com.android.mail.browse.MessageWebView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
@@ -50,12 +52,12 @@ import java.util.HashSet;
 public class SecureConversationViewFragment extends AbstractConversationViewFragment implements
         MessageHeaderViewCallbacks {
     private static final String LOG_TAG = LogTag.getLogTag();
-    private WebView mWebView;
+    private MessageWebView mWebView;
     private ConversationViewHeader mConversationHeaderView;
     private MessageHeaderView mMessageHeaderView;
     private MessageFooterView mMessageFooterView;
     private ConversationMessage mMessage;
-    private ScrollView mScrollView;
+    private MessageScrollView mScrollView;
 
     private final WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
         @Override
@@ -113,12 +115,12 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.secure_conversation_view, container, false);
-        mScrollView = (ScrollView) rootView.findViewById(R.id.scroll_view);
+        mScrollView = (MessageScrollView) rootView.findViewById(R.id.scroll_view);
         mConversationHeaderView = (ConversationViewHeader) rootView.findViewById(R.id.conv_header);
         mMessageHeaderView = (MessageHeaderView) rootView.findViewById(R.id.message_header);
         mMessageFooterView = (MessageFooterView) rootView.findViewById(R.id.message_footer);
         instantiateProgressIndicators(rootView);
-        mWebView = (WebView) rootView.findViewById(R.id.webview);
+        mWebView = (MessageWebView) rootView.findViewById(R.id.webview);
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setFocusable(false);
         final WebSettings settings = mWebView.getSettings();
@@ -129,6 +131,8 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
+
+        mScrollView.setInnerScrollableView(mWebView);
 
         return rootView;
     }
