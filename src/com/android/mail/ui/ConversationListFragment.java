@@ -791,7 +791,7 @@ public final class ConversationListFragment extends ListFragment implements
         }
         mConversationCursorHash = newCursorHash;
 
-        if (newCursor != null) {
+        if (newCursor != null && newCursor.getCount() > 0) {
             newCursor.markContentsSeen();
         }
 
