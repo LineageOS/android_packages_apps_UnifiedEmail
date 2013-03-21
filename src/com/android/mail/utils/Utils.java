@@ -1199,23 +1199,17 @@ public class Utils {
      * the unread count, but for some folder types (outbox, drafts, trash) this will return the
      * total count.
      */
-    public static int getFolderUnreadDisplayCount(Folder folder) {
-        final int count;
+    public static int getFolderUnreadDisplayCount(final Folder folder) {
         if (folder != null) {
-            switch (folder.type) {
-                case UIProvider.FolderType.DRAFT:
-                case UIProvider.FolderType.TRASH:
-                case UIProvider.FolderType.OUTBOX:
-                    count = folder.totalCount;
-                    break;
-                default:
-                    count = folder.unreadCount;
-                    break;
+            if (folder.isDraft() || folder.isTrash()
+                    || folder.isType(UIProvider.FolderType.OUTBOX)) {
+                return folder.totalCount;
+            } else {
+                return folder.unreadCount;
             }
-        } else {
-            count = 0;
         }
-        return count;
+
+        return 0;
     }
 
     /**

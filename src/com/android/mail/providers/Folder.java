@@ -141,7 +141,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public int lastSyncResult;
 
     /**
-     * Folder type. 0 is default.
+     * Folder type bit mask. 0 is default.
+     * @see FolderType
      */
     public int type;
 
@@ -437,7 +438,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
             return;
         }
         boolean showBg =
-                !TextUtils.isEmpty(folder.bgColor) && folder.type != FolderType.INBOX_SECTION;
+                !TextUtils.isEmpty(folder.bgColor) && (folder.type & FolderType.INBOX_SECTION) == 0;
         final int backgroundColor = showBg ? Integer.parseInt(folder.bgColor) : 0;
         if (backgroundColor == Utils.getDefaultFolderBackgroundColor(colorBlock.getContext())) {
             showBg = false;
@@ -470,7 +471,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Return if the type of the folder matches a provider defined folder.
      */
     public boolean isProviderFolder() {
-        return type != UIProvider.FolderType.DEFAULT;
+        return isType(type & UIProvider.FolderType.DEFAULT);
     }
 
     public int getBackgroundColor(int defaultColor) {
@@ -562,11 +563,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
             if (toFind.equals(f.uri)) {
                 return true;
             }
-            hasInbox |= (f.type == UIProvider.FolderType.INBOX);
+            hasInbox |= f.isInbox();
         }
         // Did not find the URI of needle directly. If the needle is an Inbox and one of the folders
         // was an inbox, then the needle is contained (check Javadoc for explanation).
-        final boolean needleIsInbox = (needle.type == UIProvider.FolderType.INBOX);
+        final boolean needleIsInbox = needle.isInbox();
         return needleIsInbox ? hasInbox : false;
     }
 
@@ -589,18 +590,26 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return target;
     }
 
+    public boolean isType(final int folderType) {
+        return (type & folderType) != 0;
+    }
+
+    public boolean isInbox() {
+        return isType(UIProvider.FolderType.INBOX);
+    }
+
     /**
      * Return if this is the trash folder.
      */
     public boolean isTrash() {
-        return type == UIProvider.FolderType.TRASH;
+        return isType(UIProvider.FolderType.TRASH);
     }
 
     /**
      * Return if this is a draft folder.
      */
     public boolean isDraft() {
-        return type == UIProvider.FolderType.DRAFT;
+        return isType(UIProvider.FolderType.DRAFT);
     }
 
     /**
@@ -615,7 +624,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Whether this is the special folder just used to display all mail for an account.
      */
     public boolean isViewAll() {
-        return type == UIProvider.FolderType.ALL_MAIL;
+        return isType(UIProvider.FolderType.ALL_MAIL);
     }
 
     /**

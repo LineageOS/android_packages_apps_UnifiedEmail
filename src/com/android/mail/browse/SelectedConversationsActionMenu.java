@@ -155,7 +155,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 starConversations(true);
                 break;
             case R.id.remove_star:
-                if (mFolder.type == UIProvider.FolderType.STARRED) {
+                if (mFolder.isType(UIProvider.FolderType.STARRED)) {
                     LogUtils.d(LOG_TAG, "We are in a starred folder, removing the star");
                     performDestructiveAction(R.id.remove_star);
                 } else {
@@ -373,7 +373,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // archive icon if the setting for that is true.
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
         final MenuItem moveTo = menu.findItem(R.id.move_to);
-        final boolean showRemoveFolder = mFolder != null && mFolder.type == FolderType.DEFAULT
+        final boolean showRemoveFolder = mFolder != null && mFolder.isType(FolderType.DEFAULT)
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
                 && !mFolder.isProviderFolder();
         final boolean showMoveTo = mFolder != null
