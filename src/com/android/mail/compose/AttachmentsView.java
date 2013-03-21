@@ -282,6 +282,10 @@ class AttachmentsView extends LinearLayout {
         if (attachment.getName() == null) {
             attachment.setName(contentUri.getLastPathSegment());
         }
+        if (attachment.size == 0) {
+            // if the attachment is not a content:// for example, a file:// URI
+            attachment.size = getSizeFromFile(contentUri, contentResolver);
+        }
 
         attachment.setContentType(contentType);
         return attachment;
