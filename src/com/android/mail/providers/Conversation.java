@@ -162,8 +162,6 @@ public class Conversation implements Parcelable {
 
     private ArrayList<Folder> cachedDisplayableFolders;
 
-    private static String sSendersDelimeter;
-
     private static String sSubjectAndSnippet;
 
     // Constituents of convFlags below
@@ -551,25 +549,6 @@ public class Conversation implements Parcelable {
     public String getSnippet() {
         return conversationInfo != null && !TextUtils.isEmpty(conversationInfo.firstSnippet) ?
                 conversationInfo.firstSnippet : snippet;
-    }
-
-    public String getSenders(Context context) {
-        if (conversationInfo != null) {
-            ArrayList<String> senders = new ArrayList<String>();
-            for (MessageInfo m : this.conversationInfo.messageInfos) {
-                senders.add(m.sender);
-            }
-            return TextUtils.join(getSendersDelimeter(context), senders);
-        } else {
-            return senders;
-        }
-    }
-
-    private static String getSendersDelimeter(Context context) {
-        if (sSendersDelimeter == null) {
-            sSendersDelimeter = context.getResources().getString(R.string.senders_split_token);
-        }
-        return sSendersDelimeter;
     }
 
     /**
