@@ -72,6 +72,9 @@ public class SwipeHelper {
     private static final float FACTOR = 1.2f;
     private float mMinAlpha = 0.5f;
 
+    /* Dead region where swipe cannot be initiated. */
+    private final static int DEAD_REGION_FOR_SWIPE = 64;
+
     private float mPagingTouchSlop;
     private Callback mCallback;
     private int mSwipeDirection;
@@ -356,7 +359,7 @@ public class SwipeHelper {
     }
 
     private float determinePos(View animView, float velocity) {
-        float newPos = 0;
+        final float newPos;
         if (velocity < 0 || (velocity == 0 && animView.getTranslationX() < 0)
         // if we use the Menu to dismiss an item in landscape, animate up
                 || (velocity == 0 && animView.getTranslationX() == 0 && mSwipeDirection == Y)) {
@@ -370,8 +373,8 @@ public class SwipeHelper {
     public void snapChild(final SwipeableItemView view, float velocity) {
         final View animView = view.getSwipeableView();
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
-        ObjectAnimator anim = createTranslationAnimation(animView, 0);
-        int duration = SNAP_ANIM_LEN;
+        final ObjectAnimator anim = createTranslationAnimation(animView, 0);
+        final int duration = SNAP_ANIM_LEN;
         anim.setDuration(duration);
         anim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
@@ -413,6 +416,10 @@ public class SwipeHelper {
                 if (mCurrView != null) {
                     float deltaX = ev.getX() - mInitialTouchPosX;
                     float deltaY = Math.abs(ev.getY() - mInitialTouchPosY);
+                    // If the swipe started in the dead region, ignore it.
+                    if (mInitialTouchPosX <= (DEAD_REGION_FOR_SWIPE * mDensityScale)){
+                            return true;
+                    }
                     // If the user has gone vertical and not gone horizontalish AT
                     // LEAST minBeforeLock, switch to scroll. Otherwise, cancel
                     // the swipe.
