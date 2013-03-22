@@ -88,7 +88,7 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
         if (swipe) {
             addBackground(getContext());
             setBackgroundVisibility(View.VISIBLE);
-            mConversationItemView.startSwipeUndoAnimation(viewMode, listener);
+            mConversationItemView.startSwipeUndoAnimation(listener);
         } else {
             setBackgroundVisibility(View.GONE);
             mConversationItemView.startUndoAnimation(viewMode, listener);

@@ -528,7 +528,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         calculateCoordinates();
 
         // Subject.
-        createSubject(mHeader.unread, showActivatedText());
+        createSubject(mHeader.unread);
 
         if (!mHeader.isLayoutValid(mContext)) {
             setContentDescription();
@@ -675,7 +675,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
     }
 
-    private void layoutSenders(SpannableStringBuilder sendersText) {
+    private void layoutSenders() {
         TextView sendersTextView = mSendersTextView;
         if (mHeader.styledSendersString != null) {
             if (isActivated() && showActivatedText()) {
@@ -693,7 +693,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
     }
 
-    private void createSubject(final boolean isUnread, boolean activated) {
+    private void createSubject(final boolean isUnread) {
         final String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.getSnippet();
         final SpannableStringBuilder displayedStringBuilder = new SpannableStringBuilder(
@@ -800,7 +800,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         if (mHeader.styledSenders != null) {
             ellipsizeStyledSenders();
-            layoutSenders(mHeader.styledSendersString);
+            layoutSenders();
         } else {
             // First pass to calculate width of each fragment.
             int totalWidth = 0;
@@ -826,7 +826,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             if (mSendersWidth < 0) {
                 mSendersWidth = 0;
             }
-            totalWidth = ellipsize(fixedWidth, sendersY);
+            totalWidth = ellipsize(fixedWidth);
             mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
                     mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
         }
@@ -925,7 +925,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         return (int)totalWidth;
     }
 
-    private SpannableString copyStyles(CharacterStyle[] spans, CharSequence newText) {
+    private static SpannableString copyStyles(CharacterStyle[] spans, CharSequence newText) {
         SpannableString s = new SpannableString(newText);
         if (spans != null && spans.length > 0) {
             s.setSpan(spans[0], 0, s.length(), 0);
@@ -933,7 +933,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         return s;
     }
 
-    private int ellipsize(int fixedWidth, int sendersY) {
+    private int ellipsize(int fixedWidth) {
         int totalWidth = 0;
         int currentLine = 1;
         boolean ellipsize = false;
@@ -965,7 +965,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     // New line.
                     if (currentLine < mCoordinates.sendersLineCount) {
                         currentLine++;
-                        sendersY += mCoordinates.sendersLineHeight;
                         totalWidth = 0;
                         // The text is still too long, we have to ellipsize
                         // text.
@@ -1164,7 +1163,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         return mHeader.conversation.starred ? STAR_ON : STAR_OFF;
     }
 
-    private void drawText(Canvas canvas, CharSequence s, int x, int y, TextPaint paint) {
+    private static void drawText(Canvas canvas, CharSequence s, int x, int y, TextPaint paint) {
         canvas.drawText(s, 0, s.length(), x, y, paint);
     }
 
@@ -1279,7 +1278,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 mCoordinates.starY + starBitmap.getHeight());
         ConversationCursor cursor = (ConversationCursor) mAdapter.getCursor();
         if (cursor != null) {
-            cursor.updateBoolean(mContext, mHeader.conversation, ConversationColumns.STARRED,
+            cursor.updateBoolean(mHeader.conversation, ConversationColumns.STARRED,
                     mHeader.conversation.starred);
         }
     }
@@ -1428,7 +1427,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      * back from a destructive action.
      * @param listener
      */
-    public void startSwipeUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
+    public void startSwipeUndoAnimation(final AnimatorListener listener) {
         ObjectAnimator undoAnimator = createTranslateXAnimation(true);
         undoAnimator.addListener(listener);
         undoAnimator.start();

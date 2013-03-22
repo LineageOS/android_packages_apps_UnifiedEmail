@@ -28,13 +28,11 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.webkit.WebView;
-import android.widget.TextView;
 
 import com.android.mail.R;
 

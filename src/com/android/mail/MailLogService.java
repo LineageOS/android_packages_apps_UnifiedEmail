@@ -118,6 +118,7 @@ public class MailLogService extends Service {
     /** Map of current tag -> log. */
     private static final Map<String, CircularBuffer> sLogs = new HashMap<String, CircularBuffer>();
 
+    @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
