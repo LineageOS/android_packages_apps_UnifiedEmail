@@ -58,6 +58,8 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     private ListItemSwipedListener mSwipedListener;
     private boolean mScrolling;
 
+    // Instantiated through view inflation
+    @SuppressWarnings("unused")
     public SwipeableListView(Context context) {
         this(context, null);
     }
@@ -100,10 +102,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
      */
     public void enableSwipe(boolean enable) {
         mEnableSwipe = enable;
-    }
-
-    public boolean isSwipeEnabled() {
-        return mEnableSwipe;
     }
 
     public void setSwipeAction(int action) {
