@@ -831,28 +831,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
     }
 
     /**
-     * Cancel a refresh in progress
-     */
-    public void cancelRefresh() {
-        if (DEBUG) {
-            LogUtils.i(LOG_TAG, "[cancelRefresh() %s]", mName);
-        }
-        synchronized(mCacheMapLock) {
-            if (mRefreshTask != null) {
-                mRefreshTask.cancel(true);
-                mRefreshTask = null;
-            }
-            mRefreshReady = false;
-            // If we have the cursor, close it; otherwise, it will get closed when the query
-            // finishes (it checks sRefreshInProgress)
-            if (mRequeryCursor != null) {
-                mRequeryCursor.close();
-                mRequeryCursor = null;
-            }
-        }
-    }
-
-    /**
      * When we get a requery from the UI, we'll do it, but also clear the cache. The listener is
      * notified when the requery is complete
      * NOTE: This will have to change, of course, when we start using loaders...
@@ -1763,21 +1741,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
      * Update a string columns for a group of conversations (see updateValues below)
      */
     public int updateStrings(Collection<Conversation> conversations,
-            String columnName, ArrayList<String> values) {
-        ArrayList<ConversationOperation> operations = new ArrayList<ConversationOperation>();
-        int i = 0;
-        ContentValues cv = new ContentValues();
-        for (Conversation c : conversations) {
-            cv.put(columnName, values.get(i));
-            operations.add(getOperationForConversation(c, ConversationOperation.UPDATE, cv));
-        }
-        return apply(operations);
-    }
-
-    /**
-     * Update a string columns for a group of conversations (see updateValues below)
-     */
-    public int updateStrings(Collection<Conversation> conversations,
             String[] columnNames, String[] values) {
         ContentValues cv = new ContentValues();
         for (int i = 0; i < columnNames.length; i++) {
@@ -1848,36 +1811,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
         addFolderUpdates(folderUris, add, values);
         addTargetFolders(targetFolders, values);
         return getOperationForConversation(conv, ConversationOperation.UPDATE, values);
-    }
-
-    /**
-     * Delete a single conversation
-     * @return the sequence number of the operation (for undo)
-     */
-    public int delete(Conversation conversation) {
-        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
-        conversations.add(conversation);
-        return delete(conversations);
-    }
-
-    /**
-     * Delete a single conversation
-     * @return the sequence number of the operation (for undo)
-     */
-    public int mostlyArchive(Conversation conversation) {
-        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
-        conversations.add(conversation);
-        return archive(conversations);
-    }
-
-    /**
-     * Delete a single conversation
-     * @return the sequence number of the operation (for undo)
-     */
-    public int mostlyDelete(Conversation conversation) {
-        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
-        conversations.add(conversation);
-        return delete(conversations);
     }
 
     // Convenience methods

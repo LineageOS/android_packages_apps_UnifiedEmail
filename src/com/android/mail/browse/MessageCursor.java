@@ -91,10 +91,6 @@ public class MessageCursor extends CursorWrapper {
             return mController.getConversation();
         }
 
-        public Account getAccount() {
-            return mController.getAccount();
-        }
-
         /**
          * Returns a hash code based on this message's identity, contents and current state.
          * This is a separate method from hashCode() to allow for an instance of this class to be
