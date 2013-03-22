@@ -82,7 +82,8 @@ public class FolderPreferences extends VersionedPrefs {
 
     /**
      * A constructor that can be used when no {@link Folder} object is available (like during a
-     * restore). While this will probably function as expected at other times,
+     * restore). This will function as expected except when calling
+     * {@link #getDefaultNotificationActions(Context)}, so
      * {@link #FolderPreferences(Context, String, Folder, boolean)} should be used if at all
      * possible.
      *
