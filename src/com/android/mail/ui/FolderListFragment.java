@@ -88,8 +88,11 @@ public final class FolderListFragment extends ListFragment implements
     private static final String ARG_IS_TABLET_UI = "arg-is-tablet-ui";
     /** Key to store {@link #mExcludedFolderTypes} */
     private static final String ARG_EXCLUDED_FOLDER_TYPES = "arg-excluded-folder-types";
+    //TODO(shahrk): Disabled collapsed items - Bug: 8449121
+    /** Should the {@link FolderListFragment} show less accounts to begin with? */
+    private static final boolean ARE_ACCOUNT_ITEMS_COLLAPSED = false;
     /** Should the {@link FolderListFragment} show less labels to begin with? */
-    private static final boolean ARE_ITEMS_COLLAPSED = true;
+    private static final boolean ARE_FOLDER_ITEMS_COLLAPSED = false;
 
     private static final String BUNDLE_LIST_STATE = "flf-list-state";
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
@@ -225,8 +228,8 @@ public final class FolderListFragment extends ListFragment implements
             // The second param is for whether folders should be collapsed
             // The third param is for whether accounts should be collapsed
             mCursorAdapter = new FolderListAdapter(mIsSectioned,
-                    !mIsTabletUI && ARE_ITEMS_COLLAPSED,
-                    !mIsTabletUI && ARE_ITEMS_COLLAPSED);
+                    !mIsTabletUI && ARE_FOLDER_ITEMS_COLLAPSED,
+                    !mIsTabletUI && ARE_ACCOUNT_ITEMS_COLLAPSED);
             selectedFolder = controller == null ? null : controller.getFolder();
         }
         // Is the selected folder fresher than the one we have restored from a bundle?
