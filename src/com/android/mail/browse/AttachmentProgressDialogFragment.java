@@ -16,7 +16,6 @@
  */
 package com.android.mail.browse;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
@@ -27,12 +26,9 @@ import com.android.mail.R;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentState;
-import com.android.mail.utils.LogTag;
 import com.google.common.base.Objects;
 
 public class AttachmentProgressDialogFragment extends DialogFragment {
-    private static final String LOG_TAG = LogTag.getLogTag();
-
     public static final String ATTACHMENT_KEY = "attachment";
     private AttachmentCommandHandler mCommandHandler;
 
@@ -40,8 +36,7 @@ public class AttachmentProgressDialogFragment extends DialogFragment {
 
     private ProgressDialog mDialog;
 
-    static AttachmentProgressDialogFragment newInstance(Attachment attachment,
-            int destination) {
+    static AttachmentProgressDialogFragment newInstance(Attachment attachment) {
         final AttachmentProgressDialogFragment f = new AttachmentProgressDialogFragment();
 
         // Supply the attachment as an argument.
