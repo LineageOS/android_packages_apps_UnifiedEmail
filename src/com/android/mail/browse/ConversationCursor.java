@@ -1719,43 +1719,42 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
 
     // Below are methods that update Conversation data (update/delete)
 
-    public int updateBoolean(Context context, Conversation conversation, String columnName,
-            boolean value) {
-        return updateBoolean(context, Arrays.asList(conversation), columnName, value);
+    public int updateBoolean(Conversation conversation, String columnName, boolean value) {
+        return updateBoolean(Arrays.asList(conversation), columnName, value);
     }
 
     /**
      * Update an integer column for a group of conversations (see updateValues below)
      */
-    public int updateInt(Context context, Collection<Conversation> conversations,
-            String columnName, int value) {
+    public int updateInt(Collection<Conversation> conversations, String columnName,
+            int value) {
         if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
             LogUtils.d(LOG_TAG, "ConversationCursor.updateInt(conversations=%s, columnName=%s)",
                     conversations.toArray(), columnName);
         }
         ContentValues cv = new ContentValues();
         cv.put(columnName, value);
-        return updateValues(context, conversations, cv);
+        return updateValues(conversations, cv);
     }
 
     /**
      * Update a string column for a group of conversations (see updateValues below)
      */
-    public int updateBoolean(Context context, Collection<Conversation> conversations,
-            String columnName, boolean value) {
+    public int updateBoolean(Collection<Conversation> conversations, String columnName,
+            boolean value) {
         ContentValues cv = new ContentValues();
         cv.put(columnName, value);
-        return updateValues(context, conversations, cv);
+        return updateValues(conversations, cv);
     }
 
     /**
      * Update a string column for a group of conversations (see updateValues below)
      */
-    public int updateString(Context context, Collection<Conversation> conversations,
-            String columnName, String value) {
-        return updateStrings(context, conversations, new String[]{
+    public int updateString(Collection<Conversation> conversations, String columnName,
+            String value) {
+        return updateStrings(conversations, new String[] {
                 columnName
-        }, new String[]{
+        }, new String[] {
                 value
         });
     }
@@ -1763,7 +1762,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
     /**
      * Update a string columns for a group of conversations (see updateValues below)
      */
-    public int updateStrings(Context context, Collection<Conversation> conversations,
+    public int updateStrings(Collection<Conversation> conversations,
             String columnName, ArrayList<String> values) {
         ArrayList<ConversationOperation> operations = new ArrayList<ConversationOperation>();
         int i = 0;
@@ -1772,44 +1771,41 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
             cv.put(columnName, values.get(i));
             operations.add(getOperationForConversation(c, ConversationOperation.UPDATE, cv));
         }
-        return apply(context, operations);
+        return apply(operations);
     }
 
     /**
      * Update a string columns for a group of conversations (see updateValues below)
      */
-    public int updateStrings(Context context, Collection<Conversation> conversations,
+    public int updateStrings(Collection<Conversation> conversations,
             String[] columnNames, String[] values) {
         ContentValues cv = new ContentValues();
         for (int i = 0; i < columnNames.length; i++) {
             cv.put(columnNames[i], values[i]);
         }
-        return updateValues(context, conversations, cv);
+        return updateValues(conversations, cv);
     }
 
     /**
      * Update a boolean column for a group of conversations, immediately in the UI and in a single
      * transaction in the underlying provider
-     * @param context the caller's context
      * @param conversations a collection of conversations
      * @param values the data to update
      * @return the sequence number of the operation (for undo)
      */
-    public int updateValues(Context context, Collection<Conversation> conversations,
-            ContentValues values) {
-        return apply(context,
+    public int updateValues(Collection<Conversation> conversations, ContentValues values) {
+        return apply(
                 getOperationsForConversations(conversations, ConversationOperation.UPDATE, values));
     }
 
     /**
      * Apply many operations in a single batch transaction.
-     * @param context the caller's context
      * @param op the collection of operations obtained through successive calls to
      * {@link #getOperationForConversation(Conversation, int, ContentValues)}.
      * @return the sequence number of the operation (for undo)
      */
-    public int updateBulkValues(Context context, Collection<ConversationOperation> op) {
-        return apply(context, op);
+    public int updateBulkValues(Collection<ConversationOperation> op) {
+        return apply(op);
     }
 
     private ArrayList<ConversationOperation> getOperationsForConversations(
@@ -1826,7 +1822,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
         return new ConversationOperation(type, conv, values);
     }
 
-    public void addFolderUpdates(ArrayList<Uri> folderUris, ArrayList<Boolean> add,
+    public static void addFolderUpdates(ArrayList<Uri> folderUris, ArrayList<Boolean> add,
             ContentValues values) {
         ArrayList<String> folders = new ArrayList<String>();
         for (int i = 0; i < folderUris.size(); i++) {
@@ -1836,7 +1832,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
                 TextUtils.join(ConversationOperations.FOLDERS_UPDATED_SPLIT_PATTERN, folders));
     }
 
-    public void addTargetFolders(Collection<Folder> targetFolders, ContentValues values) {
+    public static void addTargetFolders(Collection<Folder> targetFolders, ContentValues values) {
         values.put(Conversation.UPDATE_FOLDER_COLUMN, FolderList.copyOf(targetFolders).toBlob());
     }
 
@@ -1856,39 +1852,36 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
 
     /**
      * Delete a single conversation
-     * @param context the caller's context
      * @return the sequence number of the operation (for undo)
      */
-    public int delete(Context context, Conversation conversation) {
+    public int delete(Conversation conversation) {
         ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         conversations.add(conversation);
-        return delete(context, conversations);
+        return delete(conversations);
     }
 
     /**
      * Delete a single conversation
-     * @param context the caller's context
      * @return the sequence number of the operation (for undo)
      */
-    public int mostlyArchive(Context context, Conversation conversation) {
+    public int mostlyArchive(Conversation conversation) {
         ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         conversations.add(conversation);
-        return archive(context, conversations);
+        return archive(conversations);
     }
 
     /**
      * Delete a single conversation
-     * @param context the caller's context
      * @return the sequence number of the operation (for undo)
      */
-    public int mostlyDelete(Context context, Conversation conversation) {
+    public int mostlyDelete(Conversation conversation) {
         ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         conversations.add(conversation);
-        return delete(context, conversations);
+        return delete(conversations);
     }
 
     // Convenience methods
-    private int apply(Context context, Collection<ConversationOperation> operations) {
+    private int apply(Collection<ConversationOperation> operations) {
         return sProvider.apply(operations, this);
     }
 
@@ -1914,93 +1907,90 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
      * Delete a group of conversations immediately in the UI and in a single transaction in the
      * underlying provider. See applyAction for argument descriptions
      */
-    public int delete(Context context, Collection<Conversation> conversations) {
-        return applyAction(context, conversations, ConversationOperation.DELETE);
+    public int delete(Collection<Conversation> conversations) {
+        return applyAction(conversations, ConversationOperation.DELETE);
     }
 
     /**
      * As above, for archive
      */
-    public int archive(Context context, Collection<Conversation> conversations) {
-        return applyAction(context, conversations, ConversationOperation.ARCHIVE);
+    public int archive(Collection<Conversation> conversations) {
+        return applyAction(conversations, ConversationOperation.ARCHIVE);
     }
 
     /**
      * As above, for mute
      */
-    public int mute(Context context, Collection<Conversation> conversations) {
-        return applyAction(context, conversations, ConversationOperation.MUTE);
+    public int mute(Collection<Conversation> conversations) {
+        return applyAction(conversations, ConversationOperation.MUTE);
     }
 
     /**
      * As above, for report spam
      */
-    public int reportSpam(Context context, Collection<Conversation> conversations) {
-        return applyAction(context, conversations, ConversationOperation.REPORT_SPAM);
+    public int reportSpam(Collection<Conversation> conversations) {
+        return applyAction(conversations, ConversationOperation.REPORT_SPAM);
     }
 
     /**
      * As above, for report not spam
      */
-    public int reportNotSpam(Context context, Collection<Conversation> conversations) {
-        return applyAction(context, conversations, ConversationOperation.REPORT_NOT_SPAM);
+    public int reportNotSpam(Collection<Conversation> conversations) {
+        return applyAction(conversations, ConversationOperation.REPORT_NOT_SPAM);
     }
 
     /**
      * As above, for report phishing
      */
-    public int reportPhishing(Context context, Collection<Conversation> conversations) {
-        return applyAction(context, conversations, ConversationOperation.REPORT_PHISHING);
+    public int reportPhishing(Collection<Conversation> conversations) {
+        return applyAction(conversations, ConversationOperation.REPORT_PHISHING);
     }
 
     /**
      * Discard the drafts in the specified conversations
      */
-    public int discardDrafts(Context context, Collection<Conversation> conversations) {
-        return applyAction(context, conversations, ConversationOperation.DISCARD_DRAFTS);
+    public int discardDrafts(Collection<Conversation> conversations) {
+        return applyAction(conversations, ConversationOperation.DISCARD_DRAFTS);
     }
 
     /**
      * As above, for mostly archive
      */
-    public int mostlyArchive(Context context, Collection<Conversation> conversations) {
-        return applyAction(context, conversations, ConversationOperation.MOSTLY_ARCHIVE);
+    public int mostlyArchive(Collection<Conversation> conversations) {
+        return applyAction(conversations, ConversationOperation.MOSTLY_ARCHIVE);
     }
 
     /**
      * As above, for mostly delete
      */
-    public int mostlyDelete(Context context, Collection<Conversation> conversations) {
-        return applyAction(context, conversations, ConversationOperation.MOSTLY_DELETE);
+    public int mostlyDelete(Collection<Conversation> conversations) {
+        return applyAction(conversations, ConversationOperation.MOSTLY_DELETE);
     }
 
     /**
      * As above, for mostly destructive updates.
      */
-    public int mostlyDestructiveUpdate(Context context, Collection<Conversation> conversations,
+    public int mostlyDestructiveUpdate(Collection<Conversation> conversations,
             ContentValues values) {
         return apply(
-                context,
                 getOperationsForConversations(conversations,
                         ConversationOperation.MOSTLY_DESTRUCTIVE_UPDATE, values));
     }
 
     /**
      * Convenience method for performing an operation on a group of conversations
-     * @param context the caller's context
      * @param conversations the conversations to be affected
      * @param opAction the action to take
      * @return the sequence number of the operation applied in CC
      */
-    private int applyAction(Context context, Collection<Conversation> conversations,
-            int opAction) {
+    private int applyAction(Collection<Conversation> conversations, int opAction) {
         ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
             ConversationOperation op =
                     new ConversationOperation(opAction, conv);
             ops.add(op);
         }
-        return apply(context, ops);
+        return apply(ops);
     }
 
     /**

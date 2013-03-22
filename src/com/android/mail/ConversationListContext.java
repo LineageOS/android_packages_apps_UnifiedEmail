@@ -17,7 +17,6 @@
 
 package com.android.mail;
 
-import android.content.Context;
 import android.content.UriMatcher;
 import android.os.Bundle;
 import android.text.TextUtils;

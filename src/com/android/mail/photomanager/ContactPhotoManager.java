@@ -23,10 +23,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -40,15 +36,13 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.Directory;
 import android.text.TextUtils;
 import android.util.LruCache;
+
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.utils.LogUtils;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.lang.ref.Reference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;

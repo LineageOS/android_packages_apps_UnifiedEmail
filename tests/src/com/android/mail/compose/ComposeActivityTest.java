@@ -63,8 +63,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
             foldersCursor.moveToFirst();
             convUri = Uri.parse(foldersCursor
                     .getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN));
+            foldersCursor.close();
         }
-        foldersCursor.close();
         Cursor convCursor = mActivity.getContentResolver().query(convUri,
                 UIProvider.CONVERSATION_PROJECTION, null, null, null);
         Uri messagesUri = null;
@@ -72,8 +72,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
             convCursor.moveToFirst();
             messagesUri = Uri.parse(convCursor
                     .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN));
+            convCursor.close();
         }
-        convCursor.close();
         Cursor msgCursor = mActivity.getContentResolver().query(messagesUri,
                 UIProvider.MESSAGE_PROJECTION, null, null, null);
         if (msgCursor != null) {
@@ -635,7 +635,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         });
     }
 
-    private String createAttachmentsJson() {
+    private static String createAttachmentsJson() {
         Attachment attachment1 = new Attachment();
         attachment1.contentUri = Uri.parse("www.google.com");
         attachment1.setContentType("img/jpeg");

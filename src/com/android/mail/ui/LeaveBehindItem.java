@@ -115,7 +115,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     public void commit() {
         ConversationCursor cursor = mAdapter.getConversationCursor();
         if (cursor != null) {
-            cursor.delete(getContext(), ImmutableList.of(getData()));
+            cursor.delete(ImmutableList.of(getData()));
         }
     }
 
