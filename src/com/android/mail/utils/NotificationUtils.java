@@ -851,7 +851,7 @@ public class NotificationUtils {
 
                     if (message != null) {
                         final Set<String> notificationActions =
-                                folderPreferences.getNotificationActions();
+                                folderPreferences.getNotificationActions(account);
 
                         final int notificationId = getNotificationId(notificationAccount, folder);
 

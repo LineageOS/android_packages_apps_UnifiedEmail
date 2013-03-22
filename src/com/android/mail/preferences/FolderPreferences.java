@@ -26,7 +26,9 @@ import android.net.Uri;
 import android.provider.Settings;
 
 import com.android.mail.MailIntentService;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.NotificationActionUtils.NotificationActionType;
 
@@ -250,17 +252,19 @@ public class FolderPreferences extends VersionedPrefs {
         MailIntentService.broadcastBackupDataChanged(getContext());
     }
 
-    private Set<String> getDefaultNotificationActions(final Context context) {
-        final boolean supportsArchive = mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
-        final boolean supportsRemoveLabel =
-                mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION);
+    private Set<String> getDefaultNotificationActions(final Context context,
+            final Account account) {
+        final boolean supportsArchiveRemoveLabel =
+                account.supportsCapability(AccountCapabilities.ARCHIVE)
+                && (mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
+                || mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION));
         // Use the swipe setting, since it is essentially a way to allow the user to specify
         // whether they prefer archive or delete, without adding another setting
         final boolean preferDelete =
                 MailPrefs.ConversationListSwipeActions.DELETE.equals(MailPrefs.get(context)
                         .getConversationListSwipeAction(true /* supportsArchive */));
         final NotificationActionType destructiveActionType =
-                (supportsArchive || supportsRemoveLabel) && !preferDelete ?
+                supportsArchiveRemoveLabel && !preferDelete ?
                         NotificationActionType.ARCHIVE_REMOVE_LABEL : NotificationActionType.DELETE;
         final String destructiveAction = destructiveActionType.getPersistedValue();
 
@@ -280,8 +284,8 @@ public class FolderPreferences extends VersionedPrefs {
      * Gets the notification settings configured for this account and label, or the default if none
      * have been set.
      */
-    public Set<String> getNotificationActions() {
-        return getSharedPreferences().getStringSet(
-                PreferenceKeys.NOTIFICATION_ACTIONS, getDefaultNotificationActions(getContext()));
+    public Set<String> getNotificationActions(final Account account) {
+        return getSharedPreferences().getStringSet(PreferenceKeys.NOTIFICATION_ACTIONS,
+                getDefaultNotificationActions(getContext(), account));
     }
 }
