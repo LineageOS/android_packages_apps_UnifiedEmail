@@ -654,7 +654,7 @@ public final class FolderListFragment extends ListFragment implements
                 // Adapter for a flat list. Everything is a FOLDER_USER, and there are no headers.
                 do {
                     final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
-                    if (!isFolderTypeExcluded(f.type)) {
+                    if (!isFolderTypeExcluded(f)) {
                         mItemList.add(new DrawerItem(mActivity, f, DrawerItem.FOLDER_USER,
                                 mCursor.getPosition()));
                     }
@@ -671,7 +671,7 @@ public final class FolderListFragment extends ListFragment implements
             final List<DrawerItem> userFolderList = new ArrayList<DrawerItem>();
             do {
                 final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
-                if (!isFolderTypeExcluded(f.type)) {
+                if (!isFolderTypeExcluded(f)) {
                     if (f.isProviderFolder()) {
                         mItemList.add(new DrawerItem(mActivity, f, DrawerItem.FOLDER_SYSTEM,
                                 mCursor.getPosition()));
@@ -693,7 +693,7 @@ public final class FolderListFragment extends ListFragment implements
             if (mExcludedFolderTypes != null) {
                 final Iterator<Folder> iterator = recentFolderList.iterator();
                 while (iterator.hasNext()) {
-                    if (isFolderTypeExcluded(iterator.next().type)) {
+                    if (isFolderTypeExcluded(iterator.next())) {
                         iterator.remove();
                     }
                 }
@@ -969,16 +969,15 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     /**
-     * Checks if the specified folder type bitmask contains a folder type that we want to exclude
-     * from displaying.
+     * Checks if the specified {@link Folder} is a type that we want to exclude from displaying.
      */
-    private boolean isFolderTypeExcluded(final int folderType) {
+    private boolean isFolderTypeExcluded(final Folder folder) {
         if (mExcludedFolderTypes == null) {
             return false;
         }
 
         for (final int excludedType : mExcludedFolderTypes) {
-            if ((excludedType & folderType) != 0) {
+            if (folder.isType(excludedType)) {
                 return true;
             }
         }
