@@ -318,17 +318,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mVeiledMatcher = matcher;
     }
 
-    /**
-     * Find the header view corresponding to a message with given local ID.
-     *
-     * @param parent the view parent to search within
-     * @param localMessageId local message ID
-     * @return a header view or null
-     */
-    public static MessageHeaderView find(ViewGroup parent, long localMessageId) {
-        return (MessageHeaderView) parent.findViewWithTag(localMessageId);
-    }
-
     public boolean isExpanded() {
         // (let's just arbitrarily say that unbound views are expanded by default)
         return mMessageHeaderItem == null || mMessageHeaderItem.isExpanded();

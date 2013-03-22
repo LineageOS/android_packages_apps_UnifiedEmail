@@ -1261,13 +1261,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     /**
-     * Return if the checkbox for this item is checked.
-     */
-    public boolean isChecked() {
-        return mChecked;
-    }
-
-    /**
      * Toggle the star on this view and update the conversation.
      */
     public void toggleStar() {
@@ -1550,14 +1543,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             }
         }
         return result;
-    }
-
-    /**
-     * Get the current position of this conversation item in the list.
-     */
-    public int getPosition() {
-        return mHeader != null && mHeader.conversation != null ?
-                mHeader.conversation.position : -1;
     }
 
     @Override
