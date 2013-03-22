@@ -177,8 +177,15 @@ public final class OnePaneController extends AbstractActivityController {
                     loadFolderList();
                     // Remove listener and unlock drawer to avoid onDrawerClosed
                     // being called again and for user to freely drag after load
-                    mDrawerContainer.setDrawerListener(null);
                     mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                    mDrawerContainer.setDrawerListener(null);
+                }
+
+                @Override
+                public void onDrawerStateChanged(int newState) {
+                    if (newState == DrawerLayout.STATE_IDLE) {
+                        onDrawerClosed(mDrawerPullout);
+                    }
                 }
             });
             // This will invoke closeDrawer as well to hide drawer to the left
