@@ -418,7 +418,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuItem mute = menu.findItem(R.id.mute);
         if (mute != null) {
             mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE)
-                    && (mFolder != null && mFolder.type == FolderType.INBOX));
+                    && (mFolder != null && mFolder.isInbox()));
         }
         final MenuItem markImportant = menu.findItem(R.id.mark_important);
         markImportant.setVisible(showMarkImportant
