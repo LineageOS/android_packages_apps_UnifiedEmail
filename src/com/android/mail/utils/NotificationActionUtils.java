@@ -42,7 +42,6 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationOperations;
-import com.android.mail.providers.UIProvider.FolderType;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
@@ -75,8 +74,7 @@ public class NotificationActionUtils {
             @Override
             public boolean shouldDisplayPrimary(final Folder folder,
                     final Conversation conversation, final Message message) {
-                return folder == null || folder.type == FolderType.INBOX
-                        || folder.type == FolderType.INBOX_SECTION;
+                return folder == null || folder.isInbox();
             }
         }),
         DELETE("delete", true, R.drawable.ic_menu_delete_holo_dark,
