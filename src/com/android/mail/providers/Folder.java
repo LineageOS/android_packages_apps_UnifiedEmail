@@ -36,7 +36,6 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -493,25 +492,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
-     * Returns a comma separated list of folder URIs for all the folders in the collection.
-     * @param folders
-     * @return
-     */
-    public final static String getUriString(Collection<Folder> folders) {
-        final StringBuilder uris = new StringBuilder();
-        boolean first = true;
-        for (Folder f : folders) {
-            if (first) {
-                first = false;
-            } else {
-                uris.append(',');
-            }
-            uris.append(f.uri.toString());
-        }
-        return uris.toString();
-    }
-
-    /**
      * Get just the uri's from an arraylist of folders.
      */
     public final static String[] getUriArray(List<Folder> folders) {
@@ -528,66 +508,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
-     * Returns true if a conversation assigned to the needle will be assigned to the collection of
-     * folders in the haystack. False otherwise. This method is safe to call with null
-     * arguments.
-     * This method returns true under two circumstances
-     * <ul><li> If the URI of the needle was found in the collection of URIs that comprise the
-     * haystack.
-     * </li><li> If the needle is of the type Inbox, and at least one of the folders in the haystack
-     * are of type Inbox. <em>Rationale</em>: there are special folders that are marked as inbox,
-     * and the user might not have the control to assign conversations to them. This happens for
-     * the Priority Inbox in Gmail. When you assign a conversation to an Inbox folder, it will
-     * continue to appear in the Priority Inbox. However, the URI of Priority Inbox and Inbox will
-     * be different. So a direct equality check is insufficient.
-     * </li></ul>
-     * @param haystack a collection of folders, possibly overlapping
-     * @param needle a folder
-     * @return true if a conversation inside the needle will be in the folders in the haystack.
-     */
-    public final static boolean containerIncludes(Collection<Folder> haystack, Folder needle) {
-        // If the haystack is empty, it cannot contain anything.
-        if (haystack == null || haystack.size() <= 0) {
-            return false;
-        }
-        // The null folder exists everywhere.
-        if (needle == null) {
-            return true;
-        }
-        boolean hasInbox = false;
-        // Get currently active folder info and compare it to the list
-        // these conversations have been given; if they no longer contain
-        // the selected folder, delete them from the list.
-        final Uri toFind = needle.uri;
-        for (Folder f : haystack) {
-            if (toFind.equals(f.uri)) {
-                return true;
-            }
-            hasInbox |= f.isInbox();
-        }
-        // Did not find the URI of needle directly. If the needle is an Inbox and one of the folders
-        // was an inbox, then the needle is contained (check Javadoc for explanation).
-        final boolean needleIsInbox = needle.isInbox();
-        return needleIsInbox ? hasInbox : false;
-    }
-
-    /**
      * Returns a boolean indicating whether this Folder object has been initialized
      */
     public boolean isInitialized() {
         return name != FOLDER_UNINITIALIZED && conversationListUri != null &&
                 !NULL_STRING_URI.equals(conversationListUri.toString());
-    }
-
-    /**
-     * Returns a collection of a single folder. This method always returns a valid collection
-     * even if the input folder is null.
-     * @param in a folder, possibly null.
-     * @return a collection of the folder.
-     */
-    public static Collection<Folder> listOf(Folder in) {
-        final Collection<Folder> target = (in == null) ? EMPTY : ImmutableList.of(in);
-        return target;
     }
 
     public boolean isType(final int folderType) {

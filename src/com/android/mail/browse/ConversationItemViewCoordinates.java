@@ -132,14 +132,6 @@ public class ConversationItemViewCoordinates {
     }
 
     /**
-     * Returns whether to show a background on the attachment icon.
-     * Currently, we don't show a background in wide mode.
-     */
-    public static boolean showAttachmentBackground(int mode) {
-        return mode != WIDE_MODE;
-    }
-
-    /**
      * Returns the mode of the header view (Wide/Normal/Narrow).
      */
     public static int getMode(Context context, int viewMode) {
@@ -304,23 +296,6 @@ public class ConversationItemViewCoordinates {
         }
     }
 
-    /**
-     * Returns the width of a cell to draw folders.
-     */
-    public static int getLabelCellWidth(Context context, int mode, int foldersCount) {
-        Resources res = context.getResources();
-        if (FOLDER_CELL_WIDTH <= 0) {
-            FOLDER_CELL_WIDTH = res.getDimensionPixelSize(R.dimen.folder_cell_width);
-        }
-        switch (mode) {
-            case WIDE_MODE:
-            case NORMAL_MODE:
-                return FOLDER_CELL_WIDTH;
-            default:
-                throw new IllegalArgumentException("Unknown conversation header view mode " + mode);
-        }
-    }
-
     public static boolean displaySendersInline(int mode) {
         switch (mode) {
             case WIDE_MODE:
@@ -449,10 +424,6 @@ public class ConversationItemViewCoordinates {
             }
         }
         return coordinates;
-    }
-
-    public static boolean displayFoldersAboveDate(int mode) {
-        return mode == WIDE_MODE;
     }
 
     public static int getFolderCellWidth(Context context, int mode, int foldersCount) {
