@@ -63,13 +63,6 @@ public class CcBccView extends RelativeLayout {
         }
     }
 
-    /**
-     * Return if the CC/BCC field is visible.
-     */
-    public boolean isVisible() {
-        return getHeight() > 0;
-    }
-
     private void animate(Boolean showCc, boolean showBcc, boolean ccWasAlreadyShown) {
         Resources res = getResources();
         // Then, have cc/ bcc fade in
