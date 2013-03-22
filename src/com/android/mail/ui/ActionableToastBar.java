@@ -19,7 +19,6 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.os.Handler;
-import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -30,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
  * A custom {@link View} that exposes an action to the user.

@@ -43,12 +43,14 @@ public class MinTimeProgressDialog extends ProgressDialog implements OnShowListe
     private final Handler mHandler = new Handler();
 
     private final Runnable mDelayedDismiss = new Runnable() {
+        @Override
         public void run() {
             MinTimeProgressDialog.super.dismiss();
         }
     };
 
     private final Runnable mDelayedShow = new Runnable() {
+        @Override
         public void run() {
             if (!mDismissed) {
                 MinTimeProgressDialog.super.show();
@@ -57,10 +59,6 @@ public class MinTimeProgressDialog extends ProgressDialog implements OnShowListe
     };
 
     public MinTimeProgressDialog(Context context) {
-        this(context, -1);
-    }
-
-    public MinTimeProgressDialog(Context context, int theme) {
         super(context, R.style.MinTimeProgressDialogStyle);
         sMinShowTime = context.getResources()
             .getInteger(R.integer.batch_progress_display_time);
@@ -76,7 +74,7 @@ public class MinTimeProgressDialog extends ProgressDialog implements OnShowListe
         long diff = System.currentTimeMillis() - mStartTime;
         if (diff >= mMinShowTime || mStartTime == -1) {
             // This covers the case where the dialog was not shown
-            // at all yet OR enough time of the dialog showing 
+            // at all yet OR enough time of the dialog showing
             // has passed. If it wasn't shown at all yet, then it is
             // just never shown.
             super.dismiss();

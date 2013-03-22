@@ -1109,28 +1109,28 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void updateConversation(Collection<Conversation> target, ContentValues values) {
-        mConversationListCursor.updateValues(mContext, target, values);
+        mConversationListCursor.updateValues(target, values);
         refreshConversationList();
     }
 
     @Override
     public void updateConversation(Collection <Conversation> target, String columnName,
             boolean value) {
-        mConversationListCursor.updateBoolean(mContext, target, columnName, value);
+        mConversationListCursor.updateBoolean(target, columnName, value);
         refreshConversationList();
     }
 
     @Override
     public void updateConversation(Collection <Conversation> target, String columnName,
             int value) {
-        mConversationListCursor.updateInt(mContext, target, columnName, value);
+        mConversationListCursor.updateInt(target, columnName, value);
         refreshConversationList();
     }
 
     @Override
     public void updateConversation(Collection <Conversation> target, String columnName,
             String value) {
-        mConversationListCursor.updateString(mContext, target, columnName, value);
+        mConversationListCursor.updateString(target, columnName, value);
         refreshConversationList();
     }
 
@@ -1286,7 +1286,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 target.markViewed();
             }
         }
-        mConversationListCursor.updateBulkValues(mContext, opList);
+        mConversationListCursor.updateBulkValues(opList);
     }
 
     /**
@@ -2211,11 +2211,11 @@ public abstract class AbstractActivityController implements ActivityController {
             switch (mAction) {
                 case R.id.archive:
                     LogUtils.d(LOG_TAG, "Archiving");
-                    mConversationListCursor.archive(mContext, mTarget);
+                    mConversationListCursor.archive(mTarget);
                     break;
                 case R.id.delete:
                     LogUtils.d(LOG_TAG, "Deleting");
-                    mConversationListCursor.delete(mContext, mTarget);
+                    mConversationListCursor.delete(mTarget);
                     if (mFolder.supportsCapability(FolderCapabilities.DELETE_ACTION_FINAL)) {
                         undoEnabled = false;
                     }
@@ -2227,25 +2227,25 @@ public abstract class AbstractActivityController implements ActivityController {
                             c.localDeleteOnUpdate = true;
                         }
                     }
-                    mConversationListCursor.mute(mContext, mTarget);
+                    mConversationListCursor.mute(mTarget);
                     break;
                 case R.id.report_spam:
                     LogUtils.d(LOG_TAG, "Reporting spam");
-                    mConversationListCursor.reportSpam(mContext, mTarget);
+                    mConversationListCursor.reportSpam(mTarget);
                     break;
                 case R.id.mark_not_spam:
                     LogUtils.d(LOG_TAG, "Marking not spam");
-                    mConversationListCursor.reportNotSpam(mContext, mTarget);
+                    mConversationListCursor.reportNotSpam(mTarget);
                     break;
                 case R.id.report_phishing:
                     LogUtils.d(LOG_TAG, "Reporting phishing");
-                    mConversationListCursor.reportPhishing(mContext, mTarget);
+                    mConversationListCursor.reportPhishing(mTarget);
                     break;
                 case R.id.remove_star:
                     LogUtils.d(LOG_TAG, "Removing star");
                     // Star removal is destructive in the Starred folder.
-                    mConversationListCursor.updateBoolean(mContext, mTarget,
-                            ConversationColumns.STARRED, false);
+                    mConversationListCursor.updateBoolean(mTarget, ConversationColumns.STARRED,
+                            false);
                     break;
                 case R.id.mark_not_important:
                     LogUtils.d(LOG_TAG, "Marking not-important");
@@ -2256,8 +2256,8 @@ public abstract class AbstractActivityController implements ActivityController {
                             conv.localDeleteOnUpdate = true;
                         }
                     }
-                    mConversationListCursor.updateInt(mContext, mTarget,
-                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
+                    mConversationListCursor.updateInt(mTarget, ConversationColumns.PRIORITY,
+                            UIProvider.ConversationPriority.LOW);
                     break;
                 case R.id.discard_drafts:
                     LogUtils.d(LOG_TAG, "Discarding draft messages");
@@ -2267,7 +2267,7 @@ public abstract class AbstractActivityController implements ActivityController {
                             conv.localDeleteOnUpdate = true;
                         }
                     }
-                    mConversationListCursor.discardDrafts(mContext, mTarget);
+                    mConversationListCursor.discardDrafts(mTarget);
                     // We don't support undoing discarding drafts
                     undoEnabled = false;
                     break;
@@ -2664,7 +2664,7 @@ public abstract class AbstractActivityController implements ActivityController {
                         folderUris, adds, targetFolders.values()));
             }
             if (mConversationListCursor != null) {
-                mConversationListCursor.updateBulkValues(mContext, ops);
+                mConversationListCursor.updateBulkValues(ops);
             }
             refreshConversationList();
             mSelectedSet.clear();
@@ -2725,7 +2725,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 ops.add(operation);
             }
             if (mConversationListCursor != null) {
-                mConversationListCursor.updateBulkValues(mContext, ops);
+                mConversationListCursor.updateBulkValues(ops);
             }
             refreshConversationList();
             mSelectedSet.clear();
@@ -3217,7 +3217,7 @@ public abstract class AbstractActivityController implements ActivityController {
                         folderUris, adds, targetFolders.values()));
             }
             if (mConversationListCursor != null) {
-                mConversationListCursor.updateBulkValues(mContext, ops);
+                mConversationListCursor.updateBulkValues(ops);
             }
             refreshConversationList();
             if (mIsSelectedSet) {

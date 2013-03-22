@@ -82,7 +82,7 @@ public class AttachmentActionHandler {
                         mAttachment.destination == destination)) {
             mView.viewAttachment();
         } else {
-            showDownloadingDialog(destination);
+            showDownloadingDialog();
             startDownloadingAttachment(destination);
         }
     }
@@ -122,7 +122,7 @@ public class AttachmentActionHandler {
     }
 
     public void startRedownloadingAttachment(Attachment attachment) {
-        showDownloadingDialog(attachment.destination);
+        showDownloadingDialog();
         final ContentValues params = new ContentValues(2);
         params.put(AttachmentColumns.STATE, AttachmentState.REDOWNLOADING);
         params.put(AttachmentColumns.DESTINATION, attachment.destination);
@@ -134,7 +134,7 @@ public class AttachmentActionHandler {
      * Displays a loading dialog to be used for downloading attachments.
      * Must be called on the UI thread.
      */
-    private void showDownloadingDialog(int destination) {
+    private void showDownloadingDialog() {
         final FragmentTransaction ft = mFragmentManager.beginTransaction();
         final Fragment prev = mFragmentManager.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
         if (prev != null) {
@@ -144,7 +144,7 @@ public class AttachmentActionHandler {
 
          // Create and show the dialog.
         final DialogFragment newFragment = AttachmentProgressDialogFragment.newInstance(
-                mAttachment, destination);
+                mAttachment);
         newFragment.show(ft, PROGRESS_FRAGMENT_TAG);
     }
 
