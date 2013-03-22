@@ -17,18 +17,14 @@
 
 package com.android.mail.ui;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
-import android.text.Html;
-import android.text.SpannedString;
-import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Message;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.google.common.annotations.VisibleForTesting;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

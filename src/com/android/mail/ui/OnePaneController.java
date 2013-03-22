@@ -109,7 +109,6 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void resetActionBarIcon() {
-        final int mode = mViewMode.getMode();
         if (mViewMode.isWaitingForSync()) {
             mActionBarView.removeBackButton();
         } else {
@@ -374,6 +373,7 @@ public final class OnePaneController extends AbstractActivityController {
         return;
     }
 
+    @Override
     public void onFolderChanged(Folder folder) {
         mDrawerContainer.closeDrawers();
         super.onFolderChanged(folder);
@@ -514,7 +514,7 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
-    private boolean isTransactionIdValid(int id) {
+    private static boolean isTransactionIdValid(int id) {
         return id >= 0;
     }
 

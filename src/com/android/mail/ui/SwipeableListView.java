@@ -193,7 +193,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     public void dismissChild(final ConversationItemView target) {
-        final Context context = getContext();
         final ToastBarOperation undoOp;
 
         undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO, false /* batch */,
@@ -222,15 +221,15 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
                 folderUris.add(mFolder.uri);
                 adds = new ArrayList<Boolean>();
                 adds.add(Boolean.FALSE);
-                cc.addFolderUpdates(folderUris, adds, values);
-                cc.addTargetFolders(targetFolders.values(), values);
-                cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv), values);
+                ConversationCursor.addFolderUpdates(folderUris, adds, values);
+                ConversationCursor.addTargetFolders(targetFolders.values(), values);
+                cc.mostlyDestructiveUpdate(Conversation.listOf(conv), values);
                 break;
             case R.id.archive:
-                cc.mostlyArchive(context, convList);
+                cc.mostlyArchive(convList);
                 break;
             case R.id.delete:
-                cc.mostlyDelete(context, convList);
+                cc.mostlyDelete(convList);
                 break;
         }
         if (mSwipedListener != null) {

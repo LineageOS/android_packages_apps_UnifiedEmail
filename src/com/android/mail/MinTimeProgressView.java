@@ -53,12 +53,14 @@ public class MinTimeProgressView extends ProgressBar {
     }
 
     private final Runnable mDelayedHide = new Runnable() {
+        @Override
         public void run() {
             MinTimeProgressView.super.setVisibility(View.GONE);
         }
     };
 
     private final Runnable mDelayedShow = new Runnable() {
+        @Override
         public void run() {
             if (!mDismissed) {
                 mStartTime = System.currentTimeMillis();

@@ -90,7 +90,6 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
         if (mSenders == null || mSenders.isEmpty()) {
             return null;
         }
-        long start, end;
         Cursor cursor = null;
 
         Map<String, ContactInfo> results = Maps.newHashMap();
