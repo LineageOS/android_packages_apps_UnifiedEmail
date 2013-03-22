@@ -77,10 +77,8 @@
     <string name="menu_move_to" msgid="9138296669516358542">"이동"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"폴더 설정"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"폴더"</string>
-    <!-- no translation found for folder_list_more (537172187223133825) -->
-    <skip />
-    <!-- no translation found for folder_list_show_all_accounts (8054807182336991835) -->
-    <skip />
+    <string name="folder_list_more" msgid="537172187223133825">"더보기"</string>
+    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"계정 더보기"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"동기화 및 알림"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"폴더 설정"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"계정 설정"</string>
@@ -225,8 +223,7 @@
     <item quantity="one" msgid="4930161390461457462">"폴더가 변경되었습니다."</item>
     <item quantity="other" msgid="8918589141287976985">"폴더가 변경되었습니다."</item>
   </plurals>
-    <!-- no translation found for conversation_folder_moved (297469098857964678) -->
-    <skip />
+    <string name="conversation_folder_moved" msgid="297469098857964678">"<xliff:g id="FOLDERNAME">%1$s</xliff:g>(으)로 이동함"</string>
     <string name="search_results_header" msgid="4669917471897026269">"검색결과"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"이 계정에서는 검색이 지원되지 않습니다."</string>
     <string name="searchMode" msgid="3329807422114758583">"검색 모드"</string>
