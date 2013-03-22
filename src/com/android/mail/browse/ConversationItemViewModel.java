@@ -215,13 +215,6 @@ public class ConversationItemViewModel {
     }
 
     /**
-     * Clears all the current sender fragments.
-     */
-    void clearSenderFragments() {
-        senderFragments.clear();
-    }
-
-    /**
      * Returns the hashcode to compare if the data in the header is valid.
      */
     private static int getHashCode(Context context, CharSequence dateText, Object convInfo,

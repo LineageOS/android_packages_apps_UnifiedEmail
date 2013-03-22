@@ -118,10 +118,6 @@ public class FolderPreferences extends VersionedPrefs {
         }
     }
 
-    public String getPersistentId() {
-        return mPersistentId;
-    }
-
     @Override
     protected boolean canBackup(final String key) {
         if (mPersistentId == null) {
