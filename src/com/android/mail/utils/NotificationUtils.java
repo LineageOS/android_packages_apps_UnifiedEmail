@@ -427,6 +427,11 @@ public class NotificationUtils {
             final Uri.Builder uriBuilder = folder.conversationListUri.buildUpon();
             uriBuilder.appendQueryParameter(
                     UIProvider.SEEN_QUERY_PARAMETER, Boolean.FALSE.toString());
+            // Do not allow this quick check to disrupt any active network-enabled conversation
+            // cursor.
+            uriBuilder.appendQueryParameter(
+                    UIProvider.ConversationListQueryParameters.USE_NETWORK,
+                    Boolean.FALSE.toString());
             cursor = context.getContentResolver().query(uriBuilder.build(),
                     UIProvider.CONVERSATION_PROJECTION, null, null, null);
             final int cursorUnseenCount = cursor.getCount();
