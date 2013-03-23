@@ -290,13 +290,16 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
                     new ImmutableMap.Builder<Long, Integer>();
             final UnderlyingRowData[] cache;
             final int count;
+            final boolean networkWasEnabled;
+            if (result != null) {
+                // We don't want iterating over this cursor to trigger a network request
+                networkWasEnabled = Utils.disableConversationCursorNetworkAccess(result);
+            } else {
+                networkWasEnabled = false;
+            }
             if (result != null && result.moveToFirst()) {
                 count = result.getCount();
                 cache = new UnderlyingRowData[count];
-                // We don't want iterating over this cursor to trigger a network
-                // request
-                final boolean networkWasEnabled =
-                        Utils.disableConversationCursorNetworkAccess(result);
                 int i = 0;
                 do {
                     final Conversation c;
@@ -323,13 +326,12 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
                             c);
 
                 } while (result.moveToPosition(++i));
-
-                if (networkWasEnabled) {
-                    Utils.enableConversationCursorNetworkAccess(result);
-                }
             } else {
                 count = 0;
                 cache = new UnderlyingRowData[0];
+            }
+            if (networkWasEnabled) {
+                Utils.enableConversationCursorNetworkAccess(result);
             }
             mConversationUriPositionMap = conversationUriPositionMapBuilder.build();
             mConversationIdPositionMap = conversationIdPositionMapBuilder.build();
