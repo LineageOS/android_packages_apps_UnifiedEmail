@@ -347,7 +347,7 @@ public final class FolderListFragment extends ListFragment implements
             } else {
                 // Block for expanding/contracting labels/accounts
                 folder = null;
-                if(!folderItem.mIsExpandForAccount) {
+                if(!folderItem.mIsCurrAcctOrExpandAccount) {
                     mCursorAdapter.toggleShowLessFolders();
                 } else {
                     mCursorAdapter.toggleShowLessAccounts();
@@ -637,19 +637,18 @@ public final class FolderListFragment extends ListFragment implements
                     // Add show all accounts block along with current accounts
                     mItemList.add(new DrawerItem(
                             mActivity, R.string.folder_list_show_all_accounts, true));
-                    unreadCount = getInboxUnreadCount(mCurrentAccount);
-                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, unreadCount));
+                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, 0, true));
                 } else {
                     // Add all accounts and then the current account
                     Uri currentAccountUri = getCurrentAccountUri();
                     for (final Account account : mAllAccounts) {
                         if (!currentAccountUri.equals(account.uri)) {
                             unreadCount = getInboxUnreadCount(account);
-                            mItemList.add(new DrawerItem(mActivity, account, unreadCount));
+                            mItemList.add(new DrawerItem(mActivity, account,
+                                    unreadCount, false));
                         }
                     }
-                    unreadCount = getInboxUnreadCount(mCurrentAccount);
-                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, unreadCount));
+                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, 0, true));
                 }
             }
 
