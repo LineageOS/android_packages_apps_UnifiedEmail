@@ -20,6 +20,7 @@ package com.android.mail.adapter;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.ui.AccountItemView;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.FolderItemView;
 import com.android.mail.utils.LogTag;
@@ -41,7 +42,7 @@ public class DrawerItem {
     public final Account mAccount;
     public final int mResource;
     /** True if expand item view for expanding accounts. False otherwise */
-    public final boolean mIsExpandForAccount;
+    public final boolean mIsCurrAcctOrExpandAccount;
     /** Either {@link #VIEW_ACCOUNT}, {@link #VIEW_FOLDER} or {@link #VIEW_HEADER} */
     public final int mType;
     /** A normal folder, also a child, if a parent is specified. */
@@ -96,14 +97,15 @@ public class DrawerItem {
         mType = VIEW_FOLDER;
         mFolderType = folderType;
         mPosition = cursorPosition;
-        mIsExpandForAccount = false;
+        mIsCurrAcctOrExpandAccount = false;
     }
 
     /**
      * Creates an item from an account.
      * @param account an account that this item represents.
      */
-    public DrawerItem(ControllableActivity activity, Account account, int count) {
+    public DrawerItem(ControllableActivity activity, Account account, int count,
+            boolean isCurrentAccount) {
         mActivity = activity;
         mInflater = LayoutInflater.from(mActivity.getActivityContext());
         mFolder = null;
@@ -111,7 +113,7 @@ public class DrawerItem {
         mResource = count;
         mFolderType = ACCOUNT;
         mAccount = account;
-        mIsExpandForAccount = false;
+        mIsCurrAcctOrExpandAccount = isCurrentAccount;
     }
 
     /**
@@ -126,13 +128,13 @@ public class DrawerItem {
         mType = VIEW_HEADER;
         mFolderType = INERT_HEADER;
         mAccount = null;
-        mIsExpandForAccount = false;
+        mIsCurrAcctOrExpandAccount = false;
     }
 
     /**
      * Creates an item for expanding or contracting for emails/items
      * @param resource the string resource: R.string.folder_list_*
-     * @param isExpand true if "more" and false if "less"
+     * @param isExpandForAccount true if "more" and false if "less"
      */
     public DrawerItem(ControllableActivity activity, int resource, boolean isExpandForAccount) {
         mActivity = activity;
@@ -142,7 +144,7 @@ public class DrawerItem {
         mResource = resource;
         mFolderType = EXPAND;
         mAccount = null;
-        mIsExpandForAccount = isExpandForAccount;
+        mIsCurrAcctOrExpandAccount = isExpandForAccount;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -238,22 +240,20 @@ public class DrawerItem {
      * @return a view to display at this position.
      */
     private View getAccountView(int position, View convertView, ViewGroup parent) {
-        // Shoe-horn an account object into a Folder DrawerItem for now.
-        // TODO(viki): Stop this ugly shoe-horning and use a real layout.
-        final FolderItemView folderItemView;
+        final AccountItemView accountItemView;
         if (convertView != null) {
-            folderItemView = (FolderItemView) convertView;
+            accountItemView = (AccountItemView) convertView;
         } else {
-            folderItemView =
-                    (FolderItemView) mInflater.inflate(R.layout.folder_item, null, false);
+            accountItemView =
+                    (AccountItemView) mInflater.inflate(R.layout.account_item, null, false);
         }
-        // Temporary. Ideally we want a totally different item.
-        folderItemView.bind(mAccount, mActivity, mResource);
-        View v = folderItemView.findViewById(R.id.color_block);
+        accountItemView.bind(mAccount, mResource);
+        accountItemView.setCurrentAccount(mIsCurrAcctOrExpandAccount);
+        View v = accountItemView.findViewById(R.id.color_block);
         v.setBackgroundColor(mAccount.color);
-        v = folderItemView.findViewById(R.id.folder_icon);
+        v = accountItemView.findViewById(R.id.folder_icon);
         v.setVisibility(View.GONE);
-        return folderItemView;
+        return accountItemView;
     }
 
     /**
