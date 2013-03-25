@@ -115,4 +115,5 @@
     <dimen name="tile_letter_font_size_med">16dp</dimen>
     <dimen name="tile_letter_font_size_small">16dp</dimen>
     <dimen name="tile_divider_width">1dp</dimen>
+    <dimen name="sync_status_bar_height">40dip</dimen>
 </resources>
