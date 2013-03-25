@@ -38,11 +38,19 @@
 
    <include layout="@layout/search_results_view"/>
 
-   <com.android.mail.ui.SwipeableListView android:id="@android:id/list"
-       style="@style/ConversationListFade"
+   <FrameLayout
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:fadingEdge="none"
-       android:layout_alignParentTop="true"/>
+       android:layout_height="match_parent">
+
+       <com.android.mail.ui.SwipeableListView android:id="@android:id/list"
+           style="@style/ConversationListFade"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:fadingEdge="none"
+           android:layout_alignParentTop="true"/>
+
+       <include layout="@layout/sync_status_view" />
+
+   </FrameLayout>
 
 </RelativeLayout>
