@@ -658,6 +658,8 @@
     <string name="manual_sync">Sync now</string>
     <!-- Displayed at the bottom of the screen during the initial sync. If pressed will open sync setting screen for accounts. [CHAR LIMIT=30]  -->
     <string name="change_sync_settings">Change sync settings</string>
+    <!-- Displayed above the conversation list view if the result of manual sync did not find any new messages. [CHAR LIMIT=60] -->
+    <string name="no_new_messages">No new messages</string>
 
     <!-- Displayed when we could not load a photo in the photo viewer. [CHAR LIMIT=30] -->
     <string name="photo_load_failed">Couldn\'t load image</string>
