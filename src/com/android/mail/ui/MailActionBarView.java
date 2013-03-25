@@ -69,6 +69,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     // This is a private setting available starting JB MR1.1.
     private static final int DISPLAY_TITLE_MULTIPLE_LINES = 0x20;
 
+    /** True if we want the subject in the actionbar */
+    public static final boolean SHOW_ACTIONBAR_SUBJECT = true;
+
     protected ActionBar mActionBar;
     protected ControllableActivity mActivity;
     protected ActivityController mController;
@@ -175,7 +178,11 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     public MailActionBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         final Resources r = getResources();
-        mShowConversationSubject = r.getBoolean(R.bool.show_conversation_subject);
+        if (SHOW_ACTIONBAR_SUBJECT) {
+            mShowConversationSubject = r.getBoolean(R.bool.show_conversation_subject);
+        } else {
+            mShowConversationSubject = false;
+        }
         mIsOnTablet = Utils.useTabletUI(r);
     }
 
