@@ -284,6 +284,14 @@ public class UIProvider {
          * removed when all providers support this capability
          */
         public static final int DISCARD_CONVERSATION_DRAFTS = 0x100000;
+        /**
+         * Whether the account supports emptying the trash folder
+         */
+        public static final int EMPTY_TRASH = 0x200000;
+        /**
+         * Whether the account supports emptying the spam folder
+         */
+        public static final int EMPTY_SPAM = 0x400000;
     }
 
     public static final class AccountColumns implements BaseColumns {
