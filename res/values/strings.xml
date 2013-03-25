@@ -311,7 +311,7 @@
     <!-- Browse list item strings -->
     <!-- Text indicating how many messages are selected in the top action bar
     [CHAR LIMIT=40] -->
-    <string name="num_selected"><xliff:g id="number" example="7">%d</xliff:g> selected</string>
+    <string name="num_selected"><xliff:g id="number" example="7">%d</xliff:g></string>
     <!--  Displayed when drag and drop conversations "Move ? conversations" [CHAR LIMIT=50] -->
     <plurals name="move_conversation">
         <!-- Move 1 conversation -->
