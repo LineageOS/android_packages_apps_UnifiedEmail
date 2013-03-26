@@ -41,8 +41,8 @@ public class DrawerItem {
     public final Folder mFolder;
     public final Account mAccount;
     public final int mResource;
-    /** True if expand item view for expanding accounts. False otherwise */
-    public final boolean mIsCurrAcctOrExpandAccount;
+    /** True if the drawer item represents the current account, false otherwise */
+    public final boolean mIsCurrentAccount;
     /** Either {@link #VIEW_ACCOUNT}, {@link #VIEW_FOLDER} or {@link #VIEW_HEADER} */
     public final int mType;
     /** A normal folder, also a child, if a parent is specified. */
@@ -52,9 +52,7 @@ public class DrawerItem {
     /** An account object, which allows switching accounts rather than folders. */
     public static final int VIEW_ACCOUNT = 2;
     /** An expandable object for expanding/collapsing more of the list */
-    public static final int VIEW_MORE = 3;
-    /** Shown when we are waiting for initialization of the folder list. */
-    public static final int VIEW_WAITING_FOR_SYNC = 4;
+    public static final int VIEW_WAITING_FOR_SYNC = 3;
     /** The value (1-indexed) of the last View type.  Useful when returning the number of types. */
     private static final int LAST_FIELD = VIEW_WAITING_FOR_SYNC + 1;
 
@@ -67,7 +65,7 @@ public class DrawerItem {
     /**
      * Either {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or {@link #FOLDER_USER} when
      * {@link #mType} is {@link #VIEW_FOLDER}, or an {@link #ACCOUNT} in the case of
-     * accounts, {@link #EXPAND} for expand blocks, and {@link #INERT_HEADER} otherwise.
+     * accounts, and {@link #INERT_HEADER} otherwise.
      */
     public final int mFolderType;
     /** Non existent item or folder type not yet set */
@@ -82,34 +80,34 @@ public class DrawerItem {
     public static final int FOLDER_USER = 3;
     /** An entry for the accounts the user has on the device. */
     public static final int ACCOUNT = 4;
-    /** A clickable block to expand list as requested */
-    public static final int EXPAND = 5;
 
     /** True if this view is enabled, false otherwise. */
     private boolean isEnabled = false;
 
     /**
      * Creates a drawer item with every instance variable specified.
+     *
      * @param type the type of the item. This must be a VIEW_* element
      * @param activity the underlying activity
      * @param folder a non-null folder, if this is a folder type
-     * @param folderType the type of the folder. For folders this is: {@link #FOLDER_SYSTEM},
-     * {@link #FOLDER_RECENT}, {@link #FOLDER_USER}, or for non-folders this is {@link #ACCOUNT},
-     * {@link #EXPAND}, or {@link #INERT_HEADER}
+     * @param folderType the type of the folder. For folders this is:
+     *            {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT},
+     *            {@link #FOLDER_USER}, or for non-folders this is
+     *            {@link #ACCOUNT}, or {@link #INERT_HEADER}
      * @param account the account object, for an account drawer element
-     * @param resource either the string resource for a header, or the unread count for an account.
-     * @param isCurrAcctOrExpandAccount true if this item is the current account or a "More..."
-     *                                  item
+     * @param resource either the string resource for a header, or the unread
+     *            count for an account.
+     * @param isCurrentAccount true if this item is the current account
      * @param position the cursor position for a folder object, -1 otherwise.
      */
     private DrawerItem(int type, ControllableActivity activity, Folder folder, int folderType,
-            Account account, int resource, boolean isCurrAcctOrExpandAccount, int position) {
+            Account account, int resource, boolean isCurrentAccount, int position) {
         mActivity = activity;
         mFolder = folder;
         mFolderType = folderType;
         mAccount = account;
         mResource = resource;
-        mIsCurrAcctOrExpandAccount = isCurrAcctOrExpandAccount;
+        mIsCurrentAccount = isCurrentAccount;
         mInflater = LayoutInflater.from(activity.getActivityContext());
         mType = type;
         mPosition = position;
@@ -155,19 +153,6 @@ public class DrawerItem {
     }
 
     /**
-     * Creates an item for expanding or contracting for emails/items
-     * @param activity the underlying activity
-     * @param resource the string resource: R.string.folder_list_*
-     * @param isExpandForAccount true if "more" and false if "less"
-     * @return a drawer item for the "More..." item.
-     */
-    public static DrawerItem ofMore(ControllableActivity activity, int resource,
-            boolean isExpandForAccount) {
-        return new DrawerItem(VIEW_MORE, activity, null, EXPAND, null, resource,
-                isExpandForAccount, -1);
-    }
-
-    /**
      * Create a "waiting for initialization" item.
      * @param activity the underlying activity
      * @return a drawer item with an indeterminate progress indicator.
@@ -188,9 +173,6 @@ public class DrawerItem {
                 break;
             case VIEW_ACCOUNT:
                 result = getAccountView(position, convertView, parent);
-                break;
-            case VIEW_MORE:
-                result = getExpandView(position, convertView, parent);
                 break;
             case VIEW_WAITING_FOR_SYNC:
                 result = getEmptyView(position, convertView, parent);
@@ -226,9 +208,6 @@ public class DrawerItem {
             case VIEW_ACCOUNT:
                 // Accounts are only enabled if they are not the current account.
                 return !currentAccountUri.equals(mAccount.uri);
-            case VIEW_MORE:
-                // 'Expand/Collapse' items are always enabled.
-                return true;
             case VIEW_WAITING_FOR_SYNC:
                 // Waiting for sync cannot be tapped, so never enabled.
                 return false;
@@ -259,9 +238,6 @@ public class DrawerItem {
             case VIEW_ACCOUNT:
                 // Accounts are never highlighted
                 return false;
-            case VIEW_MORE:
-                // Expand/Collapse items are never highlighted
-                return false;
             case VIEW_WAITING_FOR_SYNC:
                 // Waiting for sync cannot be tapped, so never highlighted.
                 return false;
@@ -287,7 +263,7 @@ public class DrawerItem {
                     (AccountItemView) mInflater.inflate(R.layout.account_item, null, false);
         }
         accountItemView.bind(mAccount, mResource);
-        accountItemView.setCurrentAccount(mIsCurrAcctOrExpandAccount);
+        accountItemView.setCurrentAccount(mIsCurrentAccount);
         View v = accountItemView.findViewById(R.id.color_block);
         v.setBackgroundColor(mAccount.color);
         v = accountItemView.findViewById(R.id.folder_icon);
@@ -333,29 +309,6 @@ public class DrawerItem {
         Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
         Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_icon));
         return folderItemView;
-    }
-
-    /**
-     * Return a view for the 'Expand/Collapse' item.
-     * @param position a zero indexed position into the top level list.
-     * @param convertView a view, possibly null, to be recycled.
-     * @param parent the parent hosting this view.
-     * @return a view showing an item for folder/account expansion at given position.
-     */
-    private View getExpandView(int position, View convertView, ViewGroup parent) {
-        final ViewGroup headerView;
-        if (convertView != null) {
-            headerView = (ViewGroup) convertView;
-        } else {
-            headerView = (ViewGroup) mInflater.inflate(
-                    R.layout.folder_expand_item, parent, false);
-        }
-        TextView direction =
-                (TextView)headerView.findViewById(R.id.folder_expand_text);
-        if(direction != null) {
-            direction.setText(mResource);
-        }
-        return headerView;
     }
 
     /**
