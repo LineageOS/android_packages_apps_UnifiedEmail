@@ -54,8 +54,6 @@ public final class FolderListFragment extends ListFragment implements
     private ControllableActivity mActivity;
     /** The underlying list view */
     private ListView mListView;
-    /** URI that points to the list of folders for the current account. */
-    private Uri mFolderListUri;
     /** True if you want a sectioned FolderList, false otherwise. */
     private boolean mIsSectioned;
     /** Is the current device using tablet UI (true if 2-pane, false if 1-pane) */
@@ -80,8 +78,6 @@ public final class FolderListFragment extends ListFragment implements
     private static final int FOLDER_LOADER_ID = 0;
     /** Key to store {@link #mParentFolder}. */
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
-    /** Key to store {@link #mFolderListUri}. */
-    private static final String ARG_FOLDER_URI = "arg-folder-list-uri";
     /** Key to store {@link #mIsSectioned} */
     private static final String ARG_IS_SECTIONED = "arg-is-sectioned";
     /** Key to store {@link #mIsTabletUI} */
@@ -135,9 +131,9 @@ public final class FolderListFragment extends ListFragment implements
      * @param isSectioned True if sections should be shown for folder list
      * @param isTabletUI True if two-pane layout, false if not
      */
-    public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri,
+    public static FolderListFragment newInstance(Folder parentFolder,
             boolean isSectioned, boolean isTabletUI) {
-        return newInstance(parentFolder, folderUri, isSectioned, null, isTabletUI);
+        return newInstance(parentFolder, isSectioned, null, isTabletUI);
     }
 
     /**
@@ -147,22 +143,36 @@ public final class FolderListFragment extends ListFragment implements
      * @param excludedFolderTypes A list of {@link FolderType}s to exclude from displaying
      * @param isTabletUI True if two-pane layout, false if not
      */
-    public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri,
+    public static FolderListFragment newInstance(Folder parentFolder,
             boolean isSectioned, final ArrayList<Integer> excludedFolderTypes,
             boolean isTabletUI) {
         final FolderListFragment fragment = new FolderListFragment();
+        fragment.setArguments(getBundleFromArgs(parentFolder, isSectioned,
+                excludedFolderTypes, isTabletUI));
+        return fragment;
+    }
+
+    /**
+     * Construct a bundle that represents the state of this fragment.
+     * @param parentFolder
+     * @param isSectioned
+     * @param excludedFolderTypes
+     * @param isTabletUI
+     * @return
+     */
+    private static Bundle getBundleFromArgs(Folder parentFolder,
+            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes,
+            boolean isTabletUI) {
         final Bundle args = new Bundle();
         if (parentFolder != null) {
             args.putParcelable(ARG_PARENT_FOLDER, parentFolder);
         }
-        args.putString(ARG_FOLDER_URI, folderUri.toString());
         args.putBoolean(ARG_IS_SECTIONED, isSectioned);
         args.putBoolean(ARG_IS_TABLET_UI, isTabletUI);
         if (excludedFolderTypes != null) {
             args.putIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES, excludedFolderTypes);
         }
-        fragment.setArguments(args);
-        return fragment;
+        return args;
     }
 
     @Override
@@ -201,7 +211,7 @@ public final class FolderListFragment extends ListFragment implements
         };
         if (accountController != null) {
             // Current account and its observer.
-            mCurrentAccount = mAccountObserver.initialize(accountController);
+            setSelectedAccount(mAccountObserver.initialize(accountController));
             // List of all accounts and its observer.
             mAllAccountObserver = new AllAccountObserver(){
                 @Override
@@ -237,19 +247,23 @@ public final class FolderListFragment extends ListFragment implements
             setSelectedFolder(selectedFolder);
         }
         setListAdapter(mCursorAdapter);
-        // Set the region which gets highlighted since it might not have been set till now.
-        getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
+    }
+
+    /**
+     * Set the instance variables from the arguments provided here.
+     * @param args
+     */
+    private void setInstanceFromBundle(Bundle args) {
+        mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
+        mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
+        mIsTabletUI = args.getBoolean(ARG_IS_TABLET_UI);
+        mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedState) {
-        final Bundle args = getArguments();
-        mFolderListUri = Uri.parse(args.getString(ARG_FOLDER_URI));
-        mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
-        mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
-        mIsTabletUI = args.getBoolean(ARG_IS_TABLET_UI);
-        mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
+        setInstanceFromBundle(getArguments());
         final View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
@@ -373,7 +387,12 @@ public final class FolderListFragment extends ListFragment implements
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         mListView.setEmptyView(null);
         mEmptyView.setVisibility(View.GONE);
-        return new CursorLoader(mActivity.getActivityContext(), mFolderListUri,
+        if (mCurrentAccount == null) {
+            return null;
+        }
+        // This introduces a bug in Email where Hierarchical folders won't work anymore.
+        // http://b/8473060 assigned to Viki for a quick fix (before MR2 or Bazaar release)
+        return new CursorLoader(mActivity.getActivityContext(), mCurrentAccount.folderListUri,
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
     }
 
@@ -956,6 +975,9 @@ public final class FolderListFragment extends ListFragment implements
      */
     private void setSelectedAccount(Account account){
         mCurrentAccount = account;
+        if (mCurrentAccount != null) {
+            getLoaderManager().restartLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
+        }
     }
 
     public interface FolderListSelectionListener {

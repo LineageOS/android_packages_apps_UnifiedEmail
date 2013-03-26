@@ -216,12 +216,6 @@ public interface ActivityController extends LayoutListener,
     public void showWaitForInitialization();
 
     /**
-     * Load the folder list into the drawer fragment. Only handled by
-     * OnePaneController on account change.
-     */
-    void loadFolderList();
-
-    /**
      * Handle a touch event.
      */
     void onTouchEvent(MotionEvent event);

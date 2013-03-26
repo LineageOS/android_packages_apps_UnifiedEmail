@@ -59,7 +59,7 @@ public final class OnePaneController extends AbstractActivityController {
     /** Key to store {@link #mInbox}. */
     private final static String SAVED_INBOX_KEY = "m-inbox";
     /** Set to true to show sections/recent inbox in drawer, false otherwise*/
-    private final static boolean SECTIONS_AND_RECENT_FOLDERS_ENABLED = true;
+    public final static boolean SECTIONS_AND_RECENT_FOLDERS_ENABLED = true;
 
     private static final int INVALID_ID = -1;
     private boolean mConversationListVisible = false;
@@ -332,8 +332,7 @@ public final class OnePaneController extends AbstractActivityController {
      * Loads the FolderListFragment into the drawer pullout FrameLayout.
      * TODO(shahrk): Clean up and move out drawer calls if necessary
      */
-    @Override
-    public void loadFolderList() {
+    private void loadFolderList() {
         if (mAccount == null) {
             LogUtils.e(LOG_TAG, "Null account in showFolderList");
             return;
@@ -350,8 +349,7 @@ public final class OnePaneController extends AbstractActivityController {
          * Adding this will enable back stack to labels: mLastFolderListTransactionId =
          */
         replaceFragment(
-                FolderListFragment.newInstance(null, mAccount.folderListUri,
-                        SECTIONS_AND_RECENT_FOLDERS_ENABLED, false),
+                FolderListFragment.newInstance(null, SECTIONS_AND_RECENT_FOLDERS_ENABLED, false),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST,
                 R.id.drawer_pullout);
 
@@ -470,7 +468,7 @@ public final class OnePaneController extends AbstractActivityController {
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(FolderListFragment.newInstance(
-                    top, top.childFoldersListUri, SECTIONS_AND_RECENT_FOLDERS_ENABLED, false),
+                    top, SECTIONS_AND_RECENT_FOLDERS_ENABLED, false),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST,
                     R.id.content_pane);
             // Show the up affordance when digging into child folders.
@@ -511,7 +509,7 @@ public final class OnePaneController extends AbstractActivityController {
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(
-                    FolderListFragment.newInstance(folder, folder.childFoldersListUri,
+                    FolderListFragment.newInstance(folder,
                             SECTIONS_AND_RECENT_FOLDERS_ENABLED, false),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
             // Show the up affordance when digging into child folders.
