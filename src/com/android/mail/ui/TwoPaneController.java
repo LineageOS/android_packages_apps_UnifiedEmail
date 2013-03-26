@@ -99,18 +99,25 @@ public final class TwoPaneController extends AbstractActivityController {
         if (mActivity == null) {
             return;
         }
-        createFolderListFragment(null, mAccount.folderListUri);
+        createFolderListFragment(FolderListFragment.ofDrawer());
     }
 
-    private void createFolderListFragment(Folder parent, Uri uri) {
+    /**
+     * Create a {@link FolderListFragment} for trees with the specified parent
+     * @param parent the parent folder whose children need to be displayed in this list
+     */
+    private void createFolderTree(Folder parent) {
         setHierarchyFolder(parent);
+        createFolderListFragment(FolderListFragment.ofTree(parent, null));
+    }
+
+    private void createFolderListFragment(Fragment folderList) {
         // Create a sectioned FolderListFragment.
-        FolderListFragment folderListFragment = FolderListFragment.newInstance(parent, true);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         if (Utils.useFolderListFragmentTransition(mActivity.getActivityContext())) {
             fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         }
-        fragmentTransaction.replace(R.id.content_pane, folderListFragment, TAG_FOLDER_LIST);
+        fragmentTransaction.replace(R.id.content_pane, folderList, TAG_FOLDER_LIST);
         fragmentTransaction.commitAllowingStateLoss();
         // We only set the action bar if the viewmode has been set previously. Otherwise, we leave
         // the action bar in the state it is currently in.
@@ -178,7 +185,7 @@ public final class TwoPaneController extends AbstractActivityController {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
-            createFolderListFragment(folder, folder.childFoldersListUri);
+            createFolderTree(folder);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
         } else {
@@ -190,7 +197,7 @@ public final class TwoPaneController extends AbstractActivityController {
     private void goUpFolderHierarchy(Folder current) {
         Folder parent = current.parent;
         if (parent.parent != null) {
-            createFolderListFragment(parent.parent, parent.parent.childFoldersListUri);
+            createFolderTree(parent.parent);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
         } else {
@@ -405,7 +412,7 @@ public final class TwoPaneController extends AbstractActivityController {
                     // Show inbox; we are at the top of the hierarchy we were
                     // showing, and it doesn't have a parent, so we must want to
                     // the basic account folder list.
-                    createFolderListFragment(null, mAccount.folderListUri);
+                    createFolderListFragment(FolderListFragment.ofDrawer());
                     loadAccountInbox();
                 }
             } else if (!preventClose) {
