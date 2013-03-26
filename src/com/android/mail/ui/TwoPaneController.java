@@ -105,8 +105,7 @@ public final class TwoPaneController extends AbstractActivityController {
     private void createFolderListFragment(Folder parent, Uri uri) {
         setHierarchyFolder(parent);
         // Create a sectioned FolderListFragment.
-        FolderListFragment folderListFragment = FolderListFragment.newInstance(parent, true,
-                true);
+        FolderListFragment folderListFragment = FolderListFragment.newInstance(parent, true);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         if (Utils.useFolderListFragmentTransition(mActivity.getActivityContext())) {
             fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
