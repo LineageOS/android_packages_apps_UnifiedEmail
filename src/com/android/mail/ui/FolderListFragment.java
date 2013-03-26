@@ -109,7 +109,7 @@ public final class FolderListFragment extends ListFragment implements
      * {@link DrawerItem#FOLDER_RECENT} or {@link DrawerItem#FOLDER_USER}.
      */
     // Setting to INERT_HEADER = leaving uninitialized.
-    private int mSelectedFolderType = DrawerItem.INERT_HEADER;
+    private int mSelectedFolderType = DrawerItem.UNSET;
     private Cursor mFutureData;
     private ConversationListCallbacks mConversationListCallback;
     /** The current account according to the controller */
@@ -948,10 +948,6 @@ public final class FolderListFragment extends ListFragment implements
             LogUtils.e(LOG_TAG, "FolderListFragment.setSelectedFolder(null) called!");
             return;
         }
-        // If the current folder changed, we don't have a selected folder type anymore.
-        if (!folder.uri.equals(mSelectedFolderUri)) {
-            mSelectedFolderType = DrawerItem.INERT_HEADER;
-        }
         mCurrentFolderForUnreadCheck = folder;
         mSelectedFolderUri = folder.uri;
         setSelectedFolderType(folder);
@@ -965,12 +961,10 @@ public final class FolderListFragment extends ListFragment implements
      * @param folder folder to set to.
      */
     private void setSelectedFolderType(Folder folder) {
-        // If it is set already, assume it is correct.
-        if (mSelectedFolderType != DrawerItem.INERT_HEADER) {
-            return;
+        if (mSelectedFolderType == DrawerItem.UNSET) {
+            mSelectedFolderType = folder.isProviderFolder() ? DrawerItem.FOLDER_SYSTEM
+                    : DrawerItem.FOLDER_USER;
         }
-        mSelectedFolderType = folder.isProviderFolder() ? DrawerItem.FOLDER_SYSTEM
-                : DrawerItem.FOLDER_USER;
     }
 
     /**
