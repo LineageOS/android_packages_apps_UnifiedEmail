@@ -40,29 +40,12 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 /**
- * The view for each folder in the folder list.
+ * The view for each account in the folder list/drawer.
  */
 public class AccountItemView extends RelativeLayout {
-    private final String LOG_TAG = LogTag.getLogTag();
-    // Static colors
-    private static int NON_DROPPABLE_TARGET_TEXT_COLOR;
-
-    // Static bitmap
-    private static Bitmap SHORTCUT_ICON;
-
-    // These are fine to be static, as these Drawables only have one state
-    private static Drawable DROPPABLE_HOVER_BACKGROUND;
-    private static Drawable DRAG_STEADY_STATE_BACKGROUND;
-
-    private Drawable mBackground;
-    private ColorStateList mInitialFolderTextColor;
-    private ColorStateList mInitialUnreadCountTextColor;
-
-    private Folder mFolder;
-    private TextView mFolderTextView;
+    private TextView mAccountTextView;
     private TextView mUnreadCountTextView;
     private TextView mUnseenCountTextView;
-    private ImageView mFolderParentIcon;
 
     public AccountItemView(Context context) {
         super(context);
@@ -79,31 +62,19 @@ public class AccountItemView extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (SHORTCUT_ICON == null) {
-            final Resources res = getResources();
-            SHORTCUT_ICON = BitmapFactory.decodeResource(
-                    res, R.mipmap.ic_launcher_shortcut_folder);
-            DROPPABLE_HOVER_BACKGROUND =
-                    res.getDrawable(R.drawable.folder_drag_target);
-            DRAG_STEADY_STATE_BACKGROUND =
-                    res.getDrawable(R.drawable.folder_no_hover);
-            NON_DROPPABLE_TARGET_TEXT_COLOR =
-                    res.getColor(R.color.folder_disabled_drop_target_text_color);
-        }
-        mFolderTextView = (TextView)findViewById(R.id.name);
+        mAccountTextView = (TextView)findViewById(R.id.name);
         mUnreadCountTextView = (TextView)findViewById(R.id.unread);
         mUnseenCountTextView = (TextView)findViewById(R.id.unseen);
-        mBackground = getBackground();
-        mInitialFolderTextColor = mFolderTextView.getTextColors();
-        mInitialUnreadCountTextColor = mUnreadCountTextView.getTextColors();
-        mFolderParentIcon = (ImageView) findViewById(R.id.folder_parent_icon);
     }
 
+    /**
+     * Sets the account name and draws the unread count
+     *
+     * @param account account whose name will be displayed
+     * @param count unread count
+     */
     public void bind(Account account, int count) {
-        mFolder = null;
-        mFolderTextView.setText(account.name);
-        mFolderParentIcon.setVisibility(View.GONE);
-        mUnreadCountTextView.setVisibility(View.GONE);
+        mAccountTextView.setText(account.name);
         setUnseenCount(Color.BLACK, 0);
         setUnreadCount(count);
     }
@@ -118,14 +89,15 @@ public class AccountItemView extends RelativeLayout {
     public void setCurrentAccount(boolean isCurrentAccount) {
         if(isCurrentAccount) {
             mUnreadCountTextView.setVisibility(View.GONE);
-            mFolderTextView.setAllCaps(true);
-            mFolderTextView.setTextColor(R.color.folder_list_heading_text_color);
-            mFolderTextView.setTextAppearance(getContext(), android.R.style.TextAppearance_Small);
+            mAccountTextView.setAllCaps(true);
+            mAccountTextView.setTextColor(R.color.account_item_heading_text_color);
+            mAccountTextView.setTextAppearance(getContext(), android.R.style.TextAppearance_Small);
         }
     }
 
     /**
-     * Sets the unread count, taking care to hide/show the textview if the count is zero/non-zero.
+     * Sets the unread count, taking care to hide/show the textview if the count
+     * is zero/non-zero.
      */
     private void setUnreadCount(int count) {
         mUnreadCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
@@ -135,7 +107,8 @@ public class AccountItemView extends RelativeLayout {
     }
 
     /**
-     * Sets the unseen count, taking care to hide/show the textview if the count is zero/non-zero.
+     * Sets the unseen count, taking care to hide/show the textview if the count
+     * is zero/non-zero.
      */
     private void setUnseenCount(final int color, final int count) {
         mUnseenCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
@@ -144,19 +117,5 @@ public class AccountItemView extends RelativeLayout {
             mUnseenCountTextView.setText(
                     getContext().getString(R.string.inbox_unseen_banner, count));
         }
-    }
-
-    /**
-     * Used if we detect a problem with the unread count and want to force an override.
-     * @param count
-     */
-    public final void overrideUnreadCount(int count) {
-        LogUtils.e(LOG_TAG, "FLF->FolderItem.getFolderView: unread count mismatch found (%s vs %d)",
-                mUnreadCountTextView.getText(), count);
-        setUnreadCount(count);
-    }
-
-    private boolean isDroppableTarget(DragEvent event) {
-        return false;
     }
 }

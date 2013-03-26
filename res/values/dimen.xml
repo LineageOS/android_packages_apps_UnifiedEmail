@@ -84,7 +84,12 @@
     <dimen name="folder_swatch_height">8dip</dimen>
     <dimen name="folder_list_popup_width">200dip</dimen>
     <dimen name="folder_list_folder_color_width">36dip</dimen>
-    <dimen name="folder_list_minimum_height">48dip</dimen>
+    <dimen name="folder_list_item_minimum_height">48dip</dimen>
+    <dimen name="account_item_left_margin">24dp</dimen>
+    <dimen name="account_item_right_margin">16dp</dimen>
+    <dimen name="account_item_minimum_height">48dip</dimen>
+    <dimen name="account_item_swatch_height">8dip</dimen>
+    <dimen name="account_item_folder_color_width">36dip</dimen>
     <dimen name="widget_senders_font_size">18sp</dimen>
     <dimen name="widget_subject_font_size">14sp</dimen>
     <dimen name="widget_date_font_size">12sp</dimen>
