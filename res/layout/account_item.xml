@@ -20,40 +20,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:minHeight="@dimen/folder_list_minimum_height"
+    android:minHeight="@dimen/account_item_minimum_height"
     android:background="@drawable/account_item">
 
     <ImageView
-        android:id="@+id/folder_parent_icon"
-        android:layout_width="16dip"
-        android:layout_height="16dip"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:visibility="gone"
-        android:src="@drawable/folder_parent_icon" />
-
-    <ImageView
         android:id="@+id/color_block"
-        style="@style/FolderItemIcon"
+        style="@style/AccountItemIcon"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/unread"
         style="@style/UnreadCount"
-        android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_marginRight="@dimen/account_item_right_margin"
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentRight="true"
-        android:layout_toLeftOf="@id/folder_parent_icon"
         android:textColor="@color/folder_name_color_primary_invertible" />
 
     <TextView
         android:id="@+id/unseen"
         style="@style/UnseenCount"
-        android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_marginRight="@dimen/account_item_right_margin"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_alignParentRight="true"
-        android:layout_toLeftOf="@id/folder_parent_icon" />
+        android:layout_alignParentRight="true"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -61,23 +50,14 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/unread"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_marginLeft="@dimen/folder_list_item_left_margin"
-        android:layout_marginTop="@dimen/folder_swatch_height"
-        android:layout_marginBottom="@dimen/folder_swatch_height">
-
-        <ImageView
-            android:id="@+id/folder_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:visibility="gone" />
+        android:layout_marginLeft="@dimen/account_item_left_margin"
+        android:layout_marginTop="@dimen/account_item_swatch_height"
+        android:layout_marginBottom="@dimen/account_item_swatch_height">
 
         <TextView
             android:id="@+id/name"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_toRightOf="@id/folder_icon"
             android:singleLine="true"
             android:ellipsize="end"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -87,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_below="@id/name"
-            android:layout_toRightOf="@id/folder_icon"
             android:textColor="@color/folder_name_color_primary_invertible"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:visibility="gone" />
