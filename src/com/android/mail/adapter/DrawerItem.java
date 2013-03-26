@@ -53,6 +53,11 @@ public class DrawerItem {
     public static final int VIEW_ACCOUNT = 2;
     /** An expandable object for expanding/collapsing more of the list */
     public static final int VIEW_MORE = 3;
+    /** Shown when we are waiting for initialization of the folder list. */
+    public static final int VIEW_WAITING_FOR_SYNC = 4;
+    /** The value (1-indexed) of the last View type.  Useful when returning the number of types. */
+    private static final int LAST_FIELD = VIEW_WAITING_FOR_SYNC + 1;
+
     /** TODO: On adding another type, be sure to change getViewTypes() */
 
     /** The parent activity */
@@ -162,6 +167,16 @@ public class DrawerItem {
                 isExpandForAccount, -1);
     }
 
+    /**
+     * Create a "waiting for initialization" item.
+     * @param activity the underlying activity
+     * @return a drawer item with an indeterminate progress indicator.
+     */
+    public static DrawerItem forWaitView(ControllableActivity activity) {
+        return new DrawerItem(VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1,
+                false, -1);
+    }
+
     public View getView(int position, View convertView, ViewGroup parent) {
         final View result;
         switch (mType) {
@@ -177,6 +192,9 @@ public class DrawerItem {
             case VIEW_MORE:
                 result = getExpandView(position, convertView, parent);
                 break;
+            case VIEW_WAITING_FOR_SYNC:
+                result = getEmptyView(position, convertView, parent);
+                break;
             default:
                 LogUtils.wtf(LOG_TAG, "DrawerItem.getView(%d) for an invalid type!", mType);
                 result = null;
@@ -190,7 +208,7 @@ public class DrawerItem {
      * @return number of different types of view items
      */
     public static int getViewTypes() {
-        return VIEW_MORE + 1;
+        return LAST_FIELD;
     }
 
     /**
@@ -211,6 +229,9 @@ public class DrawerItem {
             case VIEW_MORE:
                 // 'Expand/Collapse' items are always enabled.
                 return true;
+            case VIEW_WAITING_FOR_SYNC:
+                // Waiting for sync cannot be tapped, so never enabled.
+                return false;
             default:
                 LogUtils.wtf(LOG_TAG, "DrawerItem.isItemEnabled() for invalid type %d", mType);
                 return false;
@@ -240,6 +261,9 @@ public class DrawerItem {
                 return false;
             case VIEW_MORE:
                 // Expand/Collapse items are never highlighted
+                return false;
+            case VIEW_WAITING_FOR_SYNC:
+                // Waiting for sync cannot be tapped, so never highlighted.
                 return false;
             default:
                 LogUtils.wtf(LOG_TAG, "DrawerItem.isHighlighted() for invalid type %d", mType);
@@ -333,5 +357,23 @@ public class DrawerItem {
         }
         return headerView;
     }
+
+    /**
+     * Return a view for the 'Waiting for sync' item with the indeterminate progress indicator.
+     * @param position a zero indexed position into the top level list.
+     * @param convertView a view, possibly null, to be recycled.
+     * @param parent the parent hosting this view.
+     * @return a view for "Waiting for sync..." at given position.
+     */
+    private View getEmptyView(int position, View convertView, ViewGroup parent) {
+        final ViewGroup emptyView;
+        if (convertView != null) {
+            emptyView = (ViewGroup) convertView;
+        } else {
+            emptyView = (ViewGroup) mInflater.inflate(R.layout.drawer_empty_view, parent, false);
+        }
+        return emptyView;
+    }
+
 }
 
