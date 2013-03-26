@@ -70,6 +70,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1648,7 +1649,14 @@ public class NotificationUtils {
         private static final HtmlDocument.Node ELIDED_TEXT_REPLACEMENT_NODE =
                 HtmlDocument.createSelfTerminatingTag(HTML4.BR_ELEMENT, null, null, null);
 
+        private static final String STYLE_ELEMENT_ATTRIBUTE_CLASS_VALUE = "style";
+
         private int mEndNodeElidedTextBlock = -1;
+        /**
+         * A stack of the end tag numbers for <style /> tags. We don't want to
+         * include anything between these.
+         */
+        private Deque<Integer> mStyleNodeEnds = Lists.newLinkedList();
 
         @Override
         public void addNode(HtmlDocument.Node n, int nodeNum, int endNum) {
@@ -1678,6 +1686,8 @@ public class NotificationUtils {
                             break;
                         }
                     }
+                } else if (STYLE_ELEMENT_ATTRIBUTE_CLASS_VALUE.equals(htmlElement.getName())) {
+                    mStyleNodeEnds.push(endNum);
                 }
 
                 if (foundElidedTextTag) {
@@ -1685,7 +1695,13 @@ public class NotificationUtils {
                 }
             }
 
-            super.addNode(n, nodeNum, endNum);
+            if (!mStyleNodeEnds.isEmpty() && mStyleNodeEnds.peek() == nodeNum) {
+                mStyleNodeEnds.pop();
+            }
+
+            if (mStyleNodeEnds.isEmpty()) {
+                super.addNode(n, nodeNum, endNum);
+            }
         }
     }
 
