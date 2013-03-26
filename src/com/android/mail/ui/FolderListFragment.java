@@ -54,6 +54,8 @@ public final class FolderListFragment extends ListFragment implements
     private ControllableActivity mActivity;
     /** The underlying list view */
     private ListView mListView;
+    /** URI that points to the list of folders for the current account. */
+    private Uri mFolderListUri;
     /** True if you want a sectioned FolderList, false otherwise. */
     private boolean mIsSectioned;
     /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
@@ -78,8 +80,19 @@ public final class FolderListFragment extends ListFragment implements
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
     /** Key to store {@link #mIsSectioned} */
     private static final String ARG_IS_SECTIONED = "arg-is-sectioned";
+    /** Key to store {@link #mFolderListUri}. */
+    private static final String ARG_FOLDER_LIST_URI = "arg-folder-list-uri";
     /** Key to store {@link #mExcludedFolderTypes} */
     private static final String ARG_EXCLUDED_FOLDER_TYPES = "arg-excluded-folder-types";
+    /** Key to store {@link #mType} */
+    private static final String ARG_TYPE = "arg-flf-type";
+
+    /** Either {@link #TYPE_DRAWER} for drawers or {@link #TYPE_TREE} for hierarchy trees */
+    private int mType;
+    /** This fragment is a drawer */
+    private static final int TYPE_DRAWER = 0;
+    /** This fragment is a folder tree */
+    private static final int TYPE_TREE = 1;
 
     private static final String BUNDLE_LIST_STATE = "flf-list-state";
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
@@ -115,45 +128,68 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     /**
-     * Creates a new instance of {@link ConversationListFragment}, initialized
-     * to display conversation list context.
-     * @param parentFolder Hierarchical parent if there is one
-     * @param isSectioned True if sections should be shown for folder list
+     * Creates a new instance of {@link FolderListFragment}. Gets the current account and current
+     * folder through observers.
      */
-    public static FolderListFragment newInstance(Folder parentFolder,
-            boolean isSectioned) {
-        return newInstance(parentFolder, isSectioned, null);
+    public static FolderListFragment ofDrawer() {
+        final FolderListFragment fragment = new FolderListFragment();
+        // The drawer is always sectioned
+        final boolean isSectioned = true;
+        fragment.setArguments(getBundleFromArgs(TYPE_DRAWER, null, null, isSectioned, null));
+        return fragment;
     }
 
     /**
-     * Creates a new instance of {@link ConversationListFragment}, initialized
-     * to display conversation list context.
-     * @param parentFolder Hierarchical parent if there is one
-     * @param isSectioned True if sections should be shown for folder list
+     * Creates a new instance of {@link FolderListFragment}, initialized
+     * to display the folder and its immediate children.
+     * @param folder parent folder whose children are shown
      * @param excludedFolderTypes A list of {@link FolderType}s to exclude from displaying
      */
-    public static FolderListFragment newInstance(Folder parentFolder,
-            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes) {
+    public static FolderListFragment ofTree(Folder folder,
+            final ArrayList<Integer> excludedFolderTypes) {
         final FolderListFragment fragment = new FolderListFragment();
-        fragment.setArguments(getBundleFromArgs(parentFolder, isSectioned,
-                excludedFolderTypes));
+        // Trees are never sectioned.
+        final boolean isSectioned = false;
+        fragment.setArguments(getBundleFromArgs(TYPE_TREE, folder, folder.childFoldersListUri,
+                isSectioned, excludedFolderTypes));
+        return fragment;
+    }
+
+    /**
+     * Creates a new instance of {@link FolderListFragment}, initialized
+     * to display the folder and its immediate children.
+     * @param folderListUri the URI which contains all the list of folders
+     * @param excludedFolderTypes A list of {@link FolderType}s to exclude from displaying
+     */
+    public static FolderListFragment ofTopLevelTree(Uri folderListUri,
+            final ArrayList<Integer> excludedFolderTypes) {
+        final FolderListFragment fragment = new FolderListFragment();
+        // Trees are never sectioned.
+        final boolean isSectioned = false;
+        fragment.setArguments(getBundleFromArgs(TYPE_TREE, null, folderListUri,
+                isSectioned, excludedFolderTypes));
         return fragment;
     }
 
     /**
      * Construct a bundle that represents the state of this fragment.
-     *
-     * @param parentFolder
-     * @param isSectioned
-     * @param excludedFolderTypes
+     * @param type the type of FLF: {@link #TYPE_DRAWER} or {@link #TYPE_TREE}
+     * @param parentFolder non-null for trees, the parent of this list
+     * @param isSectioned true if this drawer is sectioned, false otherwise
+     * @param folderListUri the URI which contains all the list of folders
+     * @param excludedFolderTypes if non-null, this indicates folders to exclude in lists.
      * @return Bundle containing parentFolder, sectioned list boolean and
      *         excluded folder types
      */
-    private static Bundle getBundleFromArgs(Folder parentFolder,
+    private static Bundle getBundleFromArgs(int type, Folder parentFolder, Uri folderListUri,
             boolean isSectioned, final ArrayList<Integer> excludedFolderTypes) {
         final Bundle args = new Bundle();
+        args.putInt(ARG_TYPE, type);
         if (parentFolder != null) {
             args.putParcelable(ARG_PARENT_FOLDER, parentFolder);
+        }
+        if (folderListUri != null) {
+            args.putString(ARG_FOLDER_LIST_URI, folderListUri.toString());
         }
         args.putBoolean(ARG_IS_SECTIONED, isSectioned);
         if (excludedFolderTypes != null) {
@@ -240,8 +276,15 @@ public final class FolderListFragment extends ListFragment implements
      */
     private void setInstanceFromBundle(Bundle args) {
         mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
+        final String folderUri = args.getString(ARG_FOLDER_LIST_URI);
+        if (folderUri == null) {
+            mFolderListUri = Uri.EMPTY;
+        } else {
+            mFolderListUri = Uri.parse(folderUri);
+        }
         mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
         mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
+        mType = args.getInt(ARG_TYPE);
     }
 
     @Override
@@ -365,9 +408,23 @@ public final class FolderListFragment extends ListFragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         mListView.setEmptyView(null);
-        // This introduces a bug in Email where Hierarchical folders won't work anymore.
-        // http://b/8473060 assigned to Viki for a quick fix (before MR2 or Bazaar release)
-        return new CursorLoader(mActivity.getActivityContext(), mCurrentAccount.folderListUri,
+        final Uri folderListUri;
+        if (mType == TYPE_TREE) {
+            // Folder trees, they specify a URI at construction time.
+            folderListUri = mFolderListUri;
+        } else if (mType == TYPE_DRAWER) {
+            // Drawers should have a valid account
+            if (mCurrentAccount != null) {
+                folderListUri = mCurrentAccount.folderListUri;
+            } else {
+                LogUtils.wtf(LOG_TAG, "FLF.onCreateLoader() for Drawer with null account");
+                return null;
+            }
+        } else {
+            LogUtils.wtf(LOG_TAG, "FLF.onCreateLoader() with weird type");
+            return null;
+        }
+        return new CursorLoader(mActivity.getActivityContext(), folderListUri,
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
     }
 
@@ -465,9 +522,8 @@ public final class FolderListFragment extends ListFragment implements
          */
         public void initFolderWatcher() {
             if (!mAccountsWatched && mAllAccounts != null) {
-                for (int i = 0; i < mAllAccounts.length; i++) {
-                    final Uri uri = mAllAccounts[i].settings.defaultInbox;
-                    mFolderWatcher.startWatching(uri);
+                for (final Account account : mAllAccounts) {
+                    mFolderWatcher.startWatching(account.settings.defaultInbox);
                 }
                 mAccountsWatched = true;
             }
