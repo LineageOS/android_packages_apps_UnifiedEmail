@@ -266,8 +266,6 @@ public class DrawerItem {
         accountItemView.setCurrentAccount(mIsCurrentAccount);
         View v = accountItemView.findViewById(R.id.color_block);
         v.setBackgroundColor(mAccount.color);
-        v = accountItemView.findViewById(R.id.folder_icon);
-        v.setVisibility(View.GONE);
         return accountItemView;
     }
 

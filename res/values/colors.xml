@@ -27,7 +27,6 @@
     <color name="senders_text_color_read">#000000</color>
     <color name="date_text_color">@color/senders_text_color_read</color>
     <color name="message_info_text_color">@color/gray_text_color</color>
-    <color name="folder_list_heading_text_color">@color/gray_text_color</color>
     <color name="subject_text_color">#333333</color>
     <color name="faded_conversation_header">#7f99d6eb</color>
     <color name="faded_activated_conversation_header">#7faccbf9</color>
@@ -40,6 +39,10 @@
     <color name="attachment_bg_color">#ffdddddd</color>
     <color name="swiped_bg_color">#ff999999</color>
     <color name="holo_light_background_color">#ffe8e8e8</color>
+
+    <!-- Folder List/Drawer colors -->
+    <color name="folder_list_heading_text_color">@color/gray_text_color</color>
+    <color name="account_item_heading_text_color">@color/gray_text_color</color>
 
     <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>
