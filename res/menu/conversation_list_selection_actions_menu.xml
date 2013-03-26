@@ -17,8 +17,7 @@
 -->
 
 <!-- Menu for the action mode invoked when items are selected
-     in the conversation list -->
-
+     in the conversation list. Order is important!  -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Depends on AccountCapabilities.ARCHIVE and
          FolderCapabilities.ARCHIVE. Only one of archive or
@@ -31,45 +30,47 @@
         android:showAsAction="always"
         android:icon="@drawable/archive"
         android:alphabeticShortcut="@string/trigger_y_char"/>
+
+    <item
+        android:id="@+id/remove_folder"
+        android:title="@string/remove_folder"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_remove_label"
+        android:alphabeticShortcut="@string/trigger_y_char"
+        android:visible="false" />
+
     <!-- Depends on FolderCapabilities.DELETE -->
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
         android:showAsAction="always"
         android:icon="@drawable/trash"/>
-
-    <item
-            android:id="@+id/read"
-            android:title="@string/mark_read"
-            android:showAsAction="always"
-            android:icon="@drawable/ic_menu_mark_read_holo_light" />
-
-    <item
-            android:id="@+id/unread"
-            android:title="@string/mark_unread"
-            android:showAsAction="always"
-            android:icon="@drawable/ic_menu_mark_unread_holo_light" />
-
     <!-- Depends on the user viewing a draft label, and the above menu item not being shown -->
     <item
         android:id="@+id/discard_drafts"
         android:title="@string/discard_drafts"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:icon="@drawable/trash" />
+
+    <!-- Only one of mark read or mark unread is shown. Both of these are set as always. -->
+    <item
+        android:id="@+id/read"
+        android:title="@string/mark_read"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_menu_mark_read_holo_light" />
+
+    <item
+        android:id="@+id/unread"
+        android:title="@string/mark_unread"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_menu_mark_unread_holo_light" />
+
 
     <item
         android:id="@+id/change_folder"
         android:showAsAction="ifRoom"
         android:title="@string/menu_change_folders"
         android:icon="@drawable/ic_menu_folders_holo_light" />
-
-    <item
-            android:id="@+id/remove_folder"
-            android:title="@string/remove_folder"
-            android:showAsAction="ifRoom"
-            android:icon="@drawable/ic_remove_label"
-            android:alphabeticShortcut="@string/trigger_y_char"
-            android:visible="false" />
 
     <item android:id="@+id/star"
         android:title="@string/add_star"

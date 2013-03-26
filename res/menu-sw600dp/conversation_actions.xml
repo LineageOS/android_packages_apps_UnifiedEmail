@@ -15,10 +15,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<!-- Action bar items for the tablet when viewing a conversation -->
-
+<!-- Action bar items for the tablet when viewing a conversation in landscape mode. -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Since we show the conversation list in landscape mode, we show compose and search
+         even in the conversation view. -->
     <item android:id="@+id/compose"
         android:title="@string/menu_compose"
         android:showAsAction="ifRoom"
@@ -62,17 +63,18 @@
         android:showAsAction="ifRoom"
         android:icon="@drawable/trash" />
 
+    <item
+        android:id="@+id/inside_conversation_unread"
+        android:title="@string/mark_unread"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_mark_unread_holo_light" />
+
     <!-- Always available -->
     <item
         android:id="@+id/change_folder"
         android:title="@string/menu_change_folders"
         android:showAsAction="never"
         android:icon="@drawable/ic_menu_folders_holo_light" />
-
-    <item android:id="@+id/inside_conversation_unread"
-        android:title="@string/mark_unread"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_menu_mark_unread_holo_light" />
 
     <item
         android:id="@+id/move_to"
