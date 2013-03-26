@@ -24,8 +24,10 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,6 +41,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.VeiledAddressMatcher;
 import com.android.mail.widget.WidgetProvider;
 
 import java.util.ArrayList;
@@ -63,6 +66,49 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     protected boolean mConfigureWidget;
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private int mMode = -1;
+
+    private final AccountController mAccountController = new AccountController() {
+        @Override
+        public void registerAccountObserver(DataSetObserver observer) {
+            // Do nothing
+        }
+
+        @Override
+        public void unregisterAccountObserver(DataSetObserver observer) {
+            // Do nothing
+        }
+
+        @Override
+        public Account getAccount() {
+            return mAccount;
+        }
+
+        @Override
+        public void registerAllAccountObserver(DataSetObserver observer) {
+            // Do nothing
+        }
+
+        @Override
+        public void unregisterAllAccountObserver(DataSetObserver observer) {
+            // Do nothing
+        }
+
+        @Override
+        public Account[] getAllAccounts() {
+            return new Account[]{mAccount};
+        }
+
+        @Override
+        public VeiledAddressMatcher getVeiledAddressMatcher() {
+            return null;
+        }
+
+        @Override
+        public void changeAccount(Account account) {
+            // Never gets called, so do nothing here.
+            Log.wtf(LOG_TAG, "FolderSelectionActivity.changeAccount() called when NOT expected.");
+        }
+    };
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -104,12 +150,14 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         }
         firstButton.setOnClickListener(this);
 
-        createFolderListFragment(null, mAccount.folderListUri);
+        createFolderListFragment();
     }
 
-    private void createFolderListFragment(Folder parent, Uri uri) {
+    private void createFolderListFragment() {
+        // We want a flat list of folders, system first, and user last.
+        final boolean showSections = false;
         final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        final Fragment fragment = FolderListFragment.newInstance(parent, uri, false,
+        final Fragment fragment = FolderListFragment.newInstance(null, showSections,
                 getExcludedFolderTypes(), true);
         fragmentTransaction.replace(R.id.content_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
@@ -330,8 +378,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     @Override
     public AccountController getAccountController() {
-        // Unsupported
-        return null;
+        return mAccountController;
     }
 
     @Override
