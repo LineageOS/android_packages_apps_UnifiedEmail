@@ -65,6 +65,8 @@ public class DrawerItem {
      * accounts, {@link #EXPAND} for expand blocks, and {@link #INERT_HEADER} otherwise.
      */
     public final int mFolderType;
+    /** Non existent item or folder type not yet set */
+    public static final int UNSET = 0;
     /** An unclickable text-header visually separating the different types. */
     public static final int INERT_HEADER = 0;
     /** A system-defined folder: Inbox/Drafts, ...*/
