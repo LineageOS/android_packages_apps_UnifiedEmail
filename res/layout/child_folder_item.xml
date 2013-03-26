@@ -20,7 +20,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:minHeight="@dimen/folder_list_minimum_height"
+    android:minHeight="@dimen/folder_list_item_minimum_height"
     android:background="@drawable/folder_item"
     android:paddingLeft="48dp">
 
