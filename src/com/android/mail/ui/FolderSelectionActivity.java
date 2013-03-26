@@ -158,7 +158,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         final boolean showSections = false;
         final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         final Fragment fragment = FolderListFragment.newInstance(null, showSections,
-                getExcludedFolderTypes(), true);
+                getExcludedFolderTypes());
         fragmentTransaction.replace(R.id.content_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
