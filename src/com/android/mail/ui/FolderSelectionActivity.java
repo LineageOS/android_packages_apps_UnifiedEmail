@@ -311,7 +311,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
-            createFolderListFragment(folder, folder.childFoldersListUri);
+            // TODO(viki): Fix FolderSelectionActivity for Email. http://b/8473060
+            createFolderListFragment();
             return;
         }
         onFolderChanged(folder);
