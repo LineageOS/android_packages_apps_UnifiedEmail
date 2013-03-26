@@ -56,8 +56,6 @@ public final class FolderListFragment extends ListFragment implements
     private ListView mListView;
     /** True if you want a sectioned FolderList, false otherwise. */
     private boolean mIsSectioned;
-    /** Is the current device using tablet UI (true if 2-pane, false if 1-pane) */
-    private boolean mIsTabletUI;
     /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
     private ArrayList<Integer> mExcludedFolderTypes;
     /** Object that changes folders on our behalf. */
@@ -80,15 +78,8 @@ public final class FolderListFragment extends ListFragment implements
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
     /** Key to store {@link #mIsSectioned} */
     private static final String ARG_IS_SECTIONED = "arg-is-sectioned";
-    /** Key to store {@link #mIsTabletUI} */
-    private static final String ARG_IS_TABLET_UI = "arg-is-tablet-ui";
     /** Key to store {@link #mExcludedFolderTypes} */
     private static final String ARG_EXCLUDED_FOLDER_TYPES = "arg-excluded-folder-types";
-    //TODO(shahrk): Disabled collapsed items - Bug: 8449121
-    /** Should the {@link FolderListFragment} show less accounts to begin with? */
-    private static final boolean ARE_ACCOUNT_ITEMS_COLLAPSED = false;
-    /** Should the {@link FolderListFragment} show less labels to begin with? */
-    private static final boolean ARE_FOLDER_ITEMS_COLLAPSED = false;
 
     private static final String BUNDLE_LIST_STATE = "flf-list-state";
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
@@ -126,47 +117,45 @@ public final class FolderListFragment extends ListFragment implements
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
+     * @param parentFolder Hierarchical parent if there is one
      * @param isSectioned True if sections should be shown for folder list
-     * @param isTabletUI True if two-pane layout, false if not
      */
     public static FolderListFragment newInstance(Folder parentFolder,
-            boolean isSectioned, boolean isTabletUI) {
-        return newInstance(parentFolder, isSectioned, null, isTabletUI);
+            boolean isSectioned) {
+        return newInstance(parentFolder, isSectioned, null);
     }
 
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
+     * @param parentFolder Hierarchical parent if there is one
      * @param isSectioned True if sections should be shown for folder list
      * @param excludedFolderTypes A list of {@link FolderType}s to exclude from displaying
-     * @param isTabletUI True if two-pane layout, false if not
      */
     public static FolderListFragment newInstance(Folder parentFolder,
-            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes,
-            boolean isTabletUI) {
+            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes) {
         final FolderListFragment fragment = new FolderListFragment();
         fragment.setArguments(getBundleFromArgs(parentFolder, isSectioned,
-                excludedFolderTypes, isTabletUI));
+                excludedFolderTypes));
         return fragment;
     }
 
     /**
      * Construct a bundle that represents the state of this fragment.
+     *
      * @param parentFolder
      * @param isSectioned
      * @param excludedFolderTypes
-     * @param isTabletUI
-     * @return
+     * @return Bundle containing parentFolder, sectioned list boolean and
+     *         excluded folder types
      */
     private static Bundle getBundleFromArgs(Folder parentFolder,
-            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes,
-            boolean isTabletUI) {
+            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes) {
         final Bundle args = new Bundle();
         if (parentFolder != null) {
             args.putParcelable(ARG_PARENT_FOLDER, parentFolder);
         }
         args.putBoolean(ARG_IS_SECTIONED, isSectioned);
-        args.putBoolean(ARG_IS_TABLET_UI, isTabletUI);
         if (excludedFolderTypes != null) {
             args.putIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES, excludedFolderTypes);
         }
@@ -235,9 +224,7 @@ public final class FolderListFragment extends ListFragment implements
             // Initiate FLA with accounts and folders collapsed in the list
             // The second param is for whether folders should be collapsed
             // The third param is for whether accounts should be collapsed
-            mCursorAdapter = new FolderListAdapter(mIsSectioned,
-                    !mIsTabletUI && ARE_FOLDER_ITEMS_COLLAPSED,
-                    !mIsTabletUI && ARE_ACCOUNT_ITEMS_COLLAPSED);
+            mCursorAdapter = new FolderListAdapter(mIsSectioned);
             selectedFolder = controller == null ? null : controller.getFolder();
         }
         // Is the selected folder fresher than the one we have restored from a bundle?
@@ -254,7 +241,6 @@ public final class FolderListFragment extends ListFragment implements
     private void setInstanceFromBundle(Bundle args) {
         mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
         mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
-        mIsTabletUI = args.getBoolean(ARG_IS_TABLET_UI);
         mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
     }
 
@@ -356,13 +342,9 @@ public final class FolderListFragment extends ListFragment implements
                 folder = mCursorAdapter.getFullFolder(folderItem);
                 mSelectedFolderType = folderItem.mFolderType;
             } else {
-                // Block for expanding/contracting labels/accounts
-                folder = null;
-                if(!folderItem.mIsCurrAcctOrExpandAccount) {
-                    mCursorAdapter.toggleShowLessFolders();
-                } else {
-                    mCursorAdapter.toggleShowLessAccounts();
-                }
+                LogUtils.wtf(LOG_TAG, "FolderListFragment: viewFolderOrChangeAccount():"
+                        + "Clicked on unset item in drawer");
+                return;
             }
         } else if (item instanceof Folder) {
             folder = (Folder) item;
@@ -417,15 +399,10 @@ public final class FolderListFragment extends ListFragment implements
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
         /** Update the folder list cursor with the cursor given here. */
         void setCursor(Cursor cursor);
-        /** Toggles showing more accounts or less accounts. */
-        boolean toggleShowLessAccounts();
-        /** Toggles showing more folders or less. */
-        boolean toggleShowLessFolders();
         /**
-         * Given an item, find the type of the item, which is {@link
-         * DrawerItem#VIEW_FOLDER}, {@link DrawerItem#VIEW_ACCOUNT} or
-         * {@link DrawerItem#VIEW_MORE}
-         * @return the type of the item.
+         * Given an item, find the type of the item, which should only be {@link
+         * DrawerItem#VIEW_FOLDER} or {@link DrawerItem#VIEW_ACCOUNT}
+         * @return item the type of the item.
          */
         int getItemType(DrawerItem item);
         /** Get the folder associated with this item. **/
@@ -450,11 +427,6 @@ public final class FolderListFragment extends ListFragment implements
             }
         };
 
-        /** After given number of accounts, show "more" until expanded. */
-        private static final int MAX_ACCOUNTS = 2;
-        /** After the given number of labels, show "more" until expanded. */
-        private static final int MAX_FOLDERS = 7;
-
         private final RecentFolderList mRecentFolders;
         /** True if the list is sectioned, false otherwise */
         private final boolean mIsSectioned;
@@ -464,8 +436,6 @@ public final class FolderListFragment extends ListFragment implements
         private Cursor mCursor = null;
         /** Watcher for tracking and receiving unread counts for mail */
         private FolderWatcher mFolderWatcher = null;
-        private boolean mShowLessFolders;
-        private boolean mShowLessAccounts;
 
         /** Track whether the accounts have folder watchers added to them yet */
         private boolean mAccountsWatched;
@@ -475,7 +445,7 @@ public final class FolderListFragment extends ListFragment implements
          * given account.
          * @param isSectioned TODO(viki):
          */
-        public FolderListAdapter(boolean isSectioned, boolean showLess, boolean showLessAccounts) {
+        public FolderListAdapter(boolean isSectioned) {
             super();
             mIsSectioned = isSectioned;
             final RecentFolderController controller = mActivity.getRecentFolderController();
@@ -485,8 +455,6 @@ public final class FolderListFragment extends ListFragment implements
                 mRecentFolders = null;
             }
             mFolderWatcher = new FolderWatcher(mActivity, this);
-            mShowLessFolders = showLess;
-            mShowLessAccounts = showLessAccounts;
             mAccountsWatched = false;
             initFolderWatcher();
         }
@@ -582,32 +550,9 @@ public final class FolderListFragment extends ListFragment implements
         }
 
         /**
-         * Toggle boolean for what folders are shown and which ones are
-         * hidden. Redraws list after toggling to show changes.
-         * @return true if folders are hidden, false if all are shown
-         */
-        @Override
-        public boolean toggleShowLessFolders() {
-            mShowLessFolders = !mShowLessFolders;
-            recalculateList();
-            return mShowLessFolders;
-        }
-
-        /**
-         * Toggle boolean for what accounts are shown and which ones are
-         * hidden. Redraws list after toggling to show changes.
-         * @return true if accounts are hidden, false if all are shown
-         */
-        @Override
-        public boolean toggleShowLessAccounts() {
-            mShowLessAccounts = !mShowLessAccounts;
-            recalculateList();
-            return mShowLessAccounts;
-        }
-
-        /**
-         * Responsible for verifying mCursor, adding collapsed view items
-         * when necessary, and notifying the data set has changed.
+         * Responsible for verifying mCursor, and ensuring any recalculate
+         * conditions are met. Also calls notifyDataSetChanged once it's finished
+         * populating {@link FolderListAdapter#mItemList}
          */
         private void recalculateList() {
             final boolean haveAccount = (mAllAccounts != null && mAllAccounts.length > 0);
@@ -617,9 +562,6 @@ public final class FolderListFragment extends ListFragment implements
                 return;
             }
             recalculateListFolders();
-            if(mShowLessFolders) {
-                mItemList.add(DrawerItem.ofMore(mActivity, R.string.folder_list_more, false));
-            }
             // Ask the list to invalidate its views.
             notifyDataSetChanged();
         }
@@ -640,23 +582,17 @@ public final class FolderListFragment extends ListFragment implements
                 int unreadCount;
                 initFolderWatcher();
 
-                if (mShowLessAccounts && mAllAccounts.length > MAX_ACCOUNTS) {
-                    // Add show all accounts block along with current accounts
-                    mItemList.add(DrawerItem.ofMore(
-                            mActivity, R.string.folder_list_show_all_accounts, true));
-                    mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
-                } else {
-                    // Add all accounts and then the current account
-                    Uri currentAccountUri = getCurrentAccountUri();
-                    for (final Account account : mAllAccounts) {
-                        if (!currentAccountUri.equals(account.uri)) {
-                            unreadCount = getInboxUnreadCount(account);
-                            mItemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount,
-                                    false));
-                        }
+                // Add all accounts and then the current account
+                Uri currentAccountUri = getCurrentAccountUri();
+                for (final Account account : mAllAccounts) {
+                    if (!currentAccountUri.equals(account.uri)) {
+                        unreadCount = getInboxUnreadCount(account);
+                        mItemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount,
+                                false));
                     }
-                    mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
                 }
+                mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
+
             }
 
             // If we are waiting for folder initialization, we don't have any kinds of folders,
@@ -680,8 +616,6 @@ public final class FolderListFragment extends ListFragment implements
                 return;
             }
 
-            // Tracks how many folders have been added through the rest of the function
-            int folderCount = 0;
             // Otherwise, this is an adapter for a sectioned list.
             // First add all the system folders.
             final List<DrawerItem> userFolderList = new ArrayList<DrawerItem>();
@@ -691,11 +625,6 @@ public final class FolderListFragment extends ListFragment implements
                     if (f.isProviderFolder()) {
                         mItemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_SYSTEM,
                                 mCursor.getPosition()));
-                        // Check if show less is enabled and we've passed max folders
-                        folderCount++;
-                        if(mShowLessFolders && folderCount >= MAX_FOLDERS) {
-                            return;
-                        }
                     } else {
                         userFolderList.add(DrawerItem.ofFolder(
                                 mActivity, f, DrawerItem.FOLDER_USER, mCursor.getPosition()));
@@ -722,11 +651,6 @@ public final class FolderListFragment extends ListFragment implements
                 for (Folder f : recentFolderList) {
                     mItemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_RECENT,
                             position));
-                    // Check if show less is enabled and we've passed max folders
-                    folderCount++;
-                    if(mShowLessFolders && folderCount >= MAX_FOLDERS) {
-                        return;
-                    }
                 }
             }
             // If there are user folders, add them and a header.
@@ -734,11 +658,6 @@ public final class FolderListFragment extends ListFragment implements
                 mItemList.add(DrawerItem.ofHeader(mActivity, R.string.all_folders_heading));
                 for (final DrawerItem i : userFolderList) {
                     mItemList.add(i);
-                    // Check if show less is enabled and we've passed max folders
-                    folderCount++;
-                    if(mShowLessFolders && folderCount >= MAX_FOLDERS) {
-                        return;
-                    }
                 }
             }
         }
@@ -766,12 +685,11 @@ public final class FolderListFragment extends ListFragment implements
         /**
          * Check if the cursor provided is valid.
          * @param mCursor
-         * @return
+         * @return True if cursor is invalid, false otherwise
          */
         private boolean isCursorInvalid(Cursor mCursor) {
             return mCursor == null || mCursor.isClosed()|| mCursor.getCount() <= 0
                     || !mCursor.moveToFirst();
-
         }
 
         @Override
@@ -931,16 +849,6 @@ public final class FolderListFragment extends ListFragment implements
         @Override
         public Account getFullAccount(DrawerItem item) {
             return null;
-        }
-
-        @Override
-        public boolean toggleShowLessFolders() {
-            return false;
-        }
-
-        @Override
-        public boolean toggleShowLessAccounts() {
-            return false;
         }
     }
 
