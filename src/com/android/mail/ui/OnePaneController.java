@@ -348,10 +348,8 @@ public final class OnePaneController extends AbstractActivityController {
          * Take out view mode changes: mViewMode.enterFolderListMode(); enableCabMode();
          * Adding this will enable back stack to labels: mLastFolderListTransactionId =
          */
-        replaceFragment(
-                FolderListFragment.newInstance(null, SECTIONS_AND_RECENT_FOLDERS_ENABLED),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST,
-                R.id.drawer_pullout);
+        replaceFragment(FolderListFragment.ofDrawer(),
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.drawer_pullout);
 
         /*
          * TODO(shahrk): Move or remove this
@@ -467,10 +465,9 @@ public final class OnePaneController extends AbstractActivityController {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
-            mLastFolderListTransactionId = replaceFragment(FolderListFragment.newInstance(
-                    top, SECTIONS_AND_RECENT_FOLDERS_ENABLED),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST,
-                    R.id.content_pane);
+            mLastFolderListTransactionId = replaceFragment(
+                    FolderListFragment.ofTree(top, null),
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
         } else {
@@ -509,8 +506,7 @@ public final class OnePaneController extends AbstractActivityController {
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(
-                    FolderListFragment.newInstance(folder,
-                            SECTIONS_AND_RECENT_FOLDERS_ENABLED),
+                    FolderListFragment.ofTree(folder, null),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
