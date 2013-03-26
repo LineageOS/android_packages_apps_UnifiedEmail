@@ -35,9 +35,9 @@ import android.widget.TextView;
 
 /** An account, a system folder, a recent folder, or a header (a resource string) */
 public class DrawerItem {
-
     private static final String LOG_TAG = LogTag.getLogTag();
-    public int mPosition;
+    // TODO(viki): Remove this: http://b/8478715
+    public final int mPosition;
     public final Folder mFolder;
     public final Account mAccount;
     public final int mResource;
@@ -82,69 +82,82 @@ public class DrawerItem {
     private boolean isEnabled = false;
 
     /**
+     * Creates a drawer item with every instance variable specified.
+     * @param type the type of the item. This must be a VIEW_* element
+     * @param activity the underlying activity
+     * @param folder a non-null folder, if this is a folder type
+     * @param folderType the type of the folder. For folders this is: {@link #FOLDER_SYSTEM},
+     * {@link #FOLDER_RECENT}, {@link #FOLDER_USER}, or for non-folders this is {@link #ACCOUNT},
+     * {@link #EXPAND}, or {@link #INERT_HEADER}
+     * @param account the account object, for an account drawer element
+     * @param resource either the string resource for a header, or the unread count for an account.
+     * @param isCurrAcctOrExpandAccount true if this item is the current account or a "More..."
+     *                                  item
+     * @param position the cursor position for a folder object, -1 otherwise.
+     */
+    private DrawerItem(int type, ControllableActivity activity, Folder folder, int folderType,
+            Account account, int resource, boolean isCurrAcctOrExpandAccount, int position) {
+        mActivity = activity;
+        mFolder = folder;
+        mFolderType = folderType;
+        mAccount = account;
+        mResource = resource;
+        mIsCurrAcctOrExpandAccount = isCurrAcctOrExpandAccount;
+        mInflater = LayoutInflater.from(activity.getActivityContext());
+        mType = type;
+        mPosition = position;
+    }
+
+    /**
      * Create a folder item with the given type.
+     * @param activity the underlying activity
      * @param folder a folder that this item represents
      * @param folderType one of {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or
      * {@link #FOLDER_USER}
+     * @param cursorPosition the position of the folder in the underlying cursor.
+     * @return a drawer item for the folder.
      */
-    public DrawerItem(ControllableActivity activity, Folder folder, int folderType,
-            int cursorPosition) {
-        mActivity = activity;
-        mInflater = LayoutInflater.from(mActivity.getActivityContext());
-        mFolder = folder;
-        mAccount = null;
-        mResource = -1;
-        mType = VIEW_FOLDER;
-        mFolderType = folderType;
-        mPosition = cursorPosition;
-        mIsCurrAcctOrExpandAccount = false;
+    public static DrawerItem ofFolder(ControllableActivity activity, Folder folder,
+            int folderType, int cursorPosition) {
+        return new DrawerItem(VIEW_FOLDER, activity, folder,  folderType, null, -1, false,
+                cursorPosition);
     }
 
     /**
      * Creates an item from an account.
-     * @param account an account that this item represents.
+     * @param activity the underlying activity
+     * @param account the account to create a drawer item for
+     * @param unreadCount the unread count of the account, pass zero if
+     * @param isCurrentAccount true if the account is the current account, false otherwise
+     * @return a drawer item for the account.
      */
-    public DrawerItem(ControllableActivity activity, Account account, int count,
-            boolean isCurrentAccount) {
-        mActivity = activity;
-        mInflater = LayoutInflater.from(mActivity.getActivityContext());
-        mFolder = null;
-        mType = VIEW_ACCOUNT;
-        mResource = count;
-        mFolderType = ACCOUNT;
-        mAccount = account;
-        mIsCurrAcctOrExpandAccount = isCurrentAccount;
+    public static DrawerItem ofAccount(ControllableActivity activity, Account account,
+            int unreadCount, boolean isCurrentAccount) {
+        return new DrawerItem(VIEW_ACCOUNT, activity, null, ACCOUNT, account, unreadCount,
+                isCurrentAccount, -1);
     }
 
     /**
      * Create a header item with a string resource.
+     * @param activity the underlying activity
      * @param resource the string resource: R.string.all_folders_heading
+     * @return a drawer item for the header.
      */
-    public DrawerItem(ControllableActivity activity, int resource) {
-        mActivity = activity;
-        mInflater = LayoutInflater.from(mActivity.getActivityContext());
-        mFolder = null;
-        mResource = resource;
-        mType = VIEW_HEADER;
-        mFolderType = INERT_HEADER;
-        mAccount = null;
-        mIsCurrAcctOrExpandAccount = false;
+    public static DrawerItem ofHeader(ControllableActivity activity, int resource) {
+        return new DrawerItem(VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false, -1);
     }
 
     /**
      * Creates an item for expanding or contracting for emails/items
+     * @param activity the underlying activity
      * @param resource the string resource: R.string.folder_list_*
      * @param isExpandForAccount true if "more" and false if "less"
+     * @return a drawer item for the "More..." item.
      */
-    public DrawerItem(ControllableActivity activity, int resource, boolean isExpandForAccount) {
-        mActivity = activity;
-        mInflater = LayoutInflater.from(mActivity.getActivityContext());
-        mFolder = null;
-        mType = VIEW_MORE;
-        mResource = resource;
-        mFolderType = EXPAND;
-        mAccount = null;
-        mIsCurrAcctOrExpandAccount = isExpandForAccount;
+    public static DrawerItem ofMore(ControllableActivity activity, int resource,
+            boolean isExpandForAccount) {
+        return new DrawerItem(VIEW_MORE, activity, null, EXPAND, null, resource,
+                isExpandForAccount, -1);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
