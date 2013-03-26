@@ -630,7 +630,7 @@ public final class FolderListFragment extends ListFragment implements
             }
             recalculateListFolders();
             if(mShowLessFolders) {
-                mItemList.add(new DrawerItem(mActivity, R.string.folder_list_more, false));
+                mItemList.add(DrawerItem.ofMore(mActivity, R.string.folder_list_more, false));
             }
             // Ask the list to invalidate its views.
             notifyDataSetChanged();
@@ -654,20 +654,20 @@ public final class FolderListFragment extends ListFragment implements
 
                 if (mShowLessAccounts && mAllAccounts.length > MAX_ACCOUNTS) {
                     // Add show all accounts block along with current accounts
-                    mItemList.add(new DrawerItem(
+                    mItemList.add(DrawerItem.ofMore(
                             mActivity, R.string.folder_list_show_all_accounts, true));
-                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, 0, true));
+                    mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
                 } else {
                     // Add all accounts and then the current account
                     Uri currentAccountUri = getCurrentAccountUri();
                     for (final Account account : mAllAccounts) {
                         if (!currentAccountUri.equals(account.uri)) {
                             unreadCount = getInboxUnreadCount(account);
-                            mItemList.add(new DrawerItem(mActivity, account,
-                                    unreadCount, false));
+                            mItemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount,
+                                    false));
                         }
                     }
-                    mItemList.add(new DrawerItem(mActivity, mCurrentAccount, 0, true));
+                    mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
                 }
             }
 
@@ -676,7 +676,7 @@ public final class FolderListFragment extends ListFragment implements
                 do {
                     final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
                     if (!isFolderTypeExcluded(f)) {
-                        mItemList.add(new DrawerItem(mActivity, f, DrawerItem.FOLDER_USER,
+                        mItemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_USER,
                                 mCursor.getPosition()));
                     }
                 } while (mCursor.moveToNext());
@@ -694,7 +694,7 @@ public final class FolderListFragment extends ListFragment implements
                 final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
                 if (!isFolderTypeExcluded(f)) {
                     if (f.isProviderFolder()) {
-                        mItemList.add(new DrawerItem(mActivity, f, DrawerItem.FOLDER_SYSTEM,
+                        mItemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_SYSTEM,
                                 mCursor.getPosition()));
                         // Check if show less is enabled and we've passed max folders
                         folderCount++;
@@ -702,7 +702,7 @@ public final class FolderListFragment extends ListFragment implements
                             return;
                         }
                     } else {
-                        userFolderList.add(new DrawerItem(
+                        userFolderList.add(DrawerItem.ofFolder(
                                 mActivity, f, DrawerItem.FOLDER_USER, mCursor.getPosition()));
                     }
                 }
@@ -721,9 +721,12 @@ public final class FolderListFragment extends ListFragment implements
             }
 
             if (recentFolderList.size() > 0) {
-                mItemList.add(new DrawerItem(mActivity, R.string.recent_folders_heading));
+                mItemList.add(DrawerItem.ofHeader(mActivity, R.string.recent_folders_heading));
+                // Recent folders are not queried for position.
+                final int position = -1;
                 for (Folder f : recentFolderList) {
-                    mItemList.add(new DrawerItem(mActivity, f, DrawerItem.FOLDER_RECENT, -1));
+                    mItemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_RECENT,
+                            position));
                     // Check if show less is enabled and we've passed max folders
                     folderCount++;
                     if(mShowLessFolders && folderCount >= MAX_FOLDERS) {
@@ -733,7 +736,7 @@ public final class FolderListFragment extends ListFragment implements
             }
             // If there are user folders, add them and a header.
             if (userFolderList.size() > 0) {
-                mItemList.add(new DrawerItem(mActivity, R.string.all_folders_heading));
+                mItemList.add(DrawerItem.ofHeader(mActivity, R.string.all_folders_heading));
                 for (final DrawerItem i : userFolderList) {
                     mItemList.add(i);
                     // Check if show less is enabled and we've passed max folders
@@ -791,6 +794,7 @@ public final class FolderListFragment extends ListFragment implements
             return item.mType;
         }
 
+        // TODO(viki): This is strange. We have the full folder and yet we create on from scratch.
         @Override
         public Folder getFullFolder(DrawerItem folderItem) {
             if (folderItem.mFolderType == DrawerItem.FOLDER_RECENT) {
