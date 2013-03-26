@@ -105,7 +105,7 @@ public final class TwoPaneController extends AbstractActivityController {
     private void createFolderListFragment(Folder parent, Uri uri) {
         setHierarchyFolder(parent);
         // Create a sectioned FolderListFragment.
-        FolderListFragment folderListFragment = FolderListFragment.newInstance(parent, uri, true,
+        FolderListFragment folderListFragment = FolderListFragment.newInstance(parent, true,
                 true);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         if (Utils.useFolderListFragmentTransition(mActivity.getActivityContext())) {
@@ -129,13 +129,6 @@ public final class TwoPaneController extends AbstractActivityController {
     public void showConversationList(ConversationListContext listContext) {
         super.showConversationList(listContext);
         initializeConversationListFragment();
-    }
-
-    @Override
-    public void loadFolderList() {
-        // On two-pane layouts, showing the folder list takes you to the top level of the
-        // application, which is the same as pressing the Up button
-        handleUpPress();
     }
 
     @Override
