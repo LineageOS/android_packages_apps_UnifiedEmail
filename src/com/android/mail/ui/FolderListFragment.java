@@ -95,8 +95,6 @@ public final class FolderListFragment extends ListFragment implements
     private static final String BUNDLE_SELECTED_TYPE = "flf-selected-type";
 
     private FolderListFragmentCursorAdapter mCursorAdapter;
-    /** View that we show while we are waiting for the folder list to load */
-    private View mEmptyView;
     /** Observer to wait for changes to the current folder so we can change the selected folder */
     private FolderObserver mFolderObserver = null;
     /** Listen for account changes. */
@@ -272,7 +270,6 @@ public final class FolderListFragment extends ListFragment implements
         if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(BUNDLE_LIST_STATE));
         }
-        mEmptyView = rootView.findViewById(R.id.empty_view);
         if (savedState != null && savedState.containsKey(BUNDLE_SELECTED_FOLDER)) {
             mSelectedFolderUri = Uri.parse(savedState.getString(BUNDLE_SELECTED_FOLDER));
             mSelectedFolderType = savedState.getInt(BUNDLE_SELECTED_TYPE);
@@ -386,10 +383,6 @@ public final class FolderListFragment extends ListFragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         mListView.setEmptyView(null);
-        mEmptyView.setVisibility(View.GONE);
-        if (mCurrentAccount == null) {
-            return null;
-        }
         // This introduces a bug in Email where Hierarchical folders won't work anymore.
         // http://b/8473060 assigned to Viki for a quick fix (before MR2 or Bazaar release)
         return new CursorLoader(mActivity.getActivityContext(), mCurrentAccount.folderListUri,
@@ -398,23 +391,15 @@ public final class FolderListFragment extends ListFragment implements
 
     public void onAnimationEnd() {
         if (mFutureData != null) {
-            updateCursorAdapter(mFutureData);
+            mCursorAdapter.setCursor(mFutureData);
             mFutureData = null;
-        }
-    }
-
-    private void updateCursorAdapter(Cursor data) {
-        mCursorAdapter.setCursor(data);
-        if (data == null || data.getCount() == 0) {
-            mEmptyView.setVisibility(View.VISIBLE);
-            mListView.setEmptyView(mEmptyView);
         }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (mConversationListCallback == null || !mConversationListCallback.isAnimating()) {
-            updateCursorAdapter(data);
+            mCursorAdapter.setCursor(data);
         } else {
             mFutureData = data;
             mCursorAdapter.setCursor(null);
@@ -481,6 +466,7 @@ public final class FolderListFragment extends ListFragment implements
         private FolderWatcher mFolderWatcher = null;
         private boolean mShowLessFolders;
         private boolean mShowLessAccounts;
+
         /** Track whether the accounts have folder watchers added to them yet */
         private boolean mAccountsWatched;
 
@@ -545,7 +531,7 @@ public final class FolderListFragment extends ListFragment implements
 
         @Override
         public int getViewTypeCount() {
-            // Accounts, headers and folders
+            // Accounts, headers, folders (all parts of drawer view types)
             return DrawerItem.getViewTypes();
         }
 
@@ -624,8 +610,10 @@ public final class FolderListFragment extends ListFragment implements
          * when necessary, and notifying the data set has changed.
          */
         private void recalculateList() {
-            if (mCursor == null || mCursor.isClosed() || mCursor.getCount() <= 0
-                    || !mCursor.moveToFirst()) {
+            final boolean haveAccount = (mAllAccounts != null && mAllAccounts.length > 0);
+            if (!haveAccount) {
+                // TODO(viki): How do we get a notification that we have accounts now? Currently
+                // we don't, and we should.
                 return;
             }
             recalculateListFolders();
@@ -669,6 +657,13 @@ public final class FolderListFragment extends ListFragment implements
                     }
                     mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
                 }
+            }
+
+            // If we are waiting for folder initialization, we don't have any kinds of folders,
+            // just the "Waiting for initialization" item.
+            if (isCursorInvalid(mCursor)) {
+                mItemList.add(DrawerItem.forWaitView(mActivity));
+                return;
             }
 
             if (!mIsSectioned) {
@@ -766,6 +761,17 @@ public final class FolderListFragment extends ListFragment implements
                 unreadCount = 0;
             }
             return unreadCount;
+        }
+
+        /**
+         * Check if the cursor provided is valid.
+         * @param mCursor
+         * @return
+         */
+        private boolean isCursorInvalid(Cursor mCursor) {
+            return mCursor == null || mCursor.isClosed()|| mCursor.getCount() <= 0
+                    || !mCursor.moveToFirst();
+
         }
 
         @Override

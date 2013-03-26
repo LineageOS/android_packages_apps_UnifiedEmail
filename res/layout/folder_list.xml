@@ -28,24 +28,4 @@
         android:cacheColorHint="@android:color/transparent"
         android:drawSelectorOnTop="false"
         android:fadingEdge="none" />
-
-    <RelativeLayout
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:gravity="center_horizontal">
-        <ProgressBar android:id="@+id/progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/progress"
-            android:layout_centerVertical="true"
-            android:text="@string/wait_for_sync_title"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
-    </RelativeLayout>
-
 </com.android.mail.ui.FolderListLayout>
