@@ -379,7 +379,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final boolean showMoveTo = mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION);
         removeFolder.setVisible(showRemoveFolder);
-        moveTo.setVisible(showMoveTo);
+        // TODO(alice): reenable "move to" after it works properly with section inbox
+        // moveTo.setVisible(showMoveTo);
+        moveTo.setVisible(false);
         if (mFolder != null && showRemoveFolder) {
             removeFolder.setTitle(mActivity.getActivityContext().getString(R.string.remove_folder,
                     mFolder.name));
