@@ -197,19 +197,39 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return mShowFooter ? count + 1 : count;
     }
 
+    /**
+     * Add a conversation to the undo set, but only if its deletion is still cached. If the
+     * deletion has already been written through and the cursor doesn't have it anymore, we can't
+     * handle it here, and should instead rely on the cursor refresh to restore the item.
+     * @param item id for the conversation that is being undeleted.
+     * @return true if the conversation is still cached and therefore we will handle the undo.
+     */
+    private boolean addUndoingItem(final long item) {
+        if (getConversationCursor().getUnderlyingPosition(item) >= 0) {
+            mUndoingItems.add(item);
+            return true;
+        }
+        return false;
+    }
+
     public void setUndo(boolean undo) {
         if (undo) {
+            boolean itemAdded = false;
             if (!mLastDeletingItems.isEmpty()) {
-                mUndoingItems.addAll(mLastDeletingItems);
+                for (Long item : mLastDeletingItems) {
+                    itemAdded |= addUndoingItem(item);
+                }
                 mLastDeletingItems.clear();
             }
             if (mLastLeaveBehind != -1) {
-                mUndoingItems.add(mLastLeaveBehind);
+                itemAdded |= addUndoingItem(mLastLeaveBehind);
                 mLastLeaveBehind = -1;
             }
-            // Start animation
-            notifyDataSetChanged();
-            performAndSetNextAction(mRefreshAction);
+            // Start animation, only if we're handling the undo.
+            if (itemAdded) {
+                notifyDataSetChanged();
+                performAndSetNextAction(mRefreshAction);
+            }
         }
     }
 
@@ -637,8 +657,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mDeletingItems.clear();
             mLastDeletingItems.clear();
             mSwipeDeletingItems.clear();
-        } else {
-            mUndoingItems.clear();
         }
     }
 
