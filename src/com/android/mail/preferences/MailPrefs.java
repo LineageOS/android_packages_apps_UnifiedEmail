@@ -67,7 +67,6 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(CONVERSATION_LIST_SWIPE_ACTION)
                 .build();
 
-        private static final String ENABLE_CHIP_DRAG_AND_DROP = "enable-chip-drag-and-drop";
         public static final String ENABLE_CONVLIST_PHOTOS = "enable-convlist-photos";
         public static final String ENABLE_WHOOSH_ZOOM = "enable-whoosh-zoom";
         public static final String ENABLE_MUNGE_TABLES = "enable-munge-tables";
@@ -131,13 +130,6 @@ public final class MailPrefs extends VersionedPrefs {
     public String getWidgetConfiguration(int appWidgetId) {
         return getSharedPreferences().getString(PreferenceKeys.WIDGET_ACCOUNT_PREFIX + appWidgetId,
                 null);
-    }
-
-    @SuppressWarnings("unused")
-    public boolean chipDragAndDropEnabled() {
-        // If experimental preferences are not enabled, return false.
-        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
-                PreferenceKeys.ENABLE_CHIP_DRAG_AND_DROP, false);
     }
 
     /**
