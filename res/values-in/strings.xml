@@ -145,7 +145,8 @@
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Bagikan tautan"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Bantuan"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"Kirim masukan"</string>
-    <string name="num_selected" msgid="2943309946439316255">"<xliff:g id="NUMBER">%d</xliff:g> dipilih"</string>
+    <!-- no translation found for num_selected (5723323585692387843) -->
+    <skip />
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Pindahkan percakapan"</item>
     <item quantity="other" msgid="1685896770174368261">"Pindahkan <xliff:g id="ID_1">%1$d</xliff:g> percakapan"</item>
@@ -315,6 +316,8 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Akun ini tidak disiapkan untuk menyinkronkan secara otomatis."\n"Sentuh "<b>"Sinkronkan Sekarang"</b>" untuk menyinkronkan surat, atau "<b>"Ubah Setelan Sinkronisasi"</b>" untuk menyiapkan akun ini untuk sinkronisasi secara otomatis."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sinkron skrg"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Ubah setelan sinkronisasi"</string>
+    <!-- no translation found for no_new_messages (2315965287002311844) -->
+    <skip />
     <string name="photo_load_failed" msgid="8811324070219403896">"Tidak dapat memuat gambar"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Tidak dapat memindah karena pilihan berisi beberapa akun."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
