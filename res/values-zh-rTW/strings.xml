@@ -145,7 +145,8 @@
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"分享連結"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"說明"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"提供意見"</string>
-    <string name="num_selected" msgid="2943309946439316255">"已選取 <xliff:g id="NUMBER">%d</xliff:g> 封郵件"</string>
+    <!-- no translation found for num_selected (5723323585692387843) -->
+    <skip />
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"移動會話群組"</item>
     <item quantity="other" msgid="1685896770174368261">"移動 <xliff:g id="ID_1">%1$d</xliff:g> 個會話群組"</item>
@@ -315,6 +316,8 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"這個帳戶尚未設成自動同步處理。"\n"請輕觸 [立即同步處理]"<b></b>"，將您的郵件同步處理一次，或者輕觸 [變更同步處理設定]"<b></b>"，將帳戶設定成自動同步處理郵件。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步處理"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"變更同步處理設定"</string>
+    <!-- no translation found for no_new_messages (2315965287002311844) -->
+    <skip />
     <string name="photo_load_failed" msgid="8811324070219403896">"無法載入圖片"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"您已選取多個帳戶，因此無法移動。"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>" - <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
