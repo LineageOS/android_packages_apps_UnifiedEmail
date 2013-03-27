@@ -259,7 +259,7 @@
     <skip />
     <!-- no translation found for contextmenu_feedback (4429118420169571473) -->
     <skip />
-    <!-- no translation found for num_selected (2943309946439316255) -->
+    <!-- no translation found for num_selected (5723323585692387843) -->
     <skip />
     <!-- no translation found for move_conversation:one (3657821200245019288) -->
     <!-- no translation found for move_conversation:other (1685896770174368261) -->
@@ -490,6 +490,8 @@
     <!-- no translation found for manual_sync (6743983544685622800) -->
     <skip />
     <!-- no translation found for change_sync_settings (5514293926214426577) -->
+    <skip />
+    <!-- no translation found for no_new_messages (2315965287002311844) -->
     <skip />
     <!-- no translation found for photo_load_failed (8811324070219403896) -->
     <skip />
