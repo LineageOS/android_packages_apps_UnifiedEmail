@@ -541,8 +541,19 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
     }
 
     /**
+     * Returns the position of a conversation in the underlying cursor, without adjusting for the
+     * cache. Notably, conversations which are marked as deleted in the cache but which haven't yet
+     * been deleted in the underlying cursor will return non-negative here.
+     * @param conversationId The id of the conversation we are looking for.
+     * @return The position of the conversation in the underlying cursor, or -1 if not there.
+     */
+    public int getUnderlyingPosition(final long conversationId) {
+        return mUnderlyingCursor.getPosition(conversationId);
+    }
+
+    /**
      * Returns the position, in the ConversationCursor, of the Conversation with the specified id.
-     * The returned posision will take into account any items that have been deleted.
+     * The returned position will take into account any items that have been deleted.
      */
     public int getConversationPosition(long conversationId) {
         final int underlyingPosition = mUnderlyingCursor.getPosition(conversationId);
