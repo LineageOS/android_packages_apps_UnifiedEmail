@@ -92,7 +92,7 @@
     <string name="mark_not_important" msgid="4550967327747977068">"Marcar como no importante"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Añadir Cc/Cco"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Añadir Cco"</string>
-    <string name="feedback" msgid="79365993169715049">"Enviar comentarios"</string>
+    <string name="feedback" msgid="79365993169715049">"Danos tu opinión"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Ayuda"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Incluir texto citado"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Citar texto"</string>
@@ -144,8 +144,9 @@
     <string name="contextmenu_map" msgid="7721544518698532954">"Mapa"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Compartir enlace"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Ayuda"</string>
-    <string name="contextmenu_feedback" msgid="4429118420169571473">"Enviar comentarios"</string>
-    <string name="num_selected" msgid="2943309946439316255">"<xliff:g id="NUMBER">%d</xliff:g> seleccionados"</string>
+    <string name="contextmenu_feedback" msgid="4429118420169571473">"Danos tu opinión"</string>
+    <!-- no translation found for num_selected (5723323585692387843) -->
+    <skip />
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Mover una conversación"</item>
     <item quantity="other" msgid="1685896770174368261">"Mover <xliff:g id="ID_1">%1$d</xliff:g> conversaciones"</item>
@@ -315,6 +316,8 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Esta cuenta no está configurada para sincronizarse de forma automática."\n"Toca "<b>"Sincronizar ahora"</b>" para sincronizar el correo una vez o selecciona "<b>"Cambiar ajustes de sincronización"</b>" para configurar la sincronización automática del correo en esta cuenta."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincronizar ahora"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Cambiar ajustes de sincronización"</string>
+    <!-- no translation found for no_new_messages (2315965287002311844) -->
+    <skip />
     <string name="photo_load_failed" msgid="8811324070219403896">"Error al cargar la imagen"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"No se puede mover porque la selección contiene varias cuentas."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
