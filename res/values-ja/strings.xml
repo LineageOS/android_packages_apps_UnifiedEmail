@@ -145,7 +145,8 @@
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"リンクを共有"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"ヘルプ"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"ご意見、ご感想"</string>
-    <string name="num_selected" msgid="2943309946439316255">"<xliff:g id="NUMBER">%d</xliff:g>件を選択済み"</string>
+    <!-- no translation found for num_selected (5723323585692387843) -->
+    <skip />
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"1件のスレッドを移動"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g>件のスレッドを移動"</item>
@@ -315,6 +316,8 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"このアカウントには自動同期が設定されていません。"\n"メールを一度だけ同期させるには["<b>"今すぐ同期"</b>"]をタップします。このアカウントでメールが自動的に同期されるように設定するには、["<b>"同期設定の変更"</b>"]をタップします。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"今すぐ同期"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"同期設定の変更"</string>
+    <!-- no translation found for no_new_messages (2315965287002311844) -->
+    <skip />
     <string name="photo_load_failed" msgid="8811324070219403896">"画像を読み込めませんでした"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"移動できません。複数のアカウントを選択しています。"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>

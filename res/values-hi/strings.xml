@@ -145,7 +145,8 @@
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"लिंक साझा करें"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"सहायता"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"फ़ीडबैक भेजें"</string>
-    <string name="num_selected" msgid="2943309946439316255">"<xliff:g id="NUMBER">%d</xliff:g> चयनित"</string>
+    <!-- no translation found for num_selected (5723323585692387843) -->
+    <skip />
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"बातचीत ले जाएं"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> बातचीत ले जाएं"</item>
@@ -315,6 +316,8 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"यह खाता अपने आप समन्वयित करने के लिए सेट नहीं है. "\n"एक बार मेल समन्‍वयित करने के लिए, "<b>"अभी समन्वयित करें"</b>" स्‍पर्श करें, या इस खाते को मेल अपने आप समन्‍वयित करने के लिए सेट करने हेतु "<b>"समन्वयन सेटिंग बदलें"</b>" स्‍पर्श करें."</string>
     <string name="manual_sync" msgid="6743983544685622800">"अभी समन्वयित करें"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"समन्वयन सेटिंग बदलें"</string>
+    <!-- no translation found for no_new_messages (2315965287002311844) -->
+    <skip />
     <string name="photo_load_failed" msgid="8811324070219403896">"चित्र लोड नहीं की जा सकी"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"चयन में एकाधिक खाते होने के कारण नहीं ले जाया जा सकता."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
