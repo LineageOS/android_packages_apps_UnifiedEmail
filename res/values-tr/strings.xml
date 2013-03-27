@@ -145,7 +145,8 @@
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Bağlantıyı paylaş"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Yardım"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"Görüş bildir"</string>
-    <string name="num_selected" msgid="2943309946439316255">"<xliff:g id="NUMBER">%d</xliff:g> adet seçildi"</string>
+    <!-- no translation found for num_selected (5723323585692387843) -->
+    <skip />
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"İleti dizisini taşı"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> ileti dizisini taşı"</item>
@@ -315,6 +316,8 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Bu hesap otomatik olarak senkronize edilecek şekilde yapılandırılmadı."\n"Postayı bir kez senkronize etmek için "<b>"Şimdi Senk Et"</b>"\'e veya bu hesabı postayı otomatik olarak senkronize edilecek şekilde ayarlamak için "<b>"Senk Ayarlarını Değiştir"</b>"\'e dokunun."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Şimdi senk et"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Senk ayarlarını değiştir"</string>
+    <!-- no translation found for no_new_messages (2315965287002311844) -->
+    <skip />
     <string name="photo_load_failed" msgid="8811324070219403896">"Resim yüklenemedi"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Seçim birden fazla hesap içerdiğinden taşınamıyor."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
