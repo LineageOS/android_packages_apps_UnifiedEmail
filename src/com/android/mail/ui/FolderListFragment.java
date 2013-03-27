@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,7 +35,16 @@ import android.widget.ListView;
 
 import com.android.mail.R;
 import com.android.mail.adapter.DrawerItem;
-import com.android.mail.providers.*;
+import com.android.mail.content.ObjectCursor;
+import com.android.mail.content.ObjectCursorLoader;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
+import com.android.mail.providers.AllAccountObserver;
+import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderObserver;
+import com.android.mail.providers.FolderWatcher;
+import com.android.mail.providers.RecentFolderObserver;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -48,7 +56,7 @@ import java.util.List;
  * The folder list UI component.
  */
 public final class FolderListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<ObjectCursor<Folder>> {
     private static final String LOG_TAG = LogTag.getLogTag();
     /** The parent activity */
     private ControllableActivity mActivity;
@@ -112,7 +120,7 @@ public final class FolderListFragment extends ListFragment implements
      */
     // Setting to INERT_HEADER = leaving uninitialized.
     private int mSelectedFolderType = DrawerItem.UNSET;
-    private Cursor mFutureData;
+    private ObjectCursor<Folder> mFutureData;
     private ConversationListCallbacks mConversationListCallback;
     /** The current account according to the controller */
     private Account mCurrentAccount;
@@ -391,8 +399,12 @@ public final class FolderListFragment extends ListFragment implements
             }
         } else if (item instanceof Folder) {
             folder = (Folder) item;
+        } else if (item instanceof ObjectCursor){
+            folder = ((ObjectCursor<Folder>) item).getModel();
         } else {
-            folder = new Folder((Cursor) item);
+            // Don't know how we got here.
+            LogUtils.wtf(LOG_TAG, "viewFolderOrChangeAccount(): invalid item");
+            folder = null;
         }
         if (folder != null) {
             // Since we may be looking at hierarchical views, if we can
@@ -406,7 +418,7 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public Loader<ObjectCursor<Folder>> onCreateLoader(int id, Bundle args) {
         mListView.setEmptyView(null);
         final Uri folderListUri;
         if (mType == TYPE_TREE) {
@@ -424,8 +436,8 @@ public final class FolderListFragment extends ListFragment implements
             LogUtils.wtf(LOG_TAG, "FLF.onCreateLoader() with weird type");
             return null;
         }
-        return new CursorLoader(mActivity.getActivityContext(), folderListUri,
-                UIProvider.FOLDERS_PROJECTION, null, null, null);
+        return new ObjectCursorLoader<Folder>(mActivity.getActivityContext(), folderListUri,
+                UIProvider.FOLDERS_PROJECTION, Folder.FACTORY);
     }
 
     public void onAnimationEnd() {
@@ -436,7 +448,7 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
         if (mConversationListCallback == null || !mConversationListCallback.isAnimating()) {
             mCursorAdapter.setCursor(data);
         } else {
@@ -446,7 +458,7 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<ObjectCursor<Folder>> loader) {
         mCursorAdapter.setCursor(null);
     }
 
@@ -455,7 +467,7 @@ public final class FolderListFragment extends ListFragment implements
      */
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
         /** Update the folder list cursor with the cursor given here. */
-        void setCursor(Cursor cursor);
+        void setCursor(ObjectCursor<Folder> cursor);
         /**
          * Given an item, find the type of the item, which should only be {@link
          * DrawerItem#VIEW_FOLDER} or {@link DrawerItem#VIEW_ACCOUNT}
@@ -490,7 +502,7 @@ public final class FolderListFragment extends ListFragment implements
         /** All the items */
         private final List<DrawerItem> mItemList = new ArrayList<DrawerItem>();
         /** Cursor into the folder list. This might be null. */
-        private Cursor mCursor = null;
+        private ObjectCursor<Folder> mCursor = null;
         /** Watcher for tracking and receiving unread counts for mail */
         private FolderWatcher mFolderWatcher = null;
 
@@ -661,7 +673,7 @@ public final class FolderListFragment extends ListFragment implements
             if (!mIsSectioned) {
                 // Adapter for a flat list. Everything is a FOLDER_USER, and there are no headers.
                 do {
-                    final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
+                    final Folder f = mCursor.getModel();
                     if (!isFolderTypeExcluded(f)) {
                         mItemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_USER,
                                 mCursor.getPosition()));
@@ -676,7 +688,7 @@ public final class FolderListFragment extends ListFragment implements
             // First add all the system folders.
             final List<DrawerItem> userFolderList = new ArrayList<DrawerItem>();
             do {
-                final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
+                final Folder f = mCursor.getModel();
                 if (!isFolderTypeExcluded(f)) {
                     if (f.isProviderFolder()) {
                         mItemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_SYSTEM,
@@ -749,7 +761,7 @@ public final class FolderListFragment extends ListFragment implements
         }
 
         @Override
-        public void setCursor(Cursor cursor) {
+        public void setCursor(ObjectCursor<Folder> cursor) {
             mCursor = cursor;
             recalculateList();
         }
@@ -787,7 +799,7 @@ public final class FolderListFragment extends ListFragment implements
                 }
                 if (pos > -1 && mCursor != null && !mCursor.isClosed()
                         && mCursor.moveToPosition(folderItem.mPosition)) {
-                    return new Folder(mCursor);
+                    return mCursor.getModel();
                 } else {
                     return null;
                 }
@@ -808,9 +820,9 @@ public final class FolderListFragment extends ListFragment implements
         private final Uri mParentUri;
         private final Folder mParent;
         private final FolderItemView.DropHandler mDropHandler;
-        private Cursor mCursor;
+        private ObjectCursor<Folder> mCursor;
 
-        public HierarchicalFolderListAdapter(Cursor c, Folder parentFolder) {
+        public HierarchicalFolderListAdapter(ObjectCursor<Folder> c, Folder parentFolder) {
             super(mActivity.getActivityContext(), R.layout.folder_item);
             mDropHandler = mActivity;
             mParent = parentFolder;
@@ -859,7 +871,7 @@ public final class FolderListFragment extends ListFragment implements
         }
 
         @Override
-        public void setCursor(Cursor cursor) {
+        public void setCursor(ObjectCursor<Folder> cursor) {
             mCursor = cursor;
             clear();
             if (mParent != null) {
@@ -868,7 +880,7 @@ public final class FolderListFragment extends ListFragment implements
             if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    Folder f = new Folder(cursor);
+                    Folder f = cursor.getModel();
                     f.parent = mParent;
                     add(f);
                 } while (cursor.moveToNext());
@@ -896,7 +908,7 @@ public final class FolderListFragment extends ListFragment implements
             }
             if (pos > -1 && mCursor != null && !mCursor.isClosed()
                     && mCursor.moveToPosition(folderItem.mPosition)) {
-                return new Folder(mCursor);
+                return mCursor.getModel();
             } else {
                 return null;
             }
