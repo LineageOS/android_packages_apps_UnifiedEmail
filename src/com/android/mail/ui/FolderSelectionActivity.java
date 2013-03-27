@@ -149,16 +149,15 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             firstButton.setEnabled(false);
         }
         firstButton.setOnClickListener(this);
-
-        createFolderListFragment();
+        createFolderListFragment(FolderListFragment.ofTopLevelTree(mAccount.folderListUri,
+                getExcludedFolderTypes()));
     }
 
-    private void createFolderListFragment() {
-        // We want a flat list of folders, system first, and user last.
-        final boolean showSections = false;
+    /**
+     * Create a Fragment showing this folder and its children.
+     */
+    private void createFolderListFragment(Fragment fragment) {
         final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        final Fragment fragment = FolderListFragment.newInstance(null, showSections,
-                getExcludedFolderTypes());
         fragmentTransaction.replace(R.id.content_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -311,8 +310,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
-            // TODO(viki): Fix FolderSelectionActivity for Email. http://b/8473060
-            createFolderListFragment();
+            createFolderListFragment(FolderListFragment.ofTree(folder, getExcludedFolderTypes()));
             return;
         }
         onFolderChanged(folder);
