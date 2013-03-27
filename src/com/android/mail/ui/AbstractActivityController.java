@@ -1427,17 +1427,23 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     private void requestFolderRefresh() {
-        if (mFolder != null) {
-            // Slide out the sync status bar over the top of conversation list view
-            final ConversationListFragment convList = getConversationListFragment();
-            convList.showSyncStatusBar();
-
-            if (mAsyncRefreshTask != null) {
-                mAsyncRefreshTask.cancel(true);
-            }
-            mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder.refreshUri);
-            mAsyncRefreshTask.execute();
+        if (mFolder == null) {
+            return;
         }
+        // Slide out the sync status bar over the top of conversation list view
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList == null) {
+            // This could happen if this account is in initial sync (user
+            // is seeing the "your mail will appear shortly" message)
+            return;
+        }
+        convList.showSyncStatusBar();
+
+        if (mAsyncRefreshTask != null) {
+            mAsyncRefreshTask.cancel(true);
+        }
+        mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder.refreshUri);
+        mAsyncRefreshTask.execute();
     }
 
     /**
