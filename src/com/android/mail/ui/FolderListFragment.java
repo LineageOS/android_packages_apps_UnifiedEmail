@@ -650,13 +650,13 @@ public final class FolderListFragment extends ListFragment implements
                 initFolderWatcher();
 
                 // Add all accounts and then the current account
-                Uri currentAccountUri = getCurrentAccountUri();
+                final Uri currentAccountUri = getCurrentAccountUri();
                 for (final Account account : mAllAccounts) {
                     if (!currentAccountUri.equals(account.uri)) {
-                            final int unreadCount = mFolderWatcher.getUnreadCount(
-                                    account.settings.defaultInbox);
-                        mItemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount,
-                                false));
+                        final int unreadCount =
+                                mFolderWatcher.getUnreadCount(account.settings.defaultInbox);
+                        mItemList.add(
+                                DrawerItem.ofAccount(mActivity, account, unreadCount, false));
                     }
                 }
                 final int unreadCount = mFolderWatcher.getUnreadCount(
