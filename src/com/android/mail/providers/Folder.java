@@ -41,12 +41,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * A folder is a collection of conversations, and perhaps other folders.
  */
 // TODO: make most of these fields final
 public class Folder implements Parcelable, Comparable<Folder> {
+
+    @Deprecated
+    public static final String SPLITTER = "^*^";
+    @Deprecated
+    private static final Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
+
     /**
      *
      */
@@ -558,5 +565,56 @@ public class Folder implements Parcelable, Comparable<Folder> {
      */
     public final boolean wasSyncSuccessful() {
         return ((lastSyncResult & 0x0f) == UIProvider.LastSyncResult.SUCCESS);
+    }
+
+    @Deprecated
+    public static Folder fromString(String inString) {
+         if (TextUtils.isEmpty(inString)) {
+             return null;
+         }
+         final Folder f = new Folder();
+         int indexOf = inString.indexOf(SPLITTER);
+         int id = -1;
+         if (indexOf != -1) {
+             id = Integer.valueOf(inString.substring(0, indexOf));
+         } else {
+             // If no separator was found, we can't parse this folder and the
+             // TextUtils.split call would also fail. Return null.
+             return null;
+         }
+         final String[] split = TextUtils.split(inString, SPLITTER_REGEX);
+         if (split.length < 20) {
+             LogUtils.e(LOG_TAG, "split.length %d", split.length);
+             return null;
+         }
+         f.id = id;
+         int index = 1;
+         f.uri = Folder.getValidUri(split[index++]);
+         f.name = split[index++];
+         f.hasChildren = Integer.parseInt(split[index++]) != 0;
+         f.capabilities = Integer.parseInt(split[index++]);
+         f.syncWindow = Integer.parseInt(split[index++]);
+         f.conversationListUri = getValidUri(split[index++]);
+         f.childFoldersListUri = getValidUri(split[index++]);
+         f.unreadCount = Integer.parseInt(split[index++]);
+         f.totalCount = Integer.parseInt(split[index++]);
+         f.refreshUri = getValidUri(split[index++]);
+         f.syncStatus = Integer.parseInt(split[index++]);
+         f.lastSyncResult = Integer.parseInt(split[index++]);
+         f.type = Integer.parseInt(split[index++]);
+         f.iconResId = Integer.parseInt(split[index++]);
+         f.bgColor = split[index++];
+         f.fgColor = split[index++];
+         f.loadMoreUri = getValidUri(split[index++]);
+         f.hierarchicalDesc = split[index++];
+         f.parent = Folder.fromString(split[index++]);
+         return f;
+     }
+
+    private static Uri getValidUri(String uri) {
+         if (TextUtils.isEmpty(uri)) {
+             return null;
+         }
+         return Uri.parse(uri);
     }
 }
