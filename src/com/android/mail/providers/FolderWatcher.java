@@ -38,12 +38,15 @@ import java.util.Map;
  * A container to keep a list of Folder objects, with the ability to automatically keep in sync with
  * the folders in the providers.
  */
-public class FolderWatcher implements LoaderManager.LoaderCallbacks<Cursor>{
+public class FolderWatcher {
     /** List of URIs that are watched. */
     private final List<Uri> mUri = new ArrayList<Uri>();
     /** Map returning the most recent folder object for each URI */
-    private final Map<Uri, Folder> mFolder = new HashMap<Uri, Folder>();
+    private final Map<Uri, Integer> mFolder = new HashMap<Uri, Integer>();
     private final RestrictedActivity mActivity;
+    /** Handles folder callbacks and reads unread counts. */
+    private final UnreadLoads mUnreadCallback = new UnreadLoads();
+
     /**
      * The adapter that consumes this data. We use this only to notify the consumer that new data
      * is available.
@@ -74,10 +77,9 @@ public class FolderWatcher implements LoaderManager.LoaderCallbacks<Cursor>{
         // This is the ID of the new URI: always at the end of the list.
         final int id = mUri.size();
         LogUtils.d(LOG_TAG, "Watching %s, at position %d.", uri, id);
-        mFolder.put(uri, null);
         mUri.add(uri);
         final LoaderManager lm = mActivity.getLoaderManager();
-        lm.initLoader(getLoaderFromPosition(id), null, this);
+        lm.initLoader(getLoaderFromPosition(id), null, mUnreadCallback);
     }
 
     /**
@@ -99,8 +101,8 @@ public class FolderWatcher implements LoaderManager.LoaderCallbacks<Cursor>{
     }
 
     /**
-     * Stops watching the given URI for folder changes. Subsequent calls to {@link #get(Uri)} for
-     * this uri will return null.
+     * Stops watching the given URI for folder changes. Subsequent calls to
+     * {@link #getUnreadCount(Uri)} for this uri will return null.
      * @param uri
      */
     public void stopWatching(Uri uri) {
@@ -122,34 +124,48 @@ public class FolderWatcher implements LoaderManager.LoaderCallbacks<Cursor>{
      * @param uri
      * @return
      */
-    public Folder get(Uri uri) {
-        return mFolder.get(uri);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final int position = getPositionFromLoader(id);
-        if (position < 0 || position > mUri.size()) {
-            return null;
+    public int getUnreadCount(Uri uri) {
+        if (mFolder.containsKey(uri)) {
+            final Integer count = mFolder.get(uri);
+            if (count != null) {
+                return count;
+            }
         }
-        return new CursorLoader(mActivity.getActivityContext(), mUri.get(position),
-                UIProvider.FOLDERS_PROJECTION, null, null, null);
+        return 0;
     }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data == null || data.getCount() <= 0 || !data.moveToFirst()) {
-            return;
+    /**
+     * Class to perform {@link LoaderManager.LoaderCallbacks} for populating unread counts.
+     */
+    private class UnreadLoads implements LoaderManager.LoaderCallbacks<Cursor> {
+        // TODO(viki): Fix http://b/8494129 and read only the URI and unread count.
+        /** Only interested in the folder unread count. */
+        private String[] projection = UIProvider.FOLDERS_PROJECTION;
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            final int position = getPositionFromLoader(id);
+            if (position < 0 || position > mUri.size()) {
+                return null;
+            }
+            return new CursorLoader(mActivity.getActivityContext(), mUri.get(position), projection,
+                    null, null, null);
         }
-        final Uri uri = mUri.get(getPositionFromLoader(loader.getId()));
-        final Folder folder = new Folder(data);
-        mFolder.put(uri, folder);
-        // Once we have updated data, we notify the parent class that something new appeared.
-        mConsumer.notifyDataSetChanged();
-    }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> arg0) {
-        // Do nothing.
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            if (data == null || data.getCount() <= 0 || !data.moveToFirst()) {
+                return;
+            }
+            final Uri uri = Uri.parse(data.getString(UIProvider.FOLDER_URI_COLUMN));
+            final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
+            mFolder.put(uri, unreadCount);
+            // Once we have updated data, we notify the parent class that something new appeared.
+            mConsumer.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+            // Do nothing.
+        }
     }
 }

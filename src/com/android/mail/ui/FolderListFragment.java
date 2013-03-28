@@ -647,20 +647,21 @@ public final class FolderListFragment extends ListFragment implements
                 // TODO(shahrk): The logic here is messy and will be changed
                 // to properly add/reflect on LRU/MRU account
                 // changes similar to RecentFoldersList
-                int unreadCount;
                 initFolderWatcher();
 
                 // Add all accounts and then the current account
                 Uri currentAccountUri = getCurrentAccountUri();
                 for (final Account account : mAllAccounts) {
                     if (!currentAccountUri.equals(account.uri)) {
-                        unreadCount = getInboxUnreadCount(account);
+                            final int unreadCount = mFolderWatcher.getUnreadCount(
+                                    account.settings.defaultInbox);
                         mItemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount,
                                 false));
                     }
                 }
-                mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
-
+                final int unreadCount = mFolderWatcher.getUnreadCount(
+                        mCurrentAccount.settings.defaultInbox);
+                mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, unreadCount, true));
             }
 
             // If we are waiting for folder initialization, we don't have any kinds of folders,
@@ -728,26 +729,6 @@ public final class FolderListFragment extends ListFragment implements
                     mItemList.add(i);
                 }
             }
-        }
-
-        /**
-         * Given an account, get the unreadCount from the FolderWatcher.
-         *
-         * @param account Account to get inbox unread count from
-         * @return Default inbox unread count
-         */
-        public int getInboxUnreadCount(Account account) {
-            int unreadCount = 0;
-            Folder inbox = mFolderWatcher.get(account.settings.defaultInbox);
-
-            if (inbox != null) {
-                // If inbox is found, get updated count otherwise NPE can be
-                // thrown
-                unreadCount = inbox.unreadCount;
-            } else {
-                unreadCount = 0;
-            }
-            return unreadCount;
         }
 
         /**
