@@ -41,8 +41,8 @@ import java.util.Map;
 public class FolderWatcher {
     /** List of URIs that are watched. */
     private final List<Uri> mUri = new ArrayList<Uri>();
-    /** Map returning the most recent folder object for each URI */
-    private final Map<Uri, Integer> mFolder = new HashMap<Uri, Integer>();
+    /** Map returning the most recent unread count for each URI */
+    private final Map<Uri, Integer> mUnreadCount = new HashMap<Uri, Integer>();
     private final RestrictedActivity mActivity;
     /** Handles folder callbacks and reads unread counts. */
     private final UnreadLoads mUnreadCallback = new UnreadLoads();
@@ -71,7 +71,7 @@ public class FolderWatcher {
      */
     public void startWatching(Uri uri) {
         // If the URI is already watched, nothing to do.
-        if (uri == null || mFolder.containsKey(uri)) {
+        if (uri == null || mUnreadCount.containsKey(uri)) {
             return;
         }
         // This is the ID of the new URI: always at the end of the list.
@@ -114,7 +114,7 @@ public class FolderWatcher {
         // Destroy the loader before removing references to the object.
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(getLoaderFromPosition(id));
-        mFolder.remove(id);
+        mUnreadCount.remove(id);
         mUri.remove(id);
     }
 
@@ -125,8 +125,8 @@ public class FolderWatcher {
      * @return
      */
     public int getUnreadCount(Uri uri) {
-        if (mFolder.containsKey(uri)) {
-            final Integer count = mFolder.get(uri);
+        if (mUnreadCount.containsKey(uri)) {
+            final Integer count = mUnreadCount.get(uri);
             if (count != null) {
                 return count;
             }
@@ -139,7 +139,8 @@ public class FolderWatcher {
      */
     private class UnreadLoads implements LoaderManager.LoaderCallbacks<Cursor> {
         // TODO(viki): Fix http://b/8494129 and read only the URI and unread count.
-        /** Only interested in the folder unread count. */
+        /** Only interested in the folder unread count, but asking for everything due to
+         * bug 8494129. */
         private String[] projection = UIProvider.FOLDERS_PROJECTION;
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -158,7 +159,7 @@ public class FolderWatcher {
             }
             final Uri uri = Uri.parse(data.getString(UIProvider.FOLDER_URI_COLUMN));
             final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
-            mFolder.put(uri, unreadCount);
+            mUnreadCount.put(uri, unreadCount);
             // Once we have updated data, we notify the parent class that something new appeared.
             mConsumer.notifyDataSetChanged();
         }
