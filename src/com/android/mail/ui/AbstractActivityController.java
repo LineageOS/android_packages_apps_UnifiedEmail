@@ -629,6 +629,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 || (mViewMode.getMode() != ViewMode.CONVERSATION_LIST)) {
             setListContext(folder, query);
             showConversationList(mConvListContext);
+            // Touch the current folder: it is different, and it has been accessed.
+            mRecentFolderList.touchFolder(mFolder, mAccount);
         }
         resetActionBarIcon();
     }
@@ -636,15 +638,6 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onFolderSelected(Folder folder) {
         onFolderChanged(folder);
-    }
-
-    /**
-     * Update the recent folders. This only needs to be done once when accessing a new folder.
-     */
-    private void updateRecentFolderList() {
-        if (mFolder != null) {
-            mRecentFolderList.touchFolder(mFolder, mAccount);
-        }
     }
 
     /**
@@ -1855,11 +1848,6 @@ public abstract class AbstractActivityController implements ActivityController {
         MailLogService.log("AbstractActivityController", "showConversation(%s)", conversation);
         // Set the current conversation just in case it wasn't already set.
         setCurrentConversation(conversation);
-        // Add the folder that we were viewing to the recent folders list.
-        // TODO: this may need to be fine tuned.  If this is the signal that is indicating that
-        // the list is shown to the user, this could fire in one pane if the user goes directly
-        // to a conversation
-        updateRecentFolderList();
     }
 
     /**
