@@ -43,6 +43,7 @@ import com.android.mail.compose.ComposeActivity;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.FolderType;
@@ -225,10 +226,21 @@ public class WidgetService extends RemoteViewsService {
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
             mFolderType = intent.getIntExtra(WidgetProvider.EXTRA_FOLDER_TYPE, FolderType.DEFAULT);
-            mFolderUri = intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_URI);
-            mFolderConversationListUri =
-                    intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_CONVERSATION_LIST_URI);
             mFolderDisplayName = intent.getStringExtra(WidgetProvider.EXTRA_FOLDER_DISPLAY_NAME);
+
+            Uri folderUri = intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_URI);
+            Uri folderConversationListUri =
+                    intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_CONVERSATION_LIST_URI);
+            if (folderUri != null && folderConversationListUri != null) {
+                mFolderUri = folderUri;
+                mFolderConversationListUri = folderConversationListUri;
+            } else {
+                // This is a old intent created in version UR8 (or earlier).
+                String folderString = intent.getStringExtra("folder");
+                Folder folder = Folder.fromString(folderString);
+                mFolderUri = folder.uri;
+                mFolderConversationListUri = folder.conversationListUri;
+            }
 
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(context);
             mService = service;
@@ -236,7 +248,6 @@ public class WidgetService extends RemoteViewsService {
 
         @Override
         public void onCreate() {
-
             // Save the map between widgetId and account to preference
             saveWidgetInformation(mContext, mAppWidgetId, mAccount, mFolderUri.toString());
 
