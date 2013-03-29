@@ -55,7 +55,7 @@ import java.util.List;
 /**
  * The folder list UI component.
  */
-public final class FolderListFragment extends ListFragment implements
+public class FolderListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<ObjectCursor<Folder>> {
     private static final String LOG_TAG = LogTag.getLogTag();
     /** The parent activity */
@@ -65,7 +65,7 @@ public final class FolderListFragment extends ListFragment implements
     /** URI that points to the list of folders for the current account. */
     private Uri mFolderListUri;
     /** True if you want a sectioned FolderList, false otherwise. */
-    private boolean mIsSectioned;
+    protected boolean mIsSectioned;
     /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
     private ArrayList<Integer> mExcludedFolderTypes;
     /** Object that changes folders on our behalf. */
@@ -282,6 +282,9 @@ public final class FolderListFragment extends ListFragment implements
      * @param args
      */
     private void setInstanceFromBundle(Bundle args) {
+        if (args == null) {
+            return;
+        }
         mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
         final String folderUri = args.getString(ARG_FOLDER_LIST_URI);
         if (folderUri == null) {
