@@ -151,15 +151,14 @@ public final class FolderListFragment extends ListFragment implements
      * Creates a new instance of {@link FolderListFragment}, initialized
      * to display the folder and its immediate children.
      * @param folder parent folder whose children are shown
-     * @param excludedFolderTypes A list of {@link FolderType}s to exclude from displaying
+     *
      */
-    public static FolderListFragment ofTree(Folder folder,
-            final ArrayList<Integer> excludedFolderTypes) {
+    public static FolderListFragment ofTree(Folder folder) {
         final FolderListFragment fragment = new FolderListFragment();
         // Trees are never sectioned.
         final boolean isSectioned = false;
         fragment.setArguments(getBundleFromArgs(TYPE_TREE, folder, folder.childFoldersListUri,
-                isSectioned, excludedFolderTypes));
+                isSectioned, null));
         return fragment;
     }
 
