@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -108,7 +107,7 @@ public final class TwoPaneController extends AbstractActivityController {
      */
     private void createFolderTree(Folder parent) {
         setHierarchyFolder(parent);
-        createFolderListFragment(FolderListFragment.ofTree(parent, null));
+        createFolderListFragment(FolderListFragment.ofTree(parent));
     }
 
     private void createFolderListFragment(Fragment folderList) {
