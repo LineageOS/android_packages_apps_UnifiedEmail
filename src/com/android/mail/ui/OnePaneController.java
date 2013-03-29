@@ -24,7 +24,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.mail.ConversationListContext;
@@ -58,8 +57,6 @@ public final class OnePaneController extends AbstractActivityController {
     private static final String CONVERSATION_LIST_NEVER_SHOWN_KEY = "conversation-list-never-shown";
     /** Key to store {@link #mInbox}. */
     private final static String SAVED_INBOX_KEY = "m-inbox";
-    /** Set to true to show sections/recent inbox in drawer, false otherwise*/
-    public final static boolean SECTIONS_AND_RECENT_FOLDERS_ENABLED = true;
 
     private static final int INVALID_ID = -1;
     private boolean mConversationListVisible = false;
@@ -147,7 +144,7 @@ public final class OnePaneController extends AbstractActivityController {
     public void changeAccount(Account account) {
         super.changeAccount(account);
         mConversationListNeverShown = true;
-        resetAndLoadDrawer();
+        closeDrawerIfOpen();
     }
 
     @Override
@@ -165,33 +162,11 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     /**
-     * If drawer is open/visible (even partially), close it and replace the
-     * folder fragment upon closing the drawer. Otherwise, the drawer is closed
-     * and we can replace the folder list fragment without concern.
+     * If drawer is open/visible (even partially), close it.
      */
-    private void resetAndLoadDrawer() {
-        if (mDrawerContainer.isDrawerVisible(mDrawerPullout)) {
-            mDrawerContainer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-                @Override
-                public void onDrawerClosed(View drawerView) {
-                    loadFolderList();
-                    // Remove listener and unlock drawer to avoid onDrawerClosed
-                    // being called again and for user to freely drag after load
-                    mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                    mDrawerContainer.setDrawerListener(null);
-                }
-
-                @Override
-                public void onDrawerStateChanged(int newState) {
-                    if (newState == DrawerLayout.STATE_IDLE) {
-                        onDrawerClosed(mDrawerPullout);
-                    }
-                }
-            });
-            // This will invoke closeDrawer as well to hide drawer to the left
-            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        } else {
-            loadFolderList();
+    private void closeDrawerIfOpen() {
+        if(mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+            mDrawerContainer.closeDrawers();
         }
     }
 
@@ -207,7 +182,7 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
-        resetAndLoadDrawer();
+        closeDrawerIfOpen();
 
         // When entering conversation list mode, hide and clean up any currently visible
         // conversation.
@@ -329,38 +304,6 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     /**
-     * Loads the FolderListFragment into the drawer pullout FrameLayout.
-     * TODO(shahrk): Clean up and move out drawer calls if necessary
-     */
-    private void loadFolderList() {
-        if (mAccount == null) {
-            LogUtils.e(LOG_TAG, "Null account in showFolderList");
-            return;
-        }
-
-        // Null out the currently selected folder; we have nothing selected the
-        // first time the user enters the folder list
-        // TODO(shahrk): Tweak the function call for nested folders?
-        setHierarchyFolder(null);
-
-        /*
-         * TODO(shahrk): Drawer addition/support
-         * Take out view mode changes: mViewMode.enterFolderListMode(); enableCabMode();
-         * Adding this will enable back stack to labels: mLastFolderListTransactionId =
-         */
-        replaceFragment(FolderListFragment.ofDrawer(),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.drawer_pullout);
-
-        /*
-         * TODO(shahrk): Move or remove this
-         * Don't make the list invisible as of right now:
-         * mConversationListVisible = false;
-         * onConversationVisibilityChanged(false);
-         * onConversationListVisibilityChanged(false);
-         */
-    }
-
-    /**
      * Toggles the drawer pullout. If it was open (Fully extended), the
      * drawer will be closed. Otherwise, the drawer will be opened. This should
      * only be called when used with a toggle item. Other cases should be handled
@@ -373,7 +316,6 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mDrawerContainer.openDrawer(mDrawerPullout);
         }
-        return;
     }
 
     @Override
@@ -473,7 +415,7 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             // Otherwise, clear the selected folder and go back to whatever the
             // last folder list displayed was.
-            loadFolderList();
+            // TODO(viki): Load folder list for parent folder.
         }
     }
 
