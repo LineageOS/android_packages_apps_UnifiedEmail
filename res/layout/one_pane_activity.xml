@@ -38,11 +38,18 @@
 
     </com.android.mail.ui.OnePaneRoot>
 
+    <!--A drawer for phones: a pull-out that gives the list of folders. -->
     <FrameLayout
         android:id="@+id/drawer_pullout"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        style="@style/FolderListStyle"/>
+        style="@style/FolderListStyle">
+        <fragment class="com.android.mail.ui.DrawerFragment"
+            android:id="@+id/drawer_fragment"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            />
+     </FrameLayout>
 
 </android.support.v4.widget.DrawerLayout>
