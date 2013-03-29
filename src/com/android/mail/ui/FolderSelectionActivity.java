@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -310,7 +309,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
-            createFolderListFragment(FolderListFragment.ofTree(folder, getExcludedFolderTypes()));
+            createFolderListFragment(FolderListFragment.ofTree(folder));
             return;
         }
         onFolderChanged(folder);
