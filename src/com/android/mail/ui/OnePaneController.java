@@ -535,13 +535,12 @@ public final class OnePaneController extends AbstractActivityController {
             // Not needed, the activity is going away anyway.
             return true;
         }
-        if (inInbox(mAccount, mConvListContext) && mViewMode.isListMode()) {
+        if (mode == ViewMode.CONVERSATION_LIST) {
             // Up affordance: show the drawer.
             toggleFolderListState();
             return true;
         }
-        if (mViewMode.isListMode()
-                || mode == ViewMode.CONVERSATION
+        if (mode == ViewMode.CONVERSATION
                 || mode == ViewMode.FOLDER_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             // Same as go back.
