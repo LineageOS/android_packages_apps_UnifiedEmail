@@ -226,6 +226,9 @@ public final class OnePaneController extends AbstractActivityController {
             // non-inbox folder.
             mLastConversationListTransactionId = INVALID_ID;
         }
+
+        mActivity.getFragmentManager().executePendingTransactions();
+
         mConversationListVisible = true;
         onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
