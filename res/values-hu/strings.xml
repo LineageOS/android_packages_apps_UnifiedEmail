@@ -316,8 +316,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Ez a fiók nincs beállítva automatikus szinkronizáláshoz."\n"Érintse meg a "<b>"Szinkr. most"</b>" elemet a levelek egyszeri szinkronizálásához, vagy érintse meg a "<b>"Szinkr. beállítások módosítása"</b>" lehetőséget a fiók leveleinek automatikusan szinkronizálásához."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Szinkr. most"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Szinkr. beállítások módosítása"</string>
-    <!-- no translation found for no_new_messages (2315965287002311844) -->
-    <skip />
+    <string name="no_new_messages" msgid="2315965287002311844">"Nincs új üzenet"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"A kép betöltése sikertelen."</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Nem lehet áthelyezni, mert a kijelölés több fiókból származik."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
