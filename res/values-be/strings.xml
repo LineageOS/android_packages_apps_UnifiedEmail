@@ -316,8 +316,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Гэты ўліковы запіс не наладжаны на аўтаматычную сінхранізацыю."\n"Дакраніцеся да кнопкі "<b>"Сінхранаваць зараз"</b>", каб адзін раз сінхранiзаваць пошту, або да кнопкі "<b>"Змена параметраў сінхранізацыі"</b>", каб наладзіць аўтаматычную сінхранізацыю пошты ў гэтым уліковым запісе."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Сінхранаваць зараз"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Змена параметраў сінхранізацыі"</string>
-    <!-- no translation found for no_new_messages (2315965287002311844) -->
-    <skip />
+    <string name="no_new_messages" msgid="2315965287002311844">"Новых паведамленняў няма"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Не атрымалася загрузіць малюнак"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Немагчыма працягваць, таму што выбар змяшчае некалькі ўліковых запісаў."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
