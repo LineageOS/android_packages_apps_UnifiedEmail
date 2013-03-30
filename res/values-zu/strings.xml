@@ -316,8 +316,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Le akhawunti ayisethiwe kufika ekuvumelaniseni kokuzenzakalela."\n"Thinta u-"<b>"Vumelanisa manje"</b>" ukuze uvumelanise imeyila kanye, noma "<b>"shintsha izilungiselelo zokuvumelanisa"</b>" ukuze usethe le akhawunti ukuze ivumelanise imeyili ngokuzenzakalela."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Vumelanisa manje"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Shintsha izilungiselelo zokuvumelanisa"</string>
-    <!-- no translation found for no_new_messages (2315965287002311844) -->
-    <skip />
+    <string name="no_new_messages" msgid="2315965287002311844">"Ayikho imilayezo emisha"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Ayikwazanga ukulayisha isithombe"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Ayikwazi ukugudluza ngoba ukukhetha kuqukethe ama-akhawunti amaningi."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>

@@ -316,8 +316,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Hierdie rekening is nie opgestel om outomaties te sinkroniseer nie."\n"Raak "<b>"Sinkroniseer nou"</b>" om pos een keer te sinkroniseer, of "<b>"Verander sinkroniseer-instellings"</b>" om hierdie rekening op te stel om pos outomaties te sinkroniseer."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sinkroniseer nou"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Verander sinkroniseer-instellings"</string>
-    <!-- no translation found for no_new_messages (2315965287002311844) -->
-    <skip />
+    <string name="no_new_messages" msgid="2315965287002311844">"Geen nuwe boodskappe nie"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Kon nie prent laai nie"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Kan nie skuif nie, omdat keuse verskeie rekeninge bevat."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
