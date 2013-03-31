@@ -740,6 +740,11 @@ public class NotificationUtils {
                                 sendersBuilder = getStyledSenders(context, conversationCursor,
                                         sendersLength, notificationAccount);
                             } else {
+                                if (from == null) {
+                                    LogUtils.e(LOG_TAG, "null from string in " +
+                                            "configureLatestEventInfoFromConversation");
+                                    from = "";
+                                }
                                 sendersBuilder = new SpannableStringBuilder(from);
                             }
                             final CharSequence digestLine = getSingleMessageInboxLine(context,
