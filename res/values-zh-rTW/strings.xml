@@ -316,8 +316,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"這個帳戶尚未設成自動同步處理。"\n"請輕觸 [立即同步處理]"<b></b>"，將您的郵件同步處理一次，或者輕觸 [變更同步處理設定]"<b></b>"，將帳戶設定成自動同步處理郵件。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步處理"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"變更同步處理設定"</string>
-    <!-- no translation found for no_new_messages (2315965287002311844) -->
-    <skip />
+    <string name="no_new_messages" msgid="2315965287002311844">"沒有新郵件"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"無法載入圖片"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"您已選取多個帳戶，因此無法移動。"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>" - <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
