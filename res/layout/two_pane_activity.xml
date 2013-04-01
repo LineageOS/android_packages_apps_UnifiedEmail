@@ -25,7 +25,13 @@
         android:id="@+id/content_pane"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:background="@drawable/folder_bg_holo_light" />
+        android:background="@drawable/folder_bg_holo_light">
+        <fragment class="com.android.mail.ui.DrawerFragment"
+                  android:id="@+id/drawer_fragment"
+                  android:layout_height="match_parent"
+                  android:layout_width="match_parent"
+                />
+        </FrameLayout>
 
     <FrameLayout
         android:id="@+id/conversation_list_pane"
