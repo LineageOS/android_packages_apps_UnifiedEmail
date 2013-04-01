@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,16 +16,8 @@
      limitations under the License.
 -->
 <resources>
-    <integer-array name="conversation_heights_without_attachment_previews">
-        <item>64</item>
-        <item>70</item>
-    </integer-array>
-    <integer-array name="senders_with_attachment_lengths">
-        <item>40</item>
-        <item>40</item>
-    </integer-array>
-    <integer-array name="senders_lengths">
-        <item>42</item>
-        <item>42</item>
-    </integer-array>
+    <dimen name="undo_bar_width_list">600dp</dimen>
+    <dimen name="undo_bar_width_conv">800dp</dimen>
+    <dimen name="undo_bar_width_conv_list">800dp</dimen>
+    <dimen name="undo_bar_width_search_list">800dp</dimen>
 </resources>

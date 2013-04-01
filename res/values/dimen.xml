@@ -26,6 +26,8 @@
     <dimen name="folders_top_margin">10sp</dimen>
     <dimen name="star_top_margin">10sp</dimen>
     <dimen name="attachment_margin_top">6sp</dimen>
+    <dimen name="attachment_tile_min_size">120dp</dimen>
+    <dimen name="attachment_tile_max_size">164dp</dimen>
     <dimen name="folders_top_margin_wide">24sp</dimen>
     <dimen name="folders_min_height">18dp</dimen>
     <dimen name="date_font_size">12sp</dimen>
@@ -108,8 +110,6 @@
     <dimen name="photo_crop_stroke_width">1dp</dimen>
     <dimen name="photo_overlay_right_padding">4dp</dimen>
     <dimen name="photo_overlay_bottom_padding">6dp</dimen>
-    <dimen name="attachment_tile_min_size">120dp</dimen>
-    <dimen name="attachment_tile_max_size">164dp</dimen>
     <dimen name="toast_bar_bottom_margin">4dip</dimen>
     <dimen name="toast_bar_bottom_margin_in_conversation">24dip</dimen>
     <dimen name="wait_padding">16dp</dimen>
@@ -121,4 +121,10 @@
     <dimen name="tile_letter_font_size_small">16dp</dimen>
     <dimen name="tile_divider_width">1dp</dimen>
     <dimen name="sync_status_bar_height">40dip</dimen>
+    <dimen name="attachment_preview_height_tall">124dip</dimen>
+    <dimen name="attachment_preview_height_tall_wide">168dip</dimen>
+    <dimen name="attachment_preview_height_short">28dip</dimen>
+    <dimen name="attachment_preview_margin_top">8dip</dimen>
+    <dimen name="attachment_preview_margin_top_wide">12dip</dimen>
+    <dimen name="attachment_preview_margin_side">16dip</dimen>
 </resources>
