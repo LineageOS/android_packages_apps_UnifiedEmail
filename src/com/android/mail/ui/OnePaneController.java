@@ -106,11 +106,9 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void resetActionBarIcon() {
-        if (mViewMode.isWaitingForSync()) {
-            mActionBarView.removeBackButton();
-        } else {
-            mActionBarView.setBackButton();
-        }
+        // Calling resetActionBarIcon should never remove the up affordance
+        // even when waiting for sync (Folder list should still show with one
+        // account. Currently this method is blank to avoid any changes.
     }
 
     /**
@@ -413,8 +411,6 @@ public final class OnePaneController extends AbstractActivityController {
             mLastFolderListTransactionId = replaceFragment(
                     FolderListFragment.ofTree(top),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
-            // Show the up affordance when digging into child folders.
-            mActionBarView.setBackButton();
         } else {
             // Otherwise, clear the selected folder and go back to whatever the
             // last folder list displayed was.
@@ -453,8 +449,6 @@ public final class OnePaneController extends AbstractActivityController {
             mLastFolderListTransactionId = replaceFragment(
                     FolderListFragment.ofTree(folder),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
-            // Show the up affordance when digging into child folders.
-            mActionBarView.setBackButton();
         } else {
             super.onFolderSelected(folder);
         }
@@ -480,17 +474,32 @@ public final class OnePaneController extends AbstractActivityController {
             // Not needed, the activity is going away anyway.
             return true;
         }
-        if (mode == ViewMode.CONVERSATION_LIST) {
+        if (mode == ViewMode.CONVERSATION_LIST
+                || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
             // Up affordance: show the drawer.
             toggleFolderListState();
             return true;
         }
         if (mode == ViewMode.CONVERSATION
-                || mode == ViewMode.FOLDER_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             // Same as go back.
             handleBackPress();
             return true;
+        }
+        if (mode == ViewMode.FOLDER_LIST) {
+            // If the folder is the top level of an heirarchy or flat, toggle the
+            // state of the drawer. Otherwise, let it pass on as a back press.
+            // We don't want this code in back press, otherwise pressing back
+            // will exhibit the same behavior
+            final FolderListFragment folderListFragment = getFolderListFragment();
+            if (folderListFragment != null) {
+                final Folder parentFolder = folderListFragment.getParentFolder();
+                if (parentFolder == null || parentFolder.parent == null) {
+                    toggleFolderListState();
+                    return true;
+                }
+            }
+            handleBackPress();
         }
         return true;
     }

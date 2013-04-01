@@ -455,6 +455,11 @@ public abstract class AbstractActivityController implements ActivityController {
         mActionBarView = (MailActionBarView) inflater.inflate(
                 isSearch ? R.layout.search_actionbar_view : R.layout.actionbar_view, null);
         mActionBarView.initialize(mActivity, this, actionBar);
+
+        //  If not a tablet, we always want the up/back button to show at top.
+        if(!mIsTablet) {
+            mActionBarView.setBackButton();
+        }
     }
 
     /**

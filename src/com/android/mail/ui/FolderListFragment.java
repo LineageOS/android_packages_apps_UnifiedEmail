@@ -903,6 +903,10 @@ public class FolderListFragment extends ListFragment implements
         }
     }
 
+    public Folder getParentFolder() {
+        return mParentFolder;
+    }
+
     /**
      * Sets the currently selected folder safely.
      * @param folder
