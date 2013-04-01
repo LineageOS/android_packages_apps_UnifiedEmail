@@ -316,8 +316,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"В этом аккаунте не настроена автоматическая синхронизация."\n"Выберите "<b>"Настройки синхронизации"</b>", чтобы включить ее, или "<b>"Синхронизировать сейчас"</b>", чтобы синхронизировать почту один раз."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр."</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Настройки синхронизации"</string>
-    <!-- no translation found for no_new_messages (2315965287002311844) -->
-    <skip />
+    <string name="no_new_messages" msgid="2315965287002311844">"Новых сообщений нет"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Не удалось загрузить фото"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Не удалось переместить сообщения, так как они находятся в разных аккаунтах."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>": <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
