@@ -316,8 +316,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Цей обліковий запис не налаштовано для автоматичної синхронізації."\n"Виберіть "<b>"Синхронізувати зараз"</b>", щоб синхронізувати пошту один раз, або "<b>"Змінити налаштування синхронізації"</b>", щоб налаштувати цей обліковий запис для автоматичної синхронізації пошти."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр. зараз"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Змінити налашт. синхронізації"</string>
-    <!-- no translation found for no_new_messages (2315965287002311844) -->
-    <skip />
+    <string name="no_new_messages" msgid="2315965287002311844">"Немає нових повідомлень"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Зображення не завантажено"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Неможливо перемістити, оскільки вибрано декілька облікових записів."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
