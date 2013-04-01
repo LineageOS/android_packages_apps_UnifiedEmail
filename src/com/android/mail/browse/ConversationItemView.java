@@ -193,6 +193,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static ContactPhotoManager sContactPhotoManager;
     public static final LetterTileProvider DEFAULT_AVATAR_PROVIDER =
             new LetterTileProvider();
+    private static final String EMPTY_SNIPPET = "";
 
     static {
         sPaint.setAntiAlias(true);
@@ -710,7 +711,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (!TextUtils.isEmpty(snippet)) {
             final int startOffset = subjectTextLength;
             // Start after the end of the subject text; since the subject may be
-            // "" or null, this could start at the 0th character in the subectText string
+            // "" or null, this could start at the 0th character in the subjectText string
             displayedStringBuilder.setSpan(ForegroundColorSpan.wrap(
                     isUnread ? sSnippetTextUnreadSpan : sSnippetTextReadSpan), startOffset,
                     displayedStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -737,7 +738,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 MeasureSpec.makeMeasureSpec(subjectHeight, MeasureSpec.EXACTLY));
         mSubjectTextView.layout(0, 0, subjectWidth, subjectHeight);
 
-        mSubjectTextView.setText(displayedStringBuilder, secondLineMaxWidth);
+        if (displayedStringBuilder.length() == 0) {
+            // Work around for bug where empty displayedStringBuilder does not overwrite any
+            // existing text in mSubjectTextView
+            mSubjectTextView.setText(EMPTY_SNIPPET);
+        } else {
+            mSubjectTextView.setText(displayedStringBuilder, secondLineMaxWidth);
+        }
     }
 
     /**
