@@ -162,20 +162,9 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void changeAccount(Account account) {
-        super.changeAccount(account);
-        renderFolderList();
-    }
-
-    @Override
     public void onFolderChanged(Folder folder) {
         super.onFolderChanged(folder);
         exitCabMode();
-        final FolderListFragment folderList = getFolderListFragment();
-        if (folderList == null && mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
-            // Create a folder list fragment if none exists.
-            renderFolderList();
-        }
     }
 
     @Override
