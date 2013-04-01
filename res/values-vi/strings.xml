@@ -316,8 +316,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tài khoản này không được thiết lập để tự động đồng bộ hóa."\n"Chạm vào "<b>"Đồng bộ hóa ngay bây giờ"</b>" để đồng bộ hóa thư một lần hoặc "<b>"Thay đổi cài đặt đồng bộ hóa"</b>" để thiết lập tài khoản này tự động đồng bộ hóa thư."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Đồng bộ hóa ngay bây giờ"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Thay đổi cài đặt đồng bộ hóa"</string>
-    <!-- no translation found for no_new_messages (2315965287002311844) -->
-    <skip />
+    <string name="no_new_messages" msgid="2315965287002311844">"Không có tin nhắn mới"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Không thể tải ảnh"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Không thể di chuyển vì lựa chọn chứa nhiều tài khoản."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
