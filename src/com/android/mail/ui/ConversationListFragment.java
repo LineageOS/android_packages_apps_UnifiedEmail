@@ -626,6 +626,14 @@ public final class ConversationListFragment extends ListFragment implements
 
         final ConversationCursor cursor =
                 (ConversationCursor) getAnimatedAdapter().getItem(position);
+
+        if (cursor == null) {
+            LogUtils.e(LOG_TAG,
+                    "unable to open conv at cursor pos=%s cursor=%s getPositionOffset=%s",
+                    position, cursor, getAnimatedAdapter().getPositionOffset(position));
+            return;
+        }
+
         final Conversation conv = cursor.getConversation();
         /*
          * The cursor position may be different than the position method parameter because of
