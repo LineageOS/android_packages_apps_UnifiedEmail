@@ -17,13 +17,19 @@
 -->
 
 <!--
-     The custom action bar view Gmail uses (containing drop down account spinner,
-    label, and subject).
+     The custom action bar view Gmail uses. This currently shows an unread count and a subject
+     (in subject view). The folder name and account name are standard title/subtitle text.
 -->
 <com.android.mail.ui.MailActionBarView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="horizontal" >
+    <!--Unread count, shown in most views -->
+    <TextView
+        android:id="@+id/unread_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/UnreadCountActionBar" />
     <!-- Only used for displaying a subject view -->
     <include layout="@layout/actionbar_subject" />
 
