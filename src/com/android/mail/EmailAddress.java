@@ -18,6 +18,8 @@ package com.android.mail;
 import android.text.Html;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +30,7 @@ import java.util.regex.Pattern;
  * TODO(pwestbro): move to provider
  */
 public class EmailAddress {
+    public static final String LOG_TAG = LogTag.getLogTag();
 
     private final String mName;
 
@@ -56,6 +59,10 @@ public class EmailAddress {
     // TODO (pwestbro): move to provider
     public static synchronized EmailAddress getEmailAddress(String rawAddress) {
         String name, address;
+        if (rawAddress == null) {
+            LogUtils.e(LOG_TAG, "null rawAddress in EmailAddress#getEmailAddress");
+            rawAddress = "";
+        }
         Matcher m = sEmailMatcher.reset(rawAddress);
         if (m.matches()) {
             name = m.group(1);
