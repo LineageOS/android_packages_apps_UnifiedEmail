@@ -54,8 +54,6 @@ public final class TwoPaneController extends AbstractActivityController {
             } else {
                 mViewMode.enterSearchResultsListMode();
             }
-        } else {
-            mViewMode.enterConversationListMode();
         }
         renderConversationList();
     }
@@ -275,15 +273,17 @@ public final class TwoPaneController extends AbstractActivityController {
         mConversationToShow = conversation;
 
         final int mode = mViewMode.getMode();
-        final boolean changedMode;
+        LogUtils.i(LOG_TAG, "IN TPC.showConv, oldMode=%s conv=%s", mode, mConversationToShow);
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
-            changedMode = mViewMode.enterSearchResultsConversationMode();
+            mViewMode.enterSearchResultsConversationMode();
         } else {
-            changedMode = mViewMode.enterConversationMode();
+            mViewMode.enterConversationMode();
         }
         // load the conversation immediately if we're already in conversation mode
-        if (!changedMode) {
+        if (!mLayout.isModeChangePending()) {
             onConversationVisibilityChanged(true);
+        } else {
+            LogUtils.i(LOG_TAG, "TPC.showConversation will wait for TPL.animationEnd to show!");
         }
     }
 

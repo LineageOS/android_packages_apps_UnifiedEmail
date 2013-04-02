@@ -50,6 +50,8 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
     /** The factory that knows how to create T objects from cursors: one object per row. */
     private final CursorCreator<T> mFactory;
 
+    private int mDebugDelayMs = 0;
+
     public ObjectCursorLoader(Context context, Uri uri, String[] projection,
             CursorCreator<T> factory) {
         super(context);
@@ -84,6 +86,13 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
         // Modifications to the ObjectCursor, create an Object Cursor and fill the cache.
         final ObjectCursor<T> cursor = new ObjectCursor<T>(inner, mFactory);
         cursor.fillCache();
+
+        try {
+            if (mDebugDelayMs > 0) {
+                Thread.sleep(mDebugDelayMs);
+            }
+        } catch (InterruptedException e) {}
+
         return cursor;
     }
 
@@ -166,5 +175,17 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
         writer.println(Arrays.toString(mSelectionArgs));
         writer.print(prefix); writer.print("mSortOrder="); writer.println(mSortOrder);
         writer.print(prefix); writer.print("mCursor="); writer.println(mCursor);
+    }
+
+    /**
+     * For debugging loader-related race conditions. Delays the background thread load. The delay is
+     * currently run after the query is complete.
+     *
+     * @param delayMs additional delay (in ms) to add to the background load operation
+     * @return this object itself, for fluent chaining
+     */
+    public ObjectCursorLoader<T> setDebugDelay(int delayMs) {
+        mDebugDelayMs = delayMs;
+        return this;
     }
 }
