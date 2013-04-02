@@ -92,6 +92,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private Folder mFolder;
 
     private SnippetTextView mSubjectView;
+    /** The view that shows an unread count. */
     private TextView mUnreadView;
 
     private SearchView mSearchWidget;
@@ -437,7 +438,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     private void showNavList() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
-        mUnreadView.setVisibility(View.VISIBLE);
+        if (mUnreadView != null) {
+            mUnreadView.setVisibility(View.VISIBLE);
+        }
         mSubjectView.setVisibility(View.GONE);
         setFolderAndAccount();
     }
@@ -449,14 +452,18 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     protected void setSnippetMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_CUSTOM);
-        mUnreadView.setVisibility(View.GONE);
+        if (mUnreadView != null) {
+            mUnreadView.setVisibility(View.GONE);
+        }
         mSubjectView.setVisibility(View.VISIBLE);
         mSubjectView.addOnLayoutChangeListener(mSnippetLayoutListener);
     }
 
     private void setFoldersMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
-        mUnreadView.setVisibility(View.GONE);
+        if (mUnreadView != null) {
+            mUnreadView.setVisibility(View.GONE);
+        }
         mActionBar.setTitle(R.string.folders);
         if (mHaveMultipleAccounts) {
             mActionBar.setSubtitle(mAccount.name);
