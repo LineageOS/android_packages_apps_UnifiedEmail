@@ -581,10 +581,13 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * account {@link #mAccount} shown in the actionbar.
      */
     private void setFolderAndAccount() {
+        // Very little can be done if the actionbar or activity is null.
+        if (mActionBar == null || mActivity == null) {
+            return;
+        }
         // Check if we should be changing the actionbar at all, and back off if not.
-        final boolean isShowingFolderAndAccount =
-                (mActionBar != null && (mIsOnTablet || ViewMode.isListMode(mMode)));
-        if (!isShowingFolderAndAccount || mActivity == null) {
+        final boolean isShowingFolderAndAccount = mIsOnTablet || ViewMode.isListMode(mMode);
+        if (!isShowingFolderAndAccount) {
             return;
         }
         if (mAccount != null && mHaveMultipleAccounts) {
