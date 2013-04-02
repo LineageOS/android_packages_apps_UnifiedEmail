@@ -265,6 +265,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("{ViewMode=");
+        sb.append(mViewMode);
+        sb.append("}");
+        return sb.toString();
+    }
+
+    @Override
     public void setViewModeListener(ModeChangeListener listener) {
         mViewMode.addListener(listener);
     }

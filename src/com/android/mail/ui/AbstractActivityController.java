@@ -669,6 +669,10 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void loadAccountInbox() {
         restartOptionalLoader(LOADER_ACCOUNT_INBOX, mFolderCallbacks, Bundle.EMPTY);
+
+        if (mViewMode.getMode() == ViewMode.UNKNOWN) {
+            mViewMode.enterConversationListMode();
+        }
     }
 
     /**
@@ -1747,6 +1751,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param intent intent passed to the activity.
      */
     private void handleIntent(Intent intent) {
+        LogUtils.d(LOG_TAG, "IN AAC.handleIntent. action=%s", intent.getAction());
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                 setAccount(Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT)));
