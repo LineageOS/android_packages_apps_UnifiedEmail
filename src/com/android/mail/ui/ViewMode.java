@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
 import android.content.Context;
@@ -79,8 +80,15 @@ public class ViewMode {
      */
     private int mMode = UNKNOWN;
 
+    public static final String LOG_TAG = "ViewMode";
+
     public ViewMode(Context context) {
         // Do nothing
+    }
+
+    @Override
+    public String toString() {
+        return "[mode=" + mMode + "]";
     }
 
     /**
@@ -105,55 +113,52 @@ public class ViewMode {
 
     /**
      * Requests a transition of the mode to show the conversation list as the prominent view.
-     * @return Whether or not a change occurred.
+     *
      */
-    public boolean enterConversationListMode() {
-        return setModeInternal(CONVERSATION_LIST);
+    public void enterConversationListMode() {
+        setModeInternal(CONVERSATION_LIST);
     }
 
     /**
      * Requests a transition of the mode to show a conversation as the prominent view.
-     * @return Whether or not a change occurred.
+     *
      */
-    public boolean enterConversationMode() {
-        return setModeInternal(CONVERSATION);
+    public void enterConversationMode() {
+        setModeInternal(CONVERSATION);
     }
 
     /**
      * Requests a transition of the mode to show the folder list as the prominent view.
-     * @return Whether or not a change occurred.
+     *
      */
-    public boolean enterFolderListMode() {
-        return setModeInternal(FOLDER_LIST);
+    public void enterFolderListMode() {
+        setModeInternal(FOLDER_LIST);
     }
 
     /**
      * Requests a transition of the mode to show a list of search results as the
      * prominent view.
      *
-     * @return Whether or not a change occurred.
      */
-    public boolean enterSearchResultsListMode() {
-        return setModeInternal(SEARCH_RESULTS_LIST);
+    public void enterSearchResultsListMode() {
+        setModeInternal(SEARCH_RESULTS_LIST);
     }
 
     /**
      * Requests a transition of the mode to show a conversation that was part of
      * search results.
      *
-     * @return Whether or not a change occurred.
      */
-    public boolean enterSearchResultsConversationMode() {
-        return setModeInternal(SEARCH_RESULTS_CONVERSATION);
+    public void enterSearchResultsConversationMode() {
+        setModeInternal(SEARCH_RESULTS_CONVERSATION);
     }
 
     /**
      * Requests a transition of the mode to show the "waiting for sync" messages
      *
-     * @return Whether or not a change occurred.
      */
-    public boolean enterWaitingForInitializationMode() {
-        return setModeInternal(WAITING_FOR_ACCOUNT_INITIALIZATION);
+    public void enterWaitingForInitializationMode() {
+        setModeInternal(WAITING_FOR_ACCOUNT_INITIALIZATION);
     }
 
     /**
@@ -235,8 +240,22 @@ public class ViewMode {
      */
     private boolean setModeInternal(int mode) {
         if (mMode == mode) {
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+                LogUtils.d(LOG_TAG, new Error(), "ViewMode: debouncing change attempt mode=%s",
+                        mode);
+            } else {
+                LogUtils.i(LOG_TAG, "ViewMode: debouncing change attempt mode=%s", mode);
+            }
             return false;
         }
+
+        if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+            LogUtils.d(LOG_TAG, new Error(), "ViewMode: executing change old=%s new=%s", mMode,
+                    mode);
+        } else {
+            LogUtils.i(LOG_TAG, "ViewMode: executing change old=%s new=%s", mMode, mode);
+        }
+
         mMode = mode;
         dispatchModeChange();
         return true;

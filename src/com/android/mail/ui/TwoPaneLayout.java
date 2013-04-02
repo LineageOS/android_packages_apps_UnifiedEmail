@@ -485,6 +485,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         requestLayout();
     }
 
+    public boolean isModeChangePending() {
+        return mPositionedMode != mCurrentMode;
+    }
+
     private void setPaneWidth(View pane, int w) {
         final ViewGroup.LayoutParams lp = pane.getLayoutParams();
         if (lp.width == w) {
