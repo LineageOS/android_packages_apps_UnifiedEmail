@@ -17,23 +17,6 @@
 
 package com.android.mail.ui;
 
-import com.android.mail.ConversationListContext;
-import com.android.mail.R;
-import com.android.mail.browse.SnippetTextView;
-import com.android.mail.providers.Account;
-import com.android.mail.providers.AccountObserver;
-import com.android.mail.providers.AllAccountObserver;
-import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Folder;
-import com.android.mail.providers.FolderObserver;
-import com.android.mail.providers.SearchRecentSuggestionsProvider;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
-
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -56,6 +39,23 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
 import android.widget.TextView;
+
+import com.android.mail.ConversationListContext;
+import com.android.mail.R;
+import com.android.mail.browse.SnippetTextView;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
+import com.android.mail.providers.AllAccountObserver;
+import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderObserver;
+import com.android.mail.providers.SearchRecentSuggestionsProvider;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * View to manage the various states of the Mail Action Bar.
@@ -468,8 +468,12 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     protected void setEmptyMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
-        mSubjectView.setVisibility(View.GONE);
-        mUnreadView.setVisibility(View.GONE);
+        if (mSubjectView != null) {
+            mSubjectView.setVisibility(View.GONE);
+        }
+        if (mUnreadView != null) {
+            mUnreadView.setVisibility(View.GONE);
+        }
     }
 
     public void removeBackButton() {
