@@ -34,7 +34,7 @@ public class ViewModeTests extends AndroidTestCase {
         Bundle state = new Bundle();
         ViewMode first = new ViewMode(this.mContext);
         // Set the state to something known.
-        assertTrue(first.enterConversationListMode());
+        first.enterConversationListMode();
         first.handleSaveInstanceState(state);
         ViewMode second = new ViewMode(this.mContext);
         second.handleRestore(state);
@@ -60,10 +60,10 @@ public class ViewModeTests extends AndroidTestCase {
         ViewMode mode = new ViewMode(this.mContext);
         Ears ears = new Ears();
         mode.addListener(ears);
-        assertTrue(mode.enterConversationListMode());
+        mode.enterConversationListMode();
         assertEquals(ears.numCalls, 1);
         mode.removeListener(ears);
-        assertTrue(mode.enterConversationMode());
+        mode.enterConversationMode();
         assertEquals(ears.numCalls, 1);
     }
 
@@ -75,10 +75,10 @@ public class ViewModeTests extends AndroidTestCase {
         Bundle state = new Bundle();
         ViewMode first = new ViewMode(this.mContext);
         // Set the state to something known.
-        assertTrue(first.enterConversationListMode());
+        first.enterConversationListMode();
         assertEquals(ViewMode.CONVERSATION_LIST, first.getMode());
         // Cannot transition to Conversation List mode. I'm in it already.
-        assertFalse(first.enterConversationListMode());
+        first.enterConversationListMode();
         assertEquals(ViewMode.CONVERSATION_LIST, first.getMode());
     }
 }
