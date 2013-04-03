@@ -30,8 +30,11 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 
 import com.android.mail.R;
-import com.android.mail.photomanager.ContactPhotoManager.DefaultImageProvider;
+import com.android.mail.photomanager.ContactPhotoManager.ContactIdentifier;
+import com.android.mail.photomanager.PhotoManager.DefaultImageProvider;
+import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
 import com.android.mail.ui.DividedImageCanvas;
+import com.android.mail.ui.ImageCanvas;
 
 /**
  * LetterTileProvider is an implementation of the DefaultImageProvider. When no
@@ -41,7 +44,7 @@ import com.android.mail.ui.DividedImageCanvas;
  * tile. If there is no English alphabet character (or digit), it creates a
  * bitmap with the default contact avatar.
  */
-public class LetterTileProvider extends DefaultImageProvider {
+public class LetterTileProvider implements DefaultImageProvider {
     private Bitmap mDefaultBitmap;
     private static Bitmap[] sBitmapBackgroundCache;
     private static Typeface sSansSerifLight;
@@ -59,16 +62,21 @@ public class LetterTileProvider extends DefaultImageProvider {
         super();
     }
 
-    @Override
-    public void applyDefaultImage(String displayName, String address, DividedImageCanvas view,
-            int extent) {
+        @Override
+        public void applyDefaultImage(PhotoIdentifier id, ImageCanvas view, int extent) {
+        ContactIdentifier contactIdentifier = (ContactIdentifier) id;
+        DividedImageCanvas dividedImageView = (DividedImageCanvas) view;
+
+        String displayName = contactIdentifier.name;
+        String address = contactIdentifier.emailAddress;
+
         Bitmap bitmap = null;
         final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
         final String firstChar = display.substring(0, 1);
         // If its a valid english alphabet letter...
         if (isLetter(firstChar)) {
             if (sTileLetterFontSize == -1) {
-                final Resources res = view.getContext().getResources();
+                final Resources res = dividedImageView.getContext().getResources();
                 sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
                 sTileLetterFontSizeSmall = res
                         .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
@@ -83,7 +91,7 @@ public class LetterTileProvider extends DefaultImageProvider {
                 sBitmapBackgroundCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
             }
             final String first = firstChar.toUpperCase();
-            DividedImageCanvas.Dimensions d = view.getDesiredDimensions(address);
+            DividedImageCanvas.Dimensions d = dividedImageView.getDesiredDimensions(address);
             bitmap = getBitmap(d);
             Canvas c = new Canvas(bitmap);
             c.drawColor(sTileColor);
@@ -95,12 +103,12 @@ public class LetterTileProvider extends DefaultImageProvider {
             if (mDefaultBitmap == null) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inMutable = true;
-                mDefaultBitmap = BitmapFactory.decodeResource(view.getContext().getResources(),
+                mDefaultBitmap = BitmapFactory.decodeResource(dividedImageView.getContext().getResources(),
                         DEFAULT_AVATAR_DRAWABLE, options);
             }
             bitmap = mDefaultBitmap;
         }
-        view.addDivisionImage(bitmap, address);
+        dividedImageView.addDivisionImage(bitmap, address);
     }
 
     private Bitmap getBitmap(final DividedImageCanvas.Dimensions d) {
