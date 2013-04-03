@@ -135,6 +135,20 @@ public class FolderListFragment extends ListFragment implements
         super();
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(super.toString());
+        sb.setLength(sb.length() - 1);
+        sb.append(" folder=");
+        sb.append(mFolderListUri);
+        sb.append(" parent=");
+        sb.append(mParentFolder);
+        sb.append(" adapterCount=");
+        sb.append(mCursorAdapter != null ? mCursorAdapter.getCount() : -1);
+        sb.append("}");
+        return sb.toString();
+    }
+
     /**
      * Creates a new instance of {@link FolderListFragment}. Gets the current account and current
      * folder through observers.

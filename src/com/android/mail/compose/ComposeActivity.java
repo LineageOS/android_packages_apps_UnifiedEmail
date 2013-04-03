@@ -3216,7 +3216,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private int replaceFragment(Fragment fragment, int transition, String tag) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.setTransition(transition);
         fragmentTransaction.replace(R.id.wait, fragment, tag);
         final int transactionId = fragmentTransaction.commitAllowingStateLoss();
