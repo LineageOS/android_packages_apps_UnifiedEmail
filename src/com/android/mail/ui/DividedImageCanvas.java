@@ -40,7 +40,7 @@ import java.util.ArrayList;
  *           the second vertical position.
  * 4 Images: Divide the Canvas into 4 equal quadrants and draws 1 bitmap in each.
  */
-public class DividedImageCanvas {
+public class DividedImageCanvas implements ImageCanvas {
     public static final int MAX_DIVISIONS = 4;
 
     private ArrayList<String> mDivisionIds;
@@ -328,9 +328,7 @@ public class DividedImageCanvas {
         }
     }
 
-    /**
-     * Reset all state associated with this view so that it can be reused.
-     */
+    @Override
     public void reset() {
         if (mCanvas != null && mDividedBitmap != null) {
             mCanvas.drawColor(Color.WHITE);
@@ -403,5 +401,10 @@ public class DividedImageCanvas {
      */
     public ArrayList<String> getDivisionIds() {
         return mDivisionIds;
+    }
+
+    @Override
+    public Bitmap loadImage(byte[] bytes, String id) {
+        return addDivisionImage(bytes, id);
     }
 }
