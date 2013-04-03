@@ -63,7 +63,8 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.ContactPhotoManager;
-import com.android.mail.photomanager.LetterTileProvider;
+import com.android.mail.photomanager.ContactPhotoManager.ContactIdentifier;
+import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -172,13 +173,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
     private int mAnimatedHeight = -1;
-    private String mAccount;
+    private final String mAccount;
     private ControllableActivity mActivity;
     private int mBackgroundOverride = -1;
-    private EllipsizedMultilineTextView mSubjectTextView;
-    private TextView mSendersTextView;
-    private TextView mDateTextView;
-    private DividedImageCanvas mContactImagesHolder;
+    private final EllipsizedMultilineTextView mSubjectTextView;
+    private final TextView mSendersTextView;
+    private final TextView mDateTextView;
+    private final DividedImageCanvas mContactImagesHolder;
     private boolean mConvListPhotosEnabled;
     private static int sFoldersLeftPadding;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
@@ -191,8 +192,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static CharacterStyle sActivatedTextSpan;
     private static Bitmap MORE_FOLDERS;
     private static ContactPhotoManager sContactPhotoManager;
-    public static final LetterTileProvider DEFAULT_AVATAR_PROVIDER =
-            new LetterTileProvider();
     private static final String EMPTY_SNIPPET = "";
 
     static {
@@ -668,10 +667,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             String emailAddress;
             for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < size; i++) {
                 emailAddress = mHeader.displayableSenderEmails.get(i);
-                sContactPhotoManager.loadThumbnail(DividedImageCanvas.generateHash(
-                        mContactImagesHolder, i, emailAddress),
-                        mContactImagesHolder, mHeader.displayableSenderNames.get(i),
-                        emailAddress, DEFAULT_AVATAR_PROVIDER);
+                PhotoIdentifier photoIdentifier = new ContactIdentifier(
+                        mHeader.displayableSenderNames.get(i), emailAddress, i);
+                sContactPhotoManager.loadThumbnail(photoIdentifier, mContactImagesHolder);
             }
         }
     }
