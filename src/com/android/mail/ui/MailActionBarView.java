@@ -24,6 +24,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.SpannableString;
@@ -119,6 +121,23 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     };
     private final boolean mShowConversationSubject;
     private FolderObserver mFolderObserver;
+
+    /** Updates the resolver and tells it the most recent account. */
+    private final class UpdateProvider extends AsyncTask<Bundle, Void, Void> {
+        final Uri mAccount;
+        final ContentResolver mResolver;
+        public UpdateProvider(Uri account, ContentResolver resolver) {
+            mAccount = account;
+            mResolver = resolver;
+        }
+
+        @Override
+        protected Void doInBackground(Bundle... params) {
+            mResolver.call(mAccount, UIProvider.AccountCallMethods.SET_CURRENT_ACCOUNT,
+                    mAccount.toString(), params[0]);
+            return null;
+        }
+    }
 
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
@@ -300,8 +319,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             final ContentResolver resolver = mActivity.getActivityContext().getContentResolver();
             final Bundle bundle = new Bundle(1);
             bundle.putParcelable(UIProvider.SetCurrentAccountColumns.ACCOUNT, account);
-            resolver.call(mAccount.uri, UIProvider.AccountCallMethods.SET_CURRENT_ACCOUNT,
-                    mAccount.uri.toString(), bundle);
+            final UpdateProvider updater = new UpdateProvider(mAccount.uri, resolver);
+            updater.execute(bundle);
             setFolderAndAccount();
         }
     }
