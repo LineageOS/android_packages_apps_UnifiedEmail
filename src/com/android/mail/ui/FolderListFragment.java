@@ -409,8 +409,9 @@ public class FolderListFragment extends ListFragment implements
                 folder = mCursorAdapter.getFullFolder(folderItem);
                 mSelectedFolderType = folderItem.mFolderType;
             } else {
-                LogUtils.wtf(LOG_TAG, "FolderListFragment: viewFolderOrChangeAccount():"
-                        + "Clicked on unset item in drawer");
+                // Do nothing.
+                LogUtils.d(LOG_TAG, "FolderListFragment: viewFolderOrChangeAccount():"
+                        + " Clicked on unset item in drawer. Offending item is " + item);
                 return;
             }
         } else if (item instanceof Folder) {

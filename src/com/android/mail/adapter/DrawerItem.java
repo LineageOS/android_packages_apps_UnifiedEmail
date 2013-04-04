@@ -84,6 +84,22 @@ public class DrawerItem {
     /** True if this view is enabled, false otherwise. */
     private boolean isEnabled = false;
 
+    @Override
+    public String toString() {
+        switch(mType) {
+            case VIEW_FOLDER:
+                return folderToString();
+            case VIEW_HEADER:
+                return headerToString();
+            case VIEW_ACCOUNT:
+                return accountToString();
+            case VIEW_WAITING_FOR_SYNC:
+                return waitToString();
+        }
+        // Should never come here.
+        return null;
+    }
+
     /**
      * Creates a drawer item with every instance variable specified.
      *
@@ -128,6 +144,17 @@ public class DrawerItem {
                 cursorPosition);
     }
 
+    private String folderToString() {
+        final StringBuilder sb = new StringBuilder("[DrawerItem ");
+        sb.append(" VIEW_FOLDER ");
+        sb.append(", mFolder=");
+        sb.append(mFolder);
+        sb.append(", mFolderType=");
+        sb.append(mFolderType);
+        sb.append("]");
+        return sb.toString();
+    }
+
     /**
      * Creates an item from an account.
      * @param activity the underlying activity
@@ -142,6 +169,15 @@ public class DrawerItem {
                 isCurrentAccount, -1);
     }
 
+    private String accountToString() {
+        final StringBuilder sb = new StringBuilder("[DrawerItem ");
+        sb.append(" VIEW_ACCOUNT ");
+        sb.append(", mAccount=");
+        sb.append(mAccount);
+        sb.append("]");
+        return sb.toString();
+    }
+
     /**
      * Create a header item with a string resource.
      * @param activity the underlying activity
@@ -152,6 +188,15 @@ public class DrawerItem {
         return new DrawerItem(VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false, -1);
     }
 
+    private String headerToString() {
+        final StringBuilder sb = new StringBuilder("[DrawerItem ");
+        sb.append(" VIEW_HEADER ");
+        sb.append(", mResource=");
+        sb.append(mResource);
+        sb.append("]");
+        return sb.toString();
+    }
+
     /**
      * Create a "waiting for initialization" item.
      * @param activity the underlying activity
@@ -160,6 +205,10 @@ public class DrawerItem {
     public static DrawerItem forWaitView(ControllableActivity activity) {
         return new DrawerItem(VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1,
                 false, -1);
+    }
+
+    private String waitToString() {
+        return "[DrawerItem VIEW_WAITING_FOR_SYNC ]";
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
