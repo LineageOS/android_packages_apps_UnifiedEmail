@@ -731,7 +731,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     @Override
-    public boolean isEnabled(int position) {
+    public boolean isEnabled(final int position) {
+        if (mSpecialViewPositions.get(position) != null) {
+            // This is a special view
+            return false;
+        }
+
         return !isPositionDeleting(position) && !isPositionUndoing(position);
     }
 
