@@ -269,6 +269,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         final StringBuilder sb = new StringBuilder(super.toString());
         sb.append("{ViewMode=");
         sb.append(mViewMode);
+        sb.append(" controller=");
+        sb.append(mController);
         sb.append("}");
         return sb.toString();
     }
