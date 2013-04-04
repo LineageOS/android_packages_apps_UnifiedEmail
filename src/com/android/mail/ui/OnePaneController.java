@@ -197,6 +197,19 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("{lastFolderListTransId=");
+        sb.append(mLastFolderListTransactionId);
+        sb.append(" lastInboxTransId=");
+        sb.append(mLastInboxConversationListTransactionId);
+        sb.append(" lastConvListTransId=");
+        sb.append(mLastConversationListTransactionId);
+        sb.append("}");
+        return sb.toString();
+    }
+
+    @Override
     public void showConversationList(ConversationListContext listContext) {
         super.showConversationList(listContext);
         enableCabMode();
@@ -210,16 +223,20 @@ public final class OnePaneController extends AbstractActivityController {
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
         Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
 
-        if (!inInbox(mAccount, mConvListContext)) {
+        if (!inInbox(mAccount, listContext)) {
             // Maintain fragment transaction history so we can get back to the
             // fragment used to launch this list.
-            mLastConversationListTransactionId = replaceFragment(conversationListFragment,
+            mLastConversationListTransactionId = replaceFragmentWithBack(conversationListFragment,
                     transition, TAG_CONVERSATION_LIST, R.id.content_pane);
         } else {
             // If going to the inbox, clear the folder list transaction history.
             mInbox = listContext.folder;
-            mLastInboxConversationListTransactionId = replaceFragment(conversationListFragment,
-                    transition, TAG_CONVERSATION_LIST, R.id.content_pane);
+            mLastInboxConversationListTransactionId = replaceFragmentWithBack(
+                    conversationListFragment, transition, TAG_CONVERSATION_LIST, R.id.content_pane);
+
+            // FIXME: "forgetting" the folder list entry in the back stack doesn't remove it from
+            // the back stack. only popping past it can remove it.
+            // Maybe we should clear the back stack prior to opening a folder.
             mLastFolderListTransactionId = INVALID_ID;
 
             // If we ever to to the inbox, we want to unset the transation id for any other
@@ -265,6 +282,7 @@ public final class OnePaneController extends AbstractActivityController {
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.remove(f);
             ft.commitAllowingStateLoss();
+            fm.executePendingTransactions();
         }
         mPagerController.show(mAccount, mFolder, conversation, true /* changeVisibility */);
         onConversationVisibilityChanged(true);
@@ -330,19 +348,34 @@ public final class OnePaneController extends AbstractActivityController {
     /**
      * Replace the content_pane with the fragment specified here. The tag is specified so that
      * the {@link ActivityController} can look up the fragments through the
-     * {@link android.app.FragmentManager}.
+     * {@link android.app.FragmentManager}. This action will be placed on the back stack.
      * @param fragment the new fragment to put
      * @param transition the transition to show
      * @param tag a tag for the fragment manager.
      * @param anchor ID of view to replace fragment in
      * @return transaction ID returned when the transition is committed.
      */
-    private int replaceFragment(Fragment fragment, int transition, String tag, int anchor) {
-        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
-        fragmentTransaction.addToBackStack(null);
+    private int replaceFragmentWithBack(Fragment fragment, int transition, String tag, int anchor) {
+        return replaceFragment(fragment, transition, tag, anchor, true);
+    }
+
+    // (Not on the back stack -> no transaction ID to return.)
+    private void replaceFragment(Fragment fragment, int transition, String tag, int anchor) {
+        replaceFragment(fragment, transition, tag, anchor, false);
+    }
+
+    private int replaceFragment(Fragment fragment, int transition, String tag, int anchor,
+            boolean addToBackStack) {
+        final FragmentManager fm = mActivity.getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.setTransition(transition);
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null);
+        }
         fragmentTransaction.replace(anchor, fragment, tag);
-        return fragmentTransaction.commitAllowingStateLoss();
+        final int id = fragmentTransaction.commitAllowingStateLoss();
+        fm.executePendingTransactions();
+        return id;
     }
 
     /**
@@ -394,7 +427,7 @@ public final class OnePaneController extends AbstractActivityController {
             } else {
                 transitionToInbox();
             }
-        } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+        } else if (mViewMode.isConversationMode()) {
             transitionBackToConversationListMode(false /* inLoaderCallbacks */);
         } else {
             mActivity.finish();
@@ -406,11 +439,14 @@ public final class OnePaneController extends AbstractActivityController {
     private void goUpFolderHierarchy(Folder current) {
         Folder top = current.parent;
         if (top != null) {
+            // FIXME: This is silly. we worked so hard to add folder fragments to the back stack.
+            // it should either just pop back, or should not use the back stack at all.
+
             setHierarchyFolder(top);
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
-            mLastFolderListTransactionId = replaceFragment(
+            mLastFolderListTransactionId = replaceFragmentWithBack(
                     FolderListFragment.ofTree(top),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
             // Show the up affordance when digging into child folders.
@@ -426,11 +462,8 @@ public final class OnePaneController extends AbstractActivityController {
      * Switch to the Inbox by creating a new conversation list context that loads the inbox.
      */
     private void transitionToInbox() {
-        mViewMode.enterConversationListMode();
         // The inbox could have changed, in which case we should load it again.
-        final boolean inboxChanged = mConvListContext == null || mConvListContext.folder == null
-                || !isDefaultInbox(mConvListContext.folder.uri, mAccount);
-        if (mInbox == null || inboxChanged) {
+        if (mInbox == null || !isDefaultInbox(mInbox.uri, mAccount)) {
             loadAccountInbox();
         } else {
             final ConversationListContext listContext = ConversationListContext.forFolder(mAccount,
@@ -438,7 +471,6 @@ public final class OnePaneController extends AbstractActivityController {
             // Set the correct context for what the conversation view will be
             // now.
             onFolderChanged(mInbox);
-            showConversationList(listContext);
         }
     }
 
@@ -450,7 +482,7 @@ public final class OnePaneController extends AbstractActivityController {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
-            mLastFolderListTransactionId = replaceFragment(
+            mLastFolderListTransactionId = replaceFragmentWithBack(
                     FolderListFragment.ofTree(folder),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
             // Show the up affordance when digging into child folders.
@@ -510,15 +542,16 @@ public final class OnePaneController extends AbstractActivityController {
             onFolderChanged(mInbox);
         } else {
             // TODO: revisit if this block is necessary
-            final ConversationListContext listContext = ConversationListContext.forFolder(
-                    mAccount, mInbox);
             // Set the correct context for what the conversation view will be now.
             onFolderChanged(mInbox);
-            showConversationList(listContext);
         }
         mConversationListVisible = true;
         onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
+    }
+
+    private void safelyPopBackStack(boolean inLoaderCallbacks) {
+        safelyPopBackStack(-1, inLoaderCallbacks);
     }
 
     /**
@@ -532,7 +565,7 @@ public final class OnePaneController extends AbstractActivityController {
      * Otherwise, this method will pop back immediately if safe. Finally, if we are not in
      * onLoadFinished and it's not safe, this method will just ignore the request.
      *
-     * @param transactionId back stack destination to pop to
+     * @param transactionId back stack destination to pop to, or -1 to just pop the top
      * @param inLoaderCallbacks whether we are in the scope of an onLoadFinished (when fragment
      * transactions are disallowed)
      */
@@ -634,7 +667,12 @@ public final class OnePaneController extends AbstractActivityController {
         }
 
         public void popBackStack() {
-            mActivity.getFragmentManager().popBackStack(mTransactionId, 0);
+            final FragmentManager fm = mActivity.getFragmentManager();
+            if (mTransactionId < 0) {
+                fm.popBackStackImmediate();
+            } else {
+                fm.popBackStackImmediate(mTransactionId, 0);
+            }
         }
 
         @Override

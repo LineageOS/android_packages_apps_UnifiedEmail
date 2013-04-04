@@ -342,7 +342,6 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
 
     private int replaceFragment(Fragment fragment, int transition, String tag) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.setTransition(transition);
         fragmentTransaction.replace(R.id.wait, fragment, tag);
         final int transactionId = fragmentTransaction.commitAllowingStateLoss();
