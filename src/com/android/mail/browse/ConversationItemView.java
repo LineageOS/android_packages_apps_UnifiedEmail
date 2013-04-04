@@ -84,6 +84,7 @@ import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
@@ -162,7 +163,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     public ConversationItemViewModel mHeader;
     private boolean mDownEvent;
     private boolean mChecked = false;
-    private static int sFadedActivatedColor = -1;
     private ConversationSelectionSet mSelectedConversationSet;
     private Folder mDisplayedFolder;
     private boolean mPriorityMarkersEnabled;
@@ -179,8 +179,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private final EllipsizedMultilineTextView mSubjectTextView;
     private final TextView mSendersTextView;
     private final TextView mDateTextView;
-    private final DividedImageCanvas mContactImagesHolder;
     private boolean mConvListPhotosEnabled;
+    private final DividedImageCanvas mContactImagesHolder;
+    private int mAttachmentPreviewMode;
+    private final DividedImageCanvas mAttachmentPreviewsCanvas;
+
+    private static int sFadedActivatedColor = -1;
     private static int sFoldersLeftPadding;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
@@ -192,6 +196,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static CharacterStyle sActivatedTextSpan;
     private static Bitmap MORE_FOLDERS;
     private static ContactPhotoManager sContactPhotoManager;
+    private static ContactPhotoManager sAttachmentPreviewsManager;
     private static final String EMPTY_SNIPPET = "";
 
     static {
@@ -408,6 +413,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
             sFoldersLeftPadding = res.getDimensionPixelSize(R.dimen.folders_left_padding);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
+            sAttachmentPreviewsManager = ContactPhotoManager.createContactPhotoManager(context);
         }
 
         mSubjectTextView = new EllipsizedMultilineTextView(mContext);
@@ -426,6 +432,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
         mContactImagesHolder = new DividedImageCanvas(context, this);
+        mAttachmentPreviewsCanvas = new DividedImageCanvas(context, this);
     }
 
     public void bind(Cursor cursor, ControllableActivity activity, ConversationSelectionSet set,
@@ -447,6 +454,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
         // If this was previously bound to a conversation, remove any contact
         // photo manager requests.
+        // TODO:MARKWEI attachment previews
         if (mHeader != null) {
             final ArrayList<String> divisionIds = mContactImagesHolder.getDivisionIds();
             if (divisionIds != null) {
@@ -467,6 +475,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
+        if (mHeader.conversation.getAttachmentsCount() == 0) {
+            mAttachmentPreviewMode = ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE;
+        } else {
+            mAttachmentPreviewMode = mHeader.conversation.read ? ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_SHORT
+                    : ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_TALL;
+        }
         setContentDescription();
         requestLayout();
     }
@@ -520,10 +534,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mHeader.standardScaledDimen != sStandardScaledDimen) {
             // Large Text has been toggle on/off. Update the static dimens.
             sStandardScaledDimen = mHeader.standardScaledDimen;
-            ConversationItemViewCoordinates.refreshConversationHeights(mContext);
+            ConversationItemViewCoordinates.refreshConversationDimens(mContext);
         }
         mCoordinates = ConversationItemViewCoordinates.forWidth(mContext, mViewWidth, mMode,
-                mHeader.standardScaledDimen, mConvListPhotosEnabled);
+                mHeader.standardScaledDimen, mConvListPhotosEnabled, mAttachmentPreviewMode);
         calculateTextsAndBitmaps();
         calculateCoordinates();
 
@@ -609,7 +623,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     mHeader.messageInfoString.toString(), maxChars, mHeader.styledSenders,
                     mHeader.displayableSenderNames, mHeader.displayableSenderEmails, mAccount,
                     true);
-            // If we have displayable sendres, load their thumbnails
+            // If we have displayable senders, load their thumbnails
             loadSenderImages();
         } else {
             SendersView.formatSenders(mHeader, getContext(), true);
@@ -617,6 +631,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
                 mHeader.conversation.dateMs);
+
+        if (mAttachmentPreviewMode != ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE) {
+            loadAttachmentPreviews();
+        }
 
         if (mHeader.isLayoutValid(mContext)) {
             pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
@@ -632,6 +650,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mHeader.conversation.hasAttachments) {
             mHeader.paperclip = ATTACHMENT;
         }
+
         // Personal level.
         mHeader.personalLevelBitmap = null;
         if (mCoordinates.showPersonalLevel) {
@@ -660,6 +679,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void loadSenderImages() {
         if (mConvListPhotosEnabled && mHeader.displayableSenderEmails != null
                 && mHeader.displayableSenderEmails.size() > 0) {
+            if (mCoordinates.contactImagesWidth <= 0 || mCoordinates.contactImagesHeight <= 0) {
+                LogUtils.w(LOG_TAG,
+                        "Contact image width(%d) or height(%d) is 0 for mode: (%d).",
+                        mCoordinates.contactImagesWidth, mCoordinates.contactImagesHeight, mMode);
+                return;
+            }
             mContactImagesHolder.setDimensions(mCoordinates.contactImagesWidth,
                     mCoordinates.contactImagesHeight);
             mContactImagesHolder.setDivisionIds(mHeader.displayableSenderEmails);
@@ -670,6 +695,32 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 PhotoIdentifier photoIdentifier = new ContactIdentifier(
                         mHeader.displayableSenderNames.get(i), emailAddress, i);
                 sContactPhotoManager.loadThumbnail(photoIdentifier, mContactImagesHolder);
+            }
+        }
+    }
+
+    private void loadAttachmentPreviews() {
+        if (mAttachmentPreviewMode != ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE) {
+            final int attachmentPreviewsHeight = ConversationItemViewCoordinates
+                    .getAttachmentPreviewsHeight(mContext, mAttachmentPreviewMode);
+            if (mCoordinates.attachmentPreviewsWidth <= 0 || attachmentPreviewsHeight <= 0) {
+                LogUtils.w(LOG_TAG,
+                        "Attachment preview width(%d) or height(%d) is 0 for mode: (%d,%d).",
+                        mCoordinates.attachmentPreviewsWidth, attachmentPreviewsHeight, mMode,
+                        mAttachmentPreviewMode);
+                return;
+            }
+            mAttachmentPreviewsCanvas.setDimensions(mCoordinates.attachmentPreviewsWidth,
+                    attachmentPreviewsHeight);
+            ArrayList<String> attachments = mHeader.conversation.getAttachments();
+            mAttachmentPreviewsCanvas.setDivisionIds(attachments);
+            int size = attachments.size();
+            for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < size; i++) {
+                String attachment = attachments.get(i);
+                PhotoIdentifier photoIdentifier = new ContactIdentifier(
+                        attachment, attachment, i);
+                sAttachmentPreviewsManager.loadThumbnail(
+                        photoIdentifier, mAttachmentPreviewsCanvas);
             }
         }
     }
@@ -748,7 +799,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     /**
      * Returns the resource for the text color depending on whether the element is activated or not.
      * @param defaultColor
-     * @return
      */
     private int getFontColor(int defaultColor) {
         final boolean isBackGroundBlue = isActivated() && showActivatedText();
@@ -1137,11 +1187,23 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             // Star.
             canvas.drawBitmap(getStarBitmap(), mCoordinates.starX, mCoordinates.starY, sPaint);
         }
+
+        // Attachment previews
+        if (mAttachmentPreviewMode != ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE) {
+            canvas.save();
+            drawAttachmentPreviews(canvas);
+            canvas.restore();
+        }
     }
 
     private void drawContactImages(Canvas canvas) {
         canvas.translate(mCoordinates.contactImagesX, mCoordinates.contactImagesY);
         mContactImagesHolder.draw(canvas);
+    }
+
+    private void drawAttachmentPreviews(Canvas canvas) {
+        canvas.translate(mCoordinates.attachmentPreviewsX, mCoordinates.attachmentPreviewsY);
+        mAttachmentPreviewsCanvas.draw(canvas);
     }
 
     private void drawSubject(Canvas canvas) {
@@ -1540,7 +1602,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             result = specSize;
         } else {
             // Measure the text
-            result = ConversationItemViewCoordinates.getHeight(mContext, mode);
+            result = ConversationItemViewCoordinates.getHeight(
+                    mContext, mode, mAttachmentPreviewMode);
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by
                 // measureSpec

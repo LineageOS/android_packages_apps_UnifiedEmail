@@ -35,6 +35,8 @@ import com.android.mail.photomanager.PhotoManager.DefaultImageProvider;
 import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.ImageCanvas;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 
 /**
  * LetterTileProvider is an implementation of the DefaultImageProvider. When no
@@ -45,6 +47,7 @@ import com.android.mail.ui.ImageCanvas;
  * bitmap with the default contact avatar.
  */
 public class LetterTileProvider implements DefaultImageProvider {
+    private static final String TAG = LogTag.getLogTag();
     private Bitmap mDefaultBitmap;
     private static Bitmap[] sBitmapBackgroundCache;
     private static Typeface sSansSerifLight;
@@ -93,6 +96,13 @@ public class LetterTileProvider implements DefaultImageProvider {
             final String first = firstChar.toUpperCase();
             DividedImageCanvas.Dimensions d = dividedImageView.getDesiredDimensions(address);
             bitmap = getBitmap(d);
+            if (bitmap == null) {
+                LogUtils.w(TAG,
+                        "LetterTileProvider width(%d) or height(%d) is 0 for name %s and address %s.",
+                        dividedImageView.getWidth(), dividedImageView.getHeight(), displayName,
+                        address);
+                return;
+            }
             Canvas c = new Canvas(bitmap);
             c.drawColor(sTileColor);
             sPaint.setTextSize(getFontSize(d.scale));
@@ -112,6 +122,11 @@ public class LetterTileProvider implements DefaultImageProvider {
     }
 
     private Bitmap getBitmap(final DividedImageCanvas.Dimensions d) {
+        if (d.width <= 0 || d.height <= 0) {
+            LogUtils.w(TAG,
+                    "LetterTileProvider width(%d) or height(%d) is 0.", d.width, d.height);
+            return null;
+        }
         final int pos;
         float scale = d.scale;
         if (scale == DividedImageCanvas.ONE) {
