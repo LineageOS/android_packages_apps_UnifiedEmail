@@ -557,11 +557,6 @@ public class UIProvider {
          */
         public static final String QUERY = "query";
 
-        /**
-         * If specified, the query results will be limited to this folder.
-         */
-        public static final String FOLDER = "folder";
-
         private SearchQueryParameters() {}
     }
 
