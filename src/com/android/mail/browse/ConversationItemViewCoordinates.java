@@ -24,10 +24,13 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.ui.ViewMode;
+import com.android.mail.utils.LogUtils;
+
 import com.google.common.base.Objects;
 
 /**
@@ -40,9 +43,16 @@ import com.google.common.base.Objects;
  * @author phamm
  */
 public class ConversationItemViewCoordinates {
-    // Modes.
-    private static final int WIDE_MODE = 0;
+    // Modes
+    static final int MODE_COUNT = 2;
+    static final int WIDE_MODE = 0;
     static final int NORMAL_MODE = 1;
+
+    // Attachment previews modes
+    static final int ATTACHMENT_PREVIEW_MODE_COUNT = 3;
+    static final int ATTACHMENT_PREVIEW_NONE = 0;
+    static final int ATTACHMENT_PREVIEW_TALL = 1;
+    static final int ATTACHMENT_PREVIEW_SHORT = 2;
 
     // Static threshold.
     private static int TOTAL_FOLDER_WIDTH = -1;
@@ -53,6 +63,14 @@ public class ConversationItemViewCoordinates {
     // For combined views
     private static int COLOR_BLOCK_WIDTH = -1;
     private static int COLOR_BLOCK_HEIGHT = -1;
+
+    // Attachments view
+    static int sAttachmentPreviewsHeights[];
+    static int sAttachmentPreviewsMarginTops[];
+    int attachmentPreviewsX;
+    int attachmentPreviewsY;
+    int attachmentPreviewsWidth;
+
 
     // Checkmark.
     int checkmarkX;
@@ -196,24 +214,60 @@ public class ConversationItemViewCoordinates {
     /**
      * Returns the height of the view in this mode.
      */
-    public static int getHeight(Context context, int mode) {
+    public static int getHeight(Context context, int mode, int attachmentPreviewMode) {
         Resources res = context.getResources();
         float density = res.getDisplayMetrics().scaledDensity;
         if (sConversationHeights == null) {
-            sConversationHeights = getDensityDependentArray(
-                    res.getIntArray(R.array.conversation_heights), density);
+            refreshConversationDimens(context);
         }
-        return sConversationHeights[mode];
+
+        // Base height
+        int result = sConversationHeights[mode];
+
+        // Attachment previews margin top
+        if (attachmentPreviewMode != ATTACHMENT_PREVIEW_NONE) {
+            result += sAttachmentPreviewsMarginTops[mode];
+        }
+
+        // Attachment previews height
+        result += getAttachmentPreviewsHeight(
+                context, attachmentPreviewMode);
+
+        return result;
     }
 
     /**
      * Refreshes the conversation heights array.
      */
-    public static void refreshConversationHeights(Context context) {
+    public static void refreshConversationDimens(Context context) {
         Resources res = context.getResources();
         float density = res.getDisplayMetrics().scaledDensity;
+
+        // Height without attachment previews
         sConversationHeights = getDensityDependentArray(
-                res.getIntArray(R.array.conversation_heights), density);
+                res.getIntArray(R.array.conversation_heights_without_attachment_previews), density);
+
+        // Attachment previews height
+        sAttachmentPreviewsHeights = new int[ATTACHMENT_PREVIEW_MODE_COUNT];
+        sAttachmentPreviewsHeights[ATTACHMENT_PREVIEW_TALL] = 0;
+        sAttachmentPreviewsHeights[ATTACHMENT_PREVIEW_TALL] = (int) res.getDimension(
+                R.dimen.attachment_preview_height_tall);
+        sAttachmentPreviewsHeights[ATTACHMENT_PREVIEW_SHORT] = (int) res.getDimension(
+                R.dimen.attachment_preview_height_short);
+
+        // Attachment previews margin top
+        sAttachmentPreviewsMarginTops = new int[MODE_COUNT];
+        sAttachmentPreviewsMarginTops[NORMAL_MODE] = (int) res.getDimension(
+                R.dimen.attachment_preview_margin_top);
+        sAttachmentPreviewsMarginTops[WIDE_MODE] = (int) res.getDimension(
+                R.dimen.attachment_preview_margin_top_wide);
+    }
+
+    public static int getAttachmentPreviewsHeight(Context context, int attachmentPreviewMode) {
+        if (sConversationHeights == null) {
+            refreshConversationDimens(context);
+        }
+        return sAttachmentPreviewsHeights[attachmentPreviewMode];
     }
 
     /**
@@ -284,7 +338,8 @@ public class ConversationItemViewCoordinates {
         Resources res = context.getResources();
         if (TOTAL_FOLDER_WIDTH <= 0) {
             TOTAL_FOLDER_WIDTH = res.getDimensionPixelSize(R.dimen.max_total_folder_width);
-            TOTAL_FOLDER_WIDTH_WIDE = res.getDimensionPixelSize(R.dimen.max_total_folder_width_wide);
+            TOTAL_FOLDER_WIDTH_WIDE = res.getDimensionPixelSize(
+                    R.dimen.max_total_folder_width_wide);
         }
         switch (mode) {
             case WIDE_MODE:
@@ -312,17 +367,32 @@ public class ConversationItemViewCoordinates {
      * the view width.
      */
     public static ConversationItemViewCoordinates forWidth(Context context, int width, int mode,
-            int standardScaledDimen, boolean convListPhotosEnabled) {
+            int standardScaledDimen, boolean convListPhotosEnabled, int attachmentPreviewMode) {
         ConversationItemViewCoordinates coordinates = sCache.get(Objects.hashCode(width, mode,
-                convListPhotosEnabled));
+                convListPhotosEnabled, attachmentPreviewMode));
         if (coordinates == null) {
             coordinates = new ConversationItemViewCoordinates();
-            sCache.put(Objects.hashCode(width, mode, convListPhotosEnabled), coordinates);
+            sCache.put(Objects.hashCode(width, mode, convListPhotosEnabled, attachmentPreviewMode),
+                    coordinates);
 
-            // Layout the appropriate view.
-            int height = getHeight(context, mode);
             View view = LayoutInflater.from(context).inflate(
                     getLayoutId(mode, convListPhotosEnabled), null);
+
+            // Show/hide optional views before measure/layout call
+            View attachmentPreviews = null;
+            if (attachmentPreviewMode != ATTACHMENT_PREVIEW_NONE) {
+                attachmentPreviews = view.findViewById(R.id.attachment_previews);
+                if (attachmentPreviews != null) {
+                    LayoutParams params = attachmentPreviews.getLayoutParams();
+                    attachmentPreviews.setVisibility(View.VISIBLE);
+                    params.height = getAttachmentPreviewsHeight(
+                            context, attachmentPreviewMode);
+                    attachmentPreviews.setLayoutParams(params);
+                }
+            }
+
+            // Layout the appropriate view.
+            int height = getHeight(context, mode, attachmentPreviewMode);
             int widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
             int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
             Resources res = context.getResources();
@@ -414,12 +484,20 @@ public class ConversationItemViewCoordinates {
 
             // Contact images view
             if (convListPhotosEnabled) {
-            View contactImagesView = view.findViewById(R.id.contact_image);
+                View contactImagesView = view.findViewById(R.id.contact_image);
                 if (contactImagesView != null) {
                     coordinates.contactImagesWidth = contactImagesView.getWidth();
                     coordinates.contactImagesHeight = contactImagesView.getHeight();
                     coordinates.contactImagesX = getX(contactImagesView);
                     coordinates.contactImagesY = getY(contactImagesView);
+                }
+            }
+
+            if (attachmentPreviewMode != ATTACHMENT_PREVIEW_NONE) {
+                if (attachmentPreviews != null) {
+                    coordinates.attachmentPreviewsX = getX(attachmentPreviews);
+                    coordinates.attachmentPreviewsY = getY(attachmentPreviews);
+                    coordinates.attachmentPreviewsWidth = attachmentPreviews.getWidth();
                 }
             }
         }
@@ -448,6 +526,6 @@ public class ConversationItemViewCoordinates {
         int mode = ConversationItemViewCoordinates.getMode(context, viewMode);
         return context.getResources().getDimensionPixelSize(
                 mode == WIDE_MODE ?
-                        R.dimen.conversation_item_height_wide : R.dimen.conversation_item_height);
+                R.dimen.conversation_item_height_wide : R.dimen.conversation_item_height);
     }
 }
