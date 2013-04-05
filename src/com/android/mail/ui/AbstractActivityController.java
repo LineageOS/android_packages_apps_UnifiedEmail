@@ -164,6 +164,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected final Context mContext;
     private final FragmentManager mFragmentManager;
     protected final RecentFolderList mRecentFolderList;
+    private final RecentAccountsList mRecentAccountList;
     protected ConversationListContext mConvListContext;
     protected Conversation mCurrentConversation;
     /**
@@ -350,6 +351,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
         mRecentFolderList = new RecentFolderList(mContext);
+        mRecentAccountList = new RecentAccountsList(mContext);
         mTracker = new ConversationPositionTracker(this);
         // Allow the fragment to observe changes to its own selection set. No other object is
         // aware of the selected set.
@@ -1691,6 +1693,7 @@ public abstract class AbstractActivityController implements ActivityController {
             LogUtils.w(LOG_TAG, new Error(), "AAC ignoring account with null settings.");
             return;
         }
+        mRecentAccountList.touchAccount(mAccount);
         mAccountObservers.notifyChanged();
         perhapsEnterWaitMode();
     }
