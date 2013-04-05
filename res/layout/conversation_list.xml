@@ -38,7 +38,7 @@
 
    <include layout="@layout/search_results_view"/>
 
-   <FrameLayout
+   <com.android.mail.ui.ConversationListView android:id="@+id/conversation_list"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
@@ -49,8 +49,26 @@
            android:fadingEdge="none"
            android:layout_alignParentTop="true"/>
 
-       <include layout="@layout/sync_status_view" />
+       <!-- TODO: Top align properly by using custom asset -->
+       <ProgressBar
+           android:id="@+id/sync_trigger"
+           style="?android:attr/progressBarStyleHorizontal"
+           android:layout_width="match_parent"
+           android:layout_height="10dp"
+           android:layout_gravity="top|center"
+           android:max="100"
+           android:progress="100"
+           android:visibility="gone" />
 
-   </FrameLayout>
+       <ProgressBar
+           android:id="@+id/progress"
+           style="?android:attr/progressBarStyleHorizontal"
+           android:layout_width="match_parent"
+           android:layout_height="10dp"
+           android:layout_gravity="top"
+           android:visibility="gone"
+           android:indeterminate="true" />
+
+   </com.android.mail.ui.ConversationListView>
 
 </RelativeLayout>
