@@ -32,5 +32,5 @@ public interface FolderController {
 
     void registerFolderObserver(DataSetObserver observer);
     void unregisterFolderObserver(DataSetObserver observer);
-
+    void requestFolderRefresh();
 }
