@@ -640,6 +640,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (folder == null) {
             return;
         }
+        mFolder = folder;
         setFolderAndAccount();
         if (folder.isSyncInProgress()) {
             onRefreshStarted();
