@@ -16,10 +16,8 @@
 
 package com.android.mail.photomanager;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -38,6 +36,9 @@ import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * LetterTileProvider is an implementation of the DefaultImageProvider. When no
  * matching contact photo is found, and there is a supplied displayName or email
@@ -54,19 +55,23 @@ public class LetterTileProvider implements DefaultImageProvider {
     private static Rect sBounds;
     private static int sTileLetterFontSize = -1;
     private static int sTileLetterFontSizeSmall;
-    private static int sTileColor;
     private static int sTileFontColor;
     private static TextPaint sPaint = new TextPaint();
     private static int DEFAULT_AVATAR_DRAWABLE = R.drawable.ic_contact_picture;
     private static final Pattern ALPHABET = Pattern.compile("^[a-zA-Z0-9]+$");
     private static final int POSSIBLE_BITMAP_SIZES = 3;
 
+    // This should match the total number of colors defined in colors.xml for letter_tile_color
+    private static final int NUM_OF_TILE_COLORS = 7;
+
+    private static final String LOG_TAG = LogTag.getLogTag();
+
     public LetterTileProvider() {
         super();
     }
 
-        @Override
-        public void applyDefaultImage(PhotoIdentifier id, ImageCanvas view, int extent) {
+    @Override
+    public void applyDefaultImage(PhotoIdentifier id, ImageCanvas view, int extent) {
         ContactIdentifier contactIdentifier = (ContactIdentifier) id;
         DividedImageCanvas dividedImageView = (DividedImageCanvas) view;
 
@@ -78,12 +83,11 @@ public class LetterTileProvider implements DefaultImageProvider {
         final String firstChar = display.substring(0, 1);
         // If its a valid english alphabet letter...
         if (isLetter(firstChar)) {
+            final Resources res = dividedImageView.getContext().getResources();
             if (sTileLetterFontSize == -1) {
-                final Resources res = dividedImageView.getContext().getResources();
                 sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
                 sTileLetterFontSizeSmall = res
                         .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
-                sTileColor = res.getColor(R.color.letter_tile_color);
                 sTileFontColor = res.getColor(R.color.letter_tile_font_color);
                 sSansSerifLight = Typeface.create("sans-serif-light", Typeface.NORMAL);
                 sBounds = new Rect();
@@ -104,7 +108,7 @@ public class LetterTileProvider implements DefaultImageProvider {
                 return;
             }
             Canvas c = new Canvas(bitmap);
-            c.drawColor(sTileColor);
+            c.drawColor(pickColor(res, address));
             sPaint.setTextSize(getFontSize(d.scale));
             sPaint.getTextBounds(first, 0, first.length(), sBounds);
             c.drawText(first, 0 + d.width / 2, 0 + d.height / 2 + (sBounds.bottom - sBounds.top)
@@ -156,5 +160,13 @@ public class LetterTileProvider implements DefaultImageProvider {
     private boolean isLetter(String letter) {
         Matcher m = ALPHABET.matcher(letter);
         return m.matches();
+    }
+
+    private int pickColor(Resources res, String emailAddress) {
+        // String.hashCode() implementation is not supposed to change across java versions, so
+        // this should guarantee the same email address always maps to the same color.
+        int color = Math.abs(emailAddress.hashCode()) % NUM_OF_TILE_COLORS;
+        TypedArray colors = res.obtainTypedArray(R.array.letter_tile_colors);
+        return colors.getColor(color, R.color.letter_tile_default_color);
     }
 }
