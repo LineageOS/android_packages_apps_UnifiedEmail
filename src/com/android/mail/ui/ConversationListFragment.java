@@ -93,6 +93,8 @@ public final class ConversationListFragment extends ListFragment implements
 
     private final Handler mHandler = new Handler();
 
+    private ConversationListView mConversationListView;
+
     // The internal view objects.
     private SwipeableListView mListView;
 
@@ -100,25 +102,6 @@ public final class ConversationListFragment extends ListFragment implements
     private TextView mSearchStatusTextView;
 
     private View mSearchStatusView;
-
-    /** Sync status bar that appears over the conversation list during a user triggered sync. */
-    private View mSyncStatusView;
-    /** Loading spinner indicating a sync is in progress. */
-    private View mSyncStatusLoading;
-    /** Text message showing result of sync.  E.g., "No new messages". */
-    private View mSyncStatusResult;
-    /** Whether the sync status bar is currently being displayed or not. */
-    private boolean mIsShowingSyncStatus;
-    /**
-     * Whether a sync has been started since user triggered a sync.
-     * See {@link #updateSyncStatusBar()}.
-     */
-    private boolean mHasSyncStarted;
-    /**
-     * Current folder's {@link Folder#lastMessageTimestamp} when user last triggered a sync.
-     * This is used to detect whether sync resulted in any new messages.
-     */
-    private long mLastMessageTimestamp;
 
     /**
      * Current Account being viewed
@@ -272,6 +255,7 @@ public final class ConversationListFragment extends ListFragment implements
                 mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
                 null);
         mFooterView.setClickListener(mActivity);
+        mConversationListView.setFolderController(mActivity.getFolderController());
         final ConversationCursor conversationCursor = getConversationListCursor();
 
         final ConversationListHelper helper = mActivity.getConversationListHelper();
@@ -397,6 +381,8 @@ public final class ConversationListFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = rootView.findViewById(R.id.empty_view);
+        mConversationListView =
+                (ConversationListView) rootView.findViewById(R.id.conversation_list);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);
@@ -406,11 +392,6 @@ public final class ConversationListFragment extends ListFragment implements
         if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
         }
-
-        mSyncStatusView = rootView.findViewById(R.id.sync_status_bar);
-        mSyncStatusLoading = mSyncStatusView.findViewById(R.id.loading);
-        mSyncStatusResult = mSyncStatusView.findViewById(R.id.sync_result);
-        mIsShowingSyncStatus = false;
 
         return rootView;
     }
@@ -750,7 +731,7 @@ public final class ConversationListFragment extends ListFragment implements
 
     private void onFolderStatusUpdated() {
         // Update the sync status bar with sync results if needed
-        updateSyncStatusBar();
+        checkSyncStatus();
 
         final ConversationCursor cursor = getConversationListCursor();
         Bundle extras = cursor != null ? cursor.getExtras() : Bundle.EMPTY;
@@ -859,86 +840,20 @@ public final class ConversationListFragment extends ListFragment implements
         mUpdater.showNextConversation(conversations);
     }
 
+    private void checkSyncStatus() {
+        if (mFolder.isSyncInProgress()) {
+            // Still syncing, ignore
+        } else {
+            // Finished syncing:
+            mConversationListView.onSyncFinished();
+        }
+    }
+
     /**
-     * Show the sync status bar with progress spinner if it isn't being displayed
-     * already.
+     * Displays the indefinite progress bar indicating a sync is in progress.  This
+     * should only be called if user manually requested a sync, and not for background syncs.
      */
     protected void showSyncStatusBar() {
-        if (mIsShowingSyncStatus) {
-            return;
-        }
-
-        // Remember the last message timestamp so after sync is finished
-        // we can compare against it to determine if any new messages were found.
-        mLastMessageTimestamp = mFolder.lastMessageTimestamp;
-
-        // Animate the status bar slide down over the top of conversation list:
-        mSyncStatusLoading.setVisibility(View.VISIBLE);
-        mSyncStatusResult.setVisibility(View.GONE);
-        mSyncStatusView.setTranslationY(-mSyncStatusView.getHeight());
-        mSyncStatusView.setVisibility(View.VISIBLE);
-        mSyncStatusView.animate().translationY(0).setDuration(200).start();
-        mIsShowingSyncStatus = true;
-        mHasSyncStarted = false;
-    }
-
-    /**
-     * Update the sync status bar based on current values of {@link #mFolder}.  If the sync
-     * resulted in new messages simply dismiss the sync status bar.  If no new messages were
-     * found display that info to the user and hide the status bar after a delay.
-     */
-    private void updateSyncStatusBar() {
-        if (!mIsShowingSyncStatus) {
-            return;
-        }
-
-        // A sync request seems to result in several #onFolderUpdated() calls to invoked,
-        // which in turn calls this method.  The first few of those invocations does not
-        // contain result of sync (e.g., mFolder.lastMessageTimestamp is not updated) and
-        // should be ignored.  We're using #isSyncInProgress here as the best signal
-        // on whether to ignore those calls.
-        if (mFolder.isSyncInProgress()) {
-            mHasSyncStarted = true;
-            return;
-        }
-        if (!mHasSyncStarted) {
-            return;
-        }
-
-        // If we reach here, current values in mFolder should accurately reflect result of sync.
-        if (mFolder.wasSyncSuccessful()) {
-            if (mLastMessageTimestamp < mFolder.lastMessageTimestamp) {
-                // Sync resulted in new messages
-                mLastMessageTimestamp = mFolder.lastMessageTimestamp;
-                hideSyncStatusBar();
-            } else {
-                // No new messages found, display "no new messages" in sync status bar.
-                mSyncStatusLoading.setVisibility(View.GONE);
-                mSyncStatusResult.setVisibility(View.VISIBLE);
-                // Auto-hide the sync status bar after a delay.
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        hideSyncStatusBar();
-                    }
-                }, NO_NEW_MESSAGE_DURATION);
-            }
-        } else {
-            // If sync failed, MailActionBarView will toast proper error message,
-            // So we only need to hide status bar here.
-            hideSyncStatusBar();
-        }
-    }
-
-    private void hideSyncStatusBar() {
-        if (!mIsShowingSyncStatus) {
-            return;
-        }
-
-        // Animate the status bar smSyncStatusView.getHeight()
-        mSyncStatusView.animate()
-                .translationY(-mSyncStatusView.getHeight())
-                .setDuration(200).start();
-        mIsShowingSyncStatus = false;
+        mConversationListView.showSyncStatusBar();
     }
 }
