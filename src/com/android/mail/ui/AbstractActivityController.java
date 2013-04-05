@@ -1025,7 +1025,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 toggleFolderListState();
                 break;
             case R.id.refresh:
-                // TODO(alice): add "pull to refresh" as another way to trigger a refresh */
                 requestFolderRefresh();
                 break;
             case R.id.settings:
@@ -1423,11 +1422,10 @@ public abstract class AbstractActivityController implements ActivityController {
         }.run(mResolver, msg.uri, values, null /* selection*/, null /* selectionArgs */);
     }
 
-    private void requestFolderRefresh() {
+    public void requestFolderRefresh() {
         if (mFolder == null) {
             return;
         }
-        // Slide out the sync status bar over the top of conversation list view
         final ConversationListFragment convList = getConversationListFragment();
         if (convList == null) {
             // This could happen if this account is in initial sync (user
