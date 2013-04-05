@@ -559,23 +559,19 @@
     <style name="SubjectAppearanceUnreadStyle">
         <item name="android:textColor">@color/subject_text_color_unread</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/subject_font_size</item>
     </style>
 
     <style name="SubjectAppearanceReadStyle">
         <item name="android:textColor">@color/subject_text_color_read</item>
-        <item name="android:textSize">@dimen/subject_font_size</item>
     </style>
 
     <style name="SendersUnreadTextAppearance">
         <item name="android:textColor">@color/senders_text_color_unread</item>
-        <item name="android:textSize">@dimen/senders_font_size</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="SendersReadTextAppearance">
         <item name="android:textColor">@color/senders_text_color_read</item>
-        <item name="android:textSize">@dimen/senders_font_size</item>
     </style>
 
     <style name="NotificationSendersUnreadTextAppearance">
@@ -588,19 +584,16 @@
     </style>
 
     <style name="MessageInfoUnreadTextAppearance">
-        <item name="android:textSize">@dimen/senders_font_size</item>
         <item name="android:textColor">@color/message_info_text_color</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="MessageInfoReadTextAppearance">
-        <item name="android:textSize">@dimen/senders_font_size</item>
         <item name="android:textColor">@color/message_info_text_color</item>
     </style>
 
-    <style name="DraftTextAppearance" parent="@android:attr/textAppearanceMedium">
+    <style name="DraftTextAppearance">
         <item name="android:textColor">@color/drafts</item>
-        <item name="android:textSize">@dimen/senders_font_size</item>
     </style>
 
     <style name="SendingTextAppearance" parent="@style/DraftTextAppearance">

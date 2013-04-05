@@ -51,7 +51,6 @@ import java.util.List;
 public class ConversationItemViewModel {
     private static final int MAX_CACHE_SIZE = 100;
 
-    boolean faded = false;
     int fontColor;
     @VisibleForTesting
     static LruCache<Pair<String, Long>, ConversationItemViewModel> sConversationHeaderMap
@@ -93,6 +92,7 @@ public class ConversationItemViewModel {
     public int viewWidth;
 
     // Standard scaled dimen used to detect if the scale of text has changed.
+    @Deprecated
     public int standardScaledDimen;
 
     public long maxMessageId;
@@ -156,7 +156,6 @@ public class ConversationItemViewModel {
         ConversationItemViewModel header = ConversationItemViewModel.forConversationId(account,
                 conv.id);
         if (conv != null) {
-            header.faded = false;
             header.checkboxVisible = true;
             header.conversation = conv;
             header.unread = !conv.read;
