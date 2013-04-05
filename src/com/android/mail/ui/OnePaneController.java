@@ -185,6 +185,8 @@ public final class OnePaneController extends AbstractActivityController {
         final int childCount = parent.getChildCount();
         if (childCount != 2) {
             // No idea which child will be the right ImageView for 'up', an OEM has modified home
+            LogUtils.w(LOG_TAG, "OnePaneController.configureUpDrawable(): "
+                    + "Action bar has incorrect number of children: %d expected 2", childCount);
             return;
         }
 
@@ -198,6 +200,9 @@ public final class OnePaneController extends AbstractActivityController {
             mUp = (ImageView) up;
             mUpDrawable = mUp.getDrawable();
             mBurgerDrawable = mContext.getResources().getDrawable(R.drawable.ic_drawer_glyph);
+        } else {
+            LogUtils.w(LOG_TAG,
+                    "OnePaneController.configureUpDrawable(): Up arrow was not of type ImageView");
         }
     }
 
