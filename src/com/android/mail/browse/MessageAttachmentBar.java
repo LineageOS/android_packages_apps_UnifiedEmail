@@ -210,8 +210,16 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 // button or cancel button or one of the
                 // overflow items.
 
+                // If the mimetype is blocked, show the info dialog
+                if (MimeType.isBlocked(mAttachment.getContentType())) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    int dialogMessage = R.string.attachment_type_blocked;
+                    builder.setTitle(R.string.more_info_attachment)
+                           .setMessage(dialogMessage)
+                           .show();
+                }
                 // If we can install, install.
-                if (MimeType.isInstallable(mAttachment.getContentType())) {
+                else if (MimeType.isInstallable(mAttachment.getContentType())) {
                     // Save to external because the package manager only handles
                     // file:// uris not content:// uris. We do the same
                     // workaround in
@@ -231,8 +239,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 // Otherwise, if we cannot do anything, show the info dialog.
                 else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    int dialogMessage = MimeType.isBlocked(mAttachment.getContentType())
-                            ? R.string.attachment_type_blocked : R.string.no_application_found;
+                    int dialogMessage = R.string.no_application_found;
                     builder.setTitle(R.string.more_info_attachment)
                            .setMessage(dialogMessage)
                            .show();
