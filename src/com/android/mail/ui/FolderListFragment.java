@@ -77,7 +77,7 @@ public class FolderListFragment extends ListFragment implements
     private Uri mSelectedFolderUri = Uri.EMPTY;
     /**
      * The current folder from the controller.  This is meant only to check when the unread count
-     * goes out of sync and fixing it. This should NOT be serialized and stored.
+     * goes out of sync and fixing it.
      */
     private Folder mCurrentFolderForUnreadCheck;
     /** Parent of the current folder, or null if the current folder is not a child. */
@@ -228,6 +228,7 @@ public class FolderListFragment extends ListFragment implements
         // activity is creating ConversationListFragments. This activity must be of type
         // ControllableActivity.
         final Activity activity = getActivity();
+        Folder currentFolder = null;
         if (! (activity instanceof ControllableActivity)){
             LogUtils.wtf(LOG_TAG, "FolderListFragment expects only a ControllableActivity to" +
                     "create it. Cannot proceed.");
@@ -244,8 +245,25 @@ public class FolderListFragment extends ListFragment implements
         };
         if (controller != null) {
             // Only register for selected folder updates if we have a controller.
-            mCurrentFolderForUnreadCheck = mFolderObserver.initialize(controller);
+            currentFolder = mFolderObserver.initialize(controller);
+            mCurrentFolderForUnreadCheck = currentFolder;
         }
+
+        // Initialize adapter for folder/heirarchical list
+        final Folder selectedFolder;
+        if (mParentFolder != null) {
+            mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
+            selectedFolder = mActivity.getHierarchyFolder();
+        } else {
+            mCursorAdapter = new FolderListAdapter(mIsSectioned);
+            selectedFolder = currentFolder;
+        }
+        // Is the selected folder fresher than the one we have restored from a bundle?
+        if (selectedFolder != null && !selectedFolder.uri.equals(mSelectedFolderUri)) {
+            setSelectedFolder(selectedFolder);
+        }
+
+        // Assign observers for current account & all accounts
         final AccountController accountController = mActivity.getAccountController();
         mAccountObserver = new AccountObserver() {
             @Override
@@ -273,21 +291,6 @@ public class FolderListFragment extends ListFragment implements
             return;
         }
 
-        final Folder selectedFolder;
-        if (mParentFolder != null) {
-            mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
-            selectedFolder = mActivity.getHierarchyFolder();
-        } else {
-            // Initiate FLA with accounts and folders collapsed in the list
-            // The second param is for whether folders should be collapsed
-            // The third param is for whether accounts should be collapsed
-            mCursorAdapter = new FolderListAdapter(mIsSectioned);
-            selectedFolder = controller == null ? null : controller.getFolder();
-        }
-        // Is the selected folder fresher than the one we have restored from a bundle?
-        if (selectedFolder != null && !selectedFolder.uri.equals(mSelectedFolderUri)) {
-            setSelectedFolder(selectedFolder);
-        }
         setListAdapter(mCursorAdapter);
     }
 
@@ -985,9 +988,17 @@ public class FolderListFragment extends ListFragment implements
      * @param account the current account to set to.
      */
     private void setSelectedAccount(Account account){
-        mCurrentAccount = account;
-        if (mCurrentAccount != null) {
-            getLoaderManager().restartLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
+        final LoaderManager manager = getLoaderManager();
+        if (mCurrentAccount != null && account != null && mCurrentAccount.uri.equals(account.uri)) {
+            // If currentAccount is the same as the one we set, restartLoader
+            manager.restartLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
+        } else {
+            // Otherwise, recreate the loader entirely by destroying and calling init
+            mCurrentAccount = account;
+            if (mCurrentAccount != null) {
+                manager.destroyLoader(FOLDER_LOADER_ID);
+                manager.initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
+            }
         }
     }
 
