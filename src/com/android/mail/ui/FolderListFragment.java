@@ -512,7 +512,9 @@ public class FolderListFragment extends ListFragment implements
                 recalculateList();
             }
         };
-
+        /** No resource used for string header in folder list */
+        private static final int NO_HEADER_RESOURCE = -1;
+        /** Cache of most recently used folders */
         private final RecentFolderList mRecentFolders;
         /** True if the list is sectioned, false otherwise */
         private final boolean mIsSectioned;
@@ -646,18 +648,17 @@ public class FolderListFragment extends ListFragment implements
                 // we don't, and we should.
                 return;
             }
+            mItemList.clear();
+            recalculateListAccounts();
             recalculateListFolders();
             // Ask the list to invalidate its views.
             notifyDataSetChanged();
         }
 
         /**
-         * Recalculates the system, recent and user label lists.
-         * This method modifies all the three lists on every single invocation.
+         * Recalculates the accounts if not null and adds them to the list.
          */
-        private void recalculateListFolders() {
-            mItemList.clear();
-
+        private void recalculateListAccounts() {
             if (mAllAccounts != null) {
                 // Add the accounts at the top. Tell mFolderWatcher which
                 // folders to track in case accounts were null earlier on.
@@ -680,7 +681,13 @@ public class FolderListFragment extends ListFragment implements
                         mCurrentAccount.settings.defaultInbox);
                 mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, unreadCount, true));
             }
+        }
 
+        /**
+         * Recalculates the system, recent and user label lists.
+         * This method modifies all the three lists on every single invocation.
+         */
+        private void recalculateListFolders() {
             // If we are waiting for folder initialization, we don't have any kinds of folders,
             // just the "Waiting for initialization" item.
             if (isCursorInvalid(mCursor)) {
@@ -697,27 +704,56 @@ public class FolderListFragment extends ListFragment implements
                                 mCursor.getPosition()));
                     }
                 } while (mCursor.moveToNext());
-                // Ask the list to invalidate its views.
-                notifyDataSetChanged();
                 return;
             }
 
             // Otherwise, this is an adapter for a sectioned list.
-            // First add all the system folders.
-            final List<DrawerItem> userFolderList = new ArrayList<DrawerItem>();
+            final List<DrawerItem> allFoldersList = new ArrayList<DrawerItem>();
+            final List<DrawerItem> inboxFolders = new ArrayList<DrawerItem>();
             do {
                 final Folder f = mCursor.getModel();
                 if (!isFolderTypeExcluded(f)) {
-                    if (f.isProviderFolder()) {
-                        mItemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_SYSTEM,
-                                mCursor.getPosition()));
+                    if (f.isProviderFolder() && f.isInbox()) {
+                        inboxFolders.add(DrawerItem.ofFolder(
+                                mActivity, f, DrawerItem.FOLDER_SYSTEM, mCursor.getPosition()));
                     } else {
-                        userFolderList.add(DrawerItem.ofFolder(
+                        allFoldersList.add(DrawerItem.ofFolder(
                                 mActivity, f, DrawerItem.FOLDER_USER, mCursor.getPosition()));
                     }
                 }
             } while (mCursor.moveToNext());
-            // If there are recent folders, add them and a header.
+
+            // Add all inboxes (sectioned included) before recents.
+            addFolderSection(inboxFolders, NO_HEADER_RESOURCE);
+
+            // Add most recently folders (in alphabetical order) next.
+            addRecentsToList();
+
+            // Add the remaining provider folders followed by all labels.
+            addFolderSection(allFoldersList,  R.string.all_folders_heading);
+        }
+
+        /**
+         * Given a list of folders as {@link DrawerItem}s, add them to the item
+         * list as needed. Passing in a non-0 integer for the resource will
+         * enable a header
+         *
+         * @param foldersList List of drawer items representing folders to add to the drawer
+         * @param headerStringResource
+         *            {@link FolderListAdapter#NO_HEADER_RESOURCE} if no header
+         *            is required, or res-id otherwise
+         */
+        private void addFolderSection(List<DrawerItem> foldersList, int headerStringResource) {
+            if (foldersList.size() > 0) {
+                if(headerStringResource != NO_HEADER_RESOURCE) {
+                    mItemList.add(DrawerItem.ofHeader(mActivity, headerStringResource));
+                }
+                mItemList.addAll(foldersList);
+            }
+        }
+
+        private void addRecentsToList() {
+            // If there are recent folders, add them.
             final List<Folder> recentFolderList = getRecentFolders(mRecentFolders);
 
             // Remove any excluded folder types
@@ -737,13 +773,6 @@ public class FolderListFragment extends ListFragment implements
                 for (Folder f : recentFolderList) {
                     mItemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_RECENT,
                             position));
-                }
-            }
-            // If there are user folders, add them and a header.
-            if (userFolderList.size() > 0) {
-                mItemList.add(DrawerItem.ofHeader(mActivity, R.string.all_folders_heading));
-                for (final DrawerItem i : userFolderList) {
-                    mItemList.add(i);
                 }
             }
         }
