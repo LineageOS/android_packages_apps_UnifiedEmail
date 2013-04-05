@@ -48,7 +48,7 @@ public final class RecentAccountsList {
     private final LinkedList<String> mAccountsCache;
 
     /**
-     * Class to store the recent folder list asynchronously.
+     * Class to store the recent accounts list asynchronously.
      */
     private class StoreRecent extends AsyncTask<Void, Void, Void> {
         /** Account to store in Mail Prefs */
@@ -134,11 +134,15 @@ public final class RecentAccountsList {
      * Accounts that are not in the cache or stale URIs that are still remaining
      * in the cache.
      *
+     * Do NOT call this more than necessary. It may affect performance for large
+     * number of accounts.
+     *
      * @param unsortedAccounts array of Accounts to be ordered
      * @return ordered array of Accounts from least to most recently used.
      */
-    public Account[] getSortedAccountsArray(final Account[] unsortedAccounts) {
+    public Account[] getSorted(final Account[] unsortedAccounts) {
         if(unsortedAccounts == null) {
+            // For the sake of consistency along users of allAccounts, this needs to return null
             return null;
         }
 
@@ -151,8 +155,8 @@ public final class RecentAccountsList {
         Account currAccount;
 
         // Add unsortedAccounts to map
-        for (int i = 0; i < unsortedAccounts.length; i++) {
-            accountsMap.put(unsortedAccounts[i].uri.toString(), unsortedAccounts[i]);
+        for (final Account account : unsortedAccounts) {
+            accountsMap.put(account.uri.toString(), account);
         }
 
         // Traverse cached list and populate sortedAccounts or fix cache if
@@ -174,7 +178,7 @@ public final class RecentAccountsList {
 
         // For any accounts that weren't in the cache, add them to the cache as
         // least recently used and the final results as well.
-        for (Account uncachedAccount : accountsMap.values()) {
+        for (final Account uncachedAccount : accountsMap.values()) {
             mAccountsCache.addFirst(uncachedAccount.uri.toString());
             sortedAccounts.addFirst(uncachedAccount);
         }

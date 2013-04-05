@@ -1694,6 +1694,7 @@ public abstract class AbstractActivityController implements ActivityController {
             return;
         }
         mRecentAccountList.touchAccount(mAccount);
+        mAllAccounts = mRecentAccountList.getSorted(mAllAccounts);
         mAccountObservers.notifyChanged();
         perhapsEnterWaitMode();
     }
@@ -2138,7 +2139,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         // Whether we have updated the current account or not, we need to update the list of
         // accounts in the ActionBar.
-        mAllAccounts = allAccounts;
+        mAllAccounts = mRecentAccountList.getSorted(allAccounts);
         mAllAccountObservers.notifyChanged();
         return (allAccounts.length > 0);
     }
