@@ -21,7 +21,6 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
@@ -29,8 +28,6 @@ import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Attachment;
-
-import com.google.common.collect.ImmutableMap;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

@@ -23,7 +23,6 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
@@ -37,7 +36,6 @@ import android.util.LruCache;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogUtils;
-import com.google.common.collect.Sets;
 
 import java.util.Collection;
 import java.util.HashMap;

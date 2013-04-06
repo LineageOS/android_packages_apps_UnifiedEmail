@@ -29,7 +29,6 @@ import android.view.ViewParent;
 import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.ui.ViewMode;
-import com.android.mail.utils.LogUtils;
 
 import com.google.common.base.Objects;
 
@@ -215,8 +214,6 @@ public class ConversationItemViewCoordinates {
      * Returns the height of the view in this mode.
      */
     public static int getHeight(Context context, int mode, int attachmentPreviewMode) {
-        Resources res = context.getResources();
-        float density = res.getDisplayMetrics().scaledDensity;
         if (sConversationHeights == null) {
             refreshConversationDimens(context);
         }
