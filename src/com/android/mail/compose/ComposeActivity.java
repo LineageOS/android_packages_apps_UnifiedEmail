@@ -169,8 +169,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // to populate the map with data stored in shared preferences.
     // FIXME: values in this map are never read.
     private static ConcurrentHashMap<Integer, Long> sRequestMessageIdMap = null;
-    // Key used to store the above map
-    private static final String CACHED_MESSAGE_REQUEST_IDS_KEY = "cache-message-request-ids";
     /**
      * Notifies the {@code Activity} that the caller is an Email
      * {@code Activity}, so that the back behavior may be modified accordingly.
@@ -602,7 +600,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private boolean hadSavedInstanceStateMessage(Bundle savedInstanceState) {
+    private static boolean hadSavedInstanceStateMessage(final Bundle savedInstanceState) {
         return savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MESSAGE);
     }
 
@@ -633,6 +631,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     mTo.requestFocus();
                     break;
                 }
+                //$FALL-THROUGH$
             case REPLY:
             case REPLY_ALL:
             default:
@@ -833,7 +832,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return message;
     }
 
-    private String formatSenders(String string) {
+    private static String formatSenders(final String string) {
         if (!TextUtils.isEmpty(string) && string.charAt(string.length() - 1) == ',') {
             return string.substring(0, string.length() - 1);
         }
@@ -969,8 +968,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return matchingReplyFrom;
     }
 
-    private ReplyFromAccount getDefaultReplyFromAccount(Account account) {
-        for (ReplyFromAccount from : account.getReplyFroms()) {
+    private static ReplyFromAccount getDefaultReplyFromAccount(final Account account) {
+        for (final ReplyFromAccount from : account.getReplyFroms()) {
             if (from.isDefault) {
                 return from;
             }
@@ -1541,14 +1540,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (action == ComposeActivity.FORWARD) {
             return;
         }
-        initReplyRecipients(mAccount.name, refMessage, action);
+        initReplyRecipients(refMessage, action);
     }
 
     @VisibleForTesting
-    void initReplyRecipients(String account, Message refMessage, int action) {
-        // This is the email address of the current user, i.e. the one composing
-        // the reply.
-        final String accountEmail = Address.getEmailAddress(account).getAddress();
+    void initReplyRecipients(final Message refMessage, final int action) {
         String[] sentToAddresses = refMessage.getToAddresses();
         final Collection<String> toAddresses;
         String replytoAddress = refMessage.getReplyTo();
@@ -1562,16 +1558,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // message, excluding the current user's email address and any addresses
         // already on the To list.
         if (action == ComposeActivity.REPLY) {
-            toAddresses = initToRecipients(accountEmail, refMessage.getFrom(),
-                    replytoAddress, sentToAddresses);
+            toAddresses = initToRecipients(refMessage.getFrom(), replytoAddress, sentToAddresses);
             addToAddresses(toAddresses);
         } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
-            toAddresses = initToRecipients(accountEmail, refMessage.getFrom(),
-                    replytoAddress, sentToAddresses);
+            toAddresses = initToRecipients(refMessage.getFrom(), replytoAddress, sentToAddresses);
             addToAddresses(toAddresses);
-            addRecipients(accountEmail, ccAddresses, sentToAddresses);
-            addRecipients(accountEmail, ccAddresses, refMessage.getCcAddresses());
+            addRecipients(ccAddresses, sentToAddresses);
+            addRecipients(ccAddresses, refMessage.getCcAddresses());
             addCcAddresses(ccAddresses, toAddresses);
         }
     }
@@ -1616,9 +1610,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private HashSet<String> convertToHashSet(List<Rfc822Token[]> list) {
-        HashSet<String> hash = new HashSet<String>();
-        for (Rfc822Token[] tokens : list) {
+    private static HashSet<String> convertToHashSet(final List<Rfc822Token[]> list) {
+        final HashSet<String> hash = new HashSet<String>();
+        for (final Rfc822Token[] tokens : list) {
             for (int i = 0; i < tokens.length; i++) {
                 hash.add(tokens[i].getAddress());
             }
@@ -1643,11 +1637,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private void addAddressToList(String address, RecipientEditTextView list) {
+    private static void addAddressToList(final String address, final RecipientEditTextView list) {
         if (address == null || list == null)
             return;
 
-        Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(address);
+        final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(address);
 
         for (int i = 0; i < tokens.length; i++) {
             list.append(tokens[i] + END_TOKEN);
@@ -1655,8 +1649,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @VisibleForTesting
-    protected Collection<String> initToRecipients(String accountEmail, String fullSenderAddress,
-            String replyToAddress, String[] inToAddresses) {
+    protected Collection<String> initToRecipients(final String fullSenderAddress,
+            final String replyToAddress, final String[] inToAddresses) {
         // The To recipient is the reply-to address specified in the original
         // message, unless it is:
         // the current user OR a custom from of the current user, in which case
@@ -1687,8 +1681,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return toAddresses;
     }
 
-    private void addRecipients(String accountAddress, Set<String> recipients, String[] addresses) {
-        for (String email : addresses) {
+    private void addRecipients(final Set<String> recipients, final String[] addresses) {
+        for (final String email : addresses) {
             // Do not add this account, or any of its custom from addresses, to
             // the list of recipients.
             final String recipientAddress = Address.getEmailAddress(email).getAddress();
@@ -1974,7 +1968,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
 
             final long messageIdToSave = messageId;
-            sendOrSaveMessage(messageIdToSave, sendOrSaveMessage, selectedAccount, message);
+            sendOrSaveMessage(messageIdToSave, sendOrSaveMessage, selectedAccount);
 
             if (!sendOrSaveMessage.mSave) {
                 UIProvider.incrementRecipientsTimesContacted(mContext,
@@ -1990,8 +1984,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         /**
          * Send or Save a message.
          */
-        private void sendOrSaveMessage(long messageIdToSave, SendOrSaveMessage sendOrSaveMessage,
-                ReplyFromAccount selectedAccount, Message message) {
+        private void sendOrSaveMessage(final long messageIdToSave,
+                final SendOrSaveMessage sendOrSaveMessage, final ReplyFromAccount selectedAccount) {
             final ContentResolver resolver = mContext.getContentResolver();
             final boolean updateExistingMessage = messageIdToSave != UIProvider.INVALID_MESSAGE_ID;
 
@@ -2037,11 +2031,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
         }
 
-        private void closeOpenedAttachmentFds(SendOrSaveMessage sendOrSaveMessage) {
+        private static void closeOpenedAttachmentFds(final SendOrSaveMessage sendOrSaveMessage) {
             final Bundle openedFds = sendOrSaveMessage.attachmentFds();
             if (openedFds != null) {
                 final Set<String> keys = openedFds.keySet();
-                for (String key : keys) {
+                for (final String key : keys) {
                     final ParcelFileDescriptor fd = openedFds.getParcelable(key);
                     if (fd != null) {
                         try {
@@ -2059,8 +2053,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
          *
          * If this was successful, this method will return an non-null Bundle instance
          */
-        private Bundle callAccountSendSaveMethod(ContentResolver resolver, Account account,
-                String method, SendOrSaveMessage sendOrSaveMessage) {
+        private static Bundle callAccountSendSaveMethod(final ContentResolver resolver,
+                final Account account, final String method,
+                final SendOrSaveMessage sendOrSaveMessage) {
             // Copy all of the values from the content values to the bundle
             final Bundle methodExtras = new Bundle(sendOrSaveMessage.mValues.size());
             final Set<Entry<String, Object>> valueSet = sendOrSaveMessage.mValues.valueSet();
@@ -2127,7 +2122,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
          * called before the ComposeActivity finishes.
          * Note: The caller is responsible for closing these file descriptors.
          */
-        private Bundle initializeAttachmentFds(Context context, List<Attachment> attachments) {
+        private static Bundle initializeAttachmentFds(final Context context,
+                final List<Attachment> attachments) {
             if (attachments == null || attachments.size() == 0) {
                 return null;
             }
@@ -2209,11 +2205,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @param to String array of email addresses to check.
      * @param wrongEmailsOut Emails addresses that were invalid.
      */
-    public void checkInvalidEmails(String[] to, List<String> wrongEmailsOut) {
+    public void checkInvalidEmails(final String[] to, final List<String> wrongEmailsOut) {
         if (mValidator == null) {
             return;
         }
-        for (String email : to) {
+        for (final String email : to) {
             if (!mValidator.isValid(email)) {
                 wrongEmailsOut.add(email);
             }
@@ -2338,8 +2334,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return false;
         }
 
-        String[] to, cc, bcc;
-        Editable body = mBodyView.getEditableText();
+        final String[] to, cc, bcc;
+        final Editable body = mBodyView.getEditableText();
         if (orientationChanged) {
             to = cc = bcc = new String[0];
         } else {
@@ -2373,7 +2369,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                sendOrSave(mBodyView.getEditableText(), save, showToast, orientationChanged);
+                sendOrSave(mBodyView.getEditableText(), save, showToast);
             }
         };
 
@@ -2408,7 +2404,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
         }
 
-        sendOrSave(body, save, showToast, false);
+        sendOrSave(body, save, showToast);
         return true;
     }
 
@@ -2563,21 +2559,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return draftType;
     }
 
-    private void sendOrSave(Spanned body, boolean save, boolean showToast,
-            boolean orientationChanged) {
+    private void sendOrSave(final Spanned body, final boolean save, final boolean showToast) {
         // Check if user is a monkey. Monkeys can compose and hit send
         // button but are not allowed to send anything off the device.
         if (ActivityManager.isUserAMonkey()) {
             return;
-        }
-
-        String[] to, cc, bcc;
-        if (orientationChanged) {
-            to = cc = bcc = new String[0];
-        } else {
-            to = getToAddresses();
-            cc = getCcAddresses();
-            bcc = getBccAddresses();
         }
 
         SendOrSaveCallback callback = new SendOrSaveCallback() {
