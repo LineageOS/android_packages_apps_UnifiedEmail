@@ -1622,7 +1622,6 @@ public class UIProvider {
         AttachmentColumns.PREVIEW_INTENT_URI,
         AttachmentColumns.PROVIDER_DATA
     };
-    private static final String EMAIL_SEPARATOR_PATTERN = "\n";
     public static final int ATTACHMENT_NAME_COLUMN = 0;
     public static final int ATTACHMENT_SIZE_COLUMN = 1;
     public static final int ATTACHMENT_URI_COLUMN = 2;

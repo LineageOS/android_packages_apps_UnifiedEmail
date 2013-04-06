@@ -78,10 +78,7 @@ public class ConversationCursorTests extends ProviderTestCase2<TestProvider> {
 //    private static final int STARRED_INDEX = 3;
     private static final int URI_INDEX = 4;
 
-    private static final String[] CONVO_PROJECTION = new String[] {
-        SUBJECT_COLUMN, FOLDER_COLUMN, READ_COLUMN, STARRED_COLUMN, URI_COLUMN};
-
-    private ContentValues makeConvo(String subject, String folder, int read, int starred) {
+    private static ContentValues makeConvo(String subject, String folder, int read, int starred) {
         ContentValues cv = new ContentValues();
         cv.put(SUBJECT_COLUMN, subject);
         cv.put(FOLDER_COLUMN, folder);

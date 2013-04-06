@@ -220,7 +220,7 @@ public class NotificationUtils {
                 final Pair<Integer, Integer> value = get(key);
                 final Integer unreadCount = value.first;
                 final Integer unseenCount = value.second;
-                if (value != null && unreadCount != null && unseenCount != null) {
+                if (unreadCount != null && unseenCount != null) {
                     final String[] partValues = new String[] {
                             key.account.uri.toString(), key.folder.uri.toString(),
                             unreadCount.toString(), unseenCount.toString()};
@@ -545,17 +545,15 @@ public class NotificationUtils {
             final String ringtoneUri = folderPreferences.getNotificationRingtoneUri();
             final boolean notifyOnce = !folderPreferences.isEveryMessageNotificationEnabled();
 
-            if (!ignoreUnobtrusiveSetting && account != null && notifyOnce) {
+            if (!ignoreUnobtrusiveSetting && notifyOnce) {
                 // If the user has "unobtrusive notifications" enabled, only alert the first time
                 // new mail is received in this account.  This is the default behavior.  See
                 // bugs 2412348 and 2413490.
                 notification.setOnlyAlertOnce(true);
             }
 
-            if (account != null) {
-                LogUtils.d(LOG_TAG, "Account: %s vibrate: %s", account.name,
-                        Boolean.toString(folderPreferences.isNotificationVibrateEnabled()));
-            }
+            LogUtils.d(LOG_TAG, "Account: %s vibrate: %s", account.name,
+                    Boolean.toString(folderPreferences.isNotificationVibrateEnabled()));
 
             int defaults = 0;
 
@@ -563,7 +561,7 @@ public class NotificationUtils {
              * We do not want to notify if this is coming back from an Undo notification, hence the
              * oldWhen check.
              */
-            if (getAttention && account != null && oldWhen == 0) {
+            if (getAttention && oldWhen == 0) {
                 final AccountPreferences accountPreferences =
                         new AccountPreferences(context, account.name);
                 if (accountPreferences.areNotificationsEnabled()) {
@@ -1320,9 +1318,7 @@ public class NotificationUtils {
         SpannableStringBuilder fixedFragment = null;
         int fixedFragmentLength = 0;
         if (draftsFragment.length() != 0 && allowDraft) {
-            if (fixedFragment == null) {
-                fixedFragment = new SpannableStringBuilder();
-            }
+            fixedFragment = new SpannableStringBuilder();
             fixedFragment.append(draftsFragment);
             if (draftsStyle != null) {
                 fixedFragment.setSpan(

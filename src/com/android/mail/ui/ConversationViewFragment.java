@@ -1088,7 +1088,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             // Ignore unsafe calls made after a fragment is detached from an activity.
             // This method needs to, for example, get at the loader manager, which needs
             // the fragment to be added.
-            final ControllableActivity activity = (ControllableActivity) getActivity();
             if (!isAdded() || !mViewsCreated) {
                 LogUtils.i(LOG_TAG, "ignoring CVF.onPageFinished, url=%s fragment=%s", url,
                         ConversationViewFragment.this);

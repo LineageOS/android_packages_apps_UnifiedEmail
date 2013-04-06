@@ -71,7 +71,8 @@ public class MessageHeaderViewTest extends AndroidTestCase {
                 "Simon &amp; Garfunkel");
     }
 
-    private void assertSnippetEquals(String expectedSnippet, String messageBody) {
+    private static void assertSnippetEquals(final String expectedSnippet,
+            final String messageBody) {
         assertEquals(expectedSnippet, MessageHeaderView.makeSnippet(messageBody));
     }
 

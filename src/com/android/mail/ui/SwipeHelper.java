@@ -51,7 +51,7 @@ public class SwipeHelper {
     public static final int X = 0;
     public static final int Y = 1;
 
-    private static DecelerateInterpolator sDecelerateInterpolator = 
+    private static DecelerateInterpolator sDecelerateInterpolator =
                                                         new DecelerateInterpolator(1.0f);
 
     private static int SWIPE_ESCAPE_VELOCITY = -1;
@@ -345,7 +345,7 @@ public class SwipeHelper {
         dismissChildren(views, 0f, listener);
     }
 
-    private int determineDuration(View animView, float newPos, float velocity) {
+    private static int determineDuration(View animView, float newPos, float velocity) {
         int duration = MAX_ESCAPE_ANIMATION_DURATION;
         if (velocity != 0) {
             duration = Math
@@ -370,7 +370,7 @@ public class SwipeHelper {
         return newPos;
     }
 
-    public void snapChild(final SwipeableItemView view, float velocity) {
+    public void snapChild(final SwipeableItemView view) {
         final View animView = view.getSwipeableView();
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
         final ObjectAnimator anim = createTranslationAnimation(animView, 0);
@@ -493,7 +493,7 @@ public class SwipeHelper {
                     if (dismissChild) {
                         dismissChild(mCurrView, childSwipedFastEnough ? velocity : 0f);
                     } else {
-                        snapChild(mCurrView, velocity);
+                        snapChild(mCurrView);
                     }
                 }
                 break;
