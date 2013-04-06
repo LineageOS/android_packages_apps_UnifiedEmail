@@ -17,7 +17,6 @@
 package com.android.mail.utils;
 
 import android.content.res.Resources;
-import android.database.DataSetObserver;
 import android.text.TextUtils;
 
 import com.android.mail.R;

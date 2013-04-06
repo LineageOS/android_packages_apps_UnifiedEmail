@@ -26,7 +26,6 @@ import android.widget.FrameLayout;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
-import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogUtils;

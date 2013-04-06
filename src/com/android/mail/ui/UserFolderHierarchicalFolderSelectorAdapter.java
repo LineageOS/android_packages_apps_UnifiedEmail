@@ -20,8 +20,6 @@ import android.content.Context;
 import android.database.Cursor;
 import com.android.mail.providers.Folder;
 
-import java.util.Set;
-
 public class UserFolderHierarchicalFolderSelectorAdapter extends HierarchicalFolderSelectorAdapter {
     public UserFolderHierarchicalFolderSelectorAdapter(Context context, Cursor folders, int layout,
                                                        String header, Folder excludedFolder) {
