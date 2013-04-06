@@ -315,7 +315,7 @@ class AttachmentsView extends LinearLayout {
      */
     public long addAttachment(Account account, Attachment attachment)
             throws AttachmentFailureException {
-        int maxSize = account.settings.getMaxAttachmentSize();
+        final int maxSize = account.settings.getMaxAttachmentSize();
 
         // Error getting the size or the size was too big.
         if (attachment.size == -1 || attachment.size > maxSize) {
@@ -333,14 +333,14 @@ class AttachmentsView extends LinearLayout {
     }
 
     @VisibleForTesting
-    protected int getSizeFromFile(Uri uri, ContentResolver contentResolver) {
+    private int getSizeFromFile(Uri uri, ContentResolver contentResolver) {
         int size = -1;
         ParcelFileDescriptor file = null;
         try {
             file = contentResolver.openFileDescriptor(uri, "r");
             size = (int) file.getStatSize();
         } catch (FileNotFoundException e) {
-            LogUtils.w(LOG_TAG, "Error opening file to obtain size.");
+            LogUtils.w(LOG_TAG, e, "Error opening file to obtain size.");
         } finally {
             try {
                 if (file != null) {
@@ -350,7 +350,9 @@ class AttachmentsView extends LinearLayout {
                 LogUtils.w(LOG_TAG, "Error closing file opened to obtain size.");
             }
         }
-        return size;
+        // We only want to return a non-negative value. (ParcelFileDescriptor#getStatSize() will
+        // return -1 if the fd is not a file
+        return Math.max(size, 0);
     }
 
     /**
