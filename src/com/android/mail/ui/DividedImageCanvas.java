@@ -92,7 +92,7 @@ public class DividedImageCanvas implements ImageCanvas {
         }
     }
 
-    private void draw(Bitmap b, Canvas c, int left, int top, int right, int bottom) {
+    private static void draw(Bitmap b, Canvas c, int left, int top, int right, int bottom) {
         if (b != null) {
             // l t r b
             sSrc.set(0, 0, b.getWidth(), b.getHeight());
@@ -303,7 +303,7 @@ public class DividedImageCanvas implements ImageCanvas {
         }
     }
 
-    private void setupPaint() {
+    private static void setupPaint() {
         sPaint.setStrokeWidth(sDividerLineWidth);
         sPaint.setColor(sDividerColor);
     }

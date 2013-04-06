@@ -17,25 +17,14 @@ package com.android.mail.ui;
 
 import com.android.mail.R;
 
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider.FolderType;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.DragEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 

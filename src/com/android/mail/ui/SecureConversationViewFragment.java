@@ -28,7 +28,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ScrollView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter;

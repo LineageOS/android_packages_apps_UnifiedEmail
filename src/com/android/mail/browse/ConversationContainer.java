@@ -526,8 +526,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         positionSnapHeader(mSnapIndex);
     }
 
-    private OverlayPosition calculatePosition(ConversationOverlayItem adapterItem, int withinTop,
-            int withinBottom, int forceGravity) {
+    private static OverlayPosition calculatePosition(final ConversationOverlayItem adapterItem,
+            final int withinTop, final int withinBottom, final int forceGravity) {
         if (adapterItem.getHeight() == 0) {
             // "place" invisible items at the bottom of their region to stay consistent with the
             // stacking algorithm in positionOverlays(), unless gravity is forced to the top
@@ -850,7 +850,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     // find the next header that can push the snap header up
     private ConversationOverlayItem findNextPushingOverlay(int start) {
-        int value = -1;
         for (int i = start, len = mOverlayAdapter.getCount(); i < len; i++) {
             final ConversationOverlayItem next = mOverlayAdapter.getItem(i);
             if (next.canPushSnapHeader()) {
