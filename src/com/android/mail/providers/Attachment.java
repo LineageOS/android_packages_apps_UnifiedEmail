@@ -262,7 +262,7 @@ public class Attachment implements Parcelable {
     }
 
     public boolean canSave() {
-        return !isSavedToExternal() && !isInstallable();
+        return !isSavedToExternal() && !isInstallable() && !MimeType.isBlocked(getContentType());
     }
 
     public boolean canShare() {
