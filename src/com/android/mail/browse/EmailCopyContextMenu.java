@@ -30,7 +30,6 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnCreateContextMenuListener;
 import android.webkit.WebView;
-import android.widget.TextView;
 
 import com.android.mail.R;
 
@@ -112,7 +111,7 @@ public class EmailCopyContextMenu implements OnCreateContextMenuListener{
     }
 
     // Location of Context Menu layout
-    private int getMenuResourceId() {
+    private static int getMenuResourceId() {
         return R.menu.email_copy_context_menu;
     }
 }

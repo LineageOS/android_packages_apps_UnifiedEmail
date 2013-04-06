@@ -22,25 +22,19 @@ import com.google.common.collect.Sets;
 
 import android.content.ComponentCallbacks2;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.Email;
-import android.provider.ContactsContract.Data;
 import android.util.LruCache;
 
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogUtils;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -411,7 +405,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     /**
      * Stores the supplied bitmap in cache.
      */
-    private void cacheBitmap(Object key, byte[] bytes, int requestedExtent) {
+    private static void cacheBitmap(final Object key, final byte[] bytes) {
         if (DEBUG) {
             BitmapHolder prev = sBitmapHolderCache.get(key);
             if (prev != null && prev.bytes != null) {
@@ -709,7 +703,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             }
             Map<String, byte[]> photosMap = loadPhotos(requests);
             for (String key : photosMap.keySet()) {
-                cacheBitmap(key, photosMap.get(key), -1);
+                cacheBitmap(key, photosMap.get(key));
             }
             mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);
             requestPreloading();
@@ -723,7 +717,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             if (photos != null) {
                 for (Object id : photos.keySet()) {
                     byte[] bytes = photos.get(id);
-                    cacheBitmap(id, bytes, -1);
+                    cacheBitmap(id, bytes);
                 }
             }
             mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);

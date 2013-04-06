@@ -456,7 +456,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             // Only commit destructive actions if the user actually pressed
             // done; otherwise, this was handled when we toggled conversation
             // selection state.
-            ((ControllableActivity)mActivity).getListHandler().commitDestructiveActions(true);
+            mActivity.getListHandler().commitDestructiveActions(true);
         }
         mMenu = null;
     }

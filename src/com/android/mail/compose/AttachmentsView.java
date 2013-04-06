@@ -37,7 +37,6 @@ import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.MimeType;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
