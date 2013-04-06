@@ -31,7 +31,6 @@ import com.android.mail.compose.ComposeAttachmentTile;
 import com.android.mail.providers.Attachment;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.ui.AttachmentTile.AttachmentPreviewCache;
-import com.android.mail.utils.AttachmentUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

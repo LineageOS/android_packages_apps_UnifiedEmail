@@ -18,9 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
-import android.app.LoaderManager;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.KeyEvent;

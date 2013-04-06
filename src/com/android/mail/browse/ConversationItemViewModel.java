@@ -37,7 +37,6 @@ import android.util.Pair;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.FolderList;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.UIProvider;
 

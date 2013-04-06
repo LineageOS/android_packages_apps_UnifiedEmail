@@ -64,8 +64,6 @@ public class LetterTileProvider implements DefaultImageProvider {
     // This should match the total number of colors defined in colors.xml for letter_tile_color
     private static final int NUM_OF_TILE_COLORS = 7;
 
-    private static final String LOG_TAG = LogTag.getLogTag();
-
     public LetterTileProvider() {
         super();
     }
@@ -125,7 +123,7 @@ public class LetterTileProvider implements DefaultImageProvider {
         dividedImageView.addDivisionImage(bitmap, address);
     }
 
-    private Bitmap getBitmap(final DividedImageCanvas.Dimensions d) {
+    private static Bitmap getBitmap(final DividedImageCanvas.Dimensions d) {
         if (d.width <= 0 || d.height <= 0) {
             LogUtils.w(TAG,
                     "LetterTileProvider width(%d) or height(%d) is 0.", d.width, d.height);
@@ -149,7 +147,7 @@ public class LetterTileProvider implements DefaultImageProvider {
         return bitmap;
     }
 
-    private int getFontSize(float scale)  {
+    private static int getFontSize(float scale)  {
         if (scale == DividedImageCanvas.ONE) {
             return sTileLetterFontSize;
         } else {
@@ -157,12 +155,12 @@ public class LetterTileProvider implements DefaultImageProvider {
         }
     }
 
-    private boolean isLetter(String letter) {
+    private static boolean isLetter(String letter) {
         Matcher m = ALPHABET.matcher(letter);
         return m.matches();
     }
 
-    private int pickColor(Resources res, String emailAddress) {
+    private static int pickColor(Resources res, String emailAddress) {
         // String.hashCode() implementation is not supposed to change across java versions, so
         // this should guarantee the same email address always maps to the same color.
         int color = Math.abs(emailAddress.hashCode()) % NUM_OF_TILE_COLORS;

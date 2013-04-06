@@ -56,7 +56,7 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
         addLoader();
     }
 
-    private void dumpLoaders() {
+    private static void dumpLoaders() {
         if (DEBUG) {
             Log.d(TAG, "Loaders: ");
             for (ConversationCursorLoader loader: sLoaders) {
