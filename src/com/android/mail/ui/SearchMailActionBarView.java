@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -28,6 +27,10 @@ import android.widget.SearchView;
 import com.android.mail.ConversationListContext;
 import com.android.mail.utils.Utils;
 
+/**
+ * This class is used to show a custom actionbar for the search activity. This doesn't have any
+ * custom views, but it shows/hides various menu items based on the viewmode.
+ */
 public class SearchMailActionBarView extends MailActionBarView {
 
     public SearchMailActionBarView(Context context) {
@@ -44,17 +47,19 @@ public class SearchMailActionBarView extends MailActionBarView {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // We start out with every option enabled. Based on the current view, we disable actions
-        // that are possible.
         super.onPrepareOptionsMenu(menu);
         switch (getMode()) {
             case ViewMode.SEARCH_RESULTS_LIST:
-                // Fall through.
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                setSearchQueryTerm();
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                if (!showConversationSubject()) {
+                // And immediately give up focus to avoid keyboard popping and suggestions.
+                clearSearchFocus();
+                break;
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                if (mIsOnTablet) {
                     setSearchQueryTerm();
                 }
+                mActionBar.setDisplayHomeAsUpEnabled(true);
                 // And immediately give up focus to avoid keyboard popping and suggestions.
                 clearSearchFocus();
                 break;
@@ -68,14 +73,6 @@ public class SearchMailActionBarView extends MailActionBarView {
         switch (getMode()) {
             case ViewMode.SEARCH_RESULTS_LIST:
                 setEmptyMode();
-                break;
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                // We only want to go into snippet mode if we are not currently showing the
-                // ActionBar title
-                if (showConversationSubject() && ActionBar.DISPLAY_SHOW_TITLE
-                        != (mActionBar.getDisplayOptions() & ActionBar.DISPLAY_SHOW_TITLE)) {
-                    setSnippetMode();
-                }
                 break;
         }
     }
