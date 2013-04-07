@@ -17,15 +17,13 @@
 -->
 
 <!--
-     The custom action bar view for search mode (containing drop down account spinner,
-    label, and subject).
+     The custom action bar view for search mode. Currently a separate layout because this creates
+     a SearchMailActionBarView object, which handles view mode changes unlike MailActionBarView.
 -->
 <com.android.mail.ui.SearchMailActionBarView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal" >
-
-    <include layout="@layout/actionbar_subject" />
 
 </com.android.mail.ui.SearchMailActionBarView>

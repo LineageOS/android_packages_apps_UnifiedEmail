@@ -414,15 +414,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
         mActivity.onOptionsItemSelected(mChangeFoldersMenuItem);
     }
-
-    @Override
-    public String getSubjectRemainder(String subject) {
-        final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
-        if (sdc == null) {
-            return subject;
-        }
-        return sdc.getUnshownSubject(subject);
-    }
     // END conversation header callbacks
 
     @Override

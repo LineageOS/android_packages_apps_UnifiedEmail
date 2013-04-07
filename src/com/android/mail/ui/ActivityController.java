@@ -267,11 +267,6 @@ public interface ActivityController extends LayoutListener,
     void setHierarchyFolder(Folder folder);
 
     /**
-     * @return a {@link SubjectDisplayChanger}, or null
-     */
-    SubjectDisplayChanger getSubjectDisplayChanger();
-
-    /**
      * Handles the animation end of the animated adapter.
      */
     void onAnimationEnd(AnimatedAdapter animatedAdapter);
