@@ -366,13 +366,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         ConversationCursor cursor = (ConversationCursor) getItem(position);
         final Conversation conv = cursor.getConversation();
         if (isPositionUndoing(conv.id)) {
-            return getUndoingView(position, conv, parent, false /* don't show swipe background */);
+            return getUndoingView(position - getPositionOffset(position), conv, parent,
+                    false /* don't show swipe background */);
         } if (isPositionUndoingSwipe(conv.id)) {
-            return getUndoingView(position, conv, parent, true /* show swipe background */);
+            return getUndoingView(position - getPositionOffset(position), conv, parent,
+                    true /* show swipe background */);
         } else if (isPositionDeleting(conv.id)) {
-            return getDeletingView(position, conv, parent, false);
+            return getDeletingView(position - getPositionOffset(position), conv, parent, false);
         } else if (isPositionSwipeDeleting(conv.id)) {
-            return getDeletingView(position, conv, parent, true);
+            return getDeletingView(position - getPositionOffset(position), conv, parent, true);
         }
         if (hasFadeLeaveBehinds()) {
             if(isPositionFadeLeaveBehind(conv)) {
@@ -559,6 +561,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return super.getItemId(position - getPositionOffset(position));
     }
 
+    /**
+     * @param position The position in the cursor
+     */
     private View getDeletingView(int position, Conversation conversation, ViewGroup parent,
             boolean swipe) {
         conversation.position = position;
@@ -572,6 +577,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return deletingView;
     }
 
+    /**
+     * @param position The position in the cursor
+     */
     private View getUndoingView(int position, Conversation conv, ViewGroup parent, boolean swipe) {
         conv.position = position;
         SwipeableConversationItemView undoView = mAnimatingViews.get(conv.id);
