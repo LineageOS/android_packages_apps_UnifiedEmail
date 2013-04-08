@@ -336,11 +336,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public SubjectDisplayChanger getSubjectDisplayChanger() {
-        return mController.getSubjectDisplayChanger();
-    }
-
-    @Override
     public ErrorListener getErrorListener() {
         return mController;
     }
