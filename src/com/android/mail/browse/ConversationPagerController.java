@@ -34,7 +34,6 @@ import com.android.mail.providers.Folder;
 import com.android.mail.ui.AbstractActivityController;
 import com.android.mail.ui.ActivityController;
 import com.android.mail.ui.RestrictedActivity;
-import com.android.mail.ui.SubjectDisplayChanger;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -63,7 +62,6 @@ public class ConversationPagerController {
     private ConversationPagerAdapter mPagerAdapter;
     private FragmentManager mFragmentManager;
     private ActivityController mActivityController;
-    private SubjectDisplayChanger mSubjectDisplayChanger;
     private boolean mShown;
     /**
      * True when the initial conversation passed to show() is busy loading. We assume that the
@@ -92,8 +90,6 @@ public class ConversationPagerController {
         mFragmentManager = activity.getFragmentManager();
         mPager = (ViewPager) activity.findViewById(R.id.conversation_pane);
         mActivityController = controller;
-        mSubjectDisplayChanger = controller.getSubjectDisplayChanger();
-
         setupPageMargin(activity.getActivityContext());
     }
 
@@ -156,8 +152,6 @@ public class ConversationPagerController {
         if (changeVisibility) {
             mPager.setVisibility(View.GONE);
         }
-
-        mSubjectDisplayChanger.clearSubjectAndUpdate();
 
         LogUtils.d(LOG_TAG, "IN CPC.hide, clearing adapter and unregistering list observer");
         mPager.setAdapter(null);

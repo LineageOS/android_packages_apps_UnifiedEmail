@@ -62,16 +62,6 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
          * @param newHeight the new height in px
          */
         void onConversationViewHeaderHeightChange(int newHeight);
-
-        /**
-         * Measure a subject string for display outside a conversation view and
-         * return the substring of trailing characters that didn't fit. Should
-         * not actually render the text, just measure it.
-         *
-         * @param subject string to measure
-         * @return the remainder of text that didn't fit
-         */
-        String getSubjectRemainder(String subject);
     }
 
     private static final String LOG_TAG = LogTag.getLogTag();
@@ -82,6 +72,10 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
     private ConversationFolderDisplayer mFolderDisplayer;
     private ConversationHeaderItem mHeaderItem;
 
+    /**
+     * Instantiated from this layout: conversation_view_header.xml
+     * @param context
+     */
     public ConversationViewHeader(Context context) {
         this(context, null);
     }
@@ -131,13 +125,8 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
     }
 
     public void setSubject(final String subject) {
-        String subjectToShow = subject;
-        if (mCallbacks != null && mCallbacks.getSubjectRemainder(subject) == null) {
-            subjectToShow = null;
-        }
-        mSubjectView.setText(subjectToShow);
-
-        if (TextUtils.isEmpty(subjectToShow)) {
+        mSubjectView.setText(subject);
+        if (TextUtils.isEmpty(subject)) {
             mSubjectView.setVisibility(GONE);
         }
     }
