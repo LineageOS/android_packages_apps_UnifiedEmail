@@ -30,11 +30,6 @@
         android:icon="@drawable/ic_menu_search_holo_light"
         android:actionLayout="@layout/mail_actionbar_searchview" />
 
-    <item android:id="@+id/show_all_folders"
-        android:title="@string/show_all_folders"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_menu_folders_holo_light" />
-
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
         android:showAsAction="ifRoom"

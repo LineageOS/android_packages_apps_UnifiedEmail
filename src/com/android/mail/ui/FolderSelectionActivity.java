@@ -346,11 +346,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public SubjectDisplayChanger getSubjectDisplayChanger() {
-        return null;
-    }
-
-    @Override
     public ErrorListener getErrorListener() {
         return null;
     }
