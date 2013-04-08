@@ -22,16 +22,12 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.TextAppearanceSpan;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +40,6 @@ import android.widget.TextView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
-import com.android.mail.browse.SnippetTextView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.AllAccountObserver;
@@ -66,14 +61,10 @@ import com.android.mail.utils.Utils;
  *
  */
 public class MailActionBarView extends LinearLayout implements ViewMode.ModeChangeListener,
-        OnQueryTextListener, OnSuggestionListener, MenuItem.OnActionExpandListener,
-        SubjectDisplayChanger {
+        OnQueryTextListener, OnSuggestionListener, MenuItem.OnActionExpandListener {
 
     // This is a private setting available starting JB MR1.1.
     private static final int DISPLAY_TITLE_MULTIPLE_LINES = 0x20;
-
-    /** True if we want the subject in the actionbar */
-    public static final boolean SHOW_ACTIONBAR_SUBJECT = true;
 
     protected ActionBar mActionBar;
     protected ControllableActivity mActivity;
@@ -93,7 +84,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     private Folder mFolder;
 
-    private SnippetTextView mSubjectView;
     /** The view that shows an unread count. */
     private TextView mUnreadView;
 
@@ -104,7 +94,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private MenuItem mFolderSettingsItem;
     private View mRefreshActionView;
     /** True if the current device is a tablet, false otherwise. */
-    private boolean mIsOnTablet;
+    protected final boolean mIsOnTablet;
     private boolean mRefreshInProgress;
     private Conversation mCurrentConversation;
     private AllAccountObserver mAllAccountObserver;
@@ -119,7 +109,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             mActivity.invalidateOptionsMenu();
         }
     };
-    private final boolean mShowConversationSubject;
     private FolderObserver mFolderObserver;
 
     /** Updates the resolver and tells it the most recent account. */
@@ -146,50 +135,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
     };
 
-    private final OnLayoutChangeListener mSnippetLayoutListener = new OnLayoutChangeListener() {
-        @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-                int oldTop, int oldRight, int oldBottom) {
-            v.removeOnLayoutChangeListener(this);
-            // We're in a layout, so try not to do anything layout-related here, and post a
-            // runnable instead.
-            v.post(new Runnable() {
-                @Override
-                public void run() {
-                    // Framework only started supporting multi-line action bars in JB MR1.1,
-                    // so on earlier versions, always use our custom action bar.
-                    if (actionBarReportsMultipleLineTitle(mActionBar)) {
-                        // Switch over to title mode when the first fragment asks for a subject
-                        // remainder. We assume that layout has happened by now, so the
-                        // SnippetTextView already has measurements it needs to calculate
-                        // remainders, and it's safe to switch over to TITLE mode to inherit
-                        // standard system behaviors.
-                        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE |
-                                DISPLAY_TITLE_MULTIPLE_LINES);
-
-                        // Work around a bug where the title's container is stuck GONE when a title
-                        // is set while in CUSTOM mode.
-                        mActionBar.setTitle(mActionBar.getTitle());
-                    }
-                }
-            });
-        }
-    };
-
-    private static boolean actionBarReportsMultipleLineTitle(ActionBar bar) {
-        boolean reports = false;
-        try {
-            if (bar != null) {
-                reports = (ActionBar.class.getField("DISPLAY_TITLE_MULTIPLE_LINES") != null);
-            }
-        } catch (NoSuchFieldException e) {
-            // stay false
-        }
-        return reports;
-    }
-
-    // Created via view inflation.
-    @SuppressWarnings("unused")
     public MailActionBarView(Context context) {
         this(context, null);
     }
@@ -200,16 +145,12 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     public MailActionBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        final Resources r = getResources();
-        mShowConversationSubject = SHOW_ACTIONBAR_SUBJECT
-                && r.getBoolean(R.bool.show_conversation_subject);
-        mIsOnTablet = Utils.useTabletUI(r);
+        mIsOnTablet = Utils.useTabletUI(getResources());
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mSubjectView = (SnippetTextView) findViewById(R.id.conversation_subject);
         mUnreadView = (TextView) findViewById(R.id.unread_count);
     }
 
@@ -233,13 +174,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     protected MenuItem getSearch() {
         return mSearch;
-    }
-
-    /**
-     * Get whether to show the conversation subject in the action bar.
-     */
-    protected boolean showConversationSubject() {
-        return ViewMode.isConversationMode(mMode) && mShowConversationSubject;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -359,17 +293,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 closeSearchField();
                 break;
             case ViewMode.CONVERSATION_LIST:
-                closeSearchField();
                 showNavList();
                 break;
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                // Fallthrough
             case ViewMode.CONVERSATION:
                 closeSearchField();
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                if (!mShowConversationSubject) {
-                    showNavList();
-                } else {
-                    setSnippetMode();
-                }
+                setEmptyMode();
                 break;
             case ViewMode.FOLDER_LIST:
                 closeSearchField();
@@ -443,41 +374,35 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 setConversationModeOptions(menu);
                 break;
             case ViewMode.CONVERSATION_LIST:
-                // Show compose, search, folders, and sync based on the account
+                // Show compose and search based on the account
                 // The only option that needs to be disabled is search
                 Utils.setMenuItemVisibility(menu, R.id.search,
                         mAccount.supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH));
+                break;
+            case ViewMode.SEARCH_RESULTS_LIST:
+                // Show only compose
+                // The only option that needs to be disabled is search
+                Utils.setMenuItemVisibility(menu, R.id.search, false);
                 break;
         }
         return false;
     }
 
     /**
-     * Put the ActionBar in List navigation mode. This starts the spinner up if it is missing.
+     * Put the ActionBar in List navigation mode.
      */
     private void showNavList() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
         if (mUnreadView != null) {
             mUnreadView.setVisibility(View.VISIBLE);
         }
-        mSubjectView.setVisibility(View.GONE);
         setFolderAndAccount();
     }
 
     /**
-     * Set the actionbar mode to "snippet" mode: no list navigation, show what looks like 2-line
-     * "standard" snippet. Later on, {@link #getUnshownSubject(String)} will seamlessly switch
-     * back to bog-standard SHOW_TITLE mode once the text remainders can safely be determined.
+     * Put the ActionBar in standard mode, and show the word "Folders" along with the account name
+     * (if user has multiple accounts)
      */
-    protected void setSnippetMode() {
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_CUSTOM);
-        if (mUnreadView != null) {
-            mUnreadView.setVisibility(View.GONE);
-        }
-        mSubjectView.setVisibility(View.VISIBLE);
-        mSubjectView.addOnLayoutChangeListener(mSnippetLayoutListener);
-    }
-
     private void setFoldersMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
         if (mUnreadView != null) {
@@ -490,18 +415,21 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     /**
-     * Set the actionbar mode to empty: no title, no custom content.
+     * Set the actionbar mode to empty: no title, no custom content. This should show the app
+     * name in the title.
      */
     protected void setEmptyMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
-        if (mSubjectView != null) {
-            mSubjectView.setVisibility(View.GONE);
-        }
+        mActionBar.setTitle(null);
+        mActionBar.setSubtitle(null);
         if (mUnreadView != null) {
             mUnreadView.setVisibility(View.GONE);
         }
     }
 
+    /**
+     * Removes the back button from being shown
+     */
     public void removeBackButton() {
         if (mActionBar == null) {
             return;
@@ -681,45 +609,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         final int mask = ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_CUSTOM | DISPLAY_TITLE_MULTIPLE_LINES;
         mActionBar.setDisplayOptions(enabledFlags, mask);
-    }
-
-    @Override
-    public void setSubject(String subject) {
-        if (!mShowConversationSubject) {
-            return;
-        }
-
-        // Use a smaller font size than the default action bar title text size
-        SpannableStringBuilder builder = new SpannableStringBuilder();
-        SpannableString textSizeSpannable = new SpannableString(subject);
-        textSizeSpannable.setSpan(
-            new TextAppearanceSpan(getContext(), R.style.SubjectActionBarTitleText),
-            0, subject.length(), 0);
-        builder.append(textSizeSpannable);
-
-        mActionBar.setTitle(builder);
-        mActionBar.setSubtitle(null);
-        mSubjectView.setText(subject);
-    }
-
-    @Override
-    public void clearSubjectAndUpdate() {
-        if (!mShowConversationSubject) {
-            return;
-        }
-        // Wipe subject view text
-        mSubjectView.setText(null);
-        // Set folder and account as title and subtitle
-        setFolderAndAccount();
-    }
-
-    @Override
-    public String getUnshownSubject(String subject) {
-        if (!mShowConversationSubject) {
-            return subject;
-        }
-
-        return mSubjectView.getTextRemainder(subject);
     }
 
     public void setCurrentConversation(Conversation conversation) {
