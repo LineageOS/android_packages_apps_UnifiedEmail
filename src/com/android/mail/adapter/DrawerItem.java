@@ -26,7 +26,6 @@ import com.android.mail.ui.FolderItemView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +81,7 @@ public class DrawerItem {
     public static final int ACCOUNT = 4;
 
     /** True if this view is enabled, false otherwise. */
-    private boolean isEnabled = false;
+    private final boolean mIsEnabled;
 
     @Override
     public String toString() {
@@ -127,6 +126,7 @@ public class DrawerItem {
         mInflater = LayoutInflater.from(activity.getActivityContext());
         mType = type;
         mPosition = position;
+        mIsEnabled = calculateEnabled();
     }
 
     /**
@@ -246,7 +246,12 @@ public class DrawerItem {
      * Returns whether this view is enabled or not.
      * @return
      */
-    public boolean isItemEnabled(Uri currentAccountUri) {
+    public boolean isItemEnabled() {
+        return mIsEnabled;
+    }
+
+    /** Calculate whether the item is enabled */
+    private boolean calculateEnabled() {
         switch (mType) {
             case VIEW_HEADER :
                 // Headers are never enabled.
@@ -256,7 +261,7 @@ public class DrawerItem {
                 return true;
             case VIEW_ACCOUNT:
                 // Accounts are only enabled if they are not the current account.
-                return !currentAccountUri.equals(mAccount.uri);
+                return !mIsCurrentAccount;
             case VIEW_WAITING_FOR_SYNC:
                 // Waiting for sync cannot be tapped, so never enabled.
                 return false;

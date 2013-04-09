@@ -18,7 +18,7 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- A random long string to be used in template XML files browse_item_view_*.xml -->
-    <string name="long_string">looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong</string>
+    <string name="long_string" translatable="false">looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong</string>
     <!-- A random date to be used in template XML files browse_item_view_*.xml -->
-    <string name="date">Aug 8, 2011</string>
+    <string name="date" translatable="false">2888/88/88</string>
 </resources>
