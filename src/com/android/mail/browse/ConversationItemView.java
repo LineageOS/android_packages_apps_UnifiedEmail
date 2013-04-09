@@ -51,6 +51,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -86,8 +87,10 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem,
         InvalidateCallback {
@@ -109,11 +112,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static Bitmap STAR_OFF;
     private static Bitmap STAR_ON;
     private static Bitmap ATTACHMENT;
-    private static Bitmap ONLY_TO_ME;
-    private static Bitmap TO_ME_AND_OTHERS;
-    private static Bitmap IMPORTANT_ONLY_TO_ME;
-    private static Bitmap IMPORTANT_TO_ME_AND_OTHERS;
-    private static Bitmap IMPORTANT_TO_OTHERS;
     private static Bitmap STATE_REPLIED;
     private static Bitmap STATE_FORWARDED;
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
@@ -128,6 +126,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sSendersTextColorUnread;
     private static int sDateTextColor;
     private static int sTouchSlop;
+    @Deprecated
     private static int sStandardScaledDimen;
     private static int sShrinkAnimationDuration;
     private static int sSlideAnimationDuration;
@@ -147,7 +146,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mMode = -1;
     private int mDateX;
     private int mPaperclipX;
-    private int mFoldersXEnd;
     private int mSendersWidth;
 
     /** Whether we're running under test mode. */
@@ -158,6 +156,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     @VisibleForTesting
     ConversationItemViewCoordinates mCoordinates;
 
+    private ConversationItemViewCoordinates.Config mConfig;
+
     private final Context mContext;
 
     public ConversationItemViewModel mHeader;
@@ -165,7 +165,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private boolean mChecked = false;
     private ConversationSelectionSet mSelectedConversationSet;
     private Folder mDisplayedFolder;
-    private boolean mPriorityMarkersEnabled;
     private boolean mCheckboxesEnabled;
     private boolean mStarEnabled;
     private boolean mSwipeEnabled;
@@ -176,25 +175,20 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private final String mAccount;
     private ControllableActivity mActivity;
     private int mBackgroundOverride = -1;
-    private final EllipsizedMultilineTextView mSubjectTextView;
+    private final TextView mSubjectTextView;
     private final TextView mSendersTextView;
-    private final TextView mDateTextView;
     private boolean mConvListPhotosEnabled;
     private final DividedImageCanvas mContactImagesHolder;
     private int mAttachmentPreviewMode;
     private final DividedImageCanvas mAttachmentPreviewsCanvas;
 
-    private static int sFadedActivatedColor = -1;
     private static int sFoldersLeftPadding;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static ForegroundColorSpan sSnippetTextUnreadSpan;
     private static ForegroundColorSpan sSnippetTextReadSpan;
     private static int sScrollSlop;
-    private static int sSendersTextViewTopPadding;
-    private static int sSendersTextViewHeight;
     private static CharacterStyle sActivatedTextSpan;
-    private static Bitmap MORE_FOLDERS;
     private static ContactPhotoManager sContactPhotoManager;
     private static ContactPhotoManager sAttachmentPreviewsManager;
     private static final String EMPTY_SNIPPET = "";
@@ -208,11 +202,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      * Handles displaying folders in a conversation header view.
      */
     static class ConversationItemFolderDisplayer extends FolderDisplayer {
-        // Maximum number of folders to be displayed.
-        private static final int MAX_DISPLAYED_FOLDERS_COUNT = 4;
 
         private int mFoldersCount;
-        private boolean mHasMoreFolders;
 
         public ConversationItemFolderDisplayer(Context context) {
             super(context);
@@ -222,34 +213,29 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri,
                 final int ignoreFolderType) {
             super.loadConversationFolders(conv, ignoreFolderUri, ignoreFolderType);
-
             mFoldersCount = mFoldersSortedSet.size();
-            mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
-            mFoldersCount = Math.min(mFoldersCount, MAX_DISPLAYED_FOLDERS_COUNT);
         }
 
         @Override
         public void reset() {
             super.reset();
             mFoldersCount = 0;
-            mHasMoreFolders = false;
         }
 
         public boolean hasVisibleFolders() {
             return mFoldersCount > 0;
         }
 
-        private int measureFolders(int mode) {
-            int availableSpace = ConversationItemViewCoordinates.getFoldersWidth(mContext, mode);
-            int cellSize = ConversationItemViewCoordinates.getFolderCellWidth(mContext, mode,
-                    mFoldersCount);
-
+        private int measureFolders(int mode, int availableSpace, int cellSize) {
             int totalWidth = 0;
+            boolean firstTime = true;
             for (Folder f : mFoldersSortedSet) {
                 final String folderString = f.name;
                 int width = (int) sFoldersPaint.measureText(folderString) + cellSize;
-                if (width % cellSize != 0) {
-                    width += cellSize - (width % cellSize);
+                if (firstTime) {
+                    firstTime = false;
+                } else {
+                    width += sFoldersLeftPadding;
                 }
                 totalWidth += width;
                 if (totalWidth > availableSpace) {
@@ -261,41 +247,53 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         public void drawFolders(Canvas canvas, ConversationItemViewCoordinates coordinates,
-                int foldersXEnd, int mode) {
+                int mode) {
             if (mFoldersCount == 0) {
                 return;
             }
-            int xEnd = foldersXEnd;
-            int y = coordinates.foldersY;
-            int height = coordinates.foldersHeight;
-            int topPadding = coordinates.foldersTopPadding;
-            int ascent = coordinates.foldersAscent;
+            final int xMinStart = coordinates.foldersX;
+            final int xEnd = coordinates.foldersXEnd;
+            final int y = coordinates.foldersY;
+            final int height = coordinates.foldersHeight;
+            final int ascent = coordinates.foldersAscent;
             int textBottomPadding = coordinates.foldersTextBottomPadding;
 
             sFoldersPaint.setTextSize(coordinates.foldersFontSize);
+            sFoldersPaint.setTypeface(coordinates.foldersTypeface);
 
             // Initialize space and cell size based on the current mode.
-            int availableSpace = ConversationItemViewCoordinates.getFoldersWidth(mContext, mode);
+            int availableSpace = xEnd - xMinStart;
             int averageWidth = availableSpace / mFoldersCount;
-            int cellSize = ConversationItemViewCoordinates.getFolderCellWidth(mContext, mode,
-                    mFoldersCount);
+            int cellSize = ConversationItemViewCoordinates.getFolderCellWidth(mContext);
 
-            int totalWidth = measureFolders(mode);
+            // TODO(ath): sFoldersPaint.measureText() is done 3x in this method. stop that.
+            // Extra credit: maybe cache results across items as long as font size doesn't change.
+
+            final int totalWidth = measureFolders(mode, availableSpace, cellSize);
             int xStart = xEnd - Math.min(availableSpace, totalWidth);
+            final boolean overflow = totalWidth > availableSpace;
 
             // Second pass to draw folders.
+            int i = 0;
             for (Folder f : mFoldersSortedSet) {
+                if (availableSpace <= 0) {
+                    break;
+                }
                 final String folderString = f.name;
                 final int fgColor = f.getForegroundColor(mDefaultFgColor);
                 final int bgColor = f.getBackgroundColor(mDefaultBgColor);
-                int width = cellSize;
                 boolean labelTooLong = false;
-                width = (int) sFoldersPaint.measureText(folderString) + cellSize;
-                if (width % cellSize != 0) {
-                    width += cellSize - (width % cellSize);
-                }
-                if (totalWidth > availableSpace && width > averageWidth) {
-                    width = averageWidth;
+                final int textW = (int) sFoldersPaint.measureText(folderString);
+                int width = textW + cellSize + sFoldersLeftPadding;
+
+                if (overflow && width > averageWidth) {
+                    if (i < mFoldersCount - 1) {
+                        width = averageWidth;
+                    } else {
+                        // allow the last label to take all remaining space
+                        // (and don't let it make room for padding)
+                        width = availableSpace + sFoldersLeftPadding;
+                    }
                     labelTooLong = true;
                 }
 
@@ -307,34 +305,27 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 // Draw the box.
                 sFoldersPaint.setColor(bgColor);
                 sFoldersPaint.setStyle(isMuted ? Paint.Style.STROKE : Paint.Style.FILL_AND_STROKE);
-                canvas.drawRect(xStart, y, xStart + width, y + height - topPadding,
-                        sFoldersPaint);
+                canvas.drawRect(xStart, y, xStart + width - sFoldersLeftPadding,
+                        y + height, sFoldersPaint);
 
                 // Draw the text.
-                int padding = getPadding(width, (int) sFoldersPaint.measureText(folderString));
+                final int padding = cellSize / 2;
+                sFoldersPaint.setColor(fgColor);
                 if (labelTooLong) {
-                    TextPaint shortPaint = new TextPaint();
-                    shortPaint.setColor(fgColor);
-                    shortPaint.setTextSize(coordinates.foldersFontSize);
-                    padding = cellSize / 2;
-                    int rightBorder = xStart + width - padding;
-                    Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder, y,
-                            fgColor, Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
-                    shortPaint.setShader(shader);
-                    canvas.drawText(folderString, xStart + padding, y + height - textBottomPadding,
-                                    shortPaint);
-                } else {
-                    sFoldersPaint.setColor(fgColor);
-                    canvas.drawText(folderString, xStart + padding, y + height - textBottomPadding,
-                            sFoldersPaint);
+                    final int rightBorder = xStart + width - sFoldersLeftPadding - padding;
+                    final Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder,
+                            y, fgColor, Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
+                    sFoldersPaint.setShader(shader);
+                }
+                canvas.drawText(folderString, xStart + padding, y + height - textBottomPadding,
+                        sFoldersPaint);
+                if (labelTooLong) {
+                    sFoldersPaint.setShader(null);
                 }
 
                 availableSpace -= width;
                 xStart += width;
-                if (availableSpace <= 0 && mHasMoreFolders) {
-                    canvas.drawBitmap(MORE_FOLDERS, xEnd, y + ascent, sFoldersPaint);
-                    return;
-                }
+                i++;
             }
         }
     }
@@ -365,16 +356,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     R.drawable.btn_star_off_normal_email_holo_light);
             STAR_ON = BitmapFactory.decodeResource(res,
                     R.drawable.btn_star_on_normal_email_holo_light);
-            ONLY_TO_ME = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_double);
-            TO_ME_AND_OTHERS = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_single);
-            IMPORTANT_ONLY_TO_ME = BitmapFactory.decodeResource(res,
-                    R.drawable.ic_email_caret_double_important_unread);
-            IMPORTANT_TO_ME_AND_OTHERS = BitmapFactory.decodeResource(res,
-                    R.drawable.ic_email_caret_single_important_unread);
-            IMPORTANT_TO_OTHERS = BitmapFactory.decodeResource(res,
-                    R.drawable.ic_email_caret_none_important_unread);
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
-            MORE_FOLDERS = BitmapFactory.decodeResource(res, R.drawable.ic_folders_more);
             STATE_REPLIED =
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_holo_light);
             STATE_FORWARDED =
@@ -406,30 +388,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
             sAnimatingBackgroundColor = res.getColor(R.color.animating_item_background_color);
-            sSendersTextViewTopPadding = res.getDimensionPixelSize
-                    (R.dimen.senders_textview_top_padding);
-            sSendersTextViewHeight = res.getDimensionPixelSize
-                    (R.dimen.senders_textview_height);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
-            sFoldersLeftPadding = res.getDimensionPixelSize(R.dimen.folders_left_padding);
+            sFoldersLeftPadding = res.getDimensionPixelOffset(R.dimen.folders_left_padding);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
             sAttachmentPreviewsManager = ContactPhotoManager.createContactPhotoManager(context);
         }
 
-        mSubjectTextView = new EllipsizedMultilineTextView(mContext);
-        mSubjectTextView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        mSubjectTextView.setMaxLines(2);
         mSendersTextView = new TextView(mContext);
-        mSendersTextView.setMaxLines(1);
         mSendersTextView.setEllipsize(TextUtils.TruncateAt.END);
-        mSendersTextView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+        mSendersTextView.setIncludeFontPadding(false);
 
-        mDateTextView = new TextView(mContext);
-        mDateTextView.setEllipsize(TextUtils.TruncateAt.END);
-        mDateTextView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+        mSubjectTextView = new TextView(mContext);
+        mSubjectTextView.setEllipsize(TextUtils.TruncateAt.END);
+        mSubjectTextView.setIncludeFontPadding(false);
 
         mContactImagesHolder = new DividedImageCanvas(context, this);
         mAttachmentPreviewsCanvas = new DividedImageCanvas(context, this);
@@ -473,14 +444,57 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 .areConvListPhotosEnabled();
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
-        mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
         if (mHeader.conversation.getAttachmentsCount() == 0) {
             mAttachmentPreviewMode = ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE;
         } else {
-            mAttachmentPreviewMode = mHeader.conversation.read ? ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_SHORT
+            mAttachmentPreviewMode = mHeader.conversation.read ?
+                    ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_SHORT
                     : ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_TALL;
         }
+
+        final int gadgetMode;
+        if (mConvListPhotosEnabled) {
+            gadgetMode = ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO;
+        } else if (mCheckboxesEnabled) {
+            gadgetMode = ConversationItemViewCoordinates.GADGET_CHECKBOX;
+        } else {
+            gadgetMode = ConversationItemViewCoordinates.GADGET_NONE;
+        }
+
+        // Initialize folder displayer.
+        if (mHeader.folderDisplayer == null) {
+            mHeader.folderDisplayer = new ConversationItemFolderDisplayer(mContext);
+        } else {
+            mHeader.folderDisplayer.reset();
+        }
+
+        final int ignoreFolderType;
+        if (mDisplayedFolder.isInbox()) {
+            ignoreFolderType = FolderType.INBOX;
+        } else {
+            ignoreFolderType = -1;
+        }
+
+        mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation, mDisplayedFolder.uri,
+                ignoreFolderType);
+
+        mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
+                mHeader.conversation.dateMs);
+
+        mConfig = new ConversationItemViewCoordinates.Config()
+            .withGadget(gadgetMode)
+            .withAttachmentPreviews(mAttachmentPreviewMode);
+        if (header.folderDisplayer.hasVisibleFolders()) {
+            mConfig.showFolders();
+        }
+        if (header.hasBeenForwarded || header.hasBeenRepliedTo || header.isInvite) {
+            mConfig.showReplyState();
+        }
+        if (mHeader.conversation.color != 0) {
+            mConfig.showColorBlock();
+        }
+
         setContentDescription();
         requestLayout();
     }
@@ -514,21 +528,21 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        startTimer(PERF_TAG_LAYOUT);
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int wSize = MeasureSpec.getSize(widthMeasureSpec);
 
-        super.onLayout(changed, left, top, right, bottom);
-
-        final int width = right - left;
         final int currentMode = mActivity.getViewMode().getMode();
-        if (width != mViewWidth || mPreviousMode != currentMode) {
-            mViewWidth = width;
+        if (wSize != mViewWidth || mPreviousMode != currentMode) {
+            mViewWidth = wSize;
             mPreviousMode = currentMode;
             if (!mTesting) {
                 mMode = ConversationItemViewCoordinates.getMode(mContext, mPreviousMode);
             }
         }
         mHeader.viewWidth = mViewWidth;
+
+        mConfig.updateWidth(wSize).setMode(mMode);
+
         Resources res = getResources();
         mHeader.standardScaledDimen = res.getDimensionPixelOffset(R.dimen.standard_scaled_dimen);
         if (mHeader.standardScaledDimen != sStandardScaledDimen) {
@@ -536,8 +550,20 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sStandardScaledDimen = mHeader.standardScaledDimen;
             ConversationItemViewCoordinates.refreshConversationDimens(mContext);
         }
-        mCoordinates = ConversationItemViewCoordinates.forWidth(mContext, mViewWidth, mMode,
-                mHeader.standardScaledDimen, mConvListPhotosEnabled, mAttachmentPreviewMode);
+
+        mCoordinates = ConversationItemViewCoordinates.forConfig(mContext, mConfig,
+                mAdapter.getCoordinatesCache());
+
+        final int h = (mAnimatedHeight != -1) ? mAnimatedHeight : mCoordinates.height;
+        setMeasuredDimension(mConfig.getWidth(), h);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        startTimer(PERF_TAG_LAYOUT);
+
+        super.onLayout(changed, left, top, right, bottom);
+
         calculateTextsAndBitmaps();
         calculateCoordinates();
 
@@ -578,24 +604,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     private void calculateTextsAndBitmaps() {
         startTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
-        // Initialize folder displayer.
-        if (mCoordinates.showFolders) {
-            if (mHeader.folderDisplayer == null) {
-                mHeader.folderDisplayer = new ConversationItemFolderDisplayer(mContext);
-            } else {
-                mHeader.folderDisplayer.reset();
-            }
-
-            final int ignoreFolderType;
-            if (mDisplayedFolder.isInbox()) {
-                ignoreFolderType = FolderType.INBOX;
-            } else {
-                ignoreFolderType = -1;
-            }
-
-            mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation,
-                    mDisplayedFolder.uri, ignoreFolderType);
-        }
 
         if (mSelectedConversationSet != null) {
             mChecked = mSelectedConversationSet.contains(mHeader.conversation);
@@ -629,9 +637,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             SendersView.formatSenders(mHeader, getContext(), true);
         }
 
-        mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
-                mHeader.conversation.dateMs);
-
         if (mAttachmentPreviewMode != ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE) {
             loadAttachmentPreviews();
         }
@@ -651,31 +656,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mHeader.paperclip = ATTACHMENT;
         }
 
-        // Personal level.
-        mHeader.personalLevelBitmap = null;
-        if (mCoordinates.showPersonalLevel) {
-            final int personalLevel = mHeader.conversation.personalLevel;
-            final boolean isImportant =
-                    mHeader.conversation.priority == UIProvider.ConversationPriority.IMPORTANT;
-            final boolean useImportantMarkers = isImportant && mPriorityMarkersEnabled;
-
-            if (personalLevel == UIProvider.ConversationPersonalLevel.ONLY_TO_ME) {
-                mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_ONLY_TO_ME
-                        : ONLY_TO_ME;
-            } else if (personalLevel == UIProvider.ConversationPersonalLevel.TO_ME_AND_OTHERS) {
-                mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_TO_ME_AND_OTHERS
-                        : TO_ME_AND_OTHERS;
-            } else if (useImportantMarkers) {
-                mHeader.personalLevelBitmap = IMPORTANT_TO_OTHERS;
-            }
-        }
-
         startTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
     }
 
+    // FIXME(ath): maybe move this to bind(). the only dependency on layout is on tile W/H, which
+    // is immutable.
     private void loadSenderImages() {
         if (mConvListPhotosEnabled && mHeader.displayableSenderEmails != null
                 && mHeader.displayableSenderEmails.size() > 0) {
@@ -725,8 +713,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
     }
 
+    private static int makeExactSpecForSize(int size) {
+        return MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY);
+    }
+
+    private static void layoutViewExactly(View v, int w, int h) {
+        v.measure(makeExactSpecForSize(w), makeExactSpecForSize(h));
+        v.layout(0, 0, w, h);
+    }
+
     private void layoutSenders() {
-        TextView sendersTextView = mSendersTextView;
         if (mHeader.styledSendersString != null) {
             if (isActivated() && showActivatedText()) {
                 mHeader.styledSendersString.setSpan(sActivatedTextSpan, 0,
@@ -735,11 +731,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 mHeader.styledSendersString.removeSpan(sActivatedTextSpan);
             }
 
-            final int w = MeasureSpec.makeMeasureSpec(mSendersWidth, MeasureSpec.EXACTLY);
-            final int h = MeasureSpec.makeMeasureSpec(sSendersTextViewHeight, MeasureSpec.EXACTLY);
-            sendersTextView.measure(w, h);
-            sendersTextView.layout(0, 0, mSendersWidth, sSendersTextViewHeight);
-            sendersTextView.setText(mHeader.styledSendersString);
+            final int w = mSendersWidth;
+            final int h = mCoordinates.sendersHeight;
+            mSendersTextView.setLayoutParams(new ViewGroup.LayoutParams(w, h));
+            mSendersTextView.setMaxLines(mCoordinates.sendersLineCount);
+            mSendersTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCoordinates.sendersFontSize);
+            layoutViewExactly(mSendersTextView, w, h);
+
+            mSendersTextView.setText(mHeader.styledSendersString);
         }
     }
 
@@ -770,30 +769,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
-        final int secondLineMaxWidth;
-        if (!ConversationItemViewCoordinates.isWideMode(mMode) && mCoordinates.showFolders
-                && mHeader.folderDisplayer != null && mHeader.folderDisplayer.hasVisibleFolders()) {
-            secondLineMaxWidth = mCoordinates.subjectWidth - Math.min(
-                    ConversationItemViewCoordinates.getFoldersWidth(mContext, mMode),
-                    mHeader.folderDisplayer.measureFolders(mMode)) - sFoldersLeftPadding;
-        } else {
-            secondLineMaxWidth = EllipsizedMultilineTextView.ALL_AVAILABLE;
-        }
         final int subjectWidth = mCoordinates.subjectWidth;
-        final int subjectHeight = (int) (mSubjectTextView.getLineHeight() * 2 +
-                mSubjectTextView.getPaint().descent());
-        mSubjectTextView.measure(
-                MeasureSpec.makeMeasureSpec(subjectWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(subjectHeight, MeasureSpec.EXACTLY));
-        mSubjectTextView.layout(0, 0, subjectWidth, subjectHeight);
+        final int subjectHeight = mCoordinates.subjectHeight;
+        mSubjectTextView.setLayoutParams(new ViewGroup.LayoutParams(subjectWidth, subjectHeight));
+        mSubjectTextView.setMaxLines(mCoordinates.subjectLineCount);
+        mSubjectTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCoordinates.subjectFontSize);
+        layoutViewExactly(mSubjectTextView, subjectWidth, subjectHeight);
 
-        if (displayedStringBuilder.length() == 0) {
-            // Work around for bug where empty displayedStringBuilder does not overwrite any
-            // existing text in mSubjectTextView
-            mSubjectTextView.setText(EMPTY_SNIPPET);
-        } else {
-            mSubjectTextView.setText(displayedStringBuilder, secondLineMaxWidth);
-        }
+        mSubjectTextView.setText(displayedStringBuilder);
     }
 
     /**
@@ -828,26 +811,22 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mDateX = mCoordinates.dateXEnd - (int) sPaint.measureText(
                 mHeader.dateText != null ? mHeader.dateText.toString() : "");
 
-        mPaperclipX = mDateX - ATTACHMENT.getWidth();
+        mPaperclipX = mDateX - ATTACHMENT.getWidth() - mCoordinates.datePaddingLeft;
 
-        if (ConversationItemViewCoordinates.isWideMode(mMode)) {
-            // Folders are displayed above the date.
-            mFoldersXEnd = mCoordinates.foldersXEnd;
+        if (mConfig.isWide()) {
             // In wide mode, the end of the senders should align with
             // the start of the subject and is based on a max width.
             mSendersWidth = mCoordinates.sendersWidth;
         } else {
-            // In normal mode, the width is based on where the folders or date
-            // (or attachment icon) start.
-            mFoldersXEnd = mCoordinates.foldersXEnd;
-                int dateAttachmentStart = 0;
-                // Have this end near the paperclip or date, not the folders.
-                if (mHeader.paperclip != null) {
-                    dateAttachmentStart = mPaperclipX;
-                } else {
-                    dateAttachmentStart = mDateX;
-                }
-                mSendersWidth = dateAttachmentStart - mCoordinates.sendersX;
+            // In normal mode, the width is based on where the date/attachment icon start.
+            final int dateAttachmentStart;
+            // Have this end near the paperclip or date, not the folders.
+            if (mHeader.paperclip != null) {
+                dateAttachmentStart = mPaperclipX - mCoordinates.paperclipPaddingLeft;
+            } else {
+                dateAttachmentStart = mDateX - mCoordinates.datePaddingLeft;
+            }
+            mSendersWidth = dateAttachmentStart - mCoordinates.sendersX;
         }
 
         // Second pass to layout each fragment.
@@ -1092,12 +1071,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             canvas.drawBitmap(checkmark, mCoordinates.checkmarkX, mCoordinates.checkmarkY, sPaint);
         }
 
-        // Personal Level.
-        if (mCoordinates.showPersonalLevel && mHeader.personalLevelBitmap != null) {
-            canvas.drawBitmap(mHeader.personalLevelBitmap, mCoordinates.personalLevelX,
-                    mCoordinates.personalLevelY, sPaint);
-        }
-
         // Senders.
         boolean isUnread = mHeader.unread;
         // Old style senders; apply text colors/ sizes/ styling.
@@ -1123,22 +1096,21 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         canvas.restore();
 
         // Folders.
-        if (mCoordinates.showFolders && mHeader.folderDisplayer != null) {
-            mHeader.folderDisplayer.drawFolders(canvas, mCoordinates, mFoldersXEnd, mMode);
+        if (mConfig.areFoldersVisible()) {
+            mHeader.folderDisplayer.drawFolders(canvas, mCoordinates, mMode);
         }
 
         // If this folder has a color (combined view/Email), show it here
-        if (mHeader.conversation.color != 0) {
+        if (mConfig.isColorBlockVisible()) {
             sFoldersPaint.setColor(mHeader.conversation.color);
             sFoldersPaint.setStyle(Paint.Style.FILL);
-            int width = ConversationItemViewCoordinates.getColorBlockWidth(mContext);
-            int height = ConversationItemViewCoordinates.getColorBlockHeight(mContext);
-            canvas.drawRect(mCoordinates.dateXEnd - width, 0, mCoordinates.dateXEnd,
-                    height, sFoldersPaint);
+            canvas.drawRect(mCoordinates.colorBlockX, mCoordinates.colorBlockY,
+                    mCoordinates.colorBlockX + mCoordinates.colorBlockWidth,
+                    mCoordinates.colorBlockY + mCoordinates.colorBlockHeight, sFoldersPaint);
         }
 
         // Draw the reply state. Draw nothing if neither replied nor forwarded.
-        if (mCoordinates.showReplyState) {
+        if (mConfig.isReplyStateVisible()) {
             if (mHeader.hasBeenRepliedTo && mHeader.hasBeenForwarded) {
                 canvas.drawBitmap(STATE_REPLIED_AND_FORWARDED, mCoordinates.replyStateX,
                         mCoordinates.replyStateY, null);
@@ -1158,29 +1130,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         sPaint.setTextSize(mCoordinates.dateFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
         sPaint.setColor(sDateTextColor);
-        drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateY - mCoordinates.dateAscent,
+        drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateYBaseline,
                 sPaint);
 
         // Paper clip icon.
         if (mHeader.paperclip != null) {
             canvas.drawBitmap(mHeader.paperclip, mPaperclipX, mCoordinates.paperclipY, sPaint);
-        }
-
-        if (mHeader.faded) {
-            int fadedColor = -1;
-            if (sFadedActivatedColor == -1) {
-                sFadedActivatedColor = mContext.getResources().getColor(
-                        R.color.faded_activated_conversation_header);
-            }
-            fadedColor = sFadedActivatedColor;
-            int restoreState = canvas.save();
-            Rect bounds = canvas.getClipBounds();
-            canvas.clipRect(bounds.left, bounds.top, bounds.right
-                    - mContext.getResources().getDimensionPixelSize(R.dimen.triangle_width),
-                    bounds.bottom);
-            canvas.drawARGB(Color.alpha(fadedColor), Color.red(fadedColor),
-                    Color.green(fadedColor), Color.blue(fadedColor));
-            canvas.restoreToCount(restoreState);
         }
 
         if (mStarEnabled) {
@@ -1207,22 +1162,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private void drawSubject(Canvas canvas) {
-        canvas.translate(mCoordinates.subjectX, mCoordinates.subjectY + sSendersTextViewTopPadding);
+        canvas.translate(mCoordinates.subjectX, mCoordinates.subjectY);
         mSubjectTextView.draw(canvas);
     }
 
     private void drawSenders(Canvas canvas) {
-        int left;
-        if (mConvListPhotosEnabled && mCoordinates.inlinePersonalLevel) {
-            if (mCoordinates.showPersonalLevel && mHeader.personalLevelBitmap != null) {
-                left = mCoordinates.sendersX;
-            } else {
-                left = mCoordinates.personalLevelX;
-            }
-        } else {
-            left = mCoordinates.sendersX;
-        }
-        canvas.translate(left, mCoordinates.sendersY + sSendersTextViewTopPadding);
+        canvas.translate(mCoordinates.sendersX, mCoordinates.sendersY);
         mSendersTextView.draw(canvas);
     }
 
@@ -1576,44 +1521,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mAnimatedHeight == -1) {
-            int height = measureHeight(heightMeasureSpec,
-                    ConversationItemViewCoordinates.getMode(mContext, mActivity.getViewMode()));
-            setMeasuredDimension(widthMeasureSpec, height);
-        } else {
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
-        }
-    }
-
-    /**
-     * Determine the height of this view.
-     * @param measureSpec A measureSpec packed into an int
-     * @param mode The current mode of this view
-     * @return The height of the view, honoring constraints from measureSpec
-     */
-    private int measureHeight(int measureSpec, int mode) {
-        int result = 0;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
-
-        if (specMode == MeasureSpec.EXACTLY) {
-            // We were told how big to be
-            result = specSize;
-        } else {
-            // Measure the text
-            result = ConversationItemViewCoordinates.getHeight(
-                    mContext, mode, mAttachmentPreviewMode);
-            if (specMode == MeasureSpec.AT_MOST) {
-                // Respect AT_MOST value if that was what is called for by
-                // measureSpec
-                result = Math.min(result, specSize);
-            }
-        }
-        return result;
-    }
-
-    @Override
     public View getSwipeableView() {
         return this;
     }
@@ -1693,7 +1600,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             int width = mView.getWidth();
             int height = mView.getHeight();
             mDragDescX = mCoordinates.sendersX;
-            mDragDescY = getPadding(height, mCoordinates.subjectFontSize)
+            mDragDescY = getPadding(height, (int) mCoordinates.subjectFontSize)
                     - mCoordinates.subjectAscent;
             shadowSize.set(width, height);
             shadowTouchPoint.set(mTouchX, mTouchY);

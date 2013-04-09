@@ -25,6 +25,7 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 
 import com.android.mail.R;
@@ -91,6 +92,13 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
      */
     private ViewPager mPager;
     private boolean mSanitizedHtml;
+
+    /**
+     * The URI of the detached conversation. We use this to mark new CVFs as detached if they are
+     * created after this is set. This is to fix b/8185448. This is not needed in UR9 due changes in
+     * CursorStatus.isWaitingForResults().
+     */
+    private String mDetachedUri = null;
 
     private boolean mStopListeningMode = false;
 
@@ -314,8 +322,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             return;
         }
 
-        boolean notify = true;
-
         // If we are in detached mode, changes to the cursor are of no interest to us, but they may
         // be to parent classes.
 
@@ -331,28 +337,27 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             final int pos = getConversationPosition(currConversation);
             final Cursor cursor = getCursor();
             if (pos == POSITION_NONE && cursor != null && currConversation != null) {
+                // enable detached mode and do no more here. the fragment itself will figure out
+                // if the conversation is empty (using message list cursor) and back out if needed.
+                mDetachedMode = true;
+                mController.setDetachedMode();
+                LogUtils.i(LOG_TAG, "CPA: current conv is gone, reverting to detached mode. c=%s",
+                        currConversation.uri);
 
-                final boolean isSingletonDraft = (currConversation.getNumMessages() == 1
-                        && currConversation.numDrafts() == 1);
-                if (isSingletonDraft) {
-                    // A single-message draft thread has gone missing from the cursor.
-                    // Bail out of conversation view immediately, since there is no reason to stick
-                    // around in detached mode.
-                    LogUtils.i(LOG_TAG,
-                            "CPA: current singleton draft conv is not in cursor, popping out. c=%s",
-                            currConversation.uri);
-                    mController.onConversationSelected(null, true /* inLoaderCallbacks */);
-                    notify = false;
+                final int currentItem = mPager.getCurrentItem();
+
+                final AbstractConversationViewFragment fragment =
+                        (AbstractConversationViewFragment) getFragmentAt(currentItem);
+
+                if (fragment != null) {
+                    fragment.onDetachedModeEntered();
                 } else {
-                    // enable detached mode and do no more here. the fragment itself will figure out
-                    // if the conversation is empty (using message list cursor) and back out if
-                    // needed.
-                    mDetachedMode = true;
-                    mController.setDetachedMode();
-                    LogUtils.i(LOG_TAG,
-                            "CPA: current conv is gone, reverting to detached mode. c=%s",
-                            currConversation.uri);
+                    LogUtils.e(LOG_TAG,
+                            "CPA: notifyDataSetChanged: fragment null, current item: %d",
+                            currentItem);
                 }
+
+                mDetachedUri = currConversation.uri.toString();
             } else {
                 // notify unaffected fragment items of the change, so they can re-render
                 // (the change may have been to the labels for a single conversation, for example)
@@ -368,9 +373,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             }
         }
 
-        if (notify) {
-            super.notifyDataSetChanged();
-        }
+        super.notifyDataSetChanged();
     }
 
     @Override

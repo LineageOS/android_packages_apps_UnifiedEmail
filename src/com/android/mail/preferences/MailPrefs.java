@@ -74,6 +74,7 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String ENABLE_WHOOSH_ZOOM = "enable-whoosh-zoom";
         public static final String ENABLE_MUNGE_TABLES = "enable-munge-tables";
         public static final String ENABLE_MUNGE_IMAGES = "enable-munge-images";
+        public static final String ENABLE_SECTIONED_INBOX_EXPERIMENT = "enable-sectioned-inbox";
 
     }
 
@@ -264,5 +265,11 @@ public final class MailPrefs extends VersionedPrefs {
     public void cacheActiveNotificationSet(final Set<String> notificationSet) {
         getEditor().putStringSet(PreferenceKeys.CACHED_ACTIVE_NOTIFICATION_SET, notificationSet)
                 .apply();
+    }
+
+    public boolean isSectionedInboxExperimentEnabled() {
+        // If experimental preferences are not enabled, return false.
+        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
+                PreferenceKeys.ENABLE_SECTIONED_INBOX_EXPERIMENT, false);
     }
 }
