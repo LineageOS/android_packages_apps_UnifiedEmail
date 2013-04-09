@@ -1043,6 +1043,23 @@ public class Utils {
         return sw.toString();
     }
 
+    public static void dumpViewTree(ViewGroup root) {
+        dumpViewTree(root, "");
+    }
+
+    private static void dumpViewTree(ViewGroup g, String prefix) {
+        LogUtils.i(LOG_TAG, "%sVIEWGROUP: %s childCount=%s", prefix, g, g.getChildCount());
+        final String childPrefix = prefix + "  ";
+        for (int i = 0; i < g.getChildCount(); i++) {
+            final View child = g.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                dumpViewTree((ViewGroup) child, childPrefix);
+            } else {
+                LogUtils.i(LOG_TAG, "%sCHILD #%s: %s", childPrefix, i, child);
+            }
+        }
+    }
+
     /**
      * Executes an out-of-band command on the cursor.
      * @param cursor

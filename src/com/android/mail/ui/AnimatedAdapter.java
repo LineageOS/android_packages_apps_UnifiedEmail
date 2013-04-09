@@ -120,6 +120,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final List<ConversationSpecialItemView> mSpecialViews;
     private final SparseArray<ConversationSpecialItemView> mSpecialViewPositions;
 
+    private final SparseArray<ConversationItemViewCoordinates> mCoordinatesCache =
+            new SparseArray<ConversationItemViewCoordinates>();
+
     private final void setAccount(Account newAccount) {
         mAccount = newAccount;
         mPriorityMarkersEnabled = mAccount.settings.priorityArrowsEnabled;
@@ -506,6 +509,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (leaveBehind != null) {
             leaveBehind.cancelFadeInTextAnimation();
         }
+    }
+
+    public SparseArray<ConversationItemViewCoordinates> getCoordinatesCache() {
+        return mCoordinatesCache;
     }
 
     public SwipeableListView getListView() {
