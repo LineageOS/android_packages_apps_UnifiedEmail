@@ -279,6 +279,7 @@ public class FolderListFragment extends ListFragment implements
                 @Override
                 public void onChanged(Account[] allAccounts) {
                     mAllAccounts = allAccounts;
+                    mCursorAdapter.notifyAllAccountsChanged();
                 }
             };
             mAllAccounts = mAllAccountObserver.initialize(accountController);
@@ -498,6 +499,8 @@ public class FolderListFragment extends ListFragment implements
         Folder getFullFolder(DrawerItem item);
         /** Get the account associated with this item. **/
         Account getFullAccount(DrawerItem item);
+        /** Notify that the all accounts changed. */
+        void notifyAllAccountsChanged();
         /** Remove all observers and destroy the object. */
         void destroy();
         /** Notifies the adapter that the data has changed. */
@@ -528,9 +531,6 @@ public class FolderListFragment extends ListFragment implements
         /** Watcher for tracking and receiving unread counts for mail */
         private FolderWatcher mFolderWatcher = null;
 
-        /** Track whether the accounts have folder watchers added to them yet */
-        private boolean mAccountsWatched;
-
         /**
          * Creates a {@link FolderListAdapter}.This is a flat folder list of all the folders for the
          * given account.
@@ -546,8 +546,13 @@ public class FolderListFragment extends ListFragment implements
                 mRecentFolders = null;
             }
             mFolderWatcher = new FolderWatcher(mActivity, this);
-            mAccountsWatched = false;
             initFolderWatcher();
+        }
+
+        @Override
+        public void notifyAllAccountsChanged() {
+            initFolderWatcher();
+            recalculateList();
         }
 
         /**
@@ -555,11 +560,11 @@ public class FolderListFragment extends ListFragment implements
          * null pointer issues, add them.
          */
         public void initFolderWatcher() {
-            if (!mAccountsWatched && mAllAccounts != null) {
-                for (final Account account : mAllAccounts) {
-                    mFolderWatcher.startWatching(account.settings.defaultInbox);
-                }
-                mAccountsWatched = true;
+            if (mAllAccounts == null) {
+                return;
+            }
+            for (final Account account : mAllAccounts) {
+                mFolderWatcher.startWatching(account.settings.defaultInbox);
             }
         }
 
@@ -605,9 +610,7 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         public boolean isEnabled(int position) {
-            final DrawerItem item = (DrawerItem) getItem(position);
-            return item.isItemEnabled(getCurrentAccountUri());
-
+            return ((DrawerItem) getItem(position)).isItemEnabled();
         }
 
         private Uri getCurrentAccountUri() {
@@ -645,12 +648,6 @@ public class FolderListFragment extends ListFragment implements
          * populating {@link FolderListAdapter#mItemList}
          */
         private void recalculateList() {
-            final boolean haveAccount = (mAllAccounts != null && mAllAccounts.length > 0);
-            if (!haveAccount) {
-                // TODO(viki): How do we get a notification that we have accounts now? Currently
-                // we don't, and we should.
-                return;
-            }
             mItemList.clear();
             recalculateListAccounts();
             recalculateListFolders();
@@ -662,28 +659,22 @@ public class FolderListFragment extends ListFragment implements
          * Recalculates the accounts if not null and adds them to the list.
          */
         private void recalculateListAccounts() {
-            if (mAllAccounts != null) {
-                // Add the accounts at the top. Tell mFolderWatcher which
-                // folders to track in case accounts were null earlier on.
-                // TODO(shahrk): The logic here is messy and will be changed
-                // to properly add/reflect on LRU/MRU account
-                // changes similar to RecentFoldersList
-                initFolderWatcher();
-
-                // Add all accounts and then the current account
-                final Uri currentAccountUri = getCurrentAccountUri();
-                for (final Account account : mAllAccounts) {
-                    if (!currentAccountUri.equals(account.uri)) {
-                        final int unreadCount =
-                                mFolderWatcher.getUnreadCount(account.settings.defaultInbox);
-                        mItemList.add(
-                                DrawerItem.ofAccount(mActivity, account, unreadCount, false));
-                    }
-                }
-                final int unreadCount = mFolderWatcher.getUnreadCount(
-                        mCurrentAccount.settings.defaultInbox);
-                mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, unreadCount, true));
+            if (mAllAccounts == null) {
+                return;
             }
+            // Add all accounts and then the current account
+            final Uri currentAccountUri = getCurrentAccountUri();
+            for (final Account account : mAllAccounts) {
+                if (!currentAccountUri.equals(account.uri)) {
+                    final int unreadCount =
+                            mFolderWatcher.getUnreadCount(account.settings.defaultInbox);
+                    mItemList.add(
+                            DrawerItem.ofAccount(mActivity, account, unreadCount, false));
+                }
+            }
+            final int unreadCount = mFolderWatcher.getUnreadCount(
+                    mCurrentAccount.settings.defaultInbox);
+            mItemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, unreadCount, true));
         }
 
         /**
@@ -947,6 +938,11 @@ public class FolderListFragment extends ListFragment implements
         @Override
         public Account getFullAccount(DrawerItem item) {
             return null;
+        }
+
+        @Override
+        public void notifyAllAccountsChanged() {
+            // Do nothing. We don't care about changes to all accounts.
         }
     }
 
