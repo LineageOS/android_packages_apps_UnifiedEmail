@@ -30,7 +30,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/UnreadCountActionBar" />
-    <!-- Only used for displaying a subject view -->
-    <include layout="@layout/actionbar_subject" />
 
 </com.android.mail.ui.MailActionBarView>

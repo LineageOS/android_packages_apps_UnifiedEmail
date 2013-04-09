@@ -87,8 +87,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      */
     ConversationUpdater getConversationUpdater();
 
-    SubjectDisplayChanger getSubjectDisplayChanger();
-
     ErrorListener getErrorListener();
 
     /**

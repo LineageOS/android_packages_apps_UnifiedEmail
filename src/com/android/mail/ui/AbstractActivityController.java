@@ -454,7 +454,6 @@ public abstract class AbstractActivityController implements ActivityController {
         final LayoutInflater inflater = LayoutInflater.from(actionBar.getThemedContext());
         final boolean isSearch = mActivity.getIntent() != null
                 && Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction());
-        // TODO(viki): Remove search_actionbar_view. http://b/8529168
         mActionBarView = (MailActionBarView) inflater.inflate(
                 isSearch ? R.layout.search_actionbar_view : R.layout.actionbar_view, null);
         mActionBarView.initialize(mActivity, this, actionBar);
@@ -1833,11 +1832,6 @@ public abstract class AbstractActivityController implements ActivityController {
         mSelectedSet.putAll(selectedSet);
     }
 
-    @Override
-    public SubjectDisplayChanger getSubjectDisplayChanger() {
-        return mActionBarView;
-    }
-
     private void showConversation(Conversation conversation) {
         showConversation(conversation, false /* inLoaderCallbacks */);
     }
@@ -1962,7 +1956,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
         if (mCurrentConversation != null) {
             mActionBarView.setCurrentConversation(mCurrentConversation);
-            mActionBarView.setSubject(mCurrentConversation.subject);
             mActivity.invalidateOptionsMenu();
         }
     }
