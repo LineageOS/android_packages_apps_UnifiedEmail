@@ -19,17 +19,15 @@
     <color name="gray_text_color">#777777</color>
     <!-- Conversation List Item Colors -->
     <color name="default_text_color">#ff000000</color>
-    <color name="subject_text_color_unread">#555555</color>
+    <color name="subject_text_color_unread">#58585b</color>
     <color name="snippet_text_color_unread">#777777</color>
-    <color name="senders_text_color_unread">#333333</color>
-    <color name="subject_text_color_read">@color/gray_text_color</color>
-    <color name="snippet_text_color_read">@color/gray_text_color</color>
-    <color name="senders_text_color_read">#000000</color>
-    <color name="date_text_color">@color/senders_text_color_read</color>
+    <color name="senders_text_color_unread">@color/subject_text_color_unread</color>
+    <color name="subject_text_color_read">@color/subject_text_color_unread</color>
+    <color name="snippet_text_color_read">@color/snippet_text_color_unread</color>
+    <color name="senders_text_color_read">@color/senders_text_color_unread</color>
+    <color name="date_text_color">@color/subject_text_color_unread</color>
     <color name="message_info_text_color">@color/gray_text_color</color>
     <color name="subject_text_color">#333333</color>
-    <color name="faded_conversation_header">#7f99d6eb</color>
-    <color name="faded_activated_conversation_header">#7faccbf9</color>
     <color name="drafts">#ff990000</color>
     <color name="light_text_color">#ff666666</color>
     <color name="default_folder_background_color">#f1f5ec</color>
