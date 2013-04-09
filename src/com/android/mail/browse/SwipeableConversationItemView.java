@@ -17,25 +17,22 @@
 
 package com.android.mail.browse;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.content.Context;
 import android.database.Cursor;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
-import com.android.mail.ui.ViewMode;
 
 public class SwipeableConversationItemView extends FrameLayout implements ToggleableItem {
 
     private ConversationItemView mConversationItemView;
-    private View mBackground;
 
     public SwipeableConversationItemView(Context context, String account) {
         super(context);
@@ -43,26 +40,11 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
         addView(mConversationItemView);
     }
 
-    public void addBackground(Context context) {
-        mBackground = findViewById(R.id.background);
-        if (mBackground == null) {
-            mBackground = LayoutInflater.from(context).inflate(R.layout.background, null, true);
-            addView(mBackground, 0);
-        }
-    }
-
-    public void setBackgroundVisibility(int visibility) {
-        if (mBackground != null) {
-            mBackground.setVisibility(visibility);
-        }
-    }
-
     public ListView getListView() {
         return (ListView) getParent();
     }
 
     public void reset() {
-        setBackgroundVisibility(View.GONE);
         mConversationItemView.reset();
     }
 
@@ -84,34 +66,18 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
                 swipeEnabled, priorityArrowsEnabled, animatedAdapter);
     }
 
-    public void startUndoAnimation(ViewMode viewMode, AnimatedAdapter listener, boolean swipe) {
-        if (swipe) {
-            addBackground(getContext());
-            setBackgroundVisibility(View.VISIBLE);
-            mConversationItemView.startSwipeUndoAnimation(listener);
-        } else {
-            setBackgroundVisibility(View.GONE);
-            mConversationItemView.startUndoAnimation(viewMode, listener);
-        }
-
+    public void startUndoAnimation(AnimatorListener listener, boolean swipe) {
+        final Animator a = (swipe) ? mConversationItemView.createSwipeUndoAnimation()
+                : mConversationItemView.createUndoAnimation();
+        a.addListener(listener);
+        a.start();
     }
 
-    /**
-     * Remove an added background. Helps to keep a smaller hierarchy of existing views.
-     */
-    public void removeBackground() {
-        if (mBackground != null) {
-            removeView(mBackground);
-        }
-        mBackground = null;
-    }
-
-    public void startDeleteAnimation(AnimatedAdapter listener, boolean swipe) {
-        if (swipe) {
-            mConversationItemView.startDestroyWithSwipeAnimation(listener);
-        } else {
-            mConversationItemView.startDestroyAnimation(listener);
-        }
+    public void startDeleteAnimation(AnimatorListener listener, boolean swipe) {
+        final Animator a = (swipe) ? mConversationItemView.createDestroyWithSwipeAnimation()
+                : mConversationItemView.createDestroyAnimation();
+        a.addListener(listener);
+        a.start();
     }
 
     @Override

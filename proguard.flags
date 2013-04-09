@@ -41,10 +41,6 @@
   *** setAnimatedHeight(...);
 }
 
--keepclasseswithmembers class com.android.mail.ui.LeaveBehindItem {
-  *** setAnimatedHeight(...);
-}
-
 -keepclasseswithmembers class com.android.mail.ui.ConversationViewFragment$MailJsBridge {
   public <methods>;
 }
@@ -63,8 +59,7 @@
 }
 
 -keepclasseswithmembers class com.android.mail.browse.ConversationItemView {
-  *** setAnimatedHeight(...);
-  *** setItemAlpha(...);
+  *** setAnimatedHeightFraction(...);
 }
 
 -keepclasseswithmembers class com.android.mail.ui.MailActivity {
