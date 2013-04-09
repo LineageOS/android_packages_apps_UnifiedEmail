@@ -81,6 +81,8 @@ public class AccountItemView extends RelativeLayout {
             mAccountTextView.setAllCaps(true);
             mAccountTextView.setTextColor(R.color.account_item_heading_text_color);
             mAccountTextView.setTextAppearance(getContext(), android.R.style.TextAppearance_Small);
+        } else {
+            mAccountTextView.setAllCaps(false);
         }
     }
 
