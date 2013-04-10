@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -25,9 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -73,9 +72,7 @@ public final class OnePaneController extends AbstractActivityController {
     private DrawerLayout mDrawerContainer;
     private ViewGroup mDrawerPullout;
 
-    /** Icon changing hack - Maintain pointer to the Up view/drawable and the burger drawable */
-    private ImageView mUp;
-    private Drawable mUpDrawable;
+    /** Burger icon */
     private Drawable mBurgerDrawable;
 
     public OnePaneController(MailActivity activity, ViewMode viewMode) {
@@ -158,52 +155,11 @@ public final class OnePaneController extends AbstractActivityController {
         mActivity.setContentView(R.layout.one_pane_activity);
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
         mDrawerPullout = (ViewGroup) mDrawerContainer.findViewById(R.id.drawer_pullout);
-        configureUpDrawable();
+
+        // Store the burger drawable for switching with the up arrow later
+        mBurgerDrawable = mContext.getResources().getDrawable(R.drawable.ic_drawer_glyph);
         // The parent class sets the correct viewmode and starts the application off.
         return super.onCreate(savedInstanceState);
-    }
-
-    /**
-     * Hack for configuring and saving pointers to the up arrow when required to change from Up to
-     * Burger and vice-versa.
-     *
-     * NOTE: The hack takes in account that the OEM has not modified the home button's children.
-     * If modified, there's a risk of modifying something that shouldn't be.
-     *
-     * TODO(shahrk): Make icon changing safer through framework or remove it?
-     */
-    private void configureUpDrawable() {
-        final View home = mActivity.findViewById(android.R.id.home);
-        if (home == null) {
-            LogUtils.w(LOG_TAG,
-                    "OnePaneController.configureUpDrawable(): Action bar home was not discovered");
-            // Action bar doesn't have a known configuration, an OEM modified home completely
-            return;
-        }
-
-        final ViewGroup parent = (ViewGroup) home.getParent();
-        final int childCount = parent.getChildCount();
-        if (childCount != 2) {
-            // No idea which child will be the right ImageView for 'up', an OEM has modified home
-            LogUtils.w(LOG_TAG, "OnePaneController.configureUpDrawable(): "
-                    + "Action bar has incorrect number of children: %d expected 2", childCount);
-            return;
-        }
-
-        final View first = parent.getChildAt(0);
-        final View second = parent.getChildAt(1);
-        // Get the view that's NOT android.R.id.home
-        final View up = first.getId() == android.R.id.home ? second : first;
-        if (up instanceof ImageView) {
-            // We've most likely discovered the correct ImageView for the up arrow. Save the
-            // drawable/reference to view and also load the burger drawable for drawer indication.
-            mUp = (ImageView) up;
-            mUpDrawable = mUp.getDrawable();
-            mBurgerDrawable = mContext.getResources().getDrawable(R.drawable.ic_drawer_glyph);
-        } else {
-            LogUtils.w(LOG_TAG,
-                    "OnePaneController.configureUpDrawable(): Up arrow was not of type ImageView");
-        }
     }
 
     /**
@@ -212,11 +168,14 @@ public final class OnePaneController extends AbstractActivityController {
      * @param changeToBurger true if icon should be 'burger', false if icon should be 'up'
      */
     private void changeUpArrow(final boolean changeToBurger) {
-        if(mUp != null) {
+        final ActionBar actionBar = mActivity.getActionBar();
+        if(actionBar != null) {
             if (changeToBurger) {
-                mUp.setImageDrawable(mBurgerDrawable);
+                actionBar.setHomeAsUpIndicator(mBurgerDrawable);
+                actionBar.setHomeActionContentDescription(R.string.toggle_drawer);
             } else {
-                mUp.setImageDrawable(mUpDrawable);
+                actionBar.setHomeAsUpIndicator(null);
+                actionBar.setHomeActionContentDescription(null);
             }
         }
     }
