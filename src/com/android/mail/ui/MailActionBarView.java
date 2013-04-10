@@ -290,13 +290,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // recent folders is enabled.
         switch (mMode) {
             case ViewMode.UNKNOWN:
-                closeSearchField();
                 break;
             case ViewMode.CONVERSATION_LIST:
                 showNavList();
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                // Fallthrough
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+                setEmptyMode();
+                break;
             case ViewMode.CONVERSATION:
                 closeSearchField();
                 mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -568,6 +569,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (folder == null) {
             return;
         }
+        /** True if we are changing folders. */
+        final boolean changingFolders = (mFolder == null || !mFolder.uri.equals(folder.uri));
         mFolder = folder;
         setFolderAndAccount();
         if (folder.isSyncInProgress()) {
@@ -578,7 +581,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
         final ConversationListContext listContext = mController == null ? null :
                 mController.getCurrentListContext();
-        if (!ConversationListContext.isSearchResult(listContext)) {
+        if (changingFolders && !ConversationListContext.isSearchResult(listContext)) {
             closeSearchField();
         }
     }
