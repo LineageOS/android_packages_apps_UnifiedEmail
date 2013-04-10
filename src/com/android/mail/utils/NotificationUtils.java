@@ -489,8 +489,8 @@ public class NotificationUtils {
             cancelNotificationIntent.setPackage(context.getPackageName());
             cancelNotificationIntent.setData(Utils.appendVersionQueryParameter(context,
                     folder.uri));
-            cancelNotificationIntent.putExtra(MailIntentService.ACCOUNT_EXTRA, account);
-            cancelNotificationIntent.putExtra(MailIntentService.FOLDER_EXTRA, folder);
+            cancelNotificationIntent.putExtra(Utils.EXTRA_ACCOUNT, account);
+            cancelNotificationIntent.putExtra(Utils.EXTRA_FOLDER, folder);
 
             notification.setDeleteIntent(PendingIntent.getService(
                     context, notificationId, cancelNotificationIntent, 0));
