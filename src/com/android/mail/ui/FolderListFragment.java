@@ -120,8 +120,6 @@ public class FolderListFragment extends ListFragment implements
      */
     // Setting to INERT_HEADER = leaving uninitialized.
     private int mSelectedFolderType = DrawerItem.UNSET;
-    private ObjectCursor<Folder> mFutureData;
-    private ConversationListCallbacks mConversationListCallback;
     /** The current account according to the controller */
     private Account mCurrentAccount;
 
@@ -234,7 +232,6 @@ public class FolderListFragment extends ListFragment implements
                     "create it. Cannot proceed.");
         }
         mActivity = (ControllableActivity) activity;
-        mConversationListCallback = mActivity.getListHandler();
         final FolderController controller = mActivity.getFolderController();
         // Listen to folder changes in the future
         mFolderObserver = new FolderObserver() {
@@ -461,21 +458,9 @@ public class FolderListFragment extends ListFragment implements
                 UIProvider.FOLDERS_PROJECTION, Folder.FACTORY);
     }
 
-    public void onAnimationEnd() {
-        if (mFutureData != null) {
-            mCursorAdapter.setCursor(mFutureData);
-            mFutureData = null;
-        }
-    }
-
     @Override
     public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
-        if (mConversationListCallback == null || !mConversationListCallback.isAnimating()) {
-            mCursorAdapter.setCursor(data);
-        } else {
-            mFutureData = data;
-            mCursorAdapter.setCursor(null);
-        }
+        mCursorAdapter.setCursor(data);
     }
 
     @Override
@@ -836,11 +821,7 @@ public class FolderListFragment extends ListFragment implements
             if (folderItem.mFolderType == DrawerItem.FOLDER_RECENT) {
                 return folderItem.mFolder;
             } else {
-                int pos = folderItem.mPosition;
-                if (mFutureData != null) {
-                    mCursor = mFutureData;
-                    mFutureData = null;
-                }
+                final int pos = folderItem.mPosition;
                 if (pos > -1 && mCursor != null && !mCursor.isClosed()
                         && mCursor.moveToPosition(folderItem.mPosition)) {
                     return mCursor.getModel();
@@ -944,11 +925,9 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         public Folder getFullFolder(DrawerItem folderItem) {
-            int pos = folderItem.mPosition;
+            final int pos = folderItem.mPosition;
             if (mCursor == null || mCursor.isClosed()) {
-                // See if we have a cursor hanging out we can use
-                mCursor = mFutureData;
-                mFutureData = null;
+                return null;
             }
             if (pos > -1 && mCursor != null && !mCursor.isClosed()
                     && mCursor.moveToPosition(folderItem.mPosition)) {
