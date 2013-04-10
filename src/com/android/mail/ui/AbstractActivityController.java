@@ -517,6 +517,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void changeAccount(Account account) {
+        LogUtils.i(LOG_TAG, "AAC.changeAccount(%s)", account);
         // Is the account or account settings different from the existing account?
         final boolean firstLoad = mAccount == null;
         final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
