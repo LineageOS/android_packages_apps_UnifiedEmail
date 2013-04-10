@@ -190,8 +190,8 @@
     <item quantity="other" msgid="2222365088907519938">"Цепочек, с которых снимается пометка: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"Скрытых цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt."</item>
-    <item quantity="other" msgid="1941193356069303587">"Скрытых цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt."</item>
+    <item quantity="one" msgid="3197365771487542615">"Скрытых цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="other" msgid="1941193356069303587">"Скрытых цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="3060864972122279220">"Цепочек, помеченных как спам: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
