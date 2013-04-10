@@ -209,8 +209,8 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /** Runnable that checks the logging level to enable/disable the logging service. */
     private Runnable mLogServiceChecker = null;
-    /** List of all accounts currently known to the controller. */
-    private Account[] mAllAccounts;
+    /** List of all accounts currently known to the controller. This is never null. */
+    private Account[] mAllAccounts = new Account[0];
 
     /**
      * Interface for actions that are deferred until after a load completes. This is for handling

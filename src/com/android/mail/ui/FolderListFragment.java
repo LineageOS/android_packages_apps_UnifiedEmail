@@ -123,9 +123,6 @@ public class FolderListFragment extends ListFragment implements
     /** The current account according to the controller */
     private Account mCurrentAccount;
 
-    /** List of all accounts currently known */
-    private Account[] mAllAccounts;
-
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
@@ -275,11 +272,10 @@ public class FolderListFragment extends ListFragment implements
             mAllAccountsObserver = new AllAccountObserver(){
                 @Override
                 public void onChanged(Account[] allAccounts) {
-                    mAllAccounts = allAccounts;
                     mCursorAdapter.notifyAllAccountsChanged();
                 }
             };
-            mAllAccounts = mAllAccountsObserver.initialize(accountController);
+            mAllAccountsObserver.initialize(accountController);
             mAccountChanger = accountController;
         }
 
@@ -475,6 +471,18 @@ public class FolderListFragment extends ListFragment implements
     }
 
     /**
+     *  Returns the sorted list of accounts. The AAC always has the current list, sorted by
+     *  frequency of use.
+     * @return a list of accounts, sorted by frequency of use
+     */
+    private Account[] getAllAccounts() {
+        if (mAllAccountsObserver != null) {
+            return mAllAccountsObserver.getAllAccounts();
+        }
+        return new Account[0];
+    }
+
+    /**
      * Interface for all cursor adapters that allow setting a cursor and being destroyed.
      */
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
@@ -535,26 +543,13 @@ public class FolderListFragment extends ListFragment implements
                 mRecentFolders = null;
             }
             mFolderWatcher = new FolderWatcher(mActivity, this);
-            initFolderWatcher();
+            mFolderWatcher.updateAccountList(getAllAccounts());
         }
 
         @Override
         public void notifyAllAccountsChanged() {
-            initFolderWatcher();
+            mFolderWatcher.updateAccountList(getAllAccounts());
             recalculateList();
-        }
-
-        /**
-         * If accounts have not yet been added to folder watcher due to various
-         * null pointer issues, add them.
-         */
-        public void initFolderWatcher() {
-            if (mAllAccounts == null) {
-                return;
-            }
-            for (final Account account : mAllAccounts) {
-                mFolderWatcher.startWatching(account.settings.defaultInbox);
-            }
         }
 
         @Override
@@ -638,15 +633,6 @@ public class FolderListFragment extends ListFragment implements
          * populating {@link FolderListAdapter#mItemList}
          */
         private void recalculateList() {
-            if (mAllAccountsObserver != null) {
-                mAllAccounts = mAllAccountsObserver.getAllAccounts();
-            }
-            final boolean haveAccount = (mAllAccounts != null && mAllAccounts.length > 0);
-            if (!haveAccount) {
-                // TODO(viki): How do we get a notification that we have accounts now? Currently
-                // we don't, and we should.
-                return;
-            }
             final List<DrawerItem> newFolderList = new ArrayList<DrawerItem>();
             recalculateListAccounts(newFolderList);
             recalculateListFolders(newFolderList);
@@ -661,24 +647,21 @@ public class FolderListFragment extends ListFragment implements
          * @param itemList List of drawer items to populate
          */
         private void recalculateListAccounts(List<DrawerItem> itemList) {
-            if (mAllAccounts != null) {
-                initFolderWatcher();
-                // Add all accounts and then the current account
-                final Uri currentAccountUri = getCurrentAccountUri();
-                for (final Account account : mAllAccounts) {
-                    if (!currentAccountUri.equals(account.uri)) {
-                        final int unreadCount =
-                                mFolderWatcher.getUnreadCount(account.settings.defaultInbox);
-                        itemList.add(
-                                DrawerItem.ofAccount(mActivity, account, unreadCount, false));
-                    }
+            final Account[] allAccounts = getAllAccounts();
+            // Add all accounts and then the current account
+            final Uri currentAccountUri = getCurrentAccountUri();
+            for (final Account account : allAccounts) {
+                if (!currentAccountUri.equals(account.uri)) {
+                    final int unreadCount = mFolderWatcher.getUnreadCount(account);
+                    itemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount, false));
                 }
-                final int unreadCount = mFolderWatcher.getUnreadCount(
-                        mCurrentAccount.settings.defaultInbox);
-                itemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, unreadCount, true));
             }
-            // TODO(shahrk): Add support for when there's only one account and allAccounts
-            // isn't available yet
+            if (mCurrentAccount == null) {
+                LogUtils.wtf(LOG_TAG, "recalculateListAccounts() with null current account.");
+            } else {
+                // We don't show the unread count for the current account, so set this to zero.
+                itemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
+            }
         }
 
         /**
