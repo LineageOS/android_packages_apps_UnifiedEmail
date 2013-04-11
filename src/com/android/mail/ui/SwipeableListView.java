@@ -201,7 +201,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         if (adapter == null) {
             return;
         }
-        adapter.setupLeaveBehind(conv, undoOp, conv.position);
+        adapter.setupLeaveBehind(conv, undoOp, conv.position, target.getHeight());
         ConversationCursor cc = (ConversationCursor) adapter.getCursor();
         Collection<Conversation> convList = Conversation.listOf(conv);
         ArrayList<Uri> folderUris;
@@ -250,26 +250,11 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         // We do this so the underlying ScrollView knows that it won't get
         // the chance to intercept events anymore
         requestDisallowInterceptTouchEvent(true);
-        SwipeableConversationItemView view = null;
-        if (v instanceof ConversationItemView) {
-            view = (SwipeableConversationItemView) v.getParent();
-        }
-        if (view != null) {
-            view.addBackground(getContext());
-            view.setBackgroundVisibility(View.VISIBLE);
-        }
         cancelDismissCounter();
     }
 
     @Override
     public void onDragCancelled(SwipeableItemView v) {
-        SwipeableConversationItemView view = null;
-        if (v instanceof ConversationItemView) {
-            view = (SwipeableConversationItemView) ((View) v).getParent();
-        }
-        if (view != null) {
-            view.removeBackground();
-        }
         final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter != null) {
             adapter.startDismissCounter();

@@ -18,6 +18,8 @@
 package com.android.mail.ui;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -54,8 +56,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class AnimatedAdapter extends SimpleCursorAdapter implements
-        android.animation.Animator.AnimatorListener {
+public class AnimatedAdapter extends SimpleCursorAdapter {
     private static int sDismissAllShortDelay = -1;
     private static int sDismissAllLongDelay = -1;
     private static final String LAST_DELETING_ITEMS = "last_deleting_items";
@@ -80,6 +81,56 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Runnable mCountDown;
     private Handler mHandler;
     protected long mLastLeaveBehind = -1;
+
+    private final AnimatorListener mAnimatorListener = new AnimatorListenerAdapter() {
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+            if (!mUndoingItems.isEmpty()) {
+                mDeletingItems.clear();
+                mLastDeletingItems.clear();
+                mSwipeDeletingItems.clear();
+            }
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            Object obj;
+            if (animation instanceof AnimatorSet) {
+                AnimatorSet set = (AnimatorSet) animation;
+                obj = ((ObjectAnimator) set.getChildAnimations().get(0)).getTarget();
+            } else {
+                obj = ((ObjectAnimator) animation).getTarget();
+            }
+            updateAnimatingConversationItems(obj, mSwipeDeletingItems);
+            updateAnimatingConversationItems(obj, mDeletingItems);
+            updateAnimatingConversationItems(obj, mSwipeUndoingItems);
+            updateAnimatingConversationItems(obj, mUndoingItems);
+            if (hasFadeLeaveBehinds() && obj instanceof LeaveBehindItem) {
+                LeaveBehindItem objItem = (LeaveBehindItem) obj;
+                clearLeaveBehind(objItem.getConversationId());
+                objItem.commit();
+                if (!hasFadeLeaveBehinds()) {
+                    // Cancel any existing animations on the remaining leave behind
+                    // item and start fading in text immediately.
+                    LeaveBehindItem item = getLastLeaveBehindItem();
+                    if (item != null) {
+                        boolean cancelled = item.cancelFadeInTextAnimationIfNotStarted();
+                        if (cancelled) {
+                            item.startFadeInTextAnimation(0 /* delay start */);
+                        }
+                    }
+                }
+                // The view types have changed, since the animating views are gone.
+                notifyDataSetChanged();
+            }
+
+            if (!isAnimating()) {
+                mActivity.onAnimationEnd(AnimatedAdapter.this);
+            }
+        }
+
+    };
 
     /**
      * The next action to perform. Do not read or write this. All accesses should
@@ -382,13 +433,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (hasFadeLeaveBehinds()) {
             if(isPositionFadeLeaveBehind(conv)) {
                 LeaveBehindItem fade  = getFadeLeaveBehindItem(position, conv);
-                fade.startShrinkAnimation(mActivity.getViewMode(), this);
+                fade.startShrinkAnimation(mActivity.getViewMode(), mAnimatorListener);
                 return fade;
             }
         }
         if (hasLeaveBehinds()) {
             if (isPositionLeaveBehind(conv)) {
-                LeaveBehindItem fadeIn = getLeaveBehindItem(conv);
+                final LeaveBehindItem fadeIn = getLeaveBehindItem(conv);
                 if (conv.id == mLastLeaveBehind) {
                     // If it looks like the person is doing a lot of rapid
                     // swipes, wait patiently before animating
@@ -426,15 +477,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     public LeaveBehindItem setupLeaveBehind(Conversation target, ToastBarOperation undoOp,
-            int deletedRow) {
+            int deletedRow, int viewHeight) {
         cancelLeaveBehindFadeInAnimation();
         mLastLeaveBehind = target.id;
         fadeOutLeaveBehindItems();
-        boolean isWide = ConversationItemViewCoordinates.isWideMode(ConversationItemViewCoordinates
-                .getMode(mContext, mActivity.getViewMode()));
-        LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
-                isWide? R.layout.swipe_leavebehind_wide : R.layout.swipe_leavebehind, null);
-        leaveBehind.bindOperations(deletedRow, mAccount, this, undoOp, target, mFolder);
+
+        final LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext)
+                .inflate(R.layout.swipe_leavebehind, mListView, false);
+        leaveBehind.bind(deletedRow, mAccount, this, undoOp, target, mFolder, viewHeight);
         mLeaveBehindItems.put(target.id, leaveBehind);
         mLastDeletingItems.add(target.id);
         return leaveBehind;
@@ -579,7 +629,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             // The undo animation consists of fading in the conversation that
             // had been destroyed.
             deletingView = newConversationItemView(position, parent, conversation);
-            deletingView.startDeleteAnimation(this, swipe);
+            deletingView.startDeleteAnimation(mAnimatorListener, swipe);
         }
         return deletingView;
     }
@@ -594,7 +644,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             // The undo animation consists of fading in the conversation that
             // had been destroyed.
             undoView = newConversationItemView(position, parent, conv);
-            undoView.startUndoAnimation(mActivity.getViewMode(), this, swipe);
+            undoView.startUndoAnimation(mAnimatorListener, swipe);
         }
         return undoView;
     }
@@ -670,15 +720,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 && conv.isMostlyDead();
     }
 
-    @Override
-    public void onAnimationStart(Animator animation) {
-        if (!mUndoingItems.isEmpty()) {
-            mDeletingItems.clear();
-            mLastDeletingItems.clear();
-            mSwipeDeletingItems.clear();
-        }
-    }
-
     /**
      * Performs the pending destruction, if any and assigns the next pending action.
      * @param next The next action that is to be performed, possibly null (if no next action is
@@ -689,43 +730,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mPendingDestruction.onListItemsRemoved();
         }
         mPendingDestruction = next;
-    }
-
-    @Override
-    public void onAnimationEnd(Animator animation) {
-        Object obj;
-        if (animation instanceof AnimatorSet) {
-            AnimatorSet set = (AnimatorSet) animation;
-            obj = ((ObjectAnimator) set.getChildAnimations().get(0)).getTarget();
-        } else {
-            obj = ((ObjectAnimator) animation).getTarget();
-        }
-        updateAnimatingConversationItems(obj, mSwipeDeletingItems);
-        updateAnimatingConversationItems(obj, mDeletingItems);
-        updateAnimatingConversationItems(obj, mSwipeUndoingItems);
-        updateAnimatingConversationItems(obj, mUndoingItems);
-        if (hasFadeLeaveBehinds() && obj instanceof LeaveBehindItem) {
-            LeaveBehindItem objItem = (LeaveBehindItem) obj;
-            clearLeaveBehind(objItem.getConversationId());
-            objItem.commit();
-            if (!hasFadeLeaveBehinds()) {
-                // Cancel any existing animations on the remaining leave behind
-                // item and start fading in text immediately.
-                LeaveBehindItem item = getLastLeaveBehindItem();
-                if (item != null) {
-                    boolean cancelled = item.cancelFadeInTextAnimationIfNotStarted();
-                    if (cancelled) {
-                        item.startFadeInTextAnimation(0 /* delay start */);
-                    }
-                }
-            }
-            // The view types have changed, since the animating views are gone.
-            notifyDataSetChanged();
-        }
-
-        if (!isAnimating()) {
-            mActivity.onAnimationEnd(this);
-        }
     }
 
     private void updateAnimatingConversationItems(Object obj, HashSet<Long> items) {
@@ -757,15 +761,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
 
         return !isPositionDeleting(position) && !isPositionUndoing(position);
-    }
-
-    @Override
-    public void onAnimationCancel(Animator animation) {
-        onAnimationEnd(animation);
-    }
-
-    @Override
-    public void onAnimationRepeat(Animator animation) {
     }
 
     public void showFooter() {
@@ -835,7 +830,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             LeaveBehindData left =
                     (LeaveBehindData) outState.getParcelable(LEAVE_BEHIND_ITEM_DATA);
             mLeaveBehindItems.put(outState.getLong(LEAVE_BEHIND_ITEM_ID),
-                    setupLeaveBehind(left.data, left.op, left.data.position));
+                    setupLeaveBehind(left.data, left.op, left.data.position, left.height));
         }
     }
 
