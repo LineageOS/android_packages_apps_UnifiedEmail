@@ -416,13 +416,11 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     /**
-     * Set the actionbar mode to empty: no title, no custom content. This should show the app
-     * name in the title.
+     * Set the actionbar mode to empty: no title, no subtitle, no custom view.
      */
     protected void setEmptyMode() {
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
-        mActionBar.setTitle(null);
-        mActionBar.setSubtitle(null);
+        // Disable title/subtitle and the custom view by setting the bitmask to all off.
+        setTitleModeFlags(0);
         if (mUnreadView != null) {
             mUnreadView.setVisibility(View.GONE);
         }
@@ -608,6 +606,12 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         return true;
     }
 
+    /**
+     * Sets the actionbar mode: Pass it an integer which contains each of these values, perhaps
+     * OR'd together: {@link ActionBar#DISPLAY_SHOW_CUSTOM}, {@link ActionBar#DISPLAY_SHOW_TITLE},
+     * and {@link #DISPLAY_TITLE_MULTIPLE_LINES}. To disable all, pass a zero.
+     * @param enabledFlags
+     */
     private void setTitleModeFlags(int enabledFlags) {
         final int mask = ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_CUSTOM | DISPLAY_TITLE_MULTIPLE_LINES;
