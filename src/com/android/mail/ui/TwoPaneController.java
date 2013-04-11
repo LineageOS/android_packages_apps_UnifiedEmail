@@ -309,7 +309,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.replace(R.id.wait, getWaitFragment(), TAG_WAIT);
+        fragmentTransaction.replace(R.id.conversation_list_pane, getWaitFragment(), TAG_WAIT);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
