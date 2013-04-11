@@ -35,6 +35,7 @@
             android:layout_toRightOf="@id/progress"
             android:layout_centerVertical="true"
             android:text="@string/wait_for_sync_title"
+            android:textColor="@android:color/white"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 </RelativeLayout>
 
