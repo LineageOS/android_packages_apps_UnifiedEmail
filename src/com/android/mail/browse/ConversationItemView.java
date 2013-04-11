@@ -65,10 +65,10 @@ import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.ContactPhotoManager;
 import com.android.mail.photomanager.ContactPhotoManager.ContactIdentifier;
 import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
-import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.ui.AnimatedAdapter;
@@ -84,7 +84,6 @@ import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
@@ -436,21 +435,21 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     public void bind(Cursor cursor, ControllableActivity activity, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
+            Folder folder, int checkboxOrSenderImage, boolean swipeEnabled,
             boolean priorityArrowEnabled, AnimatedAdapter adapter) {
         bind(ConversationItemViewModel.forCursor(mAccount, cursor), activity, set, folder,
-                checkboxesDisabled, swipeEnabled, priorityArrowEnabled, adapter);
+                checkboxOrSenderImage, swipeEnabled, priorityArrowEnabled, adapter);
     }
 
     public void bind(Conversation conversation, ControllableActivity activity,
-            ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
+            ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
         bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity, set,
-                folder, checkboxesDisabled, swipeEnabled, priorityArrowEnabled, adapter);
+                folder, checkboxOrSenderImage, swipeEnabled, priorityArrowEnabled, adapter);
     }
 
     private void bind(ConversationItemViewModel header, ControllableActivity activity,
-            ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
+            ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
         // If this was previously bound to a conversation, remove any contact
         // photo manager requests.
@@ -468,9 +467,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mActivity = activity;
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
-        mCheckboxesEnabled = !checkboxesDisabled;
-        mConvListPhotosEnabled = MailPrefs.get(activity.getActivityContext())
-                .areConvListPhotosEnabled();
+        mCheckboxesEnabled = (checkboxOrSenderImage == ConversationListIcon.CHECKBOX);
+        mConvListPhotosEnabled = (checkboxOrSenderImage == ConversationListIcon.SENDER_IMAGE);
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
@@ -478,7 +476,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mHeader.conversation.getAttachmentsCount() == 0) {
             mAttachmentPreviewMode = ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE;
         } else {
-            mAttachmentPreviewMode = mHeader.conversation.read ? ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_SHORT
+            mAttachmentPreviewMode = mHeader.conversation.read ?
+                    ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_SHORT
                     : ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_TALL;
         }
         setContentDescription();

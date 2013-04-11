@@ -40,6 +40,7 @@ import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -254,9 +255,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (view == null) {
             view = new SwipeableConversationItemView(context, mAccount.name);
         }
-        view.bind(conv, mActivity, mBatchConversations, mFolder,
-                mAccount != null ? mAccount.settings.hideCheckboxes : false, mSwipeEnabled,
-                mPriorityMarkersEnabled, this);
+        view.bind(conv, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
+                mSwipeEnabled, mPriorityMarkersEnabled, this);
         return view;
     }
 
@@ -605,8 +605,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             return;
         }
         ((SwipeableConversationItemView) view).bind(cursor, mActivity, mBatchConversations, mFolder,
-                mAccount != null ? mAccount.settings.hideCheckboxes : false,
-                        mSwipeEnabled, mPriorityMarkersEnabled, this);
+                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this);
     }
 
     private SwipeableConversationItemView newConversationItemView(int position, ViewGroup parent,
@@ -614,12 +613,17 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         SwipeableConversationItemView view = (SwipeableConversationItemView) super.getView(
                 position, null, parent);
         view.reset();
-        view.bind(conversation, mActivity, mBatchConversations, mFolder,
-                mAccount != null ? mAccount.settings.hideCheckboxes : false, mSwipeEnabled,
-                mPriorityMarkersEnabled, this);
+        view.bind(conversation, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
+                mSwipeEnabled, mPriorityMarkersEnabled, this);
         mAnimatingViews.put(conversation.id, view);
         return view;
     }
+
+    private int getCheckboxSetting() {
+        return mAccount != null ? mAccount.settings.convListIcon :
+            ConversationListIcon.DEFAULT;
+    }
+
 
     @Override
     public Object getItem(int position) {

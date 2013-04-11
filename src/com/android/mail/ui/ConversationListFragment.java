@@ -35,11 +35,11 @@ import android.widget.TextView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
-import com.android.mail.browse.ToggleableItem;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewModel;
 import com.android.mail.browse.ConversationListFooterView;
+import com.android.mail.browse.ToggleableItem;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -48,6 +48,7 @@ import com.android.mail.providers.FolderObserver;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
@@ -520,7 +521,9 @@ public final class ConversationListFragment extends ListFragment implements
         if (!(view instanceof ToggleableItem)) {
             return;
         }
-        if (mAccount.settings.hideCheckboxes && !mSelectedSet.isEmpty()) {
+        boolean showCheckboxes = (mAccount.settings.convListIcon ==
+                ConversationListIcon.CHECKBOX);
+        if (!showCheckboxes && !mSelectedSet.isEmpty()) {
             ToggleableItem v = (ToggleableItem) view;
             v.toggleCheckMarkOrBeginDrag();
         } else {
