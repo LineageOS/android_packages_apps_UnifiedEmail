@@ -1774,9 +1774,18 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             // Put the folder and conversation, and ask the loader to create this folder.
             final Bundle args = new Bundle();
-            final Uri folderUri = intent.hasExtra(Utils.EXTRA_FOLDER_URI)
-                    ? (Uri) intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI)
-                    : mAccount.settings.defaultInbox;
+
+            final Uri folderUri;
+            if (intent.hasExtra(Utils.EXTRA_FOLDER_URI)) {
+                folderUri = (Uri) intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
+            } else if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
+                final Folder folder =
+                        Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER));
+                folderUri = folder.uri;
+            } else {
+                folderUri = mAccount.settings.defaultInbox;
+            }
+
             args.putParcelable(Utils.EXTRA_FOLDER_URI, folderUri);
             args.putParcelable(Utils.EXTRA_CONVERSATION,
                     intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));

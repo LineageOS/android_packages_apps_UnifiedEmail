@@ -48,7 +48,6 @@ import com.google.common.primitives.Ints;
 import java.util.Set;
 
 public abstract class BaseWidgetProvider extends AppWidgetProvider {
-    public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_FOLDER_TYPE = "folder-type";
     public static final String EXTRA_FOLDER_URI = "folder-uri";
     public static final String EXTRA_FOLDER_CONVERSATION_LIST_URI = "folder-conversation-list-uri";
@@ -122,7 +121,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         final String action = intent.getAction();
         if (ACTION_UPDATE_WIDGET.equals(action)) {
             final int widgetId = intent.getIntExtra(EXTRA_WIDGET_ID, -1);
-            final Account account = Account.newinstance(intent.getStringExtra(EXTRA_ACCOUNT));
+            final Account account = Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT));
             final int folderType = intent.getIntExtra(EXTRA_FOLDER_TYPE, FolderType.DEFAULT);
             final Uri folderUri = intent.getParcelableExtra(EXTRA_FOLDER_URI);
             final Uri folderConversationListUri =
@@ -291,7 +290,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
 
         updateWidgetIntent.setType(account.mimeType);
         updateWidgetIntent.putExtra(EXTRA_WIDGET_ID, appWidgetId);
-        updateWidgetIntent.putExtra(EXTRA_ACCOUNT, account.serialize());
+        updateWidgetIntent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
         updateWidgetIntent.putExtra(EXTRA_FOLDER_TYPE, folderType);
         updateWidgetIntent.putExtra(EXTRA_FOLDER_URI, folderUri);
         updateWidgetIntent.putExtra(EXTRA_FOLDER_CONVERSATION_LIST_URI, folderConversationListUri);
