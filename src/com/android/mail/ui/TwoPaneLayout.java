@@ -201,6 +201,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 }
                 break;
             case ViewMode.CONVERSATION_LIST:
+            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
             case ViewMode.SEARCH_RESULTS_LIST:
                 listWidth = parentWidth - foldersWidth;
                 break;
@@ -253,6 +254,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 break;
             }
             case ViewMode.CONVERSATION_LIST:
+            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
             case ViewMode.SEARCH_RESULTS_LIST: {
                 convX = width;
                 listX = getPaneWidth(mFoldersView);
@@ -404,6 +406,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private int computeConversationListWidth(int totalWidth) {
         switch (mCurrentMode) {
             case ViewMode.CONVERSATION_LIST:
+            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
             case ViewMode.SEARCH_RESULTS_LIST:
                 return totalWidth - computeFolderListWidth(totalWidth);
             case ViewMode.CONVERSATION:
