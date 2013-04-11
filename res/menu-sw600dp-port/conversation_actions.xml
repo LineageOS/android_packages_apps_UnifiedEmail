@@ -47,7 +47,8 @@
         android:id="@+id/discard_drafts"
         android:title="@string/discard_drafts"
         android:showAsAction="always"
-        android:icon="@drawable/trash" />
+        android:icon="@drawable/trash"
+        android:visible="false" />
 
     <item
         android:id="@+id/inside_conversation_unread"
