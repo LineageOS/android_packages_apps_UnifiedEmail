@@ -17,8 +17,8 @@
 
 package com.android.mail.ui;
 
-import android.animation.ObjectAnimator;
 import android.animation.Animator.AnimatorListener;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
@@ -30,7 +30,7 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.ConversationItemViewCoordinates;
+import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -45,6 +45,19 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     private TextView mText;
     private View mSwipeableContent;
     public int position;
+    private Conversation mData;
+    private int mWidth;
+    /**
+     * The height of this view. Typically, this matches the height of the originating
+     * {@link ConversationItemView}.
+     */
+    private int mHeight;
+    private int mAnimatedHeight = -1;
+    private boolean mAnimating;
+    private boolean mFadingInText;
+    private boolean mInert = false;
+    private ObjectAnimator mFadeIn;
+
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
     private static float sScrollSlop;
@@ -94,12 +107,13 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         }
     }
 
-    public void bindOperations(int pos, Account account, AnimatedAdapter adapter,
-            ToastBarOperation undoOp, Conversation target, Folder folder) {
+    public void bind(int pos, Account account, AnimatedAdapter adapter,
+            ToastBarOperation undoOp, Conversation target, Folder folder, int height) {
         position = pos;
         mUndoOp = undoOp;
         mAccount = account;
         mAdapter = adapter;
+        mHeight = height;
         setData(target);
         mSwipeableContent = findViewById(R.id.swipeable_content);
         // Listen on swipeable content so that we can show both the undo icon
@@ -142,16 +156,8 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     }
 
     public LeaveBehindData getLeaveBehindData() {
-        return new LeaveBehindData(getData(), mUndoOp);
+        return new LeaveBehindData(getData(), mUndoOp, mHeight);
     }
-
-    private Conversation mData;
-    private int mAnimatedHeight = -1;
-    private int mWidth;
-    private boolean mAnimating;
-    private boolean mFadingInText;
-    private boolean mInert = false;
-    private ObjectAnimator mFadeIn;
 
     /**
      * Animate shrinking the height of this view.
@@ -163,13 +169,9 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     public void startShrinkAnimation(ViewMode viewMode, AnimatorListener listener) {
         if (!mAnimating) {
             mAnimating = true;
-            int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(), viewMode);
-            setMinimumHeight(minHeight);
-            final int start = minHeight;
-            final int end = 0;
-            ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
-            mAnimatedHeight = start;
-            mWidth = getMeasuredWidth();
+            final ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", mHeight, 0);
+            setMinimumHeight(mHeight);
+            mWidth = getWidth();
             height.setInterpolator(new DecelerateInterpolator(1.75f));
             height.setDuration(sShrinkAnimationDuration);
             height.addListener(listener);
@@ -262,9 +264,10 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         if (mAnimatedHeight != -1) {
             setMeasuredDimension(mWidth, mAnimatedHeight);
         } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            // override the height MeasureSpec to ensure this is sized up at the desired height
+            super.onMeasure(widthMeasureSpec,
+                    MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
         }
-        return;
     }
 
     // Used by animator

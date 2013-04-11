@@ -18,7 +18,6 @@
 package com.android.mail.browse;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ClipData;
@@ -29,11 +28,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -56,7 +53,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
+import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
@@ -77,19 +74,17 @@ import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
-import com.android.mail.ui.EllipsizedMultilineTextView;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.ViewMode;
+import com.android.mail.utils.HardwareLayerEnabler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem,
         InvalidateCallback {
@@ -170,10 +165,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
-    private int mAnimatedHeight = -1;
+    private float mAnimatedHeightFraction = 1.0f;
     private final String mAccount;
     private ControllableActivity mActivity;
-    private int mBackgroundOverride = -1;
     private final TextView mSubjectTextView;
     private final TextView mSendersTextView;
     private boolean mConvListPhotosEnabled;
@@ -552,7 +546,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mCoordinates = ConversationItemViewCoordinates.forConfig(mContext, mConfig,
                 mAdapter.getCoordinatesCache());
 
-        final int h = (mAnimatedHeight != -1) ? mAnimatedHeight : mCoordinates.height;
+        final int h = (mAnimatedHeightFraction != 1.0f) ?
+                Math.round(mAnimatedHeightFraction * mCoordinates.height) : mCoordinates.height;
         setMeasuredDimension(mConfig.getWidth(), h);
     }
 
@@ -1186,12 +1181,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      * @param isUnread
      */
     private void updateBackground(boolean isUnread) {
-        if (mBackgroundOverride != -1) {
-            // If the item is animating, we use a color to avoid shrinking a 9-patch
-            // and getting weird artifacts from the overlap.
-            setBackgroundColor(mBackgroundOverride);
-            return;
-        }
         final boolean isListOnTablet = mTabletDevice && mActivity.getViewMode().isListMode();
         final int background;
         if (isUnread) {
@@ -1417,56 +1406,68 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      * can be reused.
      */
     public void reset() {
-        mBackgroundOverride = -1;
-        setAlpha(1);
-        setTranslationX(0);
-        setAnimatedHeight(-1);
-        setMinimumHeight(ConversationItemViewCoordinates.getMinHeight(mContext,
-                mActivity.getViewMode()));
+        setAlpha(1f);
+        setTranslationX(0f);
+        mAnimatedHeightFraction = 1.0f;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void setTranslationX(float translationX) {
+        super.setTranslationX(translationX);
+
+        final ViewParent vp = getParent();
+        if (vp == null || !(vp instanceof SwipeableConversationItemView)) {
+            LogUtils.w(LOG_TAG,
+                    "CIV.setTranslationX unexpected ConversationItemView parent: %s x=%s",
+                    vp, translationX);
+        }
+
+        // When a list item is being swiped or animated, ensure that the hosting view has a
+        // background color set. We only enable the background during the X-translation effect to
+        // reduce overdraw during normal list scrolling.
+        final SwipeableConversationItemView parent = (SwipeableConversationItemView) vp;
+        if (translationX != 0f) {
+            parent.setBackgroundResource(R.color.swiped_bg_color);
+        } else {
+            parent.setBackgroundDrawable(null);
+        }
     }
 
     /**
      * Grow the height of the item and fade it in when bringing a conversation
      * back from a destructive action.
-     * @param listener
      */
-    public void startSwipeUndoAnimation(final AnimatorListener listener) {
+    public Animator createSwipeUndoAnimation() {
         ObjectAnimator undoAnimator = createTranslateXAnimation(true);
-        undoAnimator.addListener(listener);
-        undoAnimator.start();
+        return undoAnimator;
     }
 
     /**
      * Grow the height of the item and fade it in when bringing a conversation
      * back from a destructive action.
-     * @param listener
      */
-    public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
-        int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext, viewMode);
-        setMinimumHeight(minHeight);
-        mAnimatedHeight = 0;
+    public Animator createUndoAnimation() {
         ObjectAnimator height = createHeightAnimation(true);
-        Animator fade = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
+        Animator fade = ObjectAnimator.ofFloat(this, "alpha", 0, 1.0f);
         fade.setDuration(sShrinkAnimationDuration);
         fade.setInterpolator(new DecelerateInterpolator(2.0f));
         AnimatorSet transitionSet = new AnimatorSet();
         transitionSet.playTogether(height, fade);
-        transitionSet.addListener(listener);
-        transitionSet.start();
+        transitionSet.addListener(new HardwareLayerEnabler(this));
+        return transitionSet;
     }
 
     /**
      * Grow the height of the item and fade it in when bringing a conversation
      * back from a destructive action.
-     * @param listener
      */
-    public void startDestroyWithSwipeAnimation(final AnimatorListener listener) {
+    public Animator createDestroyWithSwipeAnimation() {
         ObjectAnimator slide = createTranslateXAnimation(false);
         ObjectAnimator height = createHeightAnimation(false);
         AnimatorSet transitionSet = new AnimatorSet();
         transitionSet.playSequentially(slide, height);
-        transitionSet.addListener(listener);
-        transitionSet.start();
+        return transitionSet;
     }
 
     private ObjectAnimator createTranslateXAnimation(boolean show) {
@@ -1481,40 +1482,22 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         return slide;
     }
 
-    public void startDestroyAnimation(final AnimatorListener listener) {
-        ObjectAnimator height = createHeightAnimation(false);
-        int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext,
-                mActivity.getViewMode());
-        setMinimumHeight(0);
-        mBackgroundOverride = sAnimatingBackgroundColor;
-        setBackgroundColor(mBackgroundOverride);
-        mAnimatedHeight = minHeight;
-        height.addListener(listener);
-        height.start();
+    public Animator createDestroyAnimation() {
+        return createHeightAnimation(false);
     }
 
     private ObjectAnimator createHeightAnimation(boolean show) {
-        int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(),
-                mActivity.getViewMode());
-        final int start = show ? 0 : minHeight;
-        final int end = show ? minHeight : 0;
-        ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
+        final float start = show ? 0f : 1.0f;
+        final float end = show ? 1.0f : 0f;
+        ObjectAnimator height = ObjectAnimator.ofFloat(this, "animatedHeightFraction", start, end);
         height.setInterpolator(new DecelerateInterpolator(2.0f));
         height.setDuration(sShrinkAnimationDuration);
         return height;
     }
 
     // Used by animator
-    @SuppressWarnings("unused")
-    public void setItemAlpha(float alpha) {
-        setAlpha(alpha);
-        invalidate();
-    }
-
-    // Used by animator
-    @SuppressWarnings("unused")
-    public void setAnimatedHeight(int height) {
-        mAnimatedHeight = height;
+    public void setAnimatedHeightFraction(float height) {
+        mAnimatedHeightFraction = height;
         requestLayout();
     }
 
