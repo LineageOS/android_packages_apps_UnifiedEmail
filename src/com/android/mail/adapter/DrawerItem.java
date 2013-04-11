@@ -26,6 +26,7 @@ import com.android.mail.ui.FolderItemView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +83,8 @@ public class DrawerItem {
 
     /** True if this view is enabled, false otherwise. */
     private final boolean mIsEnabled;
+    /** Photo for account objects */
+    private final Bitmap mAccountPhoto;
 
     @Override
     public String toString() {
@@ -116,7 +119,8 @@ public class DrawerItem {
      * @param position the cursor position for a folder object, -1 otherwise.
      */
     private DrawerItem(int type, ControllableActivity activity, Folder folder, int folderType,
-            Account account, int resource, boolean isCurrentAccount, int position) {
+            Account account, int resource, boolean isCurrentAccount, int position,
+            final Bitmap accountPhoto) {
         mActivity = activity;
         mFolder = folder;
         mFolderType = folderType;
@@ -127,6 +131,7 @@ public class DrawerItem {
         mType = type;
         mPosition = position;
         mIsEnabled = calculateEnabled();
+        mAccountPhoto = accountPhoto;
     }
 
     /**
@@ -141,7 +146,7 @@ public class DrawerItem {
     public static DrawerItem ofFolder(ControllableActivity activity, Folder folder,
             int folderType, int cursorPosition) {
         return new DrawerItem(VIEW_FOLDER, activity, folder,  folderType, null, -1, false,
-                cursorPosition);
+                cursorPosition, null);
     }
 
     private String folderToString() {
@@ -164,9 +169,9 @@ public class DrawerItem {
      * @return a drawer item for the account.
      */
     public static DrawerItem ofAccount(ControllableActivity activity, Account account,
-            int unreadCount, boolean isCurrentAccount) {
+            int unreadCount, boolean isCurrentAccount, final Bitmap accountPhoto) {
         return new DrawerItem(VIEW_ACCOUNT, activity, null, ACCOUNT, account, unreadCount,
-                isCurrentAccount, -1);
+                isCurrentAccount, -1, accountPhoto);
     }
 
     private String accountToString() {
@@ -180,12 +185,14 @@ public class DrawerItem {
 
     /**
      * Create a header item with a string resource.
+     *
      * @param activity the underlying activity
      * @param resource the string resource: R.string.all_folders_heading
      * @return a drawer item for the header.
      */
     public static DrawerItem ofHeader(ControllableActivity activity, int resource) {
-        return new DrawerItem(VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false, -1);
+        return new DrawerItem(
+                VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false, -1, null);
     }
 
     private String headerToString() {
@@ -199,12 +206,13 @@ public class DrawerItem {
 
     /**
      * Create a "waiting for initialization" item.
+     *
      * @param activity the underlying activity
      * @return a drawer item with an indeterminate progress indicator.
      */
     public static DrawerItem forWaitView(ControllableActivity activity) {
-        return new DrawerItem(VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1,
-                false, -1);
+        return new DrawerItem(
+                VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false, -1, null);
     }
 
     private String waitToString() {
@@ -319,6 +327,14 @@ public class DrawerItem {
         accountItemView.bind(mAccount, mIsCurrentAccount, mResource);
         View v = accountItemView.findViewById(R.id.account_graphic);
         v.setBackgroundColor(mAccount.color);
+
+        // If there is a photo, add it to the ImageView spacer. Since there's a default image,
+        // this should almost never be null (aside from first startup, but accounts immediately
+        // get loaded along with the drawer being repopulated with letter tiles).
+        final ImageView image = (ImageView) accountItemView.findViewById(R.id.photo_spacer);
+        if(image != null) {
+            image.setImageBitmap(mAccountPhoto);
+        }
         return accountItemView;
     }
 

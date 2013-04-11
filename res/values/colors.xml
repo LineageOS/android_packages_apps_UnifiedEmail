@@ -40,7 +40,7 @@
     <!-- Folder List/Drawer colors -->
     <color name="drawer_background_dim">#66000000</color>
     <color name="folder_list_divider_color">#424242</color>
-    <color name="folder_list_heading_text_color">@android:color/white</color>
+    <color name="folder_list_heading_text_color">#808080</color>
     <color name="account_item_heading_text_color">@color/gray_text_color</color>
     <color name="account_item_heading_background">@color/gray_text_color</color>
     <color name="list_background_color">#30302f</color>
