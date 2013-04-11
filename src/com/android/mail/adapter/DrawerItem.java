@@ -316,9 +316,8 @@ public class DrawerItem {
             accountItemView =
                     (AccountItemView) mInflater.inflate(R.layout.account_item, null, false);
         }
-        accountItemView.bind(mAccount, mResource);
-        accountItemView.setCurrentAccount(mIsCurrentAccount);
-        View v = accountItemView.findViewById(R.id.color_block);
+        accountItemView.bind(mAccount, mIsCurrentAccount, mResource);
+        View v = accountItemView.findViewById(R.id.account_graphic);
         v.setBackgroundColor(mAccount.color);
         return accountItemView;
     }

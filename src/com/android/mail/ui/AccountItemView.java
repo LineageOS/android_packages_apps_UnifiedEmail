@@ -23,7 +23,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.utils.Utils;
 
 import android.content.Context;
-import android.graphics.Color;
+
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -34,7 +34,6 @@ import android.widget.RelativeLayout;
 public class AccountItemView extends RelativeLayout {
     private TextView mAccountTextView;
     private TextView mUnreadCountTextView;
-    private TextView mUnseenCountTextView;
 
     public AccountItemView(Context context) {
         super(context);
@@ -53,36 +52,26 @@ public class AccountItemView extends RelativeLayout {
         super.onFinishInflate();
         mAccountTextView = (TextView)findViewById(R.id.name);
         mUnreadCountTextView = (TextView)findViewById(R.id.unread);
-        mUnseenCountTextView = (TextView)findViewById(R.id.unseen);
     }
 
     /**
-     * Sets the account name and draws the unread count
+     * Sets the account name and draws the unread count. If the account is the current account,
+     * the unread count is hidden and the account item is given the focused background to
+     * partially highlight it.
      *
      * @param account account whose name will be displayed
+     * @param isCurrentAccount true if the account is the one in use, false otherwise
      * @param count unread count
      */
-    public void bind(Account account, int count) {
+    public void bind(final Account account, final boolean isCurrentAccount, final int count) {
         mAccountTextView.setText(account.name);
-        setUnseenCount(Color.BLACK, 0);
         setUnreadCount(count);
-    }
 
-    /**
-     * Takes in true if current item view should be modified to look like
-     * the current account header. This should not get called with inactive or
-     * non-displayed accounts.
-     *
-     * @param isCurrentAccount true if account is active, false otherwise
-     */
-    public void setCurrentAccount(boolean isCurrentAccount) {
         if(isCurrentAccount) {
             mUnreadCountTextView.setVisibility(View.GONE);
-            mAccountTextView.setAllCaps(true);
-            mAccountTextView.setTextColor(R.color.account_item_heading_text_color);
-            mAccountTextView.setTextAppearance(getContext(), android.R.style.TextAppearance_Small);
+            setBackgroundResource(R.drawable.list_focused_holo);
         } else {
-            mAccountTextView.setAllCaps(false);
+            setBackground(null);
         }
     }
 
@@ -90,23 +79,10 @@ public class AccountItemView extends RelativeLayout {
      * Sets the unread count, taking care to hide/show the textview if the count
      * is zero/non-zero.
      */
-    private void setUnreadCount(int count) {
+    private void setUnreadCount(final int count) {
         mUnreadCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
         if (count > 0) {
             mUnreadCountTextView.setText(Utils.getUnreadCountString(getContext(), count));
-        }
-    }
-
-    /**
-     * Sets the unseen count, taking care to hide/show the textview if the count
-     * is zero/non-zero.
-     */
-    private void setUnseenCount(final int color, final int count) {
-        mUnseenCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
-        if (count > 0) {
-            mUnseenCountTextView.setBackgroundColor(color);
-            mUnseenCountTextView.setText(
-                    getContext().getString(R.string.inbox_unseen_banner, count));
         }
     }
 }
