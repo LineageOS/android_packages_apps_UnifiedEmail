@@ -120,7 +120,7 @@ public class WidgetService extends RemoteViewsService {
         // Launch an intent to avoid ANRs
         final Intent intent = new Intent(context, serviceClass);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        intent.putExtra(BaseWidgetProvider.EXTRA_ACCOUNT, account.serialize());
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
         intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_TYPE, folderType);
         intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_URI, folderUri);
         intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_CONVERSATION_LIST_URI,
@@ -224,7 +224,7 @@ public class WidgetService extends RemoteViewsService {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
+            mAccount = Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT));
             mFolderType = intent.getIntExtra(WidgetProvider.EXTRA_FOLDER_TYPE, FolderType.DEFAULT);
             mFolderDisplayName = intent.getStringExtra(WidgetProvider.EXTRA_FOLDER_DISPLAY_NAME);
 
@@ -236,7 +236,7 @@ public class WidgetService extends RemoteViewsService {
                 mFolderConversationListUri = folderConversationListUri;
             } else {
                 // This is a old intent created in version UR8 (or earlier).
-                String folderString = intent.getStringExtra("folder");
+                String folderString = intent.getStringExtra(Utils.EXTRA_FOLDER);
                 Folder folder = Folder.fromString(folderString);
                 mFolderUri = folder.uri;
                 mFolderConversationListUri = folder.conversationListUri;
