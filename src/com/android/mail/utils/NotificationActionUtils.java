@@ -704,7 +704,7 @@ public class NotificationActionUtils {
             final Context context, final Folder folder, final Conversation conversation) {
         final Intent intent = new Intent(MailIntentService.ACTION_MARK_SEEN);
         intent.setPackage(context.getPackageName());
-        intent.putExtra(MailIntentService.FOLDER_EXTRA, folder);
+        intent.putExtra(Utils.EXTRA_FOLDER, folder);
         intent.putExtra(MailIntentService.CONVERSATION_EXTRA, conversation);
 
         context.startService(intent);
