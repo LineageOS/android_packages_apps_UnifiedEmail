@@ -639,11 +639,13 @@ public class Utils {
             if (sUnreadText == null) {
                 sUnreadText = resources.getString(R.string.widget_large_unread_count);
             }
+            // Localize "999+" according to the device language
             unreadCountString = String.format(sUnreadText, sMaxUnreadCount);
         } else if (unreadCount <= 0) {
             unreadCountString = "";
         } else {
-            unreadCountString = String.valueOf(unreadCount);
+            // Localize unread count according to the device language
+            unreadCountString = String.format("%d", unreadCount);
         }
         return unreadCountString;
     }
