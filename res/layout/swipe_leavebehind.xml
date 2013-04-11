@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2013 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,57 @@
 -->
 <com.android.mail.ui.LeaveBehindItem xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/conversation_item_height"
-    android:background="@color/swiped_bg_color"
-    android:minHeight="@dimen/conversation_item_height" >
+    android:layout_height="match_parent"
+    android:background="@color/swiped_bg_color">
+    <LinearLayout
+        android:id="@+id/swipeable_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/undo_descriptionview"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/no_conversations"
+            android:textColor="@android:color/white"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:paddingLeft="16dip"
+            android:clickable="true"
+            android:gravity="center_vertical"/>
 
-    <include layout="@layout/swipe_leavebehind_inner"
-        android:layout_height="@dimen/conversation_item_height"
-        android:layout_width="match_parent"/>
+        <View
+            android:id="@+id/undo_separator"
+            android:layout_width="1dip"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
 
+        <ImageView
+            android:id="@+id/undo_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="12dip"
+            android:paddingRight="8dip"
+            android:src="@drawable/ic_menu_revert_holo_dark"
+            android:background="?android:attr/selectableItemBackground"
+            android:duplicateParentState="true" />
+
+        <TextView
+            android:id="@+id/undo_text"
+            style="@style/UndoTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingRight="16dip"
+            android:text="@string/undo"
+            android:textAllCaps="true"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:background="?android:attr/selectableItemBackground"
+            android:duplicateParentState="true"/>
+    </LinearLayout>
 </com.android.mail.ui.LeaveBehindItem>
