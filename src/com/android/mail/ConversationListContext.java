@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.Utils;
 import com.google.common.base.Preconditions;
 
 /**
@@ -37,8 +38,6 @@ import com.google.common.base.Preconditions;
  * list, etc.
  */
 public class ConversationListContext {
-    private static final String EXTRA_ACCOUNT = "account";
-    public static final String EXTRA_FOLDER = "folder";
     public static final String EXTRA_SEARCH_QUERY = "query";
 
     /**
@@ -68,8 +67,8 @@ public class ConversationListContext {
     public static ConversationListContext forBundle(Bundle bundle) {
         // The account is created here as a new object. This is probably not the best thing to do.
         // We should probably be reading an account instance from our controller.
-        Account account = bundle.getParcelable(EXTRA_ACCOUNT);
-        Folder folder = bundle.getParcelable(EXTRA_FOLDER);
+        Account account = bundle.getParcelable(Utils.EXTRA_ACCOUNT);
+        Folder folder = bundle.getParcelable(Utils.EXTRA_FOLDER);
         return new ConversationListContext(account, bundle.getString(EXTRA_SEARCH_QUERY), folder);
     }
 
@@ -119,9 +118,9 @@ public class ConversationListContext {
      */
     public Bundle toBundle() {
         Bundle result = new Bundle();
-        result.putParcelable(EXTRA_ACCOUNT, account);
+        result.putParcelable(Utils.EXTRA_ACCOUNT, account);
         result.putString(EXTRA_SEARCH_QUERY, searchQuery);
-        result.putParcelable(EXTRA_FOLDER, folder);
+        result.putParcelable(Utils.EXTRA_FOLDER, folder);
         return result;
     }
 }
