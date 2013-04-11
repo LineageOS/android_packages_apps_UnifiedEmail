@@ -78,6 +78,7 @@ public class FolderWatcher {
         final int id = mUri.size();
         LogUtils.d(LOG_TAG, "Watching %s, at position %d.", uri, id);
         mUri.add(uri);
+        mUnreadCount.put(uri, 0);
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.initLoader(getLoaderFromPosition(id), null, mUnreadCallback);
     }
@@ -159,9 +160,12 @@ public class FolderWatcher {
             }
             final Uri uri = Uri.parse(data.getString(UIProvider.FOLDER_URI_COLUMN));
             final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
+            boolean changed = unreadCount != mUnreadCount.get(uri);
             mUnreadCount.put(uri, unreadCount);
             // Once we have updated data, we notify the parent class that something new appeared.
-            mConsumer.notifyDataSetChanged();
+            if (changed) {
+                mConsumer.notifyDataSetChanged();
+            }
         }
 
         @Override

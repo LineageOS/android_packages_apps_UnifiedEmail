@@ -116,6 +116,27 @@ public class FolderItemView extends RelativeLayout {
         mFolderParentIcon = (ImageView) findViewById(R.id.folder_parent_icon);
     }
 
+    /**
+     * Returns true if the two folders lead to identical {@link FolderItemView} objects.
+     * @param a
+     * @param b
+     * @return true if the two folders would still lead to the same {@link FolderItemView}.
+     */
+    public static boolean areSameViews(final Folder a, final Folder b) {
+        if (a == null) {
+            return b == null;
+        }
+        if (b == null) {
+            // a is not null because it would have returned above.
+            return false;
+        }
+        return (a == b || (a.uri.equals(b.uri)
+                && a.name.equals(b.name)
+                && a.hasChildren == b.hasChildren
+                && a.unseenCount == b.unseenCount
+                && a.unreadCount == b.unreadCount));
+    }
+
     public void bind(Folder folder, DropHandler dropHandler) {
         mFolder = folder;
         mDropHandler = dropHandler;

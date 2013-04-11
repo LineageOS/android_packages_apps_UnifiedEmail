@@ -957,7 +957,9 @@ public class FolderListFragment extends ListFragment implements
         mCurrentFolderForUnreadCheck = folder;
         mSelectedFolderUri = folder.uri;
         setSelectedFolderType(folder);
-        if (mCursorAdapter != null) {
+        final boolean viewChanged =
+                !FolderItemView.areSameViews(folder, mCurrentFolderForUnreadCheck);
+        if (mCursorAdapter != null && viewChanged) {
             mCursorAdapter.notifyDataSetChanged();
         }
     }
