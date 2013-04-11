@@ -152,13 +152,11 @@
     <style name="UnreadCount">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginLeft">8dip</item>
         <item name="android:singleLine">true</item>
         <item name="android:includeFontPadding">false</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#bcbcbc</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/unread_count_color</item>
     </style>
 
     <style name="UnreadCountActionBarBase" parent="UnreadCount">
@@ -182,12 +180,10 @@
     <style name="UnseenCount">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginLeft">8dip</item>
         <item name="android:singleLine">true</item>
         <item name="android:includeFontPadding">false</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingLeft">8dp</item>
@@ -417,8 +413,8 @@
 
     <!-- Account Item (Folder List) styles -->
     <style name="AccountItemIcon">
-        <item name="android:layout_height">@dimen/account_item_swatch_height</item>
-        <item name="android:layout_width">@dimen/account_item_folder_color_width</item>
+        <item name="android:layout_height">@dimen/account_item_minimum_height</item>
+        <item name="android:layout_width">@dimen/account_item_minimum_height</item>
     </style>
 
     <!-- Folder styles -->
@@ -542,10 +538,6 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_column">1</item>
-    </style>
-
-    <style name="FolderListStyle">
-        <item name="android:background">@color/folder_list_background_color</item>
     </style>
 
     <style name="ConversationListStyle">

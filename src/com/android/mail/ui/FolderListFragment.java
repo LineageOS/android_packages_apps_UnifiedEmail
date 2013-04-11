@@ -318,7 +318,6 @@ public class FolderListFragment extends ListFragment implements
         setInstanceFromBundle(getArguments());
         final View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
-        mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setEmptyView(null);
         if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
@@ -606,7 +605,7 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         public boolean areAllItemsEnabled() {
-            // The headers and current accounts are not enabled.
+            // We have headers and thus some items are not enabled.
             return false;
         }
 
