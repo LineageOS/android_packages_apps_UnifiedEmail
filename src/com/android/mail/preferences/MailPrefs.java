@@ -17,14 +17,13 @@
 
 package com.android.mail.preferences;
 
-import com.google.common.collect.ImmutableSet;
-
 import android.content.Context;
 
 import com.android.mail.MailIntentService;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.widget.BaseWidgetProvider;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.Set;
 
@@ -70,7 +69,6 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(CONVERSATION_LIST_SWIPE_ACTION)
                 .build();
 
-        public static final String ENABLE_CONVLIST_PHOTOS = "enable-convlist-photos";
         public static final String ENABLE_WHOOSH_ZOOM = "enable-whoosh-zoom";
         public static final String ENABLE_MUNGE_TABLES = "enable-munge-tables";
         public static final String ENABLE_MUNGE_IMAGES = "enable-munge-images";
@@ -132,21 +130,6 @@ public final class MailPrefs extends VersionedPrefs {
     public String getWidgetConfiguration(int appWidgetId) {
         return getSharedPreferences().getString(PreferenceKeys.WIDGET_ACCOUNT_PREFIX + appWidgetId,
                 null);
-    }
-
-    /**
-     * Get whether to show the experimental inline contact photos in the
-     * conversation list.
-     */
-    @SuppressWarnings("unused")
-    public boolean areConvListPhotosEnabled() {
-        // If experimental preferences are not enabled, return false.
-        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
-                PreferenceKeys.ENABLE_CONVLIST_PHOTOS, false);
-    }
-
-    public void setConvListPhotosEnabled(final boolean enabled) {
-        getEditor().putBoolean(PreferenceKeys.ENABLE_CONVLIST_PHOTOS, enabled).apply();
     }
 
     @SuppressWarnings("unused")
