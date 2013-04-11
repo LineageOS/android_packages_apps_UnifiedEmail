@@ -71,17 +71,17 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
     }
 
     public void bind(Conversation conversation, ControllableActivity activity,
-            ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
+            ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
             boolean swipeEnabled, boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter) {
-        mConversationItemView.bind(conversation, activity, set, folder, checkboxesDisabled,
+        mConversationItemView.bind(conversation, activity, set, folder, checkboxOrSenderImage,
                 swipeEnabled, priorityArrowsEnabled, animatedAdapter);
     }
 
     public void bind(Cursor cursor, ControllableActivity activity, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
+            Folder folder, int checkboxOrSenderImage, boolean swipeEnabled,
             boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter) {
-        mConversationItemView.bind(cursor, activity, set, folder, checkboxesDisabled, swipeEnabled,
-                priorityArrowsEnabled, animatedAdapter);
+        mConversationItemView.bind(cursor, activity, set, folder, checkboxOrSenderImage,
+                swipeEnabled, priorityArrowsEnabled, animatedAdapter);
     }
 
     public void startUndoAnimation(ViewMode viewMode, AnimatedAdapter listener, boolean swipe) {
