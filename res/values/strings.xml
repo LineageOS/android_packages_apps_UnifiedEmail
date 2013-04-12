@@ -619,7 +619,9 @@
 
     <!-- Folder selection dialog -->
     <!-- Title for change folders dialog [CHAR LIMIT=30] -->
-    <string name="folder_selection_dialog_title">Change folders</string>
+    <string name="change_folders_selection_dialog_title">Change folders</string>
+    <!-- Title for move to dialog [CHAR LIMIT=30] -->
+    <string name="move_to_selection_dialog_title">Move to</string>
 
     <!-- Search -->
     <!-- Title of the search dialog -->
