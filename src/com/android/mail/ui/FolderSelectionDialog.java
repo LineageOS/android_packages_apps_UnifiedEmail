@@ -78,14 +78,18 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
 
     protected FolderSelectionDialog(final Context context, Account account,
             final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
-            Folder currentFolder) {
+            Folder currentFolder, boolean isMoveTo) {
         mUpdater = updater;
         mTarget = target;
         mBatch = isBatch;
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.folder_selection_dialog_title);
-        builder.setPositiveButton(R.string.ok, this);
+        if (isMoveTo) {
+            builder.setTitle(R.string.move_to_selection_dialog_title);
+        } else {
+            builder.setTitle(R.string.change_folders_selection_dialog_title);
+            builder.setPositiveButton(R.string.ok, this);
+        }
         builder.setNegativeButton(R.string.cancel, this);
         mAccount = account;
         mBuilder = builder;
