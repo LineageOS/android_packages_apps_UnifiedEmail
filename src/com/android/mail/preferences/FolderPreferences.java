@@ -32,6 +32,7 @@ import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.NotificationActionUtils.NotificationActionType;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -283,8 +284,32 @@ public class FolderPreferences extends VersionedPrefs {
      * have been set.
      */
     public Set<String> getNotificationActions(final Account account) {
-        return getSharedPreferences().getStringSet(PreferenceKeys.NOTIFICATION_ACTIONS,
+        final Set<String> actions = getSharedPreferences().getStringSet(
+                PreferenceKeys.NOTIFICATION_ACTIONS,
                 getDefaultNotificationActions(getContext(), account));
+
+        // Prune invalid actions
+        final ImmutableSet.Builder<String> builder = ImmutableSet.builder();
+        for (final NotificationActionType actionType : NotificationActionType.values()) {
+            builder.add(actionType.getPersistedValue());
+        }
+        final Set<String> validActions = builder.build();
+
+        boolean dirty = false;
+        final Iterator<String> iterator = actions.iterator();
+        while (iterator.hasNext()) {
+            final String item = iterator.next();
+            if (!validActions.contains(item)) {
+                iterator.remove();
+                dirty = true;
+            }
+        }
+
+        if (dirty) {
+            setNotificationActions(actions);
+        }
+
+        return actions;
     }
 
     /**

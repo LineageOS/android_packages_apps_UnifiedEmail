@@ -115,4 +115,7 @@
     <bool name="inline_personal_level">true</bool>
 
     <integer name="swipe_senders_length">25</integer>
+
+    <!-- The number of items to show in the ActionBar with the "always" setting -->
+    <integer name="actionbar_items_shown">3</integer>
 </resources>
