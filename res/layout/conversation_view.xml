@@ -57,42 +57,6 @@
 
     </com.android.mail.browse.ConversationContainer>
 
-    <RelativeLayout
-        android:id="@+id/message_group"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <include layout="@layout/conversation_message_header"
-            android:id="@+id/whoosh_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
-
-        <FrameLayout
-            android:id="@+id/message_inner_group"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/whoosh_header">
-
-            <com.android.mail.browse.MessageView
-                android:id="@+id/message_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <ImageButton
-                android:id="@+id/message_view_close"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_gravity="top|right"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_cancel_holo_light" />
-
-        </FrameLayout>
-
-    </RelativeLayout>
-
     <com.android.mail.browse.ScrollIndicatorsView
         android:id="@+id/scroll_indicators"
         android:layout_width="match_parent"
