@@ -58,6 +58,8 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     private ListItemSwipedListener mSwipedListener;
     private boolean mScrolling;
 
+    private SwipeListener mSwipeListener;
+
     // Instantiated through view inflation
     @SuppressWarnings("unused")
     public SwipeableListView(Context context) {
@@ -259,6 +261,13 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             view.setBackgroundVisibility(View.VISIBLE);
         }
         cancelDismissCounter();
+
+        // Notifies {@link ConversationListView} to disable pull to refresh since once
+        // an item in the list view has been picked up, we don't want any vertical movement
+        // to also trigger refresh.
+        if (mSwipeListener != null) {
+            mSwipeListener.onBeginSwipe();
+        }
     }
 
     @Override
@@ -383,5 +392,13 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             return adapter.getLastLeaveBehindItem();
         }
         return null;
+    }
+
+    public void setSwipeListener(SwipeListener swipeListener) {
+        mSwipeListener = swipeListener;
+    }
+
+    public interface SwipeListener {
+        public void onBeginSwipe();
     }
 }
