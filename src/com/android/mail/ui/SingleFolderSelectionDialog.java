@@ -53,7 +53,7 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
     public SingleFolderSelectionDialog(final Context context, Account account,
             final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
             Folder currentFolder) {
-        super(context, account, updater, target, isBatch, currentFolder);
+        super(context, account, updater, target, isBatch, currentFolder, true);
     }
 
     @Override
