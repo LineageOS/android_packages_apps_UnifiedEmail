@@ -89,16 +89,6 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     /**
-     * Render the folder list in the correct pane.
-     */
-    private void renderFolderList() {
-        if (mActivity == null) {
-            return;
-        }
-        createFolderListFragment(FolderListFragment.ofDrawer());
-    }
-
-    /**
      * Create a {@link FolderListFragment} for trees with the specified parent
      * @param parent the parent folder whose children need to be displayed in this list
      */
@@ -326,6 +316,10 @@ public final class TwoPaneController extends AbstractActivityController {
         fragmentTransaction.remove(waitFragment);
         fragmentTransaction.commitAllowingStateLoss();
         super.hideWaitForInitialization();
+        if (mViewMode.isWaitingForSync()) {
+            // We should come out of wait mode and display the account inbox.
+            loadAccountInbox();
+        }
     }
 
     /**

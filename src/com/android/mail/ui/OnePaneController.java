@@ -534,10 +534,6 @@ public final class OnePaneController extends AbstractActivityController {
         if (mInbox == null || !isDefaultInbox(mInbox.uri, mAccount)) {
             loadAccountInbox();
         } else {
-            final ConversationListContext listContext = ConversationListContext.forFolder(mAccount,
-                    mInbox);
-            // Set the correct context for what the conversation view will be
-            // now.
             onFolderChanged(mInbox);
         }
     }
