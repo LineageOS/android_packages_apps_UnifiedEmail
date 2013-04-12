@@ -34,7 +34,7 @@ import java.util.Set;
  */
 public final class MailPrefs extends VersionedPrefs {
 
-    public static final boolean SHOW_EXPERIMENTAL_PREFS = true;
+    public static final boolean SHOW_EXPERIMENTAL_PREFS = false;
 
     private static final String PREFS_NAME = "UnifiedEmail";
 
@@ -68,10 +68,6 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(DEFAULT_REPLY_ALL)
                 .add(CONVERSATION_LIST_SWIPE_ACTION)
                 .build();
-
-        public static final String ENABLE_WHOOSH_ZOOM = "enable-whoosh-zoom";
-        public static final String ENABLE_MUNGE_TABLES = "enable-munge-tables";
-        public static final String ENABLE_MUNGE_IMAGES = "enable-munge-images";
 
     }
 
@@ -130,27 +126,6 @@ public final class MailPrefs extends VersionedPrefs {
     public String getWidgetConfiguration(int appWidgetId) {
         return getSharedPreferences().getString(PreferenceKeys.WIDGET_ACCOUNT_PREFIX + appWidgetId,
                 null);
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isWhooshZoomEnabled() {
-        // If experimental preferences are not enabled, return false.
-        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
-                PreferenceKeys.ENABLE_WHOOSH_ZOOM, false);
-    }
-
-    @SuppressWarnings("unused")
-    public boolean shouldMungeTables() {
-        // If experimental preferences are not enabled, return false.
-        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
-                PreferenceKeys.ENABLE_MUNGE_TABLES, true);
-    }
-
-    @SuppressWarnings("unused")
-    public boolean shouldMungeImages() {
-        // If experimental preferences are not enabled, return false.
-        return SHOW_EXPERIMENTAL_PREFS && getSharedPreferences().getBoolean(
-                PreferenceKeys.ENABLE_MUNGE_IMAGES, true);
     }
 
     private static String createWidgetPreferenceValue(Account account, String folderUri) {
