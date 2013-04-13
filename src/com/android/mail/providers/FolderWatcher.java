@@ -160,7 +160,9 @@ public class FolderWatcher {
             }
             final Uri uri = Uri.parse(data.getString(UIProvider.FOLDER_URI_COLUMN));
             final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
-            boolean changed = unreadCount != mUnreadCount.get(uri);
+            final Integer prevUnreadCount = mUnreadCount.get(uri);
+            final boolean changed = prevUnreadCount == null ||
+                    unreadCount != prevUnreadCount.intValue();
             mUnreadCount.put(uri, unreadCount);
             // Once we have updated data, we notify the parent class that something new appeared.
             if (changed) {
