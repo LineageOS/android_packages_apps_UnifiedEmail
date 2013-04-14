@@ -65,6 +65,7 @@ public class FolderPreferences extends VersionedPrefs {
                         .add(NOTIFICATION_RINGTONE)
                         .add(NOTIFICATION_VIBRATE)
                         .add(NOTIFICATION_NOTIFY_EVERY_MESSAGE)
+                        .add(NOTIFICATION_ACTIONS)
                         .build();
     }
 
@@ -278,11 +279,19 @@ public class FolderPreferences extends VersionedPrefs {
     }
 
     /**
-     * Gets the notification settings configured for this account and label, or the default if none
+     * Gets the notification actions configured for this account and label, or the default if none
      * have been set.
      */
     public Set<String> getNotificationActions(final Account account) {
         return getSharedPreferences().getStringSet(PreferenceKeys.NOTIFICATION_ACTIONS,
                 getDefaultNotificationActions(getContext(), account));
+    }
+
+    /**
+     * Sets the notification actions for this account and label.
+     */
+    public void setNotificationActions(final Set<String> actions) {
+        getEditor().putStringSet(PreferenceKeys.NOTIFICATION_ACTIONS, actions).apply();
+        MailIntentService.broadcastBackupDataChanged(getContext());
     }
 }
