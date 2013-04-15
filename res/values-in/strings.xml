@@ -300,7 +300,10 @@
     <item quantity="other" msgid="6856940335775567991">"Sinkronkan: <xliff:g id="COUNT">%1$d</xliff:g> hari terakhir"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sinkronkan: Tidak Satu Pun"</string>
-    <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Ganti folder"</string>
+    <!-- no translation found for change_folders_selection_dialog_title (8640832109613405534) -->
+    <skip />
+    <!-- no translation found for move_to_selection_dialog_title (1230762892675507608) -->
+    <skip />
     <string name="search_hint" msgid="3625734263059221350">"Telusuri email"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
