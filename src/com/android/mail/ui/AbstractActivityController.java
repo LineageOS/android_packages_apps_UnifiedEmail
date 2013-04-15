@@ -675,8 +675,8 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void loadAccountInbox() {
         restartOptionalLoader(LOADER_ACCOUNT_INBOX, mFolderCallbacks, Bundle.EMPTY);
-
-        if (mViewMode.getMode() == ViewMode.UNKNOWN) {
+        final int mode = mViewMode.getMode();
+        if (mode == ViewMode.UNKNOWN || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
             mViewMode.enterConversationListMode();
         }
     }
