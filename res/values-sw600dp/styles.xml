@@ -19,26 +19,6 @@
     <style name="AccountSwitchSpinnerItem" parent="@style/PlainSpinnerDropdown">
         <item name="android:layout_width">match_parent</item>
     </style>
-    <style name="PersonalIndicatorStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginTop">4sp</item>
-    </style>
-
-    <style name="CheckmarkStyle">
-        <item name="android:layout_marginTop">-6sp</item>
-        <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="StarStyle">
-        <item name="android:layout_marginRight">12dip</item>
-        <item name="android:layout_marginTop">-6sp</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
 
     <style name="ConversationSubjectStyle">
         <item name="android:textSize">18sp</item>
@@ -67,14 +47,4 @@
     </style>
 
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Dialog.MinWidth"/>
-
-    <style name="SendersStyleImages" parent="@style/SendersStyle">
-        <item name="android:layout_marginLeft">0dip</item>
-        <item name="android:layout_marginTop">8sp</item>
-    </style>
-
-    <style name="PersonalIndicatorStyleImages" parent="@style/PersonalIndicatorStyle">
-        <item name="android:layout_marginLeft">0dip</item>
-        <item name="android:layout_marginTop">3sp</item>
-    </style>
 </resources>

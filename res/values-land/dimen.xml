@@ -17,5 +17,4 @@
 -->
 <resources>
     <dimen name="compose_scrollview_width">800dp</dimen>
-    <dimen name="subject_width">604dip</dimen>
 </resources>

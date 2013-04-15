@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2013 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 -->
 
 <!-- This layout is used as a template to create custom view CanvasConversationHeaderView
-    in wide mode. To be able to get the correct measurements, every source field should
+    in normal mode. To be able to get the correct measurements, every source field should
     be populated with data here. E.g:
     - Text View should set text to a random long string (android:text="@string/long_string")
     - Image View should set source to a specific asset -->
@@ -25,75 +25,121 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/conversation_item_height_wide"
-    android:orientation="vertical" >
-    <LinearLayout
+    android:orientation="vertical">
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/checkmark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dip"
-            android:layout_marginRight="16dip"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/btn_check_on_normal_holo_light" />
-        <TextView
-            android:id="@+id/senders"
-            android:layout_width="224dip"
-            android:layout_height="wrap_content"
-            android:text="@string/long_string"
-            android:textSize="@dimen/wide_senders_font_size"
-            android:layout_gravity="center_vertical"
-            android:maxLines="1"
-            android:layout_marginTop="@dimen/wide_senders_margin_top" />
-        <TextView
-            android:id="@+id/subject"
-            android:layout_width="0dip"
-            android:layout_weight="0.7"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/long_string"
-            android:lines="2"
-            android:textColor="@color/subject_text_color_unread"
-            android:textSize="@dimen/wide_subject_font_size"
-            android:layout_marginTop="2sp"
-            android:layout_marginRight="@dimen/wide_subject_margin_right"/>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="32dp">
+
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:minHeight="66dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/checkmark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical">
+                android:layout_marginRight="20dp"
+                android:src="@drawable/btn_check_on_normal_holo_light" />
+
+            <View
+                android:id="@+id/contact_image"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:baselineAligned="false"
+                android:gravity="top"
+                android:orientation="horizontal">
+
+                <!-- for Email -->
+                <!-- cancel out the asset's 2dp built-in padding -->
+                <ImageView
+                    android:id="@+id/reply_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-2dp"
+                    android:layout_marginRight="8dp"
+                    android:src="@drawable/ic_badge_reply_holo_light" />
+
+                <TextView
+                    android:id="@+id/senders"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="27dp"
+                    android:textSize="18sp"
+                    android:lines="1"
+                    android:includeFontPadding="false"
+                    android:text="@string/long_string" />
+
+                <TextView
+                    android:id="@+id/subject"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="27dp"
+                    android:lines="2"
+                    android:textSize="14sp"
+                    android:includeFontPadding="false"
+                    android:text="@string/long_string" />
+
+                <!-- cancel out the asset's 8dp built-in top padding -->
+                <!-- left padding should be 8dp, but the asset has 2dp built-in padding -->
                 <ImageView
                     android:id="@+id/paperclip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_attachment_holo_light"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="@dimen/wide_attachment_margin_top"/>
+                    android:layout_marginTop="-8dp"
+                    android:paddingLeft="6dp"
+                    android:src="@drawable/ic_attachment_holo_light" />
+
+                <!-- The date should never appear truncated. -->
                 <TextView
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/date"
-                    android:layout_marginTop="@dimen/wide_date_margin_top" />
+                    android:paddingLeft="8dp"
+                    android:textSize="12sp"
+                    android:lines="1"
+                    android:includeFontPadding="false"
+                    android:text="@string/date" />
+
+                <!-- align to date -->
+                <ImageView
+                    android:id="@+id/star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginLeft="32dp"
+                    android:src="@drawable/btn_star_off_normal_email_holo_light" />
+
             </LinearLayout>
+
         </LinearLayout>
-        <ImageView
-            android:id="@+id/star"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dip"
-            android:layout_marginRight="16dip"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/btn_star_off_normal_email_holo_light" />
-    </LinearLayout>
+
+        <!-- for Email -->
+        <!-- aligned to be above the date (32dp(star asset) + 32dp(star left margin) = 64dp) -->
+        <View android:id="@+id/color_block"
+            android:layout_width="@dimen/color_block_width"
+            android:layout_height="@dimen/color_block_height"
+            android:layout_marginRight="64dp"
+            android:layout_gravity="top|right" />
+
+    </FrameLayout>
+
     <ImageView
         android:id="@+id/attachment_previews"
         android:layout_width="match_parent"
@@ -102,4 +148,18 @@
         android:layout_marginLeft="@dimen/attachment_preview_margin_side"
         android:layout_marginRight="@dimen/attachment_preview_margin_side"
         android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/folders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-8dp"
+        android:layout_marginBottom="1dp"
+        android:fontFamily="sans-serif-light"
+        android:includeFontPadding="false"
+        android:text="@string/long_string"
+        android:textSize="12sp"
+        android:lines="1"
+        android:minHeight="16dp" />
+
 </LinearLayout>
