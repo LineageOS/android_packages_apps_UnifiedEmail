@@ -26,6 +26,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * A service to handle various intents asynchronously.
@@ -41,8 +42,6 @@ public class MailIntentService extends IntentService {
     public static final String ACTION_BACKUP_DATA_CHANGED =
             "com.android.mail.action.BACKUP_DATA_CHANGED";
 
-    public static final String ACCOUNT_EXTRA = "account";
-    public static final String FOLDER_EXTRA = "folder";
     public static final String CONVERSATION_EXTRA = "conversation";
 
     public MailIntentService() {
@@ -64,14 +63,14 @@ public class MailIntentService extends IntentService {
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             handleLocaleChanged();
         } else if (ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS.equals(action)) {
-            final Account account = intent.getParcelableExtra(ACCOUNT_EXTRA);
-            final Folder folder = intent.getParcelableExtra(FOLDER_EXTRA);
+            final Account account = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
+            final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
 
             NotificationUtils.clearFolderNotification(this, account, folder);
         } else if (ACTION_RESEND_NOTIFICATIONS.equals(action)) {
             NotificationUtils.resendNotifications(this, false);
         } else if (ACTION_MARK_SEEN.equals(action)) {
-            final Folder folder = intent.getParcelableExtra(FOLDER_EXTRA);
+            final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
 
             NotificationUtils.markSeen(this, folder);
         } else if (Intent.ACTION_DEVICE_STORAGE_LOW.equals(action)) {

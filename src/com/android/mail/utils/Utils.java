@@ -95,6 +95,7 @@ public class Utils {
     public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_ACCOUNT_URI = "accountUri";
     public static final String EXTRA_FOLDER_URI = "folderUri";
+    public static final String EXTRA_FOLDER = "folder";
     public static final String EXTRA_COMPOSE_URI = "composeUri";
     public static final String EXTRA_CONVERSATION = "conversationUri";
 
