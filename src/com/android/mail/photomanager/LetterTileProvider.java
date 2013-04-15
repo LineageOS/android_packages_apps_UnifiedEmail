@@ -16,6 +16,7 @@
 
 package com.android.mail.photomanager;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -33,11 +34,9 @@ import com.android.mail.photomanager.PhotoManager.DefaultImageProvider;
 import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.ImageCanvas;
+import com.android.mail.ui.ImageCanvas.Dimensions;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * LetterTileProvider is an implementation of the DefaultImageProvider. When no
@@ -49,23 +48,45 @@ import java.util.regex.Pattern;
  */
 public class LetterTileProvider implements DefaultImageProvider {
     private static final String TAG = LogTag.getLogTag();
-    private Bitmap mDefaultBitmap;
-    private static Bitmap[] sBitmapBackgroundCache;
-    private static Typeface sSansSerifLight;
-    private static Rect sBounds;
-    private static int sTileLetterFontSize = -1;
-    private static int sTileLetterFontSizeSmall;
-    private static int sTileFontColor;
-    private static TextPaint sPaint = new TextPaint();
-    private static int DEFAULT_AVATAR_DRAWABLE = R.drawable.ic_contact_picture;
-    private static final Pattern ALPHABET = Pattern.compile("^[a-zA-Z0-9]+$");
+    private final Bitmap mDefaultBitmap;
+    private final Bitmap[] mBitmapBackgroundCache;
+    private final Bitmap[] mDefaultBitmapCache;
+    private final Typeface mSansSerifLight;
+    private final Rect mBounds;
+    private final int mTileLetterFontSize;
+    private final int mTileLetterFontSizeSmall;
+    private final int mTileFontColor;
+    private final TextPaint mPaint = new TextPaint();
+    private final TypedArray mColors;
+    private final int mDefaultColor;
+    private final Canvas mCanvas = new Canvas();
+    private final Dimensions mDims = new Dimensions();
+    private final char[] mFirstChar = new char[1];
+
     private static final int POSSIBLE_BITMAP_SIZES = 3;
 
     // This should match the total number of colors defined in colors.xml for letter_tile_color
     private static final int NUM_OF_TILE_COLORS = 7;
 
-    public LetterTileProvider() {
-        super();
+    public LetterTileProvider(Context context) {
+        final Resources res = context.getResources();
+        mTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
+        mTileLetterFontSizeSmall = res
+                .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
+        mTileFontColor = res.getColor(R.color.letter_tile_font_color);
+        mSansSerifLight = Typeface.create("sans-serif-light", Typeface.NORMAL);
+        mBounds = new Rect();
+        mPaint.setTypeface(mSansSerifLight);
+        mPaint.setColor(mTileFontColor);
+        mPaint.setTextAlign(Align.CENTER);
+        mPaint.setAntiAlias(true);
+        mBitmapBackgroundCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
+
+        mDefaultBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_contact_picture);
+        mDefaultBitmapCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
+
+        mColors = res.obtainTypedArray(R.array.letter_tile_colors);
+        mDefaultColor = res.getColor(R.color.letter_tile_default_color);
     }
 
     @Override
@@ -78,52 +99,39 @@ public class LetterTileProvider implements DefaultImageProvider {
 
         Bitmap bitmap = null;
         final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
-        final String firstChar = display.substring(0, 1);
-        // If its a valid english alphabet letter...
-        if (isLetter(firstChar)) {
-            final Resources res = dividedImageView.getContext().getResources();
-            if (sTileLetterFontSize == -1) {
-                sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
-                sTileLetterFontSizeSmall = res
-                        .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
-                sTileFontColor = res.getColor(R.color.letter_tile_font_color);
-                sSansSerifLight = Typeface.create("sans-serif-light", Typeface.NORMAL);
-                sBounds = new Rect();
-                sPaint.setTypeface(sSansSerifLight);
-                sPaint.setColor(sTileFontColor);
-                sPaint.setTextAlign(Align.CENTER);
-                sPaint.setAntiAlias(true);
-                sBitmapBackgroundCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
-            }
-            final String first = firstChar.toUpperCase();
-            DividedImageCanvas.Dimensions d = dividedImageView.getDesiredDimensions(address);
-            bitmap = getBitmap(d);
+        final char firstChar = display.charAt(0);
+        dividedImageView.getDesiredDimensions(address, mDims);
+        // If its a valid English alphabet letter...
+        if (isEnglishLetterOrDigit(firstChar)) {
+            mFirstChar[0] = Character.toUpperCase(firstChar);
+            bitmap = getBitmap(mDims, false /* getDefault */);
             if (bitmap == null) {
-                LogUtils.w(TAG,
-                        "LetterTileProvider width(%d) or height(%d) is 0 for name %s and address %s.",
+                LogUtils.w(TAG, "LetterTileProvider width(%d) or height(%d) is 0" +
+                        " for name %s and address %s.",
                         dividedImageView.getWidth(), dividedImageView.getHeight(), displayName,
                         address);
                 return;
             }
-            Canvas c = new Canvas(bitmap);
-            c.drawColor(pickColor(res, address));
-            sPaint.setTextSize(getFontSize(d.scale));
-            sPaint.getTextBounds(first, 0, first.length(), sBounds);
-            c.drawText(first, 0 + d.width / 2, 0 + d.height / 2 + (sBounds.bottom - sBounds.top)
-                    / 2, sPaint);
+            final Canvas c = mCanvas;
+            c.setBitmap(bitmap);
+            c.drawColor(pickColor(address));
+            mPaint.setTextSize(getFontSize(mDims.scale));
+            mPaint.getTextBounds(mFirstChar, 0, 1, mBounds);
+            c.drawText(mFirstChar, 0, 1, 0 + mDims.width / 2,
+                    0 + mDims.height / 2 + (mBounds.bottom - mBounds.top) / 2, mPaint);
         } else {
-            if (mDefaultBitmap == null) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inMutable = true;
-                mDefaultBitmap = BitmapFactory.decodeResource(dividedImageView.getContext().getResources(),
-                        DEFAULT_AVATAR_DRAWABLE, options);
-            }
-            bitmap = mDefaultBitmap;
+            bitmap = getBitmap(mDims, true /* getDefault */);
         }
         dividedImageView.addDivisionImage(bitmap, address);
     }
 
-    private static Bitmap getBitmap(final DividedImageCanvas.Dimensions d) {
+    private static boolean isEnglishLetterOrDigit(char c) {
+        return ('A' <= c && c <= 'Z')
+                || ('a' <= c && c <= 'z')
+                || ('0' <= c && c <= '9');
+    }
+
+    private Bitmap getBitmap(final Dimensions d, boolean getDefault) {
         if (d.width <= 0 || d.height <= 0) {
             LogUtils.w(TAG,
                     "LetterTileProvider width(%d) or height(%d) is 0.", d.width, d.height);
@@ -131,40 +139,43 @@ public class LetterTileProvider implements DefaultImageProvider {
         }
         final int pos;
         float scale = d.scale;
-        if (scale == DividedImageCanvas.ONE) {
+        if (scale == Dimensions.SCALE_ONE) {
             pos = 0;
-        } else if (scale == DividedImageCanvas.HALF) {
+        } else if (scale == Dimensions.SCALE_HALF) {
             pos = 1;
         } else {
             pos = 2;
         }
-        Bitmap bitmap = sBitmapBackgroundCache[pos];
-        if (bitmap == null) {
+
+        final Bitmap[] cache = (getDefault) ? mDefaultBitmapCache : mBitmapBackgroundCache;
+
+        Bitmap bitmap = cache[pos];
+        // ensure bitmap is suitable for the desired w/h
+        // (two-pane uses two different sets of dimensions depending on pane width)
+        if (bitmap == null || bitmap.getWidth() != d.width || bitmap.getHeight() != d.height) {
             // create and place the bitmap
-            bitmap = Bitmap.createBitmap(d.width, d.height, Bitmap.Config.ARGB_8888);
-            sBitmapBackgroundCache[pos] = bitmap;
+            if (getDefault) {
+                bitmap = BitmapUtil.centerCrop(mDefaultBitmap, d.width, d.height);
+            } else {
+                bitmap = Bitmap.createBitmap(d.width, d.height, Bitmap.Config.ARGB_8888);
+            }
+            cache[pos] = bitmap;
         }
         return bitmap;
     }
 
-    private static int getFontSize(float scale)  {
-        if (scale == DividedImageCanvas.ONE) {
-            return sTileLetterFontSize;
+    private int getFontSize(float scale)  {
+        if (scale == Dimensions.SCALE_ONE) {
+            return mTileLetterFontSize;
         } else {
-            return sTileLetterFontSizeSmall;
+            return mTileLetterFontSizeSmall;
         }
     }
 
-    private static boolean isLetter(String letter) {
-        Matcher m = ALPHABET.matcher(letter);
-        return m.matches();
-    }
-
-    private static int pickColor(Resources res, String emailAddress) {
+    private int pickColor(String emailAddress) {
         // String.hashCode() implementation is not supposed to change across java versions, so
         // this should guarantee the same email address always maps to the same color.
         int color = Math.abs(emailAddress.hashCode()) % NUM_OF_TILE_COLORS;
-        TypedArray colors = res.obtainTypedArray(R.array.letter_tile_colors);
-        return colors.getColor(color, R.color.letter_tile_default_color);
+        return mColors.getColor(color, mDefaultColor);
     }
 }

@@ -16,9 +16,6 @@
 
 package com.android.mail.photomanager;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
-
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -36,6 +33,7 @@ import android.util.LruCache;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogUtils;
+import com.google.common.base.Objects;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,12 +47,28 @@ import java.util.Set;
  * Asynchronously loads contact photos and maintains a cache of photos.
  */
 public class ContactPhotoManager extends PhotoManager {
-    private static final DefaultImageProvider DEFAULT_AVATAR = new LetterTileProvider();
     public static final String CONTACT_PHOTO_SERVICE = "contactPhotos";
+
+    private static final String[] COLUMNS = new String[] { Photo._ID, Photo.PHOTO };
+
+    /**
+     * An LRU cache for photo ids mapped to contact addresses.
+     */
+    private final LruCache<String, Long> mPhotoIdCache;
+    private final LetterTileProvider mLetterTileProvider;
+
+    /** Cache size for {@link #mPhotoIdCache}. Starting with 500 entries. */
+    private static final int PHOTO_ID_CACHE_SIZE = 500;
+
+    private ContactPhotoManager(Context context) {
+        super(context);
+        mPhotoIdCache = new LruCache<String, Long>(PHOTO_ID_CACHE_SIZE);
+        mLetterTileProvider = new LetterTileProvider(context);
+    }
 
     @Override
     public DefaultImageProvider getDefaultImageProvider() {
-        return DEFAULT_AVATAR;
+        return mLetterTileProvider;
     }
 
     @Override
@@ -93,22 +107,6 @@ public class ContactPhotoManager extends PhotoManager {
 
     public static synchronized ContactPhotoManager createContactPhotoManager(Context context) {
         return new ContactPhotoManager(context);
-    }
-
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
-    private static final String[] COLUMNS = new String[] { Photo._ID, Photo.PHOTO };
-
-    /**
-     * An LRU cache for photo ids mapped to contact addresses.
-     */
-    private final LruCache<String, Long> mPhotoIdCache;
-
-    /** Cache size for {@link #mPhotoIdCache}. Starting with 500 entries. */
-    private static final int PHOTO_ID_CACHE_SIZE = 500;
-
-    public ContactPhotoManager(Context context) {
-        super(context);
-        mPhotoIdCache = new LruCache<String, Long>(PHOTO_ID_CACHE_SIZE);
     }
 
     @Override
@@ -164,6 +162,20 @@ public class ContactPhotoManager extends PhotoManager {
             ContactIdentifier other = (ContactIdentifier) obj;
             return Objects.equal(emailAddress, other.emailAddress)
                     && Objects.equal(name, other.name) && Objects.equal(pos, other.pos);
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("{");
+            sb.append(super.toString());
+            sb.append(" name=");
+            sb.append(name);
+            sb.append(" email=");
+            sb.append(emailAddress);
+            sb.append(" pos=");
+            sb.append(pos);
+            sb.append("}");
+            return sb.toString();
         }
     }
 
@@ -235,18 +247,18 @@ public class ContactPhotoManager extends PhotoManager {
                 return photos;
             }
 
-            List<String> photoIdsAsString = Lists.newArrayList();
-            Iterator<Object> iterator = photoIds.iterator();
-            while (iterator.hasNext()) {
-                photoIdsAsString.add(String.valueOf(iterator.next()));
+            String[] photoIdArgs = new String[photoIds.size()];
+            int i = 0;
+            for (Object id : photoIds) {
+                photoIdArgs[i++] = String.valueOf(id);
             }
 
             // first try getting photos from Contacts
             Cursor contactCursor = null;
             try {
                 contactCursor = getResolver().query(Data.CONTENT_URI, COLUMNS,
-                        createInQuery(Photo._ID, photoIds.size()),
-                        photoIdsAsString.toArray(EMPTY_STRING_ARRAY), null);
+                        createInQuery(Photo._ID, photoIdArgs.length),
+                        photoIdArgs, null);
                 while (contactCursor.moveToNext()) {
                     Long id = contactCursor.getLong(0);
                     byte[] bytes = contactCursor.getBlob(1);
@@ -259,8 +271,9 @@ public class ContactPhotoManager extends PhotoManager {
                 }
             }
 
-            iterator = photoIds.iterator();
+            Iterator<Object> iterator = photoIds.iterator();
             // then try to get the rest from Profiles
+            // FIXME: try to do this in a single query, if possible
             while (iterator.hasNext()) {
                 Long id = (Long) iterator.next();
                 if (ContactsContract.isProfileId(id)) {
@@ -291,8 +304,8 @@ public class ContactPhotoManager extends PhotoManager {
         }
 
         @Override
-        protected Map<String, byte[]> loadPhotos(Collection<Request> requests) {
-            Map<String, byte[]> photos = new HashMap<String, byte[]>(requests.size());
+        protected Map<Object, byte[]> loadPhotos(Collection<Request> requests) {
+            Map<Object, byte[]> photos = new HashMap<Object, byte[]>(requests.size());
 
             Set<String> addresses = new HashSet<String>();
             Set<Object> photoIds = new HashSet<Object>();
