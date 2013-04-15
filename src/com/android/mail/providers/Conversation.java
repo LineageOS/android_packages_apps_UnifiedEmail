@@ -151,7 +151,14 @@ public class Conversation implements Parcelable {
      */
     public boolean isRemote;
 
-    // Used within the UI to indicate the adapter position of this conversation
+    /**
+     * Used within the UI to indicate the adapter position of this conversation
+     *
+     * @deprecated Keeping this in sync with the desired value is a not always done properly, is a
+     *             source of bugs, and is a bad idea in general. Do not trust this value. Try to
+     *             migrate code away from using it.
+     */
+    @Deprecated
     public transient int position;
     // Used within the UI to indicate that a Conversation should be removed from
     // the ConversationCursor when executing an update, e.g. the the
