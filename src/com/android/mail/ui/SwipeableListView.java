@@ -296,12 +296,10 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     public int findConversation(ConversationItemView view, Conversation conv) {
-        int position = conv.position;
+        int position = INVALID_POSITION;
         long convId = conv.id;
         try {
-            if (position == INVALID_POSITION) {
-                position = getPositionForView(view);
-            }
+            position = getPositionForView(view);
         } catch (Exception e) {
             position = INVALID_POSITION;
             LogUtils.w(LOG_TAG, "Exception finding position; using alternate strategy");
