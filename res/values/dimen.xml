@@ -18,34 +18,16 @@
 
 <resources>
     <dimen name="account_dropdown_item_height">48dip</dimen>
-    <dimen name="wide_senders_font_size">16sp</dimen>
-    <dimen name="wide_subject_font_size">16sp</dimen>
     <dimen name="senders_font_size">18sp</dimen>
     <dimen name="subject_font_size">14sp</dimen>
     <dimen name="folders_text_bottom_padding">4dip</dimen>
-    <dimen name="folders_top_margin">10sp</dimen>
-    <dimen name="star_top_margin">10sp</dimen>
-    <dimen name="attachment_margin_top">6sp</dimen>
     <dimen name="attachment_tile_min_size">120dp</dimen>
     <dimen name="attachment_tile_max_size">164dp</dimen>
-    <dimen name="folders_top_margin_wide">24sp</dimen>
-    <dimen name="folders_min_height">18dp</dimen>
     <dimen name="date_font_size">12sp</dimen>
     <dimen name="account_dropdown_dropdownwidth">274dip</dimen>
     <dimen name="compose_scrollview_width">700dp</dimen>
-    <dimen name="total_conversationbar_width">150dip</dimen>
-    <dimen name="max_total_folder_width">64dip</dimen>
-    <dimen name="max_total_folder_width_wide">64dip</dimen>
     <dimen name="color_block_width">32dip</dimen>
     <dimen name="color_block_height">6dip</dimen>
-    <dimen name="subject_width">204dip</dimen>
-    <dimen name="folders_font_size">12sp</dimen>
-    <dimen name="wide_senders_margin_top">0sp</dimen>
-    <dimen name="wide_attachment_margin_top">2sp</dimen>
-    <dimen name="wide_subject_margin_right">0dip</dimen>
-    <dimen name="wide_date_margin_top">3dp</dimen>
-    <dimen name="date_background_height">17sp</dimen>
-    <dimen name="date_background_padding_left">4dip</dimen>
     <dimen name="touch_slop">32dip</dimen>
     <dimen name="move_slop">4dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
@@ -99,8 +81,6 @@
     <dimen name="widget_margin_left">0dip</dimen>
     <dimen name="widget_margin_right">0dip</dimen>
     <dimen name="widget_margin_bottom">0dip</dimen>
-    <dimen name="conversation_item_height">72sp</dimen>
-    <dimen name="conversation_item_height_wide">64sp</dimen>
     <dimen name="search_view_width">400dip</dimen>
     <dimen name="titlebar_height">48dip</dimen>
     <dimen name="titlebar_icon_size">40dip</dimen>
