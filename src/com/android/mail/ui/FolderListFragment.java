@@ -395,23 +395,26 @@ public class FolderListFragment extends ListFragment implements
      */
     private void viewFolderOrChangeAccount(int position) {
         final Object item = getListAdapter().getItem(position);
+        LogUtils.i(LOG_TAG, "viewFolderOrChangeAccount(%d): %s", position, item);
         final Folder folder;
         if (item instanceof DrawerItem) {
-            final DrawerItem folderItem = (DrawerItem) item;
-            // Could be a folder, account, or expand block.
-            final int itemType = mCursorAdapter.getItemType(folderItem);
+            final DrawerItem drawerItem = (DrawerItem) item;
+            // Could be a folder or account.
+            final int itemType = mCursorAdapter.getItemType(drawerItem);
             if (itemType == DrawerItem.VIEW_ACCOUNT) {
                 // Account, so switch.
                 folder = null;
-                final Account account = mCursorAdapter.getFullAccount(folderItem);
+                final Account account = drawerItem.mAccount;
                 mAccountChanger.changeAccount(account);
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
-                folder = mCursorAdapter.getFullFolder(folderItem);
-                mSelectedFolderType = folderItem.mFolderType;
+                folder = drawerItem.mFolder;
+                mSelectedFolderType = drawerItem.mFolderType;
+                LogUtils.i(LOG_TAG, "FLF.viewFolderOrChangeAccount folder=%s, type=%d",
+                        folder, mSelectedFolderType);
             } else {
                 // Do nothing.
-                LogUtils.d(LOG_TAG, "FolderListFragment: viewFolderOrChangeAccount():"
+                LogUtils.i(LOG_TAG, "FolderListFragment: viewFolderOrChangeAccount():"
                         + " Clicked on unset item in drawer. Offending item is " + item);
                 return;
             }
@@ -482,8 +485,6 @@ public class FolderListFragment extends ListFragment implements
         int getItemType(DrawerItem item);
         /** Get the folder associated with this item. **/
         Folder getFullFolder(DrawerItem item);
-        /** Get the account associated with this item. **/
-        Account getFullAccount(DrawerItem item);
         /** Notify that the all accounts changed. */
         void notifyAllAccountsChanged();
         /** Remove all observers and destroy the object. */
@@ -558,7 +559,7 @@ public class FolderListFragment extends ListFragment implements
             final DrawerItem item = (DrawerItem) getItem(position);
             final View view = item.getView(position, convertView, parent);
             final int type = item.mType;
-            if (mListView!= null) {
+            if (mListView != null) {
                 final boolean isSelected =
                         item.isHighlighted(mCurrentFolderForUnreadCheck, mSelectedFolderType);
                 if (type == DrawerItem.VIEW_FOLDER) {
@@ -574,6 +575,7 @@ public class FolderListFragment extends ListFragment implements
                             mCurrentFolderForUnreadCheck.unreadCount);
                 }
             }
+            LogUtils.i(LOG_TAG, "FLF.getView(%d) returns view of item %s", position, item);
             return view;
         }
 
@@ -830,11 +832,6 @@ public class FolderListFragment extends ListFragment implements
                 }
             }
         }
-
-        @Override
-        public Account getFullAccount(DrawerItem item) {
-            return item.mAccount;
-        }
     }
 
     private class HierarchicalFolderListAdapter extends ArrayAdapter<Folder>
@@ -935,11 +932,6 @@ public class FolderListFragment extends ListFragment implements
             } else {
                 return null;
             }
-        }
-
-        @Override
-        public Account getFullAccount(DrawerItem item) {
-            return null;
         }
 
         @Override
