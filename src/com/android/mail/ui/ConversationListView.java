@@ -14,9 +14,9 @@ import com.android.mail.utils.LogUtils;
 /**
  * Conversation list view contains a {@link SwipeableListView} and a sync status bar above it.
  */
-public class ConversationListView extends FrameLayout {
+public class ConversationListView extends FrameLayout implements SwipeableListView.SwipeListener {
 
-    private static final int DISTANCE_TO_TRIGGER_SYNC = 150; // dp
+    private static final int DISTANCE_TO_TRIGGER_SYNC = 200; // dp
     private static final int DISTANCE_TO_IGNORE = 15; // dp
     private static final int VELOCITY_THRESHOLD_TO_TRIGGER_SYNC = 1000;
     private static final int DISTANCE_TO_TRIGGER_CANCEL = 10; // dp
@@ -26,6 +26,9 @@ public class ConversationListView extends FrameLayout {
     private View mSyncTriggerBar;
     private View mSyncProgressBar;
     private SwipeableListView mListView;
+
+    // Whether to ignore events in {#dispatchTouchEvent}.
+    private boolean mIgnoreTouchEvents = false;
 
     private VelocityTracker mVelocityTracker;
     private boolean mTrackingScrollMovement = false;
@@ -62,6 +65,7 @@ public class ConversationListView extends FrameLayout {
         mSyncTriggerBar = findViewById(R.id.sync_trigger);
         mSyncProgressBar = findViewById(R.id.progress);
         mListView = (SwipeableListView) findViewById(android.R.id.list);
+        mListView.setSwipeListener(this);
         mDensity = getResources().getDisplayMetrics().density;
     }
 
@@ -70,7 +74,29 @@ public class ConversationListView extends FrameLayout {
     }
 
     @Override
+    public void onBeginSwipe() {
+        mIgnoreTouchEvents = true;
+        if (mTrackingScrollMovement) {
+            cancelMovementTracking();
+        }
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        // First check for any events that can trigger end of a swipe, so we can reset
+        // mIgnoreTouchEvents back to false (it can only be set to true at beginning of swipe)
+        // via {#onBeginSwipe()} callback.
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mIgnoreTouchEvents = false;
+        }
+
+        if (mIgnoreTouchEvents) {
+            return super.dispatchTouchEvent(event);
+        }
+
         float y = event.getY(0);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -95,17 +121,23 @@ public class ConversationListView extends FrameLayout {
                 if (mTrackingScrollMovement) {
                     // Sync can be triggered in 2 ways.
                     // 1. Velocity goes over a threshold (quick swipe)
+                    /* Temporarily disable velocity trigger and only use distance to see
+                       how this feels.
                     mVelocityTracker.addMovement(event);
-                    mVelocityTracker.computeCurrentVelocity(1000 /* px/sec */);
-                    if (mVelocityTracker.getYVelocity() > VELOCITY_THRESHOLD_TO_TRIGGER_SYNC) {
+                    mVelocityTracker.computeCurrentVelocity(1000);
+                    float yVelocityDip = mVelocityTracker.getYVelocity() / mDensity;
+                    if (yVelocityDip > VELOCITY_THRESHOLD_TO_TRIGGER_SYNC) {
+                        LogUtils.i(LOG_TAG, "Sync triggered from velocity %f", yVelocityDip);
                         triggerSync();
                         break;
                     }
+                    */
 
                     // 2. Tap and drag distance goes over a certain threshold
                     float verticalDistancePx = y - mTrackingScrollStartY;
                     float verticalDistanceDp = verticalDistancePx / mDensity;
                     if (verticalDistanceDp > DISTANCE_TO_TRIGGER_SYNC) {
+                        LogUtils.i(LOG_TAG, "Sync triggered from distance");
                         triggerSync();
                         break;
                     }
@@ -143,9 +175,11 @@ public class ConversationListView extends FrameLayout {
     }
 
     private void cancelMovementTracking() {
+        if (mTrackingScrollMovement) {
+            // Fade out the status bar when user lifts finger and no sync has happened yet
+            mSyncTriggerBar.animate().alpha(0f).setDuration(200).start();
+        }
         mTrackingScrollMovement = false;
-        // Fade out the status bar when user lifts finger and no sync has happened yet
-        mSyncTriggerBar.animate().alpha(0f).setDuration(200).start();
     }
 
     private void triggerSync() {
@@ -162,7 +196,7 @@ public class ConversationListView extends FrameLayout {
     protected void showSyncStatusBar() {
         mIsSyncing = true;
 
-        LogUtils.i(LOG_TAG, "ConversationListView.showSyncStatusBar()");
+        LogUtils.i(LOG_TAG, "ConversationListView show sync status bar");
         mSyncTriggerBar.animate().alpha(0f).setDuration(200).start();
 
         mSyncProgressBar.setVisibility(VISIBLE);
@@ -171,11 +205,14 @@ public class ConversationListView extends FrameLayout {
     }
 
     protected void onSyncFinished() {
-        LogUtils.i(LOG_TAG, "ConversationListView.onSyncFinished()");
-        // Hide both the sync progress bar and sync trigger bar
-        mSyncProgressBar.animate().alpha(0f).setDuration(200).start();
-        mSyncTriggerBar.setVisibility(GONE);
-
-        mIsSyncing = false;
+        // onSyncFinished() can get called several times as result of folder updates that maybe
+        // or may not be related to sync.
+        if (mIsSyncing) {
+            LogUtils.i(LOG_TAG, "ConversationListView hide sync status bar");
+            // Hide both the sync progress bar and sync trigger bar
+            mSyncProgressBar.animate().alpha(0f).setDuration(200).start();
+            mSyncTriggerBar.setVisibility(GONE);
+            mIsSyncing = false;
+        }
     }
 }
