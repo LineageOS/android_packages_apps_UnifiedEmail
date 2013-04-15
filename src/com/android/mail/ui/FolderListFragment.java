@@ -462,12 +462,16 @@ public class FolderListFragment extends ListFragment implements
 
     @Override
     public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
-        mCursorAdapter.setCursor(data);
+        if (mCursorAdapter != null) {
+            mCursorAdapter.setCursor(data);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<ObjectCursor<Folder>> loader) {
-        mCursorAdapter.setCursor(null);
+        if (mCursorAdapter != null) {
+            mCursorAdapter.setCursor(null);
+        }
     }
 
     /**
