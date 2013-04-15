@@ -204,79 +204,10 @@
     </style>
 
     <!-- Browse list item styles -->
-    <style name="PersonalIndicatorStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginTop">11sp</item>
-        <item name="android:src">@drawable/ic_email_caret_single</item>
-    </style>
-
-    <style name="PersonalIndicatorStyleImages" parent="@style/PersonalIndicatorStyle">
-        <item name="android:layout_marginLeft">0dip</item>
-        <item name="android:layout_marginTop">11sp</item>
-    </style>
-
-    <style name="SendersStyle">
-        <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginTop">10sp</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/senders_font_size</item>
-        <item name="android:lines">1</item>
-        <item name="android:text">@string/long_string</item>
-    </style>
-
-    <style name="SendersStyleImages" parent="@style/SendersStyle">
-        <item name="android:layout_marginLeft">4dip</item>
-        <item name="android:layout_marginTop">10sp</item>
-    </style>
-
-    <style name="DateStyle">
-        <item name="android:layout_width">0dip</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:text">@string/long_string</item>
-        <item name="android:textSize">@dimen/date_font_size</item>
-        <item name="android:lines">1</item>
-        <item name="android:layout_marginRight">14dip</item>
-        <item name="android:layout_marginTop">10sp</item>
-    </style>
-
-    <style name="DateStyleImages" parent="@style/DateStyle">
-    </style>
-
-    <style name="CheckmarkStyle">
-        <item name="android:layout_marginTop">-5sp</item>
-        <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:src">@drawable/btn_check_on_normal_holo_light</item>
-    </style>
-
     <style name="ConversationListFade" parent="@android:style/Widget.Holo.Light.ListView">
         <item name="android:cacheColorHint">@android:color/transparent</item>
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">0dip</item>
-    </style>
-
-    <style name="StarStyle">
-        <item name="android:layout_marginLeft">16dip</item>
-        <item name="android:layout_marginRight">16dip</item>
-        <item name="android:layout_marginTop">-4sp</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:src">@drawable/btn_star_off_normal_email_holo_light</item>
-    </style>
-
-    <style name="SubjectStyle">
-        <item name="android:layout_marginTop">-4sp</item>
-        <item name="android:textColor">@color/subject_text_color</item>
-        <item name="android:textSize">@dimen/subject_font_size</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:text">@string/long_string</item>
-        <item name="android:lines">2</item>
     </style>
     <!-- End browse list item styles -->
 
