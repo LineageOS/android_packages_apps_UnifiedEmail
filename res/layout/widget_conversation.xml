@@ -95,6 +95,7 @@
             android:paddingRight="16dip"
             android:singleLine="true"
             android:ellipsize="end"
+            android:textSize="@dimen/senders_font_size"
             android:includeFontPadding="false" />
         <TextView
             android:id="@+id/widget_subject"
