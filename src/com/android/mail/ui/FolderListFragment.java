@@ -978,17 +978,23 @@ public class FolderListFragment extends ListFragment implements
      * @param account the current account to set to.
      */
     private void setSelectedAccount(Account account){
-        final LoaderManager manager = getLoaderManager();
-        if (mCurrentAccount != null && account != null && mCurrentAccount.uri.equals(account.uri)) {
-            // If currentAccount is the same as the one we set, restartLoader
+        final boolean changed = (account != null) && (mCurrentAccount == null
+                || !mCurrentAccount.uri.equals(account.uri));
+        mCurrentAccount = account;
+        if (changed) {
+            // If currentAccount is different from the one we set, restart the loader. Look at the
+            // comment on {@link AbstractActivityController#restartOptionalLoader} to see why we
+            // don't just do restartLoader.
+            final LoaderManager manager = getLoaderManager();
+            manager.destroyLoader(FOLDER_LOADER_ID);
             manager.restartLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
-        } else {
-            // Otherwise, recreate the loader entirely by destroying and calling init
-            mCurrentAccount = account;
-            if (mCurrentAccount != null) {
-                manager.destroyLoader(FOLDER_LOADER_ID);
-                manager.initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
-            }
+            // An updated cursor causes the entire list to refresh. No need to refresh the list.
+        } else if (account == null) {
+            // This should never happen currently, but is a safeguard against a very incorrect
+            // non-null account -> null account transition.
+            LogUtils.e(LOG_TAG, "FLF.setSelectedAccount(null) called! Destroying existing loader.");
+            final LoaderManager manager = getLoaderManager();
+            manager.destroyLoader(FOLDER_LOADER_ID);
         }
     }
 
