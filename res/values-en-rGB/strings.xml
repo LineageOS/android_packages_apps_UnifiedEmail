@@ -300,11 +300,16 @@
     <item quantity="other" msgid="6856940335775567991">"Sync: Last <xliff:g id="COUNT">%1$d</xliff:g> days"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sync: None"</string>
-    <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Change folders"</string>
+    <!-- no translation found for change_folders_selection_dialog_title (8640832109613405534) -->
+    <skip />
+    <!-- no translation found for move_to_selection_dialog_title (1230762892675507608) -->
+    <skip />
     <string name="search_hint" msgid="3625734263059221350">"Search mail"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="folders" msgid="3359679829905256429">"Folders"</string>
+    <!-- no translation found for toggle_drawer (4937513687658162188) -->
+    <skip />
     <string name="network_error" msgid="2125579009654728299">"No connection"</string>
     <string name="loading" msgid="2600808404156989255">"Loading conversations…"</string>
     <string name="retry" msgid="4515885444824418022">"Retry"</string>
