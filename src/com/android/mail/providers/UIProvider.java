@@ -17,9 +17,10 @@
 
 package com.android.mail.providers;
 
-import com.google.common.collect.ImmutableMap;
-
+import android.content.ContentProvider;
+import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
@@ -27,6 +28,7 @@ import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
 import com.android.common.contacts.DataUsageStatUpdater;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -149,7 +151,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, Integer.class)
             .put(AccountColumns.SettingsColumns.SNAP_HEADERS, Integer.class)
             .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, Integer.class)
-            .put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES, Integer.class)
+            .put(AccountColumns.SettingsColumns.CONV_LIST_ICON, String.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_DELETE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)
@@ -471,10 +473,11 @@ public class UIProvider {
             public static final String REPLY_BEHAVIOR = "reply_behavior";
 
             /**
-             * Integer column containing the user's specified checkbox preference. A
-             * non zero value means to hide checkboxes.
+             * Integer column containing the user's preference for whether to show checkboxes or
+             * or sender images (or neither) in the conversation list view.  This value will be one
+             * of the values in {@link UIProvider.ConversationListIcon}.
              */
-            public static final String HIDE_CHECKBOXES = "hide_checkboxes";
+            public static final String CONV_LIST_ICON = "conversation_list_icon";
 
             /**
              * Integer column containing the user's specified confirm delete preference value.
@@ -1948,6 +1951,16 @@ public class UIProvider {
     public static final class DefaultReplyBehavior {
         public static final int REPLY = 0;
         public static final int REPLY_ALL = 1;
+    }
+
+    /**
+     * Setting for whether to show checkboxes or sender image in conversation list.
+     */
+    public static final class ConversationListIcon {
+        public static final int CHECKBOX = 0;
+        public static final int SENDER_IMAGE = 1;
+        public static final int NONE = 2;
+        public static final int DEFAULT = 0; // Default to show checkbox
     }
 
     /**
