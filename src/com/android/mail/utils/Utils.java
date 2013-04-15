@@ -120,6 +120,7 @@ public class Utils {
     private static final int SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH = 600;
 
     private static final String APP_VERSION_QUERY_PARAMETER = "appVersion";
+    private static final String FOLDER_URI_QUERY_PARAMETER = "folderUri";
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -674,8 +675,11 @@ public class Utils {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        intent.setDataAndType(appendVersionQueryParameter(context, conversation.uri),
-                account.mimeType);
+        final Uri versionedUri = appendVersionQueryParameter(context, conversation.uri);
+        // We need the URI to be unique, even if it's for the same message, so append the folder URI
+        final Uri uniqueUri = versionedUri.buildUpon().appendQueryParameter(
+                FOLDER_URI_QUERY_PARAMETER, folderUri.toString()).build();
+        intent.setDataAndType(uniqueUri, account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
         intent.putExtra(Utils.EXTRA_FOLDER_URI, folderUri);
         intent.putExtra(Utils.EXTRA_CONVERSATION, conversation);
