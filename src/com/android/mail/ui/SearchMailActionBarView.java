@@ -111,21 +111,19 @@ public class SearchMailActionBarView extends MailActionBarView {
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
         super.onMenuItemActionCollapse(item);
-        // Work around b/6664203 by manually forcing this view to be VISIBLE
-        // upon ActionView collapse. DISPLAY_SHOW_CUSTOM will still control its final
-        // visibility.
+        // When we are in the search activity, back closes the search action mode. At that point
+        // we want to quit the activity entirely.
         final int mode = getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST
                 || (Utils.showTwoPaneSearchResults(getContext())
                         && mode == ViewMode.SEARCH_RESULTS_CONVERSATION)) {
 
-            // When the action menu is collapsed, we have performed a search,
-            // pop the search fragment.
+            // When the action menu is collapsed, the search activity has finished.  We should exit
+            // search at this point
             mController.exitSearchMode();
         }
-        // Have to return true here. Unlike other callbacks, the return value
-        // here is whether we want to suppress the action (rather than consume the action). We
-        // don't want to suppress the action.
+        // The return value here is whether we want to collapse the action mode. Since we want to
+        // collapse the action mode, we should return true.
         return true;
     }
 }
