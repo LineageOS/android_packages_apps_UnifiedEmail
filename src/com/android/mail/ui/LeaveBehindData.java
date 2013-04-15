@@ -24,10 +24,12 @@ import com.android.mail.providers.Conversation;
 public class LeaveBehindData implements Parcelable {
     final Conversation data;
     final ToastBarOperation op;
+    final int height;
 
-    public LeaveBehindData(Conversation conv, ToastBarOperation undoOp) {
+    public LeaveBehindData(Conversation conv, ToastBarOperation undoOp, int height) {
         data = conv;
         op = undoOp;
+        this.height = height;
     }
 
     @Override
@@ -39,11 +41,13 @@ public class LeaveBehindData implements Parcelable {
     public void writeToParcel(Parcel arg, int flags) {
         arg.writeParcelable(data, 0);
         arg.writeParcelable(op, 0);
+        arg.writeInt(height);
     }
 
     private LeaveBehindData(Parcel arg, ClassLoader loader) {
         data = arg.readParcelable(loader);
         op = arg.readParcelable(loader);
+        height = arg.readInt();
     }
 
     public static final ClassLoaderCreator<LeaveBehindData> CREATOR =
