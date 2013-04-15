@@ -2507,10 +2507,6 @@ public abstract class AbstractActivityController implements ActivityController {
             mRecentsDataUpdated = false;
             mRecentFolderObservers.notifyChanged();
         }
-        FolderListFragment frag = this.getFolderListFragment();
-        if (frag != null) {
-            frag.onAnimationEnd();
-        }
     }
 
     @Override
