@@ -19,7 +19,7 @@
 <com.android.mail.ui.FolderListLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/FolderListStyle">
+    android:background="@color/list_background_color">
 
     <ListView
         android:id="@android:id/list"
@@ -27,5 +27,7 @@
         android:layout_height="match_parent"
         android:cacheColorHint="@android:color/transparent"
         android:drawSelectorOnTop="false"
-        android:fadingEdge="none" />
+        android:fadingEdge="none"
+        android:divider="@color/folder_list_divider_color"
+        android:dividerHeight="1dp" />
 </com.android.mail.ui.FolderListLayout>

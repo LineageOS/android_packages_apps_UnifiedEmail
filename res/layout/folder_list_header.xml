@@ -20,12 +20,14 @@
      FolderListFragment.  -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="32dip"
-    android:gravity="center_vertical"
+    android:layout_height="wrap_content"
+    android:minHeight="40dp"
+    android:gravity="bottom"
     android:ellipsize="end"
     android:singleLine="true"
     android:textAllCaps="true"
-    android:textColor="@color/folder_list_heading_text_color"
-    android:paddingLeft="@dimen/folder_list_heading_padding_side"
-    android:paddingRight="@dimen/folder_list_heading_padding_side"
-    style="?android:attr/listSeparatorTextViewStyle" />
+    android:textColor="@android:color/white"
+    android:paddingLeft="@dimen/folder_list_item_left_margin"
+    android:paddingRight="@dimen/folder_list_item_right_margin"
+    android:paddingBottom="@dimen/folder_list_heading_padding_bottom"
+    android:background="@drawable/drawer_line" />

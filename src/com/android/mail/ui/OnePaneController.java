@@ -157,6 +157,8 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean onCreate(Bundle savedInstanceState) {
         mActivity.setContentView(R.layout.one_pane_activity);
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
+        mDrawerContainer.setScrimColor(
+                mContext.getResources().getColor(R.color.drawer_background_dim));
         mDrawerPullout = (ViewGroup) mDrawerContainer.findViewById(R.id.drawer_pullout);
         configureUpDrawable();
         // The parent class sets the correct viewmode and starts the application off.
