@@ -348,7 +348,8 @@ public class Account extends android.accounts.Account implements Parcelable {
     }
 
     public Account(Cursor cursor) {
-        super(cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.NAME)), "unknown");
+        super(cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.NAME)),
+                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.TYPE)));
         accountFromAddresses = cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES));
 
