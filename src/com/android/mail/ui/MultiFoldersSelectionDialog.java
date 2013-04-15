@@ -59,7 +59,7 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
     public MultiFoldersSelectionDialog(final Context context, Account account,
             final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
             Folder currentFolder) {
-        super(context, account, updater, target, isBatch, currentFolder);
+        super(context, account, updater, target, isBatch, currentFolder, false);
         mSingle = !account
                 .supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
         mOperations = new HashMap<Uri, FolderOperation>();
