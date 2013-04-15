@@ -42,7 +42,6 @@
         android:id="@+id/drawer_pullout"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        style="@style/FolderListStyle" />
+        android:layout_gravity="start" />
 
 </android.support.v4.widget.DrawerLayout>

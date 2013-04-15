@@ -24,53 +24,43 @@
     android:background="@drawable/account_item">
 
     <ImageView
-        android:id="@+id/color_block"
+        android:id="@+id/account_graphic"
         style="@style/AccountItemIcon"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
-    <TextView
-        android:id="@+id/unread"
-        style="@style/UnreadCount"
-        android:layout_marginRight="@dimen/account_item_right_margin"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/folder_name_color_primary_invertible" />
+    <View
+        android:id="@+id/photo_spacer"
+        android:layout_height="@dimen/account_item_minimum_height"
+        android:layout_width="@dimen/account_item_minimum_height"
+        android:background="@color/gray_text_color"
+        android:layout_centerVertical="true" />
 
-    <TextView
-        android:id="@+id/unseen"
-        style="@style/UnseenCount"
-        android:layout_marginRight="@dimen/account_item_right_margin"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_alignParentRight="true"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
         android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/unread"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_marginLeft="@dimen/account_item_left_margin"
-        android:layout_marginTop="@dimen/account_item_swatch_height"
-        android:layout_marginBottom="@dimen/account_item_swatch_height">
+        android:layout_toRightOf="@id/photo_spacer" >
 
         <TextView
             android:id="@+id/name"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/account_item_left_margin"
+            android:layout_marginRight="@dimen/account_item_right_margin"
+            android:includeFontPadding="false"
             android:singleLine="true"
             android:ellipsize="end"
+            android:textColor="@color/folder_item_text_color"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/description"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_below="@id/name"
-            android:textColor="@color/folder_name_color_primary_invertible"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:visibility="gone" />
-
-    </RelativeLayout>
+            android:id="@+id/unread"
+            style="@style/UnreadCount"
+            android:layout_marginRight="@dimen/account_item_right_margin"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_alignParentRight="true" />
+    </LinearLayout>
 
 </com.android.mail.ui.AccountItemView>
