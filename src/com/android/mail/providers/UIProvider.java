@@ -125,6 +125,7 @@ public class UIProvider {
             new ImmutableMap.Builder<String, Class<?>>()
             .put(AccountColumns._ID, Integer.class)
             .put(AccountColumns.NAME, String.class)
+            .put(AccountColumns.TYPE, String.class)
             .put(AccountColumns.PROVIDER_VERSION, Integer.class)
             .put(AccountColumns.URI, String.class)
             .put(AccountColumns.FOLDER_LIST_URI, String.class)
