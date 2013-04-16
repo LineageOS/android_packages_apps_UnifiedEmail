@@ -1246,7 +1246,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             conv.position = mChecked && listView != null ? listView.getPositionForView(this)
                     : Conversation.NO_POSITION;
             if (mSelectedConversationSet != null) {
-                mSelectedConversationSet.toggle(this, conv);
+                mSelectedConversationSet.toggle(conv);
             }
             if (mSelectedConversationSet.isEmpty()) {
                 listView.commitDestructiveActions(true);
