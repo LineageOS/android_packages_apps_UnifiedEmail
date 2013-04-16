@@ -22,11 +22,13 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.ActionProvider;
@@ -37,7 +39,6 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
-import android.widget.TextView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -91,9 +92,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     private Folder mFolder;
 
-    /** The view that shows an unread count. */
-    private TextView mUnreadView;
-
     private SearchView mSearchWidget;
     private MenuItem mHelpItem;
     private MenuItem mSendFeedbackItem;
@@ -109,7 +107,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     public static final String LOG_TAG = LogTag.getLogTag();
 
-    private final Handler mHandler = new Handler();
     private final Runnable mInvalidateMenu = new Runnable() {
         @Override
         public void run() {
@@ -117,6 +114,36 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
     };
     private FolderObserver mFolderObserver;
+
+    /** A handler that changes the subtitle when it receives a message. */
+    private final class SubtitleHandler extends Handler {
+        /** Message sent to display the account email address in the subtitle. */
+        private static final int EMAIL = 0;
+
+        @Override
+        public void handleMessage(Message message) {
+            assert (message.what == EMAIL);
+            final String subtitleText;
+            if (mAccount != null && mHaveMultipleAccounts) {
+                // Display the account name (email address).
+                subtitleText = mAccount.name;
+            } else {
+                // Clear the subtitle.
+                subtitleText = "";
+            }
+            mActionBar.setSubtitle(subtitleText);
+            super.handleMessage(message);
+        }
+    }
+
+    /** Changes the subtitle to display the account name */
+    private final SubtitleHandler mHandler = new SubtitleHandler();
+    /** Unread count for the current folder. */
+    private int mUnreadCount = 0;
+    /** We show the email address after this delay: 5 seconds currently */
+    private static final int ACCOUNT_DELAY_MS = 5 * 1000;
+    /** At what point do we stop showing the unread count: 999+ currently */
+    private final int UNREAD_LIMIT;
 
     /** Updates the resolver and tells it the most recent account. */
     private final class UpdateProvider extends AsyncTask<Bundle, Void, Void> {
@@ -152,13 +179,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     public MailActionBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mIsOnTablet = Utils.useTabletUI(getResources());
+        final Resources r = getResources();
+        mIsOnTablet = Utils.useTabletUI(r);
+        UNREAD_LIMIT = r.getInteger(R.integer.maxUnreadCount);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mUnreadView = (TextView) findViewById(R.id.unread_count);
     }
 
     public void expandSearch() {
@@ -255,25 +283,25 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     private void updateAccount(Account account) {
+        final boolean changed = mAccount == null || !mAccount.uri.equals(account.uri);
         mAccount = account;
-        if (mAccount != null) {
+        if (mAccount != null && changed) {
             final ContentResolver resolver = mActivity.getActivityContext().getContentResolver();
             final Bundle bundle = new Bundle(1);
             bundle.putParcelable(UIProvider.SetCurrentAccountColumns.ACCOUNT, account);
             final UpdateProvider updater = new UpdateProvider(mAccount.uri, resolver);
             updater.execute(bundle);
-            setFolderAndAccount();
+            setFolderAndAccount(changed);
         }
     }
 
     /**
-     * Called by the owner of the ActionBar to set the
-     * folder that is currently being displayed.
+     * Called by the owner of the ActionBar to change the current folder.
      */
     public void setFolder(Folder folder) {
         setRefreshInProgress(false);
         mFolder = folder;
-        setFolderAndAccount();
+        setFolderAndAccount(true);
         mActivity.invalidateOptionsMenu();
     }
 
@@ -287,12 +315,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             mAllAccountObserver = null;
         }
         mAccountObserver.unregisterAndDestroy();
+        mHandler.removeMessages(SubtitleHandler.EMAIL);
     }
 
     @Override
     public void onViewModeChanged(int newMode) {
         mMode = newMode;
         mActivity.invalidateOptionsMenu();
+        mHandler.removeMessages(SubtitleHandler.EMAIL);
         // Check if we are either on a phone, or in Conversation mode on tablet. For these, the
         // recent folders is enabled.
         switch (mMode) {
@@ -530,10 +560,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     private void showNavList() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
-        if (mUnreadView != null) {
-            mUnreadView.setVisibility(View.VISIBLE);
-        }
-        setFolderAndAccount();
+        setFolderAndAccount(false);
     }
 
     /**
@@ -542,9 +569,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     private void setFoldersMode() {
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
-        if (mUnreadView != null) {
-            mUnreadView.setVisibility(View.GONE);
-        }
         mActionBar.setTitle(R.string.folders);
         if (mHaveMultipleAccounts) {
             mActionBar.setSubtitle(mAccount.name);
@@ -557,9 +581,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     protected void setEmptyMode() {
         // Disable title/subtitle and the custom view by setting the bitmask to all off.
         setTitleModeFlags(0);
-        if (mUnreadView != null) {
-            mUnreadView.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -671,29 +692,48 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     /**
      * Uses the current state to update the current folder {@link #mFolder} and the current
-     * account {@link #mAccount} shown in the actionbar.
+     * account {@link #mAccount} shown in the actionbar. Also updates the actionbar subtitle to
+     * momentarily display the unread count if it has changed.
+     * @param folderOrAccountChanged true if folder or account changed (in terms of URI)
      */
-    private void setFolderAndAccount() {
+    private void setFolderAndAccount(boolean folderOrAccountChanged) {
         // Very little can be done if the actionbar or activity is null.
         if (mActionBar == null || mActivity == null) {
             return;
         }
-        // Check if we should be changing the actionbar at all, and back off if not.
-        final boolean isShowingFolderAndAccount = mIsOnTablet || ViewMode.isListMode(mMode);
-        if (!isShowingFolderAndAccount) {
+        if (ViewMode.isWaitingForSync(mMode)) {
+            // Account is not synced: clear title and update the subtitle.
+            mActionBar.setTitle("");
+            mHandler.removeMessages(SubtitleHandler.EMAIL);
+            mHandler.sendEmptyMessage(SubtitleHandler.EMAIL);
             return;
         }
-        if (mAccount != null && mHaveMultipleAccounts) {
-            mActionBar.setSubtitle(mAccount.name);
+        // Check if we should be changing the actionbar at all, and back off if not.
+        final boolean isShowingFolder = mIsOnTablet || ViewMode.isListMode(mMode);
+        if (!isShowingFolder) {
+            return;
         }
         if (mFolder == null) {
             return;
         }
         mActionBar.setTitle(mFolder.name);
-        if (mUnreadView != null) {
-            mUnreadView.setText(Utils.getUnreadCountString(
-                    mActivity.getApplicationContext(), mFolder.unreadCount));
+
+        // The user shouldn't see "999+ unread messages", and then a short while later: "999+
+        // unread messages". So we set our unread count just past the limit. This way we can
+        // change the subtitle the first time around but not for subsequent changes as far as the
+        // unread count remains over the limit.
+        final int unreadCount = (mFolder.unreadCount > UNREAD_LIMIT)
+                ? (UNREAD_LIMIT + 1) : mFolder.unreadCount;
+        if (mUnreadCount != unreadCount || folderOrAccountChanged) {
+            mActionBar.setSubtitle(
+                    Utils.getUnreadMessageString(mActivity.getApplicationContext(), unreadCount));
+            // This is a new update, remove previous messages, if any.
+            mHandler.removeMessages(SubtitleHandler.EMAIL);
+            // In a short while, show the account name in its place.
+            mHandler.sendEmptyMessageDelayed(SubtitleHandler.EMAIL, ACCOUNT_DELAY_MS);
         }
+        // Remember the new value for the next run
+        mUnreadCount = unreadCount;
     }
 
     /**
@@ -706,7 +746,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         /** True if we are changing folders. */
         final boolean changingFolders = (mFolder == null || !mFolder.uri.equals(folder.uri));
         mFolder = folder;
-        setFolderAndAccount();
+        setFolderAndAccount(changingFolders);
         if (folder.isSyncInProgress()) {
             onRefreshStarted();
         } else {
