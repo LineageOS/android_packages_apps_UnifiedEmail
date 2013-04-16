@@ -576,7 +576,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             // or if unread messages still exist in the message list cursor
             // we don't want to keep marking viewed on rotation or restore
             // but we do want future re-renders to mark read (e.g. "New message from X" case)
-            MessageCursor cursor = getMessageCursor();
+            final MessageCursor cursor = getMessageCursor();
             if (!mConversation.isViewed() || (cursor != null && !cursor.isConversationRead())) {
                 // Mark the conversation viewed and read.
                 activity.getConversationUpdater()
@@ -584,7 +584,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
                 // and update the Message objects in the cursor so the next time a cursor update
                 // happens with these messages marked read, we know to ignore it
-                if (cursor != null) {
+                if (cursor != null && !cursor.isClosed()) {
                     cursor.markMessagesRead();
                 }
             }
