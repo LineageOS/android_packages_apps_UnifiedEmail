@@ -214,6 +214,7 @@ public class Utils {
 
     private static int sMaxUnreadCount = -1;
     private static String sUnreadText;
+    private static String sActionBarMaxUnread;
     private static int sDefaultFolderBackgroundColor = -1;
     private static int sUseFolderListFragmentTransition = -1;
 
@@ -631,8 +632,8 @@ public class Utils {
      * Get the correct display string for the unread count of a folder.
      */
     public static String getUnreadCountString(Context context, int unreadCount) {
-        String unreadCountString;
-        Resources resources = context.getResources();
+        final String unreadCountString;
+        final Resources resources = context.getResources();
         if (sMaxUnreadCount == -1) {
             sMaxUnreadCount = resources.getInteger(R.integer.maxUnreadCount);
         }
@@ -649,6 +650,26 @@ public class Utils {
             unreadCountString = String.format("%d", unreadCount);
         }
         return unreadCountString;
+    }
+
+    /**
+     * Get the correct display string for the unread count in the actionbar.
+     */
+    public static String getUnreadMessageString(Context context, int unreadCount) {
+        final String message;
+        final Resources resources = context.getResources();
+        if (sMaxUnreadCount == -1) {
+            sMaxUnreadCount = resources.getInteger(R.integer.maxUnreadCount);
+        }
+        if (unreadCount > sMaxUnreadCount) {
+            if (sActionBarMaxUnread == null) {
+                sActionBarMaxUnread = resources.getString(R.string.actionbar_large_unread_count);
+            }
+            message = String.format(sActionBarMaxUnread, sMaxUnreadCount);
+        } else {
+            message = formatPlural(context, R.plurals.actionbar_unread_messages, unreadCount);
+        }
+        return message;
     }
 
     /**
