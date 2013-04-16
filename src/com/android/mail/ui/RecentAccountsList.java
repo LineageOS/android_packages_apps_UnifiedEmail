@@ -138,14 +138,12 @@ public final class RecentAccountsList {
      * number of accounts.
      *
      * @param unsortedAccounts array of Accounts to be ordered
-     * @return ordered array of Accounts from least to most recently used.
+     * @return ordered array of Accounts from least to most recently used, possibly empty.
      */
     public Account[] getSorted(final Account[] unsortedAccounts) {
         if(unsortedAccounts == null) {
-            // For the sake of consistency along users of allAccounts, this needs to return null
-            return null;
+            return new Account[0];
         }
-
         // Create a sortedAccounts list that will collect the final order of accounts
         final LinkedList<Account> sortedAccounts = new LinkedList<Account>();
         // Map for uri -> Account object for quick lookup
