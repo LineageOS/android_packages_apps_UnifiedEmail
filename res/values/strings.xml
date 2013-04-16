@@ -558,12 +558,21 @@
     <string name="enumeration_comma">,\u0020</string>
 
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10]-->
-    <string name="ok">OK</string>
-    <string name="done">Done</string>
-    <string name="cancel">Cancel</string>
-    <string name="close">Close</string>
     <string name="yes">Yes</string>
+    <!-- Button name, displayed in dialogs [CHAR LIMIT=10]-->
     <string name="no">No</string>
+    <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+    <string name="ok">OK</string>
+    <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+    <string name="done">Done</string>
+    <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+    <string name="set">Set</string>
+    <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+    <string name="cancel">Cancel</string>
+    <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+    <string name="clear">Clear</string>
+    <!-- Button name, displayed in dialogs [CHAR LIMIT=10]-->
+    <string name="close">Close</string>
 
     <!-- Folders -->
     <!-- Displayed in the middle of the Folders screen when no folders have been defined -->
@@ -834,4 +843,21 @@
 
     <!-- Label list screen, banner for number of unseen messages [CHAR LIMIT=15]  -->
     <string name="inbox_unseen_banner"><xliff:g id="number" example="7">%d</xliff:g> NEW</string>
+
+    <!-- Settings screen, preference for configuring preferred ActionBar items [CHAR LIMIT=50] -->
+    <string name="preference_preferred_actionbar_items">Preferred ActionBar items</string>
+    <!-- Dialog title for the preferred ActionBar items dialog [CHAR LIMIT=150] -->
+    <string name="preference_preferred_actionbar_items_dialog_title">Select up to <xliff:g id="max">%1$d</xliff:g> actions</string>
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <string name="action_archive_remove_label">Archive/Remove Label</string>
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <string name="action_delete_discard_drafts">Delete/Discard drafts</string>
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <string name="action_mark_read_unread">Mark Read/Unread</string>
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <string name="action_add_remove_star">Add/Remove Star</string>
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <string name="action_mark_not_important">Mark (not) important</string>
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <string name="action_report_not_spam">Report (not) spam</string>
 </resources>
