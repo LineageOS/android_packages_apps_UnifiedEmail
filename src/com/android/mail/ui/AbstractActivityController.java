@@ -1489,7 +1489,12 @@ public abstract class AbstractActivityController implements ActivityController {
             // This method will be called again if the user selects an autoadvance option
             return;
         }
-
+        // If the conversation is in the selected set, remove it from the set.
+        for (final Conversation conv : target) {
+            if (mSelectedSet.contains(conv)) {
+                mSelectedSet.toggle(null, conv);
+            }
+        }
         // The conversation list deletes and performs the action if it exists.
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
