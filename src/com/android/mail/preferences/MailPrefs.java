@@ -20,11 +20,13 @@ package com.android.mail.preferences;
 import android.content.Context;
 
 import com.android.mail.MailIntentService;
+import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.widget.BaseWidgetProvider;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -63,10 +65,14 @@ public final class MailPrefs extends VersionedPrefs {
         private static final String CACHED_ACTIVE_NOTIFICATION_SET =
                 "cache-active-notification-set";
 
+        /** String set of the preffered ActionBar items */
+        public static final String PREFERRED_ACTIONBAR_ITEMS = "preferred-actionbar-items";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
                 .add(CONVERSATION_LIST_SWIPE_ACTION)
+                .add(PREFERRED_ACTIONBAR_ITEMS)
                 .build();
 
     }
@@ -222,5 +228,43 @@ public final class MailPrefs extends VersionedPrefs {
     public void cacheActiveNotificationSet(final Set<String> notificationSet) {
         getEditor().putStringSet(PreferenceKeys.CACHED_ACTIVE_NOTIFICATION_SET, notificationSet)
                 .apply();
+    }
+
+    /**
+     * Gets the preferred ActionBar items, or an empty {@link Set} if none have been set.
+     */
+    public Set<String> getPreferredActionItems() {
+        final Set<String> preferredItems = getSharedPreferences().getStringSet(
+                PreferenceKeys.PREFERRED_ACTIONBAR_ITEMS,
+                new ImmutableSet.Builder<String>().build());
+
+        // Prune invalid items
+        final Context context = getContext();
+        final Set<String> validItems = ImmutableSet.copyOf(context.getResources().getStringArray(
+                R.array.preferred_actionbar_item_ids));
+
+        boolean dirty = false;
+        final Iterator<String> iterator = preferredItems.iterator();
+        while (iterator.hasNext()) {
+            final String item = iterator.next();
+            if (!validItems.contains(item)) {
+                iterator.remove();
+                dirty = true;
+            }
+        }
+
+        if (dirty) {
+            setPreferredActionItems(preferredItems);
+        }
+
+        return preferredItems;
+    }
+
+    /**
+     * Sets the preferred ActionBar items.
+     */
+    public void setPreferredActionItems(final Set<String> items) {
+        getEditor().putStringSet(PreferenceKeys.PREFERRED_ACTIONBAR_ITEMS, items).apply();
+        MailIntentService.broadcastBackupDataChanged(getContext());
     }
 }
