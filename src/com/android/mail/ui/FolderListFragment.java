@@ -689,9 +689,12 @@ public class FolderListFragment extends ListFragment implements
          */
         private void recalculateListFolders(List<DrawerItem> itemList) {
             // If we are waiting for folder initialization, we don't have any kinds of folders,
-            // just the "Waiting for initialization" item.
+            // just the "Waiting for initialization" item. Note, this should only be done
+            // when we're waiting for account initialization or initial sync.
             if (isCursorInvalid(mCursor)) {
-                itemList.add(DrawerItem.forWaitView(mActivity));
+                if(!mCurrentAccount.isAccountReady()) {
+                    itemList.add(DrawerItem.forWaitView(mActivity));
+                }
                 return;
             }
 
@@ -987,6 +990,8 @@ public class FolderListFragment extends ListFragment implements
                 || !mCurrentAccount.uri.equals(account.uri));
         mCurrentAccount = account;
         if (changed) {
+            // We no longer have proper folder objects. Let the new ones come in
+            mCursorAdapter.setCursor(null);
             // If currentAccount is different from the one we set, restart the loader. Look at the
             // comment on {@link AbstractActivityController#restartOptionalLoader} to see why we
             // don't just do restartLoader.
