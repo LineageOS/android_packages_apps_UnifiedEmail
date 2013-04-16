@@ -39,6 +39,7 @@ import java.util.Map;
  * the folders in the providers.
  */
 public class FolderWatcher {
+    public static final String FOLDER_URI = "FOLDER-URI";
     /** List of URIs that are watched. */
     private final List<Uri> mUri = new ArrayList<Uri>();
     /** Map returning the most recent unread count for each URI */
@@ -57,7 +58,8 @@ public class FolderWatcher {
 
     /**
      * Create a {@link FolderWatcher}.
-     * @param activity
+     * @param activity Upstream activity
+     * @param consumer If non-null, a consumer to be notified when the unread count changes
      */
     public FolderWatcher(RestrictedActivity activity, BaseAdapter consumer) {
         mActivity = activity;
@@ -65,67 +67,110 @@ public class FolderWatcher {
     }
 
     /**
-     * Starts watching the given URI for changes. It is safe to call {@link #startWatching(Uri)}
-     * repeatedly for the same URI.
-     * @param uri
+     * Start watching all the accounts in this list and stop watching accounts NOT on this list.
+     * Does nothing if the list of all accounts is null.
+     * @param allAccounts all the current accounts on the device.
      */
-    public void startWatching(Uri uri) {
-        // If the URI is already watched, nothing to do.
-        if (uri == null || mUnreadCount.containsKey(uri)) {
+    public void updateAccountList(Account[] allAccounts) {
+        if (allAccounts == null) {
             return;
         }
-        // This is the ID of the new URI: always at the end of the list.
-        final int id = mUri.size();
-        LogUtils.d(LOG_TAG, "Watching %s, at position %d.", uri, id);
-        mUri.add(uri);
+        // Create list of Inbox URIs from the array of accounts.
+        final List<Uri> newAccounts = new ArrayList<Uri>(allAccounts.length);
+        for (final Account account : allAccounts) {
+            newAccounts.add(account.settings.defaultInbox);
+        }
+        // Stop watching accounts not in the new list.
+        for (final Uri previous : mUri) {
+            if (!newAccounts.contains(previous)) {
+                stopWatching(previous);
+            }
+        }
+        // Add accounts in the new list, that are not already watched.
+        for (final Uri fresh : newAccounts) {
+            if (!mUri.contains(fresh)) {
+                startWatching(fresh);
+            }
+        }
+    }
+
+    /**
+     * Starts watching the given URI for changes. It is NOT safe to call this method repeatedly
+     * for the same URI.
+     * @param uri the URI for an inbox whose unread count is to be watched
+     */
+    private void startWatching(Uri uri) {
+        final int location = insertAtNextEmptyLocation(uri);
+        LogUtils.d(LOG_TAG, "Watching %s, at position %d.", uri, location);
+        // No unread count yet, put a safe placeholder for now.
         mUnreadCount.put(uri, 0);
         final LoaderManager lm = mActivity.getLoaderManager();
-        lm.initLoader(getLoaderFromPosition(id), null, mUnreadCallback);
+        final Bundle args = new Bundle();
+        args.putString(FOLDER_URI, uri.toString());
+        lm.initLoader(getLoaderFromPosition(location), args, mUnreadCallback);
+    }
+
+    /**
+     * Locates the next empty position in {@link #mUri} and inserts the URI there, returning the
+     * location.
+     * @return location where the URI was inserted.
+     */
+    private int insertAtNextEmptyLocation(Uri newElement) {
+        Uri uri;
+        int location = -1;
+        for (int size = mUri.size(), i = 0; i < size; i++) {
+            uri = mUri.get(i);
+            // Hole in the list, use this position
+            if (uri == null) {
+                location = i;
+                break;
+            }
+        }
+        // No hole found, return the current size;
+        if (location < 0) {
+            location = mUri.size();
+        }
+        mUri.add(location, newElement);
+        return location;
     }
 
     /**
      * Returns the loader ID for a position inside the {@link #mUri} table.
-     * @param position
-     * @return
+     * @param position position in the {@link #mUri} list
+     * @return a loader id
      */
-    private static final int getLoaderFromPosition(int position) {
+    private static int getLoaderFromPosition(int position) {
         return position + AbstractActivityController.LAST_LOADER_ID;
     }
 
     /**
-     * Returns the position inside the {@link #mUri} table from a loader ID.
-     * @param loaderId
-     * @return
-     */
-    private static final int getPositionFromLoader(int loaderId) {
-        return loaderId - AbstractActivityController.LAST_LOADER_ID;
-    }
-
-    /**
      * Stops watching the given URI for folder changes. Subsequent calls to
-     * {@link #getUnreadCount(Uri)} for this uri will return null.
-     * @param uri
+     * {@link #getUnreadCount(Account)} for this uri will return null.
+     * @param uri the URI for a folder
      */
-    public void stopWatching(Uri uri) {
+    private void stopWatching(Uri uri) {
         final int id = mUri.indexOf(uri);
-        // Does not exist in the list, safely back out.
+        // Does not exist in the list, we have stopped watching it already.
         if (id < 0) {
             return;
         }
         // Destroy the loader before removing references to the object.
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(getLoaderFromPosition(id));
-        mUnreadCount.remove(id);
-        mUri.remove(id);
+        mUnreadCount.remove(uri);
+        mUri.add(id, null);
     }
 
     /**
-     * Returns the updated folder for the given URI. The URI must be watched with
-     * {@link #startWatching(Uri)}. If the URI is not watched, this method returns null.
-     * @param uri
-     * @return
+     * Returns the unread count for the default inbox for the account given. The account must be
+     * watched with {@link #updateAccountList(Account[])}. If the account was not in an account
+     * list passed previously, this method returns zero.
+     * @param account an account whose unread count we wisht to track
+     * @return the unread count if the account was in array passed previously to {@link
+     * #updateAccountList(Account[])}. Zero otherwise.
      */
-    public int getUnreadCount(Uri uri) {
+    public final int getUnreadCount(Account account) {
+        final Uri uri = account.settings.defaultInbox;
         if (mUnreadCount.containsKey(uri)) {
             final Integer count = mUnreadCount.get(uri);
             if (count != null) {
@@ -142,14 +187,12 @@ public class FolderWatcher {
         // TODO(viki): Fix http://b/8494129 and read only the URI and unread count.
         /** Only interested in the folder unread count, but asking for everything due to
          * bug 8494129. */
-        private String[] projection = UIProvider.FOLDERS_PROJECTION;
+        private final String[] projection = UIProvider.FOLDERS_PROJECTION;
+
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            final int position = getPositionFromLoader(id);
-            if (position < 0 || position > mUri.size()) {
-                return null;
-            }
-            return new CursorLoader(mActivity.getActivityContext(), mUri.get(position), projection,
+            final Uri uri = Uri.parse(args.getString(FOLDER_URI));
+            return new CursorLoader(mActivity.getActivityContext(), uri, projection,
                     null, null, null);
         }
 
