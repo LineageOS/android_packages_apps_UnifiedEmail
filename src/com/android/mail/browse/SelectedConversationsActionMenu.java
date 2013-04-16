@@ -44,6 +44,7 @@ import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FolderSelectionDialog;
+import com.android.mail.ui.MailActionBarView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -439,6 +440,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         if (discardDrafts != null) {
             discardDrafts.setVisible(showDiscardDrafts);
         }
+
+        MailActionBarView.reorderMenu(mContext, menu);
 
         return true;
     }

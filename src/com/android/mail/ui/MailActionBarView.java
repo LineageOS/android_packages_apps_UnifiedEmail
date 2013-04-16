@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.ActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +41,7 @@ import android.widget.TextView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.AllAccountObserver;
@@ -53,6 +55,11 @@ import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.Lists;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * View to manage the various states of the Mail Action Bar.
@@ -373,6 +380,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 // to show up during the time between the conversation is selected and the fragment
                 // is added.
                 setConversationModeOptions(menu);
+                // We want to use the user's preferred menu order here
+                reorderMenu(getContext(), menu);
                 break;
             case ViewMode.CONVERSATION_LIST:
                 // Show compose and search based on the account
@@ -386,6 +395,133 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 Utils.setMenuItemVisibility(menu, R.id.search, false);
                 break;
         }
+
+        return false;
+    }
+
+    public static void reorderMenu(final Context context, final Menu menu) {
+        // Bump our preferred items to the top
+        final Set<String> preferredItemIds = MailPrefs.get(context).getPreferredActionItems();
+
+        // Create another copy of the menu that we can rearrange
+        final List<MenuItem> menuCopy = Lists.newArrayListWithCapacity(menu.size());
+
+        for (int i = 0; i < menu.size(); i++) {
+            final MenuItem menuItem = menu.getItem(i);
+            menuCopy.add(menuItem);
+        }
+
+        // Re-sort our menu
+        final List<MenuItem> firstItems = Lists.newArrayListWithCapacity(2);
+        final List<MenuItem> preferredItems =
+                Lists.newArrayListWithCapacity(preferredItemIds.size());
+
+        final Iterator<MenuItem> iterator = menuCopy.iterator();
+        while (iterator.hasNext()) {
+            final MenuItem menuItem = iterator.next();
+            final int menuItemId = menuItem.getItemId();
+
+            // Compose and search must be first, if present
+            if (menuItemId == R.id.compose || menuItemId == R.id.search) {
+                iterator.remove();
+                firstItems.add(menuItem);
+                continue;
+            }
+
+            for (final String preferredItemId : preferredItemIds) {
+                if (matches(preferredItemId, menuItemId)) {
+                    iterator.remove();
+                    preferredItems.add(menuItem);
+                    break;
+                }
+            }
+        }
+
+        // Rebuild the menu
+        menu.clear();
+
+        for (final MenuItem menuItem : firstItems) {
+            addMenuItem(menu, menuItem);
+        }
+
+        for (final MenuItem menuItem : preferredItems) {
+            addMenuItem(menu, menuItem);
+        }
+
+        for (final MenuItem menuItem : menuCopy) {
+            addMenuItem(menu, menuItem);
+        }
+
+        // Set the first few to always show
+        int allowed = context.getResources().getInteger(R.integer.actionbar_items_shown);
+        int i = 0;
+        while (allowed > 0 && i < menu.size()) {
+            final MenuItem menuItem = menu.getItem(i);
+            if (menuItem.isVisible() && menuItem.getIcon() != null) {
+                // We need to collapseActionView, but only for search
+                final int actionEnum;
+                if (menuItem.getItemId() == R.id.search) {
+                    actionEnum = MenuItem.SHOW_AS_ACTION_ALWAYS
+                            | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW;
+                } else {
+                    actionEnum = MenuItem.SHOW_AS_ACTION_ALWAYS;
+                }
+
+                menuItem.setShowAsAction(actionEnum);
+                allowed--;
+            }
+            i++;
+        }
+    }
+
+    private static void addMenuItem(final Menu menu, final MenuItem menuItem) {
+        final MenuItem newItem = menu.add(Menu.NONE, menuItem.getItemId(), Menu.NONE,
+                menuItem.getTitle());
+        final ActionProvider actionProvider = menuItem.getActionProvider();
+        if (actionProvider != null) {
+            newItem.setActionProvider(actionProvider);
+        }
+        newItem.setActionView(menuItem.getActionView());
+        newItem.setAlphabeticShortcut(menuItem.getAlphabeticShortcut());
+        newItem.setCheckable(menuItem.isCheckable());
+        newItem.setChecked(menuItem.isChecked());
+        newItem.setEnabled(menuItem.isEnabled());
+        newItem.setIcon(menuItem.getIcon());
+        newItem.setIntent(menuItem.getIntent());
+        newItem.setNumericShortcut(menuItem.getNumericShortcut());
+        newItem.setShortcut(menuItem.getNumericShortcut(), menuItem.getAlphabeticShortcut());
+        newItem.setTitle(menuItem.getTitle());
+        newItem.setTitleCondensed(menuItem.getTitleCondensed());
+        newItem.setVisible(menuItem.isVisible());
+    }
+
+    private static boolean matches(final String actionItemId, final int menuItemId) {
+        switch (menuItemId) {
+            case R.id.archive:
+            case R.id.remove_folder:
+                return "archive_remove_folder".equals(actionItemId);
+            case R.id.delete:
+            case R.id.discard_drafts:
+                return "delete_discard_drafts".equals(actionItemId);
+            case R.id.read:
+            case R.id.unread:
+            case R.id.inside_conversation_unread:
+                return "mark_read_unread".equals(actionItemId);
+            case R.id.change_folder:
+                return "change_folders".equals(actionItemId);
+            case R.id.star:
+            case R.id.remove_star:
+                return "add_remove_star".equals(actionItemId);
+            case R.id.move_to:
+                return "move_to".equals(actionItemId);
+            case R.id.mark_important:
+            case R.id.mark_not_important:
+                return "mark_not_important".equals(actionItemId);
+            case R.id.report_spam:
+            case R.id.mark_not_spam:
+                return "report_not_spam".equals(actionItemId);
+        }
+
         return false;
     }
 
