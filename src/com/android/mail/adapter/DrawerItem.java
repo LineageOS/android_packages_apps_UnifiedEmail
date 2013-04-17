@@ -268,8 +268,8 @@ public class DrawerItem {
                 // Folders are always enabled.
                 return true;
             case VIEW_ACCOUNT:
-                // Accounts are only enabled if they are not the current account.
-                return !mIsCurrentAccount;
+                // Accounts are always enabled.
+                return true;
             case VIEW_WAITING_FOR_SYNC:
                 // Waiting for sync cannot be tapped, so never enabled.
                 return false;
