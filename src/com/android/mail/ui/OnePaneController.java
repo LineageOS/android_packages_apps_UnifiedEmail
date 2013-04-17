@@ -157,7 +157,6 @@ public final class OnePaneController extends AbstractActivityController {
         mDrawerContainer.setScrimColor(
                 mContext.getResources().getColor(R.color.drawer_background_dim));
         mDrawerPullout = (ViewGroup) mDrawerContainer.findViewById(R.id.drawer_pullout);
-
         // Store the burger drawable for switching with the up arrow later
         mBurgerDrawable = mContext.getResources().getDrawable(R.drawable.ic_drawer_glyph);
         // The parent class sets the correct viewmode and starts the application off.

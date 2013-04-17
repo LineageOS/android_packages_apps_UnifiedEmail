@@ -26,7 +26,7 @@
     android:ellipsize="end"
     android:singleLine="true"
     android:textAllCaps="true"
-    android:textColor="@android:color/white"
+    android:textColor="@color/folder_list_heading_text_color"
     android:paddingLeft="@dimen/folder_list_item_left_margin"
     android:paddingRight="@dimen/folder_list_item_right_margin"
     android:paddingBottom="@dimen/folder_list_heading_padding_bottom"

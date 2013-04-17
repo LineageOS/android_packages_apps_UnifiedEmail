@@ -178,7 +178,7 @@ public class ContactPhotoManager extends PhotoManager {
 
         private final String[] DATA_COLS = new String[] {
             Email.DATA,                 // 0
-            Email.PHOTO_ID,             // 1
+            Email.PHOTO_ID              // 1
         };
 
         private static final int DATA_EMAIL_COLUMN = 0;
