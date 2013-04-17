@@ -25,7 +25,6 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.ViewGroup;
 
 import com.android.mail.R;
@@ -39,7 +38,6 @@ import com.android.mail.ui.ActivityController;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.ui.SecureConversationViewFragment;
 import com.android.mail.utils.FragmentStatePagerAdapter2;
-import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
@@ -61,22 +59,15 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
      * In singleton mode, this adapter ignores the cursor contents and size, and acts as if the
      * data set size is exactly size=1, with {@link #getDefaultConversation()} at position 0.
      */
-    private boolean mSingletonMode = true;
+    private boolean mSingletonMode = false;
     /**
      * Similar to singleton mode, but once enabled, detached mode is permanent for this adapter.
      */
     private boolean mDetachedMode = false;
     /**
-     * Adapter methods may trigger a data set change notification in the middle of a ViewPager
-     * update, but they are not safe to handle, so we have to ignore them. This will not ignore
-     * pager-external updates; it's impossible to be notified of an external change during
-     * an update.
-     *
-     * TODO: Queue up changes like this, if there ever are any that actually modify the data set.
-     * Right now there are none. Such a change would have to be of the form: instantiation or
-     * setPrimary somehow adds or removes items from the conversation cursor. Crazy!
+     * True iff we are in the process of handling a dataset change.
      */
-    private boolean mSafeToNotify;
+    private boolean mInDataSetChange = false;
     /**
      * Need to keep this around to look up pager title strings.
      */
@@ -92,13 +83,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
      */
     private ViewPager mPager;
     private boolean mSanitizedHtml;
-
-    /**
-     * The URI of the detached conversation. We use this to mark new CVFs as detached if they are
-     * created after this is set. This is to fix b/8185448. This is not needed in UR9 due changes in
-     * CursorStatus.isWaitingForResults().
-     */
-    private String mDetachedUri = null;
 
     private boolean mStopListeningMode = false;
 
@@ -116,7 +100,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
      */
     private int mLastKnownCount;
 
-    private static final String LOG_TAG = LogTag.getLogTag();
+    private static final String LOG_TAG = ConversationPagerController.LOG_TAG;
 
     private static final String BUNDLE_DETACHED_MODE =
             ConversationPagerAdapter.class.getName() + "-detachedmode";
@@ -207,7 +191,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             c.position = position;
         }
         final AbstractConversationViewFragment f = getConversationViewFragment(c);
-        LogUtils.d(LOG_TAG, "IN PagerAdapter.getItem, frag=%s conv=%s", f, c);
+        LogUtils.d(LOG_TAG, "IN PagerAdapter.getItem, frag=%s conv=%s this=%s", f, c, this);
         return f;
     }
 
@@ -294,34 +278,57 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
 
     @Override
     public void restoreState(Parcelable state, ClassLoader loader) {
-        LogUtils.d(LOG_TAG, "IN PagerAdapter.restoreState. this=%s", this);
         super.restoreState(state, loader);
         if (state != null) {
             Bundle b = (Bundle) state;
             b.setClassLoader(loader);
-            mDetachedMode = b.getBoolean(BUNDLE_DETACHED_MODE);
+            final boolean detached = b.getBoolean(BUNDLE_DETACHED_MODE);
+            setDetachedMode(detached);
         }
+        LogUtils.d(LOG_TAG, "OUT PagerAdapter.restoreState. this=%s", this);
+    }
+
+    private void setDetachedMode(boolean detached) {
+        if (mDetachedMode == detached) {
+            return;
+        }
+        mDetachedMode = detached;
+        if (mDetachedMode) {
+            mController.setDetachedMode();
+        }
+        notifyDataSetChanged();
     }
 
     @Override
-    public void startUpdate(ViewGroup container) {
-        mSafeToNotify = false;
-        super.startUpdate(container);
-    }
-
-    @Override
-    public void finishUpdate(ViewGroup container) {
-        super.finishUpdate(container);
-        mSafeToNotify = true;
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(super.toString());
+        sb.setLength(sb.length() - 1);
+        sb.append(" detachedMode=");
+        sb.append(mDetachedMode);
+        sb.append(" singletonMode=");
+        sb.append(mSingletonMode);
+        sb.append(" mController=");
+        sb.append(mController);
+        sb.append(" mPager=");
+        sb.append(mPager);
+        sb.append(" mStopListening=");
+        sb.append(mStopListeningMode);
+        sb.append(" mLastKnownCount=");
+        sb.append(mLastKnownCount);
+        sb.append(" cursor=");
+        sb.append(getCursor());
+        sb.append("}");
+        return sb.toString();
     }
 
     @Override
     public void notifyDataSetChanged() {
-        if (!mSafeToNotify) {
-            LogUtils.d(LOG_TAG, "IN PagerAdapter.notifyDataSetChanged, ignoring unsafe update");
+        if (mInDataSetChange) {
+            LogUtils.i(LOG_TAG, "CPA ignoring dataset change generated during dataset change");
             return;
         }
 
+        mInDataSetChange = true;
         // If we are in detached mode, changes to the cursor are of no interest to us, but they may
         // be to parent classes.
 
@@ -339,8 +346,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             if (pos == POSITION_NONE && cursor != null && currConversation != null) {
                 // enable detached mode and do no more here. the fragment itself will figure out
                 // if the conversation is empty (using message list cursor) and back out if needed.
-                mDetachedMode = true;
-                mController.setDetachedMode();
+                setDetachedMode(true);
                 LogUtils.i(LOG_TAG, "CPA: current conv is gone, reverting to detached mode. c=%s",
                         currConversation.uri);
 
@@ -356,8 +362,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                             "CPA: notifyDataSetChanged: fragment null, current item: %d",
                             currentItem);
                 }
-
-                mDetachedUri = currConversation.uri.toString();
             } else {
                 // notify unaffected fragment items of the change, so they can re-render
                 // (the change may have been to the labels for a single conversation, for example)
@@ -371,9 +375,12 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                     mController.setCurrentConversation(conv);
                 }
             }
+        } else {
+            LogUtils.d(LOG_TAG, "in CPA.notifyDataSetChanged, doing nothing. this=%s", this);
         }
 
         super.notifyDataSetChanged();
+        mInDataSetChange = false;
     }
 
     @Override
@@ -392,20 +399,25 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     }
 
     public int getConversationPosition(Conversation conv) {
+        if (conv == null) {
+            return POSITION_NONE;
+        }
+
         final ConversationCursor cursor = getCursor();
         if (isPagingDisabled(cursor)) {
-            if (conv != getDefaultConversation()) {
-                LogUtils.d(LOG_TAG, "unable to find conversation in singleton mode. c=%s", conv);
+            final Conversation def = getDefaultConversation();
+            if (!conv.equals(def)) {
+                LogUtils.d(LOG_TAG, "unable to find conversation in singleton mode. c=%s def=%s",
+                        conv, def);
                 return POSITION_NONE;
             }
+            LogUtils.d(LOG_TAG, "in CPA.getConversationPosition returning 0, conv=%s this=%s",
+                    conv, this);
             return 0;
         }
 
         // cursor is guaranteed to be non-null because isPagingDisabled() above checks for null
         // cursor.
-        if (conv == null) {
-            return POSITION_NONE;
-        }
 
         int result = POSITION_NONE;
         final int pos = cursor.getConversationPosition(conv.id);
@@ -415,6 +427,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             result = pos;
         }
 
+        LogUtils.d(LOG_TAG, "in CPA.getConversationPosition (normal), conv=%s pos=%s this=%s",
+                conv, result, this);
         return result;
     }
 
@@ -429,6 +443,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     }
 
     public void setActivityController(ActivityController controller) {
+        boolean wasNull = (mController == null);
         if (mController != null && !mStopListeningMode) {
             mController.unregisterConversationListObserver(mListObserver);
             mController.unregisterFolderObserver(mFolderObserver);
@@ -437,8 +452,9 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         if (mController != null && !mStopListeningMode) {
             mController.registerConversationListObserver(mListObserver);
             mFolderObserver.initialize(mController);
-
-            notifyDataSetChanged();
+            if (!wasNull) {
+                notifyDataSetChanged();
+            }
         } else {
             // We're being torn down; do not notify.
             // Let the pager controller manage pager lifecycle.
@@ -464,7 +480,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         }
         mLastKnownCount = getCount();
         mStopListeningMode = true;
-        LogUtils.d(LOG_TAG, "CPA.stopListening, recording lastKnownCount=%d", mLastKnownCount);
+        LogUtils.d(LOG_TAG, "CPA.stopListening, this=%s", this);
     }
 
     @Override
