@@ -48,24 +48,25 @@
            android:fadingEdge="none"
            android:layout_alignParentTop="true"/>
 
-       <!-- TODO: Top align properly by using custom asset -->
+
        <ProgressBar
            android:id="@+id/sync_trigger"
            style="?android:attr/progressBarStyleHorizontal"
            android:layout_width="match_parent"
-           android:layout_height="10dp"
+           android:layout_height="wrap_content"
            android:layout_gravity="top|center"
            android:max="100"
            android:progress="100"
+           android:progressDrawable="@drawable/progressbar_solid_holo"
            android:visibility="gone" />
 
        <ProgressBar
            android:id="@+id/progress"
-           style="?android:attr/progressBarStyleHorizontal"
            android:layout_width="match_parent"
-           android:layout_height="10dp"
+           android:layout_height="wrap_content"
            android:layout_gravity="top"
            android:visibility="gone"
+           android:indeterminateDrawable="@drawable/progress_indeterminate_horizontal_holo"
            android:indeterminate="true" />
 
    </com.android.mail.ui.ConversationListView>
