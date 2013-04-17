@@ -65,15 +65,19 @@ public class ConversationSelectionSet implements Parcelable {
     };
 
     private final Object mLock = new Object();
-    private final HashMap<Long, Conversation> mInternalMap =
-            new HashMap<Long, Conversation>();
-
+    /** Map of conversation ID to conversation objects. Every selected conversation is here. */
+    private final HashMap<Long, Conversation> mInternalMap = new HashMap<Long, Conversation>();
+    /** Map of Conversation URI to Conversation ID. */
     private final BiMap<String, Long> mConversationUriToIdMap = HashBiMap.create();
-
+    /** All objects that are interested in changes to the selected set. */
     @VisibleForTesting
     final ArrayList<ConversationSetObserver> mObservers = new ArrayList<ConversationSetObserver>();
 
+    /**
+     * Create a new object,
+     */
     public ConversationSelectionSet() {
+        // Do nothing.
     }
 
     private ConversationSelectionSet(Parcel source, ClassLoader loader) {
