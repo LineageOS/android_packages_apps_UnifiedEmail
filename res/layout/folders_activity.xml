@@ -20,8 +20,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minWidth="@dimen/folder_list_popup_width"
-    android:orientation="vertical"
-    android:background="@color/folder_list_background_color" >
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/content_pane"
