@@ -871,4 +871,15 @@
     <string name="action_mark_not_important">Mark (not) important</string>
     <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
     <string name="action_report_not_spam">Report (not) spam</string>
+
+    <!-- In conversation list, when user initiates a downward swipe,
+        this text is displayed in the action bar as a hint that they can trigger a
+        sync/refresh by continuing the downward swipe. [CHAR LIMIT=60] -->
+    <string name="swipe_down_to_refresh">Swipe down to refresh</string>
+
+    <!-- In conversation list, when user has triggered a sync via a downward swipe,
+        this text is displayed in the action bar for a brief moment to
+	indicate that a sync is in progress.  [CHAR LIMIT=60] -->
+    <string name="checking_for_mail">Checking for mail</string>
+
 </resources>
