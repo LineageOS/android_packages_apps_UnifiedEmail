@@ -271,12 +271,14 @@
     <string name="message_invite_tentative" msgid="3898050756490962079">"Misschien"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"Nee"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="ok" msgid="8339355733816891026">"OK"</string>
-    <string name="done" msgid="3079981801778027540">"Gereed"</string>
-    <string name="cancel" msgid="8762981157252199115">"Annuleren"</string>
-    <string name="close" msgid="419945428844076406">"Sluiten"</string>
     <string name="yes" msgid="7474216525286833848">"Ja"</string>
     <string name="no" msgid="427548507197604096">"Nee"</string>
+    <string name="ok" msgid="8339355733816891026">"OK"</string>
+    <string name="done" msgid="3079981801778027540">"Gereed"</string>
+    <string name="set" msgid="9026971925519156677">"Instellen"</string>
+    <string name="cancel" msgid="8762981157252199115">"Annuleren"</string>
+    <string name="clear" msgid="3184687982186479442">"Wissen"</string>
+    <string name="close" msgid="419945428844076406">"Sluiten"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Er zijn geen mappen ingesteld voor dit account."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Geslaagd"</item>
@@ -290,6 +292,11 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Synchroniseer deze map om conversaties weer te geven."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Map synchroniseren"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="one" msgid="8470063623338548501">"<xliff:g id="COUNT">%1$d</xliff:g> ongelezen bericht"</item>
+    <item quantity="other" msgid="4103064420707175144">"<xliff:g id="COUNT">%1$d</xliff:g> ongelezen berichten"</item>
+  </plurals>
+    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"<xliff:g id="COUNT">%1$d</xliff:g>+ ongelezen berichten"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Meer conversaties bekijken"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Laden..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Account kiezen"</string>
@@ -300,10 +307,8 @@
     <item quantity="other" msgid="6856940335775567991">"Synchroniseren: afgelopen <xliff:g id="COUNT">%1$d</xliff:g> dagen"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Synchroniseren: niets"</string>
-    <!-- no translation found for change_folders_selection_dialog_title (8640832109613405534) -->
-    <skip />
-    <!-- no translation found for move_to_selection_dialog_title (1230762892675507608) -->
-    <skip />
+    <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Mappen wijzigen"</string>
+    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Verplaatsen naar"</string>
     <string name="search_hint" msgid="3625734263059221350">"Berichten doorzoeken"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
@@ -381,4 +386,12 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Stil"</string>
     <string name="inbox_unseen_banner" msgid="4561582938706814621">"<xliff:g id="NUMBER">%d</xliff:g> NIEUW"</string>
+    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Voorkeursitems voor actiebalk"</string>
+    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Selecteer maximaal <xliff:g id="MAX">%1$d</xliff:g> acties"</string>
+    <string name="action_archive_remove_label" msgid="2373265427931131215">"Label archiveren/verwijderen"</string>
+    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Concepten verwijderen/weggooien"</string>
+    <string name="action_mark_read_unread" msgid="3532210270682619853">"Markeren als gelezen/ongelezen"</string>
+    <string name="action_add_remove_star" msgid="6658875981206117895">"Ster toevoegen/verwijderen"</string>
+    <string name="action_mark_not_important" msgid="7097443517025742878">"Markeren als (niet) belangrijk"</string>
+    <string name="action_report_not_spam" msgid="7491310680850552208">"Melden dat dit (geen) spam is"</string>
 </resources>
