@@ -391,7 +391,7 @@
         <item name="android:layout_marginTop">16dip</item>
     </style>
 
-    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light"/>
+    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.DialogWhenLarge"/>
 
     <style name="ComposeTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:colorBackground">@android:color/white</item>

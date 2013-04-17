@@ -64,6 +64,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_marginRight="@dimen/folder_list_item_right_margin"
+            android:includeFontPadding="false"
             android:maxLines="2"
             android:ellipsize="end"
             android:textColor="@color/folder_item_text_color"
