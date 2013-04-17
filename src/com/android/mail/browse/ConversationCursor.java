@@ -1955,6 +1955,28 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
         return super.hashCode();
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(super.toString());
+        sb.setLength(sb.length() - 1);
+        sb.append(" mDeferSync=");
+        sb.append(mDeferSync);
+        sb.append(" mRefreshRequired=");
+        sb.append(mRefreshRequired);
+        sb.append(" mRefreshReady=");
+        sb.append(mRefreshReady);
+        sb.append(" mRefreshTask=");
+        sb.append(mRefreshTask);
+        sb.append(" mPaused=");
+        sb.append(mPaused);
+        sb.append(" mDeletedCount=");
+        sb.append(mDeletedCount);
+        sb.append(" mUnderlying=");
+        sb.append(mUnderlyingCursor);
+        sb.append("}");
+        return sb.toString();
+    }
+
     private void resetNotificationActions() {
         final boolean changed = !mNotificationTempDeleted.isEmpty();
 
