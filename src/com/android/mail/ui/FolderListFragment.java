@@ -390,7 +390,7 @@ public class FolderListFragment extends ListFragment implements
      */
     private void viewFolderOrChangeAccount(int position) {
         final Object item = getListAdapter().getItem(position);
-        LogUtils.i(LOG_TAG, "viewFolderOrChangeAccount(%d): %s", position, item);
+        LogUtils.d(LOG_TAG, "viewFolderOrChangeAccount(%d): %s", position, item);
         final Folder folder;
         if (item instanceof DrawerItem) {
             final DrawerItem drawerItem = (DrawerItem) item;
@@ -405,11 +405,11 @@ public class FolderListFragment extends ListFragment implements
                 // Folder type, so change folders only.
                 folder = drawerItem.mFolder;
                 mSelectedFolderType = drawerItem.mFolderType;
-                LogUtils.i(LOG_TAG, "FLF.viewFolderOrChangeAccount folder=%s, type=%d",
+                LogUtils.d(LOG_TAG, "FLF.viewFolderOrChangeAccount folder=%s, type=%d",
                         folder, mSelectedFolderType);
             } else {
                 // Do nothing.
-                LogUtils.i(LOG_TAG, "FolderListFragment: viewFolderOrChangeAccount():"
+                LogUtils.d(LOG_TAG, "FolderListFragment: viewFolderOrChangeAccount():"
                         + " Clicked on unset item in drawer. Offending item is " + item);
                 return;
             }
@@ -573,7 +573,7 @@ public class FolderListFragment extends ListFragment implements
                             mCurrentFolderForUnreadCheck.unreadCount);
                 }
             }
-            LogUtils.i(LOG_TAG, "FLF.getView(%d) returns view of item %s", position, item);
+            LogUtils.d(LOG_TAG, "FLF.getView(%d) returns view of item %s", position, item);
             return view;
         }
 
