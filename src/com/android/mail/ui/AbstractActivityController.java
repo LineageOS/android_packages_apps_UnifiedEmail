@@ -964,6 +964,8 @@ public abstract class AbstractActivityController implements ActivityController {
         final int id = item.getItemId();
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;
+        /** This is NOT a batch action. */
+        final boolean isBatch = false;
         final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
         final Settings settings = (mAccount == null) ? null : mAccount.settings;
         // The user is choosing a new action; commit whatever they had been
@@ -977,7 +979,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             case R.id.remove_folder:
                 delete(R.id.remove_folder, target,
-                        getDeferredRemoveFolder(target, mFolder, true, false, true));
+                        getDeferredRemoveFolder(target, mFolder, true, isBatch, true), isBatch);
                 break;
             case R.id.delete: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
@@ -997,29 +999,29 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.mark_not_important:
                 if (mFolder != null && mFolder.isImportantOnly()) {
                     delete(R.id.mark_not_important, target,
-                            getDeferredAction(R.id.mark_not_important, target, false));
+                            getDeferredAction(R.id.mark_not_important, target, isBatch), isBatch);
                 } else {
                     updateConversation(Conversation.listOf(mCurrentConversation),
                             ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                 }
                 break;
             case R.id.mute:
-                delete(R.id.mute, target, getDeferredAction(R.id.mute, target, false));
+                delete(R.id.mute, target, getDeferredAction(R.id.mute, target, isBatch), isBatch);
                 break;
             case R.id.report_spam:
                 delete(R.id.report_spam, target,
-                        getDeferredAction(R.id.report_spam, target, false));
+                        getDeferredAction(R.id.report_spam, target, isBatch), isBatch);
                 break;
             case R.id.mark_not_spam:
                 // Currently, since spam messages are only shown in list with
                 // other spam messages,
                 // marking a message not as spam is a destructive action
                 delete(R.id.mark_not_spam, target,
-                        getDeferredAction(R.id.mark_not_spam, target, false));
+                        getDeferredAction(R.id.mark_not_spam, target, isBatch), isBatch);
                 break;
             case R.id.report_phishing:
                 delete(R.id.report_phishing, target,
-                        getDeferredAction(R.id.report_phishing, target, false));
+                        getDeferredAction(R.id.report_phishing, target, isBatch), isBatch);
                 break;
             case android.R.id.home:
                 onUpPressed();
@@ -1053,7 +1055,7 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.change_folder:
                 final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
                         mActivity.getActivityContext(), mAccount, this,
-                        Conversation.listOf(mCurrentConversation), false, mFolder,
+                        Conversation.listOf(mCurrentConversation), isBatch, mFolder,
                         id == R.id.move_to);
                 if (dialog != null) {
                     dialog.show();
@@ -1457,20 +1459,21 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     private void confirmAndDelete(int actionId, final Collection<Conversation> target,
             boolean showDialog, int confirmResource) {
+        final boolean isBatch = false;
         if (showDialog) {
-            makeDialogListener(actionId, false);
+            makeDialogListener(actionId, isBatch);
             final CharSequence message = Utils.formatPlural(mContext, confirmResource,
                     target.size());
             final ConfirmDialogFragment c = ConfirmDialogFragment.newInstance(message);
             c.displayDialog(mActivity.getFragmentManager());
         } else {
-            delete(0, target, getDeferredAction(actionId, target, false));
+            delete(0, target, getDeferredAction(actionId, target, isBatch), isBatch);
         }
     }
 
     @Override
     public void delete(final int actionId, final Collection<Conversation> target,
-            final DestructiveAction action) {
+                       final DestructiveAction action, final boolean isBatch) {
         // Order of events is critical! The Conversation View Fragment must be
         // notified of the next conversation with showConversation(next) *before* the
         // conversation list
@@ -1481,7 +1484,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final Runnable operation = new Runnable() {
             @Override
             public void run() {
-                delete(actionId, target, action);
+                delete(actionId, target, action, isBatch);
             }
         };
 
@@ -1490,9 +1493,12 @@ public abstract class AbstractActivityController implements ActivityController {
             return;
         }
         // If the conversation is in the selected set, remove it from the set.
-        for (final Conversation conv : target) {
-            if (mSelectedSet.contains(conv)) {
-                mSelectedSet.toggle(null, conv);
+        // Batch selections are cleared in the end of the action, so not done for batch actions.
+        if (!isBatch) {
+            for (final Conversation conv : target) {
+                if (mSelectedSet.contains(conv)) {
+                    mSelectedSet.toggle(null, conv);
+                }
             }
         }
         // The conversation list deletes and performs the action if it exists.
@@ -2370,7 +2376,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
             folderChange = getDeferredFolderChange(target, folderOps, isDestructive,
                     batch, showUndo, isMoveTo, actionFolder);
-            delete(0, target, folderChange);
+            delete(0, target, folderChange, batch);
         } else {
             folderChange = getFolderChange(target, folderOps, isDestructive,
                     batch, showUndo, false /* isMoveTo */, mFolder);
@@ -2649,7 +2655,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 getFolderChange(conversations, dragDropOperations, isDestructive,
                         true /* isBatch */, true /* showUndo */, true /* isMoveTo */, folder);
         if (isDestructive) {
-            delete(0, conversations, action);
+            delete(0, conversations, action, true);
         } else {
             action.performAction();
         }
@@ -3481,7 +3487,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void makeDialogListener (final int action, boolean isBatch) {
+    public void makeDialogListener (final int action, final boolean isBatch) {
         final Collection<Conversation> target;
         if (isBatch) {
             target = mSelectedSet.values();
@@ -3495,7 +3501,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mDialogListener = new AlertDialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                delete(action, target, destructiveAction);
+                delete(action, target, destructiveAction, isBatch);
                 // Afterwards, let's remove references to the listener and the action.
                 setListener(null, -1);
             }
