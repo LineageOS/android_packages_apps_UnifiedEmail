@@ -40,7 +40,7 @@
     <!-- Always available -->
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
