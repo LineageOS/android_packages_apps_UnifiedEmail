@@ -19,11 +19,15 @@ package com.android.mail.ui;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.DateUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -252,8 +256,9 @@ public final class ConversationListFragment extends ListFragment implements
         mCallbacks = mActivity.getListHandler();
         mErrorListener = mActivity.getErrorListener();
         // Start off with the current state of the folder being viewed.
+        Context activityContext = mActivity.getActivityContext();
         mFooterView = (ConversationListFooterView) LayoutInflater.from(
-                mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
+                activityContext).inflate(R.layout.conversation_list_footer_view,
                 null);
         mFooterView.setClickListener(mActivity);
         mConversationListView.setFolderController(mActivity.getFolderController());
@@ -384,6 +389,8 @@ public final class ConversationListFragment extends ListFragment implements
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mConversationListView =
                 (ConversationListView) rootView.findViewById(R.id.conversation_list);
+        mConversationListView.setActivity(getActivity());
+        mConversationListView.setConversationContext(mViewContext);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);
