@@ -34,7 +34,6 @@ import com.android.mail.providers.Folder;
 import com.android.mail.ui.AbstractActivityController;
 import com.android.mail.ui.ActivityController;
 import com.android.mail.ui.RestrictedActivity;
-import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -72,7 +71,7 @@ public class ConversationPagerController {
     private boolean mInitialConversationLoading;
     private final DataSetObservable mLoadedObservable = new DataSetObservable();
 
-    private static final String LOG_TAG = LogTag.getLogTag();
+    public static final String LOG_TAG = "ConvPager";
 
     /**
      * Enables an optimization to the PagerAdapter that causes ViewPager to initially load just the
@@ -126,8 +125,8 @@ public class ConversationPagerController {
         LogUtils.d(LOG_TAG, "IN CPC.show, adapter=%s", mPagerAdapter);
 
         Utils.sConvLoadTimer.mark("pager init");
-        LogUtils.d(LOG_TAG, "init pager adapter, count=%d initialConv=%s", mPagerAdapter.getCount(),
-                initialConversation);
+        LogUtils.d(LOG_TAG, "init pager adapter, count=%d initialConv=%s adapter=%s",
+                mPagerAdapter.getCount(), initialConversation, mPagerAdapter);
         mPager.setAdapter(mPagerAdapter);
 
         if (!ENABLE_SINGLETON_INITIAL_LOAD) {
