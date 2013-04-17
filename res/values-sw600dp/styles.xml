@@ -46,5 +46,15 @@
         <item name="android:layout_width">match_parent</item>
     </style>
 
-    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.Dialog.MinWidth"/>
+    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Dialog.MinWidth"/>
+
+    <style name="SendersStyleImages" parent="@style/SendersStyle">
+        <item name="android:layout_marginLeft">0dip</item>
+        <item name="android:layout_marginTop">8sp</item>
+    </style>
+
+    <style name="PersonalIndicatorStyleImages" parent="@style/PersonalIndicatorStyle">
+        <item name="android:layout_marginLeft">0dip</item>
+        <item name="android:layout_marginTop">3sp</item>
+    </style>
 </resources>
