@@ -29,11 +29,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
-    <View
+    <ImageView
         android:id="@+id/photo_spacer"
         android:layout_height="@dimen/account_item_minimum_height"
         android:layout_width="@dimen/account_item_minimum_height"
-        android:background="@color/gray_text_color"
+        android:background="@drawable/ic_contact_picture"
         android:layout_centerVertical="true" />
 
     <LinearLayout
