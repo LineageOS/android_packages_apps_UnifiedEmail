@@ -263,6 +263,7 @@ public class NotificationUtils {
      * Get all notifications for all accounts and cancel them.
      **/
     public static void cancelAllNotifications(Context context) {
+        LogUtils.d(LOG_TAG, "NotificationUtils: cancelAllNotifications - cancelling all");
         NotificationManager nm = (NotificationManager) context.getSystemService(
                 Context.NOTIFICATION_SERVICE);
         nm.cancelAll();
@@ -283,6 +284,7 @@ public class NotificationUtils {
      **/
     public static void resendNotifications(Context context, final boolean cancelExisting) {
         if (cancelExisting) {
+            LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - cancelling all");
             NotificationManager nm =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.cancelAll();
@@ -351,6 +353,9 @@ public class NotificationUtils {
             for (NotificationKey notification : notificationsToCancel) {
                 final Folder folder = notification.folder;
                 final int notificationId = getNotificationId(notification.account.name, folder);
+                LogUtils.d(LOG_TAG,
+                        "NotificationUtils: validateAccountNotifications - cancelling %s / %s",
+                        notification.account.name, folder.persistentId);
                 nm.cancel(notificationId);
                 notificationMap.remove(notification);
                 NotificationActionUtils.sUndoNotifications.remove(notificationId);
@@ -374,6 +379,9 @@ public class NotificationUtils {
         final NotificationMap notificationMap = getNotificationMap(context);
         final NotificationKey key = new NotificationKey(account, folder);
         if (unreadCount == 0) {
+            LogUtils.d(LOG_TAG,
+                    "NotificationUtils: setNewEmailIndicator - cancelling %s / %s",
+                    account.name, folder.persistentId);
             notificationMap.remove(key);
             ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
                     .cancel(notificationId);
@@ -455,6 +463,9 @@ public class NotificationUtils {
             final int notificationId = getNotificationId(account.name, folder);
 
             if (unseenCount == 0) {
+                LogUtils.d(LOG_TAG,
+                        "NotificationUtils: validateNotifications - cancelling %s / %s",
+                        account.name, folder.persistentId);
                 nm.cancel(notificationId);
                 return;
             }
