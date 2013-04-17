@@ -129,21 +129,20 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                                 true, true));
                 break;
             case R.id.mute:
-                mUpdater.delete(
-                        R.id.mute, mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
+                destroy(R.id.mute, mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
                 break;
             case R.id.report_spam:
-                mUpdater.delete(R.id.report_spam, mSelectionSet.values(),
+                destroy(R.id.report_spam, mSelectionSet.values(),
                         mUpdater.getBatchAction(R.id.report_spam));
                 break;
             case R.id.mark_not_spam:
                 // Currently, since spam messages are only shown in list with other spam messages,
                 // marking a message not as spam is a destructive action
-                mUpdater.delete(R.id.mark_not_spam,
-                        mSelectionSet.values(), mUpdater.getBatchAction(R.id.mark_not_spam));
+                destroy (R.id.mark_not_spam,
+                        mSelectionSet.values(), mUpdater.getBatchAction(R.id.mark_not_spam)) ;
                 break;
             case R.id.report_phishing:
-                mUpdater.delete(R.id.report_phishing,
+                destroy(R.id.report_phishing,
                         mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_phishing));
                 break;
             case R.id.read:
@@ -266,9 +265,15 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
-    private void destroy(int action, final Collection<Conversation> conversations,
-            final DestructiveAction listener) {
-        mUpdater.delete(action, conversations, listener);
+    /**
+     * Destroy these conversations through the conversation updater
+     * @param actionId the ID of the action: R.id.archive, R.id.delete, ...
+     * @param target conversations to destroy
+     * @param action the action that performs the destruction
+     */
+    private void destroy(int actionId, final Collection<Conversation> target,
+            final DestructiveAction action) {
+        mUpdater.delete(actionId, target, action, true);
     }
 
     /**

@@ -78,12 +78,14 @@ public interface ConversationUpdater extends ConversationListCallbacks {
 
     /**
      * Requests the removal of the current conversation with the specified destructive action.
-     * @param actionId TODO(viki):
+     * @param actionId the unique id for the action responsible for this delete: R.id.archive, ...
      * @param target the conversations to act upon.
      * @param action to perform after the UI has been updated to remove the conversations
+     * @param isBatch true if this is a batch action, false otherwise.
      */
     void delete(
-            int actionId, final Collection<Conversation> target, final DestructiveAction action);
+            int actionId, final Collection<Conversation> target, final DestructiveAction action,
+            boolean isBatch);
 
     /**
      * Mark a number of conversations as read or unread.
