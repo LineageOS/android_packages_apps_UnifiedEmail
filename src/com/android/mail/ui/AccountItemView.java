@@ -71,7 +71,7 @@ public class AccountItemView extends RelativeLayout {
             mUnreadCountTextView.setVisibility(View.GONE);
             setBackgroundResource(R.drawable.list_focused_holo);
         } else {
-            setBackground(null);
+            setBackgroundResource(0);
         }
     }
 
