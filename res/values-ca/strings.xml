@@ -271,12 +271,16 @@
     <string name="message_invite_tentative" msgid="3898050756490962079">"Potser"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"No"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="ok" msgid="8339355733816891026">"D\'acord"</string>
-    <string name="done" msgid="3079981801778027540">"Fet"</string>
-    <string name="cancel" msgid="8762981157252199115">"Cancel·la"</string>
-    <string name="close" msgid="419945428844076406">"Tanca"</string>
     <string name="yes" msgid="7474216525286833848">"Sí"</string>
     <string name="no" msgid="427548507197604096">"No"</string>
+    <string name="ok" msgid="8339355733816891026">"D\'acord"</string>
+    <string name="done" msgid="3079981801778027540">"Fet"</string>
+    <!-- no translation found for set (9026971925519156677) -->
+    <skip />
+    <string name="cancel" msgid="8762981157252199115">"Cancel·la"</string>
+    <!-- no translation found for clear (3184687982186479442) -->
+    <skip />
+    <string name="close" msgid="419945428844076406">"Tanca"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"No s\'ha definit cap carpeta per a aquest compte."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Correcte"</item>
@@ -290,6 +294,10 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Sincron. la carpeta per veure conv."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sincronitza la carpeta"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for actionbar_unread_messages:one (8470063623338548501) -->
+    <!-- no translation found for actionbar_unread_messages:other (4103064420707175144) -->
+    <!-- no translation found for actionbar_large_unread_count (7593808085708037562) -->
+    <skip />
     <string name="view_more_conversations" msgid="3151067626309674344">"Visualitza més converses"</string>
     <string name="loading_conversation" msgid="489160038366067983">"S\'està carregant…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Tria d\'un compte"</string>
@@ -300,7 +308,10 @@
     <item quantity="other" msgid="6856940335775567991">"Sincronitza els darrers <xliff:g id="COUNT">%1$d</xliff:g> dies"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sincronitza: cap"</string>
-    <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Canvi de carpetes"</string>
+    <!-- no translation found for change_folders_selection_dialog_title (8640832109613405534) -->
+    <skip />
+    <!-- no translation found for move_to_selection_dialog_title (1230762892675507608) -->
+    <skip />
     <string name="search_hint" msgid="3625734263059221350">"Cerca al correu"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
@@ -378,4 +389,20 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Silenci"</string>
     <string name="inbox_unseen_banner" msgid="4561582938706814621">"NOUS: <xliff:g id="NUMBER">%d</xliff:g>"</string>
+    <!-- no translation found for preference_preferred_actionbar_items (1494873630787823560) -->
+    <skip />
+    <!-- no translation found for preference_preferred_actionbar_items_dialog_title (7547680637775341220) -->
+    <skip />
+    <!-- no translation found for action_archive_remove_label (2373265427931131215) -->
+    <skip />
+    <!-- no translation found for action_delete_discard_drafts (3398268725115377135) -->
+    <skip />
+    <!-- no translation found for action_mark_read_unread (3532210270682619853) -->
+    <skip />
+    <!-- no translation found for action_add_remove_star (6658875981206117895) -->
+    <skip />
+    <!-- no translation found for action_mark_not_important (7097443517025742878) -->
+    <skip />
+    <!-- no translation found for action_report_not_spam (7491310680850552208) -->
+    <skip />
 </resources>
