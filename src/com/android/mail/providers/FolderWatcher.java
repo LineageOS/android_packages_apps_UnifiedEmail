@@ -17,6 +17,8 @@
 
 package com.android.mail.providers;
 
+import com.google.common.collect.ImmutableList;
+
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -41,7 +43,7 @@ import java.util.Map;
 public class FolderWatcher {
     public static final String FOLDER_URI = "FOLDER-URI";
     /** List of URIs that are watched. */
-    private final List<Uri> mUri = new ArrayList<Uri>();
+    private final List<Uri> mUris = new ArrayList<Uri>();
     /** Map returning the most recent unread count for each URI */
     private final Map<Uri, Integer> mUnreadCount = new HashMap<Uri, Integer>();
     private final RestrictedActivity mActivity;
@@ -81,14 +83,14 @@ public class FolderWatcher {
             newAccounts.add(account.settings.defaultInbox);
         }
         // Stop watching accounts not in the new list.
-        for (final Uri previous : mUri) {
+        for (final Uri previous : ImmutableList.copyOf(mUris)) {
             if (!newAccounts.contains(previous)) {
                 stopWatching(previous);
             }
         }
         // Add accounts in the new list, that are not already watched.
         for (final Uri fresh : newAccounts) {
-            if (!mUri.contains(fresh)) {
+            if (!mUris.contains(fresh)) {
                 startWatching(fresh);
             }
         }
@@ -111,15 +113,15 @@ public class FolderWatcher {
     }
 
     /**
-     * Locates the next empty position in {@link #mUri} and inserts the URI there, returning the
+     * Locates the next empty position in {@link #mUris} and inserts the URI there, returning the
      * location.
      * @return location where the URI was inserted.
      */
     private int insertAtNextEmptyLocation(Uri newElement) {
         Uri uri;
         int location = -1;
-        for (int size = mUri.size(), i = 0; i < size; i++) {
-            uri = mUri.get(i);
+        for (int size = mUris.size(), i = 0; i < size; i++) {
+            uri = mUris.get(i);
             // Hole in the list, use this position
             if (uri == null) {
                 location = i;
@@ -128,15 +130,15 @@ public class FolderWatcher {
         }
         // No hole found, return the current size;
         if (location < 0) {
-            location = mUri.size();
+            location = mUris.size();
         }
-        mUri.add(location, newElement);
+        mUris.add(location, newElement);
         return location;
     }
 
     /**
-     * Returns the loader ID for a position inside the {@link #mUri} table.
-     * @param position position in the {@link #mUri} list
+     * Returns the loader ID for a position inside the {@link #mUris} table.
+     * @param position position in the {@link #mUris} list
      * @return a loader id
      */
     private static int getLoaderFromPosition(int position) {
@@ -149,7 +151,7 @@ public class FolderWatcher {
      * @param uri the URI for a folder
      */
     private void stopWatching(Uri uri) {
-        final int id = mUri.indexOf(uri);
+        final int id = mUris.indexOf(uri);
         // Does not exist in the list, we have stopped watching it already.
         if (id < 0) {
             return;
@@ -158,7 +160,7 @@ public class FolderWatcher {
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(getLoaderFromPosition(id));
         mUnreadCount.remove(uri);
-        mUri.add(id, null);
+        mUris.add(id, null);
     }
 
     /**
