@@ -124,7 +124,7 @@
     <string name="download_failed" msgid="442019281547315527">"Couldn\'t download. Touch to retry."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Attachments"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Save all"</string>
-    <string name="menu_photo_share" msgid="2214772815165829079">"Shared"</string>
+    <string name="menu_photo_share" msgid="2214772815165829079">"Share"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Share all"</string>
     <string name="saving" msgid="925514721138014677">"Saving…"</string>
     <string name="attach_image" msgid="3713654042212409705">"Picture"</string>
@@ -271,12 +271,14 @@
     <string name="message_invite_tentative" msgid="3898050756490962079">"Maybe"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"No"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="ok" msgid="8339355733816891026">"OK"</string>
-    <string name="done" msgid="3079981801778027540">"Finished"</string>
-    <string name="cancel" msgid="8762981157252199115">"Cancel"</string>
-    <string name="close" msgid="419945428844076406">"Close"</string>
     <string name="yes" msgid="7474216525286833848">"Yes"</string>
     <string name="no" msgid="427548507197604096">"No"</string>
+    <string name="ok" msgid="8339355733816891026">"OK"</string>
+    <string name="done" msgid="3079981801778027540">"Finished"</string>
+    <string name="set" msgid="9026971925519156677">"Setting"</string>
+    <string name="cancel" msgid="8762981157252199115">"Cancel"</string>
+    <string name="clear" msgid="3184687982186479442">"Clear"</string>
+    <string name="close" msgid="419945428844076406">"Close"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"No folders have been set for this account."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Success"</item>
@@ -290,6 +292,11 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"To view conversations, sync this folder."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sync Folder"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="one" msgid="8470063623338548501">"<xliff:g id="COUNT">%1$d</xliff:g> unread message"</item>
+    <item quantity="other" msgid="4103064420707175144">"<xliff:g id="COUNT">%1$d</xliff:g> unread messages"</item>
+  </plurals>
+    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"<xliff:g id="COUNT">%1$d</xliff:g>+ unread messages"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"View more conversations"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Loading…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Choose account"</string>
@@ -300,10 +307,8 @@
     <item quantity="other" msgid="6856940335775567991">"Sync: Last <xliff:g id="COUNT">%1$d</xliff:g> days"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sync: None"</string>
-    <!-- no translation found for change_folders_selection_dialog_title (8640832109613405534) -->
-    <skip />
-    <!-- no translation found for move_to_selection_dialog_title (1230762892675507608) -->
-    <skip />
+    <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Change folders"</string>
+    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Move to"</string>
     <string name="search_hint" msgid="3625734263059221350">"Search mail"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
@@ -381,4 +386,12 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Silent"</string>
     <string name="inbox_unseen_banner" msgid="4561582938706814621">"<xliff:g id="NUMBER">%d</xliff:g> NEW"</string>
+    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Preferred ActionBar items"</string>
+    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Select up to <xliff:g id="MAX">%1$d</xliff:g> actions"</string>
+    <string name="action_archive_remove_label" msgid="2373265427931131215">"Archive/Remove Label"</string>
+    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Delete/Discard drafts"</string>
+    <string name="action_mark_read_unread" msgid="3532210270682619853">"Mark Read/Unread"</string>
+    <string name="action_add_remove_star" msgid="6658875981206117895">"Add/Remove Star"</string>
+    <string name="action_mark_not_important" msgid="7097443517025742878">"Mark (not) important"</string>
+    <string name="action_report_not_spam" msgid="7491310680850552208">"Report not spam"</string>
 </resources>

@@ -419,17 +419,21 @@
     <skip />
     <!-- no translation found for enumeration_comma (5191660524342286026) -->
     <skip />
+    <!-- no translation found for yes (7474216525286833848) -->
+    <skip />
+    <!-- no translation found for no (427548507197604096) -->
+    <skip />
     <!-- no translation found for ok (8339355733816891026) -->
     <skip />
     <!-- no translation found for done (3079981801778027540) -->
     <skip />
+    <!-- no translation found for set (9026971925519156677) -->
+    <skip />
     <!-- no translation found for cancel (8762981157252199115) -->
     <skip />
+    <!-- no translation found for clear (3184687982186479442) -->
+    <skip />
     <!-- no translation found for close (419945428844076406) -->
-    <skip />
-    <!-- no translation found for yes (7474216525286833848) -->
-    <skip />
-    <!-- no translation found for no (427548507197604096) -->
     <skip />
     <!-- no translation found for folders_activity_instructions (5237801615196958918) -->
     <skip />
@@ -446,6 +450,10 @@
     <!-- no translation found for tap_to_configure_folder_sync (3846898229180591661) -->
     <skip />
     <!-- no translation found for widget_large_unread_count (5668393672379294516) -->
+    <skip />
+    <!-- no translation found for actionbar_unread_messages:one (8470063623338548501) -->
+    <!-- no translation found for actionbar_unread_messages:other (4103064420707175144) -->
+    <!-- no translation found for actionbar_large_unread_count (7593808085708037562) -->
     <skip />
     <!-- no translation found for view_more_conversations (3151067626309674344) -->
     <skip />
@@ -591,5 +599,21 @@
     <!-- no translation found for silent_ringtone (5856834572357761687) -->
     <skip />
     <!-- no translation found for inbox_unseen_banner (4561582938706814621) -->
+    <skip />
+    <!-- no translation found for preference_preferred_actionbar_items (1494873630787823560) -->
+    <skip />
+    <!-- no translation found for preference_preferred_actionbar_items_dialog_title (7547680637775341220) -->
+    <skip />
+    <!-- no translation found for action_archive_remove_label (2373265427931131215) -->
+    <skip />
+    <!-- no translation found for action_delete_discard_drafts (3398268725115377135) -->
+    <skip />
+    <!-- no translation found for action_mark_read_unread (3532210270682619853) -->
+    <skip />
+    <!-- no translation found for action_add_remove_star (6658875981206117895) -->
+    <skip />
+    <!-- no translation found for action_mark_not_important (7097443517025742878) -->
+    <skip />
+    <!-- no translation found for action_report_not_spam (7491310680850552208) -->
     <skip />
 </resources>
