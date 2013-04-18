@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -161,6 +162,8 @@ public final class OnePaneController extends AbstractActivityController {
                 mContext.getResources().getColor(R.color.drawer_background_dim));
         mDrawerPullout = (ViewGroup) mDrawerContainer.findViewById(R.id.drawer_pullout);
         configureUpDrawable();
+        mDrawerContainer.setDrawerShadow(
+                mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.LEFT);
         // The parent class sets the correct viewmode and starts the application off.
         return super.onCreate(savedInstanceState);
     }

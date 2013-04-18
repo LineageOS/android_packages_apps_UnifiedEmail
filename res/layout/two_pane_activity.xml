@@ -25,7 +25,7 @@
         android:id="@+id/content_pane"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:background="@drawable/folder_bg_holo_light">
+        android:background="@drawable/drawer_shadow_tablet">
         <fragment class="com.android.mail.ui.DrawerFragment"
                   android:id="@+id/drawer_fragment"
                   android:layout_height="match_parent"
