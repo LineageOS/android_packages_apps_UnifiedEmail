@@ -141,7 +141,7 @@ public final class RecentAccountsList {
      * @return ordered array of Accounts from least to most recently used, possibly empty.
      */
     public Account[] getSorted(final Account[] unsortedAccounts) {
-        if(unsortedAccounts == null) {
+        if (unsortedAccounts == null || unsortedAccounts.length == 0) {
             return new Account[0];
         }
         // Create a sortedAccounts list that will collect the final order of accounts
