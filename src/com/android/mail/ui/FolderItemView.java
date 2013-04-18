@@ -177,8 +177,7 @@ public class FolderItemView extends RelativeLayout {
         mUnseenCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
         if (count > 0) {
             mUnseenCountTextView.setBackgroundColor(color);
-            mUnseenCountTextView.setText(
-                    getContext().getString(R.string.inbox_unseen_banner, count));
+            mUnseenCountTextView.setText(Utils.getUnreadCountString(getContext(), count));
         }
     }
 
