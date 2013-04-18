@@ -1246,14 +1246,12 @@ public class Utils {
      */
     public static int getFolderUnreadDisplayCount(final Folder folder) {
         if (folder != null) {
-            if (folder.isDraft() || folder.isTrash()
-                    || folder.isType(UIProvider.FolderType.OUTBOX)) {
+            if (folder.isUnreadCountHidden()) {
                 return folder.totalCount;
             } else {
                 return folder.unreadCount;
             }
         }
-
         return 0;
     }
 
