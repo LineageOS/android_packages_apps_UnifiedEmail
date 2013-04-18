@@ -27,7 +27,8 @@
         android:name="com.android.mail.ui.FolderListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:background="@color/list_background_color"/>
 
     <include layout="@layout/one_button_button_bar"/>
 

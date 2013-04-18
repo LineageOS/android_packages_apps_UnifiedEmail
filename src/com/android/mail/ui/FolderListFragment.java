@@ -61,6 +61,7 @@ import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableSet;
+import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -334,6 +335,10 @@ public class FolderListFragment extends ListFragment implements
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setEmptyView(null);
+        // If we're not using tablet UI, set the background correctly
+        if (!Utils.useTabletUI(getResources())) {
+            mListView.setBackgroundResource(R.color.list_background_color);
+        }
         if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(BUNDLE_LIST_STATE));
         }
