@@ -567,6 +567,15 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return ((lastSyncResult & 0x0f) == UIProvider.LastSyncResult.SUCCESS);
     }
 
+    /**
+     * Returns true if unread count should be suppressed for this folder. This is done for folders
+     * where the unread count is meaningless: trash or drafts, for instance.
+     * @return true if unread count should be suppressed for this object.
+     */
+    public final boolean isUnreadCountHidden() {
+        return (isDraft() || isTrash() || isType(FolderType.OUTBOX));
+    }
+
     @Deprecated
     public static Folder fromString(String inString) {
          if (TextUtils.isEmpty(inString)) {
