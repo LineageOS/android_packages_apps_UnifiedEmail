@@ -418,6 +418,8 @@ public class FolderListFragment extends ListFragment implements
                 // Account, so switch.
                 folder = null;
                 final Account account = drawerItem.mAccount;
+                // Switching accounts takes you to the inbox, which is always a system folder.
+                mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
                 mAccountChanger.changeAccount(account);
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
@@ -1199,14 +1201,15 @@ public class FolderListFragment extends ListFragment implements
     private void setSelectedFolder(Folder folder) {
         if (folder == null) {
             mSelectedFolderUri = Uri.EMPTY;
+            mCurrentFolderForUnreadCheck = null;
             LogUtils.e(LOG_TAG, "FolderListFragment.setSelectedFolder(null) called!");
             return;
         }
+        final boolean viewChanged =
+                !FolderItemView.areSameViews(folder, mCurrentFolderForUnreadCheck);
         mCurrentFolderForUnreadCheck = folder;
         mSelectedFolderUri = folder.uri;
         setSelectedFolderType(folder);
-        final boolean viewChanged =
-                !FolderItemView.areSameViews(folder, mCurrentFolderForUnreadCheck);
         if (mCursorAdapter != null && viewChanged) {
             mCursorAdapter.notifyDataSetChanged();
         }
