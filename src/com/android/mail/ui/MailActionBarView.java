@@ -283,15 +283,15 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     private void updateAccount(Account account) {
-        final boolean changed = mAccount == null || !mAccount.uri.equals(account.uri);
+        final boolean accountChanged = mAccount == null || !mAccount.uri.equals(account.uri);
         mAccount = account;
-        if (mAccount != null && changed) {
+        if (mAccount != null && accountChanged) {
             final ContentResolver resolver = mActivity.getActivityContext().getContentResolver();
             final Bundle bundle = new Bundle(1);
             bundle.putParcelable(UIProvider.SetCurrentAccountColumns.ACCOUNT, account);
             final UpdateProvider updater = new UpdateProvider(mAccount.uri, resolver);
             updater.execute(bundle);
-            setFolderAndAccount(changed);
+            setFolderAndAccount(false /* folderChanged */);
         }
     }
 
@@ -694,9 +694,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Uses the current state to update the current folder {@link #mFolder} and the current
      * account {@link #mAccount} shown in the actionbar. Also updates the actionbar subtitle to
      * momentarily display the unread count if it has changed.
-     * @param folderOrAccountChanged true if folder or account changed (in terms of URI)
+     * @param folderChanged true if folder changed in terms of URI
      */
-    private void setFolderAndAccount(boolean folderOrAccountChanged) {
+    private void setFolderAndAccount(final boolean folderChanged) {
         // Very little can be done if the actionbar or activity is null.
         if (mActionBar == null || mActivity == null) {
             return;
@@ -704,8 +704,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (ViewMode.isWaitingForSync(mMode)) {
             // Account is not synced: clear title and update the subtitle.
             mActionBar.setTitle("");
-            mHandler.removeMessages(SubtitleHandler.EMAIL);
-            mHandler.sendEmptyMessage(SubtitleHandler.EMAIL);
+            removeUnreadCount();
             return;
         }
         // Check if we should be changing the actionbar at all, and back off if not.
@@ -718,22 +717,37 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
         mActionBar.setTitle(mFolder.name);
 
+        final int folderUnreadCount = mFolder.isUnreadCountHidden() ? 0 : mFolder.unreadCount;
         // The user shouldn't see "999+ unread messages", and then a short while later: "999+
         // unread messages". So we set our unread count just past the limit. This way we can
         // change the subtitle the first time around but not for subsequent changes as far as the
         // unread count remains over the limit.
-        final int unreadCount = (mFolder.unreadCount > UNREAD_LIMIT)
-                ? (UNREAD_LIMIT + 1) : mFolder.unreadCount;
-        if (mUnreadCount != unreadCount || folderOrAccountChanged) {
-            mActionBar.setSubtitle(
-                    Utils.getUnreadMessageString(mActivity.getApplicationContext(), unreadCount));
-            // This is a new update, remove previous messages, if any.
-            mHandler.removeMessages(SubtitleHandler.EMAIL);
-            // In a short while, show the account name in its place.
-            mHandler.sendEmptyMessageDelayed(SubtitleHandler.EMAIL, ACCOUNT_DELAY_MS);
+        final int toDisplay = (folderUnreadCount > UNREAD_LIMIT)
+                ? (UNREAD_LIMIT + 1) : folderUnreadCount;
+        if (mUnreadCount != toDisplay || folderChanged) {
+            if (toDisplay == 0) {
+                removeUnreadCount();
+            } else {
+                mActionBar.setSubtitle(Utils.getUnreadMessageString(
+                        mActivity.getApplicationContext(), toDisplay));
+                // This is a new update, remove previous messages, if any.
+                mHandler.removeMessages(SubtitleHandler.EMAIL);
+                // In a short while, show the account name in its place.
+                mHandler.sendEmptyMessageDelayed(SubtitleHandler.EMAIL, ACCOUNT_DELAY_MS);
+            }
         }
         // Remember the new value for the next run
-        mUnreadCount = unreadCount;
+        mUnreadCount = toDisplay;
+    }
+
+    /**
+     * Remove the unread count and show the account name, if required.
+     */
+    private void removeUnreadCount() {
+        // Remove all previous messages which might change the subtitle
+        mHandler.removeMessages(SubtitleHandler.EMAIL);
+        // Update the subtitle: clear it or show account name.
+        mHandler.sendEmptyMessage(SubtitleHandler.EMAIL);
     }
 
     /**
