@@ -633,6 +633,9 @@ public class FolderListFragment extends ListFragment implements
             @Override
             protected void onPostExecute(final HashMap<String, Bitmap> accountPhotos) {
                 mEmailToPhotoMap.putAll(accountPhotos);
+                if (!accountPhotos.isEmpty()) {
+                    recalculateList();
+                }
             }
 
             /**
