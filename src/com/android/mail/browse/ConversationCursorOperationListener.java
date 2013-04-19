@@ -19,15 +19,20 @@ package com.android.mail.browse;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-public interface ConversationCursorMarkSeenListener {
+public interface ConversationCursorOperationListener {
     /**
      * Marks all contents of this cursor as seen.
      */
     void markContentsSeen();
 
-    public class MarkSeenHelper {
+    /**
+     * Empties the folder of all messages, if possible.
+     */
+    void emptyFolder();
+
+    public class OperationHelper {
         /**
-         * Invokes {@link ConversationCursorMarkSeenListener#markContentsSeen(Cursor)} on the
+         * Invokes {@link ConversationCursorOperationListener#markContentsSeen(Cursor)} on the
          * specified {@link Cursor}, recursively calls {@link #markContentsSeen(Cursor)} on a
          * wrapped cursor, or returns.
          */
@@ -36,10 +41,27 @@ public interface ConversationCursorMarkSeenListener {
                 return;
             }
 
-            if (cursor instanceof ConversationCursorMarkSeenListener) {
-                ((ConversationCursorMarkSeenListener) cursor).markContentsSeen();
+            if (cursor instanceof ConversationCursorOperationListener) {
+                ((ConversationCursorOperationListener) cursor).markContentsSeen();
             } else if (cursor instanceof CursorWrapper) {
                 markContentsSeen(((CursorWrapper) cursor).getWrappedCursor());
+            }
+        }
+
+        /**
+         * Invokes {@link ConversationCursorOperationListener#emptyFolder(Cursor)} on the
+         * specified {@link Cursor}, recursively calls {@link #emptyFolder(Cursor)} on a
+         * wrapped cursor, or returns.
+         */
+        public static void emptyFolder(final Cursor cursor) {
+            if (cursor == null) {
+                return;
+            }
+
+            if (cursor instanceof ConversationCursorOperationListener) {
+                ((ConversationCursorOperationListener) cursor).emptyFolder();
+            } else if (cursor instanceof CursorWrapper) {
+                emptyFolder(((CursorWrapper) cursor).getWrappedCursor());
             }
         }
     }
