@@ -83,8 +83,6 @@ public class DrawerItem {
 
     /** True if this view is enabled, false otherwise. */
     private final boolean mIsEnabled;
-    /** Photo for account objects */
-    private final Bitmap mAccountPhoto;
 
     @Override
     public String toString() {
@@ -119,8 +117,7 @@ public class DrawerItem {
      * @param position the cursor position for a folder object, -1 otherwise.
      */
     private DrawerItem(int type, ControllableActivity activity, Folder folder, int folderType,
-            Account account, int resource, boolean isCurrentAccount, int position,
-            final Bitmap accountPhoto) {
+            Account account, int resource, boolean isCurrentAccount, int position) {
         mActivity = activity;
         mFolder = folder;
         mFolderType = folderType;
@@ -131,7 +128,6 @@ public class DrawerItem {
         mType = type;
         mPosition = position;
         mIsEnabled = calculateEnabled();
-        mAccountPhoto = accountPhoto;
     }
 
     /**
@@ -146,7 +142,7 @@ public class DrawerItem {
     public static DrawerItem ofFolder(ControllableActivity activity, Folder folder,
             int folderType, int cursorPosition) {
         return new DrawerItem(VIEW_FOLDER, activity, folder,  folderType, null, -1, false,
-                cursorPosition, null);
+                cursorPosition);
     }
 
     private String folderToString() {
@@ -169,9 +165,9 @@ public class DrawerItem {
      * @return a drawer item for the account.
      */
     public static DrawerItem ofAccount(ControllableActivity activity, Account account,
-            int unreadCount, boolean isCurrentAccount, final Bitmap accountPhoto) {
+            int unreadCount, boolean isCurrentAccount) {
         return new DrawerItem(VIEW_ACCOUNT, activity, null, ACCOUNT, account, unreadCount,
-                isCurrentAccount, -1, accountPhoto);
+                isCurrentAccount, -1);
     }
 
     private String accountToString() {
@@ -192,7 +188,7 @@ public class DrawerItem {
      */
     public static DrawerItem ofHeader(ControllableActivity activity, int resource) {
         return new DrawerItem(
-                VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false, -1, null);
+                VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false, -1);
     }
 
     private String headerToString() {
@@ -212,7 +208,7 @@ public class DrawerItem {
      */
     public static DrawerItem forWaitView(ControllableActivity activity) {
         return new DrawerItem(
-                VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false, -1, null);
+                VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false, -1);
     }
 
     private String waitToString() {
@@ -327,14 +323,6 @@ public class DrawerItem {
         accountItemView.bind(mAccount, mIsCurrentAccount, mResource);
         View v = accountItemView.findViewById(R.id.account_graphic);
         v.setBackgroundColor(mAccount.color);
-
-        // If there is a photo, add it to the ImageView spacer. Since there's a default image,
-        // this should almost never be null (aside from first startup, but accounts immediately
-        // get loaded along with the drawer being repopulated with letter tiles).
-        final ImageView image = (ImageView) accountItemView.findViewById(R.id.photo_spacer);
-        if(image != null) {
-            image.setImageBitmap(mAccountPhoto);
-        }
         return accountItemView;
     }
 
