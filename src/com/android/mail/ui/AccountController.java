@@ -72,4 +72,9 @@ public interface AccountController {
      */
     void changeAccount(Account account);
 
+    /**
+     * Handles selecting the currently active account from within
+     * the {@link FolderListFragment}.
+     */
+    void switchToDefaultInboxOrChangeAccount(Account account);
 }

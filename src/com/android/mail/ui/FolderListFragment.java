@@ -425,7 +425,7 @@ public class FolderListFragment extends ListFragment implements
                 final Account account = drawerItem.mAccount;
                 // Switching accounts takes you to the inbox, which is always a system folder.
                 mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
-                mAccountChanger.changeAccount(account);
+                mAccountChanger.switchToDefaultInboxOrChangeAccount(account);
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
                 folder = drawerItem.mFolder;

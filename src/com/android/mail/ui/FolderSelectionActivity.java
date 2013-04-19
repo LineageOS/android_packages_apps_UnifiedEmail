@@ -107,6 +107,13 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             // Never gets called, so do nothing here.
             Log.wtf(LOG_TAG, "FolderSelectionActivity.changeAccount() called when NOT expected.");
         }
+
+        @Override
+        public void switchToDefaultInboxOrChangeAccount(Account account) {
+            // Never gets called, so do nothing here.
+            Log.wtf(LOG_TAG,"FolderSelectionActivity.switchToDefaultInboxOrChangeAccount() " +
+                    "called when NOT expected.");
+        }
     };
 
     @Override
