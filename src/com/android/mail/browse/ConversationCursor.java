@@ -74,7 +74,7 @@ import java.util.Set;
  * caching for quick UI response. This is effectively a singleton class, as the cache is
  * implemented as a static HashMap.
  */
-public final class ConversationCursor implements Cursor, ConversationCursorMarkSeenListener {
+public final class ConversationCursor implements Cursor, ConversationCursorOperationListener {
 
     private static final boolean ENABLE_CONVERSATION_PRECACHING = true;
 
@@ -2060,11 +2060,13 @@ public final class ConversationCursor implements Cursor, ConversationCursorMarkS
         }
     }
 
-    /**
-     * Marks all contents of this cursor as seen. This may have no effect with certain providers.
-     */
     @Override
     public void markContentsSeen() {
-        ConversationCursorMarkSeenListener.MarkSeenHelper.markContentsSeen(mUnderlyingCursor);
+        ConversationCursorOperationListener.OperationHelper.markContentsSeen(mUnderlyingCursor);
+    }
+
+    @Override
+    public void emptyFolder() {
+        ConversationCursorOperationListener.OperationHelper.emptyFolder(mUnderlyingCursor);
     }
 }
