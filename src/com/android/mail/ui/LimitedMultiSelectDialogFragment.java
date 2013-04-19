@@ -123,7 +123,7 @@ public abstract class LimitedMultiSelectDialogFragment extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity()).setTitle(getDialogTitle())
                 .setView(listView)
-                .setPositiveButton(R.string.set, new OnClickListener() {
+                .setPositiveButton(R.string.ok, new OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, final int which) {
                         if (mListener != null) {
