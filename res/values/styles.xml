@@ -344,8 +344,8 @@
 
     <!-- Account Item (Folder List) styles -->
     <style name="AccountItemIcon">
-        <item name="android:layout_height">@dimen/account_item_minimum_height</item>
-        <item name="android:layout_width">@dimen/account_item_minimum_height</item>
+        <item name="android:layout_height">@dimen/account_item_swatch_height</item>
+        <item name="android:layout_width">@dimen/account_item_folder_color_width</item>
     </style>
 
     <!-- Folder styles -->
