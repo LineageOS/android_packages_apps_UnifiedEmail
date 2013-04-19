@@ -861,17 +861,17 @@
     <string name="preference_preferred_actionbar_items">Preferred ActionBar items</string>
     <!-- Dialog title for the preferred ActionBar items dialog [CHAR LIMIT=150] -->
     <string name="preference_preferred_actionbar_items_dialog_title">Select up to <xliff:g id="max">%1$d</xliff:g> actions</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
     <string name="action_archive_remove_label">Archive/Remove Label</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
     <string name="action_delete_discard_drafts">Delete/Discard drafts</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
     <string name="action_mark_read_unread">Mark Read/Unread</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
     <string name="action_add_remove_star">Add/Remove Star</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
     <string name="action_mark_not_important">Mark (not) important</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=30] -->
+    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
     <string name="action_report_not_spam">Report (not) spam</string>
 
     <!-- In conversation list, when user initiates a downward swipe,
