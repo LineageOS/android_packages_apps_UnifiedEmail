@@ -57,6 +57,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
@@ -100,6 +101,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * are cached
      */
     private static final int URI_COLUMN_INDEX = UIProvider.CONVERSATION_URI_COLUMN;
+
+    private static final boolean DEBUG_DUPLICATE_KEYS = true;
 
     /** The resolver for the cursor instantiator's context */
     private final ContentResolver mResolver;
@@ -283,7 +286,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
         public UnderlyingCursorWrapper(Cursor result) {
             super(result);
-            long start = SystemClock.uptimeMillis();
+            final long start = SystemClock.uptimeMillis();
             final ImmutableMap.Builder<String, Integer> conversationUriPositionMapBuilder =
                     new ImmutableMap.Builder<String, Integer>();
             final ImmutableMap.Builder<Long, Integer> conversationIdPositionMapBuilder =
@@ -301,6 +304,18 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 count = result.getCount();
                 cache = new UnderlyingRowData[count];
                 int i = 0;
+
+                final Map<String, Integer> uriPositionMap;
+                final Map<Long, Integer> idPositionMap;
+
+                if (DEBUG_DUPLICATE_KEYS) {
+                    uriPositionMap = Maps.newHashMap();
+                    idPositionMap = Maps.newHashMap();
+                } else {
+                    uriPositionMap = null;
+                    idPositionMap = null;
+                }
+
                 do {
                     final Conversation c;
                     final String innerUriString;
@@ -320,12 +335,34 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     }
                     conversationUriPositionMapBuilder.put(innerUriString, i);
                     conversationIdPositionMapBuilder.put(convId, i);
+
+                    if (DEBUG_DUPLICATE_KEYS) {
+                        if (uriPositionMap.containsKey(innerUriString)) {
+                            LogUtils.e(LOG_TAG, "Inserting duplicate conversation uri key: %s. " +
+                                    "Cursor position: %d, iteration: %d map position: %d",
+                                    innerUriString, getPosition(), i,
+                                    uriPositionMap.get(innerUriString));
+                        }
+                        if (idPositionMap.containsKey(convId)) {
+                            LogUtils.e(LOG_TAG, "Inserting duplicate conversation id key: %d" +
+                                    "Cursor position: %d, iteration: %d map position: %d",
+                                    convId, getPosition(), i, idPositionMap.get(convId));
+                        }
+                        uriPositionMap.put(innerUriString, i);
+                        idPositionMap.put(convId, i);
+                    }
                     cache[i] = new UnderlyingRowData(
                             wrappedUriString,
                             innerUriString,
                             c);
-
                 } while (result.moveToPosition(++i));
+
+                if (DEBUG_DUPLICATE_KEYS && (uriPositionMap.size() != count ||
+                        idPositionMap.size() != count)) {
+                    LogUtils.e(LOG_TAG, "Unexpected map sizes.  Cursor size: %d, " +
+                            "uri position map size: %d, id position map size: %d", count,
+                            uriPositionMap.size(), idPositionMap.size());
+                }
             } else {
                 count = 0;
                 cache = new UnderlyingRowData[0];
@@ -335,8 +372,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             }
             mConversationUriPositionMap = conversationUriPositionMapBuilder.build();
             mConversationIdPositionMap = conversationIdPositionMapBuilder.build();
+
+
             mRowCache = Collections.unmodifiableList(Arrays.asList(cache));
-            long end = SystemClock.uptimeMillis();
+            final long end = SystemClock.uptimeMillis();
             LogUtils.i(LOG_TAG, "*** ConversationCursor pre-loading took" +
                     " %sms n=%s CONV_PRECACHING=%s",
                     (end-start), count, ENABLE_CONVERSATION_PRECACHING);
@@ -376,26 +415,24 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     /**
      * Runnable that performs the query on the underlying provider
      */
-    private class RefreshTask extends AsyncTask<Void, Void, Void> {
-        private UnderlyingCursorWrapper mCursor = null;
-
+    private class RefreshTask extends AsyncTask<Void, Void, UnderlyingCursorWrapper> {
         private RefreshTask() {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected UnderlyingCursorWrapper doInBackground(Void... params) {
             if (DEBUG) {
                 LogUtils.i(LOG_TAG, "[Start refresh of %s: %d]", mName, hashCode());
             }
             // Get new data
-            mCursor = doQuery(false);
+            final UnderlyingCursorWrapper result = doQuery(false);
             // Make sure window is full
-            mCursor.getCount();
-            return null;
+            result.getCount();
+            return result;
         }
 
         @Override
-        protected void onPostExecute(Void param) {
+        protected void onPostExecute(UnderlyingCursorWrapper result) {
             synchronized(mCacheMapLock) {
                 LogUtils.d(
                         LOG_TAG,
@@ -403,10 +440,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                         (!mPaused && !mDeferSync));
                 // If cursor got closed (e.g. reset loader) in the meantime, cancel the refresh
                 if (isClosed()) {
-                    onCancelled();
+                    onCancelled(result);
                     return;
                 }
-                mRequeryCursor = mCursor;
+                mRequeryCursor = result;
                 mRefreshReady = true;
                 if (DEBUG) {
                     LogUtils.i(LOG_TAG, "[Query done %s: %d]", mName, hashCode());
@@ -418,12 +455,12 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         }
 
         @Override
-        protected void onCancelled() {
+        protected void onCancelled(UnderlyingCursorWrapper result) {
             if (DEBUG) {
                 LogUtils.i(LOG_TAG, "[Ignoring refresh result: %d]", hashCode());
             }
-            if (mCursor != null) {
-                mCursor.close();
+            if (result != null) {
+                result.close();
             }
         }
     }
