@@ -516,18 +516,26 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void changeAccount(Account account) {
-        LogUtils.d(LOG_TAG, "AAC.changeAccount(%s)", account);
-        // Is the account or account settings different from the existing account?
+    public void switchToDefaultInboxOrChangeAccount(Account account) {
+        LogUtils.d(LOG_TAG, "AAC.switchToDefaultAccount(%s)", account);
         final boolean firstLoad = mAccount == null;
         final boolean switchToDefaultInbox = !firstLoad && account.uri.equals(mAccount.uri);
-        final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
-
         // if the active account has been clicked in the drawer, go to default inbox
         if (switchToDefaultInbox) {
             loadAccountInbox();
             return;
         }
+
+        changeAccount(account);
+    }
+
+    @Override
+    public void changeAccount(Account account) {
+        LogUtils.d(LOG_TAG, "AAC.changeAccount(%s)", account);
+        // Is the account or account settings different from the existing account?
+        final boolean firstLoad = mAccount == null;
+        final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
+
         // If nothing has changed, return early without wasting any more time.
         if (!accountChanged && !account.settingsDiffer(mAccount)) {
             return;
