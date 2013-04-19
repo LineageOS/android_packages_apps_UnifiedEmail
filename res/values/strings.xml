@@ -566,8 +566,6 @@
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
     <string name="done">Done</string>
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
-    <string name="set">Set</string>
-    <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
     <string name="cancel">Cancel</string>
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
     <string name="clear">Clear</string>
