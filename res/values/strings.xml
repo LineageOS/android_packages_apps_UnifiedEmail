@@ -852,9 +852,6 @@
     <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
     <string name="silent_ringtone">Silent</string>
 
-    <!-- Label list screen, banner for number of unseen messages [CHAR LIMIT=15]  -->
-    <string name="inbox_unseen_banner"><xliff:g id="number" example="7">%d</xliff:g> NEW</string>
-
     <!-- Settings screen, preference for configuring preferred ActionBar items [CHAR LIMIT=50] -->
     <string name="preference_preferred_actionbar_items">Preferred ActionBar items</string>
     <!-- Dialog title for the preferred ActionBar items dialog [CHAR LIMIT=150] -->
