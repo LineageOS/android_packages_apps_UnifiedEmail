@@ -29,18 +29,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
-    <ImageView
-        android:id="@+id/photo_spacer"
-        android:layout_height="@dimen/account_item_minimum_height"
-        android:layout_width="@dimen/account_item_minimum_height"
-        android:background="@drawable/ic_contact_picture"
-        android:layout_centerVertical="true" />
-
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/photo_spacer" >
+        android:layout_alignParentLeft="true" >
 
         <TextView
             android:id="@+id/name"
