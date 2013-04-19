@@ -862,7 +862,13 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         public boolean isEnabled(int position) {
-            return ((DrawerItem) getItem(position)).isItemEnabled();
+            final DrawerItem drawerItem = ((DrawerItem) getItem(position));
+            if (drawerItem == null) {
+                // If there is no item, return false as there's nothing there to be enabled
+                return false;
+            } else {
+                return drawerItem.isItemEnabled();
+            }
         }
 
         private Uri getCurrentAccountUri() {
@@ -1057,7 +1063,12 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         public Object getItem(int position) {
-            return mItemList.get(position);
+            // Is there an attempt made to access outside of the drawer item list?
+            if (position >= mItemList.size()) {
+                return null;
+            } else {
+                return mItemList.get(position);
+            }
         }
 
         @Override
