@@ -540,10 +540,6 @@ public class FolderListFragment extends ListFragment implements
                 recalculateList();
             }
         };
-        /** Database columns for email address -> photo_id query */
-        private final String[] DATA_COLS = new String[] { Email.DATA, Email.PHOTO_ID };
-        /** Database columns for photo_id -> photo query */
-        private final String[] PHOTO_COLS = new String[] { Photo._ID, Photo.PHOTO };
         /** No resource used for string header in folder list */
         private static final int NO_HEADER_RESOURCE = -1;
         /** Cache of most recently used folders */
@@ -556,13 +552,6 @@ public class FolderListFragment extends ListFragment implements
         private ObjectCursor<Folder> mCursor = null;
         /** Watcher for tracking and receiving unread counts for mail */
         private FolderWatcher mFolderWatcher = null;
-        /**
-         * DO NOT USE off the UI thread. Will cause ConcurrentModificationExceptions otherwise
-         *
-         * Email address -> Bitmap
-         * Caveat: at some point we will want this to be from URI to Bitmap.
-         */
-        private final HashMap<String, Bitmap> mEmailToPhotoMap = new HashMap<String, Bitmap>();
 
         /**
          * Creates a {@link FolderListAdapter}.This is a list of all the accounts and folders.
@@ -585,238 +574,7 @@ public class FolderListFragment extends ListFragment implements
         @Override
         public void notifyAllAccountsChanged() {
             mFolderWatcher.updateAccountList(getAllAccounts());
-            retrieveContactPhotos();
             recalculateList();
-        }
-
-        /**
-         * AsyncTask for loading all photos that populates the email address -> Bitmap Hash Map.
-         * Does the querying and loading of photos in the background along with creating
-         * default images in case contact photos aren't found.
-         *
-         * The task is of type <String, Void, HashMap<String, Bitmap>> which corresponds to
-         * the input being an array of String and the result being a HashMap that will get merged to
-         * {@link FolderListAdapter#mEmailToPhotoMap}.
-         */
-        private class LoadPhotosTask extends AsyncTask<Account, Void, HashMap<String, Bitmap>> {
-            private final ContentResolver mResolver;
-            private final Context mContext;
-            private final int mImageSize;
-
-            /**
-             * Construct the async task for downloading the photos.
-             */
-            public LoadPhotosTask(final Context context, final int imageSize) {
-                mResolver = context.getContentResolver();
-                mContext = context;
-                mImageSize = imageSize;
-            }
-
-            /**
-             * Runs account photo retrieval in the background. Note, mEmailToPhotoMap should NOT be
-             * modified here since this is run on a background thread and not the UI thread.
-             *
-             * The {@link Account#accountFromAddresses} is used for letter tiles and is required
-             * in order to properly assign the tile to the respective account.
-             */
-            @Override
-            protected HashMap<String, Bitmap> doInBackground(final Account... allAccounts) {
-                final HashMap<String, String> addressToDisplayNameMap = new HashMap<
-                        String, String>();
-                for (final Account account : allAccounts) {
-                    addressToDisplayNameMap.put(account.name, account.accountFromAddresses);
-                }
-
-                return getAccountPhoto(addressToDisplayNameMap);
-            }
-
-            @Override
-            protected void onPostExecute(final HashMap<String, Bitmap> accountPhotos) {
-                mEmailToPhotoMap.putAll(accountPhotos);
-                if (!accountPhotos.isEmpty()) {
-                    recalculateList();
-                }
-            }
-
-            /**
-             * Queries the database for the photos. First finds the corresponding photo_id and then
-             * proceeds to find the photo through subsequent queries for {photo_id, bytes}. If the
-             * photo is not found for the address at the end, creates a letter tile using the
-             * display name/email address and then adds that to the finished HashMap
-             *
-             * @param addresses array of email addresses (strings)
-             * @param addressToDisplayNameMap map of email addresses to display names used for
-             *              letter tiles
-             * @return map of email addresses to the corresponding photos
-             */
-            private HashMap<String, Bitmap> getAccountPhoto(
-                    final HashMap<String, String> addressToDisplayNameMap) {
-                // Columns for email address, photo_id
-                final int DATA_EMAIL_COLUMN = 0;
-                final int DATA_PHOTO_COLUMN = 1;
-                final HashMap<String, Bitmap> photoMap = new HashMap<String, Bitmap>();
-                final Set<String> addressSet = addressToDisplayNameMap.keySet();
-
-                String address;
-                long photoId;
-                Cursor photoIdsCursor = null;
-
-
-                try {
-                    // Build query for address -> photo_id
-                    final StringBuilder query = new StringBuilder().append(Data.MIMETYPE)
-                            .append("='").append(Email.CONTENT_ITEM_TYPE).append("' AND ")
-                            .append(Email.DATA).append(" IN (");
-                    appendQuestionMarks(query, addressSet.size());
-                    query.append(')');
-                    photoIdsCursor = mResolver
-                            .query(Data.CONTENT_URI, DATA_COLS, query.toString(),
-                                    addressSet.toArray(new String[addressSet.size()]), null);
-
-                    // Iterate through cursor and attempt to find a matching photo_id
-                    if (photoIdsCursor != null) {
-                        while (photoIdsCursor.moveToNext()) {
-                            // If photo_id is found, query for the encoded bitmap
-                            if (!photoIdsCursor.isNull(DATA_PHOTO_COLUMN)) {
-                                address = photoIdsCursor.getString(DATA_EMAIL_COLUMN);
-                                photoId = photoIdsCursor.getLong(DATA_PHOTO_COLUMN);
-                                final byte[] bitmapBytes = getPhotoForId(photoId);
-                                if (bitmapBytes != null && photoMap.get(address) == null) {
-                                    final Bitmap contactPhoto = BitmapUtil.decodeBitmapFromBytes(
-                                            bitmapBytes, mImageSize, mImageSize);
-                                    photoMap.put(address, contactPhoto);
-                                }
-                            }
-                        }
-                    }
-                } finally {
-                    if(photoIdsCursor != null) {
-                        photoIdsCursor.close();
-                    }
-                }
-
-                // Finally, make sure that for any addresses in the original list for which
-                // we are unable to find contact photos, we're adding the LetterTiles
-                for(final String emailAddress : addressSet) {
-                    if(!photoMap.containsKey(emailAddress)) {
-                        final Bitmap letterTile = LetterTileUtils.generateLetterTile(
-                                addressToDisplayNameMap.get(emailAddress), emailAddress, mContext,
-                                mImageSize, mImageSize);
-                        photoMap.put(emailAddress, letterTile);
-                    }
-                }
-
-                return photoMap;
-            }
-
-            /**
-             * Find the photo by running a query on the photoId provided.
-             *
-             * @param resolver ContentResolver to query on
-             * @param photoId id corresponding to the photo (if found)
-             * @return array containing photo bytes
-             */
-            private byte[] getPhotoForId(final long photoId) {
-                // Column for the photo blob
-                final int DATA_PHOTO_COLUMN = 1;
-
-                byte[] bitmapBytes = null;
-                // First try getting photos from Contacts
-                Cursor contactCursor = null;
-                try {
-                    final String[] selectionArgs = { String.valueOf(photoId) };
-                    contactCursor = mResolver.query(Data.CONTENT_URI, PHOTO_COLS,
-                            Photo._ID + " = ?", selectionArgs, null);
-                    while (contactCursor.moveToNext()) {
-                        if (!contactCursor.isNull(1)) {
-                            bitmapBytes = contactCursor.getBlob(1);
-                            break;
-                        }
-                    }
-                } finally {
-                    if (contactCursor != null) {
-                        contactCursor.close();
-                    }
-                }
-
-                // Photo not found in contacts, try profiles instead
-                if(bitmapBytes == null) {
-                    if (ContactsContract.isProfileId(photoId)) {
-                        Cursor profileCursor = null;
-                        try {
-                            profileCursor = mResolver.query(
-                                    ContentUris.withAppendedId(Data.CONTENT_URI, photoId),
-                                    PHOTO_COLS, null, null, null);
-                            if (profileCursor != null && profileCursor.moveToFirst()) {
-                                bitmapBytes = profileCursor.getBlob(DATA_PHOTO_COLUMN);
-                            }
-                        } finally {
-                            if (profileCursor != null) {
-                                profileCursor.close();
-                            }
-                        }
-                    }
-                }
-                return bitmapBytes;
-            }
-
-            /**
-             * Prepare the Selection clause for the given query by appending question marks
-             * followed by commas (Comma-delimited list of question marks as listed by
-             * the itemCount.
-             *
-             * @param query {@link StringBuilder} representing the query thus far
-             * @param itemCount number of selection arguments to add
-             */
-            private void appendQuestionMarks(final StringBuilder query, final int itemCount) {
-                final String[] questionMarks = new String[itemCount];
-                Arrays.fill(questionMarks, "?");
-                final String selection = TextUtils.join(", ", questionMarks);
-                query.append(selection);
-            }
-        }
-
-        /**
-         * Retrieve photos for accounts that do not yet have a mapping in
-         * {@link FolderListAdapter#mEmailToPhotoMap} by querying over the database. Every account
-         * is guaranteed to have either the account contact photo, letter tile, or a default gray
-         * picture for non-English account names.
-         */
-        public synchronized void retrieveContactPhotos() {
-            final Account[] allAccounts = getAllAccounts();
-            if (allAccounts == null) {
-                return;
-            }
-            /** Fresh accounts that were recently added to the system. */
-            final HashSet<Account> freshAccounts = new HashSet<Account>();
-            /** All current account email addresses. */
-            final HashSet<String> currentEmailList = new HashSet<String>();
-            final Context context = mActivity.getActivityContext();
-            final int imageSize = context.getResources().getDimensionPixelSize(
-                    R.dimen.folder_list_item_minimum_height);
-
-            for (final Account account : allAccounts) {
-                final String email = account.name;
-                if (!mEmailToPhotoMap.containsKey(email)) {
-                    freshAccounts.add(account);
-                    // For multiple tasks running very closely together, make sure we don't end up
-                    // loading pictures for an address more than once
-                    mEmailToPhotoMap.put(email, null);
-                }
-                currentEmailList.add(email);
-            }
-            // Find all the stale accounts in our map, and remove them.
-            final Set<String> emails = ImmutableSet.copyOf(mEmailToPhotoMap.keySet());
-            for (final String email : emails) {
-                if (!currentEmailList.contains(email)) {
-                    mEmailToPhotoMap.remove(email);
-                }
-            }
-            // Fetch contact photos or letter tiles for each fresh account.
-            if (!freshAccounts.isEmpty()) {
-                new LoadPhotosTask(context, imageSize).execute(
-                        freshAccounts.toArray(new Account[freshAccounts.size()]));
-            }
         }
 
         @Override
@@ -920,16 +678,14 @@ public class FolderListFragment extends ListFragment implements
             for (final Account account : allAccounts) {
                 if (!currentAccountUri.equals(account.uri)) {
                     final int unreadCount = mFolderWatcher.getUnreadCount(account);
-                    itemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount, false,
-                            mEmailToPhotoMap.get(account.name)));
+                    itemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount, false));
                 }
             }
             if (mCurrentAccount == null) {
                 LogUtils.wtf(LOG_TAG, "recalculateListAccounts() with null current account.");
             } else {
                 // We don't show the unread count for the current account, so set this to zero.
-                itemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true,
-                        mEmailToPhotoMap.get(mCurrentAccount.name)));
+                itemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
             }
         }
 
