@@ -78,6 +78,7 @@ public class ConversationItemViewCoordinates {
         private boolean mShowFolders = false;
         private boolean mShowReplyState = false;
         private boolean mShowColorBlock = false;
+        private boolean mShowPersonalIndicator = false;
 
         public Config setMode(int mode) {
             mMode = mode;
@@ -106,6 +107,11 @@ public class ConversationItemViewCoordinates {
 
         public Config showColorBlock() {
             mShowColorBlock = true;
+            return this;
+        }
+
+        public Config showPersonalIndicator() {
+            mShowPersonalIndicator  = true;
             return this;
         }
 
@@ -146,10 +152,14 @@ public class ConversationItemViewCoordinates {
             return mShowColorBlock;
         }
 
+        public boolean isPersonalIndicatorVisible() {
+            return mShowPersonalIndicator;
+        }
+
         private int getCacheKey() {
             // hash the attributes that contribute to item height and child view geometry
             return Objects.hashCode(mWidth, mMode, mGadgetMode, mAttachmentPreviewMode,
-                    mShowFolders, mShowReplyState);
+                    mShowFolders, mShowReplyState, mShowPersonalIndicator);
         }
 
     }
@@ -222,6 +232,9 @@ public class ConversationItemViewCoordinates {
     final int replyStateX;
     final int replyStateY;
 
+    final int personalIndicatorX;
+    final int personalIndicatorY;
+
     final int contactImagesHeight;
     final int contactImagesWidth;
     final float contactImagesX;
@@ -272,6 +285,10 @@ public class ConversationItemViewCoordinates {
 
         final View replyState = view.findViewById(R.id.reply_state);
         replyState.setVisibility(config.isReplyStateVisible() ? View.VISIBLE : View.GONE);
+
+        final View personalIndicator = view.findViewById(R.id.personal_indicator);
+        personalIndicator.setVisibility(
+                config.isPersonalIndicatorVisible() ? View.VISIBLE : View.GONE);
 
         // Layout the appropriate view.
         final int widthSpec = MeasureSpec.makeMeasureSpec(config.getWidth(), MeasureSpec.EXACTLY);
@@ -365,6 +382,13 @@ public class ConversationItemViewCoordinates {
             replyStateY = getY(replyState);
         } else {
             replyStateX = replyStateY = 0;
+        }
+
+        if (config.isPersonalIndicatorVisible()) {
+            personalIndicatorX = getX(personalIndicator);
+            personalIndicatorY = getY(personalIndicator);
+        } else {
+            personalIndicatorX = personalIndicatorY = 0;
         }
 
         final TextView date = (TextView) view.findViewById(R.id.date);
