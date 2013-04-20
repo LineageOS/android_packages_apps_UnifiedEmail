@@ -65,21 +65,38 @@
                 <!-- of the date. -->
                 <!-- sendersWidth, clipX, and dateX are dynamically determined later. -->
 
-                <!-- for Email -->
-                <!-- top margin should be 12dp, but the asset has 2dp built-in padding -->
-                <ImageView
-                    android:id="@+id/reply_state"
+                <FrameLayout
+                    android:id="@+id/senders_decoration"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="8dp"
-                    android:src="@drawable/ic_badge_reply_holo_light" />
+                    android:layout_height="wrap_content">
+
+                    <!-- for Email -->
+                    <!-- top margin should be 12dp, but the asset has 2dp built-in padding -->
+                    <ImageView
+                        android:id="@+id/reply_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_badge_reply_holo_light" />
+
+                    <!-- for Gmail -->
+                    <ImageView
+                        android:id="@+id/personal_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginLeft="-2dp"
+                        android:layout_marginRight="2dp"
+                        android:src="@drawable/ic_email_caret_single" />
+
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/senders"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/reply_state"
+                    android:layout_toRightOf="@id/senders_decoration"
                     android:layout_marginTop="12dp"
                     android:textSize="18sp"
                     android:lines="1"
