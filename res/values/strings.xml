@@ -165,6 +165,10 @@
     <string name="report_rendering_improvement_desc" translatable="false">
         This message looks good.
     </string>
+    <!-- Menu item text to show the original version of an email conversation, before message manipulation [CHAR LIMIT=30] -->
+    <string name="menu_show_original">Show original</string>
+    <!-- After message manipulation, this small disclaimer text appears above a re-formatted message [CHAR LIMIT=200] -->
+    <string name="message_modified">(This message has been modified from its original version to fit this screen.)</string>
     <!-- Title for the Folder list screen. [CHAR LIMIT = 30] -->
     <string name="folder_list_title">Folders</string>
     <!-- Folder list item: show more folders. [CHAR LIMIT = 30] -->
