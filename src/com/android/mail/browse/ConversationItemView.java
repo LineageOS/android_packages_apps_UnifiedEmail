@@ -65,6 +65,7 @@ import com.android.mail.photomanager.ContactPhotoManager.ContactIdentifier;
 import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderType;
@@ -105,6 +106,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static Bitmap STAR_OFF;
     private static Bitmap STAR_ON;
     private static Bitmap ATTACHMENT;
+    private static Bitmap ONLY_TO_ME;
+    private static Bitmap TO_ME_AND_OTHERS;
+    private static Bitmap IMPORTANT_ONLY_TO_ME;
+    private static Bitmap IMPORTANT_TO_ME_AND_OTHERS;
+    private static Bitmap IMPORTANT_TO_OTHERS;
     private static Bitmap STATE_REPLIED;
     private static Bitmap STATE_FORWARDED;
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
@@ -350,6 +356,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             STAR_ON = BitmapFactory.decodeResource(res,
                     R.drawable.btn_star_on_normal_email_holo_light);
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
+            ONLY_TO_ME = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_double);
+            TO_ME_AND_OTHERS = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_single);
+            IMPORTANT_ONLY_TO_ME = BitmapFactory.decodeResource(res,
+                    R.drawable.ic_email_caret_double_important_unread);
+            IMPORTANT_TO_ME_AND_OTHERS = BitmapFactory.decodeResource(res,
+                    R.drawable.ic_email_caret_single_important_unread);
+            IMPORTANT_TO_OTHERS = BitmapFactory.decodeResource(res,
+                    R.drawable.ic_email_caret_none_important_unread);
             STATE_REPLIED =
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_holo_light);
             STATE_FORWARDED =
@@ -485,6 +499,27 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
         if (mHeader.conversation.color != 0) {
             mConfig.showColorBlock();
+        }
+        // Personal level.
+        mHeader.personalLevelBitmap = null;
+        if (true) { // TODO: hook this up to a setting
+            final int personalLevel = mHeader.conversation.personalLevel;
+            final boolean isImportant =
+                    mHeader.conversation.priority == UIProvider.ConversationPriority.IMPORTANT;
+            final boolean useImportantMarkers = isImportant && priorityArrowEnabled;
+
+            if (personalLevel == UIProvider.ConversationPersonalLevel.ONLY_TO_ME) {
+                mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_ONLY_TO_ME
+                        : ONLY_TO_ME;
+            } else if (personalLevel == UIProvider.ConversationPersonalLevel.TO_ME_AND_OTHERS) {
+                mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_TO_ME_AND_OTHERS
+                        : TO_ME_AND_OTHERS;
+            } else if (useImportantMarkers) {
+                mHeader.personalLevelBitmap = IMPORTANT_TO_OTHERS;
+            }
+        }
+        if (mHeader.personalLevelBitmap != null) {
+            mConfig.showPersonalIndicator();
         }
 
         setContentDescription();
@@ -1117,6 +1152,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 canvas.drawBitmap(STATE_CALENDAR_INVITE, mCoordinates.replyStateX,
                         mCoordinates.replyStateY, null);
             }
+        }
+
+        if (mConfig.isPersonalIndicatorVisible()) {
+            canvas.drawBitmap(mHeader.personalLevelBitmap, mCoordinates.personalIndicatorX,
+                    mCoordinates.personalIndicatorY, null);
         }
 
         // Date.
