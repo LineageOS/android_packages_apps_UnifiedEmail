@@ -886,4 +886,9 @@
 
     <!-- Conversation list screen overflow menu in spam folder [CHAR LIMIT=50]  -->
     <string name="empty_spam">Empty spam</string>
+
+    <!-- Strings used for accessibility for the items that toggles the drawer action  -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
 </resources>
