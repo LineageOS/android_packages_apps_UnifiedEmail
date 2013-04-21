@@ -17,8 +17,6 @@
 
 package com.android.mail.providers;
 
-import com.google.common.collect.ImmutableList;
-
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -30,8 +28,10 @@ import android.widget.BaseAdapter;
 import com.android.mail.ui.AbstractActivityController;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.utils.LogUtils;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +83,8 @@ public class FolderWatcher {
             newAccounts.add(account.settings.defaultInbox);
         }
         // Stop watching accounts not in the new list.
-        for (final Uri previous : ImmutableList.copyOf(mUris)) {
+        final List<Uri> uriCopy = Collections.unmodifiableList(Lists.newArrayList(mUris));
+        for (final Uri previous : uriCopy) {
             if (!newAccounts.contains(previous)) {
                 stopWatching(previous);
             }
