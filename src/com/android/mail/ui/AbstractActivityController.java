@@ -35,6 +35,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -933,6 +934,16 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
+    public void onPostCreate(Bundle savedState) {
+        // Do nothing
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        // Do nothing
+    }
+
+    @Override
     public void onStart() {
         mSafeToModifyFragments = true;
 
@@ -976,7 +987,7 @@ public abstract class AbstractActivityController implements ActivityController {
     public abstract boolean doesActionChangeConversationListVisibility(int action);
 
     @Override
-    public final boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;

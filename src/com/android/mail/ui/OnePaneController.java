@@ -17,14 +17,18 @@
 
 package com.android.mail.ui;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -74,10 +78,30 @@ public final class OnePaneController extends AbstractActivityController {
     private DrawerLayout mDrawerContainer;
     private ViewGroup mDrawerPullout;
 
-    /** Icon changing hack - Maintain pointer to the Up view/drawable and the burger drawable */
-    private ImageView mUp;
-    private Drawable mUpDrawable;
-    private Drawable mBurgerDrawable;
+    private ActionBarDrawerToggle mDrawerToggle;
+
+    private class MailDrawerListener implements DrawerLayout.DrawerListener {
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            mDrawerToggle.onDrawerOpened(drawerView);
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            mDrawerToggle.onDrawerClosed(drawerView);
+        }
+
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+            mDrawerToggle.onDrawerSlide(drawerView, slideOffset);
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+            mDrawerToggle.onDrawerStateChanged(newState);
+        }
+    }
+
 
     public OnePaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
@@ -160,70 +184,44 @@ public final class OnePaneController extends AbstractActivityController {
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
         mDrawerContainer.setScrimColor(
                 mContext.getResources().getColor(R.color.drawer_background_dim));
+        mDrawerContainer.setDrawerListener(new MailDrawerListener());
         mDrawerPullout = (ViewGroup) mDrawerContainer.findViewById(R.id.drawer_pullout);
-        configureUpDrawable();
         mDrawerContainer.setDrawerShadow(
                 mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.LEFT);
+
+
+        mDrawerToggle = new ActionBarDrawerToggle((Activity)mActivity, mDrawerContainer,
+                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
+
         // The parent class sets the correct viewmode and starts the application off.
         return super.onCreate(savedInstanceState);
     }
 
-    /**
-     * Hack for configuring and saving pointers to the up arrow when required to change from Up to
-     * Burger and vice-versa.
-     *
-     * NOTE: The hack takes in account that the OEM has not modified the home button's children.
-     * If modified, there's a risk of modifying something that shouldn't be.
-     *
-     * TODO(shahrk): Make icon changing safer through framework or remove it?
-     */
-    private void configureUpDrawable() {
-        final View home = mActivity.findViewById(android.R.id.home);
-        if (home == null) {
-            LogUtils.w(LOG_TAG,
-                    "OnePaneController.configureUpDrawable(): Action bar home was not discovered");
-            // Action bar doesn't have a known configuration, an OEM modified home completely
-            return;
-        }
+    @Override
+    public void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
-        final ViewGroup parent = (ViewGroup) home.getParent();
-        final int childCount = parent.getChildCount();
-        if (childCount != 2) {
-            // No idea which child will be the right ImageView for 'up', an OEM has modified home
-            LogUtils.w(LOG_TAG, "OnePaneController.configureUpDrawable(): "
-                    + "Action bar has incorrect number of children: %d expected 2", childCount);
-            return;
-        }
-
-        final View first = parent.getChildAt(0);
-        final View second = parent.getChildAt(1);
-        // Get the view that's NOT android.R.id.home
-        final View up = first.getId() == android.R.id.home ? second : first;
-        if (up instanceof ImageView) {
-            // We've most likely discovered the correct ImageView for the up arrow. Save the
-            // drawable/reference to view and also load the burger drawable for drawer indication.
-            mUp = (ImageView) up;
-            mUpDrawable = mUp.getDrawable();
-            mBurgerDrawable = mContext.getResources().getDrawable(R.drawable.ic_drawer_glyph);
-        } else {
-            LogUtils.w(LOG_TAG,
-                    "OnePaneController.configureUpDrawable(): Up arrow was not of type ImageView");
-        }
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
     }
 
-    /**
-     * Changes the up graphic (on left of gmail icon) to either be 'Up' or the 'Burger'.
-     *
-     * @param changeToBurger true if icon should be 'burger', false if icon should be 'up'
-     */
-    private void changeUpArrow(final boolean changeToBurger) {
-        if(mUp != null) {
-            if (changeToBurger) {
-                mUp.setImageDrawable(mBurgerDrawable);
-            } else {
-                mUp.setImageDrawable(mUpDrawable);
-            }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        /*
+         * The action bar home/up action should open or close the drawer.
+         * mDrawerToggle will take care of this.
+         */
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -247,10 +245,10 @@ public final class OnePaneController extends AbstractActivityController {
         // When view mode changes, lock drawer if viewing search results or
         // viewing a conversation. Set unlocked otherwise.
         if (ViewMode.isSearchMode(newMode) || ViewMode.isConversationMode(newMode)) {
-            changeUpArrow(false);
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
-            changeUpArrow(true);
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
         closeDrawerIfOpen();
