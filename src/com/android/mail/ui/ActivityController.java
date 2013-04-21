@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -95,6 +96,16 @@ public interface ActivityController extends LayoutListener,
      * @return true if the controller was able to initialize successfully, false otherwise.
      */
     boolean onCreate(Bundle savedState);
+
+    /**
+     * @see android.app.Activity#onPostCreate
+     */
+    void onPostCreate(Bundle savedState);
+
+    /**
+     * @see android.app.Activity#onConfigurationChanged
+     */
+    void onConfigurationChanged(Configuration newConfig);
 
     /**
      * @see android.app.Activity#onStart
