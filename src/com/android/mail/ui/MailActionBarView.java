@@ -574,8 +574,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Put the ActionBar in List navigation mode.
      */
     private void showNavList() {
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
         setFolderAndAccount(false);
+        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
     /**
@@ -583,8 +583,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * (if user has multiple accounts)
      */
     private void setFoldersMode() {
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
         mActionBar.setTitle(R.string.folders);
+        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
         if (mHaveMultipleAccounts) {
             mActionBar.setSubtitle(mAccount.name);
         }
@@ -725,9 +725,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // Check if we should be changing the actionbar at all, and back off if not.
         final boolean isShowingFolder = mIsOnTablet || ViewMode.isListMode(mMode);
         if (!isShowingFolder) {
+            // It isn't necessary to set the title in this case, as the title view will
+            // be hidden
             return;
         }
         if (mFolder == null) {
+            // Clear the action bar title.  We don't want the app name to be shown while
+            // waiting for the folder query to finish
+            mActionBar.setTitle("");
             return;
         }
         mActionBar.setTitle(mFolder.name);
