@@ -605,16 +605,11 @@
     <!-- Displayed in widget when unread count > 100. [CHAR LIMIT=4] -->
     <string name="widget_large_unread_count">%d+</string>
 
-    <plurals name="actionbar_unread_messages">
-        <!-- Suffix for unread messages when only one message is unread [CHAR LIMIT=30] -->
-        <item quantity="one"><xliff:g id="count" example="1">%1$d</xliff:g> unread message</item>
-        <!-- Suffix for unread messages when many (or zero) messages are unread [CHAR LIMIT=30] -->
-       <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> unread
-           messages</item>
-    </plurals>
+    <!-- Suffix for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
+    <string name="actionbar_unread_messages"><xliff:g id="count" example="4">%1$d</xliff:g> unread</string>
+
     <!-- Displayed in the actionbar when unread count > 999. [CHAR LIMIT=30] -->
-    <string name="actionbar_large_unread_count"><xliff:g id="count">%1$d</xliff:g>+ unread
-        messages</string>
+    <string name="actionbar_large_unread_count"><xliff:g id="count">%1$d</xliff:g>+ unread</string>
 
     <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
     <string name="view_more_conversations">View more conversations</string>
