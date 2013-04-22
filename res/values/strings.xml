@@ -855,6 +855,11 @@
     <!-- Label list screen, banner for number of unseen messages [CHAR LIMIT=15]  -->
     <string name="inbox_unseen_banner"><xliff:g id="number" example="7">%d</xliff:g> NEW</string>
 
+    <!-- Settings screen, preference name for archive vs. delete [CHAR LIMIT=50] -->
+    <string name="preference_archive_vs_delete_title">Remove action</string>
+    <!-- Settings screen, preference description for archive vs. delete [CHAR LIMIT=200] -->
+    <string name="preference_archive_vs_delete_text">Delete rather than archive conversations</string>
+
     <!-- Settings screen, preference for configuring preferred ActionBar items [CHAR LIMIT=50] -->
     <string name="preference_preferred_actionbar_items">Preferred ActionBar items</string>
     <!-- Dialog title for the preferred ActionBar items dialog [CHAR LIMIT=150] -->
