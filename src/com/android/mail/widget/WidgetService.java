@@ -103,7 +103,9 @@ public class WidgetService extends RemoteViewsService {
         remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.widget_compose, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.conversation_list, View.VISIBLE);
+        remoteViews.setViewVisibility(R.id.empty_conversation_list, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.widget_folder_not_synced, View.GONE);
+        remoteViews.setViewVisibility(R.id.widget_configuration, View.GONE);
         remoteViews.setEmptyView(R.id.conversation_list, R.id.empty_conversation_list);
 
         WidgetService.configureValidWidgetIntents(context, remoteViews, appWidgetId, account,
@@ -214,7 +216,7 @@ public class WidgetService extends RemoteViewsService {
         private int mFolderCount;
         private boolean mShouldShowViewMore;
         private boolean mFolderInformationShown = false;
-        private WidgetService mService;
+        private final WidgetService mService;
         private String mSendersSplitToken;
         private String mElidedPaddingToken;
         private TextAppearanceSpan mUnreadStyle;
@@ -238,8 +240,16 @@ public class WidgetService extends RemoteViewsService {
                 // This is a old intent created in version UR8 (or earlier).
                 String folderString = intent.getStringExtra(Utils.EXTRA_FOLDER);
                 Folder folder = Folder.fromString(folderString);
-                mFolderUri = folder.uri;
-                mFolderConversationListUri = folder.conversationListUri;
+                if (folder != null) {
+                    mFolderUri = folder.uri;
+                    mFolderConversationListUri = folder.conversationListUri;
+                } else {
+                    mFolderUri = Uri.EMPTY;
+                    mFolderConversationListUri = Uri.EMPTY;
+                    // this will mark the widget as unconfigured
+                    BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
+                            mFolderUri, mFolderConversationListUri, mFolderDisplayName);
+                }
             }
 
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(context);
