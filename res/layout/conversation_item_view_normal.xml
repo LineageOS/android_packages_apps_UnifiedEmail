@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2013 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,66 +24,128 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/conversation_item_height"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-        <View
-            android:id="@+id/spacer"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            />
-        <TextView
-            android:id="@+id/senders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/SendersStyle"
-            android:text="@string/long_string"
-            android:textSize="@dimen/senders_font_size"
-            android:lines="1"
-            android:layout_toRightOf="@id/spacer" />
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="@dimen/total_conversationbar_width"
-            android:layout_alignParentRight="true">
-            <ImageView
-                android:id="@+id/paperclip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_attachment_holo_light"
-                android:layout_marginTop="6sp" />
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="0dip"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/long_string"
-                android:textSize="@dimen/date_font_size"
-                android:lines="1"
-                android:layout_marginRight="16dip"
-                android:layout_marginTop="10sp" />
-        </LinearLayout>
-    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal">
+
         <ImageView
-            style="@style/CheckmarkStyle"
             android:id="@+id/checkmark"
-            android:src="@drawable/btn_check_on_normal_holo_light"/>
-        <TextView
-            android:id="@+id/subject"
-            android:layout_width="@dimen/subject_width"
-            style="@style/SubjectStyle"
-            android:text="@string/long_string"
-            android:lines="2"/>
-        <ImageView
-            android:id="@+id/star"
-            style="@style/StarStyle"
-            android:src="@drawable/btn_star_off_normal_email_holo_light" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/btn_check_on_normal_holo_light" />
+
+        <View
+            android:id="@+id/contact_image"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- these views overlap horizontally, that's okay. -->
+                <!-- we are only interested in the left edge of senders and the right edge -->
+                <!-- of the date. -->
+                <!-- sendersWidth, clipX, and dateX are dynamically determined later. -->
+
+                <!-- for Email -->
+                <!-- top margin should be 12dp, but the asset has 2dp built-in padding -->
+                <ImageView
+                    android:id="@+id/reply_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="8dp"
+                    android:src="@drawable/ic_badge_reply_holo_light" />
+
+                <TextView
+                    android:id="@+id/senders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/reply_state"
+                    android:layout_marginTop="12dp"
+                    android:textSize="18sp"
+                    android:lines="1"
+                    android:includeFontPadding="false"
+                    android:text="@string/long_string" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="12dp"
+                    android:paddingLeft="8dp"
+                    android:textSize="12sp"
+                    android:lines="1"
+                    android:includeFontPadding="false"
+                    android:text="@string/long_string" />
+
+                <!-- top margin should be 12dp, but the asset has 8dp built-in padding -->
+                <!-- left padding should be 8dp, but the asset has 2dp built-in padding -->
+                <ImageView
+                    android:id="@+id/paperclip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/date"
+                    android:layout_marginTop="4dp"
+                    android:paddingLeft="6dp"
+                    android:src="@drawable/ic_attachment_holo_light" />
+
+                <!-- for Email -->
+                <View android:id="@+id/color_block"
+                    android:layout_width="@dimen/color_block_width"
+                    android:layout_height="@dimen/color_block_height"
+                    android:layout_alignParentRight="true" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp">
+
+                <ImageView
+                    android:id="@+id/star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/btn_star_off_normal_email_holo_light" />
+
+                <!-- we assume the star asset is less than 48dp wide -->
+                <TextView
+                    android:id="@+id/subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="48dp"
+                    android:lines="2"
+                    android:textSize="14sp"
+                    android:includeFontPadding="false"
+                    android:text="@string/long_string" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
+
     <ImageView
         android:id="@+id/attachment_previews"
         android:layout_width="match_parent"
@@ -92,4 +154,18 @@
         android:layout_marginLeft="@dimen/attachment_preview_margin_side"
         android:layout_marginRight="@dimen/attachment_preview_margin_side"
         android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/folders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-8dp"
+        android:layout_marginBottom="1dp"
+        android:fontFamily="sans-serif-light"
+        android:includeFontPadding="false"
+        android:text="@string/long_string"
+        android:textSize="11sp"
+        android:lines="1"
+        android:minHeight="16dp" />
+
 </LinearLayout>

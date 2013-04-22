@@ -61,12 +61,6 @@ public class ConversationItemViewCoordinates {
     static final int ATTACHMENT_PREVIEW_TALL = 1;
     static final int ATTACHMENT_PREVIEW_SHORT = 2;
 
-    // Static threshold.
-    private static int TOTAL_FOLDER_WIDTH = -1;
-    private static int TOTAL_FOLDER_WIDTH_WIDE = -1;
-    @Deprecated
-    private static int sConversationHeights[];
-
     // For combined views
     private static int COLOR_BLOCK_WIDTH = -1;
     private static int COLOR_BLOCK_HEIGHT = -1;
@@ -235,8 +229,8 @@ public class ConversationItemViewCoordinates {
 
     private ConversationItemViewCoordinates(Context context, Config config) {
         final ViewGroup view = (ViewGroup) LayoutInflater.from(context).inflate(
-                config.getMode() == WIDE_MODE ? R.layout.conversation_item_view_wide2 :
-                    R.layout.conversation_item_view_normal2, null);
+                config.getMode() == WIDE_MODE ? R.layout.conversation_item_view_wide :
+                    R.layout.conversation_item_view_normal, null);
 
         final TextView folders = (TextView) view.findViewById(R.id.folders);
         folders.setVisibility(config.areFoldersVisible() ? View.VISIBLE : View.GONE);
@@ -446,30 +440,6 @@ public class ConversationItemViewCoordinates {
     }
 
     /**
-     * Returns the height of the view in this mode.
-     */
-    @Deprecated
-    public static int getHeight(Context context, int mode, int attachmentPreviewMode) {
-        if (sConversationHeights == null) {
-            refreshConversationDimens(context);
-        }
-
-        // Base height
-        int result = sConversationHeights[mode];
-
-        // Attachment previews margin top
-        if (attachmentPreviewMode != ATTACHMENT_PREVIEW_NONE) {
-            result += sAttachmentPreviewsMarginTops[mode];
-        }
-
-        // Attachment previews height
-        result += getAttachmentPreviewsHeight(
-                context, attachmentPreviewMode);
-
-        return result;
-    }
-
-    /**
      * Refreshes the conversation heights array.
      */
     @Deprecated
@@ -479,10 +449,6 @@ public class ConversationItemViewCoordinates {
     public static void refreshConversationDimens(Context context) {
         Resources res = context.getResources();
         float density = res.getDisplayMetrics().scaledDensity;
-
-        // Height without attachment previews
-        sConversationHeights = getDensityDependentArray(
-                res.getIntArray(R.array.conversation_heights_without_attachment_previews), density);
 
         // Attachment previews height
         sAttachmentPreviewsHeights = new int[ATTACHMENT_PREVIEW_MODE_COUNT];
@@ -501,7 +467,7 @@ public class ConversationItemViewCoordinates {
     }
 
     public static int getAttachmentPreviewsHeight(Context context, int attachmentPreviewMode) {
-        if (sConversationHeights == null) {
+        if (sAttachmentPreviewsHeights == null) {
             refreshConversationDimens(context);
         }
         return sAttachmentPreviewsHeights[attachmentPreviewMode];
@@ -572,27 +538,6 @@ public class ConversationItemViewCoordinates {
             COLOR_BLOCK_HEIGHT = res.getDimensionPixelSize(R.dimen.color_block_height);
         }
         return COLOR_BLOCK_HEIGHT;
-    }
-
-    /**
-     * Returns the width available to draw folders in this mode.
-     */
-    @Deprecated
-    public static int getFoldersWidth(Context context, int mode) {
-        Resources res = context.getResources();
-        if (TOTAL_FOLDER_WIDTH <= 0) {
-            TOTAL_FOLDER_WIDTH = res.getDimensionPixelSize(R.dimen.max_total_folder_width);
-            TOTAL_FOLDER_WIDTH_WIDE = res.getDimensionPixelSize(
-                    R.dimen.max_total_folder_width_wide);
-        }
-        switch (mode) {
-            case WIDE_MODE:
-                return TOTAL_FOLDER_WIDTH_WIDE;
-            case NORMAL_MODE:
-                return TOTAL_FOLDER_WIDTH;
-            default:
-                throw new IllegalArgumentException("Unknown conversation header view mode " + mode);
-        }
     }
 
     public static boolean displaySendersInline(int mode) {
