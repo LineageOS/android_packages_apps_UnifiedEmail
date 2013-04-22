@@ -16,10 +16,6 @@
      limitations under the License.
 -->
 <resources>
-    <integer-array name="conversation_heights_without_attachment_previews">
-        <item>64</item>
-        <item>70</item>
-    </integer-array>
     <integer-array name="senders_with_attachment_lengths">
         <item>40</item>
         <item>40</item>
