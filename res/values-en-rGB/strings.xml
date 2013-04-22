@@ -275,7 +275,6 @@
     <string name="no" msgid="427548507197604096">"No"</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Finished"</string>
-    <string name="set" msgid="9026971925519156677">"Setting"</string>
     <string name="cancel" msgid="8762981157252199115">"Cancel"</string>
     <string name="clear" msgid="3184687982186479442">"Clear"</string>
     <string name="close" msgid="419945428844076406">"Close"</string>
@@ -395,4 +394,6 @@
     <string name="action_add_remove_star" msgid="6658875981206117895">"Add/Remove Star"</string>
     <string name="action_mark_not_important" msgid="7097443517025742878">"Mark (not) important"</string>
     <string name="action_report_not_spam" msgid="7491310680850552208">"Report not spam"</string>
+    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Swipe down to refresh"</string>
+    <string name="checking_for_mail" msgid="2301797903350897130">"Checking for mail"</string>
 </resources>
