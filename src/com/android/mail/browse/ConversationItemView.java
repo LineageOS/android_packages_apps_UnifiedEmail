@@ -409,7 +409,18 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSubjectTextView.setEllipsize(TextUtils.TruncateAt.END);
         mSubjectTextView.setIncludeFontPadding(false);
 
-        mContactImagesHolder = new DividedImageCanvas(context, this);
+        mContactImagesHolder = new DividedImageCanvas(context, new InvalidateCallback() {
+            @Override
+            public void invalidate() {
+                if (mCoordinates == null) {
+                    return;
+                }
+                ConversationItemView.this.invalidate(mCoordinates.contactImagesX,
+                        mCoordinates.contactImagesY,
+                        mCoordinates.contactImagesX + mCoordinates.contactImagesWidth,
+                        mCoordinates.contactImagesY + mCoordinates.contactImagesHeight);
+            }
+        });
         mAttachmentPreviewsCanvas = new DividedImageCanvas(context, this);
     }
 
@@ -436,12 +447,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mHeader != null) {
             final ArrayList<String> divisionIds = mContactImagesHolder.getDivisionIds();
             if (divisionIds != null) {
+                mContactImagesHolder.reset();
                 for (int pos = 0; pos < divisionIds.size(); pos++) {
                     sContactPhotoManager.removePhoto(DividedImageCanvas.generateHash(
                             mContactImagesHolder, pos, divisionIds.get(pos)));
                 }
             }
         }
+        mCoordinates = null;
         mHeader = header;
         mActivity = activity;
         mSelectedConversationSet = set;

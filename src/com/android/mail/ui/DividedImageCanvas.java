@@ -62,6 +62,8 @@ public class DividedImageCanvas implements ImageCanvas {
      */
     private boolean mBitmapValid = false;
 
+    private int mGeneration;
+
     private static final Paint sPaint = new Paint();
     private static final Rect sDest = new Rect();
 
@@ -318,11 +320,12 @@ public class DividedImageCanvas implements ImageCanvas {
         }
         mDivisionMap.clear();
         mDivisionImages.clear();
+        mGeneration++;
     }
 
     @Override
-    public boolean contains(Object id) {
-        return mDivisionMap.containsKey(id);
+    public int getGeneration() {
+        return mGeneration;
     }
 
     /**

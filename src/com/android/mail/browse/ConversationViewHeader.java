@@ -203,8 +203,8 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
 
         public void appendFolderSpans(SpannableStringBuilder sb) {
             for (final Folder f : mFoldersSortedSet) {
-                final int bgColor = Folder.getNonEmptyColor(f.bgColor, mDefaultBgColor);
-                final int fgColor = Folder.getNonEmptyColor(f.fgColor, mDefaultFgColor);
+                final int bgColor = f.getBackgroundColor(mDefaultBgColor);
+                final int fgColor = f.getForegroundColor(mDefaultFgColor);
                 addSpan(sb, f.name, bgColor, fgColor);
             }
 

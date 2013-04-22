@@ -80,8 +80,13 @@ public interface ImageCanvas {
     void getDesiredDimensions(Object id, Dimensions outDim);
 
     /**
-     * Returns whether or not the object with key 'id' currently belongs in this canvas.
-     *
+     * Return an arbitrary integer to associate with any asynchronous requests for images that
+     * currently belong to this canvas. If, later on when results are available, the generation
+     * that is then reported does not match, the photo manager will assume the image is no longer
+     * desired and will not offer the image.
+     * <p>
+     * Implementors should basically treat this as a counter to increment upon reset() or
+     * data binding.
      */
-    boolean contains(Object id);
+    int getGeneration();
 }
