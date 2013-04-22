@@ -76,6 +76,10 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Mappen wijzigen"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Verplaatsen naar"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mapinstellingen"</string>
+    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <skip />
+    <!-- no translation found for message_modified (2564340197585393687) -->
+    <skip />
     <string name="folder_list_title" msgid="4276644062440415214">"Mappen"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Meer"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Meer accounts"</string>
@@ -275,7 +279,6 @@
     <string name="no" msgid="427548507197604096">"Nee"</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Gereed"</string>
-    <string name="set" msgid="9026971925519156677">"Instellen"</string>
     <string name="cancel" msgid="8762981157252199115">"Annuleren"</string>
     <string name="clear" msgid="3184687982186479442">"Wissen"</string>
     <string name="close" msgid="419945428844076406">"Sluiten"</string>
@@ -385,7 +388,6 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> nieuwe berichten"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Stil"</string>
-    <string name="inbox_unseen_banner" msgid="4561582938706814621">"<xliff:g id="NUMBER">%d</xliff:g> NIEUW"</string>
     <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Voorkeursitems voor actiebalk"</string>
     <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Selecteer maximaal <xliff:g id="MAX">%1$d</xliff:g> acties"</string>
     <string name="action_archive_remove_label" msgid="2373265427931131215">"Label archiveren/verwijderen"</string>
@@ -394,4 +396,14 @@
     <string name="action_add_remove_star" msgid="6658875981206117895">"Ster toevoegen/verwijderen"</string>
     <string name="action_mark_not_important" msgid="7097443517025742878">"Markeren als (niet) belangrijk"</string>
     <string name="action_report_not_spam" msgid="7491310680850552208">"Melden dat dit (geen) spam is"</string>
+    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Veeg omlaag om te vernieuwen"</string>
+    <string name="checking_for_mail" msgid="2301797903350897130">"Controleren op e-mail"</string>
+    <!-- no translation found for empty_trash (5042310780353359729) -->
+    <skip />
+    <!-- no translation found for empty_spam (930744491746508050) -->
+    <skip />
+    <!-- no translation found for drawer_open (6074646853178471940) -->
+    <skip />
+    <!-- no translation found for drawer_close (2764774620737876943) -->
+    <skip />
 </resources>
