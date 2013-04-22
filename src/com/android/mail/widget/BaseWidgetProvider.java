@@ -139,7 +139,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             final Uri folderUri = (Uri)extras.getParcelable(Utils.EXTRA_FOLDER_URI);
             final boolean updateAllWidgets = extras.getBoolean(EXTRA_UPDATE_ALL_WIDGETS, false);
 
-            if (accountUri == null && folderUri == null && !updateAllWidgets) {
+            if (accountUri == null && Utils.isEmpty(folderUri) && !updateAllWidgets) {
                 return;
             }
             final Set<Integer> widgetsToUpdate = Sets.newHashSet();
@@ -305,13 +305,14 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
         final boolean isAccountValid = isAccountValid(context, account);
 
-        if (!isAccountValid || folderUri == null) {
+        if (!isAccountValid || Utils.isEmpty(folderUri)) {
             // Widget has not been configured yet
             remoteViews.setViewVisibility(R.id.widget_folder, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_account, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_unread_count, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_compose, View.GONE);
             remoteViews.setViewVisibility(R.id.conversation_list, View.GONE);
+            remoteViews.setViewVisibility(R.id.empty_conversation_list, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_folder_not_synced, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_configuration, View.VISIBLE);
 
