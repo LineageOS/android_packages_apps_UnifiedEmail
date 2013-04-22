@@ -731,10 +731,12 @@ public class NotificationActionUtils {
 
     public static void cancelUndoNotification(final Context context,
             final NotificationAction notificationAction) {
+        final Account account = notificationAction.getAccount();
+        final Folder folder = notificationAction.getFolder();
         final int notificationId = NotificationUtils.getNotificationId(
-                notificationAction.getAccount().name, notificationAction.getFolder());
+                account.name, folder);
         removeUndoNotification(context, notificationId, false);
-        resendNotifications(context);
+        resendNotifications(context, account, folder);
     }
 
     /**
@@ -743,13 +745,15 @@ public class NotificationActionUtils {
      */
     public static void processUndoNotification(final Context context,
             final NotificationAction notificationAction) {
+        final Account account = notificationAction.getAccount();
+        final Folder folder = notificationAction.getFolder();
         final int notificationId = NotificationUtils.getNotificationId(
-                notificationAction.getAccount().name, notificationAction.getFolder());
+                account.name, folder);
         removeUndoNotification(context, notificationId, true);
         sNotificationTimestamps.delete(notificationId);
         processDestructiveAction(context, notificationAction);
 
-        resendNotifications(context);
+        resendNotifications(context, account, folder);
     }
 
     /**
@@ -772,9 +776,12 @@ public class NotificationActionUtils {
     /**
      * Broadcasts an {@link Intent} to inform the app to resend its notifications.
      */
-    public static void resendNotifications(final Context context) {
+    public static void resendNotifications(final Context context, final Account account,
+            final Folder folder) {
         final Intent intent = new Intent(MailIntentService.ACTION_RESEND_NOTIFICATIONS);
         intent.setPackage(context.getPackageName()); // Make sure we only deliver this to ourself
+        intent.putExtra(Utils.EXTRA_ACCOUNT_URI, account.uri);
+        intent.putExtra(Utils.EXTRA_FOLDER_URI, folder.uri);
         context.startService(intent);
     }
 

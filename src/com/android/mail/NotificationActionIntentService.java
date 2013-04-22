@@ -96,7 +96,8 @@ public class NotificationActionIntentService extends IntentService {
                 contentResolver.update(uri, values, null, null);
             }
 
-            NotificationActionUtils.resendNotifications(context);
+            NotificationActionUtils.resendNotifications(context, notificationAction.getAccount(),
+                    notificationAction.getFolder());
         }
     }
 }
