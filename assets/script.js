@@ -28,7 +28,10 @@ var gScaleInfo;
  * to shrink by this much. Expressed as a ratio of:
  * (original width difference : width difference after transforms);
  */
-TRANSFORM_MINIMUM_EFFECTIVE_RATIO = 0.7;
+var TRANSFORM_MINIMUM_EFFECTIVE_RATIO = 0.7;
+
+// Don't ship with this on.
+var DEBUG_DISPLAY_TRANSFORMS = false;
 
 var gTransformText = {};
 
@@ -309,15 +312,17 @@ function transformContent(el, docWidth, elWidth) {
             }
             gTransformText[msgId] = transformText;
             window.mail.onMessageTransform(msgId, transformText);
-            textElement = el.firstChild;
-            if (!textElement.classList || !textElement.classList.contains("transform-text")) {
-                textElement = document.createElement("div");
-                textElement.classList.add("transform-text");
-                textElement.style.fontSize = "10px";
-                textElement.style.color = "#ccc";
-                el.insertBefore(textElement, el.firstChild);
+            if (DEBUG_DISPLAY_TRANSFORMS) {
+                textElement = el.firstChild;
+                if (!textElement.classList || !textElement.classList.contains("transform-text")) {
+                    textElement = document.createElement("div");
+                    textElement.classList.add("transform-text");
+                    textElement.style.fontSize = "10px";
+                    textElement.style.color = "#ccc";
+                    el.insertBefore(textElement, el.firstChild);
+                }
+                textElement.innerHTML = transformText + "<br>";
             }
-            textElement.innerHTML = transformText + "<br>";
         }
         console.log("munger(s) succeeded, elapsed time=" + (Date.now() - start));
         return;
