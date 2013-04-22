@@ -866,4 +866,11 @@ public final class ConversationListFragment extends ListFragment implements
     protected void showSyncStatusBar() {
         mConversationListView.showSyncStatusBar();
     }
+
+    /**
+     * Clears all items in the list.
+     */
+    public void clear() {
+        mListView.setAdapter(null);
+    }
 }
