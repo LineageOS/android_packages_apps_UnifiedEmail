@@ -74,9 +74,11 @@ public class ContactPhotoManager extends PhotoManager {
     @Override
     public long getHash(PhotoIdentifier id, ImageCanvas view) {
         ContactIdentifier contact = (ContactIdentifier) id;
-        DividedImageCanvas dividedImageCanvas = (DividedImageCanvas) view;
-        return DividedImageCanvas.generateHash(
-                dividedImageCanvas, contact.pos, contact.emailAddress);
+        int hash = 23;
+        hash = 31 * hash + view.hashCode();
+        hash = 31 * hash + contact.pos;
+        hash = 31 * hash + (contact.emailAddress != null ? contact.emailAddress.hashCode() : 0);
+        return hash;
     }
 
     @Override
@@ -148,7 +150,11 @@ public class ContactPhotoManager extends PhotoManager {
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(emailAddress, name, pos);
+            int hash = 17;
+            hash = 31 * hash + (emailAddress != null ? emailAddress.hashCode() : 0);
+            hash = 31 * hash + (name != null ? name.hashCode() : 0);
+            hash = 31 * hash + pos;
+            return hash;
         }
 
         @Override

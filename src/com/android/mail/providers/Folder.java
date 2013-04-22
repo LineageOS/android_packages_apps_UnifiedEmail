@@ -165,6 +165,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public String bgColor;
     public String fgColor;
 
+    public int bgColorInt;
+    public int fgColorInt;
+
     /**
      * The content provider URI to request additional conversations
      */
@@ -218,6 +221,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
         this.notificationIconResId = notificationIconResId;
         this.bgColor = bgColor;
         this.fgColor = fgColor;
+        if (bgColor != null) {
+            this.bgColorInt = Integer.parseInt(bgColor);
+        }
+        if (fgColor != null) {
+            this.fgColorInt = Integer.parseInt(fgColor);
+        }
         this.loadMoreUri = loadMoreUri;
         this.hierarchicalDesc = hierarchicalDesc;
         this.parent = parent;
@@ -250,6 +259,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
         notificationIconResId = cursor.getInt(UIProvider.FOLDER_NOTIFICATION_ICON_RES_ID_COLUMN);
         bgColor = cursor.getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
         fgColor = cursor.getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
+        if (bgColor != null) {
+            bgColorInt = Integer.parseInt(bgColor);
+        }
+        if (fgColor != null) {
+            fgColorInt = Integer.parseInt(fgColor);
+        }
         String loadMore = cursor.getString(UIProvider.FOLDER_LOAD_MORE_URI_COLUMN);
         loadMoreUri = !TextUtils.isEmpty(loadMore) ? Uri.parse(loadMore) : null;
         hierarchicalDesc = cursor.getString(UIProvider.FOLDER_HIERARCHICAL_DESC_COLUMN);
@@ -294,6 +309,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
         notificationIconResId = in.readInt();
         bgColor = in.readString();
         fgColor = in.readString();
+        if (bgColor != null) {
+            bgColorInt = Integer.parseInt(bgColor);
+        }
+        if (fgColor != null) {
+            fgColorInt = Integer.parseInt(fgColor);
+        }
         loadMoreUri = in.readParcelable(loader);
         hierarchicalDesc = in.readString();
         parent = in.readParcelable(loader);
@@ -481,21 +502,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     public int getBackgroundColor(int defaultColor) {
-        return getNonEmptyColor(bgColor, defaultColor);
+        return bgColor != null ? bgColorInt : defaultColor;
     }
 
     public int getForegroundColor(int defaultColor) {
-        return getNonEmptyColor(fgColor, defaultColor);
-    }
-
-    /**
-     * Returns the candidate color if non-emptyp, or the default if the candidate is empty
-     * @param candidate
-     * @return
-     */
-    public static int getNonEmptyColor(String candidate, int defaultColor) {
-        return TextUtils.isEmpty(candidate) ? defaultColor : Integer.parseInt(candidate);
-
+        return fgColor != null ? fgColorInt : defaultColor;
     }
 
     /**
@@ -614,6 +625,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
          f.iconResId = Integer.parseInt(split[index++]);
          f.bgColor = split[index++];
          f.fgColor = split[index++];
+         if (f.bgColor != null) {
+             f.bgColorInt = Integer.parseInt(f.bgColor);
+         }
+         if (f.fgColor != null) {
+             f.fgColorInt = Integer.parseInt(f.fgColor);
+         }
          f.loadMoreUri = getValidUri(split[index++]);
          f.hierarchicalDesc = split[index++];
          f.parent = Folder.fromString(split[index++]);

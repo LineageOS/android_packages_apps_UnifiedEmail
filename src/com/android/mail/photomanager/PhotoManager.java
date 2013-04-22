@@ -16,10 +16,6 @@
 
 package com.android.mail.photomanager;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 import android.content.ComponentCallbacks2;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -34,14 +30,19 @@ import android.util.LruCache;
 
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogUtils;
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -204,8 +205,8 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * encapsulated in a request. The request may swapped out before the photo
      * loading request is started.
      */
-    private final ConcurrentHashMap<Long, Request> mPendingRequests =
-            new ConcurrentHashMap<Long, Request>();
+    private final Map<Long, Request> mPendingRequests = Collections.synchronizedMap(
+            new HashMap<Long, Request>());
 
     /**
      * Handler for messages sent to the UI thread.
@@ -275,7 +276,6 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     public void removePhoto(Long hash) {
         Request r = mPendingRequests.get(hash);
         if (r != null) {
-            r.getView().reset();
             mPendingRequests.remove(hash);
         }
     }
@@ -319,7 +319,6 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * @return false if the photo needs to be (re)loaded from the provider.
      */
     private boolean loadCachedPhoto(Request request, boolean fadeIn) {
-
         final Bitmap decoded = sBitmapCache.get(request.bitmapKey);
         if (decoded != null) {
             if (DEBUG) LogUtils.v(TAG, "%s, key=%s decodedSize=%s r=%s thread=%s",
@@ -328,7 +327,9 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                     decoded.getByteCount(),
                     request,
                     Thread.currentThread());
-            request.getView().drawImage(decoded, request.getKey());
+            if (request.getView().getGeneration() == request.viewGeneration) {
+                request.getView().drawImage(decoded, request.getKey());
+            }
             return true;
         }
 
@@ -412,14 +413,16 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * photos still haven't been loaded, sends another request for image loading.
      */
     private void processLoadedImages() {
-        Iterator<Long> iterator = mPendingRequests.keySet().iterator();
-        while (iterator.hasNext()) {
-            Long hash = iterator.next();
+        final List<Long> toRemove = Lists.newArrayList();
+        for (Long hash : mPendingRequests.keySet()) {
             Request request = mPendingRequests.get(hash);
             boolean loaded = loadCachedPhoto(request, true);
             if (loaded) {
-                iterator.remove();
+                toRemove.add(hash);
             }
+        }
+        for (Long key : toRemove) {
+            mPendingRequests.remove(key);
         }
 
         // TODO: this already seems to happen when calling loadCachedPhoto
@@ -713,18 +716,11 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         private void loadPhotosInBackground() {
             final Collection<Request> loadRequests = new HashSet<PhotoManager.Request>();
             final Collection<Request> decodeRequests = new HashSet<PhotoManager.Request>();
-
-            /*
-             * Since the call is made from the loader thread, the map could be
-             * changing during the iteration. That's not really a problem:
-             * ConcurrentHashMap will allow those changes to happen without throwing
-             * exceptions. Since we may miss some requests in the situation of
-             * concurrent change, we will need to check the map again once loading
-             * is complete.
-             */
-            Iterator<Request> iterator = mPendingRequests.values().iterator();
-            while (iterator.hasNext()) {
-                final Request request = iterator.next();
+            final List<Request> requests;
+            synchronized (mPendingRequests) {
+                requests = ImmutableList.copyOf(mPendingRequests.values());
+            }
+            for (Request request : requests) {
                 final BitmapHolder holder = sBitmapHolderCache.get(request.getKey());
                 if (holder == null || holder.bytes == null || !holder.fresh) {
                     loadRequests.add(request);
@@ -848,7 +844,11 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(key, w, h);
+            int hash = 19;
+            hash = 31 * hash + key.hashCode();
+            hash = 31 * hash + w;
+            hash = 31 * hash + h;
+            return hash;
         }
 
         @Override
@@ -886,6 +886,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         private final PhotoIdentifier mPhotoIdentifier;
         private final ImageCanvas mView;
         public final BitmapIdentifier bitmapKey;
+        public final int viewGeneration;
         // OK to be static as long as all Requests are created on the same thread
         private static final ImageCanvas.Dimensions sWorkDims = new ImageCanvas.Dimensions();
 
@@ -895,6 +896,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             mRequestedExtent = requestedExtent;
             mDefaultProvider = defaultProvider;
             mView = view;
+            viewGeneration = view.getGeneration();
 
             final Object key = getKey();
             // TODO: consider having the client pass in the desired width/height, which would be
@@ -947,6 +949,8 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             sb.append(mRequestedExtent);
             sb.append(" bitmapKey=");
             sb.append(bitmapKey);
+            sb.append(" viewGeneration=");
+            sb.append(viewGeneration);
             sb.append("}");
             return sb.toString();
         }
@@ -957,7 +961,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
 
         public void applyDefaultImage() {
             final Object key = getKey();
-            if (!mView.contains(key)) {
+            if (mView.getGeneration() != viewGeneration) {
                 // This can legitimately happen when an ImageCanvas is reused and re-purposed to
                 // house a new set of images (e.g. by ListView recycling).
                 // Ignore this now-stale request.
