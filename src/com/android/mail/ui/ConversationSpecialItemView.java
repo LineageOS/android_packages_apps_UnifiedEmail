@@ -17,6 +17,7 @@
 package com.android.mail.ui;
 
 import android.app.LoaderManager;
+import android.view.View;
 import android.widget.BaseAdapter;
 
 import com.android.mail.browse.ConversationCursor;
@@ -46,4 +47,9 @@ public interface ConversationSpecialItemView {
      * Called when the view is being destroyed.
      */
     void cleanup();
+
+    /**
+     * Called when a regular conversation item was clicked.
+     */
+    void onConversationSelected();
 }
