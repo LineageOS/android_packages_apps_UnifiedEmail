@@ -209,6 +209,8 @@ function transformContent(el, docWidth, elWidth) {
     var existingText;
     var textElement;
     var start;
+    var beforeWidth;
+    var tmpActionLog = [];
     if (elWidth <= docWidth) {
         return;
     }
@@ -274,9 +276,10 @@ function transformContent(el, docWidth, elWidth) {
 
     if (!done) {
         // OK, that wasn't enough. Try munging all <td> to override any width and nowrap set.
+        beforeWidth = newWidth;
         nodes = ENABLE_MUNGE_TABLES ? el.querySelectorAll("td") : [];
         touched = addClassToElements(nodes, null /* mungeAll */, "munged",
-            actionLog);
+            tmpActionLog);
         if (touched) {
             newWidth = el.scrollWidth;
             console.log("ran td munger on el=" + el + " oldW=" + elWidth + " newW=" + newWidth
@@ -286,6 +289,16 @@ function transformContent(el, docWidth, elWidth) {
             }
             if (newWidth <= docWidth) {
                 done = true;
+            } else if (newWidth == beforeWidth) {
+                // this transform did not improve things, and it is somewhat risky.
+                // back it out, since it's the last transform and we gained nothing.
+                undoActions(tmpActionLog);
+            } else {
+                // the transform WAS effective (although not 100%)
+                // copy the temporary action log entries over as normal
+                for (i = 0, len = tmpActionLog.length; i < len; i++) {
+                    actionLog.push(tmpActionLog[i]);
+                }
             }
         }
     }
@@ -325,11 +338,15 @@ function transformContent(el, docWidth, elWidth) {
 
     // reverse all changes if the width is STILL not narrow enough
     // (except the width->maxWidth change, which is not particularly destructive)
-    for (i = 0, len = actionLog.length; i < len; i++) {
-        actionLog[i][0].apply(actionLog[i][1], actionLog[i][2]);
-    }
+    undoActions(actionLog);
     if (actionLog.length > 0) {
         console.log("all mungers failed, changes reversed. elapsed time=" + (Date.now() - start));
+    }
+}
+
+function undoActions(actionLog) {
+    for (i = 0, len = actionLog.length; i < len; i++) {
+        actionLog[i][0].apply(actionLog[i][1], actionLog[i][2]);
     }
 }
 
