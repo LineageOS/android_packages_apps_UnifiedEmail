@@ -23,6 +23,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.res.Configuration;
+import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -75,6 +77,7 @@ public final class OnePaneController extends AbstractActivityController {
     private Folder mInbox;
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
+    private boolean mHasNewAccountOrFolder = false;
     private DrawerLayout mDrawerContainer;
     private ViewGroup mDrawerPullout;
 
@@ -89,6 +92,9 @@ public final class OnePaneController extends AbstractActivityController {
         @Override
         public void onDrawerClosed(View drawerView) {
             mDrawerToggle.onDrawerClosed(drawerView);
+            if (mHasNewAccountOrFolder) {
+                refreshDrawer();
+            }
         }
 
         @Override
@@ -99,6 +105,19 @@ public final class OnePaneController extends AbstractActivityController {
         @Override
         public void onDrawerStateChanged(int newState) {
             mDrawerToggle.onDrawerStateChanged(newState);
+            if (mHasNewAccountOrFolder && newState == DrawerLayout.STATE_IDLE) {
+                refreshDrawer();
+            }
+        }
+
+        /**
+         * If we've reached a stable drawer state, unlock the drawer for usage, remove
+         * the listener (to avoid intercepting more events), and finish end actions.
+         */
+        public void refreshDrawer() {
+            mHasNewAccountOrFolder = false;
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            notifyDrawerClosed();
         }
     }
 
@@ -761,6 +780,37 @@ public final class OnePaneController extends AbstractActivityController {
                 LogUtils.i(LOG_TAG, "Activity has been saved; ignoring unsafe deferred request"
                         + " to pop back stack");
             }
+        }
+    }
+
+    /**
+     * The default behavior calls mDrawerObserver's notifyChanged(). So, to notify the consumer of
+     * the observer that the drawer is closed, we simply make a call to
+     * {@link AbstractActivityController#closeDrawerForNewList()}.
+     */
+    public void notifyDrawerClosed() {
+        super.closeDrawerForNewList();
+    }
+
+    /**
+     * If the drawer is open, the function locks the drawer to the closed, thereby sliding in
+     * the drawer to the left edge, disabling events, and refreshing it once it's either closed
+     * or put in an idle state.
+     */
+    @Override
+    public void closeDrawerForNewList() {
+        final ConversationListFragment conversationList = getConversationListFragment();
+        if (conversationList != null) {
+            conversationList.clear();
+        }
+
+        if (mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+            // Lets the drawer listener update the drawer contents and notify the FolderListFragment
+            mHasNewAccountOrFolder = true;
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            // Drawer is already closed, notify observers that is the case.
+            notifyDrawerClosed();
         }
     }
 

@@ -24,6 +24,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,6 +40,7 @@ import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Observable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
 import com.android.mail.widget.WidgetProvider;
@@ -65,6 +67,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     protected boolean mConfigureWidget;
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private int mMode = -1;
+    /** Empty placeholder for communicating to the consumer of the drawer observer. */
+    private final DataSetObservable mDrawerObservers = new Observable("Drawer");
 
     private final AccountController mAccountController = new AccountController() {
         @Override
@@ -113,6 +117,24 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             // Never gets called, so do nothing here.
             Log.wtf(LOG_TAG,"FolderSelectionActivity.switchToDefaultInboxOrChangeAccount() " +
                     "called when NOT expected.");
+        }
+
+        @Override
+        public void registerDrawerClosedObserver(final DataSetObserver observer) {
+            mDrawerObservers.registerObserver(observer);
+        }
+
+        @Override
+        public void unregisterDrawerClosedObserver(final DataSetObserver observer) {
+            mDrawerObservers.unregisterObserver(observer);
+        }
+
+        /**
+         * Since there is no drawer to wait for, notifyChanged to the observers.
+         */
+        @Override
+        public void closeDrawerForNewList() {
+            mDrawerObservers.notifyChanged();
         }
     };
 
