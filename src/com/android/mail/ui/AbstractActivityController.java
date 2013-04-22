@@ -1553,7 +1553,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (!isBatch) {
             for (final Conversation conv : target) {
                 if (mSelectedSet.contains(conv)) {
-                    mSelectedSet.toggle(null, conv);
+                    mSelectedSet.toggle(conv);
                 }
             }
         }
