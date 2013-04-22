@@ -935,4 +935,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             view.cleanup();
         }
     }
+
+    public void onConversationSelected() {
+        for (int i = 0; i < mSpecialViews.size(); i++) {
+            final ConversationSpecialItemView specialView = mSpecialViews.get(i);
+            specialView.onConversationSelected();
+        }
+    }
 }
