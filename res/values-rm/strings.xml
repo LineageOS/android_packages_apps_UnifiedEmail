@@ -427,8 +427,6 @@
     <skip />
     <!-- no translation found for done (3079981801778027540) -->
     <skip />
-    <!-- no translation found for set (9026971925519156677) -->
-    <skip />
     <!-- no translation found for cancel (8762981157252199115) -->
     <skip />
     <!-- no translation found for clear (3184687982186479442) -->
@@ -617,5 +615,9 @@
     <!-- no translation found for action_mark_not_important (7097443517025742878) -->
     <skip />
     <!-- no translation found for action_report_not_spam (7491310680850552208) -->
+    <skip />
+    <!-- no translation found for swipe_down_to_refresh (6401908905820786227) -->
+    <skip />
+    <!-- no translation found for checking_for_mail (2301797903350897130) -->
     <skip />
 </resources>
