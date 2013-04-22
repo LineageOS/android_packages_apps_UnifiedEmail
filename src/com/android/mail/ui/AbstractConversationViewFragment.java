@@ -69,9 +69,10 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,7 +98,14 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     protected Folder mFolder;
     protected String mBaseUri;
     protected Account mAccount;
-    protected final Map<String, Address> mAddressCache = Maps.newHashMap();
+    /**
+     * Cache of email address strings to parsed Address objects.
+     * <p>
+     * Remember to synchronize on the map when reading or writing to this cache, because some
+     * instances use it off the UI thread (e.g. from WebView).
+     */
+    protected final Map<String, Address> mAddressCache = Collections.synchronizedMap(
+            new HashMap<String, Address>());
     private MessageCursor mCursor;
     private Context mContext;
     /**
