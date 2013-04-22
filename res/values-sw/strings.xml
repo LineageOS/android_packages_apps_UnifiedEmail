@@ -76,6 +76,10 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Badilisha folda"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Hamisha hadi"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mipangilio ya folda"</string>
+    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <skip />
+    <!-- no translation found for message_modified (2564340197585393687) -->
+    <skip />
     <string name="folder_list_title" msgid="4276644062440415214">"Folda"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Zaidi"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Akaunti zaidi"</string>
@@ -275,11 +279,8 @@
     <string name="no" msgid="427548507197604096">"Hapana"</string>
     <string name="ok" msgid="8339355733816891026">"SAWA"</string>
     <string name="done" msgid="3079981801778027540">"Imekamilika"</string>
-    <!-- no translation found for set (9026971925519156677) -->
-    <skip />
     <string name="cancel" msgid="8762981157252199115">"Ghairi"</string>
-    <!-- no translation found for clear (3184687982186479442) -->
-    <skip />
+    <string name="clear" msgid="3184687982186479442">"Futa"</string>
     <string name="close" msgid="419945428844076406">"Funga"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Hakuna folda zilizowekwa za akaunti hii."</string>
   <string-array name="sync_status">
@@ -294,10 +295,11 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Ili kuona mazungumzo, sawazisha folda hii."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sawazisha Folda"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <!-- no translation found for actionbar_unread_messages:one (8470063623338548501) -->
-    <!-- no translation found for actionbar_unread_messages:other (4103064420707175144) -->
-    <!-- no translation found for actionbar_large_unread_count (7593808085708037562) -->
-    <skip />
+  <plurals name="actionbar_unread_messages">
+    <item quantity="one" msgid="8470063623338548501">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> haujasomwa"</item>
+    <item quantity="other" msgid="4103064420707175144">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> haujasomwa"</item>
+  </plurals>
+    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> zaidi usiosomwa"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ona mazungumzo zaidi"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Inapakia…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Chagua akaunti"</string>
@@ -308,10 +310,8 @@
     <item quantity="other" msgid="6856940335775567991">"Sawazisha: Siku <xliff:g id="COUNT">%1$d</xliff:g> zilizopita"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sawazisha: Hakuna"</string>
-    <!-- no translation found for change_folders_selection_dialog_title (8640832109613405534) -->
-    <skip />
-    <!-- no translation found for move_to_selection_dialog_title (1230762892675507608) -->
-    <skip />
+    <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Badilisha folda"</string>
+    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Sogeza hadi"</string>
     <string name="search_hint" msgid="3625734263059221350">"Tafuta barua pepe"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
@@ -388,21 +388,22 @@
     <string name="new_messages" msgid="4419173946074516420">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Kimya"</string>
-    <string name="inbox_unseen_banner" msgid="4561582938706814621">"<xliff:g id="NUMBER">%d</xliff:g> MPYA"</string>
-    <!-- no translation found for preference_preferred_actionbar_items (1494873630787823560) -->
+    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Vipengee vya ActionBar vinavyopendelewa"</string>
+    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Chagua hadi vitendo <xliff:g id="MAX">%1$d</xliff:g>"</string>
+    <string name="action_archive_remove_label" msgid="2373265427931131215">"Weka kwenye kumbukumbu/Ondoa Lebo"</string>
+    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Futa/Tupa rasimu"</string>
+    <string name="action_mark_read_unread" msgid="3532210270682619853">"Tia alama Soma/Hazijasomwa"</string>
+    <string name="action_add_remove_star" msgid="6658875981206117895">"Ongeza/Ondoa Nyota"</string>
+    <string name="action_mark_not_important" msgid="7097443517025742878">"Tia alama kuwa (siyo) muhimu"</string>
+    <string name="action_report_not_spam" msgid="7491310680850552208">"Ripoti kuwa (siyo) barua taka"</string>
+    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Papasa kwa kasi kwenda chini ili kuonyesha upya"</string>
+    <string name="checking_for_mail" msgid="2301797903350897130">"Inaangalia barua pepe"</string>
+    <!-- no translation found for empty_trash (5042310780353359729) -->
     <skip />
-    <!-- no translation found for preference_preferred_actionbar_items_dialog_title (7547680637775341220) -->
+    <!-- no translation found for empty_spam (930744491746508050) -->
     <skip />
-    <!-- no translation found for action_archive_remove_label (2373265427931131215) -->
+    <!-- no translation found for drawer_open (6074646853178471940) -->
     <skip />
-    <!-- no translation found for action_delete_discard_drafts (3398268725115377135) -->
-    <skip />
-    <!-- no translation found for action_mark_read_unread (3532210270682619853) -->
-    <skip />
-    <!-- no translation found for action_add_remove_star (6658875981206117895) -->
-    <skip />
-    <!-- no translation found for action_mark_not_important (7097443517025742878) -->
-    <skip />
-    <!-- no translation found for action_report_not_spam (7491310680850552208) -->
+    <!-- no translation found for drawer_close (2764774620737876943) -->
     <skip />
 </resources>
