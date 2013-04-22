@@ -236,6 +236,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private final DataSetObservable mAllAccountObservers = new Observable("AllAccounts");
     /** Listeners that are interested in changes to the current folder. */
     private final DataSetObservable mFolderObservable = new Observable("CurrentFolder");
+    /** Listeners that are interested in changes to the drawer state. */
+    private final DataSetObservable mDrawerObservers = new Observable("Drawer");
 
     /**
      * Selected conversations, if any.
@@ -609,6 +611,25 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public Account getAccount() {
         return mAccount;
+    }
+
+    @Override
+    public void registerDrawerClosedObserver(final DataSetObserver observer) {
+        mDrawerObservers.registerObserver(observer);
+    }
+
+    @Override
+    public void unregisterDrawerClosedObserver(final DataSetObserver observer) {
+        mDrawerObservers.unregisterObserver(observer);
+    }
+
+    /**
+     * The default behavior for drawer closed is to notify the observers as, by default, there
+     * is no drawer.
+     */
+    @Override
+    public void closeDrawerForNewList() {
+        mDrawerObservers.notifyChanged();
     }
 
     private void fetchSearchFolder(Intent intent) {
