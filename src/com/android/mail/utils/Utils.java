@@ -152,7 +152,7 @@ public class Utils {
      * @param count The number of items.
      */
     public static String formatPlural(Context context, int resource, int count) {
-        CharSequence formatString = context.getResources().getQuantityText(resource, count);
+        final CharSequence formatString = context.getResources().getQuantityText(resource, count);
         return String.format(formatString.toString(), count);
     }
 
@@ -213,8 +213,8 @@ public class Utils {
     private static CharSequence sSendFailedString;
 
     private static int sMaxUnreadCount = -1;
+    private static final CharacterStyle ACTION_BAR_UNREAD_STYLE = new StyleSpan(Typeface.BOLD);
     private static String sUnreadText;
-    private static String sActionBarMaxUnread;
     private static int sDefaultFolderBackgroundColor = -1;
     private static int sUseFolderListFragmentTransition = -1;
 
@@ -655,20 +655,25 @@ public class Utils {
     /**
      * Get the correct display string for the unread count in the actionbar.
      */
-    public static String getUnreadMessageString(Context context, int unreadCount) {
-        final String message;
+    public static CharSequence getUnreadMessageString(Context context, int unreadCount) {
+        final SpannableString message;
         final Resources resources = context.getResources();
         if (sMaxUnreadCount == -1) {
             sMaxUnreadCount = resources.getInteger(R.integer.maxUnreadCount);
         }
+        final int stringFormatResId;
         if (unreadCount > sMaxUnreadCount) {
-            if (sActionBarMaxUnread == null) {
-                sActionBarMaxUnread = resources.getString(R.string.actionbar_large_unread_count);
-            }
-            message = String.format(sActionBarMaxUnread, sMaxUnreadCount);
+            stringFormatResId = R.string.actionbar_large_unread_count;
+            unreadCount = sMaxUnreadCount;
         } else {
-            message = formatPlural(context, R.plurals.actionbar_unread_messages, unreadCount);
+            stringFormatResId = R.string.actionbar_unread_messages;
         }
+
+        message = new SpannableString(
+                resources.getString(stringFormatResId, unreadCount));
+        message.setSpan(CharacterStyle.wrap(ACTION_BAR_UNREAD_STYLE), 0,
+                message.toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         return message;
     }
 
