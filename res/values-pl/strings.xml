@@ -273,11 +273,8 @@
     <string name="no" msgid="427548507197604096">"Nie"</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Gotowe"</string>
-    <!-- no translation found for set (9026971925519156677) -->
-    <skip />
     <string name="cancel" msgid="8762981157252199115">"Anuluj"</string>
-    <!-- no translation found for clear (3184687982186479442) -->
-    <skip />
+    <string name="clear" msgid="3184687982186479442">"Wyczyść"</string>
     <string name="close" msgid="419945428844076406">"Zamknij"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Dla tego konta nie ustawiono żadnych folderów."</string>
   <string-array name="sync_status">
@@ -292,10 +289,11 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Aby wyświetlić rozmowy, zsynchronizuj ten folder."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synchronizuj folder"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <!-- no translation found for actionbar_unread_messages:one (8470063623338548501) -->
-    <!-- no translation found for actionbar_unread_messages:other (4103064420707175144) -->
-    <!-- no translation found for actionbar_large_unread_count (7593808085708037562) -->
-    <skip />
+  <plurals name="actionbar_unread_messages">
+    <item quantity="one" msgid="8470063623338548501">"<xliff:g id="COUNT">%1$d</xliff:g> nieprzeczytana wiadomość"</item>
+    <item quantity="other" msgid="4103064420707175144">"Nieprzeczytane wiadomości: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+  </plurals>
+    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"Nieprzeczytane wiadomości: <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Wyświetl więcej rozmów"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Wczytuję…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Wybierz konto"</string>
@@ -306,16 +304,13 @@
     <item quantity="other" msgid="6856940335775567991">"Synchronizuj: ostatnie <xliff:g id="COUNT">%1$d</xliff:g> dni"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Synchronizuj: nic"</string>
-    <!-- no translation found for change_folders_selection_dialog_title (8640832109613405534) -->
-    <skip />
-    <!-- no translation found for move_to_selection_dialog_title (1230762892675507608) -->
-    <skip />
+    <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Zmień foldery"</string>
+    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Przenieś do"</string>
     <string name="search_hint" msgid="3625734263059221350">"Przeszukaj pocztę"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="folders" msgid="3359679829905256429">"Foldery"</string>
-    <!-- no translation found for toggle_drawer (4937513687658162188) -->
-    <skip />
+    <string name="toggle_drawer" msgid="4937513687658162188">"Włącz/wyłącz szufladę"</string>
     <string name="network_error" msgid="2125579009654728299">"Brak połączenia"</string>
     <string name="loading" msgid="2600808404156989255">"Ładowanie wątków…"</string>
     <string name="retry" msgid="4515885444824418022">"Ponów próbę"</string>
@@ -389,20 +384,14 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Cichy"</string>
     <string name="inbox_unseen_banner" msgid="4561582938706814621">"NOWE: <xliff:g id="NUMBER">%d</xliff:g>"</string>
-    <!-- no translation found for preference_preferred_actionbar_items (1494873630787823560) -->
-    <skip />
-    <!-- no translation found for preference_preferred_actionbar_items_dialog_title (7547680637775341220) -->
-    <skip />
-    <!-- no translation found for action_archive_remove_label (2373265427931131215) -->
-    <skip />
-    <!-- no translation found for action_delete_discard_drafts (3398268725115377135) -->
-    <skip />
-    <!-- no translation found for action_mark_read_unread (3532210270682619853) -->
-    <skip />
-    <!-- no translation found for action_add_remove_star (6658875981206117895) -->
-    <skip />
-    <!-- no translation found for action_mark_not_important (7097443517025742878) -->
-    <skip />
-    <!-- no translation found for action_report_not_spam (7491310680850552208) -->
-    <skip />
+    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Preferowane elementy na pasku akcji"</string>
+    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Wybierz nie więcej niż <xliff:g id="MAX">%1$d</xliff:g> czynności"</string>
+    <string name="action_archive_remove_label" msgid="2373265427931131215">"Zarchiwizuj/usuń etykietę"</string>
+    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Usuń/odrzuć wersje robocze"</string>
+    <string name="action_mark_read_unread" msgid="3532210270682619853">"Oznacz jako (nie)przeczytane"</string>
+    <string name="action_add_remove_star" msgid="6658875981206117895">"Dodaj/usuń gwiazdkę"</string>
+    <string name="action_mark_not_important" msgid="7097443517025742878">"Oznacz jako (nie)ważne"</string>
+    <string name="action_report_not_spam" msgid="7491310680850552208">"Zgłoś jako (nie)spam"</string>
+    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Przesuń w dół, by odświeżyć"</string>
+    <string name="checking_for_mail" msgid="2301797903350897130">"Sprawdzam pocztę"</string>
 </resources>
