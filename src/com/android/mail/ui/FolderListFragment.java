@@ -451,10 +451,19 @@ public class FolderListFragment extends ListFragment implements
                 // Account, so switch.
                 folder = null;
                 final Account account = drawerItem.mAccount;
-                // Switching accounts takes you to the inbox, which is always a system folder.
-                mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
-                mNextAccount = account;
-                mAccountChanger.closeDrawerForNewList();
+
+                if (account != null && account.settings.defaultInbox.equals(mSelectedFolderUri)) {
+                    // We're already in the default inbox for the same account, just re-check item.
+                    final int defaultInboxPosition = position + 1;
+                    if (mListView.getChildAt(defaultInboxPosition) != null) {
+                        mListView.setItemChecked(defaultInboxPosition, true);
+                    }
+                } else {
+                    // Switching accounts takes you to the inbox, which is always a system folder.
+                    mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
+                    mNextAccount = account;
+                    mAccountChanger.closeDrawerForNewList();
+                }
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
                 folder = drawerItem.mFolder;
