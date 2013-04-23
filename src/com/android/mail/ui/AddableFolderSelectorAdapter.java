@@ -20,6 +20,8 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.MatrixCursorWithCachedColumns;
 
@@ -40,7 +42,8 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
         if (folderCursor.moveToFirst()) {
             do {
                 int type = folderCursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
-                if (type == UIProvider.FolderType.INBOX || type == UIProvider.FolderType.DEFAULT) {
+                if (Folder.isType(type, UIProvider.FolderType.INBOX)
+                        || Folder.isType(type, UIProvider.FolderType.DEFAULT)) {
                     folder[UIProvider.FOLDER_ID_COLUMN] = folderCursor
                             .getLong(UIProvider.FOLDER_ID_COLUMN);
                     folder[UIProvider.FOLDER_PERSISTENT_ID_COLUMN] = folderCursor
