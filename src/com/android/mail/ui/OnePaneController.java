@@ -17,14 +17,13 @@
 
 package com.android.mail.ui;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.res.Configuration;
-import android.database.DataSetObserver;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -32,9 +31,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -80,6 +78,7 @@ public final class OnePaneController extends AbstractActivityController {
     private boolean mHasNewAccountOrFolder = false;
     private DrawerLayout mDrawerContainer;
     private ViewGroup mDrawerPullout;
+    private ListView mListViewForAnimating;
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -97,11 +96,25 @@ public final class OnePaneController extends AbstractActivityController {
             }
         }
 
+        /**
+         * As part of the overriden function, it will animate the alpha of the conversation list
+         * view along with the drawer sliding when we're in the process of switching accounts or
+         * folders. Note, this is the same amount of work done as {@link ValueAnimator#ofFloat}.
+         */
         @Override
         public void onDrawerSlide(View drawerView, float slideOffset) {
             mDrawerToggle.onDrawerSlide(drawerView, slideOffset);
+            if (mHasNewAccountOrFolder && mListViewForAnimating != null) {
+                mListViewForAnimating.setAlpha(slideOffset);
+                LogUtils.w(LOG_TAG, "OFFSET: " + slideOffset);
+            }
         }
 
+        /**
+         * This condition here should only be called when the drawer is stuck in a weird state
+         * and doesn't register the onDrawerClosed, but shows up as idle. Make sure to refresh
+         * and, more importantly, unlock the drawer when this is the case.
+         */
         @Override
         public void onDrawerStateChanged(int newState) {
             mDrawerToggle.onDrawerStateChanged(newState);
@@ -111,12 +124,17 @@ public final class OnePaneController extends AbstractActivityController {
         }
 
         /**
-         * If we've reached a stable drawer state, unlock the drawer for usage, remove
-         * the listener (to avoid intercepting more events), and finish end actions.
+         * If we've reached a stable drawer state, unlock the drawer for usage, clear the
+         * conversation list, and finish end actions. Also, make
+         * {@link OnePaneController#mHasNewAccountOrFolder} false to reflect we're done changing.
          */
         public void refreshDrawer() {
             mHasNewAccountOrFolder = false;
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            ConversationListFragment conversationList = getConversationListFragment();
+            if (conversationList != null) {
+                conversationList.clear();
+            }
             notifyDrawerClosed();
         }
     }
@@ -801,7 +819,10 @@ public final class OnePaneController extends AbstractActivityController {
     public void closeDrawerForNewList() {
         final ConversationListFragment conversationList = getConversationListFragment();
         if (conversationList != null) {
-            conversationList.clear();
+            mListViewForAnimating = conversationList.getListView();
+        } else {
+            // There is no conversation list to animate, so just set it to null
+            mListViewForAnimating = null;
         }
 
         if (mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
