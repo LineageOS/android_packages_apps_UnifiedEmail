@@ -52,6 +52,7 @@ import com.android.mail.photomanager.BitmapUtil;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.AllAccountObserver;
+import com.android.mail.providers.DrawerClosedObserver;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderObserver;
 import com.android.mail.providers.FolderWatcher;
@@ -130,17 +131,22 @@ public class FolderListFragment extends ListFragment implements
     private FolderObserver mFolderObserver = null;
     /** Listen for account changes. */
     private AccountObserver mAccountObserver = null;
-
+    /** Listen for account changes. */
+    private DrawerClosedObserver mDrawerObserver = null;
     /** Listen to changes to list of all accounts */
     private AllAccountObserver mAllAccountsObserver = null;
     /**
      * Type of currently selected folder: {@link DrawerItem#FOLDER_SYSTEM},
      * {@link DrawerItem#FOLDER_RECENT} or {@link DrawerItem#FOLDER_USER}.
+     * Set as {@link DrawerItem#UNSET} to begin with, as there is nothing selected yet.
      */
-    // Setting to INERT_HEADER = leaving uninitialized.
     private int mSelectedFolderType = DrawerItem.UNSET;
     /** The current account according to the controller */
     private Account mCurrentAccount;
+    /** The account we will change to once the drawer (if any) is closed */
+    private Account mNextAccount = null;
+    /** The folder we will change to once the drawer (if any) is closed */
+    private Folder mNextFolder = null;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -284,6 +290,7 @@ public class FolderListFragment extends ListFragment implements
                 setSelectedAccount(newAccount);
             }
         };
+        mFolderChanger = mActivity.getFolderListSelectionListener();
         if (accountController != null) {
             // Current account and its observer.
             setSelectedAccount(mAccountObserver.initialize(accountController));
@@ -296,9 +303,26 @@ public class FolderListFragment extends ListFragment implements
             };
             mAllAccountsObserver.initialize(accountController);
             mAccountChanger = accountController;
+
+            // Observer for when the drawer is closed
+            mDrawerObserver = new DrawerClosedObserver() {
+                @Override
+                public void onDrawerClosed() {
+                    // First, check if there's a folder to change to
+                    if (mNextFolder != null) {
+                        mFolderChanger.onFolderSelected(mNextFolder);
+                        mNextFolder = null;
+                    }
+                    // Next, check if there's an account to change to
+                    if (mNextAccount != null) {
+                        mAccountChanger.changeAccount(mNextAccount);
+                        mNextAccount = null;
+                    }
+                }
+            };
+            mDrawerObserver.initialize(accountController);
         }
 
-        mFolderChanger = mActivity.getFolderListSelectionListener();
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
             return;
@@ -399,6 +423,10 @@ public class FolderListFragment extends ListFragment implements
             mAllAccountsObserver.unregisterAndDestroy();
             mAllAccountsObserver = null;
         }
+        if (mDrawerObserver != null) {
+            mDrawerObserver.unregisterAndDestroy();
+            mDrawerObserver = null;
+        }
         super.onDestroyView();
     }
 
@@ -425,7 +453,8 @@ public class FolderListFragment extends ListFragment implements
                 final Account account = drawerItem.mAccount;
                 // Switching accounts takes you to the inbox, which is always a system folder.
                 mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
-                mAccountChanger.changeAccount(account);
+                mNextAccount = account;
+                mAccountChanger.closeDrawerForNewList();
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
                 folder = drawerItem.mFolder;
@@ -454,7 +483,10 @@ public class FolderListFragment extends ListFragment implements
             // update its parent!
             folder.parent = folder.equals(mParentFolder) ? null : mParentFolder;
             // Go to the conversation list for this folder.
-            mFolderChanger.onFolderSelected(folder);
+            if (!folder.uri.equals(mSelectedFolderUri)) {
+                mNextFolder = folder;
+                mAccountChanger.closeDrawerForNewList();
+            }
         }
     }
 
@@ -537,7 +569,9 @@ public class FolderListFragment extends ListFragment implements
         private final RecentFolderObserver mRecentFolderObserver = new RecentFolderObserver() {
             @Override
             public void onChanged() {
-                recalculateList();
+                if (!isCursorInvalid(mCursor)) {
+                    recalculateList();
+                }
             }
         };
         /** No resource used for string header in folder list */
