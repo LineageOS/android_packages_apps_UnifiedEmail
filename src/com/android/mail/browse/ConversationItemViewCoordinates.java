@@ -298,7 +298,7 @@ public class ConversationItemViewCoordinates {
         view.measure(widthSpec, heightSpec);
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
 
-        height = view.getHeight();
+//        Utils.dumpViewTree((ViewGroup) view);
 
         // Records coordinates.
         if (checkmark != null) {
@@ -323,8 +323,9 @@ public class ConversationItemViewCoordinates {
         starY = getY(star);
 
         final TextView senders = (TextView) view.findViewById(R.id.senders);
+        final int sendersTopAdjust = getLatinTopAdjustment(senders);
         sendersX = getX(senders);
-        sendersY = getY(senders) + getLatinTopAdjustment(senders);
+        sendersY = getY(senders) + sendersTopAdjust;
         sendersWidth = senders.getWidth();
         sendersHeight = senders.getHeight();
         sendersLineCount = getLineCount(senders);
@@ -333,11 +334,12 @@ public class ConversationItemViewCoordinates {
         sendersAscent = (int) senders.getPaint().ascent();
 
         final TextView subject = (TextView) view.findViewById(R.id.subject);
+        final int subjectTopAdjust = getLatinTopAdjustment(subject);
         subjectX = getX(subject);
         if (config.isWide()) {
-            subjectY = getY(subject) + getLatinTopAdjustment(subject);
+            subjectY = getY(subject) + subjectTopAdjust;
         } else {
-            subjectY = getY(subject);
+            subjectY = getY(subject) + sendersTopAdjust;
         }
         subjectWidth = subject.getWidth();
         subjectHeight = subject.getHeight();
@@ -349,7 +351,11 @@ public class ConversationItemViewCoordinates {
             // vertically align folders min left edge with subject
             foldersX = subjectX;
             foldersXEnd = getX(folders) + folders.getWidth();
-            foldersY = getY(folders);
+            if (config.isWide()) {
+                foldersY = getY(folders);
+            } else {
+                foldersY = getY(folders) + sendersTopAdjust;
+            }
             foldersHeight = folders.getHeight();
             foldersTypeface = folders.getTypeface();
             foldersTextBottomPadding = res
@@ -412,6 +418,8 @@ public class ConversationItemViewCoordinates {
             attachmentPreviewsY = 0;
             attachmentPreviewsWidth = 0;
         }
+
+        height = view.getHeight() + (config.isWide() ? 0 : sendersTopAdjust);
     }
 
     /**
