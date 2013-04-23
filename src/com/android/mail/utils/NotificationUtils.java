@@ -62,6 +62,7 @@ import com.google.android.common.html.parser.HTML;
 import com.google.android.common.html.parser.HTML4;
 import com.google.android.common.html.parser.HtmlDocument;
 import com.google.android.common.html.parser.HtmlTree;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -275,14 +276,26 @@ public class NotificationUtils {
      * This happens when locale changes.
      **/
     public static void cancelAndResendNotifications(Context context) {
-        resendNotifications(context, true);
+        resendNotifications(context, true, null, null);
     }
 
     /**
      * Get all notifications for all accounts, optionally cancel them, and repost.
-     * This happens when locale changes.
-     **/
-    public static void resendNotifications(Context context, final boolean cancelExisting) {
+     * This happens when locale changes. If you only want to resend messages from one
+     * account-folder pair, pass in the account and folder that should be resent.
+     * All other account-folder pairs will not have their notifications resent.
+     * All notifications will be resent if account or folder is null.
+     *
+     * @param context Current context.
+     * @param cancelExisting True, if all notifications should be canceled before resending.
+     *                       False, otherwise.
+     * @param accountUri The {@link Uri} of the {@link Account} of the notification
+     *                   upon which an action occurred.
+     * @param folderUri The {@link Uri} of the {@link Folder} of the notification
+     *                  upon which an action occurred.
+     */
+    public static void resendNotifications(Context context, final boolean cancelExisting,
+            final Uri accountUri, final Uri folderUri) {
         if (cancelExisting) {
             LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - cancelling all");
             NotificationManager nm =
@@ -294,13 +307,21 @@ public class NotificationUtils {
         final Set<NotificationKey> keys = notificationMap.keySet();
         for (NotificationKey notification : keys) {
             final Folder folder = notification.folder;
-            final int notificationId = getNotificationId(notification.account.name, folder);
+            final int notificationId = getNotificationId(notification.account.name,
+                    folder);
+
+            // Only resend notifications if the notifications are from the same folder
+            // and same account as the undo notification that was previously displayed.
+            if (!Objects.equal(accountUri, notification.account.uri) &&
+                    !Objects.equal(folderUri, folder.uri)) {
+                continue;
+            }
 
             final NotificationAction undoableAction =
                     NotificationActionUtils.sUndoNotifications.get(notificationId);
             if (undoableAction == null) {
-                validateNotifications(context, folder, notification.account, true, false,
-                        notification);
+                validateNotifications(context, folder, notification.account, true,
+                        false, notification);
             } else {
                 // Create an undo notification
                 NotificationActionUtils.createUndoNotification(context, undoableAction);

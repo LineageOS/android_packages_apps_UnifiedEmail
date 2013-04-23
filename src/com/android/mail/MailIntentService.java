@@ -15,6 +15,7 @@
  */
 package com.android.mail;
 
+import android.net.Uri;
 import com.android.mail.utils.StorageLowState;
 
 import android.app.IntentService;
@@ -68,7 +69,10 @@ public class MailIntentService extends IntentService {
 
             NotificationUtils.clearFolderNotification(this, account, folder);
         } else if (ACTION_RESEND_NOTIFICATIONS.equals(action)) {
-            NotificationUtils.resendNotifications(this, false);
+            final Uri accountUri = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT_URI);
+            final Uri folderUri = intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
+
+            NotificationUtils.resendNotifications(this, false, accountUri, folderUri);
         } else if (ACTION_MARK_SEEN.equals(action)) {
             final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
 
