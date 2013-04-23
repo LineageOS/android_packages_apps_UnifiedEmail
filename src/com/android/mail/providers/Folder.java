@@ -534,7 +534,17 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     public boolean isType(final int folderType) {
-        return (type & folderType) != 0;
+        return isType(type, folderType);
+    }
+
+    /**
+     * Checks if <code>typeMask</code> is of the specified {@link FolderType}
+     *
+     * @return <code>true</code> if the mask contains the specified
+     *         {@link FolderType}, <code>false</code> otherwise
+     */
+    public static boolean isType(final int typeMask, final int folderType) {
+        return (typeMask & folderType) != 0;
     }
 
     public boolean isInbox() {
