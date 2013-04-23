@@ -105,8 +105,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     protected final boolean mIsOnTablet;
     private boolean mRefreshInProgress;
     private Conversation mCurrentConversation;
-    private AllAccountObserver mAllAccountObserver;
-    private boolean mHaveMultipleAccounts = false;
 
     public static final String LOG_TAG = LogTag.getLogTag();
 
@@ -127,12 +125,12 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         public void handleMessage(Message message) {
             assert (message.what == EMAIL);
             final String subtitleText;
-            if (mAccount != null && mHaveMultipleAccounts) {
+            if (mAccount != null) {
                 // Display the account name (email address).
                 subtitleText = mAccount.name;
             } else {
-                // Clear the subtitle.
-                subtitleText = "";
+                subtitleText = null;
+                LogUtils.wtf(LOG_TAG, "MABV.handleMessage() has a null account!");
             }
             mActionBar.setSubtitle(subtitleText);
             super.handleMessage(message);
@@ -277,13 +275,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // Return values are purposely discarded. Initialization happens quite early, and we don't
         // have a valid folder, or a valid list of accounts.
         mFolderObserver.initialize(mController);
-        mAllAccountObserver = new AllAccountObserver() {
-            @Override
-            public void onChanged(Account[] allAccounts) {
-                mHaveMultipleAccounts = (allAccounts.length > 1);
-            }
-        };
-        mAllAccountObserver.initialize(mController);
         updateAccount(mAccountObserver.initialize(activity.getAccountController()));
     }
 
@@ -314,10 +305,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (mFolderObserver != null) {
             mFolderObserver.unregisterAndDestroy();
             mFolderObserver = null;
-        }
-        if (mAllAccountObserver != null) {
-            mAllAccountObserver.unregisterAndDestroy();
-            mAllAccountObserver = null;
         }
         mAccountObserver.unregisterAndDestroy();
         mHandler.removeMessages(SubtitleHandler.EMAIL);
@@ -585,9 +572,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private void setFoldersMode() {
         mActionBar.setTitle(R.string.folders);
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
-        if (mHaveMultipleAccounts) {
-            mActionBar.setSubtitle(mAccount.name);
-        }
+        mActionBar.setSubtitle(mAccount.name);
     }
 
     /**
