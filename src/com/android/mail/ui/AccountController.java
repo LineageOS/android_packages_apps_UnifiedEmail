@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 
 import com.android.mail.providers.Account;
@@ -72,4 +73,19 @@ public interface AccountController {
      */
     void changeAccount(Account account);
 
+    /**
+     * Registers to receive changes upon drawer closing when a changeAccount is called.
+     */
+    void registerDrawerClosedObserver(final DataSetObserver observer);
+
+    /**
+     * Removes a listener from receiving current account changes.
+     */
+    void unregisterDrawerClosedObserver(final DataSetObserver observer);
+
+    /**
+     * When the {@link FolderListFragment} has a new account ready for changing to,
+     * close the drawer and then wait for {@link DataSetObservable#notifyChanged()}.
+     */
+    void closeDrawerForNewList();
 }

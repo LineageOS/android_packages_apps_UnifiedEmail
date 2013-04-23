@@ -22,11 +22,13 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.mail.ConversationListContext;
@@ -721,6 +723,63 @@ public final class OnePaneController extends AbstractActivityController {
                 LogUtils.i(LOG_TAG, "Activity has been saved; ignoring unsafe deferred request"
                         + " to pop back stack");
             }
+        }
+    }
+
+    /**
+     * The default behavior calls mDrawerObserver's notifyChanged(). So, to notify the consumer of
+     * the observer that the drawer is closed, we simply make a call to
+     * {@link AbstractActivityController#closeDrawerForNewList()}.
+     */
+    public void notifyDrawerClosed() {
+        super.closeDrawerForNewList();
+    }
+
+    /**
+     * If the drawer is open, the function locks the drawer to the closed, thereby sliding in
+     * the drawer to the left edge, disabling events, and refreshing it once it's either closed
+     * or put in an idle state.
+     */
+    @Override
+    public void closeDrawerForNewList() {
+        final ConversationListFragment conversationList = getConversationListFragment();
+        if (conversationList != null) {
+            conversationList.clear();
+        }
+
+        if (mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+            // Drawer is open. Lock it to CLOSED state and once it's closed,
+            // unlock + reload contents. We should also be vary of a state change. If, for whatever
+            // reason, the drawer does NOT close, we want to reload/unlock as soon as it's idle
+            // again. This should account for all cases of drawer movement.
+            mDrawerContainer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+                @Override
+                public void onDrawerClosed(final View drawerView) {
+                    refreshDrawer();
+                }
+
+                @Override
+                public void onDrawerStateChanged(final int newState) {
+                    if (newState == DrawerLayout.STATE_IDLE) {
+                        refreshDrawer();
+                    }
+                }
+
+                /**
+                 * If we've reached a stable drawer state, unlock the drawer for usage, remove
+                 * the listener (to avoid intercepting more events), and finish end actions.
+                 */
+                public void refreshDrawer() {
+                    mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                    mDrawerContainer.setDrawerListener(null);
+                    notifyDrawerClosed();
+                }
+            });
+            // Now that we have a close listener, lock it to closed.
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            // Drawer is already closed, notify observers that is the case.
+            notifyDrawerClosed();
         }
     }
 
