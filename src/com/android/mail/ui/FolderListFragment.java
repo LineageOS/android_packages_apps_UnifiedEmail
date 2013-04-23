@@ -693,6 +693,8 @@ public class FolderListFragment extends ListFragment implements
                 // We don't show the unread count for the current account, so set this to zero.
                 itemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
             }
+            // TODO(shahrk): Add support for when there's only one account and allAccounts
+            // isn't available yet
         }
 
         /**
