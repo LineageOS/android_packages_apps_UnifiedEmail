@@ -418,10 +418,15 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     private float calculateScrollYPercent() {
-        float p;
-        int scrollY = mWebView.getScrollY();
-        int viewH = mWebView.getHeight();
-        int webH = (int) (mWebView.getContentHeight() * mWebView.getScale());
+        final float p;
+        if (mWebView == null) {
+            // onCreateView hasn't been called, return 0 as the user hasn't scrolled the view.
+            return 0;
+        }
+
+        final int scrollY = mWebView.getScrollY();
+        final int viewH = mWebView.getHeight();
+        final int webH = (int) (mWebView.getContentHeight() * mWebView.getScale());
 
         if (webH == 0 || webH <= viewH) {
             p = 0;
