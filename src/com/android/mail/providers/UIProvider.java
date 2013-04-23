@@ -1966,7 +1966,7 @@ public class UIProvider {
         public static final int CHECKBOX = 0;
         public static final int SENDER_IMAGE = 1;
         public static final int NONE = 2;
-        public static final int DEFAULT = 0; // Default to show checkbox
+        public static final int DEFAULT = 1; // Default to show sender image
     }
 
     /**
