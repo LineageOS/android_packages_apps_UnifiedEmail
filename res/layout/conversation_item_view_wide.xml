@@ -25,6 +25,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="1dp"
     android:orientation="vertical">
 
     <FrameLayout
@@ -37,7 +38,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:minHeight="66dp"
             android:gravity="center_vertical">
 
             <ImageView
@@ -52,8 +52,8 @@
                 android:layout_width="46dp"
                 android:layout_height="46dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -163,8 +163,7 @@
         android:id="@+id/folders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-8dp"
-        android:layout_marginBottom="1dp"
+        android:layout_marginTop="-10dp"
         android:fontFamily="sans-serif-light"
         android:includeFontPadding="false"
         android:text="@string/long_string"
