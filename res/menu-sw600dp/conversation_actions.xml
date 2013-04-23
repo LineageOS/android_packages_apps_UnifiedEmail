@@ -80,7 +80,7 @@
     <item
         android:id="@+id/move_to"
         android:title="@string/menu_move_to"
-        android:icon="@drawable/ic_menu_move_to_holo_light" />
+        android:icon="@drawable/ic_menu_moveto_holo_light" />
 
     <item
         android:id="@+id/mark_important"
