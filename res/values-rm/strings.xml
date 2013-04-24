@@ -453,9 +453,9 @@
     <skip />
     <!-- no translation found for widget_large_unread_count (5668393672379294516) -->
     <skip />
-    <!-- no translation found for actionbar_unread_messages:one (8470063623338548501) -->
-    <!-- no translation found for actionbar_unread_messages:other (4103064420707175144) -->
-    <!-- no translation found for actionbar_large_unread_count (7593808085708037562) -->
+    <!-- no translation found for actionbar_unread_messages (3805594795629836031) -->
+    <skip />
+    <!-- no translation found for actionbar_large_unread_count (2780005218279965391) -->
     <skip />
     <!-- no translation found for view_more_conversations (3151067626309674344) -->
     <skip />
@@ -570,23 +570,17 @@
     <skip />
     <!-- no translation found for notification_action_reply_all (20020468410400912) -->
     <skip />
-    <!-- no translation found for notification_action_forward (7252777659544972497) -->
-    <skip />
     <!-- no translation found for notification_action_archive (81978513898440040) -->
     <skip />
     <!-- no translation found for notification_action_remove_label (5852730267411032291) -->
     <skip />
     <!-- no translation found for notification_action_delete (327773454111551791) -->
     <skip />
-    <!-- no translation found for notification_action_mark_read (4351952818740163225) -->
-    <skip />
     <!-- no translation found for notification_action_undo_archive (7280710366587361219) -->
     <skip />
     <!-- no translation found for notification_action_undo_remove_label (1425192858683932457) -->
     <skip />
     <!-- no translation found for notification_action_undo_delete (3105611327110905438) -->
-    <skip />
-    <!-- no translation found for notification_action_preference_summary_not_set (8168109255072452703) -->
     <skip />
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
@@ -600,21 +594,13 @@
     <skip />
     <!-- no translation found for silent_ringtone (5856834572357761687) -->
     <skip />
-    <!-- no translation found for preference_preferred_actionbar_items (1494873630787823560) -->
+    <!-- no translation found for preference_archive_vs_delete_title (6469574019069966937) -->
     <skip />
-    <!-- no translation found for preference_preferred_actionbar_items_dialog_title (7547680637775341220) -->
+    <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
     <skip />
-    <!-- no translation found for action_archive_remove_label (2373265427931131215) -->
+    <!-- no translation found for preference_swipe_title (807579971507624260) -->
     <skip />
-    <!-- no translation found for action_delete_discard_drafts (3398268725115377135) -->
-    <skip />
-    <!-- no translation found for action_mark_read_unread (3532210270682619853) -->
-    <skip />
-    <!-- no translation found for action_add_remove_star (6658875981206117895) -->
-    <skip />
-    <!-- no translation found for action_mark_not_important (7097443517025742878) -->
-    <skip />
-    <!-- no translation found for action_report_not_spam (7491310680850552208) -->
+    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
     <skip />
     <!-- no translation found for swipe_down_to_refresh (6401908905820786227) -->
     <skip />
