@@ -851,7 +851,7 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     private void checkSyncStatus() {
-        if (mFolder.isSyncInProgress()) {
+        if (mFolder != null && mFolder.isSyncInProgress()) {
             // Still syncing, ignore
         } else {
             // Finished syncing:
