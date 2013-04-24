@@ -35,8 +35,8 @@
     <color name="swiped_bg_color">#ff999999</color>
     <color name="holo_light_background_color">#ffe8e8e8</color>
     <!-- Keep the following two colors in sync with LabelColorUtils.DEFAULT_COLORS (UnifiedGmail) -->
-    <color name="default_folder_background_color">#f1f5ec</color>
-    <color name="default_folder_foreground_color">#006633</color>
+    <color name="default_folder_background_color">#dddddd</color>
+    <color name="default_folder_foreground_color">@color/gray_text_color</color>
 
     <!-- Folder List/Drawer colors -->
     <color name="drawer_background_dim">#66000000</color>
