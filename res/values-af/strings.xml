@@ -276,7 +276,7 @@
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Klaar"</string>
     <string name="cancel" msgid="8762981157252199115">"Kanselleer"</string>
-    <string name="clear" msgid="3184687982186479442">"Vee uit"</string>
+    <string name="clear" msgid="3184687982186479442">"Maak skoon"</string>
     <string name="close" msgid="419945428844076406">"Maak toe"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Geen vouers is vir hierdie rekening opgestel nie."</string>
   <string-array name="sync_status">
@@ -368,15 +368,12 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Krimp wye boodskappe om op jou skerm te pas en laat zoem toe. Om hierdie opsie af te skakel, gaan na Instellings &gt; Algemene instellings."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Antwoord"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Antwoord almal"</string>
-    <string name="notification_action_forward" msgid="7252777659544972497">"Stuur aan"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Argiveer"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"Verwyder etiket"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"Vee uit"</string>
-    <string name="notification_action_mark_read" msgid="4351952818740163225">"Merk as gelees"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Geargiveer"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Etiket verwyder"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Uitgevee"</string>
-    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"Nie gestel nie"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -386,14 +383,14 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Stil"</string>
     <string name="inbox_unseen_banner" msgid="4561582938706814621">"<xliff:g id="NUMBER">%d</xliff:g> NUUT"</string>
-    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Voorkeur ActionBar-items"</string>
-    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Kies tot <xliff:g id="MAX">%1$d</xliff:g> handelinge"</string>
-    <string name="action_archive_remove_label" msgid="2373265427931131215">"Etiket: argiveer/verwyder"</string>
-    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Konsepte: vee uit/gooi weg"</string>
-    <string name="action_mark_read_unread" msgid="3532210270682619853">"Merk as gelees/ongelees"</string>
-    <string name="action_add_remove_star" msgid="6658875981206117895">"Ster: voeg by/verwyder"</string>
-    <string name="action_mark_not_important" msgid="7097443517025742878">"Merk as (on)belangrik"</string>
-    <string name="action_report_not_spam" msgid="7491310680850552208">"Gee aan as (nie) strooipos"</string>
+    <!-- no translation found for preference_archive_vs_delete_title (6469574019069966937) -->
+    <skip />
+    <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
+    <skip />
+    <!-- no translation found for preference_swipe_title (807579971507624260) -->
+    <skip />
+    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Trek af om te verfris"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Kyk tans vir pos"</string>
 </resources>
