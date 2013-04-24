@@ -34,10 +34,14 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="32dp">
 
+        <!-- minHeight here is to ensure more consistent item heights across gadget choices -->
+        <!-- and between 'normal' vs. 'wide' layouts (which is important during 2-pane -->
+        <!-- transitions)  -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:minHeight="66dp"
             android:gravity="center_vertical">
 
             <ImageView
