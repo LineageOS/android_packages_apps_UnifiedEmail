@@ -650,8 +650,6 @@
 
     <!-- Show in the actionbar -->
     <string name="folders">Folders</string>
-    <!-- Show in the actionbar: Corresponds to either sliding in or sliding out the drawer -->
-    <string name="toggle_drawer">Toggle drawer</string>
 
     <!-- Shown in conversation list footer when application cannot make a connection [CHAR LIMIT=20]-->
     <string name="network_error">No connection</string>

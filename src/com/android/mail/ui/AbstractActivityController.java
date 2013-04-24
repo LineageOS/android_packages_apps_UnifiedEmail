@@ -297,8 +297,9 @@ public abstract class AbstractActivityController implements ActivityController {
     public static final int LAST_LOADER_ID = 100;
     /**
      * Guaranteed to be the last loader ID used by the Fragment. Loaders are owned by Activity or
-     * fragments, and within an activity, loader IDs need to be unique. Currently, only one special
-     * view in Gmail uses {@link ConversationListFragment}'s LoaderManager.
+     * fragments, and within an activity, loader IDs need to be unique. Currently,
+     * {@link SectionedInboxTeaserView} is the only class that uses the
+     * {@link ConversationListFragment}'s LoaderManager.
      */
     public static final int LAST_FRAGMENT_LOADER_ID = 1000;
 
