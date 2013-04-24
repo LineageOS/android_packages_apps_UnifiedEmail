@@ -268,11 +268,14 @@ public class FolderListFragment extends ListFragment implements
             mCurrentFolderForUnreadCheck = currentFolder;
         }
 
-        // Initialize adapter for folder/heirarchical list
+        // Initialize adapter for folder/heirarchical list.  Note this relies on
+        // mActivity being initialized.
         final Folder selectedFolder;
         if (mParentFolder != null) {
+            mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
             selectedFolder = mActivity.getHierarchyFolder();
         } else {
+            mCursorAdapter = new FolderListAdapter(mIsSectioned);
             selectedFolder = currentFolder;
         }
         // Is the selected folder fresher than the one we have restored from a bundle?
@@ -347,17 +350,6 @@ public class FolderListFragment extends ListFragment implements
         mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
         mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
         mType = args.getInt(ARG_TYPE);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setInstanceFromBundle(getArguments());
-        if (mParentFolder != null) {
-            mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
-        } else {
-            mCursorAdapter = new FolderListAdapter(mIsSectioned);
-        }
     }
 
     @Override
