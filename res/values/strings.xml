@@ -868,4 +868,9 @@
 	indicate that a sync is in progress.  [CHAR LIMIT=60] -->
     <string name="checking_for_mail">Checking for mail</string>
 
+    <!-- Conversation list screen overflow menu in trash folder [CHAR LIMIT=50]  -->
+    <string name="empty_trash">Empty trash</string>
+
+    <!-- Conversation list screen overflow menu in spam folder [CHAR LIMIT=50]  -->
+    <string name="empty_spam">Empty spam</string>
 </resources>

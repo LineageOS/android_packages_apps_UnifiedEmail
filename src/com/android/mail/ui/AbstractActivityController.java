@@ -1089,11 +1089,19 @@ public abstract class AbstractActivityController implements ActivityController {
                     dialog.show();
                 }
                 break;
+            case R.id.empty_trash:
+            case R.id.empty_spam:
+                emptyFolder();
+                break;
             default:
                 handled = false;
                 break;
         }
         return handled;
+    }
+
+    private void emptyFolder() {
+        mConversationListCursor.emptyFolder();
     }
 
     /**

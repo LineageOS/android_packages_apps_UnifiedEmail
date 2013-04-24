@@ -52,6 +52,7 @@ import com.android.mail.providers.SearchRecentSuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -91,6 +92,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private MenuItem mSendFeedbackItem;
     private MenuItem mRefreshItem;
     private MenuItem mFolderSettingsItem;
+    private MenuItem mEmptyTrashItem;
+    private MenuItem mEmptySpamItem;
     private View mRefreshActionView;
     /** True if the current device is a tablet, false otherwise. */
     protected final boolean mIsOnTablet;
@@ -228,6 +231,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
         mRefreshItem = menu.findItem(R.id.refresh);
         mFolderSettingsItem = menu.findItem(R.id.folder_options);
+        mEmptyTrashItem = menu.findItem(R.id.empty_trash);
+        mEmptySpamItem = menu.findItem(R.id.empty_spam);
         return true;
     }
 
@@ -394,6 +399,16 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (mFolderSettingsItem != null) {
             mFolderSettingsItem.setVisible(mFolder != null
                     && mFolder.supportsCapability(FolderCapabilities.SUPPORTS_SETTINGS));
+        }
+        if (mEmptyTrashItem != null) {
+            mEmptyTrashItem.setVisible(mAccount != null && mFolder != null
+                    && mAccount.supportsCapability(AccountCapabilities.EMPTY_TRASH)
+                    && mFolder.isTrash());
+        }
+        if (mEmptySpamItem != null) {
+            mEmptySpamItem.setVisible(mAccount != null && mFolder != null
+                    && mAccount.supportsCapability(AccountCapabilities.EMPTY_SPAM)
+                    && mFolder.isType(FolderType.SPAM));
         }
 
         switch (mMode) {

@@ -15,6 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/compose"
@@ -36,6 +37,18 @@
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
+
+    <!-- Available only in the trash folder, when the account supports emptying it -->
+    <item android:id="@+id/empty_trash"
+        android:title="@string/empty_trash"
+        android:showAsAction="never"
+        android:icon="@drawable/ic_menu_trash_holo_light" />
+
+    <!-- Available only in the spam folder, when the account supports emptying it -->
+    <item android:id="@+id/empty_spam"
+        android:title="@string/empty_spam"
+        android:showAsAction="never"
+        android:icon="@drawable/ic_menu_trash_holo_light" />
 
     <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
     <item android:id="@+id/folder_options"
