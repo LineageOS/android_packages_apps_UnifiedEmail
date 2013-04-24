@@ -68,9 +68,12 @@ public abstract class VersionedPrefs {
         setCurrentVersion(CURRENT_VERSION_NUMBER);
 
         if (!hasMigrationCompleted()) {
-            new PreferenceMigrator().performMigration(context, oldVersion, CURRENT_VERSION_NUMBER);
+            final boolean migrationComplete = new PreferenceMigrator()
+                    .performMigration(context, oldVersion, CURRENT_VERSION_NUMBER);
 
-            setMigrationComplete();
+            if (migrationComplete) {
+                setMigrationComplete();
+            }
         }
     }
 
@@ -116,6 +119,13 @@ public abstract class VersionedPrefs {
 
     protected void setMigrationComplete() {
         MailPrefs.get(mContext).setMigrationComplete();
+    }
+
+    /**
+     * Commits all pending changes to the preferences.
+     */
+    public void commit() {
+        getEditor().commit();
     }
 
     /**
