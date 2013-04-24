@@ -74,6 +74,12 @@ public interface AccountController {
     void changeAccount(Account account);
 
     /**
+     * Handles selecting the currently active account from within
+     * the {@link FolderListFragment}.
+     */
+    void switchToDefaultInboxOrChangeAccount(Account account);
+
+    /**
      * Registers to receive changes upon drawer closing when a changeAccount is called.
      */
     void registerDrawerClosedObserver(final DataSetObserver observer);

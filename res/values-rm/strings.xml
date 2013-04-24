@@ -127,6 +127,10 @@
     <skip />
     <!-- no translation found for menu_manage_folders (6755623004628177492) -->
     <skip />
+    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <skip />
+    <!-- no translation found for message_modified (2564340197585393687) -->
+    <skip />
     <!-- no translation found for folder_list_title (4276644062440415214) -->
     <skip />
     <!-- no translation found for folder_list_more (537172187223133825) -->
@@ -598,8 +602,6 @@
     <skip />
     <!-- no translation found for silent_ringtone (5856834572357761687) -->
     <skip />
-    <!-- no translation found for inbox_unseen_banner (4561582938706814621) -->
-    <skip />
     <!-- no translation found for preference_preferred_actionbar_items (1494873630787823560) -->
     <skip />
     <!-- no translation found for preference_preferred_actionbar_items_dialog_title (7547680637775341220) -->
@@ -619,5 +621,13 @@
     <!-- no translation found for swipe_down_to_refresh (6401908905820786227) -->
     <skip />
     <!-- no translation found for checking_for_mail (2301797903350897130) -->
+    <skip />
+    <!-- no translation found for empty_trash (5042310780353359729) -->
+    <skip />
+    <!-- no translation found for empty_spam (930744491746508050) -->
+    <skip />
+    <!-- no translation found for drawer_open (6074646853178471940) -->
+    <skip />
+    <!-- no translation found for drawer_close (2764774620737876943) -->
     <skip />
 </resources>

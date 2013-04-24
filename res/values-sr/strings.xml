@@ -76,6 +76,10 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Промени директоријуме"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Премести у"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Подешавања директоријума"</string>
+    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <skip />
+    <!-- no translation found for message_modified (2564340197585393687) -->
+    <skip />
     <string name="folder_list_title" msgid="4276644062440415214">"Директоријуми"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Још"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Још налога"</string>
@@ -312,7 +316,6 @@
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="folders" msgid="3359679829905256429">"Директоријуми"</string>
-    <string name="toggle_drawer" msgid="4937513687658162188">"Укључи/искључи фиоку"</string>
     <string name="network_error" msgid="2125579009654728299">"Веза није успостављена"</string>
     <string name="loading" msgid="2600808404156989255">"Учитавање преписки..."</string>
     <string name="retry" msgid="4515885444824418022">"Покушај поново"</string>
@@ -385,7 +388,6 @@
     <string name="new_messages" msgid="4419173946074516420">"Нових порука: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Нечујно"</string>
-    <string name="inbox_unseen_banner" msgid="4561582938706814621">"НОВИХ: <xliff:g id="NUMBER">%d</xliff:g>"</string>
     <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Жељене ставке са траке за радње"</string>
     <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Избор радњи (највише <xliff:g id="MAX">%1$d</xliff:g>)"</string>
     <string name="action_archive_remove_label" msgid="2373265427931131215">"Архивирај/уклони ознаку"</string>
@@ -396,4 +398,12 @@
     <string name="action_report_not_spam" msgid="7491310680850552208">"Пријави као (не)пожељно"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Листајте надоле да бисте освежили"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Проверавање поште"</string>
+    <!-- no translation found for empty_trash (5042310780353359729) -->
+    <skip />
+    <!-- no translation found for empty_spam (930744491746508050) -->
+    <skip />
+    <!-- no translation found for drawer_open (6074646853178471940) -->
+    <skip />
+    <!-- no translation found for drawer_close (2764774620737876943) -->
+    <skip />
 </resources>

@@ -17,11 +17,17 @@
 package com.android.mail.photomanager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+
+import com.android.mail.utils.LogUtils;
 
 /**
  * Provides static functions to decode bitmaps at the optimal size
  */
 public class BitmapUtil {
+
+    private static final boolean DEBUG = false;
+
     private BitmapUtil() {
     }
 
@@ -90,38 +96,71 @@ public class BitmapUtil {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
     }
 
-    public static Bitmap decodeBitmapFromBytes(byte[] bytes, int width, int height) {
-        final BitmapFactory.Options options;
-        options = new BitmapFactory.Options();
-        options.outWidth = width;
-        options.outHeight = height;
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+    /**
+     * Decode an image into a Bitmap, using sub-sampling if the desired dimensions call for it.
+     * Also applies a center-crop a la {@link android.widget.ImageView.ScaleType#CENTER_CROP}.
+     *
+     * @param src an encoded image
+     * @param w desired width in px
+     * @param h desired height in px
+     * @return an exactly-sized decoded Bitmap that is center-cropped.
+     */
+    public static Bitmap decodeByteArrayWithCenterCrop(byte[] src, int w, int h) {
+        try {
+            // calculate sample size based on w/h
+            final BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(src, 0, src.length, opts);
+            if (opts.mCancel || opts.outWidth == -1 || opts.outHeight == -1) {
+                return null;
+            }
+            opts.inSampleSize = Math.min(opts.outWidth / w, opts.outHeight / h);
+            opts.inJustDecodeBounds = false;
+            final Bitmap decoded = BitmapFactory.decodeByteArray(src, 0, src.length, opts);
+
+            return centerCrop(decoded, w, h);
+
+        } catch (Throwable t) {
+            LogUtils.w(PhotoManager.TAG, t, "unable to decode image");
+            return null;
+        }
     }
 
-    // TODO(mindyp): can I do the scale/ crop in 1 step?
-    public static Bitmap obtainBitmapWithHalfWidth(byte[] bytes, int width, int height) {
-        if (bytes != null && bytes.length > 0) {
-            final float desiredWidth = width / 2;
-            final BitmapFactory.Options opts = new BitmapFactory.Options();
-            opts.outWidth = width;
-            opts.outHeight = height;
-            final Bitmap scaled = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);
+    /**
+     * Returns a new Bitmap copy with a center-crop effect a la
+     * {@link android.widget.ImageView.ScaleType#CENTER_CROP}.
+     *
+     * @param src original bitmap of any size
+     * @param w desired width in px
+     * @param h desired height in px
+     * @return a copy of src conforming to the given width and height
+     */
+    public static Bitmap centerCrop(Bitmap src, int w, int h) {
+        final Matrix m = new Matrix();
+        final float scale = Math.max(
+                (float) w / src.getWidth(),
+                (float) h / src.getHeight());
+        m.setScale(scale, scale);
 
-            // Crop
-            final int scaledHeight = scaled.getHeight();
-            final int scaledWidth = scaled.getWidth();
-            final float extraWidth = scaledWidth > 0 && scaledWidth > desiredWidth ?
-                    scaledWidth - desiredWidth : 0;
-            final float extraHeight = scaledHeight > 0 && scaledHeight > height ?
-                    scaledHeight - height : 0;
-            final int x = (int) (extraWidth / 2.0f);
-            final int y = (int) (extraHeight / 2.0f);
+        final int srcX, srcY, srcW, srcH;
 
-            if (height > scaledHeight) {
-                return scaled;
-            }
-            return Bitmap.createBitmap(scaled, x, y, (int) desiredWidth, (int) height);
+        srcW = Math.round(w / scale);
+        srcH = Math.round(h / scale);
+        srcX = (src.getWidth() - srcW) / 2;
+        srcY = (src.getHeight() - srcH) / 2;
+
+        final Bitmap cropped = Bitmap.createBitmap(src, srcX, srcY, srcW, srcH, m,
+                true /* filter */);
+
+        if (DEBUG) LogUtils.i(PhotoManager.TAG,
+                "IN centerCrop, srcW/H=%s/%s desiredW/H=%s/%s srcX/Y=%s/%s" +
+                " innerW/H=%s/%s scale=%s resultW/H=%s/%s",
+                src.getWidth(), src.getHeight(), w, h, srcX, srcY, srcW, srcH, scale,
+                cropped.getWidth(), cropped.getHeight());
+        if (DEBUG && (w != cropped.getWidth() || h != cropped.getHeight())) {
+            LogUtils.e(PhotoManager.TAG, new Error(), "last center crop violated assumptions.");
         }
-        return null;
+
+        return cropped;
     }
 }

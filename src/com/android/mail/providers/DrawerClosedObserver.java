@@ -47,9 +47,6 @@ public abstract class DrawerClosedObserver extends DataSetObserver {
      * @param controller
      */
     public void initialize(AccountController controller) {
-        if (controller == null) {
-            LogUtils.wtf(LOG_TAG, "DrawerClosedObserver initialized with null controller!");
-        }
         mController = controller;
         mController.registerDrawerClosedObserver(this);
     }
@@ -62,19 +59,17 @@ public abstract class DrawerClosedObserver extends DataSetObserver {
 
     @Override
     public final void onChanged() {
-        if (mController == null) {
-            return;
+        if (mController != null) {
+            onDrawerClosed();
         }
-        onDrawerClosed();
     }
 
     /**
      * Unregisters the {@link DrawerClosedObserver} and makes it unusable.
      */
     public void unregisterAndDestroy() {
-        if (mController == null) {
-            return;
+        if (mController != null) {
+            mController.unregisterDrawerClosedObserver(this);
         }
-        mController.unregisterDrawerClosedObserver(this);
     }
 }

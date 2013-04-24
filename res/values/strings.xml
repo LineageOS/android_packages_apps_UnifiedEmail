@@ -165,6 +165,10 @@
     <string name="report_rendering_improvement_desc" translatable="false">
         This message looks good.
     </string>
+    <!-- Menu item text to show the original version of an email conversation, before message manipulation [CHAR LIMIT=30] -->
+    <string name="menu_show_original">Show original</string>
+    <!-- After message manipulation, this small disclaimer text appears above a re-formatted message [CHAR LIMIT=200] -->
+    <string name="message_modified">(This message has been modified from its original version to fit this screen.)</string>
     <!-- Title for the Folder list screen. [CHAR LIMIT = 30] -->
     <string name="folder_list_title">Folders</string>
     <!-- Folder list item: show more folders. [CHAR LIMIT = 30] -->
@@ -601,16 +605,11 @@
     <!-- Displayed in widget when unread count > 100. [CHAR LIMIT=4] -->
     <string name="widget_large_unread_count">%d+</string>
 
-    <plurals name="actionbar_unread_messages">
-        <!-- Suffix for unread messages when only one message is unread [CHAR LIMIT=30] -->
-        <item quantity="one"><xliff:g id="count" example="1">%1$d</xliff:g> unread message</item>
-        <!-- Suffix for unread messages when many (or zero) messages are unread [CHAR LIMIT=30] -->
-       <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> unread
-           messages</item>
-    </plurals>
+    <!-- Suffix for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
+    <string name="actionbar_unread_messages"><xliff:g id="count" example="4">%1$d</xliff:g> unread</string>
+
     <!-- Displayed in the actionbar when unread count > 999. [CHAR LIMIT=30] -->
-    <string name="actionbar_large_unread_count"><xliff:g id="count">%1$d</xliff:g>+ unread
-        messages</string>
+    <string name="actionbar_large_unread_count"><xliff:g id="count">%1$d</xliff:g>+ unread</string>
 
     <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
     <string name="view_more_conversations">View more conversations</string>
@@ -845,9 +844,6 @@
     <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
     <string name="silent_ringtone">Silent</string>
 
-    <!-- Label list screen, banner for number of unseen messages [CHAR LIMIT=15]  -->
-    <string name="inbox_unseen_banner"><xliff:g id="number" example="7">%d</xliff:g> NEW</string>
-
     <!-- Settings screen, preference name for archive vs. delete [CHAR LIMIT=50] -->
     <string name="preference_archive_vs_delete_title">Remove action</string>
     <!-- Settings screen, preference description for archive vs. delete [CHAR LIMIT=200] -->
@@ -873,4 +869,9 @@
 
     <!-- Conversation list screen overflow menu in spam folder [CHAR LIMIT=50]  -->
     <string name="empty_spam">Empty spam</string>
+
+    <!-- Strings used for accessibility for the items that toggles the drawer action  -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
 </resources>

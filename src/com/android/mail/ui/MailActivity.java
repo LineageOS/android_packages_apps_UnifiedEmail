@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -151,6 +152,19 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         if (nfcAdapter != null) {
             nfcAdapter.setNdefPushMessageCallback(mNdefHandler, this);
         }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        mController.onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mController.onConfigurationChanged(newConfig);
     }
 
     @Override

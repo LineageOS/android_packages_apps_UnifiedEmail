@@ -186,8 +186,7 @@ public class SendersView {
                 }
                 // Prepend a space if we are showing other message info text.
                 if (count > 1 || (draftCount > 0 && hasSenders) || showSending) {
-                    messageInfo = new SpannableStringBuilder(sMessageCountSpacerString)
-                            .append(messageInfo);
+                    messageInfo.insert(0, sMessageCountSpacerString);
                 }
             }
         } finally {

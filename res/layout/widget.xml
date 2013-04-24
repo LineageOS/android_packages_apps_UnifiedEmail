@@ -78,17 +78,6 @@
             android:layout_gravity="center_vertical"
             android:contentDescription="@string/compose" />
     </LinearLayout>
-    <TextView
-        android:id="@+id/empty_conversation_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/loading_conversations"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:background="@drawable/gradient_bg_widget_holo"
-        android:visibility="gone" />
     <ListView
         android:id="@+id/conversation_list"
         android:layout_width="match_parent"
@@ -99,8 +88,7 @@
     <LinearLayout
         android:id="@+id/widget_configuration"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@drawable/gradient_bg_widget_holo"
@@ -118,6 +106,18 @@
             android:textSize="16sp"
             android:textStyle="bold"/>
     </LinearLayout>
+    <TextView
+        android:id="@+id/empty_conversation_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/loading_conversations"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@drawable/gradient_bg_widget_holo"
+        android:visibility="gone" />
     <LinearLayout android:id="@+id/widget_folder_not_synced"
             android:layout_width="match_parent"
             android:layout_height="0dip"

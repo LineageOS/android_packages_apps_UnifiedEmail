@@ -76,6 +76,10 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"フォルダを変更"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"移動"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"フォルダの設定"</string>
+    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <skip />
+    <!-- no translation found for message_modified (2564340197585393687) -->
+    <skip />
     <string name="folder_list_title" msgid="4276644062440415214">"フォルダ"</string>
     <string name="folder_list_more" msgid="537172187223133825">"その他"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"その他のアカウント"</string>
@@ -312,7 +316,6 @@
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="folders" msgid="3359679829905256429">"フォルダ"</string>
-    <string name="toggle_drawer" msgid="4937513687658162188">"引き出しを切り替え"</string>
     <string name="network_error" msgid="2125579009654728299">"接続なし"</string>
     <string name="loading" msgid="2600808404156989255">"スレッド読み込み中…"</string>
     <string name="retry" msgid="4515885444824418022">"再試行"</string>
@@ -385,7 +388,6 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g>件の新着メッセージ"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"マナーモード"</string>
-    <string name="inbox_unseen_banner" msgid="4561582938706814621">"<xliff:g id="NUMBER">%d</xliff:g>件の新着"</string>
     <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"ActionBarの優先アイテム"</string>
     <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"最大<xliff:g id="MAX">%1$d</xliff:g>個の操作を選択"</string>
     <string name="action_archive_remove_label" msgid="2373265427931131215">"ラベルをアーカイブ/削除"</string>
@@ -396,4 +398,12 @@
     <string name="action_report_not_spam" msgid="7491310680850552208">"迷惑メール（でないこと）を報告"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"下にスワイプして更新"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"メールを確認しています"</string>
+    <!-- no translation found for empty_trash (5042310780353359729) -->
+    <skip />
+    <!-- no translation found for empty_spam (930744491746508050) -->
+    <skip />
+    <!-- no translation found for drawer_open (6074646853178471940) -->
+    <skip />
+    <!-- no translation found for drawer_close (2764774620737876943) -->
+    <skip />
 </resources>

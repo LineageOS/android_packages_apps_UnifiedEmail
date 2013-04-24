@@ -21,7 +21,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.BiMap;
@@ -122,7 +121,7 @@ public class ConversationSelectionSet implements Parcelable {
      * @param key the id of the conversation
      * @return true if the key exists in this selected set.
      */
-    public boolean containsKey(Long key) {
+    private boolean containsKey(Long key) {
         synchronized (mLock) {
             return mInternalMap.containsKey(key);
         }
@@ -194,21 +193,6 @@ public class ConversationSelectionSet implements Parcelable {
         }
     }
 
-    /** @see java.util.HashMap#put */
-    private void put(Long id, ConversationItemView info) {
-        synchronized (mLock) {
-            final boolean initiallyEmpty = mInternalMap.isEmpty();
-            mInternalMap.put(id, info.mHeader.conversation);
-            mConversationUriToIdMap.put(info.mHeader.conversation.uri.toString(), id);
-
-            final ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
-            dispatchOnChange(observersCopy);
-            if (initiallyEmpty) {
-                dispatchOnBecomeUnempty(observersCopy);
-            }
-        }
-    }
-
     /** @see java.util.HashMap#remove */
     private void remove(Long id) {
         synchronized (mLock) {
@@ -259,18 +243,16 @@ public class ConversationSelectionSet implements Parcelable {
     /**
      * Toggles the existence of the given conversation in the selection set. If the conversation is
      * currently selected, it is deselected. If it doesn't exist in the selection set, then it is
-     * selected. If you are certain that you are deselecting a conversation (you have verified
-     * that {@link #contains(Conversation)} or {@link #containsKey(Long)} are true), then you
-     * may pass a null {@link ConversationItemView}.
+     * selected.
      * @param conversation
      */
-    public void toggle(ConversationItemView view, Conversation conversation) {
-        long conversationId = conversation.id;
+    public void toggle(Conversation conversation) {
+        final long conversationId = conversation.id;
         if (containsKey(conversationId)) {
             // We must not do anything with view here.
             remove(conversationId);
         } else {
-            put(conversationId, view);
+            put(conversationId, conversation);
         }
     }
 

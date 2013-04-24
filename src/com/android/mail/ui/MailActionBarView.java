@@ -99,8 +99,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     protected final boolean mIsOnTablet;
     private boolean mRefreshInProgress;
     private Conversation mCurrentConversation;
-    private AllAccountObserver mAllAccountObserver;
-    private boolean mHaveMultipleAccounts = false;
 
     public static final String LOG_TAG = LogTag.getLogTag();
 
@@ -121,12 +119,12 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         public void handleMessage(Message message) {
             assert (message.what == EMAIL);
             final String subtitleText;
-            if (mAccount != null && mHaveMultipleAccounts) {
+            if (mAccount != null) {
                 // Display the account name (email address).
                 subtitleText = mAccount.name;
             } else {
-                // Clear the subtitle.
-                subtitleText = "";
+                subtitleText = null;
+                LogUtils.wtf(LOG_TAG, "MABV.handleMessage() has a null account!");
             }
             mActionBar.setSubtitle(subtitleText);
             super.handleMessage(message);
@@ -271,13 +269,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // Return values are purposely discarded. Initialization happens quite early, and we don't
         // have a valid folder, or a valid list of accounts.
         mFolderObserver.initialize(mController);
-        mAllAccountObserver = new AllAccountObserver() {
-            @Override
-            public void onChanged(Account[] allAccounts) {
-                mHaveMultipleAccounts = (allAccounts.length > 1);
-            }
-        };
-        mAllAccountObserver.initialize(mController);
         updateAccount(mAccountObserver.initialize(activity.getAccountController()));
     }
 
@@ -308,10 +299,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (mFolderObserver != null) {
             mFolderObserver.unregisterAndDestroy();
             mFolderObserver = null;
-        }
-        if (mAllAccountObserver != null) {
-            mAllAccountObserver.unregisterAndDestroy();
-            mAllAccountObserver = null;
         }
         mAccountObserver.unregisterAndDestroy();
         mHandler.removeMessages(SubtitleHandler.EMAIL);
@@ -465,8 +452,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Put the ActionBar in List navigation mode.
      */
     private void showNavList() {
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
         setFolderAndAccount(false);
+        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
     /**
@@ -474,11 +461,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * (if user has multiple accounts)
      */
     private void setFoldersMode() {
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
         mActionBar.setTitle(R.string.folders);
-        if (mHaveMultipleAccounts) {
-            mActionBar.setSubtitle(mAccount.name);
-        }
+        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
+        mActionBar.setSubtitle(mAccount.name);
     }
 
     /**
@@ -616,9 +601,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // Check if we should be changing the actionbar at all, and back off if not.
         final boolean isShowingFolder = mIsOnTablet || ViewMode.isListMode(mMode);
         if (!isShowingFolder) {
+            // It isn't necessary to set the title in this case, as the title view will
+            // be hidden
             return;
         }
         if (mFolder == null) {
+            // Clear the action bar title.  We don't want the app name to be shown while
+            // waiting for the folder query to finish
+            mActionBar.setTitle("");
             return;
         }
         mActionBar.setTitle(mFolder.name);

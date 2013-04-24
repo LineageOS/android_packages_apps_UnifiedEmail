@@ -35,6 +35,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -517,18 +518,26 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void changeAccount(Account account) {
-        LogUtils.d(LOG_TAG, "AAC.changeAccount(%s)", account);
-        // Is the account or account settings different from the existing account?
+    public void switchToDefaultInboxOrChangeAccount(Account account) {
+        LogUtils.d(LOG_TAG, "AAC.switchToDefaultAccount(%s)", account);
         final boolean firstLoad = mAccount == null;
         final boolean switchToDefaultInbox = !firstLoad && account.uri.equals(mAccount.uri);
-        final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
-
         // if the active account has been clicked in the drawer, go to default inbox
         if (switchToDefaultInbox) {
             loadAccountInbox();
             return;
         }
+
+        changeAccount(account);
+    }
+
+    @Override
+    public void changeAccount(Account account) {
+        LogUtils.d(LOG_TAG, "AAC.changeAccount(%s)", account);
+        // Is the account or account settings different from the existing account?
+        final boolean firstLoad = mAccount == null;
+        final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
+
         // If nothing has changed, return early without wasting any more time.
         if (!accountChanged && !account.settingsDiffer(mAccount)) {
             return;
@@ -945,6 +954,16 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
+    public void onPostCreate(Bundle savedState) {
+        // Do nothing
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        // Do nothing
+    }
+
+    @Override
     public void onStart() {
         mSafeToModifyFragments = true;
 
@@ -988,7 +1007,7 @@ public abstract class AbstractActivityController implements ActivityController {
     public abstract boolean doesActionChangeConversationListVisibility(int action);
 
     @Override
-    public final boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;
@@ -1533,7 +1552,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (!isBatch) {
             for (final Conversation conv : target) {
                 if (mSelectedSet.contains(conv)) {
-                    mSelectedSet.toggle(null, conv);
+                    mSelectedSet.toggle(conv);
                 }
             }
         }
@@ -1979,6 +1998,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public final void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
+        final ConversationListFragment convListFragment = getConversationListFragment();
+        if (convListFragment != null && convListFragment.getAnimatedAdapter() != null) {
+            convListFragment.getAnimatedAdapter().onConversationSelected();
+        }
         // Only animate destructive actions if we are going to be showing the
         // conversation list when we show the next conversation.
         commitDestructiveActions(mIsTablet);

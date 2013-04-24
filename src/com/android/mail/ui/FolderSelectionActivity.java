@@ -113,6 +113,13 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         }
 
         @Override
+        public void switchToDefaultInboxOrChangeAccount(Account account) {
+            // Never gets called, so do nothing here.
+            Log.wtf(LOG_TAG,"FolderSelectionActivity.switchToDefaultInboxOrChangeAccount() " +
+                    "called when NOT expected.");
+        }
+
+        @Override
         public void registerDrawerClosedObserver(final DataSetObserver observer) {
             mDrawerObservers.registerObserver(observer);
         }

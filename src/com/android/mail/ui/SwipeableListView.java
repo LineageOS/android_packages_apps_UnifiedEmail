@@ -238,7 +238,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         adapter.notifyDataSetChanged();
         if (mConvSelectionSet != null && !mConvSelectionSet.isEmpty()
                 && mConvSelectionSet.contains(conv)) {
-            mConvSelectionSet.toggle(null, conv);
+            mConvSelectionSet.toggle(conv);
             // Don't commit destructive actions if the item we just removed from
             // the selection set is the item we just destroyed!
             if (!conv.isMostlyDead() && mConvSelectionSet.isEmpty()) {

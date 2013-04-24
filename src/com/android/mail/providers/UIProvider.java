@@ -152,7 +152,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, Integer.class)
             .put(AccountColumns.SettingsColumns.SNAP_HEADERS, Integer.class)
             .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, Integer.class)
-            .put(AccountColumns.SettingsColumns.CONV_LIST_ICON, String.class)
+            .put(AccountColumns.SettingsColumns.CONV_LIST_ICON, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_DELETE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)

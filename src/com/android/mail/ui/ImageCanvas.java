@@ -26,12 +26,67 @@ import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
 public interface ImageCanvas {
 
     /**
-     * Draw the image, given an optional {@link PhotoIdentifier#getKey()} id.
+     * Dimensions holds the desired width, height, and scale for a bitmap being
+     * placed in the ImageCanvas.
      */
-    public abstract Bitmap loadImage(byte[] bytes, String id);
+    public static class Dimensions {
+        public int width;
+        public int height;
+        public float scale;
+
+        public static final float SCALE_ONE = 1.0f;
+        public static final float SCALE_HALF = 0.5f;
+        public static final float SCALE_QUARTER = 0.25f;
+
+        public Dimensions() {
+        }
+
+        public Dimensions(int w, int h, float s) {
+            width = w;
+            height = h;
+            scale = s;
+        }
+    }
+
+    /**
+     * Draw the image, given an optional {@link PhotoIdentifier#getKey()} id.
+     *
+     * @deprecated use {@link #drawImage(Bitmap, Object)} instead.
+     */
+    @Deprecated
+    Bitmap loadImage(byte[] bytes, Object id);
+
+    /**
+     * Draw/composite the given Bitmap corresponding with the key 'id'. It will be sized according
+     * to whatever {@link #getDesiredDimensions(Object, Dimensions)} reported when the
+     * decode request was made.
+     *
+     * @param decoded an exactly-sized, decoded bitmap to display
+     * @param id
+     */
+    void drawImage(Bitmap decoded, Object id);
 
     /**
      * Reset all state associated with this view so that it can be reused.
      */
-    public abstract void reset();
+    void reset();
+
+    /**
+     * Outputs the desired dimensions that the object with key 'id' would like to be drawn to.
+     *
+     * @param id
+     * @param outDim caller-allocated {@link Dimensions} object to house the result
+     */
+    void getDesiredDimensions(Object id, Dimensions outDim);
+
+    /**
+     * Return an arbitrary integer to associate with any asynchronous requests for images that
+     * currently belong to this canvas. If, later on when results are available, the generation
+     * that is then reported does not match, the photo manager will assume the image is no longer
+     * desired and will not offer the image.
+     * <p>
+     * Implementors should basically treat this as a counter to increment upon reset() or
+     * data binding.
+     */
+    int getGeneration();
 }

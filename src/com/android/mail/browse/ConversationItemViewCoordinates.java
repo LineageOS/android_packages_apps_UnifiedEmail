@@ -237,8 +237,8 @@ public class ConversationItemViewCoordinates {
 
     final int contactImagesHeight;
     final int contactImagesWidth;
-    final float contactImagesX;
-    final float contactImagesY;
+    final int contactImagesX;
+    final int contactImagesY;
 
     private ConversationItemViewCoordinates(Context context, Config config) {
         final ViewGroup view = (ViewGroup) LayoutInflater.from(context).inflate(

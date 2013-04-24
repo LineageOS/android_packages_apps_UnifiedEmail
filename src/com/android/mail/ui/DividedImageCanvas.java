@@ -20,15 +20,17 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.android.mail.R;
-import com.android.mail.photomanager.BitmapUtil;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * DividedImageCanvas creates a canvas that can display into a minimum of 1
@@ -43,7 +45,8 @@ import java.util.ArrayList;
 public class DividedImageCanvas implements ImageCanvas {
     public static final int MAX_DIVISIONS = 4;
 
-    private ArrayList<String> mDivisionIds;
+    private final Map<String, Integer> mDivisionMap =
+            Maps.newHashMapWithExpectedSize(MAX_DIVISIONS);
     private Bitmap mDividedBitmap;
     private Canvas mCanvas;
     private int mWidth;
@@ -53,16 +56,16 @@ public class DividedImageCanvas implements ImageCanvas {
     private final InvalidateCallback mCallback;
     private final ArrayList<Bitmap> mDivisionImages = new ArrayList<Bitmap>(MAX_DIVISIONS);
 
+    /**
+     * Ignore any request to draw final output when not yet ready. This prevents partially drawn
+     * canvases from appearing.
+     */
+    private boolean mBitmapValid = false;
+
+    private int mGeneration;
 
     private static final Paint sPaint = new Paint();
-    private static final Rect sSrc = new Rect();
     private static final Rect sDest = new Rect();
-
-    public static final float ONE = 1.0f;
-
-    public static final float HALF = 0.5f;
-
-    public static final float QUARTER = 0.25f;
 
     private static int sDividerLineWidth = -1;
     private static int sDividerColor;
@@ -80,118 +83,103 @@ public class DividedImageCanvas implements ImageCanvas {
         return mContext;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append(super.toString());
+        sb.append(" mDivisionMap=");
+        sb.append(mDivisionMap);
+        sb.append(" mDivisionImages=");
+        sb.append(mDivisionImages);
+        sb.append(" mWidth=");
+        sb.append(mWidth);
+        sb.append(" mHeight=");
+        sb.append(mHeight);
+        sb.append("}");
+        return sb.toString();
+    }
+
     /**
      * Set the id associated with each quadrant. The quadrants are laid out:
      * TopLeft, TopRight, Bottom Left, Bottom Right
      * @param divisionIds
      */
-    public void setDivisionIds(ArrayList<String> divisionIds) {
-        mDivisionIds = divisionIds;
-        for (int i = 0; i < mDivisionIds.size(); i++) {
+    public void setDivisionIds(List<String> divisionIds) {
+        if (divisionIds.size() > MAX_DIVISIONS) {
+            throw new IllegalArgumentException("too many divisionIds: " + divisionIds);
+        }
+        mDivisionMap.clear();
+        mDivisionImages.clear();
+        int i = 0;
+        for (String id : divisionIds) {
+            mDivisionMap.put(id, i);
             mDivisionImages.add(null);
+            i++;
         }
     }
 
     private static void draw(Bitmap b, Canvas c, int left, int top, int right, int bottom) {
         if (b != null) {
             // l t r b
-            sSrc.set(0, 0, b.getWidth(), b.getHeight());
             sDest.set(left, top, right, bottom);
-            c.drawBitmap(b, sSrc, sDest, sPaint);
+            c.drawBitmap(b, null, sDest, sPaint);
         }
     }
-
-    /**
-     * Create a bitmap and add it to this view in the quadrant matching its id.
-     * @param b Bitmap
-     * @param id Id to look for that was previously set in setDivisionIds.
-     * @return created bitmap or null
-     */
-    public Bitmap addDivisionImage(byte[] bytes, String id) {
-        Bitmap b = null;
-        final int pos = mDivisionIds.indexOf(id);
-        if (pos >= 0 && bytes != null && bytes.length > 0) {
-            final int width = mWidth;
-            final int height = mHeight;
-            // Different layouts depending on count.
-            int size = mDivisionIds.size();
-            switch (size) {
-                case 1:
-                    // Draw the bitmap filling the entire canvas.
-                    b = BitmapUtil.decodeBitmapFromBytes(bytes, width, height);
-                    break;
-                case 2:
-                    // Draw 2 bitmaps split vertically down the middle
-                    b = BitmapUtil.obtainBitmapWithHalfWidth(bytes, width, height);
-                    break;
-                case 3:
-                    switch (pos) {
-                        case 0:
-                            b = BitmapUtil.obtainBitmapWithHalfWidth(bytes, width, height);
-                            break;
-                        case 1:
-                        case 2:
-                            b = BitmapUtil.decodeBitmapFromBytes(bytes, width / 2, height / 2);
-                            break;
-                    }
-                    break;
-                case 4:
-                    // Draw all 4 bitmaps in a grid
-                    b = BitmapUtil.decodeBitmapFromBytes(bytes, width / 2, height / 2);
-                    break;
-            }
-        }
-        addDivisionImage(b, id);
-        return b;
-    }
-
 
     /**
      * Get the desired dimensions and scale for the bitmap to be placed in the
-     * location corresponding to id.
+     * location corresponding to id. Caller must allocate the Dimensions object.
      * @param id
-     * @return
+     * @param outDim a {@link ImageCanvas.Dimensions} object to write results into
      */
-    public Dimensions getDesiredDimensions(String id) {
+    @Override
+    public void getDesiredDimensions(Object id, Dimensions outDim) {
         int w = 0, h = 0;
         float scale = 0;
-        int pos = mDivisionIds.indexOf(id);
-        if (pos >= 0) {
-            int size = mDivisionIds.size();
+        final Integer pos = mDivisionMap.get(id);
+        if (pos != null && pos >= 0) {
+            final int size = mDivisionMap.size();
             switch (size) {
                 case 0:
                     break;
                 case 1:
                     w = mWidth;
                     h = mHeight;
-                    scale = ONE;
+                    scale = Dimensions.SCALE_ONE;
                     break;
                 case 2:
                     w = mWidth / 2;
                     h = mHeight;
-                    scale = HALF;
+                    scale = Dimensions.SCALE_HALF;
                     break;
                 case 3:
                     switch (pos) {
                         case 0:
                             w = mWidth / 2;
                             h = mHeight;
-                            scale = HALF;
+                            scale = Dimensions.SCALE_HALF;
                             break;
                         default:
                             w = mWidth / 2;
                             h = mHeight / 2;
-                            scale = QUARTER;
+                            scale = Dimensions.SCALE_QUARTER;
                     }
                     break;
                 case 4:
                     w = mWidth / 2;
                     h = mHeight / 2;
-                    scale = QUARTER;
+                    scale = Dimensions.SCALE_QUARTER;
                     break;
             }
         }
-        return new Dimensions(w, h, scale);
+        outDim.width = w;
+        outDim.height = h;
+        outDim.scale = scale;
+    }
+
+    @Override
+    public void drawImage(Bitmap b, Object id) {
+        addDivisionImage(b, id);
     }
 
     /**
@@ -199,19 +187,15 @@ public class DividedImageCanvas implements ImageCanvas {
      * @param b Bitmap
      * @param id Id to look for that was previously set in setDivisionIds.
      */
-    public void addDivisionImage(Bitmap b, String id) {
-        int pos = mDivisionIds.indexOf(id);
-        if (pos >= 0 && b != null) {
+    public void addDivisionImage(Bitmap b, Object id) {
+        final Integer pos = mDivisionMap.get(id);
+        if (pos != null && pos >= 0 && b != null) {
             mDivisionImages.set(pos, b);
             boolean complete = false;
-            int width = mWidth;
-            int height = mHeight;
-            if (mDividedBitmap == null) {
-                mDividedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                mCanvas = new Canvas(mDividedBitmap);
-            }
+            final int width = mWidth;
+            final int height = mHeight;
             // Different layouts depending on count.
-            int size = mDivisionIds.size();
+            final int size = mDivisionMap.size();
             switch (size) {
                 case 0:
                     // Do nothing.
@@ -289,6 +273,7 @@ public class DividedImageCanvas implements ImageCanvas {
             }
             // Create the new image bitmap.
             if (complete) {
+                mBitmapValid = true;
                 mCallback.invalidate();
             }
         }
@@ -323,18 +308,24 @@ public class DividedImageCanvas implements ImageCanvas {
      * Draw the contents of the DividedImageCanvas to the supplied canvas.
      */
     public void draw(Canvas canvas) {
-        if (mDividedBitmap != null) {
-            canvas.drawBitmap(mDividedBitmap, 0, 0, sPaint);
+        if (mDividedBitmap != null && mBitmapValid) {
+            canvas.drawBitmap(mDividedBitmap, 0, 0, null);
         }
     }
 
     @Override
     public void reset() {
         if (mCanvas != null && mDividedBitmap != null) {
-            mCanvas.drawColor(Color.WHITE);
+            mBitmapValid = false;
         }
-        mDivisionIds = null;
+        mDivisionMap.clear();
         mDivisionImages.clear();
+        mGeneration++;
+    }
+
+    @Override
+    public int getGeneration() {
+        return mGeneration;
     }
 
     /**
@@ -343,8 +334,16 @@ public class DividedImageCanvas implements ImageCanvas {
      * @param height
      */
     public void setDimensions(int width, int height) {
+        if (mWidth == width && mHeight == height) {
+            return;
+        }
+
         mWidth = width;
         mHeight = height;
+
+        mDividedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas(mDividedBitmap);
+        mBitmapValid = true;
     }
 
     /**
@@ -369,23 +368,8 @@ public class DividedImageCanvas implements ImageCanvas {
         public void invalidate();
     }
 
-    /**
-     * Dimensions holds the desired width, height, and scale for a bitmap being
-     * placed in the DividedImageCanvas.
-     */
-    public class Dimensions {
-        final public int width;
-        final public int height;
-        final public float scale;
-        public Dimensions(int w, int h, float s) {
-            width = w;
-            height = h;
-            scale = s;
-        }
-    }
-
     public int getDivisionCount() {
-        return mDivisionIds != null ? mDivisionIds.size() : 0;
+        return mDivisionMap.size();
     }
 
     /**
@@ -400,11 +384,13 @@ public class DividedImageCanvas implements ImageCanvas {
      * Get the division ids currently associated with this DivisionImageCanvas.
      */
     public ArrayList<String> getDivisionIds() {
-        return mDivisionIds;
+        return Lists.newArrayList(mDivisionMap.keySet());
     }
 
+    @Deprecated
     @Override
-    public Bitmap loadImage(byte[] bytes, String id) {
-        return addDivisionImage(bytes, id);
+    public Bitmap loadImage(byte[] bytes, Object id) {
+        // TODO: remove me soon.
+        return null;
     }
 }
