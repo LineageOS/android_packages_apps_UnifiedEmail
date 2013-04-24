@@ -39,7 +39,7 @@
     <string name="forward_attribution" msgid="1498936339458535158">"---------- پیام باز ارسال شده ----------&lt;br&gt;فرستنده: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;موضوع: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;گیرنده: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"انتخاب نوع پیوست"</string>
-    <string name="too_large_to_attach_single" msgid="2996733972478212136">"فایل بیش از <xliff:g id="MAXSIZE">%1$s</xliff:g> قابل پیوست نمی‌باشد."</string>
+    <string name="too_large_to_attach_single" msgid="2996733972478212136">"فایل بیش از <xliff:g id="MAXSIZE">%1$s</xliff:g> قابل پیوست نیست."</string>
     <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"یک یا چند فایل پیوست نشده است. حداکثر ظرفیت <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="3366607594339390249">"فایل پیوست نشد. فراتر از حداکثر ظرفیت <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="generic_attachment_problem" msgid="8775959340559458709">"پیوست فایل انجام نشد."</string>
@@ -368,15 +368,12 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"پیام‌های گسترده را متناسب با صفحه شما کوچک می‌کند و امکان بزرگنمایی را بوجود می‌آورد. برای غیرفعال کردن این گزینه به تنظیمات &gt; تنظیمات عمومی بروید."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"پاسخ"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"پاسخ به همه"</string>
-    <string name="notification_action_forward" msgid="7252777659544972497">"بازارسال"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"آرشیو"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"حذف برچسب"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"حذف"</string>
-    <string name="notification_action_mark_read" msgid="4351952818740163225">"علامت بعنوان خوانده"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"بایگانی شد"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"برچسب حذف شد"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"حذف شده"</string>
-    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"تنظیم نشده است"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -386,14 +383,14 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"بیصدا"</string>
     <string name="inbox_unseen_banner" msgid="4561582938706814621">"<xliff:g id="NUMBER">%d</xliff:g> پیام جدید"</string>
-    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"موارد ActionBar دلخواه"</string>
-    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"حداکثر <xliff:g id="MAX">%1$d</xliff:g> عملکرد را انتخاب کنید"</string>
-    <string name="action_archive_remove_label" msgid="2373265427931131215">"بایگانی/حذف برچسب"</string>
-    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"حذف/صرفنظر کردن از پیش‌نویس‌ها"</string>
-    <string name="action_mark_read_unread" msgid="3532210270682619853">"علامت‌گذاری به عنوان خوانده شده/خوانده نشده"</string>
-    <string name="action_add_remove_star" msgid="6658875981206117895">"افزودن/حذف ستاره"</string>
-    <string name="action_mark_not_important" msgid="7097443517025742878">"علامت‌گذاری به‌ عنوان (غیر)مهم"</string>
-    <string name="action_report_not_spam" msgid="7491310680850552208">"گزارش به عنوان (غیر)هرزنامه"</string>
+    <!-- no translation found for preference_archive_vs_delete_title (6469574019069966937) -->
+    <skip />
+    <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
+    <skip />
+    <!-- no translation found for preference_swipe_title (807579971507624260) -->
+    <skip />
+    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"برای بازخوانی، صفحه را با انگشت به سمت پایین بکشید"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"در حال بررسی برای ایمیل"</string>
 </resources>

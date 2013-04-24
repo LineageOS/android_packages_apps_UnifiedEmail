@@ -368,15 +368,12 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"बड़े संदेशों को अपनी स्क्रीन में फ़िट करने के लिए उन्हें सिकोड़ें और ज़ूम इन करने दें. इस विकल्प को बंद करने के लिए, सेटिंग &gt; सामान्य सेटिंग पर जाएं."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"जवाब दें"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"सभी को जवाब दें"</string>
-    <string name="notification_action_forward" msgid="7252777659544972497">"अग्रेषित करें"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"संग्रहीत करें"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"लेबल निकालें"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"हटाएं"</string>
-    <string name="notification_action_mark_read" msgid="4351952818740163225">"पठित चिह्नित करें"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"संग्रहीत"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"लेबल निकाल दिया गया"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"हटा दिया गया"</string>
-    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"सेट नहीं है"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -386,14 +383,14 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"मौन"</string>
     <string name="inbox_unseen_banner" msgid="4561582938706814621">"<xliff:g id="NUMBER">%d</xliff:g> नए"</string>
-    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"पसंदीदा ActionBar आइटम"</string>
-    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"अधिकतम <xliff:g id="MAX">%1$d</xliff:g> क्रियाएं चुनें"</string>
-    <string name="action_archive_remove_label" msgid="2373265427931131215">"लेबल संगृहीत करें/निकालें"</string>
-    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"ड्राफ़्ट हटाएं/खारिज करें"</string>
-    <string name="action_mark_read_unread" msgid="3532210270682619853">"पठित/अपठित चिह्नित करें"</string>
-    <string name="action_add_remove_star" msgid="6658875981206117895">"तारा जोड़ें/निकालें"</string>
-    <string name="action_mark_not_important" msgid="7097443517025742878">"महत्वपूर्ण (नहीं) चिह्नित करें"</string>
-    <string name="action_report_not_spam" msgid="7491310680850552208">"स्पैम (नहीं) रिपोर्ट करें"</string>
+    <!-- no translation found for preference_archive_vs_delete_title (6469574019069966937) -->
+    <skip />
+    <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
+    <skip />
+    <!-- no translation found for preference_swipe_title (807579971507624260) -->
+    <skip />
+    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"रीफ्रेश करने के लिए नीचे स्वाइप करें"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"मेल के लिए जांच की जा रही है"</string>
 </resources>
