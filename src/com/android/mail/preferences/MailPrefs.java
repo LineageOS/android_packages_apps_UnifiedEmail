@@ -120,7 +120,7 @@ public final class MailPrefs extends VersionedPrefs {
 
     @Override
     protected void setMigrationComplete() {
-        getEditor().putInt(PreferenceKeys.MIGRATED_VERSION, CURRENT_VERSION_NUMBER).apply();
+        getEditor().putInt(PreferenceKeys.MIGRATED_VERSION, CURRENT_VERSION_NUMBER).commit();
     }
 
     public boolean isWidgetConfigured(int appWidgetId) {

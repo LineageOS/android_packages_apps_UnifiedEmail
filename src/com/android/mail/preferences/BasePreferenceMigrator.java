@@ -28,12 +28,15 @@ public abstract class BasePreferenceMigrator {
     /** If <code>true</code>, we have not attempted a migration since the app started. */
     private static final AtomicBoolean sMigrationNecessary = new AtomicBoolean(true);
 
-    public final void performMigration(
+    public final boolean performMigration(
             final Context context, final int oldVersion, final int newVersion) {
         // Ensure we only run this once
         if (sMigrationNecessary.getAndSet(false)) {
             migrate(context, oldVersion, newVersion);
+            return true;
         }
+
+        return false;
     }
 
     /**
