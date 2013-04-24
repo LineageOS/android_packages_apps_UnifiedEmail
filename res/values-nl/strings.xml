@@ -295,10 +295,11 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Synchroniseer deze map om conversaties weer te geven."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Map synchroniseren"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <!-- no translation found for actionbar_unread_messages (3805594795629836031) -->
-    <skip />
-    <!-- no translation found for actionbar_large_unread_count (2780005218279965391) -->
-    <skip />
+  <plurals name="actionbar_unread_messages">
+    <item quantity="one" msgid="8470063623338548501">"<xliff:g id="COUNT">%1$d</xliff:g> ongelezen bericht"</item>
+    <item quantity="other" msgid="4103064420707175144">"<xliff:g id="COUNT">%1$d</xliff:g> ongelezen berichten"</item>
+  </plurals>
+    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"<xliff:g id="COUNT">%1$d</xliff:g>+ ongelezen berichten"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Meer conversaties bekijken"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Laden..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Account kiezen"</string>
@@ -370,12 +371,15 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Verklein brede berichten tot ze op uw scherm passen en sta inzoomen toe. Als u deze optie wilt uitschakelen, gaat u naar \'Instellingen &gt; Algemene instellingen\'."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Beantwoorden"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Allen beantwoorden"</string>
+    <string name="notification_action_forward" msgid="7252777659544972497">"Doorsturen"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Archiveren"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"Label verwijderen"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"Verwijderen"</string>
+    <string name="notification_action_mark_read" msgid="4351952818740163225">"Markeren als gelezen"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Gearchiveerd"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Label verwijderd"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Verwijderd"</string>
+    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"Niet ingesteld"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -384,14 +388,14 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> nieuwe berichten"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Stil"</string>
-    <!-- no translation found for preference_archive_vs_delete_title (6469574019069966937) -->
-    <skip />
-    <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
-    <skip />
-    <!-- no translation found for preference_swipe_title (807579971507624260) -->
-    <skip />
-    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
-    <skip />
+    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Voorkeursitems voor actiebalk"</string>
+    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Selecteer maximaal <xliff:g id="MAX">%1$d</xliff:g> acties"</string>
+    <string name="action_archive_remove_label" msgid="2373265427931131215">"Label archiveren/verwijderen"</string>
+    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Concepten verwijderen/weggooien"</string>
+    <string name="action_mark_read_unread" msgid="3532210270682619853">"Markeren als gelezen/ongelezen"</string>
+    <string name="action_add_remove_star" msgid="6658875981206117895">"Ster toevoegen/verwijderen"</string>
+    <string name="action_mark_not_important" msgid="7097443517025742878">"Markeren als (niet) belangrijk"</string>
+    <string name="action_report_not_spam" msgid="7491310680850552208">"Melden dat dit (geen) spam is"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Veeg omlaag om te vernieuwen"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Controleren op e-mail"</string>
     <!-- no translation found for empty_trash (5042310780353359729) -->
