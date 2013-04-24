@@ -302,13 +302,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
                 // Draw the box.
                 sFoldersPaint.setColor(bgColor);
-                sFoldersPaint.setStyle(isMuted ? Paint.Style.STROKE : Paint.Style.FILL_AND_STROKE);
+                sFoldersPaint.setStyle(Paint.Style.FILL);
                 canvas.drawRect(xStart, y, xStart + width - sFoldersLeftPadding,
                         y + height, sFoldersPaint);
 
                 // Draw the text.
                 final int padding = cellSize / 2;
                 sFoldersPaint.setColor(fgColor);
+                sFoldersPaint.setStyle(Paint.Style.FILL);
                 if (labelTooLong) {
                     final int rightBorder = xStart + width - sFoldersLeftPadding - padding;
                     final Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder,
