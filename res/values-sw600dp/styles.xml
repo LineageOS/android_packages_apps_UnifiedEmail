@@ -47,4 +47,5 @@
     </style>
 
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Dialog.MinWidth"/>
+
 </resources>
