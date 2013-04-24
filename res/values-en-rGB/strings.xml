@@ -76,10 +76,8 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Change folders"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Move to"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Folder settings"</string>
-    <!-- no translation found for menu_show_original (7645904330201725804) -->
-    <skip />
-    <!-- no translation found for message_modified (2564340197585393687) -->
-    <skip />
+    <string name="menu_show_original" msgid="7645904330201725804">"Show original"</string>
+    <string name="message_modified" msgid="2564340197585393687">"(This message has been modified from its original version to fit this screen.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Folders"</string>
     <string name="folder_list_more" msgid="537172187223133825">"More"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"More accounts"</string>
@@ -295,11 +293,8 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"To view conversations, sync this folder."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sync Folder"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-  <plurals name="actionbar_unread_messages">
-    <item quantity="one" msgid="8470063623338548501">"<xliff:g id="COUNT">%1$d</xliff:g> unread message"</item>
-    <item quantity="other" msgid="4103064420707175144">"<xliff:g id="COUNT">%1$d</xliff:g> unread messages"</item>
-  </plurals>
-    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"<xliff:g id="COUNT">%1$d</xliff:g>+ unread messages"</string>
+    <string name="actionbar_unread_messages" msgid="3805594795629836031">"<xliff:g id="COUNT">%1$d</xliff:g> unread"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>+ unread"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"View more conversations"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Loading…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Choose account"</string>
@@ -372,15 +367,12 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Shrink wide messages to fit your screen and allow zooming in. To turn off this option, go to Settings &gt; General settings."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Reply"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Reply all"</string>
-    <string name="notification_action_forward" msgid="7252777659544972497">"Forward"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Archive"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"Remove label"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"Delete"</string>
-    <string name="notification_action_mark_read" msgid="4351952818740163225">"Mark as read"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Archived"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Label Removed"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Deleted"</string>
-    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"Not set"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -389,22 +381,16 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> new messages"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Silent"</string>
-    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Preferred ActionBar items"</string>
-    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Select up to <xliff:g id="MAX">%1$d</xliff:g> actions"</string>
-    <string name="action_archive_remove_label" msgid="2373265427931131215">"Archive/Remove Label"</string>
-    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Delete/Discard drafts"</string>
-    <string name="action_mark_read_unread" msgid="3532210270682619853">"Mark Read/Unread"</string>
-    <string name="action_add_remove_star" msgid="6658875981206117895">"Add/Remove Star"</string>
-    <string name="action_mark_not_important" msgid="7097443517025742878">"Mark (not) important"</string>
-    <string name="action_report_not_spam" msgid="7491310680850552208">"Report not spam"</string>
+    <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Remove action"</string>
+    <string name="preference_archive_vs_delete_text" msgid="3219537390825170783">"Delete rather than archive conversations"</string>
+    <!-- no translation found for preference_swipe_title (807579971507624260) -->
+    <skip />
+    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Swipe down to refresh"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Checking for mail"</string>
-    <!-- no translation found for empty_trash (5042310780353359729) -->
-    <skip />
-    <!-- no translation found for empty_spam (930744491746508050) -->
-    <skip />
-    <!-- no translation found for drawer_open (6074646853178471940) -->
-    <skip />
-    <!-- no translation found for drawer_close (2764774620737876943) -->
-    <skip />
+    <string name="empty_trash" msgid="5042310780353359729">"Empty trash"</string>
+    <string name="empty_spam" msgid="930744491746508050">"Empty spam"</string>
+    <string name="drawer_open" msgid="6074646853178471940">"Open navigation drawer"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"Close navigation drawer"</string>
 </resources>
