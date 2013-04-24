@@ -259,8 +259,8 @@ public class FolderPreferences extends VersionedPrefs {
         final String destructiveAction = destructiveActionType.getPersistedValue();
 
         final String replyAction =
-                MailPrefs.get(getContext()).getDefaultReplyAll() ? NotificationActionType.REPLY_ALL
-                        .getPersistedValue()
+                MailPrefs.get(getContext()).getDefaultReplyAll()
+                        ? NotificationActionType.REPLY_ALL.getPersistedValue()
                         : NotificationActionType.REPLY.getPersistedValue();
 
         final Set<String> notificationActions = new LinkedHashSet<String>(2);
