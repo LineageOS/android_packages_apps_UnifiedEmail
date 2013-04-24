@@ -261,6 +261,8 @@ function transformContent(el, docWidth, elWidth) {
 
     if (!done) {
         // OK, that wasn't enough. Find tables with widths and override their widths.
+        // Also ensure that any use of 'table-layout: fixed' is negated, since using
+        // that with 'width: auto' causes erratic table width.
         nodes = ENABLE_MUNGE_TABLES ? el.querySelectorAll("table") : [];
         touched = addClassToElements(nodes, shouldMungeTable, "munged",
             actionLog);

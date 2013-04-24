@@ -73,6 +73,7 @@ import com.android.mail.ui.ConversationViewState.ExpansionState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -922,10 +923,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     private Address getAddress(String rawFrom) {
-        Address addr = mAddressCache.get(rawFrom);
-        if (addr == null) {
-            addr = Address.getEmailAddress(rawFrom);
-            mAddressCache.put(rawFrom, addr);
+        Address addr;
+        synchronized (mAddressCache) {
+            addr = mAddressCache.get(rawFrom);
+            if (addr == null) {
+                addr = Address.getEmailAddress(rawFrom);
+                mAddressCache.put(rawFrom, addr);
+            }
         }
         return addr;
     }
@@ -993,7 +997,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
 
             final Set<String> emailAddresses = Sets.newHashSet();
-            for (Address addr : mAddressCache.values()) {
+            final List<Address> cacheCopy;
+            synchronized (mAddressCache) {
+                cacheCopy = ImmutableList.copyOf(mAddressCache.values());
+            }
+            for (Address addr : cacheCopy) {
                 emailAddresses.add(addr.getAddress());
             }
             ContactLoaderCallbacks callbacks = getContactInfoSource();
@@ -1083,6 +1091,31 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
             } catch (Throwable t) {
                 LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.getMessageBody");
+                return "";
+            }
+        }
+
+        @SuppressWarnings("unused")
+        @JavascriptInterface
+        public String getMessageSender(String domId) {
+            try {
+                final MessageCursor cursor = getMessageCursor();
+                if (!mViewsCreated || cursor == null) {
+                    return "";
+                }
+
+                int pos = -1;
+                while (cursor.moveToPosition(++pos)) {
+                    final ConversationMessage msg = cursor.getMessage();
+                    if (TextUtils.equals(domId, mTemplates.getMessageDomId(msg))) {
+                        return getAddress(msg.getFrom()).getAddress();
+                    }
+                }
+
+                return "";
+
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.getMessageSender");
                 return "";
             }
         }
