@@ -80,6 +80,7 @@
     <item
         android:id="@+id/move_to"
         android:title="@string/menu_move_to"
+        android:showAsAction="always"
         android:icon="@drawable/ic_menu_move_to_holo_light" />
 
     <item

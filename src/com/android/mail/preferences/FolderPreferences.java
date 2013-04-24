@@ -32,7 +32,6 @@ import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.NotificationActionUtils.NotificationActionType;
 
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -57,8 +56,6 @@ public class FolderPreferences extends VersionedPrefs {
          */
         public static final String NOTIFICATION_NOTIFY_EVERY_MESSAGE =
                 "notification-notify-every-message";
-        /** String set of the notification actions (from {@link NotificationActionType} */
-        public static final String NOTIFICATION_ACTIONS = "notification-actions";
 
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
@@ -66,7 +63,6 @@ public class FolderPreferences extends VersionedPrefs {
                         .add(NOTIFICATION_RINGTONE)
                         .add(NOTIFICATION_VIBRATE)
                         .add(NOTIFICATION_NOTIFY_EVERY_MESSAGE)
-                        .add(NOTIFICATION_ACTIONS)
                         .build();
     }
 
@@ -251,24 +247,19 @@ public class FolderPreferences extends VersionedPrefs {
         MailIntentService.broadcastBackupDataChanged(getContext());
     }
 
-    private Set<String> getDefaultNotificationActions(final Context context,
-            final Account account) {
+    public Set<String> getNotificationActions(final Account account) {
         final boolean supportsArchiveRemoveLabel =
                 account.supportsCapability(AccountCapabilities.ARCHIVE)
                 && (mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
                 || mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION));
-        // Use the swipe setting, since it is essentially a way to allow the user to specify
-        // whether they prefer archive or delete, without adding another setting
-        final boolean preferDelete =
-                MailPrefs.ConversationListSwipeActions.DELETE.equals(MailPrefs.get(context)
-                        .getConversationListSwipeAction(true /* supportsArchive */));
+        final boolean preferDelete = MailPrefs.get(getContext()).getPreferDelete();
         final NotificationActionType destructiveActionType =
                 supportsArchiveRemoveLabel && !preferDelete ?
                         NotificationActionType.ARCHIVE_REMOVE_LABEL : NotificationActionType.DELETE;
         final String destructiveAction = destructiveActionType.getPersistedValue();
 
         final String replyAction =
-                MailPrefs.get(context).getDefaultReplyAll() ? NotificationActionType.REPLY_ALL
+                MailPrefs.get(getContext()).getDefaultReplyAll() ? NotificationActionType.REPLY_ALL
                         .getPersistedValue()
                         : NotificationActionType.REPLY.getPersistedValue();
 
@@ -277,46 +268,5 @@ public class FolderPreferences extends VersionedPrefs {
         notificationActions.add(replyAction);
 
         return notificationActions;
-    }
-
-    /**
-     * Gets the notification actions configured for this account and label, or the default if none
-     * have been set.
-     */
-    public Set<String> getNotificationActions(final Account account) {
-        final Set<String> actions = getSharedPreferences().getStringSet(
-                PreferenceKeys.NOTIFICATION_ACTIONS,
-                getDefaultNotificationActions(getContext(), account));
-
-        // Prune invalid actions
-        final ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-        for (final NotificationActionType actionType : NotificationActionType.values()) {
-            builder.add(actionType.getPersistedValue());
-        }
-        final Set<String> validActions = builder.build();
-
-        boolean dirty = false;
-        final Iterator<String> iterator = actions.iterator();
-        while (iterator.hasNext()) {
-            final String item = iterator.next();
-            if (!validActions.contains(item)) {
-                iterator.remove();
-                dirty = true;
-            }
-        }
-
-        if (dirty) {
-            setNotificationActions(actions);
-        }
-
-        return actions;
-    }
-
-    /**
-     * Sets the notification actions for this account and label.
-     */
-    public void setNotificationActions(final Set<String> actions) {
-        getEditor().putStringSet(PreferenceKeys.NOTIFICATION_ACTIONS, actions).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
     }
 }

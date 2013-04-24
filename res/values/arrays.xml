@@ -33,28 +33,4 @@
         <!-- Drafts -->
         <item>^r</item>
     </string-array>
-
-    <!-- A set of unique identifiers for configuring ActionBar items. Do not translate. -->
-    <string-array translatable="false" name="preferred_actionbar_item_ids">
-        <item>archive_remove_folder</item>
-        <item>delete_discard_drafts</item>
-        <item>mark_read_unread</item>
-        <item>change_folders</item>
-        <item>add_remove_star</item>
-        <item>move_to</item>
-        <item>mark_not_important</item>
-        <item>report_not_spam</item>
-    </string-array>
-
-    <!-- Display names for the above ActionBar items. Do not translate. -->
-    <string-array translatable="false" name="preferred_actionbar_item_names">
-        <item>@string/action_archive_remove_label</item>
-        <item>@string/action_delete_discard_drafts</item>
-        <item>@string/action_mark_read_unread</item>
-        <item>@string/menu_change_folders</item>
-        <item>@string/action_add_remove_star</item>
-        <item>@string/menu_move_to</item>
-        <item>@string/action_mark_not_important</item>
-        <item>@string/action_report_not_spam</item>
-    </string-array>
 </resources>
