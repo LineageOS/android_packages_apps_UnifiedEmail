@@ -79,13 +79,9 @@ public class NotificationActionUtils {
         }),
         DELETE("delete", true, R.drawable.ic_menu_delete_holo_dark,
                 R.string.notification_action_delete),
-        MARK_READ("mark_read", false, R.drawable.ic_menu_mark_read_holo_dark,
-                R.string.notification_action_mark_read),
         REPLY("reply", false, R.drawable.ic_reply_holo_dark, R.string.notification_action_reply),
         REPLY_ALL("reply_all", false, R.drawable.ic_reply_all_holo_dark,
-                R.string.notification_action_reply_all),
-        FORWARD("forward", false, R.drawable.ic_forward_holo_dark,
-                R.string.notification_action_forward);
+                R.string.notification_action_reply_all);
 
         private final String mPersistedValue;
         private final boolean mIsDestructive;
@@ -236,17 +232,11 @@ public class NotificationActionUtils {
             if (unsortedActions.contains(NotificationActionType.DELETE)) {
                 sortedActions.add(NotificationActionType.DELETE);
             }
-            if (unsortedActions.contains(NotificationActionType.MARK_READ)) {
-                sortedActions.add(NotificationActionType.MARK_READ);
-            }
             if (unsortedActions.contains(NotificationActionType.REPLY)) {
                 sortedActions.add(NotificationActionType.REPLY);
             }
             if (unsortedActions.contains(NotificationActionType.REPLY_ALL)) {
                 sortedActions.add(NotificationActionType.REPLY_ALL);
-            }
-            if (unsortedActions.contains(NotificationActionType.FORWARD)) {
-                sortedActions.add(NotificationActionType.FORWARD);
             }
         } else if (folder.isProviderFolder()) {
             // Gmail system labels
@@ -261,17 +251,11 @@ public class NotificationActionUtils {
             if (unsortedActions.contains(NotificationActionType.DELETE)) {
                 sortedActions.add(NotificationActionType.DELETE);
             }
-            if (unsortedActions.contains(NotificationActionType.MARK_READ)) {
-                sortedActions.add(NotificationActionType.MARK_READ);
-            }
             if (unsortedActions.contains(NotificationActionType.REPLY)) {
                 sortedActions.add(NotificationActionType.REPLY);
             }
             if (unsortedActions.contains(NotificationActionType.REPLY_ALL)) {
                 sortedActions.add(NotificationActionType.REPLY_ALL);
-            }
-            if (unsortedActions.contains(NotificationActionType.FORWARD)) {
-                sortedActions.add(NotificationActionType.FORWARD);
             }
         } else {
             // Gmail user created labels
@@ -288,17 +272,11 @@ public class NotificationActionUtils {
             if (unsortedActions.contains(NotificationActionType.DELETE)) {
                 sortedActions.add(NotificationActionType.DELETE);
             }
-            if (unsortedActions.contains(NotificationActionType.MARK_READ)) {
-                sortedActions.add(NotificationActionType.MARK_READ);
-            }
             if (unsortedActions.contains(NotificationActionType.REPLY)) {
                 sortedActions.add(NotificationActionType.REPLY);
             }
             if (unsortedActions.contains(NotificationActionType.REPLY_ALL)) {
                 sortedActions.add(NotificationActionType.REPLY_ALL);
-            }
-            if (unsortedActions.contains(NotificationActionType.FORWARD)) {
-                sortedActions.add(NotificationActionType.FORWARD);
             }
         }
 
@@ -354,24 +332,6 @@ public class NotificationActionUtils {
 
                 return taskStackBuilder.getPendingIntent(
                         notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
-            } case FORWARD: {
-                // Build a task stack that forces the conversation view on the stack before the
-                // reply activity.
-                final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-
-                final Intent intent = createForwardIntent(context, account, messageUri);
-                intent.setPackage(context.getPackageName());
-                intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
-                // To make sure that the reply intents one notification don't clobber over
-                // intents for other notification, force a data uri on the intent
-                final Uri notificationUri =
-                        Uri.parse("mailfrom://mail/account/" + "forward/" + notificationId);
-                intent.setData(notificationUri);
-
-                taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(intent);
-
-                return taskStackBuilder.getPendingIntent(
-                        notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
             } case ARCHIVE_REMOVE_LABEL: {
                 final String intentAction =
                         NotificationActionIntentService.ACTION_ARCHIVE_REMOVE_LABEL;
@@ -385,16 +345,6 @@ public class NotificationActionUtils {
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             } case DELETE: {
                 final String intentAction = NotificationActionIntentService.ACTION_DELETE;
-
-                final Intent intent = new Intent(intentAction);
-                intent.setPackage(context.getPackageName());
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                        notificationAction);
-
-                return PendingIntent.getService(
-                        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            } case MARK_READ: {
-                final String intentAction = NotificationActionIntentService.ACTION_MARK_READ;
 
                 final Intent intent = new Intent(intentAction);
                 intent.setPackage(context.getPackageName());
