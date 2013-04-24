@@ -271,10 +271,8 @@ public class FolderListFragment extends ListFragment implements
         // Initialize adapter for folder/heirarchical list
         final Folder selectedFolder;
         if (mParentFolder != null) {
-            mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
             selectedFolder = mActivity.getHierarchyFolder();
         } else {
-            mCursorAdapter = new FolderListAdapter(mIsSectioned);
             selectedFolder = currentFolder;
         }
         // Is the selected folder fresher than the one we have restored from a bundle?
@@ -352,9 +350,19 @@ public class FolderListFragment extends ListFragment implements
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setInstanceFromBundle(getArguments());
+        if (mParentFolder != null) {
+            mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
+        } else {
+            mCursorAdapter = new FolderListAdapter(mIsSectioned);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedState) {
-        setInstanceFromBundle(getArguments());
         final View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
