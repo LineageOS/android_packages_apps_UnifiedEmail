@@ -18,15 +18,14 @@
 package com.android.mail.preferences;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.android.mail.MailIntentService;
-import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.widget.BaseWidgetProvider;
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -58,21 +57,25 @@ public final class MailPrefs extends VersionedPrefs {
          * A preference for storing most recently used accounts (ordered list or URIs)
          */
         public static final String RECENT_ACCOUNTS = "recent-account-uris";
-        public static final String CONVERSATION_LIST_SWIPE_ACTION =
-                "conversation-list-swipe-action";
+        /**
+         * A boolean that, if <code>true</code>, means we should allow conversation list swiping
+         */
+        public static final String CONVERSATION_LIST_SWIPE = "conversation-list-swipe";
+
+        /**
+         * A boolean indicating whether the user prefers delete or archive.
+         */
+        public static final String PREFER_DELETE = "prefer-delete";
 
         /** Hidden preference used to cache the active notification set */
         private static final String CACHED_ACTIVE_NOTIFICATION_SET =
                 "cache-active-notification-set";
 
-        /** String set of the preffered ActionBar items */
-        public static final String PREFERRED_ACTIONBAR_ITEMS = "preferred-actionbar-items";
-
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
-                .add(CONVERSATION_LIST_SWIPE_ACTION)
-                .add(PREFERRED_ACTIONBAR_ITEMS)
+                .add(CONVERSATION_LIST_SWIPE)
+                .add(PREFER_DELETE)
                 .build();
 
     }
@@ -176,17 +179,29 @@ public final class MailPrefs extends VersionedPrefs {
     }
 
     /**
-     * Gets the action to take (one of the values from {@link ConversationListSwipeActions}) when an
-     * item in the conversation list is swiped.
-     *
-     * @param allowArchive <code>true</code> if Archive is an acceptable action (this will affect
-     *        the default return value)
+     * Gets a boolean indicating whether delete is preferred over archive.
      */
-    public String getConversationListSwipeAction(final boolean allowArchive) {
-        return getSharedPreferences().getString(
-                PreferenceKeys.CONVERSATION_LIST_SWIPE_ACTION,
-                allowArchive ? ConversationListSwipeActions.ARCHIVE
-                        : ConversationListSwipeActions.DELETE);
+    public boolean getPreferDelete() {
+        final SharedPreferences sharedPreferences = getSharedPreferences();
+        return sharedPreferences.getBoolean(PreferenceKeys.PREFER_DELETE, false);
+    }
+
+    public void setPreferDelete(final boolean preferDelete) {
+        getEditor().putBoolean(PreferenceKeys.PREFER_DELETE, preferDelete).apply();
+        MailIntentService.broadcastBackupDataChanged(getContext());
+    }
+
+    /**
+     * Gets a boolean indicating whether conversation list swiping is enabled.
+     */
+    public boolean getIsConversationListSwipeEnabled() {
+        final SharedPreferences sharedPreferences = getSharedPreferences();
+        return sharedPreferences.getBoolean(PreferenceKeys.CONVERSATION_LIST_SWIPE, true);
+    }
+
+    public void setConversationListSwipeEnabled(final boolean enabled) {
+        getEditor().putBoolean(PreferenceKeys.CONVERSATION_LIST_SWIPE, enabled).apply();
+        MailIntentService.broadcastBackupDataChanged(getContext());
     }
 
     /**
@@ -197,21 +212,14 @@ public final class MailPrefs extends VersionedPrefs {
      *        the default return value)
      */
     public int getConversationListSwipeActionInteger(final boolean allowArchive) {
-        final String swipeAction = getConversationListSwipeAction(allowArchive);
-        if (ConversationListSwipeActions.ARCHIVE.equals(swipeAction)) {
-            return UIProvider.Swipe.ARCHIVE;
-        } else if (ConversationListSwipeActions.DELETE.equals(swipeAction)) {
-            return UIProvider.Swipe.DELETE;
-        } else if (ConversationListSwipeActions.DISABLED.equals(swipeAction)) {
-            return UIProvider.Swipe.DISABLED;
-        } else {
-            return UIProvider.Swipe.DEFAULT;
-        }
-    }
+        final boolean swipeEnabled = getIsConversationListSwipeEnabled();
+        final boolean archive = !getPreferDelete() && allowArchive;
 
-    public void setConversationListSwipeAction(final String swipeAction) {
-        getEditor().putString(PreferenceKeys.CONVERSATION_LIST_SWIPE_ACTION, swipeAction).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        if (swipeEnabled) {
+            return archive ? UIProvider.Swipe.ARCHIVE : UIProvider.Swipe.DELETE;
+        }
+
+        return UIProvider.Swipe.DISABLED;
     }
 
     /**
@@ -228,43 +236,5 @@ public final class MailPrefs extends VersionedPrefs {
     public void cacheActiveNotificationSet(final Set<String> notificationSet) {
         getEditor().putStringSet(PreferenceKeys.CACHED_ACTIVE_NOTIFICATION_SET, notificationSet)
                 .apply();
-    }
-
-    /**
-     * Gets the preferred ActionBar items, or an empty {@link Set} if none have been set.
-     */
-    public Set<String> getPreferredActionItems() {
-        final Set<String> preferredItems = getSharedPreferences().getStringSet(
-                PreferenceKeys.PREFERRED_ACTIONBAR_ITEMS,
-                new ImmutableSet.Builder<String>().build());
-
-        // Prune invalid items
-        final Context context = getContext();
-        final Set<String> validItems = ImmutableSet.copyOf(context.getResources().getStringArray(
-                R.array.preferred_actionbar_item_ids));
-
-        boolean dirty = false;
-        final Iterator<String> iterator = preferredItems.iterator();
-        while (iterator.hasNext()) {
-            final String item = iterator.next();
-            if (!validItems.contains(item)) {
-                iterator.remove();
-                dirty = true;
-            }
-        }
-
-        if (dirty) {
-            setPreferredActionItems(preferredItems);
-        }
-
-        return preferredItems;
-    }
-
-    /**
-     * Sets the preferred ActionBar items.
-     */
-    public void setPreferredActionItems(final Set<String> items) {
-        getEditor().putStringSet(PreferenceKeys.PREFERRED_ACTIONBAR_ITEMS, items).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
     }
 }
