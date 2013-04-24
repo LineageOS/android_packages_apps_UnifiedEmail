@@ -368,12 +368,15 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Sumažinkite plačius pranešimus, kad jie tilptų jūsų ekrane, ir įgalinkite mastelio keitimą. Jei norite išjungti šią parinktį, eikite į „Nustatymai“ &gt; „Bendrieji nustatymai“."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Atsakyti"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Atsakyti visiems"</string>
+    <string name="notification_action_forward" msgid="7252777659544972497">"Persiųsti"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Archyvuoti"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"Pašalinti etiketę"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"Ištrinti"</string>
+    <string name="notification_action_mark_read" msgid="4351952818740163225">"Žymėti raudonai"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Suarchyvuota"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Etiketė pašalinta"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Ištrinta"</string>
+    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"Nenustatyta"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -383,14 +386,14 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Tylus"</string>
     <string name="inbox_unseen_banner" msgid="4561582938706814621">"NAUJA: <xliff:g id="NUMBER">%d</xliff:g>"</string>
-    <!-- no translation found for preference_archive_vs_delete_title (6469574019069966937) -->
-    <skip />
-    <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
-    <skip />
-    <!-- no translation found for preference_swipe_title (807579971507624260) -->
-    <skip />
-    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
-    <skip />
+    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Pageidaujami veiksmų juostos elementai"</string>
+    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Pasirinkite iki <xliff:g id="MAX">%1$d</xliff:g> veiksm."</string>
+    <string name="action_archive_remove_label" msgid="2373265427931131215">"Archyvuoti / pašalinti etiketę"</string>
+    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Ištrinti / išmesti juodr."</string>
+    <string name="action_mark_read_unread" msgid="3532210270682619853">"Pažym. kaip skait. / neskait."</string>
+    <string name="action_add_remove_star" msgid="6658875981206117895">"Pridėti / pašalinti žvaigždutę"</string>
+    <string name="action_mark_not_important" msgid="7097443517025742878">"Pažymėti kaip (ne)svarbų"</string>
+    <string name="action_report_not_spam" msgid="7491310680850552208">"Praneš., kad tai (ne)šlamštas"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Perbraukite žemyn, kad atnaujintumėte"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Ieškoma laiškų"</string>
 </resources>
