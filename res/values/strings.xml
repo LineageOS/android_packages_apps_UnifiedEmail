@@ -807,16 +807,12 @@
     <string name="notification_action_reply">Reply</string>
     <!-- Notification action for replying-all to a message. [CHAR LIMIT=20] -->
     <string name="notification_action_reply_all">Reply all</string>
-    <!-- Notification action for forwarding a message. [CHAR LIMIT=20] -->
-    <string name="notification_action_forward">Forward</string>
     <!-- Notification action for archiving a message. [CHAR LIMIT=20] -->
     <string name="notification_action_archive">Archive</string>
     <!-- Notification action for removing a label from a message. [CHAR LIMIT=20] -->
     <string name="notification_action_remove_label">Remove label</string>
     <!-- Notification action for deleting a message. [CHAR LIMIT=20] -->
     <string name="notification_action_delete">Delete</string>
-    <!-- Notification action for marking a message as read. [CHAR LIMIT=24] -->
-    <string name="notification_action_mark_read">Mark read</string>
 
     <!-- Notification undo text after archiving a message. [CHAR LIMIT=30] -->
     <string name="notification_action_undo_archive">Archived</string>
@@ -824,9 +820,6 @@
     <string name="notification_action_undo_remove_label">Label Removed</string>
     <!-- Notification undo text after deleting a message. [CHAR LIMIT=30] -->
     <string name="notification_action_undo_delete">Deleted</string>
-
-    <!-- Manage label/folder screen, summary for notification actions preference when no actions are set. [CHAR LIMIT=30] -->
-    <string name="notification_action_preference_summary_not_set">Not set</string>
 
     <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
     <string name="veiled_address"/>
@@ -854,22 +847,10 @@
     <!-- Settings screen, preference description for archive vs. delete [CHAR LIMIT=200] -->
     <string name="preference_archive_vs_delete_text">Delete rather than archive conversations</string>
 
-    <!-- Settings screen, preference for configuring preferred ActionBar items [CHAR LIMIT=50] -->
-    <string name="preference_preferred_actionbar_items">Preferred ActionBar items</string>
-    <!-- Dialog title for the preferred ActionBar items dialog [CHAR LIMIT=150] -->
-    <string name="preference_preferred_actionbar_items_dialog_title">Select up to <xliff:g id="max">%1$d</xliff:g> actions</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
-    <string name="action_archive_remove_label">Archive/Remove Label</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
-    <string name="action_delete_discard_drafts">Delete/Discard drafts</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
-    <string name="action_mark_read_unread">Mark Read/Unread</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
-    <string name="action_add_remove_star">Add/Remove Star</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
-    <string name="action_mark_not_important">Mark (not) important</string>
-    <!-- Option for configuring ActionBar items [CHAR LIMIT=50] -->
-    <string name="action_report_not_spam">Report (not) spam</string>
+    <!-- Preference name for swipe action [CHAR LIMIT=100]-->
+    <string name="preference_swipe_title">Swipe to remove</string>
+    <!-- Preference description swiping in conversation list option [CHAR LIMIT=100] -->
+    <string name="preference_swipe_description">In conversation list</string>
 
     <!-- In conversation list, when user initiates a downward swipe,
         this text is displayed in the action bar as a hint that they can trigger a
