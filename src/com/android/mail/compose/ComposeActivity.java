@@ -1013,8 +1013,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mVideoAttachmentsButton.setOnClickListener(this);
         }
         mTo = (RecipientEditTextView) findViewById(R.id.to);
+        mTo.setTokenizer(new Rfc822Tokenizer());
         mCc = (RecipientEditTextView) findViewById(R.id.cc);
+        mCc.setTokenizer(new Rfc822Tokenizer());
         mBcc = (RecipientEditTextView) findViewById(R.id.bcc);
+        mBcc.setTokenizer(new Rfc822Tokenizer());
         // TODO: add special chips text change watchers before adding
         // this as a text changed watcher to the to, cc, bcc fields.
         mSubject = (TextView) findViewById(R.id.subject);
@@ -1736,7 +1739,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void setupRecipients(RecipientEditTextView view) {
         view.setAdapter(new RecipientAdapter(this, mAccount));
-        view.setTokenizer(new Rfc822Tokenizer());
         if (mValidator == null) {
             final String accountName = mAccount.name;
             int offset = accountName.indexOf("@") + 1;
