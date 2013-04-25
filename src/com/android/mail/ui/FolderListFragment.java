@@ -773,7 +773,7 @@ public class FolderListFragment extends ListFragment implements
             do {
                 final Folder f = mCursor.getModel();
                 if (!isFolderTypeExcluded(f)) {
-                    if (f.isProviderFolder() && f.isInbox()) {
+                    if (f.isInbox()) {
                         inboxFolders.add(DrawerItem.ofFolder(
                                 mActivity, f, DrawerItem.FOLDER_SYSTEM, mCursor.getPosition()));
                     } else {
@@ -1039,8 +1039,11 @@ public class FolderListFragment extends ListFragment implements
      */
     private void setSelectedFolderType(Folder folder) {
         if (mSelectedFolderType == DrawerItem.UNSET) {
-            mSelectedFolderType = folder.isProviderFolder() ? DrawerItem.FOLDER_SYSTEM
+            mSelectedFolderType = folder.isInbox() ? DrawerItem.FOLDER_SYSTEM
                     : DrawerItem.FOLDER_USER;
+        } else if (folder.isInbox()) {
+            // Handle when backing up in case we need to manually set the type
+            mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
         }
     }
 
