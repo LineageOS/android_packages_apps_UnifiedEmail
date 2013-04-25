@@ -835,4 +835,9 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    @Override
+    public boolean isDrawerEnabled() {
+        // The drawer is enabled for one pane mode
+        return true;
+    }
 }

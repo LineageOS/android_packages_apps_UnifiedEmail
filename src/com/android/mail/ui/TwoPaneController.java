@@ -551,4 +551,10 @@ public final class TwoPaneController extends AbstractActivityController {
 
         showErrorToast(folder, replaceVisibleToast);
     }
+
+    @Override
+    public boolean isDrawerEnabled() {
+        // The drawer is currently not enabled for two pane mode
+        return false;
+    }
 }

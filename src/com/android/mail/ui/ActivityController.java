@@ -296,4 +296,10 @@ public interface ActivityController extends LayoutListener,
      * Called when Accessibility is enabled or disabled.
      */
     void onAccessibilityStateChanged();
+
+    /**
+     * Called to determine if the drawer is enabled for this controller/activity instance.
+     * Note: the value returned should not change for this controller instance.
+     */
+    boolean isDrawerEnabled();
 }
