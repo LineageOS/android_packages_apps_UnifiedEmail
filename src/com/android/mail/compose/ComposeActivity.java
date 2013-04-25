@@ -1293,9 +1293,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Since URLDecode.decode changes + into ' ', and + is a valid
         // email character, we need to find/ replace these ourselves before
         // decoding.
-        String replacePlus = s.replace("+", "%2B");
         try {
-            return URLDecoder.decode(replacePlus, UTF8_ENCODING_NAME);
+            return URLDecoder.decode(replacePlus(s), UTF8_ENCODING_NAME);
         } catch (IllegalArgumentException e) {
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
                 LogUtils.e(LOG_TAG, "%s while decoding '%s'", e.getMessage(), s);
@@ -1304,6 +1303,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
             return null;
         }
+    }
+
+    /**
+     * Replaces all occurrences of '+' with "%2B", to prevent URLDecode.decode from
+     * changing '+' into ' '
+     *
+     * @param toReplace Input string
+     * @return The string with all "+" characters replaced with "%2B"
+     */
+    private String replacePlus(String toReplace) {
+        return toReplace.replace("+", "%2B");
     }
 
     /**
@@ -1347,7 +1357,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         List<String> subject = uri.getQueryParameters("subject");
         if (subject.size() > 0) {
             try {
-                mSubject.setText(URLDecoder.decode(subject.get(0), UTF8_ENCODING_NAME));
+                mSubject.setText(URLDecoder.decode(replacePlus(subject.get(0)),
+                        UTF8_ENCODING_NAME));
             } catch (UnsupportedEncodingException e) {
                 LogUtils.e(LOG_TAG, "%s while decoding subject '%s'",
                         e.getMessage(), subject);
@@ -1357,7 +1368,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         List<String> body = uri.getQueryParameters("body");
         if (body.size() > 0) {
             try {
-                setBody(URLDecoder.decode(body.get(0), UTF8_ENCODING_NAME),
+                setBody(URLDecoder.decode(replacePlus(body.get(0)), UTF8_ENCODING_NAME),
                         true /* with signature */);
             } catch (UnsupportedEncodingException e) {
                 LogUtils.e(LOG_TAG, "%s while decoding body '%s'", e.getMessage(), body);
