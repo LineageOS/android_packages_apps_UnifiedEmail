@@ -66,6 +66,11 @@
         android:showAsAction="always"
         android:icon="@drawable/ic_menu_mark_unread_holo_light" />
 
+    <item
+        android:id="@+id/move_to"
+        android:title="@string/menu_move_to"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_menu_moveto_holo_light" />
 
     <item
         android:id="@+id/change_folder"
@@ -82,12 +87,6 @@
         android:title="@string/remove_star"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_star_off_holo_light" />
-
-    <item
-        android:id="@+id/move_to"
-        android:title="@string/menu_move_to"
-        android:showAsAction="always"
-        android:icon="@drawable/ic_menu_moveto_holo_light" />
 
     <item
         android:id="@+id/mark_important"
