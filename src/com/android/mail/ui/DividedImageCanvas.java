@@ -279,6 +279,11 @@ public class DividedImageCanvas implements ImageCanvas {
         }
     }
 
+    public boolean hasImageFor(Object id) {
+        final Integer pos = mDivisionMap.get(id);
+        return pos != null && mDivisionImages.get(pos) != null;
+    }
+
     private void setupDividerLines() {
         if (sDividerLineWidth == -1) {
             Resources res = getContext().getResources();
