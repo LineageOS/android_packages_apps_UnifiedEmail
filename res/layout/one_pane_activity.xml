@@ -41,7 +41,7 @@
     <!--A drawer for phones: a pull-out that gives the list of folders. -->
     <fragment class="com.android.mail.ui.DrawerFragment"
         android:id="@+id/drawer_pullout"
-        android:layout_width="300dp"
+        android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start" />
 

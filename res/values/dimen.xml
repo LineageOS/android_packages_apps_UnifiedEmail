@@ -17,6 +17,9 @@
 -->
 
 <resources>
+    <dimen name="drawer_width">300dp</dimen>
+    <dimen name="list_min_width_is_wide">720dp</dimen>
+    <dimen name="list_normal_mode_min_width_is_spacious">600dp</dimen>
     <dimen name="account_dropdown_item_height">48dip</dimen>
     <dimen name="senders_font_size">18sp</dimen>
     <dimen name="subject_font_size">14sp</dimen>

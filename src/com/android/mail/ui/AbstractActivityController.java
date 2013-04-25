@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.animation.ValueAnimator;
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
@@ -44,7 +45,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,6 +56,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
@@ -334,6 +339,13 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private final Deque<UpOrBackHandler> mUpOrBackHandlers = Lists.newLinkedList();
 
+    protected DrawerLayout mDrawerContainer;
+    protected View mDrawerPullout;
+    protected ActionBarDrawerToggle mDrawerToggle;
+    protected ListView mListViewForAnimating;
+    protected boolean mHasNewAccountOrFolder;
+    protected final MailDrawerListener mDrawerListener = new MailDrawerListener();
+
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
     private final DataSetObserver mUndoNotificationObserver = new DataSetObserver() {
@@ -459,10 +471,9 @@ public abstract class AbstractActivityController implements ActivityController {
                 isSearch ? R.layout.search_actionbar_view : R.layout.actionbar_view, null);
         mActionBarView.initialize(mActivity, this, actionBar);
 
-        //  If not a tablet, we always want the up/back button to show at top.
-        if(!mIsTablet) {
-            mActionBarView.setBackButton();
-        }
+        // init the action bar to allow the 'up' affordance.
+        // any configurations that disallow 'up' should do that later.
+        mActionBarView.setBackButton();
     }
 
     /**
@@ -622,12 +633,39 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * The default behavior for drawer closed is to notify the observers as, by default, there
-     * is no drawer.
+     * If the drawer is open, the function locks the drawer to the closed, thereby sliding in
+     * the drawer to the left edge, disabling events, and refreshing it once it's either closed
+     * or put in an idle state.
      */
     @Override
     public void closeDrawer(final boolean hasNewFolderOrAccount) {
-        mDrawerObservers.notifyChanged();
+        if (!isDrawerEnabled()) {
+            mDrawerObservers.notifyChanged();
+            return;
+        }
+
+        // If there are no new folders or accounts to switch to, just close the drawer
+        if (!hasNewFolderOrAccount) {
+            mDrawerContainer.closeDrawers();
+            return;
+        }
+
+        final ConversationListFragment conversationList = getConversationListFragment();
+        if (conversationList != null) {
+            mListViewForAnimating = conversationList.getListView();
+        } else {
+            // There is no conversation list to animate, so just set it to null
+            mListViewForAnimating = null;
+        }
+
+        if (mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+            // Lets the drawer listener update the drawer contents and notify the FolderListFragment
+            mHasNewAccountOrFolder = true;
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            // Drawer is already closed, notify observers that is the case.
+            mDrawerObservers.notifyChanged();
+        }
     }
 
     private void fetchSearchFolder(Intent intent) {
@@ -639,6 +677,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onFolderChanged(Folder folder) {
+        mDrawerContainer.closeDrawers();
         changeFolder(folder, null);
     }
 
@@ -915,6 +954,14 @@ public abstract class AbstractActivityController implements ActivityController {
         mRecentFolderList.initialize(mActivity);
         mVeiledMatcher.initialize(this);
 
+        mDrawerToggle = new ActionBarDrawerToggle((Activity) mActivity, mDrawerContainer,
+                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
+        mDrawerContainer.setDrawerListener(new MailDrawerListener());
+        mDrawerContainer.setDrawerShadow(
+                mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.START);
+
+        mDrawerToggle.setDrawerIndicatorEnabled(isDrawerEnabled());
+
         // All the individual UI components listen for ViewMode changes. This
         // simplifies the amount of logic in the AbstractActivityController, but increases the
         // possibility of timing-related bugs.
@@ -954,12 +1001,25 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onPostCreate(Bundle savedState) {
-        // Do nothing
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        // Do nothing
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * If drawer is open/visible (even partially), close it.
+     */
+    protected void closeDrawerIfOpen() {
+        if (!isDrawerEnabled()) {
+            return;
+        }
+        if(mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+            mDrawerContainer.closeDrawers();
+        }
     }
 
     @Override
@@ -1007,6 +1067,14 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        /*
+         * The action bar home/up action should open or close the drawer.
+         * mDrawerToggle will take care of this.
+         */
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         final int id = item.getItemId();
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;
@@ -1125,11 +1193,20 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Stand-in method overriden in OnePaneController for toggling the state
-     * of the drawer.
+     * Toggles the drawer pullout. If it was open (Fully extended), the
+     * drawer will be closed. Otherwise, the drawer will be opened. This should
+     * only be called when used with a toggle item. Other cases should be handled
+     * explicitly with just closeDrawers() or openDrawer(View drawerView);
      */
     protected void toggleFolderListState() {
-        //Implemented in OnePaneController.java
+        if (!isDrawerEnabled()) {
+            return;
+        }
+        if(mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+            mDrawerContainer.closeDrawers();
+        } else {
+            mDrawerContainer.openDrawer(mDrawerPullout);
+        }
     }
 
     @Override
@@ -1149,6 +1226,12 @@ public abstract class AbstractActivityController implements ActivityController {
                 return true;
             }
         }
+
+        if (isDrawerEnabled() && mDrawerContainer.isDrawerVisible(mDrawerPullout)) {
+            mDrawerContainer.closeDrawers();
+            return true;
+        }
+
         return handleBackPress();
     }
 
@@ -1486,6 +1569,7 @@ public abstract class AbstractActivityController implements ActivityController {
         }.run(mResolver, msg.uri, values, null /* selection*/, null /* selectionArgs */);
     }
 
+    @Override
     public void requestFolderRefresh() {
         if (mFolder == null) {
             return;
@@ -1702,6 +1786,28 @@ public abstract class AbstractActivityController implements ActivityController {
         // If the viewmode is not set, preserve existing icon.
         if (newMode != ViewMode.UNKNOWN) {
             resetActionBarIcon();
+        }
+
+        if (isDrawerEnabled()) {
+            // if search list/conv mode, disable drawer pull and indicator
+            // allow drawer pull everywhere except conversation mode where the list is hidden
+            // only allow indicator at top level of app
+            final boolean showIndicator;
+            final boolean allowPull;
+            if (ViewMode.isSearchMode(newMode)) {
+                showIndicator = false;
+                allowPull = false;
+            } else {
+                allowPull = !(ViewMode.isConversationMode(newMode)
+                        // TODO(ath): get this to work to allow drawer pull in 2-pane conv mode.
+                        /* && !isConversationListVisible() */);
+                showIndicator = (newMode == ViewMode.CONVERSATION_LIST
+                        || newMode == ViewMode.FOLDER_LIST);
+            }
+            mDrawerToggle.setDrawerIndicatorEnabled(showIndicator);
+            mDrawerContainer.setDrawerLockMode(allowPull ? DrawerLayout.LOCK_MODE_UNLOCKED :
+                DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            closeDrawerIfOpen();
         }
     }
 
@@ -3612,4 +3718,61 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         mDetachedConvUri = null;
     }
+
+    private class MailDrawerListener implements DrawerLayout.DrawerListener {
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            mDrawerToggle.onDrawerOpened(drawerView);
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            mDrawerToggle.onDrawerClosed(drawerView);
+            if (mHasNewAccountOrFolder) {
+                refreshDrawer();
+            }
+        }
+
+        /**
+         * As part of the overriden function, it will animate the alpha of the conversation list
+         * view along with the drawer sliding when we're in the process of switching accounts or
+         * folders. Note, this is the same amount of work done as {@link ValueAnimator#ofFloat}.
+         */
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+            mDrawerToggle.onDrawerSlide(drawerView, slideOffset);
+            if (mHasNewAccountOrFolder && mListViewForAnimating != null) {
+                mListViewForAnimating.setAlpha(slideOffset);
+            }
+        }
+
+        /**
+         * This condition here should only be called when the drawer is stuck in a weird state
+         * and doesn't register the onDrawerClosed, but shows up as idle. Make sure to refresh
+         * and, more importantly, unlock the drawer when this is the case.
+         */
+        @Override
+        public void onDrawerStateChanged(int newState) {
+            mDrawerToggle.onDrawerStateChanged(newState);
+            if (mHasNewAccountOrFolder && newState == DrawerLayout.STATE_IDLE) {
+                refreshDrawer();
+            }
+        }
+
+        /**
+         * If we've reached a stable drawer state, unlock the drawer for usage, clear the
+         * conversation list, and finish end actions. Also, make
+         * {@link #mHasNewAccountOrFolder} false to reflect we're done changing.
+         */
+        public void refreshDrawer() {
+            mHasNewAccountOrFolder = false;
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            ConversationListFragment conversationList = getConversationListFragment();
+            if (conversationList != null) {
+                conversationList.clear();
+            }
+            mDrawerObservers.notifyChanged();
+        }
+    }
+
 }
