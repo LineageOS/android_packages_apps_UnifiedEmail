@@ -847,6 +847,11 @@
     <!-- Settings screen, preference description for archive vs. delete [CHAR LIMIT=200] -->
     <string name="preference_archive_vs_delete_text">Delete rather than archive conversations</string>
 
+    <!--  Settings screen, Reply to all default setting title  [CHAR LIMIT=30] -->
+    <string name="preferences_default_reply_all_title">Reply all</string>
+    <!--  Settings screen, Reply to all default setting summary [CHAR LIMIT=70] -->
+    <string name="preferences_default_reply_all_summary">Use as default for message replies</string>
+
     <!-- Preference name for swipe action [CHAR LIMIT=100]-->
     <string name="preference_swipe_title">Swipe to remove</string>
     <!-- Preference description swiping in conversation list option [CHAR LIMIT=100] -->
