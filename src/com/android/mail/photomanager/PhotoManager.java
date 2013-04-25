@@ -965,7 +965,8 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                 // This can legitimately happen when an ImageCanvas is reused and re-purposed to
                 // house a new set of images (e.g. by ListView recycling).
                 // Ignore this now-stale request.
-                LogUtils.d(TAG, "ImageCanvas skipping applyDefaultImage; no longer contains" +
+                if (DEBUG) LogUtils.d(TAG,
+                        "ImageCanvas skipping applyDefaultImage; no longer contains" +
                         " item=%s canvas=%s", key, mView);
                 return;
             }
