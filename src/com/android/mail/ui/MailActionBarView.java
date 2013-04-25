@@ -26,6 +26,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,6 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
+import android.widget.TextView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -63,10 +65,8 @@ import com.android.mail.utils.Utils;
  *
  */
 public class MailActionBarView extends LinearLayout implements ViewMode.ModeChangeListener,
-        OnQueryTextListener, OnSuggestionListener, MenuItem.OnActionExpandListener {
-
-    // This is a private setting available starting JB MR1.1.
-    private static final int DISPLAY_TITLE_MULTIPLE_LINES = 0x20;
+        OnQueryTextListener, OnSuggestionListener, MenuItem.OnActionExpandListener,
+        View.OnClickListener {
 
     protected ActionBar mActionBar;
     protected ControllableActivity mActivity;
@@ -94,6 +94,11 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private MenuItem mEmptyTrashItem;
     private MenuItem mEmptySpamItem;
     private View mRefreshActionView;
+    private boolean mUseLegacyTitle;
+    private View mLegacyTitleContainer;
+    private TextView mLegacyTitle;
+    private TextView mLegacySubTitle;
+
     /** True if the current device is a tablet, false otherwise. */
     protected final boolean mIsOnTablet;
     private boolean mRefreshInProgress;
@@ -125,7 +130,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 subtitleText = null;
                 LogUtils.wtf(LOG_TAG, "MABV.handleMessage() has a null account!");
             }
-            mActionBar.setSubtitle(subtitleText);
+            setSubtitle(subtitleText);
             super.handleMessage(message);
         }
     }
@@ -178,9 +183,25 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         UNREAD_LIMIT = r.getInteger(R.integer.maxUnreadCount);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
+    private void initializeTitleViews() {
+        mLegacyTitleContainer = findViewById(R.id.legacy_title_container);
+        if (mLegacyTitleContainer != null) {
+            // Determine if this device is running on MR1.1 or later
+            final boolean runningMR11OrLater = actionBarSupportsNewMethods(mActionBar);
+            if (runningMR11OrLater || !mController.isDrawerEnabled()) {
+                // We don't need the legacy view, just hide it
+                mLegacyTitleContainer.setVisibility(View.GONE);
+                mUseLegacyTitle = false;
+            } else {
+                mUseLegacyTitle = true;
+                // We need to show the legacy title/subtitle.  Set the click listener
+                mLegacyTitleContainer.setOnClickListener(this);
+
+                mLegacyTitle = (TextView)mLegacyTitleContainer.findViewById(R.id.legacy_title);
+                mLegacySubTitle =
+                        (TextView)mLegacyTitleContainer.findViewById(R.id.legacy_subtitle);
+            }
+        }
     }
 
     public void expandSearch() {
@@ -259,6 +280,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mActionBar = actionBar;
         mController = callback;
         mActivity = activity;
+        initializeTitleViews();
+
         mFolderObserver = new FolderObserver() {
             @Override
             public void onChanged(Folder newFolder) {
@@ -452,7 +475,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     private void showNavList() {
         setFolderAndAccount(false);
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+        setTitleModeFlags(getActionBarTitleModeFlag());
     }
 
     /**
@@ -460,9 +483,34 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * (if user has multiple accounts)
      */
     private void setFoldersMode() {
-        mActionBar.setTitle(R.string.folders);
+        setTitle(R.string.folders);
         setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
-        mActionBar.setSubtitle(mAccount.name);
+        setSubtitle(mAccount.name);
+    }
+
+    private void setSubtitle(CharSequence subtitle) {
+        mActionBar.setSubtitle(subtitle);
+        if (mLegacySubTitle != null) {
+            mLegacySubTitle.setText(subtitle);
+        }
+    }
+
+    private void setTitle(int res) {
+        mActionBar.setTitle(res);
+        if (mLegacyTitle != null) {
+            mLegacyTitle.setText(res);
+        }
+    }
+
+    private void setTitle(CharSequence title) {
+        mActionBar.setTitle(title);
+        if (mLegacyTitle != null) {
+            mLegacyTitle.setText(title);
+        }
+    }
+
+    private int getActionBarTitleModeFlag() {
+        return mUseLegacyTitle ? ActionBar.DISPLAY_SHOW_CUSTOM : ActionBar.DISPLAY_SHOW_TITLE;
     }
 
     /**
@@ -593,7 +641,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
         if (ViewMode.isWaitingForSync(mMode)) {
             // Account is not synced: clear title and update the subtitle.
-            mActionBar.setTitle("");
+            setTitle("");
             removeUnreadCount();
             return;
         }
@@ -607,10 +655,10 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (mFolder == null) {
             // Clear the action bar title.  We don't want the app name to be shown while
             // waiting for the folder query to finish
-            mActionBar.setTitle("");
+            setTitle("");
             return;
         }
-        mActionBar.setTitle(mFolder.name);
+        setTitle(mFolder.name);
 
         final int folderUnreadCount = mFolder.isUnreadCountHidden() ? 0 : mFolder.unreadCount;
         // The user shouldn't see "999+ unread messages", and then a short while later: "999+
@@ -623,7 +671,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             if (toDisplay == 0) {
                 removeUnreadCount();
             } else {
-                mActionBar.setSubtitle(Utils.getUnreadMessageString(
+                setSubtitle(Utils.getUnreadMessageString(
                         mActivity.getApplicationContext(), toDisplay));
                 // This is a new update, remove previous messages, if any.
                 mHandler.removeMessages(SubtitleHandler.EMAIL);
@@ -693,13 +741,12 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     /**
      * Sets the actionbar mode: Pass it an integer which contains each of these values, perhaps
-     * OR'd together: {@link ActionBar#DISPLAY_SHOW_CUSTOM}, {@link ActionBar#DISPLAY_SHOW_TITLE},
-     * and {@link #DISPLAY_TITLE_MULTIPLE_LINES}. To disable all, pass a zero.
+     * OR'd together: {@link ActionBar#DISPLAY_SHOW_CUSTOM} and
+     * {@link ActionBar#DISPLAY_SHOW_TITLE}. To disable all, pass a zero.
      * @param enabledFlags
      */
     private void setTitleModeFlags(int enabledFlags) {
-        final int mask = ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_CUSTOM | DISPLAY_TITLE_MULTIPLE_LINES;
+        final int mask = ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM;
         mActionBar.setDisplayOptions(enabledFlags, mask);
     }
 
@@ -756,5 +803,33 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                         mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)
                         && !mCurrentConversation.muted);
+    }
+
+    private static boolean actionBarSupportsNewMethods(ActionBar bar) {
+        // TODO(pwestbro) switch this to
+        // (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) when we switch to the
+        // latest SDK
+        if (Build.VERSION.SDK_INT > 17) {
+            return true;
+        }
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            return false;
+        }
+        boolean supportsNewApi = false;
+        try {
+            if (bar != null) {
+                supportsNewApi = (ActionBar.class.getField("DISPLAY_TITLE_MULTIPLE_LINES") != null);
+            }
+        } catch (NoSuchFieldException e) {
+            // stay false
+        }
+        return supportsNewApi;
+    }
+
+    @Override
+    public void onClick (View v) {
+        if (v.getId() == R.id.legacy_title_container) {
+            mController.onUpPressed();
+        }
     }
 }
