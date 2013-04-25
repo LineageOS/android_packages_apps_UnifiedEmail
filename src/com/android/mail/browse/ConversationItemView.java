@@ -101,8 +101,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static final String LOG_TAG = LogTag.getLogTag();
 
     // Static bitmaps.
-    private static Bitmap CHECKMARK_OFF;
-    private static Bitmap CHECKMARK_ON;
     private static Bitmap STAR_OFF;
     private static Bitmap STAR_ON;
     private static Bitmap ATTACHMENT;
@@ -161,10 +159,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     public ConversationItemViewModel mHeader;
     private boolean mDownEvent;
-    private boolean mChecked = false;
+    private boolean mSelected = false;
     private ConversationSelectionSet mSelectedConversationSet;
     private Folder mDisplayedFolder;
-    private boolean mCheckboxesEnabled;
     private boolean mStarEnabled;
     private boolean mSwipeEnabled;
     private int mLastTouchX;
@@ -175,7 +172,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private ControllableActivity mActivity;
     private final TextView mSubjectTextView;
     private final TextView mSendersTextView;
-    private boolean mConvListPhotosEnabled;
+    private int mGadgetMode;
     private final DividedImageCanvas mContactImagesHolder;
     private int mAttachmentPreviewMode;
     private final DividedImageCanvas mAttachmentPreviewsCanvas;
@@ -344,12 +341,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mTabletDevice = Utils.useTabletUI(res);
         mAccount = account;
 
-        if (CHECKMARK_OFF == null) {
+        if (STAR_OFF == null) {
             // Initialize static bitmaps.
-            CHECKMARK_OFF = BitmapFactory.decodeResource(res,
-                    R.drawable.btn_check_off_normal_holo_light);
-            CHECKMARK_ON = BitmapFactory.decodeResource(res,
-                    R.drawable.btn_check_on_normal_holo_light);
             STAR_OFF = BitmapFactory.decodeResource(res,
                     R.drawable.btn_star_off_normal_email_holo_light);
             STAR_ON = BitmapFactory.decodeResource(res,
@@ -445,8 +438,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mActivity = activity;
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
-        mCheckboxesEnabled = (checkboxOrSenderImage == ConversationListIcon.CHECKBOX);
-        mConvListPhotosEnabled = (checkboxOrSenderImage == ConversationListIcon.SENDER_IMAGE);
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
         mAdapter = adapter;
@@ -458,13 +449,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     : ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_TALL;
         }
 
-        final int gadgetMode;
-        if (mConvListPhotosEnabled) {
-            gadgetMode = ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO;
-        } else if (mCheckboxesEnabled) {
-            gadgetMode = ConversationItemViewCoordinates.GADGET_CHECKBOX;
+        if (checkboxOrSenderImage == ConversationListIcon.SENDER_IMAGE) {
+            mGadgetMode = ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO;
         } else {
-            gadgetMode = ConversationItemViewCoordinates.GADGET_NONE;
+            mGadgetMode = ConversationItemViewCoordinates.GADGET_NONE;
         }
 
         // Initialize folder displayer.
@@ -488,7 +476,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 mHeader.conversation.dateMs);
 
         mConfig = new ConversationItemViewCoordinates.Config()
-            .withGadget(gadgetMode)
+            .withGadget(mGadgetMode)
             .withAttachmentPreviews(mAttachmentPreviewMode);
         if (header.folderDisplayer.hasVisibleFolders()) {
             mConfig.showFolders();
@@ -633,9 +621,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         startTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
 
         if (mSelectedConversationSet != null) {
-            mChecked = mSelectedConversationSet.contains(mHeader.conversation);
+            mSelected = mSelectedConversationSet.contains(mHeader.conversation);
         }
-        mHeader.checkboxVisible = mCheckboxesEnabled && !mConvListPhotosEnabled;
+        mHeader.gadgetMode = mGadgetMode;
 
         final boolean isUnread = mHeader.unread;
         updateBackground(isUnread);
@@ -692,7 +680,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     // FIXME(ath): maybe move this to bind(). the only dependency on layout is on tile W/H, which
     // is immutable.
     private void loadSenderImages() {
-        if (mConvListPhotosEnabled && mHeader.displayableSenderEmails != null
+        if (mGadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
+                && mHeader.displayableSenderEmails != null
                 && mHeader.displayableSenderEmails.size() > 0) {
             if (mCoordinates.contactImagesWidth <= 0 || mCoordinates.contactImagesHeight <= 0) {
                 LogUtils.w(LOG_TAG,
@@ -1088,16 +1077,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Check mark.
-        if (mConvListPhotosEnabled) {
+        // Contact photo
+        if (mGadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO) {
             canvas.save();
             drawContactImages(canvas);
             canvas.restore();
-        } else if (mHeader.checkboxVisible) {
-            Bitmap checkmark = mChecked ? CHECKMARK_ON : CHECKMARK_OFF;
-            canvas.drawBitmap(checkmark, mCoordinates.checkmarkX, mCoordinates.checkmarkY, sPaint);
         }
-
         // Senders.
         boolean isUnread = mHeader.unread;
         // Old style senders; apply text colors/ sizes/ styling.
@@ -1224,13 +1209,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         final int background;
         if (isUnread) {
             if (isListOnTablet) {
-                if (mChecked) {
+                if (mSelected) {
                     background = R.drawable.list_conversation_wide_unread_selected_holo;
                 } else {
                     background = R.drawable.conversation_wide_unread_selector;
                 }
             } else {
-                if (mChecked) {
+                if (mSelected) {
                     background = getCheckedActivatedBackground();
                 } else {
                     background = R.drawable.conversation_unread_selector;
@@ -1238,13 +1223,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             }
         } else {
             if (isListOnTablet) {
-                if (mChecked) {
+                if (mSelected) {
                     background = R.drawable.list_conversation_wide_read_selected_holo;
                 } else {
                     background = R.drawable.conversation_wide_read_selector;
                 }
             } else {
-                if (mChecked) {
+                if (mSelected) {
                     background = getCheckedActivatedBackground();
                 } else {
                     background = R.drawable.conversation_read_selector;
@@ -1267,22 +1252,22 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      * drag, if drag is enabled.
      */
     @Override
-    public void toggleCheckMarkOrBeginDrag() {
+    public void toggleSelectedStateOrBeginDrag() {
         ViewMode mode = mActivity.getViewMode();
         if (!mTabletDevice || !mode.isListMode()) {
-            toggleCheckMark();
+            toggleSelectedState();
         } else {
             beginDragMode();
         }
     }
 
-    private void toggleCheckMark() {
+    private void toggleSelectedState() {
         if (mHeader != null && mHeader.conversation != null) {
-            mChecked = !mChecked;
+            mSelected = !mSelected;
             Conversation conv = mHeader.conversation;
             // Set the list position of this item in the conversation
             SwipeableListView listView = getListView();
-            conv.position = mChecked && listView != null ? listView.getPositionForView(this)
+            conv.position = mSelected && listView != null ? listView.getPositionForView(this)
                     : Conversation.NO_POSITION;
             if (mSelectedConversationSet != null) {
                 mSelectedConversationSet.toggle(this, conv);
@@ -1314,9 +1299,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
     }
 
-    private boolean isTouchInCheckmark(float x, float y) {
+    private boolean isTouchInContactPhoto(float x) {
         // Everything before senders and include a touch slop.
-        return mHeader.checkboxVisible && x < mCoordinates.sendersX + sTouchSlop;
+        return (mHeader.gadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
+                && x < mCoordinates.sendersX + sTouchSlop);
     }
 
     private boolean isTouchInStar(float x, float y) {
@@ -1346,7 +1332,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mLastTouchY = y;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTouchInCheckmark(x, y) || isTouchInStar(x, y)) {
+                if (isTouchInContactPhoto(x) || isTouchInStar(x, y)) {
                     mDownEvent = true;
                     handled = true;
                 }
@@ -1358,9 +1344,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
-                    if (isTouchInCheckmark(x, y)) {
+                    if (isTouchInContactPhoto(x)) {
                         // Touch on the check mark
-                        toggleCheckMark();
+                        toggleSelectedState();
                     } else if (isTouchInStar(x, y)) {
                         // Touch on the star
                         toggleStar();
@@ -1391,17 +1377,17 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTouchInCheckmark(x, y) || isTouchInStar(x, y)) {
+                if (isTouchInContactPhoto(x) || isTouchInStar(x, y)) {
                     mDownEvent = true;
                     return true;
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
-                    if (isTouchInCheckmark(x, y)) {
+                    if (isTouchInContactPhoto(x)) {
                         // Touch on the check mark
                         mDownEvent = false;
-                        toggleCheckMark();
+                        toggleSelectedState();
                         return true;
                     } else if (isTouchInStar(x, y)) {
                         // Touch on the star
@@ -1553,8 +1539,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             return;
         }
         // If this is already checked, don't bother unchecking it!
-        if (!mChecked) {
-            toggleCheckMark();
+        if (!mSelected) {
+            toggleSelectedState();
         }
 
         // Clip data has form: [conversations_uri, conversationId1,

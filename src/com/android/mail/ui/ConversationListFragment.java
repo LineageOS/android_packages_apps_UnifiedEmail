@@ -499,7 +499,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (!(view instanceof ConversationItemView)) {
             return false;
         }
-        ((ConversationItemView) view).toggleCheckMarkOrBeginDrag();
+        ((ConversationItemView) view).toggleSelectedStateOrBeginDrag();
         return true;
     }
 
@@ -528,11 +528,11 @@ public final class ConversationListFragment extends ListFragment implements
         if (!(view instanceof ToggleableItem)) {
             return;
         }
-        boolean showCheckboxes = (mAccount.settings.convListIcon ==
-                ConversationListIcon.CHECKBOX);
-        if (!showCheckboxes && !mSelectedSet.isEmpty()) {
+        boolean showSenderImage = (mAccount.settings.convListIcon ==
+                ConversationListIcon.SENDER_IMAGE);
+        if (!showSenderImage && !mSelectedSet.isEmpty()) {
             ToggleableItem v = (ToggleableItem) view;
-            v.toggleCheckMarkOrBeginDrag();
+            v.toggleSelectedStateOrBeginDrag();
         } else {
             viewConversation(position);
         }

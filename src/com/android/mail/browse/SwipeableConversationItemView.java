@@ -81,9 +81,9 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
     }
 
     @Override
-    public void toggleCheckMarkOrBeginDrag() {
+    public void toggleSelectedStateOrBeginDrag() {
         if (mConversationItemView != null) {
-            mConversationItemView.toggleCheckMarkOrBeginDrag();
+            mConversationItemView.toggleSelectedStateOrBeginDrag();
         }
     }
 }

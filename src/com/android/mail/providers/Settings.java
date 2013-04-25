@@ -101,7 +101,7 @@ public class Settings implements Parcelable {
         messageTextSize = MessageTextSize.NORMAL;
         snapHeaders = SnapHeaderValue.ALWAYS;
         replyBehavior = DefaultReplyBehavior.REPLY;
-        convListIcon = ConversationListIcon.CHECKBOX;
+        convListIcon = ConversationListIcon.SENDER_IMAGE;
         confirmDelete = false;
         confirmArchive = false;
         confirmSend = false;
