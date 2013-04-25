@@ -94,7 +94,7 @@ public final class TwoPaneController extends AbstractActivityController {
      */
     private void createFolderTree(Folder parent) {
         setHierarchyFolder(parent);
-        createFolderListFragment(FolderListFragment.ofTree(parent));
+        createFolderListFragment(FolderListFragment.ofTree(parent, false));
     }
 
     private void createFolderListFragment(Fragment folderList) {
