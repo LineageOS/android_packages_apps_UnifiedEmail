@@ -713,6 +713,7 @@ public class NotificationUtils {
             // The title of the notification is the new messages string
             notification.setContentTitle(newMessagesString);
 
+            // TODO(skennedy) Can we remove this check?
             if (com.android.mail.utils.Utils.isRunningJellybeanOrLater()) {
                 // For a new-style notification
                 final int maxNumDigestItems = context.getResources().getInteger(
@@ -724,6 +725,7 @@ public class NotificationUtils {
                 final NotificationCompat.InboxStyle digest =
                         new NotificationCompat.InboxStyle(notification);
 
+                // TODO(skennedy) I do not believe this line is necessary
                 digest.setBigContentTitle(newMessagesString);
 
                 int numDigestItems = 0;
@@ -843,6 +845,7 @@ public class NotificationUtils {
                     }
                 }
 
+                // TODO(skennedy) Can we remove this check?
                 if (Utils.isRunningJellybeanOrLater()) {
                     // For a new-style notification
 
