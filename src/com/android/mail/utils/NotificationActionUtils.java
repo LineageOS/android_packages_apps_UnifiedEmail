@@ -43,6 +43,7 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +60,13 @@ public class NotificationActionUtils {
      */
     public static final ObservableSparseArrayCompat<NotificationAction> sUndoNotifications =
             new ObservableSparseArrayCompat<NotificationAction>();
+
+    /**
+     * If a {@link Conversation} exists in this set, then the undo notification for this
+     * {@link Conversation} was tapped by the user in the notification drawer.
+     * We need to properly handle notification actions for this case.
+     */
+    public static final Set<Conversation> sUndoneConversations = Sets.newHashSet();
 
     /**
      * If an undo notification is displayed, its timestamp
@@ -679,12 +687,21 @@ public class NotificationActionUtils {
         sNotificationTimestamps.put(notificationId, notificationAction.getWhen());
     }
 
+    /**
+     * Called when an Undo notification has been tapped.
+     */
     public static void cancelUndoNotification(final Context context,
             final NotificationAction notificationAction) {
         final Account account = notificationAction.getAccount();
         final Folder folder = notificationAction.getFolder();
+        final Conversation conversation = notificationAction.getConversation();
         final int notificationId = NotificationUtils.getNotificationId(
                 account.name, folder);
+
+        // Note: we must add the conversation before removing the undo notification
+        // Otherwise, the observer for sUndoNotifications gets called, which calls
+        // handleNotificationActions before the undone conversation has been added to the set.
+        sUndoneConversations.add(conversation);
         removeUndoNotification(context, notificationId, false);
         resendNotifications(context, account, folder);
     }
