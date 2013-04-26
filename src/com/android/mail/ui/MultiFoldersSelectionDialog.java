@@ -27,8 +27,10 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.ui.FolderSelectorAdapter.FolderRow;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,13 +58,16 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
      * @param currentFolder the current folder that the
      *            {@link FolderListFragment} is showing
      */
-    public MultiFoldersSelectionDialog(final Context context, Account account,
-            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
-            Folder currentFolder) {
-        super(context, account, updater, target, isBatch, currentFolder, false);
+    public MultiFoldersSelectionDialog(final Context context, final Account account,
+            final ConversationUpdater updater, final Collection<Conversation> target,
+            final boolean isBatch, final Folder currentFolder) {
+        super(context, account, updater, target, isBatch, currentFolder);
         mSingle = !account
                 .supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
         mOperations = new HashMap<Uri, FolderOperation>();
+
+        mBuilder.setTitle(R.string.change_folders_selection_dialog_title);
+        mBuilder.setPositiveButton(R.string.ok, this);
     }
 
     @Override
@@ -98,7 +103,8 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
             // TODO(mindyp): we currently do not support frequently moved to
             // folders, at headers[1]; need to define what that means.*/
             mAdapter.addSection(new AddableFolderSelectorAdapter(context,
-                    AddableFolderSelectorAdapter.filterFolders(foldersCursor), checked,
+                    AddableFolderSelectorAdapter.filterFolders(foldersCursor,
+                            ImmutableSet.of(FolderType.INBOX_SECTION)), checked,
                     R.layout.multi_folders_view, null));
             mBuilder.setAdapter(mAdapter, MultiFoldersSelectionDialog.this);
         } finally {

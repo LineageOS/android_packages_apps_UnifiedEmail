@@ -34,14 +34,31 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
         super(context, folders, initiallySelected, layout, header);
     }
 
-    public static Cursor filterFolders(Cursor folderCursor) {
+    public static Cursor filterFolders(final Cursor folderCursor,
+            final Set<Integer> excludedTypes) {
         final int projectionSize = UIProvider.FOLDERS_PROJECTION.length;
         final MatrixCursor cursor =
                 new MatrixCursorWithCachedColumns(UIProvider.FOLDERS_PROJECTION);
-        Object[] folder = new Object[projectionSize];
+        final Object[] folder = new Object[projectionSize];
         if (folderCursor.moveToFirst()) {
             do {
-                int type = folderCursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
+                final int type = folderCursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
+
+                if (excludedTypes != null) {
+                    boolean exclude = false;
+
+                    for (final int excludedType : excludedTypes) {
+                        if (Folder.isType(type, excludedType)) {
+                            exclude = true;
+                            break;
+                        }
+                    }
+
+                    if (exclude) {
+                        continue;
+                    }
+                }
+
                 if (Folder.isType(type, UIProvider.FolderType.INBOX)
                         || Folder.isType(type, UIProvider.FolderType.DEFAULT)) {
                     folder[UIProvider.FOLDER_ID_COLUMN] = folderCursor
