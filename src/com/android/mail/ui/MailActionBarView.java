@@ -474,8 +474,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Put the ActionBar in List navigation mode.
      */
     private void showNavList() {
-        setFolderAndAccount(false);
         setTitleModeFlags(getActionBarTitleModeFlag());
+        setFolderAndAccount(false);
     }
 
     /**
@@ -484,8 +484,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      */
     private void setFoldersMode() {
         setTitle(R.string.folders);
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
         setSubtitle(mAccount.name);
+        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
     }
 
     private void setSubtitle(CharSequence subtitle) {
