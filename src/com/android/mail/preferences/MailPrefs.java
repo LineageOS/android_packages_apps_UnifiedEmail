@@ -54,10 +54,6 @@ public final class MailPrefs extends VersionedPrefs {
          */
         public static final String DEFAULT_REPLY_ALL = "default-reply-all";
         /**
-         * A preference for storing most recently used accounts (ordered list or URIs)
-         */
-        public static final String RECENT_ACCOUNTS = "recent-account-uris";
-        /**
          * A boolean that, if <code>true</code>, means we should allow conversation list swiping
          */
         public static final String CONVERSATION_LIST_SWIPE = "conversation-list-swipe";
@@ -158,24 +154,6 @@ public final class MailPrefs extends VersionedPrefs {
     public void setDefaultReplyAll(final boolean replyAll) {
         getEditor().putBoolean(PreferenceKeys.DEFAULT_REPLY_ALL, replyAll).apply();
         MailIntentService.broadcastBackupDataChanged(getContext());
-    }
-
-    /**
-     * Return a list of URIs corresponding to the most recently used accounts
-     *
-     * @return uris of accounts from least recently used to most recently used
-     */
-    public String getRecentAccountUris() {
-        return getSharedPreferences().getString(PreferenceKeys.RECENT_ACCOUNTS,
-                "");
-    }
-
-    /**
-     * Take in an ArrayList of account URIs that are in order from least recently
-     * used to most recently used, and save it as prefs.
-     */
-    public void setRecentAccountUris(String accountUris) {
-        getEditor().putString(PreferenceKeys.RECENT_ACCOUNTS, accountUris).apply();
     }
 
     /**
