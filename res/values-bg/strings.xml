@@ -76,10 +76,9 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Промяна на папките"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Преместване във:"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Настройки за папките"</string>
-    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <!-- no translation found for menu_show_original (4227060689700765828) -->
     <skip />
-    <!-- no translation found for message_modified (2564340197585393687) -->
-    <skip />
+    <string name="message_modified" msgid="2564340197585393687">"(Това съобщение е променено от оригиналната си версия, за да се побере на екрана.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Папки"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Още"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Още профили"</string>
@@ -295,11 +294,8 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"За да видите кореспонденциите, синхронизирайте тази папка."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Синхронизиране на папката"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-  <plurals name="actionbar_unread_messages">
-    <item quantity="one" msgid="8470063623338548501">"<xliff:g id="COUNT">%1$d</xliff:g> непрочетено съобщение"</item>
-    <item quantity="other" msgid="4103064420707175144">"<xliff:g id="COUNT">%1$d</xliff:g> непрочетени съобщения"</item>
-  </plurals>
-    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"над <xliff:g id="COUNT">%1$d</xliff:g> непрочетени съобщения"</string>
+    <string name="actionbar_unread_messages" msgid="3805594795629836031">"<xliff:g id="COUNT">%1$d</xliff:g> непрочетени"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"над <xliff:g id="COUNT">%1$d</xliff:g> непрочетени"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Преглед на още кореспонденции"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Зарежда се…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Изберете профил"</string>
@@ -371,15 +367,12 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Намалете голямата ширина на съобщенията, за да се поберат на екрана ви, и разрешете увеличаването на мащаба. За да изключите тази опция, отворете „Настройки“ &gt; „Общи настройки“."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Отговор"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Отговор до всички"</string>
-    <string name="notification_action_forward" msgid="7252777659544972497">"Препращане"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Архивиране"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"Етикет: Премахване"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"Изтриване"</string>
-    <string name="notification_action_mark_read" msgid="4351952818740163225">"Означ. като прочетено"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Архивирано"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Етикетът е премахнат"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Изтрито"</string>
-    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"Незададени"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -388,22 +381,18 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> нови съобщения"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Тих режим"</string>
-    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Предпочитани елементи в лентата за действие"</string>
-    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Изберете до <xliff:g id="MAX">%1$d</xliff:g> действия"</string>
-    <string name="action_archive_remove_label" msgid="2373265427931131215">"Архив./премахване на етикет"</string>
-    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Изтрив./отхвърл. на чернови"</string>
-    <string name="action_mark_read_unread" msgid="3532210270682619853">"Означ. като прочетено/непроч."</string>
-    <string name="action_add_remove_star" msgid="6658875981206117895">"Добавяне/премахване на звезда"</string>
-    <string name="action_mark_not_important" msgid="7097443517025742878">"Означ. като важно (маловажно)"</string>
-    <string name="action_report_not_spam" msgid="7491310680850552208">"Подав. на сигнал „(Не е) Спам“"</string>
+    <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Действие при премахване"</string>
+    <string name="preference_archive_vs_delete_text" msgid="3219537390825170783">"Изтриване вместо архивиране на кореспонденциите"</string>
+    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
+    <skip />
+    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
+    <skip />
+    <string name="preference_swipe_title" msgid="807579971507624260">"Прекарайте пръст, за да премахнете"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"В списък с кореспонденции"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Прекарайте пръст надолу, за да опресните"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Проверява се за поща"</string>
-    <!-- no translation found for empty_trash (5042310780353359729) -->
-    <skip />
-    <!-- no translation found for empty_spam (930744491746508050) -->
-    <skip />
-    <!-- no translation found for drawer_open (6074646853178471940) -->
-    <skip />
-    <!-- no translation found for drawer_close (2764774620737876943) -->
-    <skip />
+    <string name="empty_trash" msgid="5042310780353359729">"Изчистване на кошчето"</string>
+    <string name="empty_spam" msgid="930744491746508050">"Изчистване на нежеланата поща"</string>
+    <string name="drawer_open" msgid="6074646853178471940">"Отваряне на чекмеджето за навигация"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"Затваряне на чекмеджето за навигация"</string>
 </resources>
