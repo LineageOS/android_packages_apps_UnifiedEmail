@@ -76,10 +76,9 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Keisti aplankus"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Perkelti į"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Aplankų nustatymai"</string>
-    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <!-- no translation found for menu_show_original (4227060689700765828) -->
     <skip />
-    <!-- no translation found for message_modified (2564340197585393687) -->
-    <skip />
+    <string name="message_modified" msgid="2564340197585393687">"(Pranešimo originalas pakeistas, kad tilptų į ekraną.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Aplankai"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Daugiau"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Daugiau paskyrų"</string>
@@ -295,10 +294,8 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Jei norite perž. pok., sinchr. apl."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sinchronizuoti aplanką"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <!-- no translation found for actionbar_unread_messages (3805594795629836031) -->
-    <skip />
-    <!-- no translation found for actionbar_large_unread_count (2780005218279965391) -->
-    <skip />
+    <string name="actionbar_unread_messages" msgid="3805594795629836031">"Neskaitytų: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Neskaitytų: <xliff:g id="COUNT">%1$d</xliff:g> ir daugiau"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Peržiūrėti daugiau pokalbių"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Įkeliama..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Pasirinkti paskyrą"</string>
@@ -315,7 +312,6 @@
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="folders" msgid="3359679829905256429">"Aplankai"</string>
-    <string name="toggle_drawer" msgid="4937513687658162188">"Kaitalioti braižyklę"</string>
     <string name="network_error" msgid="2125579009654728299">"Nėra ryšio"</string>
     <string name="loading" msgid="2600808404156989255">"Įkeliami pokalbiai…"</string>
     <string name="retry" msgid="4515885444824418022">"Bandyti dar kartą"</string>
@@ -385,22 +381,18 @@
     <string name="new_messages" msgid="4419173946074516420">"Naujų pranešimų: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Tylus"</string>
-    <!-- no translation found for preference_archive_vs_delete_title (6469574019069966937) -->
+    <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Pašalinti veiksmą"</string>
+    <string name="preference_archive_vs_delete_text" msgid="3219537390825170783">"Pokalbius ištrinti, o ne archyvuoti"</string>
+    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />
-    <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
+    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
     <skip />
-    <!-- no translation found for preference_swipe_title (807579971507624260) -->
-    <skip />
-    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
-    <skip />
+    <string name="preference_swipe_title" msgid="807579971507624260">"Jei norite pašalinti, perbraukite"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"Pokalbių sąraše"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Perbraukite žemyn, kad atnaujintumėte"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Ieškoma laiškų"</string>
-    <!-- no translation found for empty_trash (5042310780353359729) -->
-    <skip />
-    <!-- no translation found for empty_spam (930744491746508050) -->
-    <skip />
-    <!-- no translation found for drawer_open (6074646853178471940) -->
-    <skip />
-    <!-- no translation found for drawer_close (2764774620737876943) -->
-    <skip />
+    <string name="empty_trash" msgid="5042310780353359729">"Išvalyti šiukšliadėžę"</string>
+    <string name="empty_spam" msgid="930744491746508050">"Išvalyti šlamšto aplanką"</string>
+    <string name="drawer_open" msgid="6074646853178471940">"Atidaryti naršymo juostą"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"Uždaryti naršymo juostą"</string>
 </resources>

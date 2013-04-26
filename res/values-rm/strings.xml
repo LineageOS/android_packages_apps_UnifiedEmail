@@ -127,7 +127,7 @@
     <skip />
     <!-- no translation found for menu_manage_folders (6755623004628177492) -->
     <skip />
-    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <!-- no translation found for menu_show_original (4227060689700765828) -->
     <skip />
     <!-- no translation found for message_modified (2564340197585393687) -->
     <skip />
@@ -481,8 +481,6 @@
     <skip />
     <!-- no translation found for folders (3359679829905256429) -->
     <skip />
-    <!-- no translation found for toggle_drawer (4937513687658162188) -->
-    <skip />
     <!-- no translation found for network_error (2125579009654728299) -->
     <skip />
     <!-- no translation found for loading (2600808404156989255) -->
@@ -599,6 +597,10 @@
     <!-- no translation found for preference_archive_vs_delete_title (6469574019069966937) -->
     <skip />
     <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
+    <skip />
+    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
+    <skip />
+    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
     <skip />
     <!-- no translation found for preference_swipe_title (807579971507624260) -->
     <skip />

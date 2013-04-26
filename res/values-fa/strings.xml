@@ -76,7 +76,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"تغییر پوشه‌ها"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"انتقال به"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"تنظیمات پوشه"</string>
-    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <!-- no translation found for menu_show_original (4227060689700765828) -->
     <skip />
     <!-- no translation found for message_modified (2564340197585393687) -->
     <skip />
@@ -315,7 +315,6 @@
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="folders" msgid="3359679829905256429">"پوشه‌ها"</string>
-    <string name="toggle_drawer" msgid="4937513687658162188">"روشن/خاموش کردن کشو"</string>
     <string name="network_error" msgid="2125579009654728299">"اتصالی موجود نیست"</string>
     <string name="loading" msgid="2600808404156989255">"در حال بارگیری مکالمات…"</string>
     <string name="retry" msgid="4515885444824418022">"سعی مجدد"</string>
@@ -389,10 +388,12 @@
     <skip />
     <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
     <skip />
-    <!-- no translation found for preference_swipe_title (807579971507624260) -->
+    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />
-    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
+    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
     <skip />
+    <string name="preference_swipe_title" msgid="807579971507624260">"برای حذف انگشت خود را روی صفحه بکشید"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"در لیست مکالمه"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"برای بازخوانی، صفحه را با انگشت به سمت پایین بکشید"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"در حال بررسی برای ایمیل"</string>
     <!-- no translation found for empty_trash (5042310780353359729) -->

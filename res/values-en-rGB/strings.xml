@@ -76,7 +76,8 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Change folders"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Move to"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Folder settings"</string>
-    <string name="menu_show_original" msgid="7645904330201725804">"Show original"</string>
+    <!-- no translation found for menu_show_original (4227060689700765828) -->
+    <skip />
     <string name="message_modified" msgid="2564340197585393687">"(This message has been modified from its original version to fit this screen.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Folders"</string>
     <string name="folder_list_more" msgid="537172187223133825">"More"</string>
@@ -311,7 +312,6 @@
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="folders" msgid="3359679829905256429">"Folders"</string>
-    <string name="toggle_drawer" msgid="4937513687658162188">"Toggle drawer"</string>
     <string name="network_error" msgid="2125579009654728299">"No connection"</string>
     <string name="loading" msgid="2600808404156989255">"Loading conversations…"</string>
     <string name="retry" msgid="4515885444824418022">"Retry"</string>
@@ -383,10 +383,12 @@
     <string name="silent_ringtone" msgid="5856834572357761687">"Silent"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Remove action"</string>
     <string name="preference_archive_vs_delete_text" msgid="3219537390825170783">"Delete rather than archive conversations"</string>
-    <!-- no translation found for preference_swipe_title (807579971507624260) -->
+    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />
-    <!-- no translation found for preference_swipe_description (5132683510510041028) -->
+    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
     <skip />
+    <string name="preference_swipe_title" msgid="807579971507624260">"Swipe to remove"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"In conversation list"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Swipe down to refresh"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Checking for mail"</string>
     <string name="empty_trash" msgid="5042310780353359729">"Empty trash"</string>
