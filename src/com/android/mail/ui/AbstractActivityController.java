@@ -1121,7 +1121,9 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     private void emptyFolder() {
-        mConversationListCursor.emptyFolder();
+        if (mConversationListCursor != null) {
+            mConversationListCursor.emptyFolder();
+        }
     }
 
     /**
