@@ -532,7 +532,7 @@ public final class ConversationListFragment extends ListFragment implements
                 ConversationListIcon.SENDER_IMAGE);
         if (!showSenderImage && !mSelectedSet.isEmpty()) {
             ToggleableItem v = (ToggleableItem) view;
-            v.toggleSelectedStateOrBeginDrag();
+            v.toggleSelectedState();
         } else {
             viewConversation(position);
         }
@@ -798,6 +798,7 @@ public final class ConversationListFragment extends ListFragment implements
             }
             mListView.setSwipeAction(action);
         }
+        mListView.setCurrentAccount(mAccount);
         mListView.setCurrentFolder(mFolder);
     }
 
