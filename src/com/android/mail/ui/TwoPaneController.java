@@ -28,6 +28,7 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -234,6 +235,28 @@ public final class TwoPaneController extends AbstractActivityController {
             disableCabMode();
         } else {
             enableCabMode();
+        }
+    }
+
+    @Override
+    public void onSetPopulated(ConversationSelectionSet set) {
+        super.onSetPopulated(set);
+
+        boolean showSenderImage =
+                (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
+        if (!showSenderImage && mViewMode.isListMode()) {
+            getConversationListFragment().setChoiceNone();
+        }
+    }
+
+    @Override
+    public void onSetEmpty() {
+        super.onSetEmpty();
+
+        boolean showSenderImage =
+                (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
+        if (!showSenderImage && mViewMode.isListMode()) {
+            getConversationListFragment().revertChoiceMode();
         }
     }
 
