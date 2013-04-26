@@ -705,7 +705,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     public final void onRestoreInstanceState(Bundle savedInstanceState) {
-        clearChangeListeners();
+        final boolean hasAccounts = mAccounts != null && mAccounts.length > 0;
+        if (hasAccounts) {
+            clearChangeListeners();
+        }
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(EXTRA_FOCUS_SELECTION_START)) {
@@ -720,7 +723,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 }
             }
         }
-        initChangeListeners();
+        if (hasAccounts) {
+            initChangeListeners();
+        }
     }
 
     @Override
