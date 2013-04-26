@@ -555,7 +555,7 @@ public final class OnePaneController extends AbstractActivityController {
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragmentWithBack(
-                    FolderListFragment.ofTree(top),
+                    FolderListFragment.ofTree(top, false),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
         } else {
             // Otherwise, clear the selected folder and go back to whatever the
@@ -585,7 +585,7 @@ public final class OnePaneController extends AbstractActivityController {
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragmentWithBack(
-                    FolderListFragment.ofTree(folder),
+                    FolderListFragment.ofTree(folder, false),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
         } else {
             super.onFolderSelected(folder);

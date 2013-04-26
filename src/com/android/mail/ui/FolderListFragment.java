@@ -86,6 +86,8 @@ public class FolderListFragment extends ListFragment implements
     private Uri mFolderListUri;
     /** True if you want a sectioned FolderList, false otherwise. */
     protected boolean mIsSectioned;
+    /** True if the folder list belongs to a folder selection activity (one account only) */
+    private boolean mHideAccounts;
     /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
     private ArrayList<Integer> mExcludedFolderTypes;
     /** Object that changes folders on our behalf. */
@@ -114,6 +116,8 @@ public class FolderListFragment extends ListFragment implements
     private static final String ARG_EXCLUDED_FOLDER_TYPES = "arg-excluded-folder-types";
     /** Key to store {@link #mType} */
     private static final String ARG_TYPE = "arg-flf-type";
+    /** Key to store {@link #mHideAccounts} */
+    private static final String ARG_HIDE_ACCOUNTS = "arg-hide-accounts";
 
     /** Either {@link #TYPE_DRAWER} for drawers or {@link #TYPE_TREE} for hierarchy trees */
     private int mType;
@@ -177,7 +181,7 @@ public class FolderListFragment extends ListFragment implements
         final FolderListFragment fragment = new FolderListFragment();
         // The drawer is always sectioned
         final boolean isSectioned = true;
-        fragment.setArguments(getBundleFromArgs(TYPE_DRAWER, null, null, isSectioned, null));
+        fragment.setArguments(getBundleFromArgs(TYPE_DRAWER, null, null, isSectioned, null, false));
         return fragment;
     }
 
@@ -185,14 +189,14 @@ public class FolderListFragment extends ListFragment implements
      * Creates a new instance of {@link FolderListFragment}, initialized
      * to display the folder and its immediate children.
      * @param folder parent folder whose children are shown
-     *
+     * @param hideAccounts True if accounts should be hidden, false otherwise
      */
-    public static FolderListFragment ofTree(Folder folder) {
+    public static FolderListFragment ofTree(Folder folder, final boolean hideAccounts) {
         final FolderListFragment fragment = new FolderListFragment();
         // Trees are never sectioned.
         final boolean isSectioned = false;
         fragment.setArguments(getBundleFromArgs(TYPE_TREE, folder, folder.childFoldersListUri,
-                isSectioned, null));
+                isSectioned, null, hideAccounts));
         return fragment;
     }
 
@@ -201,14 +205,15 @@ public class FolderListFragment extends ListFragment implements
      * to display the folder and its immediate children.
      * @param folderListUri the URI which contains all the list of folders
      * @param excludedFolderTypes A list of {@link FolderType}s to exclude from displaying
+     * @param hideAccounts True if accounts should be hidden, false otherwise
      */
     public static FolderListFragment ofTopLevelTree(Uri folderListUri,
-            final ArrayList<Integer> excludedFolderTypes) {
+            final ArrayList<Integer> excludedFolderTypes, final boolean hideAccounts) {
         final FolderListFragment fragment = new FolderListFragment();
         // Trees are never sectioned.
         final boolean isSectioned = false;
         fragment.setArguments(getBundleFromArgs(TYPE_TREE, null, folderListUri,
-                isSectioned, excludedFolderTypes));
+                isSectioned, excludedFolderTypes, hideAccounts));
         return fragment;
     }
 
@@ -223,7 +228,8 @@ public class FolderListFragment extends ListFragment implements
      *         excluded folder types
      */
     private static Bundle getBundleFromArgs(int type, Folder parentFolder, Uri folderListUri,
-            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes) {
+            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes,
+            final boolean hideAccounts) {
         final Bundle args = new Bundle();
         args.putInt(ARG_TYPE, type);
         if (parentFolder != null) {
@@ -236,6 +242,7 @@ public class FolderListFragment extends ListFragment implements
         if (excludedFolderTypes != null) {
             args.putIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES, excludedFolderTypes);
         }
+        args.putBoolean(ARG_HIDE_ACCOUNTS, hideAccounts);
         return args;
     }
 
@@ -350,11 +357,16 @@ public class FolderListFragment extends ListFragment implements
         mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
         mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
         mType = args.getInt(ARG_TYPE);
+        mHideAccounts = args.getBoolean(ARG_HIDE_ACCOUNTS, false);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedState) {
+        final Bundle args = getArguments();
+        if (args != null) {
+            mHideAccounts = args.getBoolean(ARG_HIDE_ACCOUNTS, false);
+        }
         final View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -708,11 +720,15 @@ public class FolderListFragment extends ListFragment implements
          */
         private void recalculateList() {
             final List<DrawerItem> newFolderList = new ArrayList<DrawerItem>();
-            recalculateListAccounts(newFolderList);
+            // Don't show accounts for single-account-based folder selection (i.e. widgets)
+            if (!mHideAccounts) {
+                recalculateListAccounts(newFolderList);
+            }
             recalculateListFolders(newFolderList);
             mItemList = newFolderList;
             // Ask the list to invalidate its views.
             notifyDataSetChanged();
+
         }
 
         /**
