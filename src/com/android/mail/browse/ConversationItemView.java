@@ -1330,14 +1330,15 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     @Override
     public void toggleSelectedStateOrBeginDrag() {
         ViewMode mode = mActivity.getViewMode();
-        if (!mTabletDevice || !mode.isListMode()) {
-            toggleSelectedState();
-        } else {
+        if (mTabletDevice && mode.isListMode()) {
             beginDragMode();
+        } else {
+            toggleSelectedState();
         }
     }
 
-    private void toggleSelectedState() {
+    @Override
+    public void toggleSelectedState() {
         if (mHeader != null && mHeader.conversation != null) {
             mSelected = !mSelected;
             Conversation conv = mHeader.conversation;

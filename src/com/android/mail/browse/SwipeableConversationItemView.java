@@ -32,7 +32,7 @@ import com.android.mail.ui.ConversationSelectionSet;
 
 public class SwipeableConversationItemView extends FrameLayout implements ToggleableItem {
 
-    private ConversationItemView mConversationItemView;
+    private final ConversationItemView mConversationItemView;
 
     public SwipeableConversationItemView(Context context, String account) {
         super(context);
@@ -84,6 +84,13 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
     public void toggleSelectedStateOrBeginDrag() {
         if (mConversationItemView != null) {
             mConversationItemView.toggleSelectedStateOrBeginDrag();
+        }
+    }
+
+    @Override
+    public void toggleSelectedState() {
+        if (mConversationItemView != null) {
+            mConversationItemView.toggleSelectedState();
         }
     }
 }
