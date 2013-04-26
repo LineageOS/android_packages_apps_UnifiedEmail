@@ -42,7 +42,7 @@ public class DrawerItem {
     public final Account mAccount;
     public final int mResource;
     /** True if the drawer item represents the current account, false otherwise */
-    public final boolean mIsCurrentAccount;
+    public boolean mIsSelected;
     /** Either {@link #VIEW_ACCOUNT}, {@link #VIEW_FOLDER} or {@link #VIEW_HEADER} */
     public final int mType;
     /** A normal folder, also a child, if a parent is specified. */
@@ -123,7 +123,7 @@ public class DrawerItem {
         mFolderType = folderType;
         mAccount = account;
         mResource = resource;
-        mIsCurrentAccount = isCurrentAccount;
+        mIsSelected = isCurrentAccount;
         mInflater = LayoutInflater.from(activity.getActivityContext());
         mType = type;
         mPosition = position;
@@ -264,8 +264,8 @@ public class DrawerItem {
                 // Folders are always enabled.
                 return true;
             case VIEW_ACCOUNT:
-                // Accounts are always enabled.
-                return true;
+                // Accounts are only enabled if they are not the current account.
+                return !mIsSelected;
             case VIEW_WAITING_FOR_SYNC:
                 // Waiting for sync cannot be tapped, so never enabled.
                 return false;
@@ -305,6 +305,10 @@ public class DrawerItem {
         }
     }
 
+    public void setSelected(final boolean isSelected) {
+        mIsSelected = isSelected;
+    }
+
     /**
      * Return a view for an account object.
      * @param position a zero indexed position in to the list.
@@ -320,7 +324,7 @@ public class DrawerItem {
             accountItemView =
                     (AccountItemView) mInflater.inflate(R.layout.account_item, null, false);
         }
-        accountItemView.bind(mAccount, mIsCurrentAccount, mResource);
+        accountItemView.bind(mAccount, mIsSelected, mResource);
         View v = accountItemView.findViewById(R.id.account_graphic);
         v.setBackgroundColor(mAccount.color);
         return accountItemView;
@@ -360,7 +364,7 @@ public class DrawerItem {
             folderItemView =
                     (FolderItemView) mInflater.inflate(R.layout.folder_item, null, false);
         }
-        folderItemView.bind(mFolder, mActivity);
+        folderItemView.bind(mFolder, mActivity, mIsSelected);
         Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
         Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_icon));
         return folderItemView;

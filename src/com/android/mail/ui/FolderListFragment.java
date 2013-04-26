@@ -371,6 +371,7 @@ public class FolderListFragment extends ListFragment implements
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setEmptyView(null);
+        mListView.setDivider(null);
         // If we're not using tablet UI, set the background correctly
         if (!Utils.useTabletUI(getResources())) {
             mListView.setBackgroundResource(R.color.list_background_color);
@@ -635,23 +636,23 @@ public class FolderListFragment extends ListFragment implements
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             final DrawerItem item = (DrawerItem) getItem(position);
-            final View view = item.getView(position, convertView, parent);
+            final View view;
             final int type = item.mType;
-            if (mListView != null) {
-                final boolean isSelected =
-                        item.isHighlighted(mCurrentFolderForUnreadCheck, mSelectedFolderType);
-                if (type == DrawerItem.VIEW_FOLDER) {
-                    mListView.setItemChecked(position, isSelected);
-                }
-                // If this is the current folder, also check to verify that the unread count
-                // matches what the action bar shows.
-                if (type == DrawerItem.VIEW_FOLDER
-                        && isSelected
-                        && (mCurrentFolderForUnreadCheck != null)
-                        && item.mFolder.unreadCount != mCurrentFolderForUnreadCheck.unreadCount) {
-                    ((FolderItemView) view).overrideUnreadCount(
-                            mCurrentFolderForUnreadCheck.unreadCount);
-                }
+            final boolean isSelected =
+                    item.isHighlighted(mCurrentFolderForUnreadCheck, mSelectedFolderType);
+            if (type == DrawerItem.VIEW_FOLDER) {
+                mListView.setItemChecked(position, isSelected);
+                item.setSelected(isSelected);
+            }
+            view = item.getView(position, convertView, parent);
+            // If this is the current folder, also check to verify that the unread count
+            // matches what the action bar shows.
+            if (type == DrawerItem.VIEW_FOLDER
+                    && isSelected
+                    && (mCurrentFolderForUnreadCheck != null)
+                    && item.mFolder.unreadCount != mCurrentFolderForUnreadCheck.unreadCount) {
+                ((FolderItemView) view).overrideUnreadCount(
+                        mCurrentFolderForUnreadCheck.unreadCount);
             }
             LogUtils.d(LOG_TAG, "FLF.getView(%d) returns view of item %s", position, item);
             return view;
@@ -741,16 +742,12 @@ public class FolderListFragment extends ListFragment implements
             // Add all accounts and then the current account
             final Uri currentAccountUri = getCurrentAccountUri();
             for (final Account account : allAccounts) {
-                if (!currentAccountUri.equals(account.uri)) {
-                    final int unreadCount = mFolderWatcher.getUnreadCount(account);
-                    itemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount, false));
-                }
+                final int unreadCount = mFolderWatcher.getUnreadCount(account);
+                itemList.add(DrawerItem.ofAccount(
+                        mActivity, account, unreadCount, currentAccountUri.equals(account.uri)));
             }
             if (mCurrentAccount == null) {
                 LogUtils.wtf(LOG_TAG, "recalculateListAccounts() with null current account.");
-            } else {
-                // We don't show the unread count for the current account, so set this to zero.
-                itemList.add(DrawerItem.ofAccount(mActivity, mCurrentAccount, 0, true));
             }
         }
 
@@ -800,7 +797,7 @@ public class FolderListFragment extends ListFragment implements
             } while (mCursor.moveToNext());
 
             // Add all inboxes (sectioned included) before recents.
-            addFolderSection(itemList, inboxFolders, NO_HEADER_RESOURCE);
+            addFolderSection(itemList, inboxFolders, R.string.inbox_folders_heading);
 
             // Add most recently folders (in alphabetical order) next.
             addRecentsToList(itemList);
@@ -963,6 +960,7 @@ public class FolderListFragment extends ListFragment implements
             folderItemView.bind(folder, mDropHandler);
             if (folder.uri.equals(mSelectedFolderUri)) {
                 getListView().setItemChecked(position, true);
+                folderItemView.setSelected(true);
                 // If this is the current folder, also check to verify that the unread count
                 // matches what the action bar shows.
                 final boolean unreadCountDiffers = (mCurrentFolderForUnreadCheck != null)
