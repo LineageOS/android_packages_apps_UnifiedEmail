@@ -430,15 +430,31 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     public static void reorderMenu(final Context context, final Menu menu) {
         final boolean preferDelete = MailPrefs.get(context).getPreferDelete();
 
+        // Do a first pass to extract necessary information on what is safe to move to the overflow
+        boolean archiveVisibleEnabled = false;
+        boolean deleteVisibleEnabled = false;
+        for (int i = 0; i < menu.size(); i++) {
+            final MenuItem menuItem = menu.getItem(i);
+            final int itemId = menuItem.getItemId();
+            final boolean visible = menuItem.isVisible();
+            final boolean enabled = menuItem.isEnabled();
+
+            if (itemId == R.id.archive || itemId == R.id.remove_folder) {
+                archiveVisibleEnabled |= (visible & enabled);
+            } else if (itemId == R.id.delete || itemId == R.id.discard_drafts) {
+                deleteVisibleEnabled |= (visible & enabled);
+            }
+        }
+
         for (int i = 0; i < menu.size(); i++) {
             final MenuItem menuItem = menu.getItem(i);
             final int itemId = menuItem.getItemId();
 
-            if (preferDelete) {
+            if (preferDelete && deleteVisibleEnabled) {
                 if (itemId == R.id.archive || itemId == R.id.remove_folder) {
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
-            } else {
+            } else if (!preferDelete && archiveVisibleEnabled) {
                 if (itemId == R.id.delete || itemId == R.id.discard_drafts) {
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
