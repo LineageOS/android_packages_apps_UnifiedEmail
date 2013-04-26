@@ -359,6 +359,8 @@
     <string name="me">me</string>
     <!-- List item to open folders view in account dropdown [CHAR LIMIT=50] -->
     <string name="show_all_folders">Show all folders</string>
+    <!-- Header for list of inboxes in the drawer (Inbox, Priority) [CHAR LIMIT=50] -->
+    <string name="inbox_folders_heading">Inbox</string>
 
     <plurals name="confirm_delete_conversation">
         <!-- Dialog message to confirm deletion of one conversation -->
