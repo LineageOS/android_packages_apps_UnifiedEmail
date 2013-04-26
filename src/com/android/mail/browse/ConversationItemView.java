@@ -647,6 +647,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         // Parse senders fragments.
         if (mHeader.conversation.conversationInfo != null) {
+            // This is Gmail
             Context context = getContext();
             mHeader.messageInfoString = SendersView
                     .createMessageInfo(context, mHeader.conversation, true);
@@ -663,7 +664,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             // If we have displayable senders, load their thumbnails
             loadSenderImages();
         } else {
+            // This is Email
             SendersView.formatSenders(mHeader, getContext(), true);
+            if (mHeader.conversation.senders != null) {
+                mHeader.displayableSenderEmails = new ArrayList<String>();
+                mHeader.displayableSenderEmails.add(mHeader.conversation.senders);
+                mHeader.displayableSenderNames = new ArrayList<String>();
+                // Does Email have display name for sender?
+                mHeader.displayableSenderNames.add(mHeader.conversation.senders);
+                loadSenderImages();
+            }
         }
 
         if (mAttachmentPreviewMode != ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE) {
