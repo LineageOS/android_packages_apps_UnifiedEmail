@@ -136,7 +136,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     private boolean mInitialConversationLimit = false;
     /** A list of mostly-dead items */
     private final List<Conversation> mMostlyDead = Lists.newArrayList();
-    /** A list of items pending removal from a notification action. These may be undone later. */
+    /** A list of items pending removal from a notification action. These may be undone later.
+     *  Note: only modify on UI thread. */
     private final Set<Conversation> mNotificationTempDeleted = Sets.newHashSet();
     /** The name of the loader */
     private final String mName;
@@ -2015,22 +2016,26 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     }
 
     private void resetNotificationActions() {
-        final boolean changed = !mNotificationTempDeleted.isEmpty();
+        // Needs to be on the UI thread because it updates the ConversationCursor's internal
+        // state which violates assumptions about how the ListView works and how
+        // the ConversationViewPager works if performed off of the UI thread.
+        // Also, prevents ConcurrentModificationExceptions on mNotificationTempDeleted.
+        mMainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                final boolean changed = !mNotificationTempDeleted.isEmpty();
 
-        for (final Conversation conversation : mNotificationTempDeleted) {
-            sProvider.undeleteLocal(conversation.uri, this);
-        }
+                for (final Conversation conversation : mNotificationTempDeleted) {
+                    sProvider.undeleteLocal(conversation.uri, ConversationCursor.this);
+                }
 
-        mNotificationTempDeleted.clear();
+                mNotificationTempDeleted.clear();
 
-        if (changed) {
-            mMainThreadHandler.post(new Runnable() {
-                @Override
-                public void run() {
+                if (changed) {
                     notifyDataChanged();
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -2038,63 +2043,77 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * "Undo" action is available, we do not want to show the conversation in the list.
      */
     public void handleNotificationActions() {
-        final SparseArrayCompat<NotificationAction> undoNotifications =
-                NotificationActionUtils.sUndoNotifications;
+        // Needs to be on the UI thread because it updates the ConversationCursor's internal
+        // state which violates assumptions about how the ListView works and how
+        // the ConversationViewPager works if performed off of the UI thread.
+        // Also, prevents ConcurrentModificationExceptions on mNotificationTempDeleted.
+        mMainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                final SparseArrayCompat<NotificationAction> undoNotifications =
+                        NotificationActionUtils.sUndoNotifications;
+                final Set<Conversation> undoneConversations =
+                        NotificationActionUtils.sUndoneConversations;
 
-        final Set<Conversation> undoConversations =
-                Sets.newHashSetWithExpectedSize(undoNotifications.size());
+                final Set<Conversation> undoConversations =
+                        Sets.newHashSetWithExpectedSize(undoNotifications.size());
 
-        boolean changed = false;
+                boolean changed = false;
 
-        for (int i = 0; i < undoNotifications.size(); i++) {
-            final NotificationAction notificationAction =
-                    undoNotifications.get(undoNotifications.keyAt(i));
+                for (int i = 0; i < undoNotifications.size(); i++) {
+                    final NotificationAction notificationAction =
+                            undoNotifications.get(undoNotifications.keyAt(i));
 
-            // We only care about notifications that were for this folder or if the action was
-            // delete
-            final Folder folder = notificationAction.getFolder();
-            final boolean deleteAction =
-                    notificationAction.getNotificationActionType() == NotificationActionType.DELETE;
+                    // We only care about notifications that were for this folder
+                    // or if the action was delete
+                    final Folder folder = notificationAction.getFolder();
+                    final boolean deleteAction = notificationAction.getNotificationActionType()
+                            == NotificationActionType.DELETE;
 
-            if (folder.conversationListUri.equals(qUri) || deleteAction) {
-                // We only care about destructive actions
-                if (notificationAction.getNotificationActionType().getIsDestructive()) {
-                    final Conversation conversation = notificationAction.getConversation();
+                    if (folder.conversationListUri.equals(qUri) || deleteAction) {
+                        // We only care about destructive actions
+                        if (notificationAction.getNotificationActionType().getIsDestructive()) {
+                            final Conversation conversation = notificationAction.getConversation();
 
-                    undoConversations.add(conversation);
+                            undoConversations.add(conversation);
 
-                    if (!mNotificationTempDeleted.contains(conversation)) {
-                        sProvider.deleteLocal(conversation.uri, this);
-                        mNotificationTempDeleted.add(conversation);
+                            if (!mNotificationTempDeleted.contains(conversation)) {
+                                sProvider.deleteLocal(conversation.uri, ConversationCursor.this);
+                                mNotificationTempDeleted.add(conversation);
+
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+
+                // Remove any conversations from the temporary deleted state
+                // if they no longer have an undo notification
+                final Iterator<Conversation> iterator = mNotificationTempDeleted.iterator();
+                while (iterator.hasNext()) {
+                    final Conversation conversation = iterator.next();
+
+                    if (!undoConversations.contains(conversation)) {
+                        // We should only be un-deleting local cursor edits
+                        // if the notification was undone rather than just
+                        // disappearing because the internal cursor
+                        // gets updated when the undo goes away via timeout which
+                        // will update everything properly.
+                        if (undoneConversations.contains(conversation)) {
+                            sProvider.undeleteLocal(conversation.uri, ConversationCursor.this);
+                            undoneConversations.remove(conversation);
+                        }
+                        iterator.remove();
 
                         changed = true;
                     }
                 }
-            }
-        }
 
-        // Remove any conversations from the temporary deleted state if they no longer have an undo
-        // notification
-        final Iterator<Conversation> iterator = mNotificationTempDeleted.iterator();
-        while (iterator.hasNext()) {
-            final Conversation conversation = iterator.next();
-
-            if (!undoConversations.contains(conversation)) {
-                sProvider.undeleteLocal(conversation.uri, this);
-                iterator.remove();
-
-                changed = true;
-            }
-        }
-
-        if (changed) {
-            mMainThreadHandler.post(new Runnable() {
-                @Override
-                public void run() {
+                if (changed) {
                     notifyDataChanged();
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
