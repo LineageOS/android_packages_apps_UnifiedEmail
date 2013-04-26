@@ -41,18 +41,18 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
     private static boolean sDialogShown;
 
     protected AlertDialog mDialog;
-    protected ConversationUpdater mUpdater;
-    protected SeparatedFolderListAdapter mAdapter;
-    protected Collection<Conversation> mTarget;
-    protected boolean mBatch;
-    protected QueryRunner mRunner;
-    protected Account mAccount;
-    protected AlertDialog.Builder mBuilder;
-    protected Folder mCurrentFolder;
+    protected final ConversationUpdater mUpdater;
+    protected final SeparatedFolderListAdapter mAdapter;
+    protected final Collection<Conversation> mTarget;
+    protected final boolean mBatch;
+    protected final QueryRunner mRunner;
+    protected final Account mAccount;
+    protected final AlertDialog.Builder mBuilder;
+    protected final Folder mCurrentFolder;
 
-    public static FolderSelectionDialog getInstance(final Context context, Account account,
-            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
-            Folder currentFolder, boolean isMoveTo) {
+    public static FolderSelectionDialog getInstance(final Context context, final Account account,
+            final ConversationUpdater updater, final Collection<Conversation> target,
+            final boolean isBatch, final Folder currentFolder, final boolean isMoveTo) {
         if (sDialogShown) {
             return null;
         }
@@ -76,20 +76,14 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
 
     protected abstract void onListItemClick(int position);
 
-    protected FolderSelectionDialog(final Context context, Account account,
-            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
-            Folder currentFolder, boolean isMoveTo) {
+    protected FolderSelectionDialog(final Context context, final Account account,
+            final ConversationUpdater updater, final Collection<Conversation> target,
+            final boolean isBatch, final Folder currentFolder) {
         mUpdater = updater;
         mTarget = target;
         mBatch = isBatch;
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        if (isMoveTo) {
-            builder.setTitle(R.string.move_to_selection_dialog_title);
-        } else {
-            builder.setTitle(R.string.change_folders_selection_dialog_title);
-            builder.setPositiveButton(R.string.ok, this);
-        }
         builder.setNegativeButton(R.string.cancel, this);
         mAccount = account;
         mBuilder = builder;

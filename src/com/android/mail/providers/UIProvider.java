@@ -28,6 +28,7 @@ import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
 import com.android.common.contacts.DataUsageStatUpdater;
+import com.android.mail.ui.MultiFoldersSelectionDialog;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
@@ -738,6 +739,13 @@ public class UIProvider {
          * from this folder.
          */
         public static final int ALLOWS_REMOVE_CONVERSATION = 0x4000;
+
+        /**
+         * The flag indicates that the user has the ability to move conversations to or from this
+         * Folder in the same operation as other Folder changes (usually through
+         * {@link MultiFoldersSelectionDialog}).
+         */
+        public static final int MULTI_MOVE = 0x8000;
     }
 
     public static final class FolderColumns {
