@@ -31,6 +31,7 @@ import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Displays a folder selection dialog for the conversation provided. It allows
@@ -50,10 +51,12 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
      * @param currentFolder the current folder that the
      *            {@link FolderListFragment} is showing
      */
-    public SingleFolderSelectionDialog(final Context context, Account account,
-            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
-            Folder currentFolder) {
-        super(context, account, updater, target, isBatch, currentFolder, true);
+    public SingleFolderSelectionDialog(final Context context, final Account account,
+            final ConversationUpdater updater, final Collection<Conversation> target,
+            final boolean isBatch, final Folder currentFolder) {
+        super(context, account, updater, target, isBatch, currentFolder);
+
+        mBuilder.setTitle(R.string.move_to_selection_dialog_title);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
             // folders, at headers[1]; need to define what that means.*/
             // TODO(pwestbro): determine if we need to call filterFolders
             mAdapter.addSection(new UserFolderHierarchicalFolderSelectorAdapter(context,
-                    AddableFolderSelectorAdapter.filterFolders(foldersCursor),
+                    AddableFolderSelectorAdapter.filterFolders(foldersCursor, null),
                     R.layout.single_folders_view, headers[2], mCurrentFolder));
             mBuilder.setAdapter(mAdapter, SingleFolderSelectionDialog.this);
         } finally {
