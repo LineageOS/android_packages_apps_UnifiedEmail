@@ -97,7 +97,7 @@ public class ConversationItemViewModel {
 
     public long maxMessageId;
 
-    public boolean checkboxVisible;
+    public int gadgetMode;
 
     public Conversation conversation;
 
@@ -156,7 +156,6 @@ public class ConversationItemViewModel {
         ConversationItemViewModel header = ConversationItemViewModel.forConversationId(account,
                 conv.id);
         if (conv != null) {
-            header.checkboxVisible = true;
             header.conversation = conv;
             header.unread = !conv.read;
             header.hasBeenForwarded =
@@ -229,7 +228,7 @@ public class ConversationItemViewModel {
      * Returns the layout hashcode to compare to see if the layout state has changed.
      */
     private int getLayoutHashCode() {
-        return Objects.hashCode(mDataHashCode, viewWidth, standardScaledDimen, checkboxVisible);
+        return Objects.hashCode(mDataHashCode, viewWidth, standardScaledDimen, gadgetMode);
     }
 
     private Object getConvInfo() {
