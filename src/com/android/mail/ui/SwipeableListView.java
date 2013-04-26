@@ -34,9 +34,11 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SwipeableConversationItemView;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderList;
+import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -47,13 +49,14 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class SwipeableListView extends ListView implements Callback, OnScrollListener {
-    private SwipeHelper mSwipeHelper;
+    private final SwipeHelper mSwipeHelper;
     private boolean mEnableSwipe = false;
 
     public static final String LOG_TAG = LogTag.getLogTag();
 
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;
+    private Account mAccount;
     private Folder mFolder;
     private ListItemSwipedListener mSwipedListener;
     private boolean mScrolling;
@@ -120,6 +123,10 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     public void setSelectionSet(ConversationSelectionSet set) {
         mConvSelectionSet = set;
+    }
+
+    public void setCurrentAccount(Account account) {
+        mAccount = account;
     }
 
     public void setCurrentFolder(Folder folder) {
@@ -324,7 +331,19 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     @Override
     public boolean performItemClick(View view, int pos, long id) {
+        int previousPosition = getCheckedItemPosition();
+        boolean selectionSetEmpty = mConvSelectionSet.isEmpty();
+
+        // Superclass method modifies the selection set
         boolean handled = super.performItemClick(view, pos, id);
+
+        // If we are in CAB mode with no checkboxes then a click shouldn't
+        // activate the new item, it should only add it to the selection set
+        boolean showSenderImage = mAccount != null
+                && (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
+        if (!showSenderImage && !selectionSetEmpty && previousPosition != -1) {
+            setItemChecked(previousPosition, true);
+        }
         // Commit any existing destructive actions when the user selects a
         // conversation to view.
         commitDestructiveActions(true);
