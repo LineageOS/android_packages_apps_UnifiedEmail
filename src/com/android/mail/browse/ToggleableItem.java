@@ -18,5 +18,5 @@
 package com.android.mail.browse;
 
 public interface ToggleableItem {
-    void toggleCheckMarkOrBeginDrag();
+    void toggleSelectedStateOrBeginDrag();
 }
