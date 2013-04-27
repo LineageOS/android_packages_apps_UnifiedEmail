@@ -178,7 +178,7 @@ public class FolderItemView extends RelativeLayout {
         if (mIsSelected) {
             textColorResId = R.color.folder_item_selected_text_color;
         } else {
-            textColorResId = R.color.gray_text_color;
+            textColorResId = R.color.folder_item_text_color;
         }
         mFolderTextView.setTextColor(getContext().getResources().getColor(textColorResId));
         mUnreadCountTextView.setTextColor(getContext().getResources().getColor(textColorResId));
