@@ -26,7 +26,5 @@
         android:layout_height="match_parent"
         android:cacheColorHint="@android:color/transparent"
         android:drawSelectorOnTop="false"
-        android:fadingEdge="none"
-        android:divider="@color/folder_list_divider_color"
-        android:dividerHeight="1dp" />
+        android:fadingEdge="none"/>
 </com.android.mail.ui.FolderListLayout>

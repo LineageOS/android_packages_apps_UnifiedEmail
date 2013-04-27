@@ -17,6 +17,7 @@ package com.android.mail.ui;
 
 import com.android.mail.R;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.mail.providers.Account;
@@ -34,6 +35,7 @@ import android.widget.RelativeLayout;
 public class AccountItemView extends RelativeLayout {
     private TextView mAccountTextView;
     private TextView mUnreadCountTextView;
+    private ImageView mSelectedButton;
 
     public AccountItemView(Context context) {
         super(context);
@@ -52,6 +54,7 @@ public class AccountItemView extends RelativeLayout {
         super.onFinishInflate();
         mAccountTextView = (TextView)findViewById(R.id.name);
         mUnreadCountTextView = (TextView)findViewById(R.id.unread);
+        mSelectedButton = (ImageView)findViewById(R.id.account_radio_button);
     }
 
     /**
@@ -64,15 +67,21 @@ public class AccountItemView extends RelativeLayout {
      * @param count unread count
      */
     public void bind(final Account account, final boolean isCurrentAccount, final int count) {
+        final int textColorResId;
+        final int buttonResId;
+
+        if (isCurrentAccount) {
+            textColorResId = R.color.account_item_selected_text_color;
+            buttonResId = R.drawable.ic_radiobutton_selected;
+        } else {
+            textColorResId = R.color.gray_text_color;
+            buttonResId = R.drawable.ic_radiobutton;
+        }
         mAccountTextView.setText(account.name);
         setUnreadCount(count);
-
-        if(isCurrentAccount) {
-            mUnreadCountTextView.setVisibility(View.GONE);
-            setBackgroundResource(R.drawable.list_focused_holo);
-        } else {
-            setBackgroundResource(0);
-        }
+        mSelectedButton.setImageResource(buttonResId);
+        mAccountTextView.setTextColor(getContext().getResources().getColor(textColorResId));
+        mUnreadCountTextView.setTextColor(getContext().getResources().getColor(textColorResId));
     }
 
     /**
