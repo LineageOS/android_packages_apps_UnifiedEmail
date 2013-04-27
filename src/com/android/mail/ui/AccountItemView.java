@@ -74,7 +74,7 @@ public class AccountItemView extends RelativeLayout {
             textColorResId = R.color.account_item_selected_text_color;
             buttonResId = R.drawable.ic_radiobutton_selected;
         } else {
-            textColorResId = R.color.gray_text_color;
+            textColorResId = R.color.account_item_text_color;
             buttonResId = R.drawable.ic_radiobutton;
         }
         mAccountTextView.setText(account.name);
