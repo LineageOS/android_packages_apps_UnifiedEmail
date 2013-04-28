@@ -67,7 +67,8 @@
             android:id="@+id/widget_unread_count"
             style="@style/UnreadCount"
             android:layout_marginRight="12dip"
-            android:textColor="#777777" />
+            android:textColor="#777777"
+            android:visibility="gone" />
         <ImageButton
             android:id="@+id/widget_compose"
             android:layout_width="wrap_content"

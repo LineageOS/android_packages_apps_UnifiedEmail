@@ -100,7 +100,7 @@ public class WidgetService extends RemoteViewsService {
         if (!TextUtils.isEmpty(account.name)) {
             remoteViews.setTextViewText(R.id.widget_account, account.name);
         }
-        remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
+        remoteViews.setViewVisibility(R.id.widget_unread_count, View.GONE);
         remoteViews.setViewVisibility(R.id.widget_compose, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.conversation_list, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.empty_conversation_list, View.VISIBLE);
@@ -548,9 +548,17 @@ public class WidgetService extends RemoteViewsService {
                 if (!TextUtils.isEmpty(mAccount.name)) {
                     remoteViews.setTextViewText(R.id.widget_account, mAccount.name);
                 }
-                remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
-                remoteViews.setTextViewText(R.id.widget_unread_count,
-                        Utils.getUnreadCountString(mContext, unreadCount));
+
+                final String unreadCountString = Utils.getUnreadCountString(mContext, unreadCount);
+
+                // If there are 0 unread messages, hide the unread count text view.
+                // Otherwise, show the unread count.
+                if ("".equals(unreadCountString)) {
+                    remoteViews.setViewVisibility(R.id.widget_unread_count, View.GONE);
+                } else {
+                    remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
+                    remoteViews.setTextViewText(R.id.widget_unread_count, unreadCountString);
+                }
 
                 appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
             } else if (loader == mConversationCursorLoader) {
