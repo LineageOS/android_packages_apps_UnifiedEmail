@@ -375,7 +375,7 @@ public class UIProvider {
          * TODO: When we want to support a heterogeneous set of account types, this value may need
          * to be moved to a global content provider.
          */
-        public static String SETTINGS_INTENT_URI = "accountSettingsIntentUri";
+        public static final String SETTINGS_INTENT_URI = "accountSettingsIntentUri";
 
         /**
          * Uri for VIEW intent that will cause the help screens for this account type to be
@@ -383,7 +383,7 @@ public class UIProvider {
          * TODO: When we want to support a heterogeneous set of account types, this value may need
          * to be moved to a global content provider.
          */
-        public static String HELP_INTENT_URI = "helpIntentUri";
+        public static final String HELP_INTENT_URI = "helpIntentUri";
 
         /**
          * Uri for VIEW intent that will cause the send feedback for this account type to be
@@ -391,7 +391,7 @@ public class UIProvider {
          * TODO: When we want to support a heterogeneous set of account types, this value may need
          * to be moved to a global content provider.
          */
-        public static String SEND_FEEDBACK_INTENT_URI = "sendFeedbackIntentUri";
+        public static final String SEND_FEEDBACK_INTENT_URI = "sendFeedbackIntentUri";
 
         /**
          * Uri for VIEW intent that will cause the user to be prompted for authentication for
@@ -399,7 +399,7 @@ public class UIProvider {
          * handle this intent are expected to return {@link android.app.Activity#RESULT_OK} if the
          * user successfully authenticated.
          */
-        public static String REAUTHENTICATION_INTENT_URI = "reauthenticationUri";
+        public static final String REAUTHENTICATION_INTENT_URI = "reauthenticationUri";
 
         /**
          * This int column contains the current sync status of the account (the logical AND of the
@@ -765,16 +765,16 @@ public class UIProvider {
          * This int column represents the capabilities of the folder specified by
          * FolderCapabilities flags.
          */
-        public static String CAPABILITIES = "capabilities";
+        public static final String CAPABILITIES = "capabilities";
         /**
          * This int column represents whether or not this folder has any
          * child folders.
          */
-        public static String HAS_CHILDREN = "hasChildren";
+        public static final String HAS_CHILDREN = "hasChildren";
         /**
          * This int column represents how large the sync window is.
          */
-        public static String SYNC_WINDOW = "syncWindow";
+        public static final String SYNC_WINDOW = "syncWindow";
         /**
          * This string column contains the content provider uri to return the
          * list of conversations for this folder.
@@ -996,41 +996,41 @@ public class UIProvider {
          * This int column contains the number of messages in this conversation.
          * For unthreaded, this will always be 1.
          */
-        public static String NUM_MESSAGES = "numMessages";
+        public static final String NUM_MESSAGES = "numMessages";
 
         /**
          * This int column contains the number of drafts associated with this
          * conversation.
          */
-        public static String NUM_DRAFTS = "numDrafts";
+        public static final String NUM_DRAFTS = "numDrafts";
 
         /**
          * This int column contains the state of drafts and replies associated
          * with this conversation. Use ConversationSendingState to interpret
          * this field.
          */
-        public static String SENDING_STATE = "sendingState";
+        public static final String SENDING_STATE = "sendingState";
 
         /**
          * This int column contains the priority of this conversation. Use
          * ConversationPriority to interpret this field.
          */
-        public static String PRIORITY = "priority";
+        public static final String PRIORITY = "priority";
 
         /**
          * This int column indicates whether the conversation has been read
          */
-        public static String READ = "read";
+        public static final String READ = "read";
 
         /**
          * This int column indicates whether the conversation has been seen
          */
-        public static String SEEN = "seen";
+        public static final String SEEN = "seen";
 
         /**
          * This int column indicates whether the conversation has been starred
          */
-        public static String STARRED = "starred";
+        public static final String STARRED = "starred";
 
         /**
          * This blob column contains the marshalled form of a Parceled
@@ -1527,17 +1527,17 @@ public class UIProvider {
         /**
          * This boolean column indicates whether the message has been read
          */
-        public static String READ = "read";
+        public static final String READ = "read";
 
         /**
          * This boolean column indicates whether the message has been seen
          */
-        public static String SEEN = "seen";
+        public static final String SEEN = "seen";
 
         /**
          * This boolean column indicates whether the message has been starred
          */
-        public static String STARRED = "starred";
+        public static final String STARRED = "starred";
 
         /**
          * This integer column represents the offset in the message of quoted
