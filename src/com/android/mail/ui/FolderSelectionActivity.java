@@ -36,6 +36,7 @@ import android.widget.Button;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderWatcher;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
@@ -135,6 +136,11 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         @Override
         public void closeDrawer(final boolean hasNewFolderOrAccount) {
             mDrawerObservers.notifyChanged();
+        }
+
+        @Override
+        public void setFolderWatcher(FolderWatcher watcher) {
+            // Unsupported.
         }
     };
 
@@ -446,4 +452,5 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         // Unsupported
         return null;
     }
+
 }

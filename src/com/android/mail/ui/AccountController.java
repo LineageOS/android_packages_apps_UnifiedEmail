@@ -22,6 +22,7 @@ import android.database.DataSetObserver;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
+import com.android.mail.providers.FolderWatcher;
 import com.android.mail.utils.VeiledAddressMatcher;
 
 /**
@@ -96,4 +97,9 @@ public interface AccountController {
      *            or account, false otherwise.
      */
     void closeDrawer(boolean hasNewFolderOrAccount);
+
+    /**
+     * Set the folderWatcher
+     */
+    void setFolderWatcher(FolderWatcher watcher);
 }
