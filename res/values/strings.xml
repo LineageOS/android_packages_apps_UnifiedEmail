@@ -846,8 +846,24 @@
 
     <!-- Settings screen, preference name for archive vs. delete [CHAR LIMIT=50] -->
     <string name="preference_archive_vs_delete_title">Remove action</string>
-    <!-- Settings screen, preference description for archive vs. delete [CHAR LIMIT=200] -->
-    <string name="preference_archive_vs_delete_text">Delete rather than archive conversations</string>
+    <!-- Options to select from for whether to have archive or delete as the remove action [CHAR LIMIT=50] -->
+    <string-array name="prefEntries_archive_vs_delete">
+        <item>Archive conversations</item>
+        <item>Delete conversations</item>
+    </string-array>
+    <!-- Description of currently selected option of whether to use archive or delete as remove action [CHAR LIMIT=200] -->
+    <string-array name="prefSummaries_archive_vs_delete_summary">
+        <item>Archive rather than delete conversations</item>
+        <item>Delete rather than archive conversations</item>
+    </string-array>
+    <string-array translatable="false" name="prefValues_archive_vs_delete">
+        <item>archive</item>
+        <item>delete</item>
+    </string-array>
+    <!-- Dialog title for the choosing whether to use archive or delete as remove action [CHAR LIMIT=150] -->
+    <string name="prefDialogTitle_archive_vs_delete">Remove action</string>
+    <!-- The default value -->
+    <string translatable="false" name="prefDefault_archive_vs_delete">archive</string>
 
     <!--  Settings screen, Reply to all default setting title  [CHAR LIMIT=30] -->
     <string name="preferences_default_reply_all_title">Reply all</string>
