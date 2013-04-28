@@ -75,7 +75,8 @@
             style="@style/UnreadCount"
             android:layout_alignWithParentIfMissing="true"
             android:layout_alignParentRight="true"
-            android:layout_alignBaseline="@id/name" />
+            android:layout_alignBaseline="@id/name"
+            android:textColor="@color/folder_item_text_color" />
 
         <TextView
             android:id="@+id/unseen"

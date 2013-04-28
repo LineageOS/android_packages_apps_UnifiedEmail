@@ -636,15 +636,13 @@ public class FolderListFragment extends ListFragment implements
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             final DrawerItem item = (DrawerItem) getItem(position);
-            final View view;
+            final View view = item.getView(position, convertView, parent);
             final int type = item.mType;
             final boolean isSelected =
                     item.isHighlighted(mCurrentFolderForUnreadCheck, mSelectedFolderType);
             if (type == DrawerItem.VIEW_FOLDER) {
                 mListView.setItemChecked(position, isSelected);
-                item.setSelected(isSelected);
             }
-            view = item.getView(position, convertView, parent);
             // If this is the current folder, also check to verify that the unread count
             // matches what the action bar shows.
             if (type == DrawerItem.VIEW_FOLDER
@@ -960,7 +958,6 @@ public class FolderListFragment extends ListFragment implements
             folderItemView.bind(folder, mDropHandler);
             if (folder.uri.equals(mSelectedFolderUri)) {
                 getListView().setItemChecked(position, true);
-                folderItemView.setSelected(true);
                 // If this is the current folder, also check to verify that the unread count
                 // matches what the action bar shows.
                 final boolean unreadCountDiffers = (mCurrentFolderForUnreadCheck != null)
