@@ -466,16 +466,18 @@ public class FolderListFragment extends ListFragment implements
                 final Account account = drawerItem.mAccount;
 
                 if (account != null && account.settings.defaultInbox.equals(mSelectedFolderUri)) {
-                    // We're already in the default inbox for the same account, just re-check item.
+                    // We're already in the default inbox for account, just re-check item ...
                     final int defaultInboxPosition = position + 1;
                     if (mListView.getChildAt(defaultInboxPosition) != null) {
                         mListView.setItemChecked(defaultInboxPosition, true);
                     }
+                    // ... and close the drawer (no new target folders/accounts)
+                    mAccountChanger.closeDrawer(false /* hasNewFolderOrAccount */);
                 } else {
                     // Switching accounts takes you to the inbox, which is always a system folder.
                     mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
                     mNextAccount = account;
-                    mAccountChanger.closeDrawerForNewList();
+                    mAccountChanger.closeDrawer(true /* hasNewFolderOrAccount */);
                 }
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
@@ -507,7 +509,10 @@ public class FolderListFragment extends ListFragment implements
             // Go to the conversation list for this folder.
             if (!folder.uri.equals(mSelectedFolderUri)) {
                 mNextFolder = folder;
-                mAccountChanger.closeDrawerForNewList();
+                mAccountChanger.closeDrawer(true /* hasNewFolderOrAccount */);
+            } else {
+                // Clicked on same folder, just close drawer
+                mAccountChanger.closeDrawer(false /* hasNewFolderOrAccount */);
             }
         }
     }

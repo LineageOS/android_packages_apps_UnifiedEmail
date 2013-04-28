@@ -92,6 +92,8 @@ public interface AccountController {
     /**
      * When the {@link FolderListFragment} has a new account ready for changing to,
      * close the drawer and then wait for {@link DataSetObservable#notifyChanged()}.
+     * @param hasNewFolderOrAccount true if we need to load conversations for a different folder
+     *            or account, false otherwise.
      */
-    void closeDrawerForNewList();
+    void closeDrawer(boolean hasNewFolderOrAccount);
 }
