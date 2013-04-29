@@ -804,10 +804,10 @@ public final class OnePaneController extends AbstractActivityController {
     /**
      * The default behavior calls mDrawerObserver's notifyChanged(). So, to notify the consumer of
      * the observer that the drawer is closed, we simply make a call to
-     * {@link AbstractActivityController#closeDrawerForNewList()}.
+     * {@link AbstractActivityController#closeDrawer(boolean)}.
      */
     public void notifyDrawerClosed() {
-        super.closeDrawerForNewList();
+        super.closeDrawer(true);
     }
 
     /**
@@ -816,7 +816,13 @@ public final class OnePaneController extends AbstractActivityController {
      * or put in an idle state.
      */
     @Override
-    public void closeDrawerForNewList() {
+    public void closeDrawer(final boolean hasNewFolderOrAccount) {
+        // If there are no new folders or accounts to switch to, just close the drawer
+        if (!hasNewFolderOrAccount) {
+            mDrawerContainer.closeDrawers();
+            return;
+        }
+
         final ConversationListFragment conversationList = getConversationListFragment();
         if (conversationList != null) {
             mListViewForAnimating = conversationList.getListView();
