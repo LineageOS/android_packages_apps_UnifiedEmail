@@ -20,19 +20,19 @@
 
     <item android:id="@+id/compose"
         android:title="@string/menu_compose"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_compose_normal_holo_light"
         android:alphabeticShortcut="@string/trigger_compose_char" />
 
     <item android:id="@+id/search"
         android:title="@string/menu_search"
-        android:showAsAction="always|collapseActionView"
+        android:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_menu_search_holo_light"
         android:actionLayout="@layout/mail_actionbar_searchview" />
 
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
