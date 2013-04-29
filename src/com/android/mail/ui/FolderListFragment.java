@@ -1080,6 +1080,10 @@ public class FolderListFragment extends ListFragment implements
             manager.destroyLoader(FOLDER_LOADER_ID);
             manager.restartLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
             // An updated cursor causes the entire list to refresh. No need to refresh the list.
+            // But we do need to blank out the current folder, since the account might not be
+            // synced.
+            mSelectedFolderUri = null;
+            mCurrentFolderForUnreadCheck = null;
         } else if (account == null) {
             // This should never happen currently, but is a safeguard against a very incorrect
             // non-null account -> null account transition.
