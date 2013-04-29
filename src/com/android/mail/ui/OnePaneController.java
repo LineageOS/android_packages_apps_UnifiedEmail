@@ -225,7 +225,7 @@ public final class OnePaneController extends AbstractActivityController {
         mDrawerPullout = (ViewGroup) mDrawerContainer.findViewById(R.id.drawer_pullout);
         mDrawerContainer.setDrawerShadow(
                 mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.LEFT);
-
+        mDrawerPullout.setBackgroundResource(R.color.list_background_color);
 
         mDrawerToggle = new ActionBarDrawerToggle((Activity)mActivity, mDrawerContainer,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
