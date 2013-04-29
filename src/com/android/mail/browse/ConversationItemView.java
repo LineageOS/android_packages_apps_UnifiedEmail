@@ -109,6 +109,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static final String CONV_ITEM_VIEW_CATEGORY = "ConversationItemView";
     private static final String CONTACT_PHOTO_ACTION = "ContactPhoto";
     private static final String NUM_PHOTOS_LABEL = "num_photos";
+    private static final String CUSTOM_DIMEN_ACCOUNT_TYPE_GOOGLE_COM = "account_type_google_com";
+    private static final String CUSTOM_DIMEN_ACCOUNT_TYPE_NON_GOOGLE_COM
+            = "account_type_non_google_com";
     private static final boolean REPORT_ANALYTICS = true;
 
 
@@ -451,15 +454,27 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                             numPhotos++;
                         }
                     }
+
                     // Number of subtiles
                     sConversationItemViewTracker.setCustomMetric(1, (long)numTiles);
                     // Number of resolved photos
                     sConversationItemViewTracker.setCustomMetric(2, (long)numPhotos);
                     // Number of letter subtiles
                     sConversationItemViewTracker.setCustomMetric(3, (long)(numTiles - numPhotos));
+                    final String accountTypeCustomDimen = mAccount.endsWith("google.com") ?
+                            CUSTOM_DIMEN_ACCOUNT_TYPE_GOOGLE_COM :
+                            CUSTOM_DIMEN_ACCOUNT_TYPE_NON_GOOGLE_COM;
+                    sConversationItemViewTracker.setCustomDimension(3, accountTypeCustomDimen);
+                    // This is a hack. Ideally this would check the folder object to determine if it
+                    // is the primary section
+                    final String isPrimarySection =
+                            TextUtils.equals(mDisplayedFolder.persistentId, "^sq_ig_i_personal") ?
+                                    "primary" : "not_primary";
+                    sConversationItemViewTracker.setCustomDimension(4, isPrimarySection);
 
                     sConversationItemViewTracker.sendEvent(CONV_ITEM_VIEW_CATEGORY,
                             CONTACT_PHOTO_ACTION, NUM_PHOTOS_LABEL, (long)numTiles);
+
                     mReportedStats = true;
                 }
             }
