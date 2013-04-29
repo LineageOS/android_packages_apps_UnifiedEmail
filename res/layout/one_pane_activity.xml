@@ -20,16 +20,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/content_pane"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <include layout="@layout/conversation_pager" />
-
+    <!-- DrawerLayout current only supports one content view (b/8752191) -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/content_pane"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <include layout="@layout/conversation_pager" />
 
         <com.android.mail.ui.ActionableToastBar
             android:id="@+id/toast_bar"
