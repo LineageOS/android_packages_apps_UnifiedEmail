@@ -372,10 +372,6 @@ public class FolderListFragment extends ListFragment implements
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setEmptyView(null);
         mListView.setDivider(null);
-        // If we're not using tablet UI, set the background correctly
-        if (!Utils.useTabletUI(getResources())) {
-            mListView.setBackgroundResource(R.color.list_background_color);
-        }
         if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(BUNDLE_LIST_STATE));
         }
