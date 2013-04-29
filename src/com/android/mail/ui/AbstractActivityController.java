@@ -626,7 +626,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * is no drawer.
      */
     @Override
-    public void closeDrawerForNewList() {
+    public void closeDrawer(final boolean hasNewFolderOrAccount) {
         mDrawerObservers.notifyChanged();
     }
 
