@@ -22,53 +22,69 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-   <!-- Note: intentionally not called "empty" because we call
-        setEmptyView programmatically-->
-   <!-- Offset by height of undo bar and action bar -->
-   <TextView
-       android:id="@+id/empty_view"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:gravity="center"
-       android:textAppearance="?android:attr/textAppearanceLarge"
-       android:text="@string/no_conversations"
-       android:layout_marginTop="@dimen/empty_view_top_padding"
-       android:visibility="gone" />
+    <!-- Note: intentionally not called "empty" because we call
+         setEmptyView programmatically-->
+    <!-- Offset by height of undo bar and action bar -->
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/no_conversations"
+        android:layout_marginTop="@dimen/empty_view_top_padding"
+        android:visibility="gone" />
 
-   <include layout="@layout/search_results_view"/>
+    <include layout="@layout/search_results_view"/>
 
-   <com.android.mail.ui.ConversationListView android:id="@+id/conversation_list"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
+    <com.android.mail.ui.ConversationListView
+        android:id="@+id/conversation_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-       <com.android.mail.ui.SwipeableListView android:id="@android:id/list"
-           style="@style/ConversationListFade"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:fadingEdge="none"
-           android:layout_alignParentTop="true"/>
+        <com.android.mail.ui.SwipeableListView android:id="@android:id/list"
+            style="@style/ConversationListFade"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadingEdge="none"
+            android:layout_alignParentTop="true"/>
 
+        <!-- white background to make blue progress bar more visible -->
+        <FrameLayout
+            android:id="@+id/sync_trigger"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_gravity="top|center"
+            android:background="#ffffff"
+            android:visibility="gone">
 
-       <ProgressBar
-           android:id="@+id/sync_trigger"
-           style="?android:attr/progressBarStyleHorizontal"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_gravity="top|center"
-           android:max="100"
-           android:progress="100"
-           android:progressDrawable="@drawable/progressbar_solid_holo"
-           android:visibility="gone" />
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:max="100"
+                android:progress="100"
+                android:progressDrawable="@drawable/progressbar_solid_holo" />
+        </FrameLayout>
 
-       <ProgressBar
-           android:id="@+id/progress"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_gravity="top"
-           android:visibility="gone"
-           android:indeterminateDrawable="@drawable/progress_indeterminate_horizontal_holo"
-           android:indeterminate="true" />
+        <!-- white background to make blue progress bar more visible -->
+        <FrameLayout
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_gravity="top"
+            android:background="#ffffff"
+            android:visibility="gone">
 
-   </com.android.mail.ui.ConversationListView>
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:indeterminateDrawable="@drawable/progress_indeterminate_horizontal_holo"
+                android:indeterminate="true" />
+        </FrameLayout>
+
+    </com.android.mail.ui.ConversationListView>
 
 </RelativeLayout>
