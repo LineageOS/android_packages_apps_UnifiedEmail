@@ -305,10 +305,6 @@ public class DrawerItem {
         }
     }
 
-    public void setSelected(final boolean isSelected) {
-        mIsSelected = isSelected;
-    }
-
     /**
      * Return a view for an account object.
      * @param position a zero indexed position in to the list.
@@ -364,7 +360,7 @@ public class DrawerItem {
             folderItemView =
                     (FolderItemView) mInflater.inflate(R.layout.folder_item, null, false);
         }
-        folderItemView.bind(mFolder, mActivity, mIsSelected);
+        folderItemView.bind(mFolder, mActivity);
         Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
         Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_icon));
         return folderItemView;
