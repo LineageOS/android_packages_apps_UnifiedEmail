@@ -172,6 +172,8 @@
     <string name="send_failed" msgid="750908595144529579">"ההודעה לא נשלחה."</string>
     <string name="me" msgid="6480762904022198669">"אני"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"הצג את כל התיקיות"</string>
+    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
+    <skip />
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"האם למחוק שיחה זו?"</item>
     <item quantity="other" msgid="930334208937121234">"האם למחוק <xliff:g id="COUNT">%1$d</xliff:g> שיחות אלה?"</item>
@@ -382,7 +384,12 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>‏: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"שקט"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"פעולת הסרה"</string>
-    <string name="preference_archive_vs_delete_text" msgid="3219537390825170783">"מחק הודעות במקום להעביר אותן לארכיון"</string>
+    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
+    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
+    <skip />
     <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />
     <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->

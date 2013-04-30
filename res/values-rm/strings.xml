@@ -291,6 +291,8 @@
     <skip />
     <!-- no translation found for show_all_folders (3281420732307737553) -->
     <skip />
+    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
+    <skip />
     <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
     <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
     <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
@@ -596,7 +598,11 @@
     <skip />
     <!-- no translation found for preference_archive_vs_delete_title (6469574019069966937) -->
     <skip />
-    <!-- no translation found for preference_archive_vs_delete_text (3219537390825170783) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
+    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
     <skip />
     <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />

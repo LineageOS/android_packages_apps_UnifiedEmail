@@ -172,6 +172,8 @@
     <string name="send_failed" msgid="750908595144529579">"Thư chưa được gửi."</string>
     <string name="me" msgid="6480762904022198669">"tôi"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Hiển thị tất cả thư mục"</string>
+    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
+    <skip />
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Xóa cuộc hội thoại này?"</item>
     <item quantity="other" msgid="930334208937121234">"Xóa <xliff:g id="COUNT">%1$d</xliff:g> cuộc hội thoại này?"</item>
@@ -382,7 +384,12 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Im lặng"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Xóa tác vụ"</string>
-    <string name="preference_archive_vs_delete_text" msgid="3219537390825170783">"Xóa chứ không lưu trữ cuộc hội thoại"</string>
+    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
+    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
+    <skip />
     <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />
     <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
@@ -391,8 +398,8 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Trong danh sách cuộc hội thoại"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Vuốt xuống để làm mới"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Đang kiểm tra thư"</string>
-    <string name="empty_trash" msgid="5042310780353359729">"Thùng rác trống"</string>
-    <string name="empty_spam" msgid="930744491746508050">"Spam trống"</string>
+    <string name="empty_trash" msgid="5042310780353359729">"Làm rỗng thùng rác"</string>
+    <string name="empty_spam" msgid="930744491746508050">"Làm rỗng Spam"</string>
     <string name="drawer_open" msgid="6074646853178471940">"Mở ngăn kéo điều hướng"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Đóng ngăn kéo điều hướng"</string>
 </resources>
