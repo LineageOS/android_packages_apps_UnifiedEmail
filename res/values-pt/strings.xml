@@ -78,7 +78,7 @@
     <string name="menu_manage_folders" msgid="6755623004628177492">"Configurações de pastas"</string>
     <!-- no translation found for menu_show_original (4227060689700765828) -->
     <skip />
-    <string name="message_modified" msgid="2564340197585393687">"(A versão original desta mensagem foi modificada para caber nesta tela.)"</string>
+    <string name="message_modified" msgid="2564340197585393687">"A versão original desta mensagem foi modificada para caber nesta tela."</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Pastas"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Mais"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Mais contas"</string>
@@ -172,6 +172,8 @@
     <string name="send_failed" msgid="750908595144529579">"A mensagem não foi enviada."</string>
     <string name="me" msgid="6480762904022198669">"eu"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Mostrar todas as pastas"</string>
+    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
+    <skip />
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Excluir esta conversa?"</item>
     <item quantity="other" msgid="930334208937121234">"Excluir estas <xliff:g id="COUNT">%1$d</xliff:g> conversas?"</item>
@@ -382,7 +384,12 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Silencioso"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Ação de remoção"</string>
-    <string name="preference_archive_vs_delete_text" msgid="3219537390825170783">"Excluir conversas em vez de arquivá-las"</string>
+    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
+    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
+    <skip />
     <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />
     <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
