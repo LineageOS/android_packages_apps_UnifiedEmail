@@ -362,7 +362,7 @@ public class DrawerItem {
         }
         folderItemView.bind(mFolder, mActivity);
         Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
-        Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_icon));
+        folderItemView.setIcon(mFolder);
         return folderItemView;
     }
 

@@ -37,33 +37,26 @@
         android:src="@drawable/account_radio_button"
         android:layout_centerVertical="true"/>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/name"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_toRightOf="@id/account_radio_button"
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginLeft="@dimen/account_item_left_margin"
         android:layout_marginRight="@dimen/account_item_right_margin"
-        android:layout_centerVertical="true" >
+        android:layout_centerVertical="true"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textColor="@color/account_item_text_color"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginRight="@dimen/account_item_right_margin"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:textColor="@color/account_item_text_color"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/unread"
-            style="@style/UnreadCount"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_alignParentRight="true"
-            android:textColor="@color/account_item_text_color" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/unread"
+        style="@style/UnreadCount"
+        android:layout_marginRight="@dimen/account_item_right_margin"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/account_item_text_color" />
 
 </com.android.mail.ui.AccountItemView>
