@@ -49,7 +49,6 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -427,6 +426,13 @@ public class FolderListFragment extends ListFragment implements
         viewFolderOrChangeAccount(position);
     }
 
+    private Folder getDefaultInbox(Account account) {
+        if (account == null || mCursorAdapter == null) {
+            return null;
+        }
+        return mCursorAdapter.getDefaultInbox(account);
+    }
+
     /**
      * Display the conversation list from the folder at the position given.
      * @param position a zero indexed position into the list.
@@ -451,12 +457,13 @@ public class FolderListFragment extends ListFragment implements
                         mListView.setItemChecked(defaultInboxPosition, true);
                     }
                     // ... and close the drawer (no new target folders/accounts)
-                    mAccountChanger.closeDrawer(false /* hasNewFolderOrAccount */);
+                    mAccountChanger.closeDrawer(false, mNextAccount,
+                            getDefaultInbox(mNextAccount));
                 } else {
                     // Switching accounts takes you to the inbox, which is always a system folder.
                     mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
                     mNextAccount = account;
-                    mAccountChanger.closeDrawer(true /* hasNewFolderOrAccount */);
+                    mAccountChanger.closeDrawer(true, mNextAccount, getDefaultInbox(mNextAccount));
                 }
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
@@ -480,6 +487,8 @@ public class FolderListFragment extends ListFragment implements
             folder = null;
         }
         if (folder != null) {
+            // Not changing the account.
+            final Account nextAccount = null;
             // Since we may be looking at hierarchical views, if we can
             // determine the parent of the folder we have tapped, set it here.
             // If we are looking at the folder we are already viewing, don't
@@ -488,10 +497,10 @@ public class FolderListFragment extends ListFragment implements
             // Go to the conversation list for this folder.
             if (!folder.uri.equals(mSelectedFolderUri)) {
                 mNextFolder = folder;
-                mAccountChanger.closeDrawer(true /* hasNewFolderOrAccount */);
+                mAccountChanger.closeDrawer(true, nextAccount, folder);
             } else {
                 // Clicked on same folder, just close drawer
-                mAccountChanger.closeDrawer(false /* hasNewFolderOrAccount */);
+                mAccountChanger.closeDrawer(false, nextAccount, folder);
             }
         }
     }
@@ -565,6 +574,8 @@ public class FolderListFragment extends ListFragment implements
         void destroy();
         /** Notifies the adapter that the data has changed. */
         void notifyDataSetChanged();
+        /** Returns default inbox for this account. */
+        Folder getDefaultInbox(Account account);
     }
 
     /**
@@ -882,6 +893,14 @@ public class FolderListFragment extends ListFragment implements
         }
 
         @Override
+        public Folder getDefaultInbox(Account account) {
+            if (mFolderWatcher != null) {
+                return mFolderWatcher.getDefaultInbox(account);
+            }
+            return null;
+        }
+
+        @Override
         public int getItemType(DrawerItem item) {
             return item.mType;
         }
@@ -981,6 +1000,11 @@ public class FolderListFragment extends ListFragment implements
         @Override
         public void destroy() {
             // Do nothing.
+        }
+
+        @Override
+        public Folder getDefaultInbox(Account account) {
+            return null;
         }
 
         @Override

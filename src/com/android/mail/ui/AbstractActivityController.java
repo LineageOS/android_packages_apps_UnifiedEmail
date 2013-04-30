@@ -162,6 +162,11 @@ public abstract class AbstractActivityController implements ActivityController,
     /** Tag used when loading a folder list fragment. */
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
 
+    /** Key to store an account in a bundle */
+    private final String BUNDLE_ACCOUNT_KEY = "account";
+    /** Key to store a folder in a bundle */
+    private final String BUNDLE_FOLDER_KEY = "folder";
+
     protected Account mAccount;
     protected Folder mFolder;
     /** True when {@link #mFolder} is first shown to the user. */
@@ -641,12 +646,16 @@ public abstract class AbstractActivityController implements ActivityController,
      * or put in an idle state.
      */
     @Override
-    public void closeDrawer(final boolean hasNewFolderOrAccount) {
+    public void closeDrawer(final boolean hasNewFolderOrAccount, Account nextAccount,
+            Folder nextFolder) {
         if (!isDrawerEnabled()) {
             mDrawerObservers.notifyChanged();
             return;
         }
 
+        if (nextFolder != null) {
+            preloadConvList(nextAccount, nextFolder);
+        }
         // If there are no new folders or accounts to switch to, just close the drawer
         if (!hasNewFolderOrAccount) {
             mDrawerContainer.closeDrawers();
@@ -669,6 +678,28 @@ public abstract class AbstractActivityController implements ActivityController,
             // Drawer is already closed, notify observers that is the case.
             mDrawerObservers.notifyChanged();
         }
+    }
+
+    /**
+     * Load the conversation list early for the given folder.
+     * @param nextFolder
+     */
+    protected void preloadConvList(Account nextAccount, Folder nextFolder) {
+        // Fire off the conversation list loader for this account already with a fake
+        // listener.
+        final Bundle args = new Bundle();
+        if (nextAccount != null) {
+            args.putParcelable(BUNDLE_ACCOUNT_KEY, nextAccount);
+        } else {
+            args.putParcelable(BUNDLE_ACCOUNT_KEY, mAccount);
+        }
+        if (nextFolder != null) {
+            args.putParcelable(BUNDLE_FOLDER_KEY, nextFolder);
+        }
+        mFolder = null;
+        final LoaderManager lm = mActivity.getLoaderManager();
+        lm.destroyLoader(LOADER_CONVERSATION_LIST);
+        lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
     }
 
     private void fetchSearchFolder(Intent intent) {
@@ -832,18 +863,15 @@ public abstract class AbstractActivityController implements ActivityController,
         } else {
             lm.restartLoader(LOADER_FOLDER_CURSOR, Bundle.EMPTY, mFolderCallbacks);
         }
-        // In this case, we are starting from no folder, which would occur
-        // the first time the app was launched or on orientation changes.
-        // We want to attach to an existing loader, if available.
-        if (wasNull || lm.getLoader(LOADER_CONVERSATION_LIST) == null) {
-            lm.initLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY, mListCursorCallbacks);
-        } else {
-            // However, if there was an existing folder AND we have changed
+        if (!wasNull && lm.getLoader(LOADER_CONVERSATION_LIST) != null) {
+            // If there was an existing folder AND we have changed
             // folders, we want to restart the loader to get the information
             // for the newly selected folder
             lm.destroyLoader(LOADER_CONVERSATION_LIST);
-            lm.initLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY, mListCursorCallbacks);
         }
+        final Bundle args = new Bundle();
+        args.putParcelable(BUNDLE_FOLDER_KEY, mFolder);
+        lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
     }
 
     @Override
@@ -2998,14 +3026,23 @@ public abstract class AbstractActivityController implements ActivityController,
 
         @Override
         public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
-            return new ConversationCursorLoader((Activity) mActivity,
-                    mAccount, mFolder.conversationListUri, mFolder.name);
+            final Account account = args.getParcelable(BUNDLE_ACCOUNT_KEY);
+            final Folder folder = args.getParcelable(BUNDLE_FOLDER_KEY);
+            if (account == null || folder == null) {
+                return null;
+            }
+            return new ConversationCursorLoader((Activity) mActivity, account,
+                    folder.conversationListUri, folder.name);
         }
 
         @Override
         public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
             LogUtils.d(LOG_TAG, "IN AAC.ConversationCursor.onLoadFinished, data=%s loader=%s",
                     data, loader);
+            if (mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+                LogUtils.d(LOG_TAG, "ConversationListLoaderCallbacks.onLoadFinished: ignoring.");
+                return;
+            }
             // Clear our all pending destructive actions before swapping the conversation cursor
             destroyPending(null);
             mConversationListCursor = data;
