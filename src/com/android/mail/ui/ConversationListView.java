@@ -298,12 +298,15 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         Window window = mActivity.getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rect);
         int statusBarHeight = rect.top;
-        int contentViewTop=
-                window.findViewById(Window.ID_ANDROID_CONTENT).getTop();
-        int titleBarHeight= contentViewTop - statusBarHeight;
+
+        final TypedArray actionBarSize = mActivity.obtainStyledAttributes(
+                new int[] { android.R.attr.actionBarSize });
+        int actionBarHeight = actionBarSize.getDimensionPixelSize(0, 0);
+        actionBarSize.recycle();
+
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
-                titleBarHeight,
+                actionBarHeight,
                 WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
