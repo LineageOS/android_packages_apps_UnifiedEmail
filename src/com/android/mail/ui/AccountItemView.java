@@ -58,30 +58,20 @@ public class AccountItemView extends RelativeLayout {
     }
 
     /**
-     * Sets the account name and draws the unread count. If the account is the current account,
-     * the unread count is hidden and the account item is given the focused background to
-     * partially highlight it.
+     * Sets the account name and draws the unread count. Depending on the account state (current or
+     * unused), the colors and drawables will change through the call to setSelected for each
+     * necessary element.
      *
      * @param account account whose name will be displayed
      * @param isCurrentAccount true if the account is the one in use, false otherwise
      * @param count unread count
      */
     public void bind(final Account account, final boolean isCurrentAccount, final int count) {
-        final int textColorResId;
-        final int buttonResId;
-
-        if (isCurrentAccount) {
-            textColorResId = R.color.account_item_selected_text_color;
-            buttonResId = R.drawable.ic_radiobutton_selected;
-        } else {
-            textColorResId = R.color.account_item_text_color;
-            buttonResId = R.drawable.ic_radiobutton;
-        }
         mAccountTextView.setText(account.name);
         setUnreadCount(count);
-        mSelectedButton.setImageResource(buttonResId);
-        mAccountTextView.setTextColor(getContext().getResources().getColor(textColorResId));
-        mUnreadCountTextView.setTextColor(getContext().getResources().getColor(textColorResId));
+        mUnreadCountTextView.setSelected(isCurrentAccount);
+        mAccountTextView.setSelected(isCurrentAccount);
+        mSelectedButton.setSelected(isCurrentAccount);
     }
 
     /**
