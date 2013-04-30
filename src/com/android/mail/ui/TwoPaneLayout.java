@@ -23,9 +23,12 @@ import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
@@ -86,6 +89,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private LayoutListener mListener;
     private boolean mIsSearchResult;
 
+    private DrawerLayout mDrawerLayout;
+
     private View mConversationView;
     private View mFoldersView;
     private View mListView;
@@ -105,6 +110,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      * {@link #mListView}.
      */
     private Integer mListCopyWidthOnComplete;
+
+    private final boolean mIsExpansiveLayout;
 
     public TwoPaneLayout(Context context) {
         this(context, null);
@@ -130,6 +137,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 / (folderListWeight + convListWeight);
         mConversationListWeight = (double) convListWeight
                 / (convListWeight + convViewWeight);
+
+        mIsExpansiveLayout = res.getBoolean(R.bool.use_expansive_tablet_ui);
     }
 
     @Override
@@ -156,6 +165,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mIsSearchResult = isSearchResult;
     }
 
+    public void setDrawerLayout(DrawerLayout drawerLayout) {
+        mDrawerLayout = drawerLayout;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "TPL(%s).onMeasure()", this);
@@ -180,14 +193,21 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      */
     private void setupPaneWidths(int parentWidth) {
         final int foldersWidth = computeFolderListWidth(parentWidth);
+        final int foldersFragmentWidth;
+        if (isDrawerView(mFoldersView)) {
+            foldersFragmentWidth = getResources().getDimensionPixelSize(R.dimen.drawer_width);
+        } else {
+            foldersFragmentWidth = foldersWidth;
+        }
         final int convWidth = computeConversationWidth(parentWidth);
 
-        // only adjust the fixed folder and conversation view widths when my width changes
+        setPaneWidth(mFoldersView, foldersFragmentWidth);
+
+        // only adjust the fixed conversation view width when my width changes
         if (parentWidth != getMeasuredWidth()) {
             LogUtils.i(LOG_TAG, "setting up new TPL, w=%d fw=%d cv=%d", parentWidth,
                     foldersWidth, convWidth);
 
-            setPaneWidth(mFoldersView, foldersWidth);
             setPaneWidth(mConversationView, convWidth);
         }
 
@@ -286,8 +306,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         // a view intent.
         if (mPositionedMode == ViewMode.UNKNOWN) {
             mConversationView.setX(convX);
-            mFoldersView.setX(foldersX);
             mListView.setX(listX);
+            if (!isDrawerView(mFoldersView)) {
+                mFoldersView.setX(foldersX);
+            }
 
             // listeners need to know that the "transition" is complete, even if one is not run.
             // defer notifying listeners because we're in a layout pass, and they might do layout.
@@ -310,7 +332,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         useHardwareLayer(true);
 
         mConversationView.animate().x(convX);
-        mFoldersView.animate().x(foldersX);
+        if (!isDrawerView(mFoldersView)) {
+            mFoldersView.animate().x(foldersX);
+        }
         mListCopyView.animate().x(listX).alpha(0.0f);
         mListView.animate()
             .x(listX)
@@ -334,6 +358,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     private void configureAnimations(View... views) {
         for (View v : views) {
+            if (isDrawerView(v)) {
+                continue;
+            }
             v.animate()
                 .setInterpolator(mSlideInterpolator)
                 .setDuration(SLIDE_DURATION_MS);
@@ -342,14 +369,18 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     private void useHardwareLayer(boolean useHardware) {
         final int layerType = useHardware ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE;
-        mFoldersView.setLayerType(layerType, null);
+        if (!isDrawerView(mFoldersView)) {
+            mFoldersView.setLayerType(layerType, null);
+        }
         mListView.setLayerType(layerType, null);
         mListCopyView.setLayerType(layerType, null);
         mConversationView.setLayerType(layerType, null);
         if (useHardware) {
             // these buildLayer calls are safe because layout is the only way we get here
             // (i.e. these views must already be attached)
-            mFoldersView.buildLayer();
+            if (!isDrawerView(mFoldersView)) {
+                mFoldersView.buildLayer();
+            }
             mListView.buildLayer();
             mListCopyView.buildLayer();
             mConversationView.buildLayer();
@@ -434,8 +465,11 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private int computeFolderListWidth(int parentWidth) {
         if (mIsSearchResult) {
             return 0;
+        } else if (isDrawerView(mFoldersView)) {
+            return 0;
+        } else {
+            return (int) (parentWidth * mFolderListWeight);
         }
-        return (int) (parentWidth * mFolderListWeight);
     }
 
     private void dispatchConversationListVisibilityChange(boolean visible) {
@@ -450,12 +484,17 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
     }
 
+    // does not apply to drawer children. will return zero for those.
     private int getPaneWidth(View pane) {
-        return pane.getLayoutParams().width;
+        return isDrawerView(pane) ? 0 : pane.getLayoutParams().width;
     }
 
     public View getConversationView() {
         return mConversationView;
+    }
+
+    private boolean isDrawerView(View child) {
+        return child != null && child.getParent() == mDrawerLayout;
     }
 
     /**
@@ -473,6 +512,26 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             mListView.setVisibility(VISIBLE);
             mListCopyView.setVisibility(VISIBLE);
             mConversationView.setVisibility(VISIBLE);
+        }
+
+        // set up the drawer as appropriate for the configuration
+        final ViewParent foldersParent = mFoldersView.getParent();
+        if (mIsExpansiveLayout && foldersParent != this) {
+            if (foldersParent != mDrawerLayout) {
+                throw new IllegalStateException("invalid Folders fragment parent: " +
+                        foldersParent);
+            }
+            mDrawerLayout.removeView(mFoldersView);
+            addView(mFoldersView, 0);
+            mFoldersView.setBackgroundResource(R.drawable.drawer_shadow_tablet);
+        } else if (!mIsExpansiveLayout && foldersParent == this) {
+            removeView(mFoldersView);
+            mDrawerLayout.addView(mFoldersView);
+            final DrawerLayout.LayoutParams lp =
+                    (DrawerLayout.LayoutParams) mFoldersView.getLayoutParams();
+            lp.gravity = Gravity.START;
+            mFoldersView.setLayoutParams(lp);
+            mFoldersView.setBackgroundResource(R.color.list_background_color);
         }
 
         // detach the pager immediately from its data source (to prevent processing updates)
@@ -499,6 +558,23 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
         lp.width = w;
         pane.setLayoutParams(lp);
+        if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+            final String s;
+            if (pane == mFoldersView) {
+                s = "folders";
+            } else if (pane == mListView) {
+                s = "conv-list";
+            } else if (pane == mConversationView) {
+                s = "conv-view";
+            } else {
+                s = "???:" + pane;
+            }
+            LogUtils.d(LOG_TAG, "TPL: setPaneWidth, w=%spx pane=%s", w, s);
+        }
+    }
+
+    public boolean isDrawerEnabled() {
+        return !mIsExpansiveLayout;
     }
 
 }

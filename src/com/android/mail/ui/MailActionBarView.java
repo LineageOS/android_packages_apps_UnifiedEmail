@@ -551,7 +551,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     public void setBackButton() {
-        if (mActionBar == null){
+        if (mActionBar == null) {
             return;
         }
         // Show home as up, and show an icon.
