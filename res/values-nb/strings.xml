@@ -172,6 +172,8 @@
     <string name="send_failed" msgid="750908595144529579">"E-post ikke sendt."</string>
     <string name="me" msgid="6480762904022198669">"meg"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Vis alle mapper"</string>
+    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
+    <skip />
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Vil du slette denne samtalen?"</item>
     <item quantity="other" msgid="930334208937121234">"Vil du slette disse <xliff:g id="COUNT">%1$d</xliff:g> samtalene?"</item>
@@ -295,7 +297,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synkroniser mappen"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <string name="actionbar_unread_messages" msgid="3805594795629836031">"<xliff:g id="COUNT">%1$d</xliff:g> uleste"</string>
-    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>+  uleste"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>+ uleste"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Se flere samtaler"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Laster inn …"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Velg konto"</string>
@@ -382,7 +384,12 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Stille"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Handling for fjerning"</string>
-    <string name="preference_archive_vs_delete_text" msgid="3219537390825170783">"Slett samtaler i stedet for å arkivere dem"</string>
+    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
+    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
+    <skip />
     <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />
     <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
