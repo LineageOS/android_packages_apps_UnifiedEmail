@@ -172,6 +172,8 @@
     <string name="send_failed" msgid="750908595144529579">"Съобщ. не бе изпратено."</string>
     <string name="me" msgid="6480762904022198669">"аз"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Показване на всички папки"</string>
+    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
+    <skip />
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Да се изтрие ли тази кореспонденция?"</item>
     <item quantity="other" msgid="930334208937121234">"Да се изтрият ли тези <xliff:g id="COUNT">%1$d</xliff:g> кореспонденции?"</item>
@@ -382,7 +384,12 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Тих режим"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Действие при премахване"</string>
-    <string name="preference_archive_vs_delete_text" msgid="3219537390825170783">"Изтриване вместо архивиране на кореспонденциите"</string>
+    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
+    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
+    <skip />
     <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />
     <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
@@ -393,6 +400,6 @@
     <string name="checking_for_mail" msgid="2301797903350897130">"Проверява се за поща"</string>
     <string name="empty_trash" msgid="5042310780353359729">"Изчистване на кошчето"</string>
     <string name="empty_spam" msgid="930744491746508050">"Изчистване на нежеланата поща"</string>
-    <string name="drawer_open" msgid="6074646853178471940">"Отваряне на чекмеджето за навигация"</string>
+    <string name="drawer_open" msgid="6074646853178471940">"Отваряне на слоя за навигация"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Затваряне на чекмеджето за навигация"</string>
 </resources>
