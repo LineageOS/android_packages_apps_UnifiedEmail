@@ -60,6 +60,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
 
 
     protected static final String ACTION_UPDATE_WIDGET = "com.android.mail.ACTION_UPDATE_WIDGET";
+    protected static final String
+            ACTION_VALIDATE_ALL_WIDGETS = "com.android.mail.ACTION_VALIDATE_ALL_WIDGETS";
     protected static final String EXTRA_WIDGET_ID = "widgetId";
 
     private static final String LOG_TAG = LogTag.getLogTag();
@@ -132,6 +134,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
                 updateWidgetInternal(context, widgetId, account, folderType, folderUri,
                         folderConversationListUri, folderDisplayName);
             }
+        } else if (ACTION_VALIDATE_ALL_WIDGETS.equals(action)) {
+            validateAllWidgetInformation(context);
         } else if (Utils.ACTION_NOTIFY_DATASET_CHANGED.equals(action)) {
             // Receive notification for a certain account.
             final Bundle extras = intent.getExtras();
@@ -299,6 +303,12 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         context.sendBroadcast(updateWidgetIntent);
     }
 
+    public static void validateAllWidgets(Context context, String accountMimeType) {
+        final Intent migrateAllWidgetsIntent = new Intent(ACTION_VALIDATE_ALL_WIDGETS);
+        migrateAllWidgetsIntent.setType(accountMimeType);
+        context.sendBroadcast(migrateAllWidgetsIntent);
+    }
+
     protected void updateWidgetInternal(Context context, int appWidgetId, Account account,
             final int folderType, final Uri folderUri, final Uri folderConversationListUri,
             final String folderDisplayName) {
@@ -348,6 +358,23 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         return false;
     }
 
+    protected boolean isFolderValid(Context context, Uri folderUri) {
+        if (folderUri != null) {
+            final Cursor folderCursor =
+                    context.getContentResolver().query(folderUri,
+                            UIProvider.FOLDERS_PROJECTION, null, null, null);
+
+            try {
+                if (folderCursor.moveToFirst()) {
+                    return true;
+                }
+            } finally {
+                folderCursor.close();
+            }
+        }
+        return false;
+    }
+
     protected void configureValidAccountWidget(Context context, RemoteViews remoteViews,
             int appWidgetId, Account account, final int folderType, final Uri folderUri,
             final Uri folderConversationListUri, String folderDisplayName) {
@@ -367,6 +394,36 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             // have information about.
             if (!MailPrefs.get(context).isWidgetConfigured(widgetId)) {
                 migrateLegacyWidgetInformation(context, widgetId);
+            }
+        }
+    }
+
+    private final void validateAllWidgetInformation(Context context) {
+        final int[] widgetIds = getCurrentWidgetIds(context);
+        for (int widgetId : widgetIds) {
+            final String accountFolder = MailPrefs.get(context).getWidgetConfiguration(widgetId);
+            String accountUri = null;
+            Uri folderUri = null;
+            if (!TextUtils.isEmpty(accountFolder)) {
+                final String[] parsedInfo = TextUtils.split(accountFolder,
+                        ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
+                if (parsedInfo.length == 2) {
+                    accountUri = parsedInfo[0];
+                    folderUri = Uri.parse(parsedInfo[1]);
+                } else {
+                    accountUri = accountFolder;
+                    folderUri =  Uri.EMPTY;
+                }
+            }
+
+            Account account = null;
+            if (!TextUtils.isEmpty(accountUri)) {
+                account = getAccountObject(context, accountUri);
+            }
+
+            // unconfigure the widget if it is not valid
+            if (!isAccountValid(context, account) || !isFolderValid(context, folderUri)) {
+                updateWidgetInternal(context, widgetId, null, FolderType.DEFAULT, null, null, null);
             }
         }
     }
