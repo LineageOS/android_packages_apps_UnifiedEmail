@@ -21,4 +21,6 @@
     <string name="add_cc_label" msgid="6156834609108442458">"+ ካርቦን ቅጂ/ስውር ቅጂ"</string>
     <string name="add_bcc_label" msgid="7648769906379235693">"+ ስውር ቅጂ"</string>
     <string name="menu_manage_folders" msgid="7574962882483466700">"አቃፊዎችን አስተዳድር"</string>
+    <!-- no translation found for preferences_default_reply_all_summary (5318418012992612729) -->
+    <skip />
 </resources>
