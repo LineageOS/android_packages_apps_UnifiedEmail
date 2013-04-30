@@ -40,7 +40,6 @@
     <color name="default_folder_foreground_color">@color/gray_text_color</color>
 
     <!-- Folder List/Drawer colors -->
-    <color name="drawer_background_dim">#66000000</color>
     <color name="account_item_selected_text_color">#35b4e3</color>
     <color name="folder_list_divider_color">@color/gray_text_color</color>
     <color name="folder_list_heading_text_color">@color/dark_gray_text_color</color>

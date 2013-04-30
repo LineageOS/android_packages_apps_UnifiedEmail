@@ -158,7 +158,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mViewWidth = -1;
     /** The view mode at which we calculated mViewWidth previously. */
     private int mPreviousMode;
-    private int mMode = -1;
     private int mDateX;
     private int mPaperclipX;
     private int mSendersWidth;
@@ -242,7 +241,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             return mFoldersCount > 0;
         }
 
-        private int measureFolders(int mode, int availableSpace, int cellSize) {
+        private int measureFolders(int availableSpace, int cellSize) {
             int totalWidth = 0;
             boolean firstTime = true;
             for (Folder f : mFoldersSortedSet) {
@@ -262,8 +261,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             return totalWidth;
         }
 
-        public void drawFolders(Canvas canvas, ConversationItemViewCoordinates coordinates,
-                int mode) {
+        public void drawFolders(Canvas canvas, ConversationItemViewCoordinates coordinates) {
             if (mFoldersCount == 0) {
                 return;
             }
@@ -280,12 +278,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             // Initialize space and cell size based on the current mode.
             int availableSpace = xEnd - xMinStart;
             int averageWidth = availableSpace / mFoldersCount;
-            int cellSize = ConversationItemViewCoordinates.getFolderCellWidth(mContext);
+            int cellSize = coordinates.getFolderCellWidth();
 
             // TODO(ath): sFoldersPaint.measureText() is done 3x in this method. stop that.
             // Extra credit: maybe cache results across items as long as font size doesn't change.
 
-            final int totalWidth = measureFolders(mode, availableSpace, cellSize);
+            final int totalWidth = measureFolders(availableSpace, cellSize);
             int xStart = xEnd - Math.min(availableSpace, totalWidth);
             final boolean overflow = totalWidth > availableSpace;
 
@@ -600,15 +598,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         return mHeader.conversation;
     }
 
-    /**
-     * Sets the mode. Only used for testing.
-     */
-    @VisibleForTesting
-    void setMode(int mode) {
-        mMode = mode;
-        mTesting = true;
-    }
-
     private static void startTimer(String tag) {
         if (sTimer != null) {
             sTimer.start(tag);
@@ -629,13 +618,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (wSize != mViewWidth || mPreviousMode != currentMode) {
             mViewWidth = wSize;
             mPreviousMode = currentMode;
-            if (!mTesting) {
-                mMode = ConversationItemViewCoordinates.getMode(mContext, mPreviousMode);
-            }
         }
         mHeader.viewWidth = mViewWidth;
 
-        mConfig.updateWidth(wSize).setMode(mMode);
+        mConfig.updateWidth(wSize).setViewMode(currentMode);
 
         Resources res = getResources();
         mHeader.standardScaledDimen = res.getDimensionPixelOffset(R.dimen.standard_scaled_dimen);
@@ -718,8 +704,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mHeader.messageInfoString = SendersView
                     .createMessageInfo(context, mHeader.conversation, true);
             int maxChars = ConversationItemViewCoordinates.getSendersLength(context,
-                    ConversationItemViewCoordinates.getMode(context, mActivity.getViewMode()),
-                    mHeader.conversation.hasAttachments);
+                    mCoordinates.getMode(), mHeader.conversation.hasAttachments);
             mHeader.displayableSenderEmails = new ArrayList<String>();
             mHeader.displayableSenderNames = new ArrayList<String>();
             mHeader.styledSenders = new ArrayList<SpannableString>();
@@ -776,7 +761,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             if (mCoordinates.contactImagesWidth <= 0 || mCoordinates.contactImagesHeight <= 0) {
                 LogUtils.w(LOG_TAG,
                         "Contact image width(%d) or height(%d) is 0 for mode: (%d).",
-                        mCoordinates.contactImagesWidth, mCoordinates.contactImagesHeight, mMode);
+                        mCoordinates.contactImagesWidth, mCoordinates.contactImagesHeight,
+                        mCoordinates.getMode());
                 return;
             }
             mContactImagesHolder.setDimensions(mCoordinates.contactImagesWidth,
@@ -801,8 +787,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             if (mCoordinates.attachmentPreviewsWidth <= 0 || attachmentPreviewsHeight <= 0) {
                 LogUtils.w(LOG_TAG,
                         "Attachment preview width(%d) or height(%d) is 0 for mode: (%d,%d).",
-                        mCoordinates.attachmentPreviewsWidth, attachmentPreviewsHeight, mMode,
-                        mAttachmentPreviewMode);
+                        mCoordinates.attachmentPreviewsWidth, attachmentPreviewsHeight,
+                        mCoordinates.getMode(), mAttachmentPreviewMode);
                 return;
             }
             mAttachmentPreviewsCanvas.setDimensions(mCoordinates.attachmentPreviewsWidth,
@@ -920,7 +906,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         mPaperclipX = mDateX - ATTACHMENT.getWidth() - mCoordinates.datePaddingLeft;
 
-        if (mConfig.isWide()) {
+        if (mCoordinates.isWide()) {
             // In wide mode, the end of the senders should align with
             // the start of the subject and is based on a max width.
             mSendersWidth = mCoordinates.sendersWidth;
@@ -961,7 +947,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 totalWidth += senderFragment.width;
             }
 
-            if (!ConversationItemViewCoordinates.displaySendersInline(mMode)) {
+            if (!ConversationItemViewCoordinates.displaySendersInline(mCoordinates.getMode())) {
                 sendersY += totalWidth <= mSendersWidth ? mCoordinates.sendersLineHeight / 2 : 0;
             }
             if (mSendersWidth < 0) {
@@ -1200,7 +1186,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         // Folders.
         if (mConfig.areFoldersVisible()) {
-            mHeader.folderDisplayer.drawFolders(canvas, mCoordinates, mMode);
+            mHeader.folderDisplayer.drawFolders(canvas, mCoordinates);
         }
 
         // If this folder has a color (combined view/Email), show it here
