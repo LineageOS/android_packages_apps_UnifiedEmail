@@ -72,7 +72,7 @@ public class ConversationItemViewCoordinates {
      */
     public static final class Config {
         private int mWidth;
-        private int mMode = NORMAL_MODE;
+        private int mViewMode = ViewMode.UNKNOWN;
         private int mGadgetMode = GADGET_NONE;
         private int mAttachmentPreviewMode = ATTACHMENT_PREVIEW_NONE;
         private boolean mShowFolders = false;
@@ -80,8 +80,8 @@ public class ConversationItemViewCoordinates {
         private boolean mShowColorBlock = false;
         private boolean mShowPersonalIndicator = false;
 
-        public Config setMode(int mode) {
-            mMode = mode;
+        public Config setViewMode(int viewMode) {
+            mViewMode = viewMode;
             return this;
         }
 
@@ -124,12 +124,8 @@ public class ConversationItemViewCoordinates {
             return mWidth;
         }
 
-        public int getMode() {
-            return mMode;
-        }
-
-        public boolean isWide() {
-            return mMode == WIDE_MODE;
+        public int getViewMode() {
+            return mViewMode;
         }
 
         public int getGadgetMode() {
@@ -158,11 +154,16 @@ public class ConversationItemViewCoordinates {
 
         private int getCacheKey() {
             // hash the attributes that contribute to item height and child view geometry
-            return Objects.hashCode(mWidth, mMode, mGadgetMode, mAttachmentPreviewMode,
+            return Objects.hashCode(mWidth, mViewMode, mGadgetMode, mAttachmentPreviewMode,
                     mShowFolders, mShowReplyState, mShowPersonalIndicator);
         }
 
     }
+
+    /**
+     * One of either NORMAL_MODE or WIDE_MODE.
+     */
+    private final int mMode;
 
     final int height;
 
@@ -240,10 +241,38 @@ public class ConversationItemViewCoordinates {
     final int contactImagesX;
     final int contactImagesY;
 
+    /**
+     * The smallest item width for which we use the "wide" layout.
+     */
+    private final int mMinListWidthForWide;
+    /**
+     * The smallest item width for which we use the "spacious" variant of the normal layout,
+     * if the normal version is used at all. Larger than {@link #mMinListWidthForWide}, we use
+     * wide mode anyway, and this value is unused.
+     */
+    private final int mMinListWidthIsSpacious;
+    private final int mFolderCellWidth;
+
     private ConversationItemViewCoordinates(Context context, Config config) {
-        final ViewGroup view = (ViewGroup) LayoutInflater.from(context).inflate(
-                config.getMode() == WIDE_MODE ? R.layout.conversation_item_view_wide :
-                    R.layout.conversation_item_view_normal, null);
+        final Resources res = context.getResources();
+        mFolderCellWidth = res.getDimensionPixelSize(R.dimen.folder_cell_width);
+        mMinListWidthForWide = res.getDimensionPixelSize(R.dimen.list_min_width_is_wide);
+        mMinListWidthIsSpacious = res.getDimensionPixelSize(
+                R.dimen.list_normal_mode_min_width_is_spacious);
+
+        mMode = calculateMode(res, config);
+
+        final int layoutId;
+        if (mMode == WIDE_MODE) {
+            layoutId = R.layout.conversation_item_view_wide;
+        } else {
+            if (config.getWidth() >= mMinListWidthIsSpacious) {
+                layoutId = R.layout.conversation_item_view_normal_spacious;
+            } else {
+                layoutId = R.layout.conversation_item_view_normal;
+            }
+        }
+        final ViewGroup view = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
 
         final TextView folders = (TextView) view.findViewById(R.id.folders);
         folders.setVisibility(config.areFoldersVisible() ? View.VISIBLE : View.GONE);
@@ -293,7 +322,6 @@ public class ConversationItemViewCoordinates {
         // Layout the appropriate view.
         final int widthSpec = MeasureSpec.makeMeasureSpec(config.getWidth(), MeasureSpec.EXACTLY);
         final int heightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-        final Resources res = context.getResources();
 
         view.measure(widthSpec, heightSpec);
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
@@ -336,7 +364,7 @@ public class ConversationItemViewCoordinates {
         final TextView subject = (TextView) view.findViewById(R.id.subject);
         final int subjectTopAdjust = getLatinTopAdjustment(subject);
         subjectX = getX(subject);
-        if (config.isWide()) {
+        if (isWide()) {
             subjectY = getY(subject) + subjectTopAdjust;
         } else {
             subjectY = getY(subject) + sendersTopAdjust;
@@ -351,7 +379,7 @@ public class ConversationItemViewCoordinates {
             // vertically align folders min left edge with subject
             foldersX = subjectX;
             foldersXEnd = getX(folders) + folders.getWidth();
-            if (config.isWide()) {
+            if (isWide()) {
                 foldersY = getY(folders);
             } else {
                 foldersY = getY(folders) + sendersTopAdjust;
@@ -419,7 +447,15 @@ public class ConversationItemViewCoordinates {
             attachmentPreviewsWidth = 0;
         }
 
-        height = view.getHeight() + (config.isWide() ? 0 : sendersTopAdjust);
+        height = view.getHeight() + (isWide() ? 0 : sendersTopAdjust);
+    }
+
+    public int getMode() {
+        return mMode;
+    }
+
+    public boolean isWide() {
+        return mMode == WIDE_MODE;
     }
 
     /**
@@ -437,13 +473,12 @@ public class ConversationItemViewCoordinates {
     }
 
     /**
-     * Returns the mode of the header view (Wide/Normal/Narrow).
+     * Returns the mode of the header view (Wide/Normal).
      */
-    public static int getMode(Context context, int viewMode) {
-        final Resources res = context.getResources();
-        switch (viewMode) {
+    private int calculateMode(Resources res, Config config) {
+        switch (config.getViewMode()) {
             case ViewMode.CONVERSATION_LIST:
-                return res.getInteger(R.integer.conversation_list_header_mode);
+                return config.getWidth() >= mMinListWidthForWide ? WIDE_MODE : NORMAL_MODE;
 
             case ViewMode.SEARCH_RESULTS_LIST:
                 return res.getInteger(R.integer.conversation_list_search_header_mode);
@@ -451,13 +486,6 @@ public class ConversationItemViewCoordinates {
             default:
                 return res.getInteger(R.integer.conversation_header_mode);
         }
-    }
-
-    /**
-     * Returns the mode of the header view (Wide/Normal/Narrow).
-     */
-    public static int getMode(Context context, ViewMode viewMode) {
-        return getMode(context, viewMode.getMode());
     }
 
     /**
@@ -605,8 +633,8 @@ public class ConversationItemViewCoordinates {
      * intra-cell margin within cells.
      *
      */
-    public static int getFolderCellWidth(Context context) {
-        return context.getResources().getDimensionPixelSize(R.dimen.folder_cell_width);
+    public int getFolderCellWidth() {
+        return mFolderCellWidth;
     }
 
     public static boolean isWideMode(int mode) {

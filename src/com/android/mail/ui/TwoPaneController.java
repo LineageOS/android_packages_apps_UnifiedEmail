@@ -21,6 +21,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
@@ -127,12 +128,15 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean onCreate(Bundle savedState) {
         mActivity.setContentView(R.layout.two_pane_activity);
+        mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
+        mDrawerPullout = mDrawerContainer.findViewById(R.id.content_pane);
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
         if (mLayout == null) {
             // We need the layout for everything. Crash early if it is null.
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
         }
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
+        mLayout.setDrawerLayout(mDrawerContainer);
 
         // 2-pane layout is the main listener of view mode changes, and issues secondary
         // notifications upon animation completion:
@@ -218,6 +222,9 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void resetActionBarIcon() {
+        if (isDrawerEnabled()) {
+            return;
+        }
         // On two-pane, the back button is only removed in the conversation list mode, and shown
         // for every other condition.
         if (mViewMode.isListMode() || mViewMode.isWaitingForSync()) {
@@ -577,7 +584,6 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public boolean isDrawerEnabled() {
-        // The drawer is currently not enabled for two pane mode
-        return false;
+        return mLayout.isDrawerEnabled();
     }
 }
