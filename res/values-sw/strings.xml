@@ -76,10 +76,9 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Badilisha folda"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Hamisha hadi"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mipangilio ya folda"</string>
-    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <!-- no translation found for menu_show_original (4227060689700765828) -->
     <skip />
-    <!-- no translation found for message_modified (2564340197585393687) -->
-    <skip />
+    <string name="message_modified" msgid="2564340197585393687">"(Ujumbe huu umerekebishwa kutoka kwa toleo lake asili ili kutoshea kwenye skrini hii.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Folda"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Zaidi"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Akaunti zaidi"</string>
@@ -173,6 +172,8 @@
     <string name="send_failed" msgid="750908595144529579">"Ujumbe haukutumwa."</string>
     <string name="me" msgid="6480762904022198669">"mimi"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Onyesha folda zote"</string>
+    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
+    <skip />
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Mazungumzo haya yafutwe?"</item>
     <item quantity="other" msgid="930334208937121234">"Mazungumzo haya <xliff:g id="COUNT">%1$d</xliff:g> yafutwe?"</item>
@@ -295,11 +296,8 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Ili kuona mazungumzo, sawazisha folda hii."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sawazisha Folda"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-  <plurals name="actionbar_unread_messages">
-    <item quantity="one" msgid="8470063623338548501">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> haujasomwa"</item>
-    <item quantity="other" msgid="4103064420707175144">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> haujasomwa"</item>
-  </plurals>
-    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> zaidi usiosomwa"</string>
+    <string name="actionbar_unread_messages" msgid="3805594795629836031">"Zisizosomwa<xliff:g id="COUNT">%1$d</xliff:g>"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Zisizosomwa <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ona mazungumzo zaidi"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Inapakia…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Chagua akaunti"</string>
@@ -371,15 +369,12 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Kunja ujumbe mpana ili utoshee kwenye skrini yako na uruhusu ukuzaji karibu. Ili kuzima chaguo hili, nenda kwenye Mipangilio &gt; mipagilio ya Jumla."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Jibu"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Jibu wote"</string>
-    <string name="notification_action_forward" msgid="7252777659544972497">"Sambaza"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Kumbukumbu"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"Ondoa lebo"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"Futa"</string>
-    <string name="notification_action_mark_read" msgid="4351952818740163225">"Tia alama kuwa imesomwa"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Imewekwa kwenye kumbukumbu"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Lebo Imeondolewa"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Imefutwa"</string>
-    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"Haijawekwa"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -388,22 +383,23 @@
     <string name="new_messages" msgid="4419173946074516420">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Kimya"</string>
-    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Vipengee vya ActionBar vinavyopendelewa"</string>
-    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Chagua hadi vitendo <xliff:g id="MAX">%1$d</xliff:g>"</string>
-    <string name="action_archive_remove_label" msgid="2373265427931131215">"Weka kwenye kumbukumbu/Ondoa Lebo"</string>
-    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Futa/Tupa rasimu"</string>
-    <string name="action_mark_read_unread" msgid="3532210270682619853">"Tia alama Soma/Hazijasomwa"</string>
-    <string name="action_add_remove_star" msgid="6658875981206117895">"Ongeza/Ondoa Nyota"</string>
-    <string name="action_mark_not_important" msgid="7097443517025742878">"Tia alama kuwa (siyo) muhimu"</string>
-    <string name="action_report_not_spam" msgid="7491310680850552208">"Ripoti kuwa (siyo) barua taka"</string>
+    <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Ondoa kitendo"</string>
+    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
+    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
+    <skip />
+    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
+    <skip />
+    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
+    <skip />
+    <string name="preference_swipe_title" msgid="807579971507624260">"Papasa ili uondoe"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"Katika orodha ya mazungumzo"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Papasa kwa kasi kwenda chini ili kuonyesha upya"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Inaangalia barua pepe"</string>
-    <!-- no translation found for empty_trash (5042310780353359729) -->
-    <skip />
-    <!-- no translation found for empty_spam (930744491746508050) -->
-    <skip />
-    <!-- no translation found for drawer_open (6074646853178471940) -->
-    <skip />
-    <!-- no translation found for drawer_close (2764774620737876943) -->
-    <skip />
+    <string name="empty_trash" msgid="5042310780353359729">"Safisha tupio"</string>
+    <string name="empty_spam" msgid="930744491746508050">"Safisha barua taka"</string>
+    <string name="drawer_open" msgid="6074646853178471940">"Fungua menyu ya kichoraji"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"Funga menyu ya kichoraji"</string>
 </resources>

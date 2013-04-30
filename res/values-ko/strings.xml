@@ -76,10 +76,9 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"폴더 변경"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"이동"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"폴더 설정"</string>
-    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <!-- no translation found for menu_show_original (4227060689700765828) -->
     <skip />
-    <!-- no translation found for message_modified (2564340197585393687) -->
-    <skip />
+    <string name="message_modified" msgid="2564340197585393687">"(이 메일은 원본 버전을 화면에 맞게 수정한 것입니다.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"폴더"</string>
     <string name="folder_list_more" msgid="537172187223133825">"더보기"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"계정 더보기"</string>
@@ -173,6 +172,8 @@
     <string name="send_failed" msgid="750908595144529579">"메일이 전송되지 않았습니다."</string>
     <string name="me" msgid="6480762904022198669">"나"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"모든 폴더 표시"</string>
+    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
+    <skip />
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"대화를 삭제하시겠습니까?"</item>
     <item quantity="other" msgid="930334208937121234">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 삭제하시겠습니까?"</item>
@@ -295,11 +296,8 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"대화를 보려면 폴더를 동기화하세요."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"폴더 동기화"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-  <plurals name="actionbar_unread_messages">
-    <item quantity="one" msgid="8470063623338548501">"읽지 않은 메일 <xliff:g id="COUNT">%1$d</xliff:g>개"</item>
-    <item quantity="other" msgid="4103064420707175144">"읽지 않은 메일 <xliff:g id="COUNT">%1$d</xliff:g>개"</item>
-  </plurals>
-    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"읽지 않은 메일이 <xliff:g id="COUNT">%1$d</xliff:g>개 이상 있음"</string>
+    <string name="actionbar_unread_messages" msgid="3805594795629836031">"읽지 않은 메일 <xliff:g id="COUNT">%1$d</xliff:g>개"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>개 이상 읽지 않음"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"대화 더보기"</string>
     <string name="loading_conversation" msgid="489160038366067983">"로드 중…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"계정 선택"</string>
@@ -371,15 +369,12 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"메일의 너비가 화면에 맞도록 크기를 축소하고, 확대 기능을 지원합니다. 이 옵션을 사용 중지하려면 설정 &gt; 일반 설정으로 이동합니다."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"답장"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"전체답장"</string>
-    <string name="notification_action_forward" msgid="7252777659544972497">"전달"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"보관처리"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"라벨 삭제"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"삭제"</string>
-    <string name="notification_action_mark_read" msgid="4351952818740163225">"읽음으로 표시"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"보관처리됨"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"라벨 삭제됨"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"삭제됨"</string>
-    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"설정되지 않음"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -388,22 +383,23 @@
     <string name="new_messages" msgid="4419173946074516420">"새 메시지 <xliff:g id="COUNT">%1$d</xliff:g>개"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"무음"</string>
-    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"기본 ActionBar 항목"</string>
-    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"액션을 최대 <xliff:g id="MAX">%1$d</xliff:g>개까지 선택"</string>
-    <string name="action_archive_remove_label" msgid="2373265427931131215">"라벨 보관처리/삭제"</string>
-    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"임시보관 메일 삭제/취소"</string>
-    <string name="action_mark_read_unread" msgid="3532210270682619853">"읽음/읽지 않음 표시"</string>
-    <string name="action_add_remove_star" msgid="6658875981206117895">"별표 추가/삭제"</string>
-    <string name="action_mark_not_important" msgid="7097443517025742878">"중요/중요하지 않음으로 표시"</string>
-    <string name="action_report_not_spam" msgid="7491310680850552208">"스팸 신고/해제"</string>
+    <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"삭제 작업"</string>
+    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
+    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
+    <skip />
+    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
+    <skip />
+    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
+    <skip />
+    <string name="preference_swipe_title" msgid="807579971507624260">"스와이프하여 삭제"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"대화 목록"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"아래로 스와이프하여 새로고침"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"메일 확인 중"</string>
-    <!-- no translation found for empty_trash (5042310780353359729) -->
-    <skip />
-    <!-- no translation found for empty_spam (930744491746508050) -->
-    <skip />
-    <!-- no translation found for drawer_open (6074646853178471940) -->
-    <skip />
-    <!-- no translation found for drawer_close (2764774620737876943) -->
-    <skip />
+    <string name="empty_trash" msgid="5042310780353359729">"휴지통 비우기"</string>
+    <string name="empty_spam" msgid="930744491746508050">"스팸 비우기"</string>
+    <string name="drawer_open" msgid="6074646853178471940">"내비게이션 폴더 열기"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"내비게이션 폴더 닫기"</string>
 </resources>
