@@ -598,8 +598,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             }
         }
         activity.getListHandler().onConversationSeen(mConversation);
-
-        showAutoFitPrompt();
     }
 
     protected ConversationViewState getNewViewState() {
@@ -790,33 +788,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             go();
         }
 
-    }
-
-    private static boolean isConversationViewModeSet(final Account acct) {
-        return acct.settings.conversationViewMode != UIProvider.ConversationViewMode.UNDEFINED;
-    }
-
-    private void showAutoFitPrompt() {
-        // If the user has never set a conversation view mode, and they view a wide message, we
-        // should prompt them to turn on auto-fit
-        final boolean enablePrompt =
-                getResources().getInteger(R.integer.prompt_auto_fit_on_first_wide_message) == 1;
-        // TODO: Enable this dialog for Email and ensure it saves the setting properly, and remove
-        // R.integer.prompt_auto_fit_on_first_wide_message
-        if (enablePrompt && isUserVisible() && !isConversationViewModeSet(mAccount)) {
-            final boolean isWideContent =
-                    getWebView().canScrollHorizontally(1) || getWebView().canScrollHorizontally(-1);
-
-            final boolean dialogShowing =
-                    getFragmentManager().findFragmentByTag(AutoFitPromptDialogFragment.FRAGMENT_TAG)
-                    != null;
-
-            if (isWideContent && !dialogShowing) {
-                // Not everything fits, so let's prompt them to set an auto-fit value
-                AutoFitPromptDialogFragment.newInstance(mAccount.updateSettingsUri)
-                        .show(getFragmentManager(), AutoFitPromptDialogFragment.FRAGMENT_TAG);
-            }
-        }
     }
 
     public void onDetachedModeEntered() {
