@@ -34,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/account_item_left_margin"
+        android:src="@drawable/account_radio_button"
         android:layout_centerVertical="true"/>
 
     <LinearLayout
@@ -54,14 +55,15 @@
             android:includeFontPadding="false"
             android:singleLine="true"
             android:ellipsize="end"
-            android:textColor="@color/folder_item_text_color"
+            android:textColor="@color/account_item_text_color"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/unread"
             style="@style/UnreadCount"
             android:layout_alignWithParentIfMissing="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:textColor="@color/account_item_text_color" />
     </LinearLayout>
 
 </com.android.mail.ui.AccountItemView>
