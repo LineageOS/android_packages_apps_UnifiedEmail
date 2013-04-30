@@ -15,41 +15,46 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.mail.ui.TwoPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/two_pane_activity"
-    android:orientation="horizontal"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/content_pane"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:background="@drawable/drawer_shadow_tablet">
-        <fragment class="com.android.mail.ui.DrawerFragment"
-                  android:id="@+id/drawer_fragment"
-                  android:layout_height="match_parent"
-                  android:layout_width="match_parent"
-                />
+    <!-- DrawerLayout current only supports one content view (b/8752191) -->
+    <com.android.mail.ui.TwoPaneLayout
+        android:id="@+id/two_pane_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/content_pane"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/drawer_shadow_tablet">
+            <fragment class="com.android.mail.ui.DrawerFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/conversation_list_pane"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
+        <FrameLayout
+            android:id="@+id/conversation_list_pane"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
 
-    <com.android.mail.ui.ConversationListCopy
-        android:id="@+id/conversation_list_copy"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
+        <com.android.mail.ui.ConversationListCopy
+            android:id="@+id/conversation_list_copy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
 
-    <include layout="@layout/conversation_pager"
-        android:id="@+id/conversation_pane"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
+        <include layout="@layout/conversation_pager"
+            android:id="@+id/conversation_pane"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
 
-    <com.android.mail.ui.ActionableToastBar
-        android:id="@+id/toast_bar"
-        style="@style/ToastBarStyle" />
+        <com.android.mail.ui.ActionableToastBar
+            android:id="@+id/toast_bar"
+            style="@style/ToastBarStyle" />
 
-</com.android.mail.ui.TwoPaneLayout>
+    </com.android.mail.ui.TwoPaneLayout>
+
+</android.support.v4.widget.DrawerLayout>
