@@ -161,6 +161,23 @@ public class FolderItemView extends RelativeLayout {
     }
 
     /**
+     * Sets the icon, if any. If the image view's visibility is set to gone, the text view will
+     * be moved over to account for the change.
+     */
+    public void setIcon(final Folder folder) {
+        final ImageView folderIconView = (ImageView) findViewById(R.id.folder_icon);
+        Folder.setIcon(folder, folderIconView);
+        if (folderIconView.getVisibility() == View.GONE) {
+            mFolderTextView.setPadding(getContext()
+                    .getResources().getDimensionPixelSize(R.dimen.folder_list_item_left_offset),
+                    0, 0, 0 /* No top, right, bottom padding needed */);
+        } else {
+            // View recycling case
+            mFolderTextView.setPadding(0, 0, 0, 0);
+        }
+    }
+
+    /**
      * Sets the unread count, taking care to hide/show the textview if the count is zero/non-zero.
      */
     private void setUnreadCount(int count) {

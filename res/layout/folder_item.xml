@@ -46,44 +46,32 @@
         android:layout_marginLeft="@dimen/folder_list_item_left_margin"
         android:visibility="gone" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/name"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/folder_icon"
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginLeft="@dimen/folder_list_item_left_margin"
         android:layout_marginRight="@dimen/folder_list_item_right_margin"
-        android:layout_marginTop="@dimen/folder_swatch_height"
-        android:layout_marginBottom="@dimen/folder_swatch_height">
+        android:includeFontPadding="false"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="@color/folder_item_text_color"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginRight="@dimen/folder_list_item_right_margin"
-            android:includeFontPadding="false"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:textColor="@color/folder_item_text_color"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+        android:id="@+id/unread"
+        style="@style/UnreadCount"
+        android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/folder_item_text_color" />
 
-        <TextView
-            android:id="@+id/unread"
-            style="@style/UnreadCount"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignBaseline="@id/name"
-            android:textColor="@color/folder_item_text_color" />
-
-        <TextView
-            android:id="@+id/unseen"
-            style="@style/UnseenCount"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignBaseline="@id/name" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/unseen"
+        style="@style/UnseenCount"
+        android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_alignParentRight="true"/>
 
 </com.android.mail.ui.FolderItemView>
