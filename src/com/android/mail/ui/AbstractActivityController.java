@@ -212,6 +212,8 @@ public abstract class AbstractActivityController implements ActivityController {
     /** List of all accounts currently known to the controller. This is never null. */
     private Account[] mAllAccounts = new Account[0];
 
+    private FolderWatcher mFolderWatcher;
+
     /**
      * Interface for actions that are deferred until after a load completes. This is for handling
      * user actions which affect cursors (e.g. marking messages read or unread) that happen before
@@ -706,15 +708,29 @@ public abstract class AbstractActivityController implements ActivityController {
         return mRecentFolderList;
     }
 
-    // TODO(mindyp): set this up to store a copy of the folder as a transient
-    // field in the account.
     @Override
     public void loadAccountInbox() {
-        restartOptionalLoader(LOADER_ACCOUNT_INBOX, mFolderCallbacks, Bundle.EMPTY);
+        boolean handled = false;
+        if (mFolderWatcher != null) {
+            final Folder inbox = mFolderWatcher.getDefaultInbox(mAccount);
+            if (inbox != null) {
+                onFolderChanged(inbox);
+                handled = true;
+            }
+        }
+        if (!handled) {
+            LogUtils.w(LOG_TAG, "Starting a LOADER_ACCOUNT_INBOX for %s", mAccount);
+            restartOptionalLoader(LOADER_ACCOUNT_INBOX, mFolderCallbacks, Bundle.EMPTY);
+        }
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.UNKNOWN || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
             mViewMode.enterConversationListMode();
         }
+    }
+
+    @Override
+    public void setFolderWatcher(FolderWatcher watcher) {
+        mFolderWatcher = watcher;
     }
 
     /**
