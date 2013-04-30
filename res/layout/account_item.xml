@@ -38,10 +38,18 @@
         android:layout_centerVertical="true"/>
 
     <TextView
+        android:id="@+id/unread"
+        style="@style/UnreadCount"
+        android:layout_marginRight="@dimen/account_item_right_margin"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/account_item_text_color" />
+
+    <TextView
         android:id="@+id/name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_toRightOf="@id/account_radio_button"
+        android:layout_toLeftOf="@id/unread"
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginLeft="@dimen/account_item_left_margin"
         android:layout_marginRight="@dimen/account_item_right_margin"
@@ -51,12 +59,5 @@
         android:ellipsize="end"
         android:textColor="@color/account_item_text_color"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/unread"
-        style="@style/UnreadCount"
-        android:layout_marginRight="@dimen/account_item_right_margin"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/account_item_text_color" />
 
 </com.android.mail.ui.AccountItemView>
