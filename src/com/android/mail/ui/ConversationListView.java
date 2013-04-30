@@ -8,12 +8,15 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -34,7 +37,12 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     private static final int DISTANCE_TO_IGNORE = 15; // dp
     private static final int DISTANCE_TO_TRIGGER_CANCEL = 10; // dp
     private static final int SHOW_CHECKING_FOR_MAIL_DURATION_IN_MILLIS = 1 * 1000; // 1 seconds
-    private static final int TEXT_FADE_DURATION_IN_MILLIS = 300;
+
+    private static final int ACTION_BAR_FADE_DURATION_IN_MILLIS = 100;
+    private static final int SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS = 100;
+    private static final int SWIPE_TEXT_FADE_DURATION_IN_MILLIS = 300;
+    private static final int SYNC_STATUS_BAR_FADE_DURATION_IN_MILLIS = 150;
+    private static final int SYNC_TRIGGER_SHRINK_DURATION_IN_MILLIS = 250;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -53,7 +61,9 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     // sync trigger bar.
     private float mTrackingScrollMaxY;
     private boolean mIsSyncing = false;
-    private Interpolator mInterpolator = new AccelerateInterpolator();
+
+    private Interpolator mAccelerateInterpolator = new AccelerateInterpolator(1.5f);
+    private Interpolator mDecelerateInterpolator = new DecelerateInterpolator(1.5f);
 
     private FolderController mFolderController = null;
 
@@ -196,7 +206,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                     } else {
                         mHintText.displaySwipeToRefresh();
                     }
-                    mSyncTriggerBar.setScaleX(mInterpolator.getInterpolation(
+                    mSyncTriggerBar.setScaleX(mAccelerateInterpolator.getInterpolation(
                             verticalDistanceDp/mDistanceToTriggerSyncDp));
 
                     if (y > mTrackingScrollMaxY) {
@@ -227,8 +237,9 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
     private void cancelMovementTracking() {
         if (mTrackingScrollMovement) {
-            // Fade out the status bar when user lifts finger and no sync has happened yet
-            mSyncTriggerBar.animate().alpha(0f).setDuration(200).start();
+            // Shrink the status bar when user lifts finger and no sync has happened yet
+            mSyncTriggerBar.animate().scaleX(0f).setInterpolator(mDecelerateInterpolator)
+                    .setDuration(SYNC_TRIGGER_SHRINK_DURATION_IN_MILLIS).start();
         }
         mTrackingScrollMovement = false;
         mHintText.hide();
@@ -247,11 +258,14 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     }
 
     protected void showSyncStatusBar() {
-        mIsSyncing = true;
+        if (!mIsSyncing) {
+            mIsSyncing = true;
 
-        LogUtils.i(LOG_TAG, "ConversationListView show sync status bar");
-        mSyncTriggerBar.setVisibility(GONE);
-        mSyncProgressBar.setVisibility(VISIBLE);
+            LogUtils.i(LOG_TAG, "ConversationListView show sync status bar");
+            mSyncTriggerBar.setVisibility(GONE);
+            mSyncProgressBar.setVisibility(VISIBLE);
+            mSyncProgressBar.setAlpha(1f);
+        }
     }
 
     protected void onSyncFinished() {
@@ -260,7 +274,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         if (mIsSyncing) {
             LogUtils.i(LOG_TAG, "ConversationListView hide sync status bar");
             // Hide both the sync progress bar and sync trigger bar
-            mSyncProgressBar.setVisibility(GONE);
+            mSyncProgressBar.animate().alpha(0f)
+                    .setDuration(SYNC_STATUS_BAR_FADE_DURATION_IN_MILLIS);
             mSyncTriggerBar.setVisibility(GONE);
             mIsSyncing = false;
         }
@@ -302,7 +317,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
      * A test view that covers the entire action bar, used for displaying
      * "Swipe down to refresh" hint text if user has initiated a downward swipe.
      */
-    protected static class HintText extends TextView {
+    protected static class HintText extends FrameLayout {
 
         private static final int NONE = 0;
         private static final int SWIPE_TO_REFRESH = 1;
@@ -311,8 +326,25 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         // Can be one of NONE, SWIPE_TO_REFRESH, CHECKING_FOR_MAIL
         private int mDisplay;
 
+        private TextView mTextView;
+
+        private Interpolator mDecelerateInterpolator = new DecelerateInterpolator(1.5f);
+
         public HintText(final Context context) {
-            super(context);
+            this(context, null);
+        }
+
+        public HintText(final Context context, final AttributeSet attrs) {
+            this(context, attrs, -1);
+        }
+
+        public HintText(final Context context, final AttributeSet attrs, final int defStyle) {
+            super(context, attrs, defStyle);
+
+            final LayoutInflater factory = LayoutInflater.from(context);
+            factory.inflate(R.layout.swipe_to_refresh, this);
+
+            mTextView = (TextView) findViewById(R.id.swipe_text);
 
             mDisplay = NONE;
             setVisibility(View.GONE);
@@ -332,23 +364,26 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                 // Default color
                 setBackgroundColor(R.color.list_background_color);
             }
-
-            setTextAppearance(context, android.R.attr.textAppearanceMedium);
-            setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
         }
 
         private void displaySwipeToRefresh() {
             if (mDisplay != SWIPE_TO_REFRESH) {
-                setText(getResources().getText(R.string.swipe_down_to_refresh));
+                mTextView.setText(getResources().getText(R.string.swipe_down_to_refresh));
                 setVisibility(View.VISIBLE);
+                // Fade out the current action bar first:
                 setAlpha(0f);
-                animate().alpha(1f).setDuration(TEXT_FADE_DURATION_IN_MILLIS).start();
+                animate().alpha(1f).setDuration(ACTION_BAR_FADE_DURATION_IN_MILLIS);
+                // Then animate text sliding down onto action bar:
+                mTextView.setY(-mTextView.getHeight());
+                mTextView.animate().y(0).setStartDelay(ACTION_BAR_FADE_DURATION_IN_MILLIS)
+                        .setInterpolator(mDecelerateInterpolator)
+                        .setDuration(SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS);
                 mDisplay = SWIPE_TO_REFRESH;
             }
         }
 
         private void displayCheckingForMailAndHideAfterDelay() {
-            setText(getResources().getText(R.string.checking_for_mail));
+            mTextView.setText(getResources().getText(R.string.checking_for_mail));
             setVisibility(View.VISIBLE);
             mDisplay = CHECKING_FOR_MAIL;
             postDelayed(new Runnable() {
@@ -361,13 +396,13 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
         private void hide() {
             if (mDisplay != NONE) {
-                animate().alpha(0f).setDuration(TEXT_FADE_DURATION_IN_MILLIS).start();
+                animate().alpha(0f).setDuration(SWIPE_TEXT_FADE_DURATION_IN_MILLIS).start();
                 postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         setVisibility(View.GONE);
                     }
-                }, TEXT_FADE_DURATION_IN_MILLIS);
+                }, SWIPE_TEXT_FADE_DURATION_IN_MILLIS);
                 mDisplay = NONE;
             }
         }
