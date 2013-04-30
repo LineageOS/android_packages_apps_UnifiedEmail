@@ -20,20 +20,10 @@ package com.android.mail.ui;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.Data;
-import android.provider.ContactsContract.CommonDataKinds.Email;
-import android.provider.ContactsContract.Contacts.Photo;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,10 +35,8 @@ import android.widget.ListView;
 
 import com.android.mail.R;
 import com.android.mail.adapter.DrawerItem;
-import com.android.mail.browse.LetterTileUtils;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
-import com.android.mail.photomanager.BitmapUtil;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.AllAccountObserver;
@@ -61,16 +49,11 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.google.common.collect.ImmutableSet;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The folder list UI component.
@@ -609,6 +592,7 @@ public class FolderListFragment extends ListFragment implements
         private ObjectCursor<Folder> mCursor = null;
         /** Watcher for tracking and receiving unread counts for mail */
         private FolderWatcher mFolderWatcher = null;
+        private boolean mRegistered = false;
 
         /**
          * Creates a {@link FolderListAdapter}.This is a list of all the accounts and folders.
@@ -630,6 +614,11 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         public void notifyAllAccountsChanged() {
+            if (!mRegistered && mAccountChanger != null) {
+                // TODO(viki): Round-about way of setting the watcher. http://b/8750610
+                mAccountChanger.setFolderWatcher(mFolderWatcher);
+                mRegistered = true;
+            }
             mFolderWatcher.updateAccountList(getAllAccounts());
             recalculateList();
         }

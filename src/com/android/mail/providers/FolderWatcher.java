@@ -18,13 +18,13 @@
 package com.android.mail.providers;
 
 import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Loader;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.BaseAdapter;
 
+import com.android.mail.content.ObjectCursor;
+import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.ui.AbstractActivityController;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.utils.LogUtils;
@@ -44,8 +44,8 @@ public class FolderWatcher {
     public static final String FOLDER_URI = "FOLDER-URI";
     /** List of URIs that are watched. */
     private final List<Uri> mUris = new ArrayList<Uri>();
-    /** Map returning the most recent unread count for each URI */
-    private final Map<Uri, Integer> mUnreadCount = new HashMap<Uri, Integer>();
+    /** Map returning the default inbox folder for each URI */
+    private final Map<Uri, Folder> mInbox = new HashMap<Uri, Folder>();
     private final RestrictedActivity mActivity;
     /** Handles folder callbacks and reads unread counts. */
     private final UnreadLoads mUnreadCallback = new UnreadLoads();
@@ -105,8 +105,8 @@ public class FolderWatcher {
     private void startWatching(Uri uri) {
         final int location = insertAtNextEmptyLocation(uri);
         LogUtils.d(LOG_TAG, "Watching %s, at position %d.", uri, location);
-        // No unread count yet, put a safe placeholder for now.
-        mUnreadCount.put(uri, 0);
+        // No inbox folder yet, put a safe placeholder for now.
+        mInbox.put(uri, null);
         final LoaderManager lm = mActivity.getLoaderManager();
         final Bundle args = new Bundle();
         args.putString(FOLDER_URI, uri.toString());
@@ -160,7 +160,7 @@ public class FolderWatcher {
         // Destroy the loader before removing references to the object.
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(getLoaderFromPosition(id));
-        mUnreadCount.remove(uri);
+        mInbox.remove(uri);
         mUris.add(id, null);
     }
 
@@ -173,51 +173,60 @@ public class FolderWatcher {
      * #updateAccountList(Account[])}. Zero otherwise.
      */
     public final int getUnreadCount(Account account) {
-        final Uri uri = account.settings.defaultInbox;
-        if (mUnreadCount.containsKey(uri)) {
-            final Integer count = mUnreadCount.get(uri);
-            if (count != null) {
-                return count;
-            }
+        final Folder f = getDefaultInbox(account);
+        if (f != null) {
+            return f.unreadCount;
         }
         return 0;
+    }
+
+    public final Folder getDefaultInbox(Account account) {
+        final Uri uri = account.settings.defaultInbox;
+        if (mInbox.containsKey(uri)) {
+            final Folder candidate = mInbox.get(uri);
+            if (candidate != null) {
+                return candidate;
+            }
+        }
+        return null;
     }
 
     /**
      * Class to perform {@link LoaderManager.LoaderCallbacks} for populating unread counts.
      */
-    private class UnreadLoads implements LoaderManager.LoaderCallbacks<Cursor> {
+    private class UnreadLoads implements LoaderManager.LoaderCallbacks<ObjectCursor<Folder>> {
         // TODO(viki): Fix http://b/8494129 and read only the URI and unread count.
         /** Only interested in the folder unread count, but asking for everything due to
          * bug 8494129. */
         private final String[] projection = UIProvider.FOLDERS_PROJECTION;
 
         @Override
-        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        public Loader<ObjectCursor<Folder>> onCreateLoader(int id, Bundle args) {
             final Uri uri = Uri.parse(args.getString(FOLDER_URI));
-            return new CursorLoader(mActivity.getActivityContext(), uri, projection,
-                    null, null, null);
+            return new ObjectCursorLoader<Folder>(mActivity.getActivityContext(), uri, projection,
+                    Folder.FACTORY);
         }
 
         @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
             if (data == null || data.getCount() <= 0 || !data.moveToFirst()) {
                 return;
             }
-            final Uri uri = Uri.parse(data.getString(UIProvider.FOLDER_URI_COLUMN));
-            final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
-            final Integer prevUnreadCount = mUnreadCount.get(uri);
-            final boolean changed = prevUnreadCount == null ||
-                    unreadCount != prevUnreadCount.intValue();
-            mUnreadCount.put(uri, unreadCount);
+            final Folder f = data.getModel();
+            final Uri uri = f.uri;
+            final int unreadCount = f.unreadCount;
+            final Folder previousFolder = mInbox.get(uri);
+            final boolean unreadCountChanged = previousFolder == null
+                    || unreadCount != previousFolder.unreadCount;
+            mInbox.put(uri, f);
             // Once we have updated data, we notify the parent class that something new appeared.
-            if (changed) {
+            if (unreadCountChanged) {
                 mConsumer.notifyDataSetChanged();
             }
         }
 
         @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
+        public void onLoaderReset(Loader<ObjectCursor<Folder>> loader) {
             // Do nothing.
         }
     }
