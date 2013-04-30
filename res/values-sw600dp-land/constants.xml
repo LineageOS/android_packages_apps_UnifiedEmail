@@ -15,8 +15,6 @@
      limitations under the License.
 -->
 <resources>
-    <integer name="conversation_list_weight">3</integer>
-    <integer name="conversation_view_weight">5</integer>
     <!-- Whether to show conversation subject in conversation view -->
     <bool name="show_conversation_subject">false</bool>
 
