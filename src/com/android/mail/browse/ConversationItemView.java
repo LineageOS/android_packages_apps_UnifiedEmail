@@ -1392,9 +1392,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private boolean isTouchInContactPhoto(float x) {
-        // Everything before senders and include a touch slop.
+        // Everything before the right edge of contact photo
         return (mHeader.gadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
-                && x < mCoordinates.sendersX + sTouchSlop);
+                && x < (mCoordinates.contactImagesX + mCoordinates.contactImagesWidth));
     }
 
     private boolean isTouchInStar(float x, float y) {
