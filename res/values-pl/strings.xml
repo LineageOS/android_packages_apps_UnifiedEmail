@@ -76,10 +76,9 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Zmień foldery"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Przenieś do"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Ustawienia folderów"</string>
-    <!-- no translation found for menu_show_original (7645904330201725804) -->
+    <!-- no translation found for menu_show_original (4227060689700765828) -->
     <skip />
-    <!-- no translation found for message_modified (2564340197585393687) -->
-    <skip />
+    <string name="message_modified" msgid="2564340197585393687">"(Ta wiadomość została dopasowana do ekranu i wygląda inaczej niż w wersji oryginalnej)."</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Foldery"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Więcej"</string>
     <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Więcej kont"</string>
@@ -171,6 +170,8 @@
     <string name="send_failed" msgid="750908595144529579">"Wiadomość nie została wysłana."</string>
     <string name="me" msgid="6480762904022198669">"ja"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Pokaż wszystkie foldery"</string>
+    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
+    <skip />
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Usunąć wątek?"</item>
     <item quantity="other" msgid="930334208937121234">"Usunąć wątki (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
@@ -293,11 +294,8 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Aby wyświetlić rozmowy, zsynchronizuj ten folder."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synchronizuj folder"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-  <plurals name="actionbar_unread_messages">
-    <item quantity="one" msgid="8470063623338548501">"<xliff:g id="COUNT">%1$d</xliff:g> nieprzeczytana wiadomość"</item>
-    <item quantity="other" msgid="4103064420707175144">"Nieprzeczytane wiadomości: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
-  </plurals>
-    <string name="actionbar_large_unread_count" msgid="7593808085708037562">"Nieprzeczytane wiadomości: <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
+    <string name="actionbar_unread_messages" msgid="3805594795629836031">"Nieprzeczytane: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Nieprzeczytane: ponad <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Wyświetl więcej rozmów"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Wczytuję…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Wybierz konto"</string>
@@ -369,15 +367,12 @@
     <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Zmniejsz wiadomości zajmujące dużo miejsca w poziomie, by pasowały do ekranu, i zezwól na powiększanie. Aby wyłączyć tę opcję, wybierz kolejno Ustawienia &gt; Ustawienia ogólne."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Odpowiedz"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Odpowiedz wszystkim"</string>
-    <string name="notification_action_forward" msgid="7252777659544972497">"Przekaż dalej"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Archiwizuj"</string>
     <string name="notification_action_remove_label" msgid="5852730267411032291">"Usuń etykietę"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"Usuń"</string>
-    <string name="notification_action_mark_read" msgid="4351952818740163225">"Oznacz jako przeczytane"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Zarchiwizowano"</string>
     <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Etykieta usunięta"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Usunięto"</string>
-    <string name="notification_action_preference_summary_not_set" msgid="8168109255072452703">"Nie ustawiono"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -386,22 +381,23 @@
     <string name="new_messages" msgid="4419173946074516420">"Nowe wiadomości: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Cichy"</string>
-    <string name="preference_preferred_actionbar_items" msgid="1494873630787823560">"Preferowane elementy na pasku akcji"</string>
-    <string name="preference_preferred_actionbar_items_dialog_title" msgid="7547680637775341220">"Wybierz nie więcej niż <xliff:g id="MAX">%1$d</xliff:g> czynności"</string>
-    <string name="action_archive_remove_label" msgid="2373265427931131215">"Zarchiwizuj/usuń etykietę"</string>
-    <string name="action_delete_discard_drafts" msgid="3398268725115377135">"Usuń/odrzuć wersje robocze"</string>
-    <string name="action_mark_read_unread" msgid="3532210270682619853">"Oznacz jako (nie)przeczytane"</string>
-    <string name="action_add_remove_star" msgid="6658875981206117895">"Dodaj/usuń gwiazdkę"</string>
-    <string name="action_mark_not_important" msgid="7097443517025742878">"Oznacz jako (nie)ważne"</string>
-    <string name="action_report_not_spam" msgid="7491310680850552208">"Zgłoś jako (nie)spam"</string>
+    <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Usuń czynność"</string>
+    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
+    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
+    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
+    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
+    <skip />
+    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
+    <skip />
+    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
+    <skip />
+    <string name="preference_swipe_title" msgid="807579971507624260">"Przesuń palcem, by usunąć"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"Na liście wątków"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Przesuń w dół, by odświeżyć"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Sprawdzam pocztę"</string>
-    <!-- no translation found for empty_trash (5042310780353359729) -->
-    <skip />
-    <!-- no translation found for empty_spam (930744491746508050) -->
-    <skip />
-    <!-- no translation found for drawer_open (6074646853178471940) -->
-    <skip />
-    <!-- no translation found for drawer_close (2764774620737876943) -->
-    <skip />
+    <string name="empty_trash" msgid="5042310780353359729">"Opróżnij kosz"</string>
+    <string name="empty_spam" msgid="930744491746508050">"Opróżnij spam"</string>
+    <string name="drawer_open" msgid="6074646853178471940">"Otwórz szufladę nawigacji"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"Zamknij szufladę nawigacji"</string>
 </resources>
