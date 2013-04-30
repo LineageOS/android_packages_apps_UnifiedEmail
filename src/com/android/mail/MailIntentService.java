@@ -62,7 +62,7 @@ public class MailIntentService extends IntentService {
         final String action = intent.getAction();
 
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
-            handleLocaleChanged();
+            NotificationUtils.cancelAndResendNotifications(this);
         } else if (ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS.equals(action)) {
             final Account account = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
             final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
@@ -90,10 +90,5 @@ public class MailIntentService extends IntentService {
     public static void broadcastBackupDataChanged(final Context context) {
         final Intent intent = new Intent(ACTION_BACKUP_DATA_CHANGED);
         context.startService(intent);
-    }
-
-    private void handleLocaleChanged() {
-        // Cancel all notifications. The correct ones will be recreated when the app starts back up
-        NotificationUtils.cancelAndResendNotifications(this);
     }
 }

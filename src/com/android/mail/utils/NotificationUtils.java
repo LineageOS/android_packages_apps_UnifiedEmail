@@ -312,8 +312,8 @@ public class NotificationUtils {
 
             // Only resend notifications if the notifications are from the same folder
             // and same account as the undo notification that was previously displayed.
-            if (!Objects.equal(accountUri, notification.account.uri) &&
-                    !Objects.equal(folderUri, folder.uri)) {
+            if (accountUri != null && !Objects.equal(accountUri, notification.account.uri) &&
+                    folderUri != null && !Objects.equal(folderUri, folder.uri)) {
                 continue;
             }
 
