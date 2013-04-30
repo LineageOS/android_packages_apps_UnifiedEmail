@@ -800,11 +800,6 @@
     <!-- Dialog title for the What's New dialog. [CHAR LIMIT=50] -->
     <string name="whats_new_dialog_title">What\'s new</string>
 
-    <!-- Dialog title for the Auto-fit messages dialog. [CHAR LIMIT=50] -->
-    <string name="auto_fit_messages_dialog_title">Auto-fit messages?</string>
-    <!-- Dialog message for the Auto-fit messages dialog. -->
-    <string name="auto_fit_messages_dialog_message">Shrink wide messages to fit your screen and allow zooming in. To turn off this option, go to Settings > General\u00A0settings.</string>
-
     <!-- Notification action for replying to a message. [CHAR LIMIT=20] -->
     <string name="notification_action_reply">Reply</string>
     <!-- Notification action for replying-all to a message. [CHAR LIMIT=20] -->
