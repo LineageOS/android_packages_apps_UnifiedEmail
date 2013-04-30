@@ -63,7 +63,6 @@ public class FolderItemView extends RelativeLayout {
     private TextView mUnseenCountTextView;
     private DropHandler mDropHandler;
     private ImageView mFolderParentIcon;
-    private boolean mIsSelected;
 
     /**
      * A delegate for a handler to handle a drop of an item.
@@ -139,13 +138,8 @@ public class FolderItemView extends RelativeLayout {
     }
 
     public void bind(final Folder folder, final DropHandler dropHandler) {
-        bind(folder, dropHandler, false);
-    }
-
-    public void bind(final Folder folder, final DropHandler dropHandler, final boolean isSelected) {
         mFolder = folder;
         mDropHandler = dropHandler;
-        mIsSelected = isSelected;
         mFolderTextView.setText(folder.name);
         mFolderParentIcon.setVisibility(mFolder.hasChildren ? View.VISIBLE : View.GONE);
         if (mFolder.isInbox() && mFolder.unseenCount > 0) {
@@ -155,33 +149,15 @@ public class FolderItemView extends RelativeLayout {
             mUnseenCountTextView.setVisibility(View.GONE);
             setUnreadCount(Utils.getFolderUnreadDisplayCount(mFolder));
         }
-        setFolderSelected();
     }
 
     public void bind(final Account account, final DropHandler dropHandler, final int count) {
         mFolder = null;
-        mIsSelected = false;
         mDropHandler = dropHandler;
         mFolderTextView.setText(account.name);
         mFolderParentIcon.setVisibility(View.GONE);
         setUnseenCount(Color.BLACK, 0);
         setUnreadCount(count);
-        setFolderSelected();
-    }
-
-    /**
-     * Allows for changing view colors/states depending on whether the label is selected
-     * in the drawer.
-     */
-    private void setFolderSelected() {
-        final int textColorResId;
-        if (mIsSelected) {
-            textColorResId = R.color.folder_item_selected_text_color;
-        } else {
-            textColorResId = R.color.folder_item_text_color;
-        }
-        mFolderTextView.setTextColor(getContext().getResources().getColor(textColorResId));
-        mUnreadCountTextView.setTextColor(getContext().getResources().getColor(textColorResId));
     }
 
     /**
