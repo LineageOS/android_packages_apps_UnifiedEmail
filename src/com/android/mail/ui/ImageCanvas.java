@@ -89,9 +89,4 @@ public interface ImageCanvas {
      * data binding.
      */
     int getGeneration();
-
-    /**
-     * Called when an image is loaded on this ImageCanvas
-     */
-    void onCachedImageLoaded();
 }
