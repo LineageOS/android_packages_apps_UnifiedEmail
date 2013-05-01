@@ -55,8 +55,6 @@ public class DividedImageCanvas implements ImageCanvas {
     private final Context mContext;
     private final InvalidateCallback mCallback;
     private final ArrayList<Bitmap> mDivisionImages = new ArrayList<Bitmap>(MAX_DIVISIONS);
-    private final ArrayList<Boolean> mImageStatusList = new ArrayList<Boolean>(MAX_DIVISIONS);
-    private int mNumCachedImagesLoaded = 0;
 
     /**
      * Ignore any request to draw final output when not yet ready. This prevents partially drawn
@@ -112,13 +110,10 @@ public class DividedImageCanvas implements ImageCanvas {
         }
         mDivisionMap.clear();
         mDivisionImages.clear();
-        mImageStatusList.clear();
-        mNumCachedImagesLoaded = 0;
         int i = 0;
         for (String id : divisionIds) {
             mDivisionMap.put(id, i);
             mDivisionImages.add(null);
-            mImageStatusList.add(null);
             i++;
         }
     }
@@ -184,20 +179,18 @@ public class DividedImageCanvas implements ImageCanvas {
 
     @Override
     public void drawImage(Bitmap b, Object id) {
-        addDivisionImage(b, id, true);
+        addDivisionImage(b, id);
     }
 
     /**
      * Add a bitmap to this view in the quadrant matching its id.
      * @param b Bitmap
      * @param id Id to look for that was previously set in setDivisionIds.
-     * @param resolved Indicates whether this image has been resolved
      */
-    public void addDivisionImage(Bitmap b, Object id, boolean resolved) {
+    public void addDivisionImage(Bitmap b, Object id) {
         final Integer pos = mDivisionMap.get(id);
         if (pos != null && pos >= 0 && b != null) {
             mDivisionImages.set(pos, b);
-            mImageStatusList.set(pos, resolved);
             boolean complete = false;
             final int width = mWidth;
             final int height = mHeight;
@@ -291,14 +284,6 @@ public class DividedImageCanvas implements ImageCanvas {
         return pos != null && mDivisionImages.get(pos) != null;
     }
 
-    public Boolean imageResolved(Object id) {
-        final Integer pos = mDivisionMap.get(id);
-        if (pos == null) {
-            return null;
-        }
-        return mImageStatusList.get(pos);
-    }
-
     private void setupDividerLines() {
         if (sDividerLineWidth == -1) {
             Resources res = getContext().getResources();
@@ -341,7 +326,6 @@ public class DividedImageCanvas implements ImageCanvas {
         mDivisionMap.clear();
         mDivisionImages.clear();
         mGeneration++;
-        mNumCachedImagesLoaded = 0;
     }
 
     @Override
@@ -385,10 +369,8 @@ public class DividedImageCanvas implements ImageCanvas {
      * The class that will provided the canvas to which the DividedImageCanvas
      * should render its contents must implement this interface.
      */
-    // TODO(pwestbro): rename this interface to match the usage
     public interface InvalidateCallback {
         public void invalidate();
-        public void onImagesResolved();
     }
 
     public int getDivisionCount() {
@@ -415,12 +397,5 @@ public class DividedImageCanvas implements ImageCanvas {
     public Bitmap loadImage(byte[] bytes, Object id) {
         // TODO: remove me soon.
         return null;
-    }
-
-    @Override
-    public void onCachedImageLoaded() {
-        if (++mNumCachedImagesLoaded >= mDivisionMap.size()) {
-            mCallback.onImagesResolved();
-        }
     }
 }
