@@ -1160,9 +1160,6 @@ public abstract class AbstractActivityController implements ActivityController,
             case R.id.compose:
                 ComposeActivity.compose(mActivity.getActivityContext(), mAccount);
                 break;
-            case R.id.show_all_folders:
-                toggleFolderListState();
-                break;
             case R.id.refresh:
                 requestFolderRefresh();
                 break;
