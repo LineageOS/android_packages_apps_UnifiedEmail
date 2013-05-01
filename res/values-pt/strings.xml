@@ -365,8 +365,6 @@
     <item msgid="2189929276292165301">"Exibir a lista de conversas depois de excluir"</item>
   </string-array>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"O que há de novo"</string>
-    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"Ajustar mensagens automaticamente?"</string>
-    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Reduz mensagens largas para que caibam na tela e permite aumentar zoom. Para desativar esta opção, vá para \"Configurações\" &gt; \"Configurações gerais\"."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Responder"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Responder a todos"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Arquivar"</string>
@@ -398,8 +396,14 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Na lista de conversas"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Deslize para baixo para atualizar"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Verificando e-mail"</string>
-    <string name="empty_trash" msgid="5042310780353359729">"Esvaziar lixeira"</string>
-    <string name="empty_spam" msgid="930744491746508050">"Spam vazio"</string>
+    <string name="empty_trash" msgid="652435297593538512">"Esvaziar lixeira"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"Esvaziar spam"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Esvaziar a lixeira?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Esvaziar o spam?"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="462609766565707217">"<xliff:g id="COUNT">%1$d</xliff:g> mensagem será excluída permanentemente."</item>
+    <item quantity="other" msgid="2473439906075355840">"Estas <xliff:g id="COUNT">%1$d</xliff:g> mensagens serão excluídas permanentemente."</item>
+  </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Abrir gaveta de navegação"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Fechar gaveta de navegação"</string>
 </resources>

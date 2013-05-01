@@ -76,8 +76,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"폴더 변경"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"이동"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"폴더 설정"</string>
-    <!-- no translation found for menu_show_original (4227060689700765828) -->
-    <skip />
+    <string name="menu_show_original" msgid="4227060689700765828">"자동 크기 조정 되돌리기"</string>
     <string name="message_modified" msgid="2564340197585393687">"(이 메일은 원본 버전을 화면에 맞게 수정한 것입니다.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"폴더"</string>
     <string name="folder_list_more" msgid="537172187223133825">"더보기"</string>
@@ -172,8 +171,7 @@
     <string name="send_failed" msgid="750908595144529579">"메일이 전송되지 않았습니다."</string>
     <string name="me" msgid="6480762904022198669">"나"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"모든 폴더 표시"</string>
-    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
-    <skip />
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"받은편지함"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"대화를 삭제하시겠습니까?"</item>
     <item quantity="other" msgid="930334208937121234">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 삭제하시겠습니까?"</item>
@@ -365,8 +363,6 @@
     <item msgid="2189929276292165301">"삭제 후 대화 목록 표시"</item>
   </string-array>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"새로운 기능"</string>
-    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"메일을 자동 맞춤하시겠습니까?"</string>
-    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"메일의 너비가 화면에 맞도록 크기를 축소하고, 확대 기능을 지원합니다. 이 옵션을 사용 중지하려면 설정 &gt; 일반 설정으로 이동합니다."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"답장"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"전체답장"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"보관처리"</string>
@@ -384,22 +380,31 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"무음"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"삭제 작업"</string>
-    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
-    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
-    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
-    <skip />
+  <string-array name="prefEntries_archive_vs_delete">
+    <item msgid="7861611617238166527">"대화 보관처리"</item>
+    <item msgid="1894624633891654411">"대화 삭제"</item>
+  </string-array>
+  <string-array name="prefSummaries_archive_vs_delete_summary">
+    <item msgid="6388312490146989386">"대화를 삭제하지 않고 보관처리"</item>
+    <item msgid="6515786566522105643">"대화를 보관처리하지 않고 삭제"</item>
+  </string-array>
+    <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"작업 삭제"</string>
+    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"전체답장"</string>
+    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"메일 답장 시 기본값으로 사용"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"스와이프하여 삭제"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"대화 목록"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"아래로 스와이프하여 새로고침"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"메일 확인 중"</string>
-    <string name="empty_trash" msgid="5042310780353359729">"휴지통 비우기"</string>
-    <string name="empty_spam" msgid="930744491746508050">"스팸 비우기"</string>
+    <!-- no translation found for empty_trash (652435297593538512) -->
+    <skip />
+    <!-- no translation found for empty_spam (6064497180615519589) -->
+    <skip />
+    <!-- no translation found for empty_trash_dialog_title (3248644791068595150) -->
+    <skip />
+    <!-- no translation found for empty_spam_dialog_title (8091014690336479280) -->
+    <skip />
+    <!-- no translation found for empty_folder_dialog_message:one (462609766565707217) -->
+    <!-- no translation found for empty_folder_dialog_message:other (2473439906075355840) -->
     <string name="drawer_open" msgid="6074646853178471940">"내비게이션 폴더 열기"</string>
     <string name="drawer_close" msgid="2764774620737876943">"내비게이션 폴더 닫기"</string>
 </resources>
