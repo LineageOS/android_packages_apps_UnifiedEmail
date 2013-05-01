@@ -695,6 +695,8 @@ public abstract class AbstractActivityController implements ActivityController,
         }
         if (nextFolder != null) {
             args.putParcelable(BUNDLE_FOLDER_KEY, nextFolder);
+        } else {
+            LogUtils.e(LOG_TAG, new Error(), "AAC.preloadConvList(): Got an empty folder");
         }
         mFolder = null;
         final LoaderManager lm = mActivity.getLoaderManager();
@@ -870,6 +872,7 @@ public abstract class AbstractActivityController implements ActivityController,
             lm.destroyLoader(LOADER_CONVERSATION_LIST);
         }
         final Bundle args = new Bundle();
+        args.putParcelable(BUNDLE_ACCOUNT_KEY, mAccount);
         args.putParcelable(BUNDLE_FOLDER_KEY, mFolder);
         lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
     }
