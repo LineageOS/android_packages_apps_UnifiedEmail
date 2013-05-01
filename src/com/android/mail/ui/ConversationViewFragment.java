@@ -694,9 +694,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
-        final boolean applyTransforms = true;
+        final boolean applyTransforms = shouldApplyTransforms();
 
         final MailPrefs prefs = MailPrefs.get(getContext());
+
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
                 mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount),
@@ -885,6 +886,12 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     // END message header callbacks
+
+    @Override
+    public void showUntransformedConversation() {
+        super.showUntransformedConversation();
+        renderConversation(getMessageCursor());
+    }
 
     @Override
     public void onSuperCollapsedClick(SuperCollapsedBlockItem item) {
@@ -1159,6 +1166,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         public void onMessageTransform(String messageDomId, String transformText) {
             LogUtils.i(LOG_TAG, "TRANSFORM: (%s) %s", messageDomId, transformText);
             mMessageTransforms.put(messageDomId, transformText);
+            onConversationTransformed();
         }
     }
 

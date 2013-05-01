@@ -97,6 +97,10 @@
         android:id="@+id/mute"
         android:title="@string/mute"
         android:showAsAction="never" />
+    <item
+        android:id="@+id/show_original"
+        android:title="@string/menu_show_original"
+        android:showAsAction="never"/>
 
     <item
         android:id="@+id/report_spam"

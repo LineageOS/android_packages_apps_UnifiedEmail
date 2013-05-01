@@ -128,6 +128,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     private boolean mIsDetached;
 
+    private boolean mHasConversationBeenTransformed;
+    private boolean mHasConversationTransformBeenReverted;
+
     private final Runnable mDelayedShow = new FragmentRunnable("mDelayedShow") {
         @Override
         public void go() {
@@ -156,6 +159,11 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     private static final String BUNDLE_DETACHED =
             AbstractConversationViewFragment.class.getName() + "detached";
+
+    private static final String BUNDLE_KEY_HAS_CONVERSATION_BEEN_TRANSFORMED =
+            AbstractConversationViewFragment.class.getName() + "conversationtransformed";
+    private static final String BUNDLE_KEY_HAS_CONVERSATION_BEEN_REVERTED =
+            AbstractConversationViewFragment.class.getName() + "conversationreverted";
 
     public static Bundle makeBasicArgs(Account account, Folder folder) {
         Bundle args = new Bundle();
@@ -223,8 +231,14 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             mViewState = savedState.getParcelable(BUNDLE_VIEW_STATE);
             mUserVisible = savedState.getBoolean(BUNDLE_USER_VISIBLE);
             mIsDetached = savedState.getBoolean(BUNDLE_DETACHED, false);
+            mHasConversationBeenTransformed =
+                    savedState.getBoolean(BUNDLE_KEY_HAS_CONVERSATION_BEEN_TRANSFORMED, false);
+            mHasConversationTransformBeenReverted =
+                    savedState.getBoolean(BUNDLE_KEY_HAS_CONVERSATION_BEEN_REVERTED, false);
         } else {
             mViewState = getNewViewState();
+            mHasConversationBeenTransformed = false;
+            mHasConversationTransformBeenReverted = false;
         }
     }
 
@@ -415,8 +429,19 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                 markUnread();
                 handled = true;
                 break;
+            case R.id.show_original:
+                showUntransformedConversation();
+                handled = true;
+                break;
         }
         return handled;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        // Only show option if we support message transforms and message has been transformed.
+        Utils.setMenuItemVisibility(menu, R.id.show_original, supportsMessageTransforms() &&
+                mHasConversationBeenTransformed && !mHasConversationTransformBeenReverted);
     }
 
     // BEGIN conversation header callbacks
@@ -437,6 +462,10 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
         outState.putBoolean(BUNDLE_USER_VISIBLE, mUserVisible);
         outState.putBoolean(BUNDLE_DETACHED, mIsDetached);
+        outState.putBoolean(BUNDLE_KEY_HAS_CONVERSATION_BEEN_TRANSFORMED,
+                mHasConversationBeenTransformed);
+        outState.putBoolean(BUNDLE_KEY_HAS_CONVERSATION_BEEN_REVERTED,
+                mHasConversationTransformBeenReverted);
     }
 
     @Override
@@ -800,5 +829,34 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         } else {
             mIsDetached = true;
         }
+    }
+
+    /**
+     * Called when the JavaScript reports that it transformed a message.
+     * Sets a flag to true and invalidates the options menu so it will
+     * include the "Revert auto-sizing" menu option.
+     */
+    public void onConversationTransformed() {
+        mHasConversationBeenTransformed = true;
+        mActivity.invalidateOptionsMenu();
+    }
+
+    /**
+     * Called when the "Revert auto-sizing" option is selected. Default
+     * implementation simply sets a value on whether transforms should be
+     * applied. Derived classes should override this class and force a
+     * re-render so that the conversation renders without
+     */
+    public void showUntransformedConversation() {
+        // must set the value to true so we don't show the options menu item again
+        mHasConversationTransformBeenReverted = true;
+    }
+
+    /**
+     * Returns {@code true} if the conversation should be transformed. {@code false}, otherwise.
+     * @return {@code true} if the conversation should be transformed. {@code false}, otherwise.
+     */
+    public boolean shouldApplyTransforms() {
+        return !mHasConversationTransformBeenReverted;
     }
 }
