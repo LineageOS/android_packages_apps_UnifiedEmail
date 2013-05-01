@@ -3042,7 +3042,7 @@ public abstract class AbstractActivityController implements ActivityController,
         public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
             LogUtils.d(LOG_TAG, "IN AAC.ConversationCursor.onLoadFinished, data=%s loader=%s",
                     data, loader);
-            if (mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+            if (isDrawerEnabled() && mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
                 LogUtils.d(LOG_TAG, "ConversationListLoaderCallbacks.onLoadFinished: ignoring.");
                 return;
             }
