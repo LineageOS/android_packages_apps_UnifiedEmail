@@ -29,11 +29,24 @@
         <FrameLayout
             android:id="@+id/content_pane"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/drawer_shadow_tablet">
+            android:layout_height="match_parent">
             <fragment class="com.android.mail.ui.DrawerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
+            <FrameLayout android:id="@+id/folders_pane_edge"
+                android:layout_width="8dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:background="@drawable/shadow_right">
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:background="@color/light_gray" />
+
+            </FrameLayout>
         </FrameLayout>
 
         <FrameLayout
