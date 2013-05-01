@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -254,7 +255,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                 request,
                 Thread.currentThread());
 
-        final boolean loaded = loadCachedPhoto(request, false);
+        boolean loaded = loadCachedPhoto(request, false);
         if (loaded) {
             if (DEBUG) LogUtils.v(TAG, "image request, cache hit. request queue size=%s",
                     mPendingRequests.size());
@@ -414,16 +415,12 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     private void processLoadedImages() {
         final List<Long> toRemove = Lists.newArrayList();
         for (Long hash : mPendingRequests.keySet()) {
-            final Request request = mPendingRequests.get(hash);
-            final boolean loaded = loadCachedPhoto(request, true);
+            Request request = mPendingRequests.get(hash);
+            boolean loaded = loadCachedPhoto(request, true);
             if (loaded) {
                 toRemove.add(hash);
             }
-            // We want to call onCachedImageLoaded in all cases here, as when loaded is false,
-            // loadCachedPhoto will attempt to reload the letter tile.
-            request.getView().onCachedImageLoaded();
         }
-
         for (Long key : toRemove) {
             mPendingRequests.remove(key);
         }

@@ -84,12 +84,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
-// TODO(pwestbro): References to non AOSP code should be moved out of UnifiedEmail
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.Tracker;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem,
         InvalidateCallback {
@@ -104,16 +99,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static final String PERF_TAG_CALCULATE_FOLDERS = "CCHV.folders";
     private static final String PERF_TAG_CALCULATE_COORDINATES = "CCHV.coordinates";
     private static final String LOG_TAG = LogTag.getLogTag();
-
-    // Analytics string values
-    private static final String CONV_ITEM_VIEW_CATEGORY = "ConversationItemView";
-    private static final String CONTACT_PHOTO_ACTION = "ContactPhoto";
-    private static final String NUM_PHOTOS_LABEL = "num_photos";
-    private static final String CUSTOM_DIMEN_ACCOUNT_TYPE_GOOGLE_COM = "account_type_google_com";
-    private static final String CUSTOM_DIMEN_ACCOUNT_TYPE_NON_GOOGLE_COM
-            = "account_type_non_google_com";
-    private static final boolean REPORT_ANALYTICS = true;
-
 
     // Static bitmaps.
     private static Bitmap STAR_OFF;
@@ -148,9 +133,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static TextPaint sPaint = new TextPaint();
     private static TextPaint sFoldersPaint = new TextPaint();
 
-    private static Tracker sConversationItemViewTracker;
-
-
     // Backgrounds for different states.
     private final SparseArray<Drawable> mBackgrounds = new SparseArray<Drawable>();
 
@@ -166,9 +148,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private boolean mTesting = false;
     /** Whether we are on a tablet device or not */
     private final boolean mTabletDevice;
-
-    /** Whether we have reported analytics for this view */
-    private boolean mReportedStats = false;
 
     @VisibleForTesting
     ConversationItemViewCoordinates mCoordinates;
@@ -411,13 +390,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sFoldersLeftPadding = res.getDimensionPixelOffset(R.dimen.folders_left_padding);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
             sAttachmentPreviewsManager = ContactPhotoManager.createContactPhotoManager(context);
-
-            if (REPORT_ANALYTICS) {
-                EasyTracker.getInstance().setContext(context);
-                sConversationItemViewTracker = EasyTracker.getTracker();
-            }
         }
-
 
         mSendersTextView = new TextView(mContext);
         mSendersTextView.setEllipsize(TextUtils.TruncateAt.END);
@@ -437,44 +410,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                         mCoordinates.contactImagesY,
                         mCoordinates.contactImagesX + mCoordinates.contactImagesWidth,
                         mCoordinates.contactImagesY + mCoordinates.contactImagesHeight);
-            }
-
-            @Override
-            public void onImagesResolved() {
-                if (REPORT_ANALYTICS && !mReportedStats) {
-                    final int numTiles = mContactImagesHolder.getDivisionCount();
-                    final List<String> photoKeys = mContactImagesHolder.getDivisionIds();
-                    int numPhotos = 0;
-                    for (final String photoKey : photoKeys) {
-                        final Boolean isResolved =
-                                mContactImagesHolder.imageResolved(photoKey);
-                        if (isResolved != null && isResolved) {
-                            numPhotos++;
-                        }
-                    }
-
-                    // Number of subtiles
-                    sConversationItemViewTracker.setCustomMetric(1, (long)numTiles);
-                    // Number of resolved photos
-                    sConversationItemViewTracker.setCustomMetric(2, (long)numPhotos);
-                    // Number of letter subtiles
-                    sConversationItemViewTracker.setCustomMetric(3, (long)(numTiles - numPhotos));
-                    final String accountTypeCustomDimen = mAccount.endsWith("google.com") ?
-                            CUSTOM_DIMEN_ACCOUNT_TYPE_GOOGLE_COM :
-                            CUSTOM_DIMEN_ACCOUNT_TYPE_NON_GOOGLE_COM;
-                    sConversationItemViewTracker.setCustomDimension(3, accountTypeCustomDimen);
-                    // This is a hack. Ideally this would check the folder object to determine if it
-                    // is the primary section
-                    final String isPrimarySection =
-                            TextUtils.equals(mDisplayedFolder.persistentId, "^sq_ig_i_personal") ?
-                                    "primary" : "not_primary";
-                    sConversationItemViewTracker.setCustomDimension(4, isPrimarySection);
-
-                    sConversationItemViewTracker.sendEvent(CONV_ITEM_VIEW_CATEGORY,
-                            CONTACT_PHOTO_ACTION, NUM_PHOTOS_LABEL, (long)numTiles);
-
-                    mReportedStats = true;
-                }
             }
         });
         mAttachmentPreviewsCanvas = new DividedImageCanvas(context, this);
@@ -518,7 +453,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
         mAdapter = adapter;
-        mReportedStats = false;
         if (mHeader.conversation.getAttachmentsCount() == 0) {
             mAttachmentPreviewMode = ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE;
         } else {
@@ -768,12 +702,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mContactImagesHolder.setDimensions(mCoordinates.contactImagesWidth,
                     mCoordinates.contactImagesHeight);
             mContactImagesHolder.setDivisionIds(mHeader.displayableSenderEmails);
-            final int size = mHeader.displayableSenderEmails.size();
-            final int numTiles = Math.min(DividedImageCanvas.MAX_DIVISIONS, size);
+            int size = mHeader.displayableSenderEmails.size();
             String emailAddress;
-            for (int i = 0; i < numTiles; i++) {
+            for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < size; i++) {
                 emailAddress = mHeader.displayableSenderEmails.get(i);
-                final PhotoIdentifier photoIdentifier = new ContactIdentifier(
+                PhotoIdentifier photoIdentifier = new ContactIdentifier(
                         mHeader.displayableSenderNames.get(i), emailAddress, i);
                 sContactPhotoManager.loadThumbnail(photoIdentifier, mContactImagesHolder);
             }
@@ -1702,10 +1635,5 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     @Override
     public float getMinAllowScrollDistance() {
         return sScrollSlop;
-    }
-
-    @Override
-    public void onImagesResolved() {
-        // Do nothing
     }
 }

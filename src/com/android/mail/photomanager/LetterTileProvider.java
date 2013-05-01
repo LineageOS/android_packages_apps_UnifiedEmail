@@ -127,7 +127,7 @@ public class LetterTileProvider implements DefaultImageProvider {
         } else {
             bitmap = getBitmap(mDims, true /* getDefault */);
         }
-        dividedImageView.addDivisionImage(bitmap, address, false);
+        dividedImageView.addDivisionImage(bitmap, address);
     }
 
     private static boolean isEnglishLetterOrDigit(char c) {
