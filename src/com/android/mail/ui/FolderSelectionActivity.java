@@ -134,7 +134,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
          * Since there is no drawer to wait for, notifyChanged to the observers.
          */
         @Override
-        public void closeDrawer(final boolean hasNewFolderOrAccount) {
+        public void closeDrawer(final boolean hasNewFolderOrAccount,
+                Account account, Folder folder) {
             mDrawerObservers.notifyChanged();
         }
 
