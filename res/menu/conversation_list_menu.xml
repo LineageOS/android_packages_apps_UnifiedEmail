@@ -44,12 +44,6 @@
         android:icon="@drawable/ic_menu_trash_holo_light" />
 
     <!-- Always available -->
-    <item android:id="@+id/show_all_folders"
-        android:title="@string/show_all_folders"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_menu_folders_holo_light" />
-
-    <!-- Always available -->
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
         android:showAsAction="never"
