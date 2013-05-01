@@ -881,10 +881,22 @@
     <string name="checking_for_mail">Checking for mail</string>
 
     <!-- Conversation list screen overflow menu in trash folder [CHAR LIMIT=50]  -->
-    <string name="empty_trash">Empty trash</string>
+    <string name="empty_trash">Empty Trash</string>
 
     <!-- Conversation list screen overflow menu in spam folder [CHAR LIMIT=50]  -->
-    <string name="empty_spam">Empty spam</string>
+    <string name="empty_spam">Empty Spam</string>
+
+    <!-- Dialog title for empty trash confirmation dialog [CHAR LIMIT=100] -->
+    <string name="empty_trash_dialog_title">Empty Trash?</string>
+
+    <!-- Dialog title for empty spam confirmation dialog [CHAR LIMIT=100] -->
+    <string name="empty_spam_dialog_title">Empty Spam?</string>
+
+    <!-- Dialog message for empty folder confirmation dialog [CHAR LIMIT=300] -->
+    <plurals name="empty_folder_dialog_message">
+        <item quantity="one">This <xliff:g id="count">%1$d</xliff:g> message will be permanently deleted.</item>
+        <item quantity="other">These <xliff:g id="count">%1$d</xliff:g> messages will be permanently deleted.</item>
+    </plurals>
 
     <!-- Strings used for accessibility for the items that toggles the drawer action  -->
     <string name="drawer_open">Open navigation drawer</string>

@@ -131,7 +131,8 @@ import java.util.TimerTask;
  * In the Gmail codebase, this was called BaseActivityController
  * </p>
  */
-public abstract class AbstractActivityController implements ActivityController {
+public abstract class AbstractActivityController implements ActivityController,
+        EmptyFolderDialogFragment.EmptyFolderDialogFragmentListener {
     // Keys for serialization of various information in Bundles.
     /** Tag for {@link #mAccount} */
     private static final String SAVED_ACCOUNT = "saved-account";
@@ -1192,8 +1193,10 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
                 break;
             case R.id.empty_trash:
+                showEmptyDialog();
+                break;
             case R.id.empty_spam:
-                emptyFolder();
+                showEmptyDialog();
                 break;
             default:
                 handled = false;
@@ -1202,9 +1205,39 @@ public abstract class AbstractActivityController implements ActivityController {
         return handled;
     }
 
+    /**
+     * Opens an {@link EmptyFolderDialogFragment} for the current folder.
+     */
+    private void showEmptyDialog() {
+        if (mFolder != null) {
+            final EmptyFolderDialogFragment fragment =
+                    EmptyFolderDialogFragment.newInstance(mFolder.totalCount, mFolder.type);
+            fragment.setListener(this);
+            fragment.show(mActivity.getFragmentManager(), EmptyFolderDialogFragment.FRAGMENT_TAG);
+        }
+    }
+
+    @Override
+    public void onFolderEmptied() {
+        emptyFolder();
+    }
+
+    /**
+     * Performs the work of emptying the currently visible folder.
+     */
     private void emptyFolder() {
         if (mConversationListCursor != null) {
             mConversationListCursor.emptyFolder();
+        }
+    }
+
+    private void attachEmptyFolderDialogFragmentListener() {
+        final EmptyFolderDialogFragment fragment =
+                (EmptyFolderDialogFragment) mActivity.getFragmentManager()
+                        .findFragmentByTag(EmptyFolderDialogFragment.FRAGMENT_TAG);
+
+        if (fragment != null) {
+            fragment.setListener(this);
         }
     }
 
@@ -1703,6 +1736,8 @@ public abstract class AbstractActivityController implements ActivityController {
         disableNotifications();
 
         mSafeToModifyFragments = true;
+
+        attachEmptyFolderDialogFragmentListener();
     }
 
     @Override
