@@ -38,12 +38,31 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
+    <FrameLayout
+        android:id="@+id/message_counts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:id="@+id/unread"
+            style="@style/UnreadCount" />
+
+        <TextView
+            android:id="@+id/unseen"
+            style="@style/UnseenCount" />
+
+    </FrameLayout>
+
     <ImageView
         android:id="@+id/folder_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/folder_list_item_left_margin"
+        android:layout_alignParentLeft="true"
         android:visibility="gone" />
 
     <TextView
@@ -52,6 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/folder_icon"
+        android:layout_toLeftOf="@id/message_counts"
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginLeft="@dimen/folder_list_item_left_margin"
         android:layout_marginRight="@dimen/folder_list_item_right_margin"
@@ -60,18 +80,5 @@
         android:ellipsize="end"
         android:textColor="@color/folder_item_text_color"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/unread"
-        style="@style/UnreadCount"
-        android:layout_marginRight="@dimen/folder_list_item_right_margin"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/folder_item_text_color" />
-
-    <TextView
-        android:id="@+id/unseen"
-        style="@style/UnseenCount"
-        android:layout_marginRight="@dimen/folder_list_item_right_margin"
-        android:layout_alignParentRight="true"/>
 
 </com.android.mail.ui.FolderItemView>
