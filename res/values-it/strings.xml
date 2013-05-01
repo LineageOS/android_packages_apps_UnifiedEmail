@@ -76,8 +76,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Cambia cartelle"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Sposta in"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Impostazioni cartella"</string>
-    <!-- no translation found for menu_show_original (4227060689700765828) -->
-    <skip />
+    <string name="menu_show_original" msgid="4227060689700765828">"Ripristina ridim. autom."</string>
     <string name="message_modified" msgid="2564340197585393687">"(La versione originale di questo messaggio è stata modificata per essere adattata allo schermo.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Cartelle"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Altre"</string>
@@ -172,8 +171,7 @@
     <string name="send_failed" msgid="750908595144529579">"Messaggio non inviato."</string>
     <string name="me" msgid="6480762904022198669">"me"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Visualizza tutte le cartelle"</string>
-    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
-    <skip />
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"Posta in arrivo"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Eliminare questa conversazione?"</item>
     <item quantity="other" msgid="930334208937121234">"Eliminare queste <xliff:g id="COUNT">%1$d</xliff:g> conversazioni?"</item>
@@ -365,8 +363,6 @@
     <item msgid="2189929276292165301">"Mostra elenco conversazioni dopo eliminazione"</item>
   </string-array>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Novità"</string>
-    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"Adattare automaticamente i messaggi?"</string>
-    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Restringi i messaggi larghi per adattarli allo schermo e consenti lo zoom in avanti. Per disattivare questa opzione, vai a Impostazioni &gt; Impostazioni generali."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Rispondi"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Rispondi a tutti"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Archivia"</string>
@@ -384,22 +380,29 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Silenzioso"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Azione rimozione"</string>
-    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
-    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
-    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
-    <skip />
+  <string-array name="prefEntries_archive_vs_delete">
+    <item msgid="7861611617238166527">"Archivia conversazioni"</item>
+    <item msgid="1894624633891654411">"Elimina conversazioni"</item>
+  </string-array>
+  <string-array name="prefSummaries_archive_vs_delete_summary">
+    <item msgid="6388312490146989386">"Archivia anziché eliminare le conversazioni"</item>
+    <item msgid="6515786566522105643">"Elimina anziché archiviare le conversazioni"</item>
+  </string-array>
+    <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"Azione rimozione"</string>
+    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Rispondi a tutti"</string>
+    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Usa come predefinito per le risposte ai messaggi"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"Fai scorrere per rimuovere"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"In elenco di conversazioni"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Fai scorrere verso il basso per aggiornare"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Controllo della posta"</string>
-    <string name="empty_trash" msgid="5042310780353359729">"Cestino vuoto"</string>
-    <string name="empty_spam" msgid="930744491746508050">"Cartella spam vuota"</string>
+    <string name="empty_trash" msgid="652435297593538512">"Cestino vuoto"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"Cartella spam vuota"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Svuotare il cestino?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Svuotare la cartella spam?"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="462609766565707217">"Il messaggio <xliff:g id="COUNT">%1$d</xliff:g> verrà eliminato definitivamente."</item>
+    <item quantity="other" msgid="2473439906075355840">"I messaggi <xliff:g id="COUNT">%1$d</xliff:g> verranno eliminati definitivamente."</item>
+  </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Apri riquadro di navigazione"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Chiudi riquadro di navigazione"</string>
 </resources>
