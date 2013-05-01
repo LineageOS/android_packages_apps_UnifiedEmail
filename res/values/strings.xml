@@ -894,8 +894,8 @@
 
     <!-- Dialog message for empty folder confirmation dialog [CHAR LIMIT=300] -->
     <plurals name="empty_folder_dialog_message">
-        <item quantity="one">This <xliff:g id="count">%1$d</xliff:g> message will be permanently deleted.</item>
-        <item quantity="other">These <xliff:g id="count">%1$d</xliff:g> messages will be permanently deleted.</item>
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> message will be permanently deleted.</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> messages will be permanently deleted.</item>
     </plurals>
 
     <!-- Strings used for accessibility for the items that toggles the drawer action  -->
