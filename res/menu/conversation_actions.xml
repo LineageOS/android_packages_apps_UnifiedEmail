@@ -89,6 +89,9 @@
     <item
         android:id="@+id/mute"
         android:title="@string/mute" />
+    <item
+        android:id="@+id/show_original"
+        android:title="@string/menu_show_original"/>
     <!-- Depends on AccountCapabilities.REPORT_SPAM -->
     <item
         android:id="@+id/report_spam"
