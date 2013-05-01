@@ -22,6 +22,7 @@ import android.database.DataSetObserver;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
 import com.android.mail.utils.VeiledAddressMatcher;
 
@@ -96,7 +97,7 @@ public interface AccountController {
      * @param hasNewFolderOrAccount true if we need to load conversations for a different folder
      *            or account, false otherwise.
      */
-    void closeDrawer(boolean hasNewFolderOrAccount);
+    void closeDrawer(boolean hasNewFolderOrAccount, Account nextAccount, Folder nextFolder);
 
     /**
      * Set the folderWatcher
