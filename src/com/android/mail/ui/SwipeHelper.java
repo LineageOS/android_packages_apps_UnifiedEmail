@@ -73,7 +73,7 @@ public class SwipeHelper {
     private float mMinAlpha = 0.5f;
 
     /* Dead region where swipe cannot be initiated. */
-    private final static int DEAD_REGION_FOR_SWIPE = 64;
+    private final static int DEAD_REGION_FOR_SWIPE = 56;
 
     private float mPagingTouchSlop;
     private Callback mCallback;
