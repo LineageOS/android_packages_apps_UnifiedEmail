@@ -103,4 +103,9 @@ public interface AccountController {
      * Set the folderWatcher
      */
     void setFolderWatcher(FolderWatcher watcher);
+
+    /**
+     * @return <code>true</code> if the drawer pull action is enabled, <code>false</code> otherwise
+     */
+    boolean isDrawerPullEnabled();
 }
