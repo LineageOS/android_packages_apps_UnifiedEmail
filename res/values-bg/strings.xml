@@ -365,8 +365,6 @@
     <item msgid="2189929276292165301">"Показване на списъка с кореспонденции след изтриване"</item>
   </string-array>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Новите неща"</string>
-    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"Да се побират ли автоматично съобщенията?"</string>
-    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Намалете голямата ширина на съобщенията, за да се поберат на екрана ви, и разрешете увеличаването на мащаба. За да изключите тази опция, отворете „Настройки“ &gt; „Общи настройки“."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Отговор"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Отговор до всички"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Архивиране"</string>
@@ -398,8 +396,16 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"В списък с кореспонденции"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Прекарайте пръст надолу, за да опресните"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Проверява се за поща"</string>
-    <string name="empty_trash" msgid="5042310780353359729">"Изчистване на кошчето"</string>
-    <string name="empty_spam" msgid="930744491746508050">"Изчистване на нежеланата поща"</string>
+    <!-- no translation found for empty_trash (652435297593538512) -->
+    <skip />
+    <!-- no translation found for empty_spam (6064497180615519589) -->
+    <skip />
+    <!-- no translation found for empty_trash_dialog_title (3248644791068595150) -->
+    <skip />
+    <!-- no translation found for empty_spam_dialog_title (8091014690336479280) -->
+    <skip />
+    <!-- no translation found for empty_folder_dialog_message:one (462609766565707217) -->
+    <!-- no translation found for empty_folder_dialog_message:other (2473439906075355840) -->
     <string name="drawer_open" msgid="6074646853178471940">"Отваряне на слоя за навигация"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Затваряне на чекмеджето за навигация"</string>
 </resources>
