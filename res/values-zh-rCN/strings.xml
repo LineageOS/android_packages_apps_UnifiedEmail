@@ -76,8 +76,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"更改文件夹"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"移至"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"文件夹设置"</string>
-    <!-- no translation found for menu_show_original (4227060689700765828) -->
-    <skip />
+    <string name="menu_show_original" msgid="4227060689700765828">"撤消自动重设大小"</string>
     <string name="message_modified" msgid="2564340197585393687">"（系统对此邮件进行了调整，使其适合此屏幕的大小。）"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"文件夹"</string>
     <string name="folder_list_more" msgid="537172187223133825">"更多"</string>
@@ -172,8 +171,7 @@
     <string name="send_failed" msgid="750908595144529579">"邮件发送失败。"</string>
     <string name="me" msgid="6480762904022198669">"我"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"显示所有文件夹"</string>
-    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
-    <skip />
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"收件箱"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"要删除此会话吗？"</item>
     <item quantity="other" msgid="930334208937121234">"要删除这 <xliff:g id="COUNT">%1$d</xliff:g> 个会话吗？"</item>
@@ -365,8 +363,6 @@
     <item msgid="2189929276292165301">"在您执行删除操作后显示会话列表"</item>
   </string-array>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"新功能"</string>
-    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"是否自动调整邮件内容缩放比例？"</string>
-    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"缩小过宽的邮件内容，使其适应屏幕大小。您还可以自行放大邮件内容以使其更易阅读。要关闭此选项，请转到“设置”&gt;“常规设置”。"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"回复"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"全部回复"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"归档"</string>
@@ -384,22 +380,31 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>：<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"静音"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"删除操作"</string>
-    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
-    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
-    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
-    <skip />
+  <string-array name="prefEntries_archive_vs_delete">
+    <item msgid="7861611617238166527">"归档会话"</item>
+    <item msgid="1894624633891654411">"删除会话"</item>
+  </string-array>
+  <string-array name="prefSummaries_archive_vs_delete_summary">
+    <item msgid="6388312490146989386">"归档会话（而不是删除）"</item>
+    <item msgid="6515786566522105643">"删除会话（而不是归档）"</item>
+  </string-array>
+    <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"删除操作"</string>
+    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"全部回复"</string>
+    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"用作默认的邮件回复方式"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"滑动即可删除"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"在会话列表中"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"下拉即可刷新"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"正在检查邮件"</string>
-    <string name="empty_trash" msgid="5042310780353359729">"清空已删除邮件"</string>
-    <string name="empty_spam" msgid="930744491746508050">"清空垃圾邮件"</string>
+    <!-- no translation found for empty_trash (652435297593538512) -->
+    <skip />
+    <!-- no translation found for empty_spam (6064497180615519589) -->
+    <skip />
+    <!-- no translation found for empty_trash_dialog_title (3248644791068595150) -->
+    <skip />
+    <!-- no translation found for empty_spam_dialog_title (8091014690336479280) -->
+    <skip />
+    <!-- no translation found for empty_folder_dialog_message:one (462609766565707217) -->
+    <!-- no translation found for empty_folder_dialog_message:other (2473439906075355840) -->
     <string name="drawer_open" msgid="6074646853178471940">"打开抽屉式导航栏"</string>
     <string name="drawer_close" msgid="2764774620737876943">"关闭抽屉式导航栏"</string>
 </resources>
