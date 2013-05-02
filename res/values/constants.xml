@@ -112,4 +112,6 @@
     <bool name="inline_personal_level">true</bool>
 
     <integer name="swipe_senders_length">25</integer>
+    <!-- Is the screen narrow? Used to determine how many items to show in CAB mode. -->
+    <bool name="is_narrow">true</bool>
 </resources>
