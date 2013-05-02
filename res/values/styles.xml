@@ -207,7 +207,6 @@
 
     <!-- Browse list item styles -->
     <style name="ConversationListFade" parent="@android:style/Widget.Holo.Light.ListView">
-        <item name="android:cacheColorHint">@android:color/transparent</item>
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">0dip</item>
     </style>

@@ -365,7 +365,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
 
             // Initialize colors.
-            sActivatedTextColor = res.getColor(android.R.color.white);
+            sActivatedTextColor = res.getColor(R.color.senders_text_color_read);
             sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(sActivatedTextColor));
             sSendersTextColorRead = res.getColor(R.color.senders_text_color_read);
             sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
@@ -805,15 +805,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSubjectTextView.setText(displayedStringBuilder);
     }
 
-    /**
-     * Returns the resource for the text color depending on whether the element is activated or not.
-     * @param defaultColor
-     */
-    private int getFontColor(int defaultColor) {
-        final boolean isBackGroundBlue = isActivated() && showActivatedText();
-        return isBackGroundBlue ? sActivatedTextColor : defaultColor;
-    }
-
     private boolean showActivatedText() {
         // For activated elements in tablet in conversation mode, we show an activated color, since
         // the background is dark blue for activated versus gray for non-activated.
@@ -1100,8 +1091,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mHeader.sendersDisplayLayout != null) {
             sPaint.setTextSize(mCoordinates.sendersFontSize);
             sPaint.setTypeface(SendersView.getTypeface(isUnread));
-            sPaint.setColor(getFontColor(isUnread ?
-                    sSendersTextColorUnread : sSendersTextColorRead));
+            sPaint.setColor(isUnread ? sSendersTextColorUnread : sSendersTextColorRead);
             canvas.translate(mCoordinates.sendersX, mCoordinates.sendersY
                     + mHeader.sendersDisplayLayout.getTopPadding());
             mHeader.sendersDisplayLayout.draw(canvas);
@@ -1176,6 +1166,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             drawAttachmentPreviews(canvas);
             canvas.restore();
         }
+
+        if (isActivated()) {
+            // TODO: draw caret on the right, centered vertically
+        }
     }
 
     private void drawContactImages(Canvas canvas) {
@@ -1215,46 +1209,21 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      * @param isUnread
      */
     private void updateBackground(boolean isUnread) {
-        final boolean isListOnTablet = mTabletDevice && mActivity.getViewMode().isListMode();
         final int background;
         if (isUnread) {
-            if (isListOnTablet) {
-                if (mSelected) {
-                    background = R.drawable.list_conversation_wide_unread_selected_holo;
-                } else {
-                    background = R.drawable.conversation_wide_unread_selector;
-                }
+            if (mSelected) {
+                background = R.color.checked_item_background_color;
             } else {
-                if (mSelected) {
-                    background = getCheckedActivatedBackground();
-                } else {
-                    background = R.drawable.conversation_unread_selector;
-                }
+                background = R.drawable.conversation_unread_selector;
             }
         } else {
-            if (isListOnTablet) {
-                if (mSelected) {
-                    background = R.drawable.list_conversation_wide_read_selected_holo;
-                } else {
-                    background = R.drawable.conversation_wide_read_selector;
-                }
+            if (mSelected) {
+                background = R.color.checked_item_background_color;
             } else {
-                if (mSelected) {
-                    background = getCheckedActivatedBackground();
-                } else {
-                    background = R.drawable.conversation_read_selector;
-                }
+                background = R.drawable.conversation_read_selector;
             }
         }
         setBackgroundResource(background);
-    }
-
-    private final int getCheckedActivatedBackground() {
-        if (isActivated() && mTabletDevice) {
-            return R.drawable.list_arrow_selected_holo;
-        } else {
-            return R.drawable.list_selected_holo;
-        }
     }
 
     /**
