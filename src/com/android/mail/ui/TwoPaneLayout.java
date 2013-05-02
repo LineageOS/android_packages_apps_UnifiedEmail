@@ -523,7 +523,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             }
             mDrawerLayout.removeView(mFoldersView);
             addView(mFoldersView, 0);
-            mFoldersView.setBackgroundResource(R.drawable.drawer_shadow_tablet);
+            mFoldersView.findViewById(R.id.folders_pane_edge).setVisibility(VISIBLE);
+            mFoldersView.setBackgroundDrawable(null);
         } else if (!mIsExpansiveLayout && foldersParent == this) {
             removeView(mFoldersView);
             mDrawerLayout.addView(mFoldersView);
@@ -531,6 +532,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                     (DrawerLayout.LayoutParams) mFoldersView.getLayoutParams();
             lp.gravity = Gravity.START;
             mFoldersView.setLayoutParams(lp);
+            mFoldersView.findViewById(R.id.folders_pane_edge).setVisibility(GONE);
             mFoldersView.setBackgroundResource(R.color.list_background_color);
         }
 

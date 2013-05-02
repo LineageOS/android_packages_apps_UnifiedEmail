@@ -108,6 +108,8 @@ public final class ConversationListFragment extends ListFragment implements
 
     private View mSearchStatusView;
 
+    private View mListEdge;
+
     /**
      * Current Account being viewed
      */
@@ -397,6 +399,8 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setSwipedListener(this);
 
+        mListEdge = rootView.findViewById(R.id.list_pane_edge);
+
         if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
         }
@@ -583,10 +587,10 @@ public final class ConversationListFragment extends ListFragment implements
         // Change the divider based on view mode.
         if (mTabletDevice) {
             if (ViewMode.isConversationMode(newMode)) {
-                mListView.setBackgroundResource(R.drawable.panel_conversation_leftstroke);
+                mListEdge.setVisibility(View.VISIBLE);
             } else if (ViewMode.isListMode(newMode)) {
+                mListEdge.setVisibility(View.GONE);
                 // There are no selected conversations when in conversation list mode.
-                mListView.setBackgroundDrawable(null);
                 mListView.clearChoices();
             }
         }
