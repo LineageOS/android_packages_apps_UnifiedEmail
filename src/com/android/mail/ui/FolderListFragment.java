@@ -433,6 +433,13 @@ public class FolderListFragment extends ListFragment implements
         return mCursorAdapter.getDefaultInbox(account);
     }
 
+    private void changeAccount(final Account account) {
+        // Switching accounts takes you to the inbox, which is always a system folder.
+        mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
+        mNextAccount = account;
+        mAccountChanger.closeDrawer(true, mNextAccount, getDefaultInbox(mNextAccount));
+    }
+
     /**
      * Display the conversation list from the folder at the position given.
      * @param position a zero indexed position into the list.
@@ -460,10 +467,7 @@ public class FolderListFragment extends ListFragment implements
                     mAccountChanger.closeDrawer(false, mNextAccount,
                             getDefaultInbox(mNextAccount));
                 } else {
-                    // Switching accounts takes you to the inbox, which is always a system folder.
-                    mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
-                    mNextAccount = account;
-                    mAccountChanger.closeDrawer(true, mNextAccount, getDefaultInbox(mNextAccount));
+                    changeAccount(account);
                 }
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
@@ -776,12 +780,14 @@ public class FolderListFragment extends ListFragment implements
                                 mCursor.getPosition()));
                     }
                 } while (mCursor.moveToNext());
+
                 return;
             }
 
             // Otherwise, this is an adapter for a sectioned list.
             final List<DrawerItem> allFoldersList = new ArrayList<DrawerItem>();
             final List<DrawerItem> inboxFolders = new ArrayList<DrawerItem>();
+            boolean currentFolderFound = false;
             do {
                 final Folder f = mCursor.getModel();
                 if (!isFolderTypeExcluded(f)) {
@@ -792,8 +798,18 @@ public class FolderListFragment extends ListFragment implements
                         allFoldersList.add(DrawerItem.ofFolder(
                                 mActivity, f, DrawerItem.FOLDER_USER, mCursor.getPosition()));
                     }
+                    if (f.equals(mCurrentFolderForUnreadCheck)) {
+                        currentFolderFound = true;
+                    }
                 }
             } while (mCursor.moveToNext());
+
+            if (!currentFolderFound && mCurrentFolderForUnreadCheck != null
+                    && mCurrentAccount != null) {
+                LogUtils.d(LOG_TAG, "Current folder (%1$s) has disappeared for %2$s",
+                        mCurrentFolderForUnreadCheck.name, mCurrentAccount.name);
+                changeAccount(mCurrentAccount);
+            }
 
             // Add all inboxes (sectioned included) before recents.
             addFolderSection(itemList, inboxFolders, R.string.inbox_folders_heading);
