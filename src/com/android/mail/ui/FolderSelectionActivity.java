@@ -143,6 +143,12 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         public void setFolderWatcher(FolderWatcher watcher) {
             // Unsupported.
         }
+
+        @Override
+        public boolean isDrawerPullEnabled() {
+            // Unsupported
+            return false;
+        }
     };
 
     @Override

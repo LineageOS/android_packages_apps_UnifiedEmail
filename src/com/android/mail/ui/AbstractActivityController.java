@@ -1868,25 +1868,32 @@ public abstract class AbstractActivityController implements ActivityController,
         }
 
         if (isDrawerEnabled()) {
-            // if search list/conv mode, disable drawer pull and indicator
-            // allow drawer pull everywhere except conversation mode where the list is hidden
-            // only allow indicator at top level of app
-            final boolean showIndicator;
-            final boolean allowPull;
-            if (ViewMode.isSearchMode(newMode)) {
-                showIndicator = false;
-                allowPull = false;
-            } else {
-                allowPull = !(ViewMode.isConversationMode(newMode)
-                        // TODO(ath): get this to work to allow drawer pull in 2-pane conv mode.
-                        /* && !isConversationListVisible() */);
-                showIndicator = (newMode == ViewMode.CONVERSATION_LIST
-                        || newMode == ViewMode.FOLDER_LIST);
-            }
-            mDrawerToggle.setDrawerIndicatorEnabled(showIndicator);
-            mDrawerContainer.setDrawerLockMode(allowPull ? DrawerLayout.LOCK_MODE_UNLOCKED :
-                DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            mDrawerToggle.setDrawerIndicatorEnabled(getShouldShowDrawerIndicator(newMode));
+            mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(newMode)
+                    ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             closeDrawerIfOpen();
+        }
+    }
+
+    private boolean getShouldShowDrawerIndicator(final int viewMode) {
+        // if search list/conv mode, disable indicator
+        // only allow indicator at top level of app
+        if (ViewMode.isSearchMode(viewMode)) {
+            return false;
+        } else {
+            return viewMode == ViewMode.CONVERSATION_LIST || viewMode == ViewMode.FOLDER_LIST;
+        }
+    }
+
+    private boolean getShouldAllowDrawerPull(final int viewMode) {
+        // if search list/conv mode, disable drawer pull
+        // allow drawer pull everywhere except conversation mode where the list is hidden
+        if (ViewMode.isSearchMode(viewMode)) {
+            return false;
+        } else {
+            return !(ViewMode.isConversationMode(viewMode)
+            // TODO(ath): get this to work to allow drawer pull in 2-pane conv mode.
+            /* && !isConversationListVisible() */);
         }
     }
 
@@ -3866,4 +3873,8 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
+    @Override
+    public boolean isDrawerPullEnabled() {
+        return getShouldAllowDrawerPull(mViewMode.getMode());
+    }
 }
