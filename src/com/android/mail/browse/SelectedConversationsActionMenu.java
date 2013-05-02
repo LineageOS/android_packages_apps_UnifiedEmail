@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -89,6 +90,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private final Folder mFolder;
 
     private AccountObserver mAccountObserver;
+    /** True if this device is narrow. */
+    private final boolean mMoveToInOverflow;
 
     public SelectedConversationsActionMenu(
             ControllableActivity activity, ConversationSelectionSet selectionSet, Folder folder) {
@@ -103,6 +106,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         };
         mAccount = mAccountObserver.initialize(activity.getAccountController());
         mFolder = folder;
+        final Resources r = activity.getActivityContext().getResources();
+        // If the device is narrow, "move to" should be in the overflow menu.
+        mMoveToInOverflow = r.getBoolean(R.bool.is_narrow);
         mContext = mActivity.getActivityContext();
         mUpdater = activity.getConversationUpdater();
         FolderSelectionDialog.setDialogDismissed();
@@ -386,6 +392,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION);
         removeFolder.setVisible(showRemoveFolder);
         moveTo.setVisible(showMoveTo);
+        if (showMoveTo) {
+            // Hide the "move to" on narrow devices so that the selected count can be shown.
+            final int showWhen = mMoveToInOverflow ? MenuItem.SHOW_AS_ACTION_IF_ROOM
+                    : MenuItem.SHOW_AS_ACTION_ALWAYS;
+            moveTo.setShowAsAction(showWhen);
+        }
         if (mFolder != null && showRemoveFolder) {
             removeFolder.setTitle(mActivity.getActivityContext().getString(R.string.remove_folder,
                     mFolder.name));
