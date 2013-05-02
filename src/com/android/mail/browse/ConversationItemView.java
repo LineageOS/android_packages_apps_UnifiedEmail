@@ -113,6 +113,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static Bitmap STATE_FORWARDED;
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
     private static Bitmap STATE_CALENDAR_INVITE;
+    private static Bitmap VISIBLE_CONVERSATION_CARET;
+    private static Drawable RIGHT_EDGE_TABLET;
 
     private static String sSendersSplitToken;
     private static String sElidedPaddingToken;
@@ -361,6 +363,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_forward_holo_light);
             STATE_CALENDAR_INVITE =
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
+            VISIBLE_CONVERSATION_CARET = BitmapFactory.decodeResource(res,
+                    R.drawable.ic_carrot_holo);
+
+            RIGHT_EDGE_TABLET = res.getDrawable(R.drawable.list_edge_tablet);
 
             // Initialize colors.
             sActivatedTextColor = res.getColor(R.color.senders_text_color_read);
@@ -1165,8 +1171,18 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             canvas.restore();
         }
 
+        // right-side edge effect when in tablet conversation mode
+        if (mTabletDevice && ViewMode.isConversationMode(mConfig.getViewMode())) {
+            RIGHT_EDGE_TABLET.setBounds(getWidth() - RIGHT_EDGE_TABLET.getIntrinsicWidth(), 0,
+                    getWidth(), getHeight());
+            RIGHT_EDGE_TABLET.draw(canvas);
+        }
+
         if (isActivated()) {
-            // TODO: draw caret on the right, centered vertically
+            // draw caret on the right, centered vertically
+            final int x = getWidth() - VISIBLE_CONVERSATION_CARET.getWidth();
+            final int y = (getHeight() - VISIBLE_CONVERSATION_CARET.getHeight()) / 2;
+            canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
         }
     }
 
@@ -1210,13 +1226,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         final int background;
         if (isUnread) {
             if (mSelected) {
-                background = R.color.checked_item_background_color;
+                background = R.drawable.list_checked_holo;
             } else {
                 background = R.drawable.conversation_unread_selector;
             }
         } else {
             if (mSelected) {
-                background = R.color.checked_item_background_color;
+                background = R.drawable.list_checked_holo;
             } else {
                 background = R.drawable.conversation_read_selector;
             }
