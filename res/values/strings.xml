@@ -868,6 +868,11 @@
     <!-- Preference description swiping in conversation list option [CHAR LIMIT=100] -->
     <string name="preference_swipe_description">In conversation list</string>
 
+    <!-- Preference name for whether to display sender images in conversation list [CHAR LIMIT=100] -->
+    <string name="preference_sender_image_title">Sender image</string>
+    <!-- Preference description for whether to display sender image option [CHAR LIMIT=200] -->
+    <string name="preference_sender_image_description">Show beside name in conversation list</string>
+
     <!-- In conversation list, when user initiates a downward swipe,
         this text is displayed in the action bar as a hint that they can trigger a
         sync/refresh by continuing the downward swipe. [CHAR LIMIT=60] -->
