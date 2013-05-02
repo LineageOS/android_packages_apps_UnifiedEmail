@@ -683,17 +683,15 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // unread count remains over the limit.
         final int toDisplay = (folderUnreadCount > UNREAD_LIMIT)
                 ? (UNREAD_LIMIT + 1) : folderUnreadCount;
-        if (mUnreadCount != toDisplay || folderChanged) {
-            if (toDisplay == 0) {
-                removeUnreadCount();
-            } else {
-                setSubtitle(Utils.getUnreadMessageString(
-                        mActivity.getApplicationContext(), toDisplay));
-                // This is a new update, remove previous messages, if any.
-                mHandler.removeMessages(SubtitleHandler.EMAIL);
-                // In a short while, show the account name in its place.
-                mHandler.sendEmptyMessageDelayed(SubtitleHandler.EMAIL, ACCOUNT_DELAY_MS);
-            }
+        if ((mUnreadCount != toDisplay || folderChanged) && toDisplay != 0) {
+            setSubtitle(Utils.getUnreadMessageString(
+                    mActivity.getApplicationContext(), toDisplay));
+            // This is a new update, remove previous messages, if any.
+            mHandler.removeMessages(SubtitleHandler.EMAIL);
+            // In a short while, show the account name in its place.
+            mHandler.sendEmptyMessageDelayed(SubtitleHandler.EMAIL, ACCOUNT_DELAY_MS);
+        } else {
+            removeUnreadCount();
         }
         // Remember the new value for the next run
         mUnreadCount = toDisplay;
