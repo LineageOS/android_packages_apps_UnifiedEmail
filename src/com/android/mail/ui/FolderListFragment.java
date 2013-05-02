@@ -805,7 +805,8 @@ public class FolderListFragment extends ListFragment implements
             } while (mCursor.moveToNext());
 
             if (!currentFolderFound && mCurrentFolderForUnreadCheck != null
-                    && mCurrentAccount != null) {
+                    && mCurrentAccount != null && mAccountChanger != null
+                    && mAccountChanger.isDrawerPullEnabled()) {
                 LogUtils.d(LOG_TAG, "Current folder (%1$s) has disappeared for %2$s",
                         mCurrentFolderForUnreadCheck.name, mCurrentAccount.name);
                 changeAccount(mCurrentAccount);
