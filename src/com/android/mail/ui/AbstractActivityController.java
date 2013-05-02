@@ -2032,6 +2032,9 @@ public abstract class AbstractActivityController implements ActivityController,
                         Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER));
                 folderUri = folder.uri;
             } else {
+                final Bundle extras = intent.getExtras();
+                LogUtils.d(LOG_TAG, "Couldn't find a folder URI in the extras: %s",
+                        extras == null ? "null" : extras.toString());
                 folderUri = mAccount.settings.defaultInbox;
             }
 
