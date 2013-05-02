@@ -296,8 +296,8 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Ili kuona mazungumzo, sawazisha folda hii."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sawazisha Folda"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <string name="actionbar_unread_messages" msgid="3805594795629836031">"Zisizosomwa<xliff:g id="COUNT">%1$d</xliff:g>"</string>
-    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Zisizosomwa <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
+    <string name="actionbar_unread_messages" msgid="3805594795629836031">"<xliff:g id="COUNT">%1$d</xliff:g> ambazo hazijasomwa"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Zaidi ya <xliff:g id="COUNT">%1$d</xliff:g> ambazo hazijasomwa"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ona mazungumzo zaidi"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Inapakia…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Chagua akaunti"</string>
@@ -365,8 +365,6 @@
     <item msgid="2189929276292165301">"Onyesha orodha ya mazungumzo baada ya kufuta"</item>
   </string-array>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Nini kipya"</string>
-    <string name="auto_fit_messages_dialog_title" msgid="2759387078807832659">"Pimisha ujumbe kiotomatiki?"</string>
-    <string name="auto_fit_messages_dialog_message" msgid="4039164951892949801">"Kunja ujumbe mpana ili utoshee kwenye skrini yako na uruhusu ukuzaji karibu. Ili kuzima chaguo hili, nenda kwenye Mipangilio &gt; mipagilio ya Jumla."</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Jibu"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Jibu wote"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Kumbukumbu"</string>
@@ -398,8 +396,16 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Katika orodha ya mazungumzo"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Papasa kwa kasi kwenda chini ili kuonyesha upya"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Inaangalia barua pepe"</string>
-    <string name="empty_trash" msgid="5042310780353359729">"Safisha tupio"</string>
-    <string name="empty_spam" msgid="930744491746508050">"Safisha barua taka"</string>
-    <string name="drawer_open" msgid="6074646853178471940">"Fungua menyu ya kichoraji"</string>
-    <string name="drawer_close" msgid="2764774620737876943">"Funga menyu ya kichoraji"</string>
+    <!-- no translation found for empty_trash (652435297593538512) -->
+    <skip />
+    <!-- no translation found for empty_spam (6064497180615519589) -->
+    <skip />
+    <!-- no translation found for empty_trash_dialog_title (3248644791068595150) -->
+    <skip />
+    <!-- no translation found for empty_spam_dialog_title (8091014690336479280) -->
+    <skip />
+    <!-- no translation found for empty_folder_dialog_message:one (462609766565707217) -->
+    <!-- no translation found for empty_folder_dialog_message:other (2473439906075355840) -->
+    <string name="drawer_open" msgid="6074646853178471940">"Fungua menyu"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"Funga menyu"</string>
 </resources>
