@@ -142,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-12dp"
                     android:layout_marginLeft="32dp"
-                    android:src="@drawable/btn_star_off_normal_email_holo_light" />
+                    android:src="@drawable/ic_star_off" />
 
             </LinearLayout>
 

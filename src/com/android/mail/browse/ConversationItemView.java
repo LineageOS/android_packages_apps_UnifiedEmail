@@ -342,10 +342,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         if (STAR_OFF == null) {
             // Initialize static bitmaps.
-            STAR_OFF = BitmapFactory.decodeResource(res,
-                    R.drawable.btn_star_off_normal_email_holo_light);
-            STAR_ON = BitmapFactory.decodeResource(res,
-                    R.drawable.btn_star_on_normal_email_holo_light);
+            STAR_OFF = BitmapFactory.decodeResource(res, R.drawable.ic_star_off);
+            STAR_ON = BitmapFactory.decodeResource(res, R.drawable.ic_star_on);
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
             ONLY_TO_ME = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_double);
             TO_ME_AND_OTHERS = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_single);
