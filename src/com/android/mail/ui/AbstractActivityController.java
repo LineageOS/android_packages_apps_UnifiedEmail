@@ -652,16 +652,16 @@ public abstract class AbstractActivityController implements ActivityController,
             mDrawerObservers.notifyChanged();
             return;
         }
-
-        if (nextFolder != null) {
-            preloadConvList(nextAccount, nextFolder);
-        }
         // If there are no new folders or accounts to switch to, just close the drawer
         if (!hasNewFolderOrAccount) {
             mDrawerContainer.closeDrawers();
             return;
         }
-
+        // Otherwise, start preloading the conversation list for the new folder.
+        if (nextFolder != null) {
+            preloadConvList(nextAccount, nextFolder);
+        }
+        // Remember if the conversation list view is animating
         final ConversationListFragment conversationList = getConversationListFragment();
         if (conversationList != null) {
             mListViewForAnimating = conversationList.getListView();
