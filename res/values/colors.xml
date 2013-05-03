@@ -109,4 +109,11 @@
     <color name="letter_tile_font_color">#ffffff</color>
 
     <color name="tile_divider_color">#ffffff</color>
+
+    <!-- Teaser colors -->
+
+
+    <!-- The color of the section name text in the teaser -->
+    <color name="teaser_main_text">#58585b</color>
+
 </resources>

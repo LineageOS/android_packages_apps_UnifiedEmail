@@ -146,8 +146,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mPaperclipX;
     private int mSendersWidth;
 
-    /** Whether we're running under test mode. */
-    private boolean mTesting = false;
     /** Whether we are on a tablet device or not */
     private final boolean mTabletDevice;
 
@@ -1521,8 +1519,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     @Override
-    public View getSwipeableView() {
-        return this;
+    public SwipeableView getSwipeableView() {
+        return SwipeableView.from(this);
     }
 
     /**

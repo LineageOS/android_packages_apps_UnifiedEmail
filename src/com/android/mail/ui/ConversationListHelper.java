@@ -16,17 +16,23 @@
  */
 package com.android.mail.ui;
 
+import com.google.common.collect.Lists;
+
 import android.content.Context;
 
 import com.android.mail.providers.Account;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public interface ConversationListHelper {
+public class ConversationListHelper {
     /**
      * Creates a list of newly created special views.
      */
-    List<ConversationSpecialItemView> makeConversationListSpecialViews(Context context,
-            Account account, FolderListSelectionListener listener);
+    public ArrayList<ConversationSpecialItemView> makeConversationListSpecialViews(Context context,
+            Account account, FolderListSelectionListener listener) {
+        // TODO: Move conversation photo teaser view here once
+        // getConversationListIcon() is moved out of Persistence
+        return Lists.newArrayList();
+    }
 }

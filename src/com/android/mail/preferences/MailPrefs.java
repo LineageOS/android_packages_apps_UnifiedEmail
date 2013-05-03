@@ -67,6 +67,9 @@ public final class MailPrefs extends VersionedPrefs {
         private static final String CACHED_ACTIVE_NOTIFICATION_SET =
                 "cache-active-notification-set";
 
+        private static final String
+                CONVERSATION_PHOTO_TEASER_SHOWN = "conversation-photo-teaser-shown";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
@@ -228,5 +231,27 @@ public final class MailPrefs extends VersionedPrefs {
     public void cacheActiveNotificationSet(final Set<String> notificationSet) {
         getEditor().putStringSet(PreferenceKeys.CACHED_ACTIVE_NOTIFICATION_SET, notificationSet)
                 .apply();
+    }
+
+    /**
+     * Returns whether the teaser has bee shown before
+     */
+    public boolean isConversationPhotoTeaserAlreadyShown() {
+        return getSharedPreferences()
+                .getBoolean(PreferenceKeys.CONVERSATION_PHOTO_TEASER_SHOWN, false);
+    }
+
+    /**
+     * Notify that we have shown the teaser
+     */
+    public void setConversationPhotoTeaserAlreadyShown() {
+        getEditor().putBoolean(PreferenceKeys.CONVERSATION_PHOTO_TEASER_SHOWN, true).apply();
+    }
+
+    /**
+     * Reset the flag so that next time, the teaser will be shown again
+     */
+    public void resetConversationPhotoTeaserAlreadyShown() {
+        getEditor().putBoolean(PreferenceKeys.CONVERSATION_PHOTO_TEASER_SHOWN, false).apply();
     }
 }

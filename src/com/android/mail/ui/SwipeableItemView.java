@@ -23,11 +23,27 @@ import android.view.View;
  * Represents an item that can be dismissed by the SwipeableListView.
  */
 public interface SwipeableItemView {
-    public View getSwipeableView();
+    public SwipeableView getSwipeableView();
 
     public boolean canChildBeDismissed();
 
     public void dismiss();
 
     public float getMinAllowScrollDistance();
+
+    public static class SwipeableView {
+        public static SwipeableView from(View view) {
+            view.setClickable(true);
+            return new SwipeableView(view);
+        }
+
+        private final View mView;
+        private SwipeableView(View view) {
+            mView = view;
+        }
+
+        public View getView() {
+            return mView;
+        }
+    }
 }
