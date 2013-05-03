@@ -482,9 +482,9 @@ public class UIProvider {
             public static final String REPLY_BEHAVIOR = "reply_behavior";
 
             /**
-             * Integer column containing the user's preference for whether to show checkboxes or
-             * or sender images (or neither) in the conversation list view.  This value will be one
-             * of the values in {@link UIProvider.ConversationListIcon}.
+             * Integer column containing the user's preference for whether to show sender images
+             * or not in the conversation list view.  This value will be one of the values in
+             * {@link UIProvider.ConversationListIcon}.
              */
             public static final String CONV_LIST_ICON = "conversation_list_icon";
 
