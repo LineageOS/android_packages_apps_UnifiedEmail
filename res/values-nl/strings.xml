@@ -76,7 +76,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Mappen wijzigen"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Verplaatsen naar"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mapinstellingen"</string>
-    <string name="menu_show_original" msgid="4227060689700765828">"Autom. formaat terugzttn"</string>
+    <string name="menu_show_original" msgid="4227060689700765828">"Oorspr. versie herstellen"</string>
     <string name="message_modified" msgid="2564340197585393687">"(Dit bericht is een aangepaste versie van het oorspronkelijke bericht, zodat het op het scherm past.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Mappen"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Meer"</string>
@@ -170,7 +170,6 @@
     <string name="sending" msgid="8214361929125649771">"Verzenden..."</string>
     <string name="send_failed" msgid="750908595144529579">"Niet verzonden."</string>
     <string name="me" msgid="6480762904022198669">"ik"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"Alle mappen weergeven"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Postvak IN"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Deze conversatie verwijderen?"</item>
@@ -393,6 +392,10 @@
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Gebruiken als standaard voor beantwoorden"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"Vegen om te verwijderen"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"In conversatielijst"</string>
+    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
+    <skip />
+    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Veeg omlaag om te vernieuwen"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Controleren op e-mail"</string>
     <string name="empty_trash" msgid="652435297593538512">"Prullenbak leegmaken"</string>
@@ -400,8 +403,8 @@
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Prullenbak leegmaken?"</string>
     <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Spammap leegmaken?"</string>
   <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="462609766565707217">"Dit <xliff:g id="COUNT">%1$d</xliff:g> bericht wordt permanent verwijderd."</item>
-    <item quantity="other" msgid="2473439906075355840">"Deze <xliff:g id="COUNT">%1$d</xliff:g> berichten worden permanent verwijderd."</item>
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> bericht wordt permanent verwijderd."</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> berichten worden permanent verwijderd."</item>
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Navigatielade openen"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Navigatielade sluiten"</string>

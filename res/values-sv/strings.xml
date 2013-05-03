@@ -170,7 +170,6 @@
     <string name="sending" msgid="8214361929125649771">"Skickar ..."</string>
     <string name="send_failed" msgid="750908595144529579">"E-post skickades ej."</string>
     <string name="me" msgid="6480762904022198669">"jag"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"Visa alla mappar"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Inkorg"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Vill du ta bort konversationen?"</item>
@@ -385,14 +384,18 @@
     <item msgid="1894624633891654411">"Ta bort konversationer"</item>
   </string-array>
   <string-array name="prefSummaries_archive_vs_delete_summary">
-    <item msgid="6388312490146989386">"Ta bort i stället för att arkivera samtal"</item>
-    <item msgid="6515786566522105643">"Ta bort i stället för att arkivera samtal"</item>
+    <item msgid="6388312490146989386">"Ta bort i stället för att arkivera konversationer"</item>
+    <item msgid="6515786566522105643">"Ta bort i stället för att arkivera konversationer"</item>
   </string-array>
     <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"Ta bort åtgärd"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Svara alla"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Använd som standard för svar på meddelanden"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"Ta bort genom att dra"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"I konversationslista"</string>
+    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
+    <skip />
+    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Dra nedåt om du vill uppdatera"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Söker efter e-post"</string>
     <string name="empty_trash" msgid="652435297593538512">"Töm papperskorgen"</string>
@@ -400,8 +403,8 @@
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Vill du tömma papperskorgen?"</string>
     <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Vill du tömma spammappen?"</string>
   <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="462609766565707217">"Det här meddelandet (<xliff:g id="COUNT">%1$d</xliff:g>) tas bort permanent"</item>
-    <item quantity="other" msgid="2473439906075355840">"Dessa <xliff:g id="COUNT">%1$d</xliff:g> meddelanden tas bort permanent."</item>
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> meddelande tas bort permanent."</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> meddelanden tas bort permanent."</item>
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Öppna navigeringsmenyn"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Stäng navigeringsmenyn"</string>

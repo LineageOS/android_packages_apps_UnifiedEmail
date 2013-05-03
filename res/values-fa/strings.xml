@@ -76,8 +76,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"تغییر پوشه‌ها"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"انتقال به"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"تنظیمات پوشه"</string>
-    <!-- no translation found for menu_show_original (4227060689700765828) -->
-    <skip />
+    <string name="menu_show_original" msgid="4227060689700765828">"برگرداندن اندازه خودکار"</string>
     <string name="message_modified" msgid="2564340197585393687">"(نسخه اصلی این پیام برای اندازه شدن در این صفحه تغییر داده شده است.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"پوشه‌ها"</string>
     <string name="folder_list_more" msgid="537172187223133825">"بیشتر"</string>
@@ -171,9 +170,7 @@
     <string name="sending" msgid="8214361929125649771">"در حال ارسال..."</string>
     <string name="send_failed" msgid="750908595144529579">"پیام ارسال نشد."</string>
     <string name="me" msgid="6480762904022198669">"من"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"نمایش همه پوشه‌ها"</string>
-    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
-    <skip />
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"صندوق ورودی"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"این مکالمه حذف شود؟"</item>
     <item quantity="other" msgid="930334208937121234">"این <xliff:g id="COUNT">%1$d</xliff:g> مکالمه حذف شوند؟"</item>
@@ -382,30 +379,33 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"بیصدا"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"عملکرد حذف"</string>
-    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
-    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
-    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
-    <skip />
+  <string-array name="prefEntries_archive_vs_delete">
+    <item msgid="7861611617238166527">"بایگانی کردن مکالمات"</item>
+    <item msgid="1894624633891654411">"حذف مکالمات"</item>
+  </string-array>
+  <string-array name="prefSummaries_archive_vs_delete_summary">
+    <item msgid="6388312490146989386">"مکالمات به جای حذف شدن بایگانی شوند"</item>
+    <item msgid="6515786566522105643">"مکالمات به جای بایگانی شدن حذف شوند"</item>
+  </string-array>
+    <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"عملکرد حذف"</string>
+    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"پاسخ به همه"</string>
+    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"به‌ عنوان پیش‌فرض برای پاسخ‌ پیام استفاده شود"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"برای حذف انگشت خود را روی صفحه بکشید"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"در لیست مکالمه"</string>
+    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
+    <skip />
+    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"برای بازخوانی، صفحه را با انگشت به سمت پایین بکشید"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"در حال بررسی برای ایمیل"</string>
-    <!-- no translation found for empty_trash (652435297593538512) -->
-    <skip />
-    <!-- no translation found for empty_spam (6064497180615519589) -->
-    <skip />
-    <!-- no translation found for empty_trash_dialog_title (3248644791068595150) -->
-    <skip />
-    <!-- no translation found for empty_spam_dialog_title (8091014690336479280) -->
-    <skip />
-    <!-- no translation found for empty_folder_dialog_message:one (462609766565707217) -->
-    <!-- no translation found for empty_folder_dialog_message:other (2473439906075355840) -->
+    <string name="empty_trash" msgid="652435297593538512">"خالی کردن پوشه حذف‌ شده‌ها"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"خالی کردن پوشه هرزنامه"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"خالی کردن پوشه حذف‌ شده‌ها؟"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"خالی کردن پوشه هرزنامه؟"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> پیام به طور دائم حذف خواهد شد."</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> پیام به طور دائم حذف خواهند شد."</item>
+  </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"باز کردن کشوی پیمایش"</string>
     <string name="drawer_close" msgid="2764774620737876943">"بستن کشوی پیمایش"</string>
 </resources>

@@ -170,8 +170,7 @@
     <string name="sending" msgid="8214361929125649771">"送信しています…"</string>
     <string name="send_failed" msgid="750908595144529579">"送信に失敗しました。"</string>
     <string name="me" msgid="6480762904022198669">"自分"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"すべてのフォルダを表示"</string>
-    <string name="inbox_folders_heading" msgid="3960094746248976565">"受信ボックス"</string>
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"受信トレイ"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"このスレッドを削除しますか？"</item>
     <item quantity="other" msgid="930334208937121234">"<xliff:g id="COUNT">%1$d</xliff:g>件のスレッドを削除しますか？"</item>
@@ -393,18 +392,20 @@
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"返信時のデフォルトとして使用する"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"スワイプして削除"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"スレッドリスト内"</string>
+    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
+    <skip />
+    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"下にスワイプして更新"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"メールを確認しています"</string>
-    <!-- no translation found for empty_trash (652435297593538512) -->
-    <skip />
-    <!-- no translation found for empty_spam (6064497180615519589) -->
-    <skip />
-    <!-- no translation found for empty_trash_dialog_title (3248644791068595150) -->
-    <skip />
-    <!-- no translation found for empty_spam_dialog_title (8091014690336479280) -->
-    <skip />
-    <!-- no translation found for empty_folder_dialog_message:one (462609766565707217) -->
-    <!-- no translation found for empty_folder_dialog_message:other (2473439906075355840) -->
+    <string name="empty_trash" msgid="652435297593538512">"ゴミ箱を空にする"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"迷惑メールフォルダを空にする"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"ゴミ箱を空にしますか？"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"迷惑メールフォルダを空にしますか？"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g>件のメッセージが完全に削除されます。"</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g>件のメッセージが完全に削除されます。"</item>
+  </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"ナビゲーションドロワーを開く"</string>
     <string name="drawer_close" msgid="2764774620737876943">"ナビゲーションドロワーを閉じる"</string>
 </resources>
