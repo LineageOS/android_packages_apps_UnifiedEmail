@@ -108,8 +108,6 @@ public final class ConversationListFragment extends ListFragment implements
 
     private View mSearchStatusView;
 
-    private View mListEdge;
-
     /**
      * Current Account being viewed
      */
@@ -399,8 +397,6 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setSwipedListener(this);
 
-        mListEdge = rootView.findViewById(R.id.list_pane_edge);
-
         if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
         }
@@ -424,17 +420,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (!mTabletDevice) {
             return;
         }
-        final int currentSelected = mListView.getCheckedItemPosition();
-        mListView.clearChoices();
-        // We use the activated state to show the blue highlight on tablet. Clearing the choices
-        // removes the checked state, but doesn't do anything to the activated state.  We must
-        // manually clear that.
-        if (currentSelected != ListView.INVALID_POSITION) {
-            final View v = mListView.getChildAt(currentSelected);
-            if (v != null) {
-                v.setActivated(false);
-            }
-        }
+        clearChoicesAndActivated();
         setChoiceMode(ListView.CHOICE_MODE_NONE);
     }
 
@@ -584,18 +570,28 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onViewModeChanged(int newMode) {
-        // Change the divider based on view mode.
         if (mTabletDevice) {
-            if (ViewMode.isConversationMode(newMode)) {
-                mListEdge.setVisibility(View.VISIBLE);
-            } else if (ViewMode.isListMode(newMode)) {
-                mListEdge.setVisibility(View.GONE);
+            if (ViewMode.isListMode(newMode)) {
                 // There are no selected conversations when in conversation list mode.
-                mListView.clearChoices();
+                clearChoicesAndActivated();
             }
         }
         if (mFooterView != null) {
             mFooterView.onViewModeChanged(newMode);
+        }
+    }
+
+    private void clearChoicesAndActivated() {
+        final int currentSelected = mListView.getCheckedItemPosition();
+        mListView.clearChoices();
+        // We use the activated state to show the blue highlight on tablet. Clearing the choices
+        // removes the checked state, but doesn't do anything to the activated state.  We must
+        // manually clear that.
+        if (currentSelected != ListView.INVALID_POSITION) {
+            final View v = mListView.getChildAt(currentSelected);
+            if (v != null) {
+                v.setActivated(false);
+            }
         }
     }
 
