@@ -1164,9 +1164,14 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         @SuppressWarnings("unused")
         @JavascriptInterface
         public void onMessageTransform(String messageDomId, String transformText) {
-            LogUtils.i(LOG_TAG, "TRANSFORM: (%s) %s", messageDomId, transformText);
-            mMessageTransforms.put(messageDomId, transformText);
-            onConversationTransformed();
+            try {
+                LogUtils.i(LOG_TAG, "TRANSFORM: (%s) %s", messageDomId, transformText);
+                mMessageTransforms.put(messageDomId, transformText);
+                onConversationTransformed();
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onMessageTransform");
+                return;
+            }
         }
     }
 
