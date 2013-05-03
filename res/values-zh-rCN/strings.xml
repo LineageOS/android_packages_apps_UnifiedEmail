@@ -170,7 +170,6 @@
     <string name="sending" msgid="8214361929125649771">"正在发送..."</string>
     <string name="send_failed" msgid="750908595144529579">"邮件发送失败。"</string>
     <string name="me" msgid="6480762904022198669">"我"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"显示所有文件夹"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"收件箱"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"要删除此会话吗？"</item>
@@ -385,7 +384,7 @@
     <item msgid="1894624633891654411">"删除会话"</item>
   </string-array>
   <string-array name="prefSummaries_archive_vs_delete_summary">
-    <item msgid="6388312490146989386">"归档会话（而不是删除）"</item>
+    <item msgid="6388312490146989386">"将会话归档（而不是删除）"</item>
     <item msgid="6515786566522105643">"删除会话（而不是归档）"</item>
   </string-array>
     <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"删除操作"</string>
@@ -393,18 +392,20 @@
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"用作默认的邮件回复方式"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"滑动即可删除"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"在会话列表中"</string>
+    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
+    <skip />
+    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"下拉即可刷新"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"正在检查邮件"</string>
-    <!-- no translation found for empty_trash (652435297593538512) -->
-    <skip />
-    <!-- no translation found for empty_spam (6064497180615519589) -->
-    <skip />
-    <!-- no translation found for empty_trash_dialog_title (3248644791068595150) -->
-    <skip />
-    <!-- no translation found for empty_spam_dialog_title (8091014690336479280) -->
-    <skip />
-    <!-- no translation found for empty_folder_dialog_message:one (462609766565707217) -->
-    <!-- no translation found for empty_folder_dialog_message:other (2473439906075355840) -->
+    <string name="empty_trash" msgid="652435297593538512">"清空已删除邮件"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"清空垃圾邮件"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"要清空已删除邮件吗？"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"要清空垃圾邮件吗？"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g>封邮件将遭到永久删除。"</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g>封邮件将遭到永久删除。"</item>
+  </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"打开抽屉式导航栏"</string>
     <string name="drawer_close" msgid="2764774620737876943">"关闭抽屉式导航栏"</string>
 </resources>

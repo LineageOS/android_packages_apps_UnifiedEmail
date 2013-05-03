@@ -76,7 +76,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Canvia les carpetes"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Mou a"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Configuració de la carpeta"</string>
-    <string name="menu_show_original" msgid="4227060689700765828">"Reverteix a mida automàt."</string>
+    <string name="menu_show_original" msgid="4227060689700765828">"Reverteix a mida orginal"</string>
     <string name="message_modified" msgid="2564340197585393687">"(La versió original d\'aquest missatge s\'ha modificat perquè s\'adapti a la pantalla.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Carpetes"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Més"</string>
@@ -170,7 +170,6 @@
     <string name="sending" msgid="8214361929125649771">"S\'està enviant…"</string>
     <string name="send_failed" msgid="750908595144529579">"No s\'ha enviat el missatge."</string>
     <string name="me" msgid="6480762904022198669">"jo"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"Mostra totes les carpetes"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Safata d\'entrada"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Vols suprimir aquesta conversa?"</item>
@@ -390,9 +389,13 @@
   </string-array>
     <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"Suprimeix l\'acció"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Respon a tots"</string>
-    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Utilitza com a valor predeterminat per a les respostes a missatges"</string>
+    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Utilitza com predeterminada per respondre els missatges"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"Fes lliscar el dit per suprimir"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"A la llista de converses"</string>
+    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
+    <skip />
+    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Fes lliscar el dit cap avall per actualitzar."</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"S\'està comprovant si hi ha correu."</string>
     <string name="empty_trash" msgid="652435297593538512">"Buida la paperera"</string>
@@ -400,8 +403,8 @@
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Vols buidar la paperera?"</string>
     <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Vols buidar el correu brossa?"</string>
   <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="462609766565707217">"Aquest missatge (<xliff:g id="COUNT">%1$d</xliff:g>) se suprimirà permanentment."</item>
-    <item quantity="other" msgid="2473439906075355840">"Aquests <xliff:g id="COUNT">%1$d</xliff:g> missatges se suprimiran permanentment."</item>
+    <item quantity="one" msgid="7530191630810420066">"Se suprimirà <xliff:g id="COUNT">%1$d</xliff:g> missatge de manera permanent."</item>
+    <item quantity="other" msgid="2182899395748020953">"Se suprimiran <xliff:g id="COUNT">%1$d</xliff:g> missatges de manera permanent."</item>
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Obre el calaix de navegació"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Tanca el calaix de navegació"</string>
