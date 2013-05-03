@@ -59,9 +59,9 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String CONVERSATION_LIST_SWIPE = "conversation-list-swipe";
 
         /**
-         * A boolean indicating whether the user prefers delete or archive.
+         * A string indicating the user's removal action preference.
          */
-        public static final String PREFER_DELETE = "prefer-delete";
+        public static final String REMOVAL_ACTION = "removal-action";
 
         /** Hidden preference used to cache the active notification set */
         private static final String CACHED_ACTIVE_NOTIFICATION_SET =
@@ -71,7 +71,7 @@ public final class MailPrefs extends VersionedPrefs {
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
                 .add(CONVERSATION_LIST_SWIPE)
-                .add(PREFER_DELETE)
+                .add(REMOVAL_ACTION)
                 .build();
 
     }
@@ -80,6 +80,12 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String ARCHIVE = "archive";
         public static final String DELETE = "delete";
         public static final String DISABLED = "disabled";
+    }
+
+    public static final class RemovalActions {
+        public static final String ARCHIVE = "archive";
+        public static final String DELETE = "delete";
+        public static final String ARCHIVE_AND_DELETE = "archive-and-delete";
     }
 
     public static MailPrefs get(Context c) {
@@ -157,15 +163,20 @@ public final class MailPrefs extends VersionedPrefs {
     }
 
     /**
-     * Gets a boolean indicating whether delete is preferred over archive.
+     * Returns a string indicating the preferred removal action.
+     * Should be one of the {@link RemovalActions}.
      */
-    public boolean getPreferDelete() {
+    public String getRemovalAction() {
         final SharedPreferences sharedPreferences = getSharedPreferences();
-        return sharedPreferences.getBoolean(PreferenceKeys.PREFER_DELETE, false);
+        return sharedPreferences.getString(PreferenceKeys.REMOVAL_ACTION, RemovalActions.ARCHIVE);
     }
 
-    public void setPreferDelete(final boolean preferDelete) {
-        getEditor().putBoolean(PreferenceKeys.PREFER_DELETE, preferDelete).apply();
+    /**
+     * Sets the removal action preference.
+     * @param removalAction The preferred {@link RemovalActions}.
+     */
+    public void setRemovalAction(final String removalAction) {
+        getEditor().putString(PreferenceKeys.REMOVAL_ACTION, removalAction).apply();
         MailIntentService.broadcastBackupDataChanged(getContext());
     }
 
@@ -191,7 +202,7 @@ public final class MailPrefs extends VersionedPrefs {
      */
     public int getConversationListSwipeActionInteger(final boolean allowArchive) {
         final boolean swipeEnabled = getIsConversationListSwipeEnabled();
-        final boolean archive = !getPreferDelete() && allowArchive;
+        final boolean archive = !RemovalActions.DELETE.equals(getRemovalAction()) && allowArchive;
 
         if (swipeEnabled) {
             return archive ? UIProvider.Swipe.ARCHIVE : UIProvider.Swipe.DELETE;
