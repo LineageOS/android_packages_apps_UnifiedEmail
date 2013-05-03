@@ -53,17 +53,17 @@
         android:icon="@drawable/trash"
         android:visible="false" />
 
-    <!-- Only one of mark read or mark unread is shown. Both of these are set as always. -->
+    <!-- Only one of mark read or mark unread is shown. -->
     <item
         android:id="@+id/read"
         android:title="@string/mark_read"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_mark_read_holo_light" />
 
     <item
         android:id="@+id/unread"
         android:title="@string/mark_unread"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_mark_unread_holo_light" />
 
     <item
