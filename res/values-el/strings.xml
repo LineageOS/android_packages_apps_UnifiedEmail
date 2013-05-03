@@ -170,7 +170,6 @@
     <string name="sending" msgid="8214361929125649771">"Γίνεται αποστολή…"</string>
     <string name="send_failed" msgid="750908595144529579">"Μήνυμα δεν εστάλη."</string>
     <string name="me" msgid="6480762904022198669">"εγώ"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"Εμφάνιση όλων των φακέλων"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Εισερχόμενα"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Να διαγραφεί αυτή η συνομιλία;"</item>
@@ -390,9 +389,11 @@
   </string-array>
     <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"Κατάργηση ενέργειας"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Απάντηση σε όλους"</string>
-    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Χρήση ως προεπιλογής για απαντήσεις μηνυμάτων"</string>
+    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Χρήση ως προεπιλογή για απαντήσεις μηνυμάτων"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"Σύρετε για να καταργήσετε"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Στη λίστα συνομιλιών"</string>
+    <string name="preference_sender_image_title" msgid="2441320893522058724">"Εικόνα αποστολέα"</string>
+    <string name="preference_sender_image_description" msgid="7126493917536558232">"Εμφάνιση δίπλα στο όνομα στη λίστα συνομιλιών"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Σύρετε προς τα κάτω για ανανέωση"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Γίνεται έλεγχος για αλληλογραφία"</string>
     <string name="empty_trash" msgid="652435297593538512">"Άδειασμα κάδου απορριμάτων"</string>
@@ -400,8 +401,8 @@
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Άδειασμα κάδου απορριμάτων;"</string>
     <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Άδειασμα ανεπιθύμητων μηνυμάτων;"</string>
   <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="462609766565707217">"Αυτό το μήνυμα <xliff:g id="COUNT">%1$d</xliff:g> θα διαγραφεί οριστικά."</item>
-    <item quantity="other" msgid="2473439906075355840">"Αυτά τα μηνύματα <xliff:g id="COUNT">%1$d</xliff:g> θα διαγραφούν οριστικά."</item>
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> μήνυμα θα διαγραφεί οριστικά."</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> μηνύματα θα διαγραφούν οριστικά."</item>
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Άνοιγμα συρταριού πλοήγησης"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Κλείσιμο συρταριού πλοήγησης"</string>
