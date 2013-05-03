@@ -170,7 +170,6 @@
     <string name="sending" msgid="8214361929125649771">"Sender…"</string>
     <string name="send_failed" msgid="750908595144529579">"Besked ikke sendt."</string>
     <string name="me" msgid="6480762904022198669">"mig"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"Vis alle mapper"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Indbakke"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Vil du slette denne samtale?"</item>
@@ -393,6 +392,10 @@
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Brug som standardsvar på meddelelser"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"Stryg med fingeren for at fjerne"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"På samtaleliste"</string>
+    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
+    <skip />
+    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Stryg ned for at opdatere"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Tjekker for e-mails"</string>
     <string name="empty_trash" msgid="652435297593538512">"Tøm papirkurv"</string>
@@ -400,8 +403,8 @@
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Skal papirkurven tømmes?"</string>
     <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Skal spammappen tømmes?"</string>
   <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="462609766565707217">"Denne <xliff:g id="COUNT">%1$d</xliff:g> meddelelse vil blive slettet permanent."</item>
-    <item quantity="other" msgid="2473439906075355840">"Disse <xliff:g id="COUNT">%1$d</xliff:g> meddelelser vil blive slettet permanent."</item>
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> meddelelse vil blive slettet permanent."</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> meddelelser vil blive slettet permanent."</item>
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Åbn navigationsskuffen"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Luk navigationsskuffen"</string>
