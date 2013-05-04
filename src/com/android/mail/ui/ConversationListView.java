@@ -1,5 +1,8 @@
 package com.android.mail.ui;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -48,6 +51,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
     private View mSyncTriggerBar;
     private View mSyncProgressBar;
+    private AnimatorListenerAdapter mSyncProgressBarFadeListener;
     private SwipeableListView mListView;
 
     // Whether to ignore events in {#dispatchTouchEvent}.
@@ -110,10 +114,20 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
         // Calculate distance threshold for triggering a sync based on
         // screen height.  Apply a min and max cutoff.
-        float threshold = ((float) displayMetrics.heightPixels) / mDensity / 2.5f;
+        float threshold = (displayMetrics.heightPixels) / mDensity / 2.5f;
         mDistanceToTriggerSyncDp = Math.max(
                 Math.min(threshold, MAX_DISTANCE_TO_TRIGGER_SYNC),
                 MIN_DISTANCE_TO_TRIGGER_SYNC);
+
+        mSyncProgressBarFadeListener = new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator arg0) {
+                // Even though alpha is set to 0, still need to set visiblity to
+                // GONE, otherwise the progressbar animation continues to get drawn
+                // even though it's not visible.
+                mSyncProgressBar.setVisibility(GONE);
+            }
+        };
     }
 
     protected void setFolderController(FolderController folderController) {
@@ -275,7 +289,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
             LogUtils.i(LOG_TAG, "ConversationListView hide sync status bar");
             // Hide both the sync progress bar and sync trigger bar
             mSyncProgressBar.animate().alpha(0f)
-                    .setDuration(SYNC_STATUS_BAR_FADE_DURATION_IN_MILLIS);
+                    .setDuration(SYNC_STATUS_BAR_FADE_DURATION_IN_MILLIS)
+                    .setListener(mSyncProgressBarFadeListener);
             mSyncTriggerBar.setVisibility(GONE);
             mIsSyncing = false;
         }
