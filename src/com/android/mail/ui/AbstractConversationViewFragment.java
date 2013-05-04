@@ -838,7 +838,12 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      */
     public void onConversationTransformed() {
         mHasConversationBeenTransformed = true;
-        mActivity.invalidateOptionsMenu();
+        mHandler.post(new FragmentRunnable("invalidateOptionsMenu") {
+            @Override
+            public void go() {
+                mActivity.invalidateOptionsMenu();
+            }
+        });
     }
 
     /**
