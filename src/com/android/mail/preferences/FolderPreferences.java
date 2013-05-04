@@ -249,11 +249,11 @@ public class FolderPreferences extends VersionedPrefs {
 
     public Set<String> getNotificationActions(final Account account) {
         final boolean supportsArchiveRemoveLabel =
-                account.supportsCapability(AccountCapabilities.ARCHIVE)
-                && (mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
-                || mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION));
+                mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
+                || mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION);
         final boolean preferDelete = MailPrefs.RemovalActions.DELETE.equals(
-                MailPrefs.get(getContext()).getRemovalAction());
+                MailPrefs.get(getContext()).getRemovalAction(
+                        account.supportsCapability(AccountCapabilities.ARCHIVE)));
         final NotificationActionType destructiveActionType =
                 supportsArchiveRemoveLabel && !preferDelete ?
                         NotificationActionType.ARCHIVE_REMOVE_LABEL : NotificationActionType.DELETE;
