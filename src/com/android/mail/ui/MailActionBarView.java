@@ -429,7 +429,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 // is added.
                 setConversationModeOptions(menu);
                 // We want to use the user's preferred menu order here
-                reorderMenu(getContext(), menu);
+                reorderMenu(getContext(), mAccount, menu);
                 break;
             case ViewMode.CONVERSATION_LIST:
                 // Show compose and search based on the account
@@ -451,7 +451,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Reorders the specified {@link Menu}, taking into account the user's Archive/Delete
      * preference.
      */
-    public static void reorderMenu(final Context context, final Menu menu) {
+    public static void reorderMenu(final Context context, final Account account, final Menu menu) {
         final String removalAction = MailPrefs.get(context).getRemovalAction();
         final boolean showArchive = MailPrefs.RemovalActions.ARCHIVE.equals(removalAction) ||
                 MailPrefs.RemovalActions.ARCHIVE_AND_DELETE.equals(removalAction);
@@ -494,6 +494,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 if (itemId == R.id.move_to) {
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
+            }
+
+            // TODO(skennedy) Refactor the above into this switch
+            switch (itemId) {
+                case R.id.change_folder:
+                    menuItem.setVisible(account
+                            .supportsCapability(AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV));
+                    break;
             }
         }
     }

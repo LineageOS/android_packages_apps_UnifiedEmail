@@ -458,7 +458,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             discardDrafts.setVisible(showDiscardDrafts);
         }
 
-        MailActionBarView.reorderMenu(mContext, menu);
+        MailActionBarView.reorderMenu(mContext, mAccount, menu);
 
         return true;
     }
