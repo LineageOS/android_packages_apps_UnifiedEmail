@@ -76,8 +76,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Klasörleri değiştir"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Taşı"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Klasör ayarları"</string>
-    <!-- no translation found for menu_show_original (4227060689700765828) -->
-    <skip />
+    <string name="menu_show_original" msgid="4227060689700765828">"Otomatik boyutlandırmayı geri çevir"</string>
     <string name="message_modified" msgid="2564340197585393687">"(Bu ileti, bu ekrana sığacak şekilde orijinalinden farklı hale getirilmiştir.)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Klasörler"</string>
     <string name="folder_list_more" msgid="537172187223133825">"Diğer"</string>
@@ -171,9 +170,7 @@
     <string name="sending" msgid="8214361929125649771">"Gönderiliyor..."</string>
     <string name="send_failed" msgid="750908595144529579">"İleti gönderilmedi."</string>
     <string name="me" msgid="6480762904022198669">"ben"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"Tüm klasörleri göster"</string>
-    <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
-    <skip />
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"Gelen Kutusu"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Bu ileti dizisi silinsin mi?"</item>
     <item quantity="other" msgid="930334208937121234">"Bu <xliff:g id="COUNT">%1$d</xliff:g> ileti dizisi silinsin mi?"</item>
@@ -382,30 +379,33 @@
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Sessiz"</string>
     <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Kaldırma işlemi"</string>
-    <!-- no translation found for prefEntries_archive_vs_delete:0 (7861611617238166527) -->
-    <!-- no translation found for prefEntries_archive_vs_delete:1 (1894624633891654411) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:0 (6388312490146989386) -->
-    <!-- no translation found for prefSummaries_archive_vs_delete_summary:1 (6515786566522105643) -->
-    <!-- no translation found for prefDialogTitle_archive_vs_delete (8526388308897297454) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
-    <skip />
-    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
-    <skip />
+  <string-array name="prefEntries_archive_vs_delete">
+    <item msgid="7861611617238166527">"İleti dizilerini arşivle"</item>
+    <item msgid="1894624633891654411">"İleti dizilerini sil"</item>
+  </string-array>
+  <string-array name="prefSummaries_archive_vs_delete_summary">
+    <item msgid="6388312490146989386">"İleti dizilerini silmek yerine arşivleyin"</item>
+    <item msgid="6515786566522105643">"İleti dizilerini arşivlemek yerine silin"</item>
+  </string-array>
+    <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"Kaldırma işlemi"</string>
+    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Yanıtı tüm alıcılara gönder"</string>
+    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"İleti yanıtlarında varsayılan olarak kullan"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"Kaldırmak için hızlıca kaydırın"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"İleti dizisi listesinde"</string>
+    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
+    <skip />
+    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Yenilemek için aşağı hızlıca kaydırın"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Posta kontrol ediliyor"</string>
-    <!-- no translation found for empty_trash (652435297593538512) -->
-    <skip />
-    <!-- no translation found for empty_spam (6064497180615519589) -->
-    <skip />
-    <!-- no translation found for empty_trash_dialog_title (3248644791068595150) -->
-    <skip />
-    <!-- no translation found for empty_spam_dialog_title (8091014690336479280) -->
-    <skip />
-    <!-- no translation found for empty_folder_dialog_message:one (462609766565707217) -->
-    <!-- no translation found for empty_folder_dialog_message:other (2473439906075355840) -->
+    <string name="empty_trash" msgid="652435297593538512">"Çöp Kutusunu Boşalt"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"Spam Klasörünü Boşalt"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Çöp Kutusu boşaltılsın mı?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Spam Klasörü boşaltılsın mı?"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> ileti kalıcı olarak silinecek."</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> ileti kalıcı olarak silinecek."</item>
+  </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Gezinme menüsünü aç"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Gezinme menüsünü kapat"</string>
 </resources>
