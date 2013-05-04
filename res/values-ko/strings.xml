@@ -170,7 +170,6 @@
     <string name="sending" msgid="8214361929125649771">"전송 중..."</string>
     <string name="send_failed" msgid="750908595144529579">"메일이 전송되지 않았습니다."</string>
     <string name="me" msgid="6480762904022198669">"나"</string>
-    <string name="show_all_folders" msgid="3281420732307737553">"모든 폴더 표시"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"받은편지함"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"대화를 삭제하시겠습니까?"</item>
@@ -393,18 +392,20 @@
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"메일 답장 시 기본값으로 사용"</string>
     <string name="preference_swipe_title" msgid="807579971507624260">"스와이프하여 삭제"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"대화 목록"</string>
+    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
+    <skip />
+    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"아래로 스와이프하여 새로고침"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"메일 확인 중"</string>
-    <!-- no translation found for empty_trash (652435297593538512) -->
-    <skip />
-    <!-- no translation found for empty_spam (6064497180615519589) -->
-    <skip />
-    <!-- no translation found for empty_trash_dialog_title (3248644791068595150) -->
-    <skip />
-    <!-- no translation found for empty_spam_dialog_title (8091014690336479280) -->
-    <skip />
-    <!-- no translation found for empty_folder_dialog_message:one (462609766565707217) -->
-    <!-- no translation found for empty_folder_dialog_message:other (2473439906075355840) -->
+    <string name="empty_trash" msgid="652435297593538512">"휴지통 비우기"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"스팸 비우기"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"휴지통을 비우시겠습니까?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"스팸을 비우시겠습니까?"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="7530191630810420066">"메시지 <xliff:g id="COUNT">%1$d</xliff:g>개가 완전히 삭제됩니다."</item>
+    <item quantity="other" msgid="2182899395748020953">"메시지 <xliff:g id="COUNT">%1$d</xliff:g>개가 완전히 삭제됩니다."</item>
+  </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"내비게이션 폴더 열기"</string>
     <string name="drawer_close" msgid="2764774620737876943">"내비게이션 폴더 닫기"</string>
 </resources>
