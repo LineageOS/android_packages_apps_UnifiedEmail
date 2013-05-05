@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 
 import android.view.Gravity;
@@ -41,9 +42,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     private static final int DISTANCE_TO_TRIGGER_CANCEL = 10; // dp
     private static final int SHOW_CHECKING_FOR_MAIL_DURATION_IN_MILLIS = 1 * 1000; // 1 seconds
 
-    private static final int ACTION_BAR_FADE_DURATION_IN_MILLIS = 100;
-    private static final int SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS = 100;
-    private static final int SWIPE_TEXT_FADE_DURATION_IN_MILLIS = 300;
+    private static final int SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS = 200;
     private static final int SYNC_STATUS_BAR_FADE_DURATION_IN_MILLIS = 150;
     private static final int SYNC_TRIGGER_SHRINK_DURATION_IN_MILLIS = 250;
 
@@ -69,11 +68,9 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     private Interpolator mAccelerateInterpolator = new AccelerateInterpolator(1.5f);
     private Interpolator mDecelerateInterpolator = new DecelerateInterpolator(1.5f);
 
-    private FolderController mFolderController = null;
-
     private float mDensity;
 
-    private Activity mActivity;
+    private ControllableActivity mActivity;
     private WindowManager mWindowManager;
     private HintText mHintText;
     private boolean mHasHintTextViewBeenAdded = false;
@@ -95,7 +92,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     }
 
     public ConversationListView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, -1);
+        super(context, attrs, defStyle);
 
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mHintText = new ConversationListView.HintText(context);
@@ -130,11 +127,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         };
     }
 
-    protected void setFolderController(FolderController folderController) {
-        mFolderController = folderController;
-    }
-
-    protected void setActivity(Activity activity) {
+    protected void setActivity(ControllableActivity activity) {
         mActivity = activity;
     }
 
@@ -185,6 +178,11 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                 }
                 // Disable swipe to refresh in search results page
                 if (ConversationListContext.isSearchResult(mConvListContext)) {
+                    break;
+                }
+                // Disable swipe to refresh in CAB mode
+                if (mActivity.getSelectedSet() != null &&
+                        mActivity.getSelectedSet().size() > 0) {
                     break;
                 }
                 // Only if we have reached the top of the list, any further scrolling
@@ -240,6 +238,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     }
 
     private void startMovementTracking(float y) {
+        LogUtils.d(LOG_TAG, "Start swipe to refresh tracking");
         mTrackingScrollMovement = true;
         mTrackingScrollStartY = y;
         mTrackingScrollMaxY = mTrackingScrollStartY;
@@ -263,7 +262,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         mSyncTriggerBar.setVisibility(View.GONE);
 
         // This will call back to showSyncStatusBar():
-        mFolderController.requestFolderRefresh();
+        mActivity.getFolderController().requestFolderRefresh();
 
         // Any continued dragging after this should have no effect
         mTrackingScrollMovement = false;
@@ -292,6 +291,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                     .setDuration(SYNC_STATUS_BAR_FADE_DURATION_IN_MILLIS)
                     .setListener(mSyncProgressBarFadeListener);
             mSyncTriggerBar.setVisibility(GONE);
+            // Hide the "Checking for mail" text in action bar if it isn't hidden already:
+            mHintText.hide();
             mIsSyncing = false;
         }
     }
@@ -314,8 +315,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         window.getDecorView().getWindowVisibleDisplayFrame(rect);
         int statusBarHeight = rect.top;
 
-        final TypedArray actionBarSize = mActivity.obtainStyledAttributes(
-                new int[] { android.R.attr.actionBarSize });
+        final TypedArray actionBarSize = ((Activity) mActivity).obtainStyledAttributes(
+                new int[]{android.R.attr.actionBarSize});
         int actionBarHeight = actionBarSize.getDimensionPixelSize(0, 0);
         actionBarSize.recycle();
 
@@ -332,7 +333,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     }
 
     /**
-     * A test view that covers the entire action bar, used for displaying
+     * A text view that covers the entire action bar, used for displaying
      * "Swipe down to refresh" hint text if user has initiated a downward swipe.
      */
     protected static class HintText extends FrameLayout {
@@ -347,6 +348,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         private TextView mTextView;
 
         private Interpolator mDecelerateInterpolator = new DecelerateInterpolator(1.5f);
+        private Interpolator mAccelerateInterpolator = new AccelerateInterpolator(1.5f);
 
         public HintText(final Context context) {
             this(context, null);
@@ -387,13 +389,12 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         private void displaySwipeToRefresh() {
             if (mDisplay != SWIPE_TO_REFRESH) {
                 mTextView.setText(getResources().getText(R.string.swipe_down_to_refresh));
+                // Covers the current action bar:
                 setVisibility(View.VISIBLE);
-                // Fade out the current action bar first:
-                setAlpha(0f);
-                animate().alpha(1f).setDuration(ACTION_BAR_FADE_DURATION_IN_MILLIS);
-                // Then animate text sliding down onto action bar:
+                setAlpha(1f);
+                // Animate text sliding down onto action bar:
                 mTextView.setY(-mTextView.getHeight());
-                mTextView.animate().y(0).setStartDelay(ACTION_BAR_FADE_DURATION_IN_MILLIS)
+                mTextView.animate().y(0)
                         .setInterpolator(mDecelerateInterpolator)
                         .setDuration(SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS);
                 mDisplay = SWIPE_TO_REFRESH;
@@ -414,13 +415,20 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
         private void hide() {
             if (mDisplay != NONE) {
-                animate().alpha(0f).setDuration(SWIPE_TEXT_FADE_DURATION_IN_MILLIS).start();
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setVisibility(View.GONE);
-                    }
-                }, SWIPE_TEXT_FADE_DURATION_IN_MILLIS);
+                // Animate text sliding up leaving behind a blank action bar
+                mTextView.animate().y(-mTextView.getHeight())
+                        .setInterpolator(mAccelerateInterpolator)
+                        .setDuration(SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS)
+                        .start();
+                animate().alpha(0f)
+                        .setDuration(SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS)
+                        .withEndAction(
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setVisibility(View.GONE);
+                                    }
+                                });
                 mDisplay = NONE;
             }
         }
