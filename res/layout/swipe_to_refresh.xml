@@ -26,8 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#62b5e5"
-        android:textSize="18sp" />
+        android:textColor="#0099cc"
+        android:textSize="17sp" />
 
 </FrameLayout>
