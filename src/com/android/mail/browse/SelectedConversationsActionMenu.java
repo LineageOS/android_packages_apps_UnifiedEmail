@@ -121,12 +121,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mListController.commitDestructiveActions(true);
         switch (item.getItemId()) {
             case R.id.delete:
+                LogUtils.i(LOG_TAG, "Delete selected from CAB menu");
                 performDestructiveAction(R.id.delete);
                 break;
             case R.id.discard_drafts:
                 performDestructiveAction(R.id.discard_drafts);
                 break;
             case R.id.archive:
+                LogUtils.i(LOG_TAG, "Archive selected from CAB menu");
                 performDestructiveAction(R.id.archive);
                 break;
             case R.id.remove_folder:
@@ -279,6 +281,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     private void destroy(int actionId, final Collection<Conversation> target,
             final DestructiveAction action) {
+        LogUtils.i(LOG_TAG, "About to remove %d converations", target.size());
         mUpdater.delete(actionId, target, action, true);
     }
 

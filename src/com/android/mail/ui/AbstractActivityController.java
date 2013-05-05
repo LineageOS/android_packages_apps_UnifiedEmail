@@ -1721,12 +1721,13 @@ public abstract class AbstractActivityController implements ActivityController,
         // The conversation list deletes and performs the action if it exists.
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
-            LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
+            LogUtils.i(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
             convListFragment.requestDelete(actionId, target, action);
             return;
         }
         // No visible UI element handled it on our behalf. Perform the action
         // ourself.
+        LogUtils.i(LOG_TAG, "ACC.requestDelete: performing remove action ourselves");
         action.performAction();
     }
 
