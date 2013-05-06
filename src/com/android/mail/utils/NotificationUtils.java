@@ -296,6 +296,8 @@ public class NotificationUtils {
      */
     public static void resendNotifications(Context context, final boolean cancelExisting,
             final Uri accountUri, final Uri folderUri) {
+        LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications ");
+
         if (cancelExisting) {
             LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - cancelling all");
             NotificationManager nm =
@@ -314,8 +316,14 @@ public class NotificationUtils {
             // and same account as the undo notification that was previously displayed.
             if (accountUri != null && !Objects.equal(accountUri, notification.account.uri) &&
                     folderUri != null && !Objects.equal(folderUri, folder.uri)) {
+                LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - not resending %s / %s"
+                        + " because it doesn't match %s / %s",
+                        notification.account.uri, folder.uri, accountUri, folderUri);
                 continue;
             }
+
+            LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - resending %s / %s",
+                    notification.account.uri, folder.uri);
 
             final NotificationAction undoableAction =
                     NotificationActionUtils.sUndoNotifications.get(notificationId);
