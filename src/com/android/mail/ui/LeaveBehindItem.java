@@ -146,8 +146,8 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     }
 
     @Override
-    public View getSwipeableView() {
-        return mSwipeableContent;
+    public SwipeableView getSwipeableView() {
+        return SwipeableView.from(mSwipeableContent);
     }
 
     @Override
