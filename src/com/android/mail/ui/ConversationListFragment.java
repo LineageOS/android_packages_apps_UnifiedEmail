@@ -261,7 +261,7 @@ public final class ConversationListFragment extends ListFragment implements
                 activityContext).inflate(R.layout.conversation_list_footer_view,
                 null);
         mFooterView.setClickListener(mActivity);
-        mConversationListView.setFolderController(mActivity.getFolderController());
+        mConversationListView.setActivity(mActivity);
         final ConversationCursor conversationCursor = getConversationListCursor();
 
         final ConversationListHelper helper = mActivity.getConversationListHelper();
@@ -389,7 +389,6 @@ public final class ConversationListFragment extends ListFragment implements
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mConversationListView =
                 (ConversationListView) rootView.findViewById(R.id.conversation_list);
-        mConversationListView.setActivity(getActivity());
         mConversationListView.setConversationContext(mViewContext);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
