@@ -31,7 +31,7 @@
     <dimen name="compose_scrollview_width">700dp</dimen>
     <dimen name="color_block_width">32dip</dimen>
     <dimen name="color_block_height">6dip</dimen>
-    <dimen name="touch_slop">32dip</dimen>
+    <dimen name="touch_slop">4dip</dimen>
     <dimen name="move_slop">4dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">32dip</dimen>
