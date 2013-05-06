@@ -22,6 +22,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -82,7 +83,7 @@ public class LetterTileProvider implements DefaultImageProvider {
         mPaint.setAntiAlias(true);
         mBitmapBackgroundCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
 
-        mDefaultBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_contact_picture);
+        mDefaultBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_generic_man);
         mDefaultBitmapCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
 
         mColors = res.obtainTypedArray(R.array.letter_tile_colors);
@@ -106,27 +107,33 @@ public class LetterTileProvider implements DefaultImageProvider {
         final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
         final char firstChar = display.charAt(0);
         dividedImageView.getDesiredDimensions(address, mDims);
-        // If its a valid English alphabet letter...
+
+        // get an empty bitmap
+        bitmap = getBitmap(mDims, false /* getDefault */);
+        if (bitmap == null) {
+            LogUtils.w(TAG, "LetterTileProvider width(%d) or height(%d) is 0" +
+                    " for name %s and address %s.",
+                    dividedImageView.getWidth(), dividedImageView.getHeight(), displayName,
+                    address);
+            return;
+        }
+
+        final Canvas c = mCanvas;
+        c.setBitmap(bitmap);
+        c.drawColor(pickColor(address));
+
+        // If its a valid English alphabet letter,
+        // draw the letter on top of the color
         if (isEnglishLetterOrDigit(firstChar)) {
             mFirstChar[0] = Character.toUpperCase(firstChar);
-            bitmap = getBitmap(mDims, false /* getDefault */);
-            if (bitmap == null) {
-                LogUtils.w(TAG, "LetterTileProvider width(%d) or height(%d) is 0" +
-                        " for name %s and address %s.",
-                        dividedImageView.getWidth(), dividedImageView.getHeight(), displayName,
-                        address);
-                return;
-            }
-            final Canvas c = mCanvas;
-            c.setBitmap(bitmap);
-            c.drawColor(pickColor(address));
             mPaint.setTextSize(getFontSize(mDims.scale));
             mPaint.getTextBounds(mFirstChar, 0, 1, mBounds);
             c.drawText(mFirstChar, 0, 1, 0 + mDims.width / 2,
                     0 + mDims.height / 2 + (mBounds.bottom - mBounds.top) / 2, mPaint);
-        } else {
-            bitmap = getBitmap(mDims, true /* getDefault */);
+        } else { // draw the generic icon on top
+            c.drawBitmap(getBitmap(mDims, true /* getDefault */), 0, 0, null);
         }
+
         dividedImageView.addDivisionImage(bitmap, address);
     }
 
