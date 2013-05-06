@@ -378,24 +378,25 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> jauni ziņojumi"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Klusums"</string>
-    <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Noņemšanas darbība"</string>
-  <string-array name="prefEntries_archive_vs_delete">
-    <item msgid="7861611617238166527">"Arhivēt sarunas"</item>
-    <item msgid="1894624633891654411">"Dzēst sarunas"</item>
-  </string-array>
-  <string-array name="prefSummaries_archive_vs_delete_summary">
-    <item msgid="6388312490146989386">"Arhivēt, nevis dzēst sarunas"</item>
-    <item msgid="6515786566522105643">"Dzēst, nevis arhivēt sarunas"</item>
-  </string-array>
-    <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"Noņemšanas darbība"</string>
+    <!-- no translation found for preference_removal_action_title (6585232628422090835) -->
+    <skip />
+    <!-- no translation found for prefEntries_removal_action:0 (1938422987822134657) -->
+    <!-- no translation found for prefEntries_removal_action:1 (5737880287951287278) -->
+    <!-- no translation found for prefEntries_removal_action:2 (4279948809971752573) -->
+    <!-- no translation found for prefSummaries_removal_action_summary:0 (492039800376391677) -->
+    <!-- no translation found for prefSummaries_removal_action_summary:1 (8350973578419775975) -->
+    <!-- no translation found for prefSummaries_removal_action_summary:2 (2967059853409454648) -->
+    <!-- no translation found for prefDialogTitle_removal_action (6225642737241938453) -->
+    <skip />
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Atbildēt visiem"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Izmantot kā noklusējumu, atbildot uz ziņojumiem"</string>
-    <string name="preference_swipe_title" msgid="807579971507624260">"Vilkt, lai noņemtu"</string>
+    <!-- no translation found for preference_swipe_title_archive (1178014339238995814) -->
+    <skip />
+    <!-- no translation found for preference_swipe_title_delete (8611320022727435597) -->
+    <skip />
     <string name="preference_swipe_description" msgid="5132683510510041028">"Sarunu sarakstā"</string>
-    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
-    <skip />
-    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
-    <skip />
+    <string name="preference_sender_image_title" msgid="2441320893522058724">"Sūtītāja attēls"</string>
+    <string name="preference_sender_image_description" msgid="7126493917536558232">"Rādīt blakus vārdam sarunu sarakstā"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Lai atsvaidzinātu, velciet uz leju."</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Notiek e-pasta pārbaude"</string>
     <string name="empty_trash" msgid="652435297593538512">"Iztukšot atkritni"</string>
@@ -408,4 +409,6 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Atvērt navigācijas paneli"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Aizvērt navigācijas paneli"</string>
+    <!-- no translation found for conversation_photo_welcome_text (4274875219447670662) -->
+    <skip />
 </resources>
