@@ -852,9 +852,11 @@ public final class ConversationListFragment extends ListFragment implements
 
     private void checkSyncStatus() {
         if (mFolder != null && mFolder.isSyncInProgress()) {
+            LogUtils.d(LOG_TAG, "CLF.checkSyncStatus still syncing");
             // Still syncing, ignore
         } else {
             // Finished syncing:
+            LogUtils.d(LOG_TAG, "CLF.checkSyncStatus done syncing");
             mConversationListView.onSyncFinished();
         }
     }
