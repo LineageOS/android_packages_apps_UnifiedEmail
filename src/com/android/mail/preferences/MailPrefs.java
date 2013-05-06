@@ -166,9 +166,12 @@ public final class MailPrefs extends VersionedPrefs {
      * Returns a string indicating the preferred removal action.
      * Should be one of the {@link RemovalActions}.
      */
-    public String getRemovalAction() {
+    public String getRemovalAction(final boolean supportsArchive) {
+        final String defaultAction = supportsArchive
+                ? RemovalActions.ARCHIVE : RemovalActions.DELETE;
+
         final SharedPreferences sharedPreferences = getSharedPreferences();
-        return sharedPreferences.getString(PreferenceKeys.REMOVAL_ACTION, RemovalActions.ARCHIVE);
+        return sharedPreferences.getString(PreferenceKeys.REMOVAL_ACTION, defaultAction);
     }
 
     /**
@@ -202,7 +205,7 @@ public final class MailPrefs extends VersionedPrefs {
      */
     public int getConversationListSwipeActionInteger(final boolean allowArchive) {
         final boolean swipeEnabled = getIsConversationListSwipeEnabled();
-        final boolean archive = !RemovalActions.DELETE.equals(getRemovalAction()) && allowArchive;
+        final boolean archive = !RemovalActions.DELETE.equals(getRemovalAction(allowArchive));
 
         if (swipeEnabled) {
             return archive ? UIProvider.Swipe.ARCHIVE : UIProvider.Swipe.DELETE;
