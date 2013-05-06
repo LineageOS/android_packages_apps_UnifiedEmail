@@ -18,7 +18,6 @@ package com.android.mail.ui;
 
 import android.app.LoaderManager;
 import android.view.View;
-import android.widget.BaseAdapter;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Folder;
@@ -39,7 +38,7 @@ public interface ConversationSpecialItemView {
 
     int getPosition();
 
-    void setAdapter(BaseAdapter adapter);
+    void setAdapter(AnimatedAdapter adapter);
 
     void bindLoaderManager(LoaderManager loaderManager);
 

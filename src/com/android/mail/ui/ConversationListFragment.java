@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import com.google.common.collect.ImmutableList;
+
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
@@ -265,9 +267,10 @@ public final class ConversationListFragment extends ListFragment implements
         final ConversationCursor conversationCursor = getConversationListCursor();
 
         final ConversationListHelper helper = mActivity.getConversationListHelper();
-        final List<ConversationSpecialItemView> specialItemViews =
-                helper != null ? helper.makeConversationListSpecialViews(getActivity(), mAccount,
-                        mActivity.getFolderListSelectionListener()) : null;
+        final List<ConversationSpecialItemView> specialItemViews = helper != null ?
+                ImmutableList.copyOf(helper.makeConversationListSpecialViews(
+                        getActivity(), mAccount, mActivity.getFolderListSelectionListener()))
+                : null;
         if (specialItemViews != null) {
             // Attach to the LoaderManager
             for (final ConversationSpecialItemView view : specialItemViews) {

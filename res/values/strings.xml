@@ -910,4 +910,5 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
+    <string name="conversation_photo_welcome_text">Touch a sender image to select that conversation.</string>
 </resources>
