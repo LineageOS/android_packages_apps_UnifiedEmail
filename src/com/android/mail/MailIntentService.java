@@ -39,7 +39,6 @@ public class MailIntentService extends IntentService {
             "com.android.mail.action.RESEND_NOTIFICATIONS";
     public static final String ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS =
             "com.android.mail.action.CLEAR_NEW_MAIL_NOTIFICATIONS";
-    public static final String ACTION_MARK_SEEN = "com.android.mail.action.MARK_SEEN";
     public static final String ACTION_BACKUP_DATA_CHANGED =
             "com.android.mail.action.BACKUP_DATA_CHANGED";
 
@@ -73,10 +72,6 @@ public class MailIntentService extends IntentService {
             final Uri folderUri = intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
 
             NotificationUtils.resendNotifications(this, false, accountUri, folderUri);
-        } else if (ACTION_MARK_SEEN.equals(action)) {
-            final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
-
-            NotificationUtils.markSeen(this, folder);
         } else if (Intent.ACTION_DEVICE_STORAGE_LOW.equals(action)) {
             // The storage_low state is recorded centrally even though
             // no handler might be present to change application state

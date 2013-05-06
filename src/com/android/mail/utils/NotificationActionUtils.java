@@ -643,29 +643,16 @@ public class NotificationActionUtils {
 
                     contentResolver.update(uri, values, null, null);
                 }
-
-                markSeen(context, folder, conversation);
                 break;
             }
             case DELETE: {
                 contentResolver.delete(uri, null, null);
-                markSeen(context, folder, conversation);
                 break;
             }
             default:
                 throw new IllegalArgumentException(
                         "The specified NotificationActionType is not a destructive action.");
         }
-    }
-
-    private static void markSeen(
-            final Context context, final Folder folder, final Conversation conversation) {
-        final Intent intent = new Intent(MailIntentService.ACTION_MARK_SEEN);
-        intent.setPackage(context.getPackageName());
-        intent.putExtra(Utils.EXTRA_FOLDER, folder);
-        intent.putExtra(MailIntentService.CONVERSATION_EXTRA, conversation);
-
-        context.startService(intent);
     }
 
     /**
