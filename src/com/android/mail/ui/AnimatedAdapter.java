@@ -79,7 +79,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private final Context mContext;
     private final ConversationSelectionSet mBatchConversations;
     private Runnable mCountDown;
-    private Handler mHandler;
+    private final Handler mHandler;
     protected long mLastLeaveBehind = -1;
 
     private final AnimatorListener mAnimatorListener = new AnimatorListenerAdapter() {
@@ -160,7 +160,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private final HashMap<Long, LeaveBehindItem> mLeaveBehindItems = Maps.newHashMap();
     /** True if priority inbox markers are enabled, false otherwise. */
     private boolean mPriorityMarkersEnabled;
-    private ControllableActivity mActivity;
+    private final ControllableActivity mActivity;
     private final AccountObserver mAccountListener = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
@@ -881,7 +881,19 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             specialView.onUpdate(mAccount.name, mFolder, getConversationCursor());
 
             if (specialView.getShouldDisplayInList()) {
-                mSpecialViewPositions.put(specialView.getPosition(), specialView);
+                int position = specialView.getPosition();
+
+                // insert the special view into the position, but if there is
+                // already an item occupying that position, move that item back
+                // one position, and repeat
+                ConversationSpecialItemView insert = specialView;
+                while (insert != null) {
+                    final ConversationSpecialItemView kickedOut = mSpecialViewPositions.get(
+                            position);
+                    mSpecialViewPositions.put(position, insert);
+                    insert = kickedOut;
+                    position++;
+                }
             }
         }
     }
@@ -922,7 +934,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         for (int i = 0; i < mSpecialViewPositions.size(); i++) {
             final int key = mSpecialViewPositions.keyAt(i);
             final ConversationSpecialItemView specialView = mSpecialViewPositions.get(key);
-            if (specialView.getPosition() <= position) {
+            if (key <= position) {
                 offset++;
             }
         }

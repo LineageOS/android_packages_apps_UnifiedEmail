@@ -65,3 +65,7 @@
 -keepclasseswithmembers class com.android.mail.ui.MailActivity {
   *** doNothingClickHandler(...);
 }
+
+-keepclasseswithmembers class com.android.mail.ui.ConversationPhotoTeaserView {
+  *** setAnimatedHeight(...);
+}
