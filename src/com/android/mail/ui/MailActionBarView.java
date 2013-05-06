@@ -452,7 +452,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * preference.
      */
     public static void reorderMenu(final Context context, final Account account, final Menu menu) {
-        final String removalAction = MailPrefs.get(context).getRemovalAction();
+        final String removalAction = MailPrefs.get(context).getRemovalAction(
+                account.supportsCapability(AccountCapabilities.ARCHIVE));
         final boolean showArchive = MailPrefs.RemovalActions.ARCHIVE.equals(removalAction) ||
                 MailPrefs.RemovalActions.ARCHIVE_AND_DELETE.equals(removalAction);
         final boolean showDelete = MailPrefs.RemovalActions.DELETE.equals(removalAction) ||
