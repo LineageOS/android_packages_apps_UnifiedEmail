@@ -378,34 +378,37 @@
     <string name="new_messages" msgid="4419173946074516420">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Kimya"</string>
-    <string name="preference_archive_vs_delete_title" msgid="6469574019069966937">"Ondoa kitendo"</string>
-  <string-array name="prefEntries_archive_vs_delete">
-    <item msgid="7861611617238166527">"Mazungumzo yaliyo kwenye kumbukumbu"</item>
-    <item msgid="1894624633891654411">"Futa mazungumzo"</item>
-  </string-array>
-  <string-array name="prefSummaries_archive_vs_delete_summary">
-    <item msgid="6388312490146989386">"Jalidi badala ya kufuta mazungumzo"</item>
-    <item msgid="6515786566522105643">"Futa badala ya kuweka kwenye kumbukumbu za mazungumzo"</item>
-  </string-array>
-    <string name="prefDialogTitle_archive_vs_delete" msgid="8526388308897297454">"Ondoa kitendo"</string>
+    <!-- no translation found for preference_removal_action_title (6585232628422090835) -->
+    <skip />
+    <!-- no translation found for prefEntries_removal_action:0 (1938422987822134657) -->
+    <!-- no translation found for prefEntries_removal_action:1 (5737880287951287278) -->
+    <!-- no translation found for prefEntries_removal_action:2 (4279948809971752573) -->
+    <!-- no translation found for prefSummaries_removal_action_summary:0 (492039800376391677) -->
+    <!-- no translation found for prefSummaries_removal_action_summary:1 (8350973578419775975) -->
+    <!-- no translation found for prefSummaries_removal_action_summary:2 (2967059853409454648) -->
+    <!-- no translation found for prefDialogTitle_removal_action (6225642737241938453) -->
+    <skip />
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Jibu wote"</string>
-    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Tumia kama chaguo-msingi au majibu ya ujumbe"</string>
-    <string name="preference_swipe_title" msgid="807579971507624260">"Papasa ili uondoe"</string>
+    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Tumia kama chaguo-msingi la majibu ya ujumbe"</string>
+    <!-- no translation found for preference_swipe_title_archive (1178014339238995814) -->
+    <skip />
+    <!-- no translation found for preference_swipe_title_delete (8611320022727435597) -->
+    <skip />
     <string name="preference_swipe_description" msgid="5132683510510041028">"Katika orodha ya mazungumzo"</string>
-    <!-- no translation found for preference_sender_image_title (2441320893522058724) -->
-    <skip />
-    <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
-    <skip />
+    <string name="preference_sender_image_title" msgid="2441320893522058724">"Picha ya mtumaji"</string>
+    <string name="preference_sender_image_description" msgid="7126493917536558232">"Onyesha kando ya jina katika orodha ya mazungumzo"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Papasa kwa kasi kwenda chini ili kuonyesha upya"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Inaangalia barua pepe"</string>
     <string name="empty_trash" msgid="652435297593538512">"Safisha Tupio"</string>
     <string name="empty_spam" msgid="6064497180615519589">"Ondoa Barua taka"</string>
-    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Je, ungependa Kusafisha Tupio?"</string>
-    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Je, ungependa Kuondoa Barua taka"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Ungependa Kusafisha Tupio?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Ungependa Kuondoa Barua taka?"</string>
   <plurals name="empty_folder_dialog_message">
     <item quantity="one" msgid="7530191630810420066">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> utafutwa kabisa."</item>
     <item quantity="other" msgid="2182899395748020953">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> utafutwa kabisa."</item>
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Fungua menyu"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Funga menyu"</string>
+    <!-- no translation found for conversation_photo_welcome_text (4274875219447670662) -->
+    <skip />
 </resources>
