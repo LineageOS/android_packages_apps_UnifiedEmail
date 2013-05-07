@@ -4,7 +4,8 @@ import android.animation.ObjectAnimator;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.res.Resources;
-import android.view.LayoutInflater;
+import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -27,13 +28,24 @@ public class ConversationPhotoTeaserView extends FrameLayout
     private final MailPrefs mMailPrefs;
     private AnimatedAdapter mAdapter;
 
+    private View mSwipeableContent;
+
     private boolean mShown;
     private int mAnimatedHeight = -1;
     private boolean mNeedLayout;
     private int mTextTop;
 
     public ConversationPhotoTeaserView(final Context context) {
-        super(context);
+        this(context, null);
+    }
+
+    public ConversationPhotoTeaserView(final Context context, final AttributeSet attrs) {
+        this(context, attrs, -1);
+    }
+
+    public ConversationPhotoTeaserView(
+            final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
 
         final Resources resources = context.getResources();
 
@@ -47,9 +59,12 @@ public class ConversationPhotoTeaserView extends FrameLayout
 
         mMailPrefs = MailPrefs.get(context);
 
-        LayoutInflater.from(context).inflate(R.layout.conversation_photo_teaser_view, this);
-
         mNeedLayout = true;
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        mSwipeableContent = findViewById(R.id.swipeable_content);
     }
 
     @Override
@@ -59,25 +74,27 @@ public class ConversationPhotoTeaserView extends FrameLayout
         final TextView text = (TextView) findViewById(R.id.text);
         final ImageView arrow = (ImageView) findViewById(R.id.arrow);
 
-        // The text top is changed when we move the arrow, so we need to do
-        // multiple passes
-        int textTop = text.getTop();
-        if (mNeedLayout || textTop != mTextTop) {
-            mNeedLayout = false;
-            mTextTop = textTop;
+        // We post to avoid calling layout within layout
+        arrow.post(new Runnable() {
+            @Override
+            public void run() {
 
-            // We post to avoid calling layout within layout
-            arrow.post(new Runnable() {
-                @Override
-                public void run() {
+                // The text top is changed when we move the arrow, so we need to
+                // do multiple passes
+                int textTop = text.getTop();
+                if (mNeedLayout || textTop != mTextTop) {
+                    mNeedLayout = false;
+                    mTextTop = textTop;
+
                     final int lineHeight = text.getLineHeight();
                     final LinearLayout.LayoutParams arrowParams = (LinearLayout.LayoutParams) arrow
                             .getLayoutParams();
                     arrowParams.topMargin = mTextTop + lineHeight / 2;
                     arrow.setLayoutParams(arrowParams);
                 }
-            });
-        }
+                arrow.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -114,7 +131,7 @@ public class ConversationPhotoTeaserView extends FrameLayout
 
     @Override
     public void onConversationSelected() {
-        setDismissed();
+        dismiss();
     }
 
     @Override
@@ -136,7 +153,7 @@ public class ConversationPhotoTeaserView extends FrameLayout
 
     @Override
     public SwipeableView getSwipeableView() {
-        return SwipeableView.from(this);
+        return SwipeableView.from(mSwipeableContent);
     }
 
     @Override
