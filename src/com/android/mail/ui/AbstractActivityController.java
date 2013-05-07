@@ -1441,6 +1441,8 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void markConversationsRead(final Collection<Conversation> targets, final boolean read,
             final boolean viewed) {
+        LogUtils.d(LOG_TAG, "markConversationsRead(targets=%s)", targets.toArray());
+
         if (mConversationListCursor == null) {
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
                 LogUtils.d(LOG_TAG, "markConversationsRead(targets=%s), deferring",
