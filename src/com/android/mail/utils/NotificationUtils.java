@@ -276,6 +276,7 @@ public class NotificationUtils {
      * This happens when locale changes.
      **/
     public static void cancelAndResendNotifications(Context context) {
+        LogUtils.d(LOG_TAG, "NotificationUtils: cancelAndResendNotifications");
         resendNotifications(context, true, null, null);
     }
 
@@ -341,6 +342,8 @@ public class NotificationUtils {
      * Validate the notifications for the specified account.
      */
     public static void validateAccountNotifications(Context context, String account) {
+        LogUtils.d(LOG_TAG, "NotificationUtils: validateAccountNotifications - %s", account);
+
         List<NotificationKey> notificationsToCancel = Lists.newArrayList();
         // Iterate through the notification map to see if there are any entries that correspond to
         // labels that are not in the sync set.
@@ -400,6 +403,10 @@ public class NotificationUtils {
     public static void setNewEmailIndicator(Context context, final int unreadCount,
             final int unseenCount, final Account account, final Folder folder,
             final boolean getAttention) {
+        LogUtils.d(LOG_TAG, "NotificationUtils: setNewEmailIndicator unreadCount = %d, "
+            + "unseenCount = %d, account = %s, folder = %s, getAttention = %b", unreadCount,
+            unseenCount, account.name, folder.uri, getAttention);
+
         boolean ignoreUnobtrusiveSetting = false;
 
         final int notificationId = getNotificationId(account.name, folder);
