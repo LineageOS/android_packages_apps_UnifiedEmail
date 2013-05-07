@@ -47,6 +47,8 @@ import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
+import android.text.util.Rfc822Token;
+import android.text.util.Rfc822Tokenizer;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -653,12 +655,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         } else {
             // This is Email
             SendersView.formatSenders(mHeader, getContext(), true);
-            if (mHeader.conversation.senders != null) {
+            if (!TextUtils.isEmpty(mHeader.conversation.senders)) {
                 mHeader.displayableSenderEmails = new ArrayList<String>();
-                mHeader.displayableSenderEmails.add(mHeader.conversation.senders);
                 mHeader.displayableSenderNames = new ArrayList<String>();
-                // Does Email have display name for sender?
-                mHeader.displayableSenderNames.add(mHeader.conversation.senders);
+
+                final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(mHeader.conversation.senders);
+                for (int i = 0; i < tokens.length;i++) {
+                    final Rfc822Token token = tokens[i];
+                    final String senderName = token.getName();
+                    final String senderAddress = token.getAddress();
+                    mHeader.displayableSenderEmails.add(senderAddress);
+                    mHeader.displayableSenderNames.add(
+                            !TextUtils.isEmpty(senderName) ? senderName : senderAddress);
+                }
                 loadSenderImages();
             }
         }
