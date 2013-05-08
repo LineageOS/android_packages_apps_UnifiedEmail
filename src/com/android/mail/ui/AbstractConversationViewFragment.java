@@ -595,6 +595,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     protected void onConversationSeen() {
+        LogUtils.d(LOG_TAG, "AbstractConversationViewFragment#onConversationSeen()");
+
         // Ignore unsafe calls made after a fragment is detached from an activity
         final ControllableActivity activity = (ControllableActivity) getActivity();
         if (activity == null) {
@@ -604,6 +606,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
         mViewState.setInfoForConversation(mConversation);
 
+        LogUtils.d(LOG_TAG, "onConversationSeen() - mSuppressMarkingViewed = %b",
+                mSuppressMarkingViewed);
         // In most circumstances we want to mark the conversation as viewed and read, since the
         // user has read it.  However, if the user has already marked the conversation unread, we
         // do not want a  later mark-read operation to undo this.  So we check this variable which
@@ -614,6 +618,10 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             // we don't want to keep marking viewed on rotation or restore
             // but we do want future re-renders to mark read (e.g. "New message from X" case)
             final MessageCursor cursor = getMessageCursor();
+            LogUtils.d(LOG_TAG, "onConversationSeen() - mConversation.isViewed() = %b, "
+                    + "cursor null = %b, cursor.isConversationRead() = %b",
+                    mConversation.isViewed(), cursor == null,
+                    cursor != null && cursor.isConversationRead());
             if (!mConversation.isViewed() || (cursor != null && !cursor.isConversationRead())) {
                 // Mark the conversation viewed and read.
                 activity.getConversationUpdater()
