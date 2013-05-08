@@ -427,7 +427,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     /**
      * Computes the width of the conversation list in stable state of the current mode.
      */
-    protected int computeConversationListWidth() {
+    public int computeConversationListWidth() {
         return computeConversationListWidth(getMeasuredWidth());
     }
 
@@ -445,6 +445,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 return (int) (totalWidth * mConversationListWeight);
         }
         return 0;
+    }
+
+    public int computeConversationWidth() {
+        return computeConversationWidth(getMeasuredWidth());
     }
 
     /**
