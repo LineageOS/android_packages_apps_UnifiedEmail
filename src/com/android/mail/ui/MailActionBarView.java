@@ -438,8 +438,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                         mAccount.supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH));
                 break;
             case ViewMode.SEARCH_RESULTS_LIST:
-                // Show only compose
-                // The only option that needs to be disabled is search
+                // Hide compose and search
+                Utils.setMenuItemVisibility(menu, R.id.compose, false);
                 Utils.setMenuItemVisibility(menu, R.id.search, false);
                 break;
         }
