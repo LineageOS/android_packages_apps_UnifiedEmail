@@ -23,11 +23,25 @@ import android.net.Uri;
 public class ContactInfo {
     public final Uri contactUri;
     public final Integer status;
+    public final byte[] photoBytes;
     public final Bitmap photo;
 
+    public ContactInfo(Uri contactUri, Integer status) {
+        this(contactUri, status, null, null);
+    }
+
+    public ContactInfo(Uri contactUri, Integer status, byte[] photoBytes) {
+        this(contactUri, status, photoBytes, null);
+    }
+
     public ContactInfo(Uri contactUri, Integer status, Bitmap photo) {
+        this(contactUri, status, null, photo);
+    }
+
+    private ContactInfo(Uri contactUri, Integer status, byte[] photoBytes, Bitmap photo) {
         this.contactUri = contactUri;
         this.status = status;
+        this.photoBytes = photoBytes;
         this.photo = photo;
     }
 
