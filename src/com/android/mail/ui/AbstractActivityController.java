@@ -1769,6 +1769,10 @@ public abstract class AbstractActivityController implements ActivityController,
         mSafeToModifyFragments = true;
 
         attachEmptyFolderDialogFragmentListener();
+
+        // Invalidating the options menu so that when we make changes in settings,
+        // the changes will always be updated in the action bar/options menu/
+        mActivity.invalidateOptionsMenu();
     }
 
     @Override
