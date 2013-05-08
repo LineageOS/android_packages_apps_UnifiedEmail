@@ -449,26 +449,6 @@ public final class TwoPaneController extends AbstractActivityController {
                 && shouldEnterSearchConvMode();
     }
 
-    private int getUndoBarWidth(int mode, ToastBarOperation op) {
-        int resId = -1;
-        switch (mode) {
-            case ViewMode.SEARCH_RESULTS_LIST:
-                resId = R.dimen.undo_bar_width_search_list;
-                break;
-            case ViewMode.CONVERSATION_LIST:
-                resId = R.dimen.undo_bar_width_list;
-                break;
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-            case ViewMode.CONVERSATION:
-                if (op.isBatchUndo() && !mLayout.isConversationListCollapsed()) {
-                    resId = R.dimen.undo_bar_width_conv_list;
-                } else {
-                    resId = R.dimen.undo_bar_width_conv;
-                }
-        }
-        return resId != -1 ? (int) mContext.getResources().getDimension(resId) : -1;
-    }
-
     @Override
     public void onUndoAvailable(ToastBarOperation op) {
         final int mode = mViewMode.getMode();
@@ -506,30 +486,43 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     public void repositionToastBar(ToastBarOperation op) {
+        repositionToastBar(op.isBatchUndo());
+    }
+
+    /**
+     * Set the toast bar's layout params to position it in the right place
+     * depending the current view mode.
+     *
+     * @param convModeShowInList if we're in conversation mode, should the toast
+     *            bar appear over the list? no effect when not in conversation mode.
+     */
+    private void repositionToastBar(boolean convModeShowInList) {
         final int mode = mViewMode.getMode();
         final FrameLayout.LayoutParams params =
                 (FrameLayout.LayoutParams) mToastBar.getLayoutParams();
-        int undoBarWidth = getUndoBarWidth(mode, op);
         switch (mode) {
             case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
-                params.width = undoBarWidth - params.leftMargin - params.rightMargin;
+                params.width = mLayout.computeConversationListWidth() - params.leftMargin
+                        - params.rightMargin;
                 params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                 mToastBar.setLayoutParams(params);
                 mToastBar.setConversationMode(false);
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
-                if (op.isBatchUndo() && !mLayout.isConversationListCollapsed()) {
+                if (convModeShowInList && !mLayout.isConversationListCollapsed()) {
                     // Show undo bar in the conversation list.
                     params.gravity = Gravity.BOTTOM | Gravity.LEFT;
-                    params.width = undoBarWidth - params.leftMargin - params.rightMargin;
+                    params.width = mLayout.computeConversationListWidth() - params.leftMargin
+                            - params.rightMargin;
                     mToastBar.setLayoutParams(params);
                     mToastBar.setConversationMode(false);
                 } else {
                     // Show undo bar in the conversation.
                     params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                    params.width = undoBarWidth - params.leftMargin - params.rightMargin;
+                    params.width = mLayout.computeConversationWidth() - params.leftMargin
+                            - params.rightMargin;
                     mToastBar.setLayoutParams(params);
                     mToastBar.setConversationMode(true);
                 }
@@ -558,27 +551,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void onError(final Folder folder, boolean replaceVisibleToast) {
-        final int mode = mViewMode.getMode();
-        final FrameLayout.LayoutParams params =
-                (FrameLayout.LayoutParams) mToastBar.getLayoutParams();
-        switch (mode) {
-            case ViewMode.SEARCH_RESULTS_LIST:
-            case ViewMode.CONVERSATION_LIST:
-                params.width = mLayout.computeConversationListWidth()
-                        - params.leftMargin - params.rightMargin;
-                params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                mToastBar.setLayoutParams(params);
-                break;
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-            case ViewMode.CONVERSATION:
-                // Show error bar in the conversation list.
-                params.gravity = Gravity.BOTTOM | Gravity.LEFT;
-                params.width = mLayout.computeConversationListWidth()
-                        - params.leftMargin - params.rightMargin;
-                mToastBar.setLayoutParams(params);
-                break;
-        }
-
+        repositionToastBar(true /* convModeShowInList */);
         showErrorToast(folder, replaceVisibleToast);
     }
 
