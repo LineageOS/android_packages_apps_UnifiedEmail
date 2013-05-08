@@ -629,6 +629,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mSelectedConversationSet != null) {
             mSelected = mSelectedConversationSet.contains(mHeader.conversation);
         }
+        setSelected(mSelected);
         mHeader.gadgetMode = mGadgetMode;
 
         final boolean isUnread = mHeader.unread;
@@ -1234,17 +1235,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void updateBackground(boolean isUnread) {
         final int background;
         if (isUnread) {
-            if (mSelected) {
-                background = R.drawable.list_checked_holo;
-            } else {
-                background = R.drawable.conversation_unread_selector;
-            }
+            background = R.drawable.conversation_unread_selector;
         } else {
-            if (mSelected) {
-                background = R.drawable.list_checked_holo;
-            } else {
-                background = R.drawable.conversation_read_selector;
-            }
+            background = R.drawable.conversation_read_selector;
         }
         setBackgroundResource(background);
     }
@@ -1267,6 +1260,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     public void toggleSelectedState() {
         if (mHeader != null && mHeader.conversation != null) {
             mSelected = !mSelected;
+            setSelected(mSelected);
             Conversation conv = mHeader.conversation;
             // Set the list position of this item in the conversation
             SwipeableListView listView = getListView();
