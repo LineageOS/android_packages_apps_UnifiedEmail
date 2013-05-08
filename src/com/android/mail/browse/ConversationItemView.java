@@ -126,7 +126,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sSendersTextColorRead;
     private static int sSendersTextColorUnread;
     private static int sDateTextColor;
-    private static int sTouchSlop;
+    private static int sStarTouchSlop;
+    private static int sSenderImageTouchSlop;
     @Deprecated
     private static int sStandardScaledDimen;
     private static int sShrinkAnimationDuration;
@@ -382,7 +383,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSnippetTextReadSpan =
                     new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_read));
             sDateTextColor = res.getColor(R.color.date_text_color);
-            sTouchSlop = res.getDimensionPixelSize(R.dimen.touch_slop);
+            sStarTouchSlop = res.getDimensionPixelSize(R.dimen.star_touch_slop);
+            sSenderImageTouchSlop = res.getDimensionPixelSize(R.dimen.sender_image_touch_slop);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
             sSlideAnimationDuration = res.getInteger(R.integer.slide_animation_duration);
@@ -1303,12 +1305,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private boolean isTouchInContactPhoto(float x) {
         // Everything before the right edge of contact photo
         return (mHeader.gadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
-                && x < (mCoordinates.contactImagesX + mCoordinates.contactImagesWidth));
+                && x < (mCoordinates.contactImagesX + mCoordinates.contactImagesWidth
+                        + sSenderImageTouchSlop));
     }
 
     private boolean isTouchInStar(float x, float y) {
         // Everything after the star and include a touch slop.
-        return mStarEnabled && x > mCoordinates.starX - sTouchSlop;
+        return mStarEnabled && x > mCoordinates.starX - sStarTouchSlop;
     }
 
     @Override
