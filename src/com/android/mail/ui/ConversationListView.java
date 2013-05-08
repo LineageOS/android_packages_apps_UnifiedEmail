@@ -421,14 +421,13 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                         .setDuration(SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS)
                         .start();
                 animate().alpha(0f)
-                        .setDuration(SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS)
-                        .withEndAction(
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        setVisibility(View.GONE);
-                                    }
-                                });
+                        .setDuration(SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS);
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setVisibility(View.GONE);
+                    }
+                }, SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS);
                 mDisplay = NONE;
             }
         }
