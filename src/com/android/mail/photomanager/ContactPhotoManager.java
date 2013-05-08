@@ -20,17 +20,13 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
-import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Contacts.Photo;
 import android.provider.ContactsContract.Data;
-import android.provider.ContactsContract.Directory;
 import android.text.TextUtils;
 import android.util.LruCache;
 
-import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogUtils;
 import com.google.common.base.Objects;
@@ -39,7 +35,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,11 +79,6 @@ public class ContactPhotoManager extends PhotoManager {
     @Override
     public PhotoLoaderThread getLoaderThread(ContentResolver contentResolver) {
         return new ContactPhotoLoaderThread(contentResolver);
-    }
-
-    @Override
-    public int getCapacityOfBitmapCache() {
-        return 6;
     }
 
     /**
@@ -207,46 +197,7 @@ public class ContactPhotoManager extends PhotoManager {
         }
 
         @Override
-        protected int getPhotoPreloadDelay() {
-            return PHOTO_PRELOAD_DELAY;
-        }
-
-        @Override
-        protected int getPreloadBatch() {
-            return PRELOAD_BATCH;
-        }
-
-        @Override
-        protected void queryAndAddPhotosForPreload(List<Object> preloadPhotoIds) {
-            Cursor cursor = null;
-            try {
-                Uri uri = Contacts.CONTENT_URI.buildUpon().appendQueryParameter(
-                        ContactsContract.DIRECTORY_PARAM_KEY, String.valueOf(Directory.DEFAULT))
-                        .appendQueryParameter(ContactsContract.LIMIT_PARAM_KEY,
-                                String.valueOf(MAX_PHOTOS_TO_PRELOAD))
-                        .build();
-                cursor = getResolver().query(uri, new String[] { Contacts.PHOTO_ID },
-                        Contacts.PHOTO_ID + " NOT NULL AND " + Contacts.PHOTO_ID + "!=0",
-                        null,
-                        Contacts.STARRED + " DESC, " + Contacts.LAST_TIME_CONTACTED + " DESC");
-
-                if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        // Insert them in reverse order, because we will be taking
-                        // them from the end of the list for loading.
-                        long photoId = cursor.getLong(0);
-                        preloadPhotoIds.add(0, photoId);
-                    }
-                }
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
-        }
-
-        @Override
-        protected Map<Object, byte[]> preloadPhotos(Set<Object> photoIds) {
+        protected Map<Object, byte[]> queryForPhotos(Set<Object> photoIds) {
             Map<Object, byte[]> photos = new HashMap<Object, byte[]>(photoIds.size());
 
             if (photoIds == null || photoIds.isEmpty()) {
@@ -365,8 +316,7 @@ public class ContactPhotoManager extends PhotoManager {
                 }
             }
             if (photoIds != null && photoIds.size() > 0) {
-                Map<Object, byte[]> photosFromIds = preloadPhotos(photoIds);
-                onLoaded(photosFromIds.keySet());
+                Map<Object, byte[]> photosFromIds = queryForPhotos(photoIds);
 
                 for (Object id : photosFromIds.keySet()) {
                     byte[] bytes = photosFromIds.get(id);
