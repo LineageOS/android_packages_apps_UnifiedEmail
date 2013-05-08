@@ -192,6 +192,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private final Runnable mOnProgressDismiss = new FragmentRunnable("onProgressDismiss") {
         @Override
         public void go() {
+            LogUtils.d(LOG_TAG, "onProgressDismiss go() - isUserVisible() = %b", isUserVisible());
             if (isUserVisible()) {
                 onConversationSeen();
             }
@@ -470,6 +471,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     @Override
     public void onUserVisibleHintChanged() {
         final boolean userVisible = isUserVisible();
+        LogUtils.d(LOG_TAG, "ConversationViewFragment#onUserVisibleHintChanged(), userVisible = %b",
+                userVisible);
 
         if (!userVisible) {
             dismissLoadingStatus();
