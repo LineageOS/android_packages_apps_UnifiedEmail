@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import android.content.AsyncTaskLoader;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Loader;
@@ -90,6 +91,24 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
         if (mSenders == null || mSenders.isEmpty()) {
             return null;
         }
+
+        return loadContactPhotos(
+                getContext().getContentResolver(), mSenders, true /* decodeBitmaps */);
+    }
+
+    /**
+     * Loads contact photos from the ContentProvider.
+     * @param resolver {@link ContentResolver} to use in queries to the ContentProvider.
+     * @param senderSet The email addresses of the sender images to return.
+     * @param decodeBitmaps If {@code true}, decode the bitmaps and put them into
+     *                      {@link ContactInfo}. Otherwise, just put the raw bytes of the photo
+     *                      into the {@link ContactInfo}.
+     * @return A mapping of email addresses to {@link ContactInfo}s. The {@link ContactInfo} will
+     * contain either a byte array or an actual decoded bitmap for the sender image.
+     */
+    public static ImmutableMap<String, ContactInfo> loadContactPhotos(
+            final ContentResolver resolver, final Set<String> senderSet,
+            final boolean decodeBitmaps) {
         Cursor cursor = null;
 
         Map<String, ContactInfo> results = Maps.newHashMap();
@@ -97,7 +116,7 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
         // temporary structures
         Map<Long, Pair<String, ContactInfo>> photoIdMap = Maps.newHashMap();
         ArrayList<String> photoIdsAsStrings = new ArrayList<String>();
-        ArrayList<String> senders = getTruncatedQueryParams(mSenders);
+        ArrayList<String> senders = getTruncatedQueryParams(senderSet);
 
         // Build first query
         StringBuilder query = new StringBuilder()
@@ -107,7 +126,7 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
         query.append(')');
 
         try {
-            cursor = getContext().getContentResolver().query(Data.CONTENT_URI, DATA_COLS,
+            cursor = resolver.query(Data.CONTENT_URI, DATA_COLS,
                     query.toString(), toStringArray(senders), null /* sortOrder */);
 
             if (cursor == null) {
@@ -125,7 +144,7 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
                     status = cursor.getInt(DATA_STATUS_COLUMN);
                 }
 
-                ContactInfo result = new ContactInfo(contactUri, status, null);
+                ContactInfo result = new ContactInfo(contactUri, status);
 
                 if (!cursor.isNull(DATA_PHOTO_ID_COLUMN)) {
                     long photoId = cursor.getLong(DATA_PHOTO_ID_COLUMN);
@@ -148,7 +167,7 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
             appendQuestionMarks(query, photoIdsAsStrings);
             query.append(')');
 
-            cursor = getContext().getContentResolver().query(Data.CONTENT_URI, PHOTO_COLS,
+            cursor = resolver.query(Data.CONTENT_URI, PHOTO_COLS,
                     query.toString(), toStringArray(photoIdsAsStrings), null /* sortOrder */);
 
             if (cursor == null) {
@@ -167,10 +186,16 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
                 String email = prev.first;
                 ContactInfo prevResult = prev.second;
 
-                Bitmap photo = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.length);
-                // overwrite existing photo-less result
-                results.put(email,
-                        new ContactInfo(prevResult.contactUri, prevResult.status, photo));
+                if (decodeBitmaps) {
+                    Bitmap photo = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.length);
+                    // overwrite existing photo-less result
+                    results.put(email,
+                            new ContactInfo(prevResult.contactUri, prevResult.status, photo));
+                } else {
+                    // overwrite existing photoBytes-less result
+                    results.put(email, new ContactInfo(
+                            prevResult.contactUri, prevResult.status, photoBytes));
+                }
             }
         } finally {
             if (cursor != null) {
