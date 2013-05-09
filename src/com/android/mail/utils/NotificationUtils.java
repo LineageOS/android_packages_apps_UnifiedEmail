@@ -1676,7 +1676,7 @@ public class NotificationUtils {
 
         @Override
         public String toString() {
-            return account.toString() + " " + folder.name;
+            return account.name + " " + folder.name;
         }
 
         @Override
