@@ -502,7 +502,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
          * bitmap. Instead, the default image provider will be used.
          */
         public boolean isValid();
-        public Object getKey();
+        public String getKey();
     }
 
     /**
@@ -511,16 +511,10 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     protected abstract class PhotoLoaderThread extends HandlerThread implements Callback {
 
         /**
-         * Do a query on one or more ContentProviders and return the resulting
-         * photos. Remove from photoIds the processed ids.
-         */
-        protected abstract Map<Object, byte[]> queryForPhotos(Set<Object> photoIds);
-
-        /**
          * Return photos mapped from {@link Request#getKey()} to the photo for
          * that request.
          */
-        protected abstract Map<Object, byte[]> loadPhotos(Collection<Request> requests);
+        protected abstract Map<String, byte[]> loadPhotos(Collection<Request> requests);
 
         private static final int MESSAGE_LOAD_PHOTOS = 0;
 
@@ -587,12 +581,12 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                     }
                 }
             }
-            final Map<Object, byte[]> photosMap = loadPhotos(loadRequests);
+            final Map<String, byte[]> photosMap = loadPhotos(loadRequests);
             if (DEBUG) LogUtils.d(TAG,
                     "worker thread completed read request batch. inputN=%s outputN=%s",
                     loadRequests.size(),
                     photosMap.size());
-            for (Object key : photosMap.keySet()) {
+            for (String key : photosMap.keySet()) {
                 if (DEBUG) LogUtils.d(TAG,
                         "worker thread completed read request key=%s byteCount=%s thread=%s",
                         key,
@@ -606,7 +600,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                     continue;
                 }
 
-                final Object key = r.getKey();
+                final String key = r.getKey();
                 final BitmapHolder holder = sBitmapHolderCache.get(key);
                 if (holder == null || holder.bytes == null || !holder.fresh) {
                     continue;
@@ -724,7 +718,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             mView = view;
             viewGeneration = view.getGeneration();
 
-            final Object key = getKey();
+            final String key = getKey();
             // TODO: consider having the client pass in the desired width/height, which would be
             // faster and more direct.
             mView.getDesiredDimensions(key, sWorkDims);
@@ -781,12 +775,12 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             return sb.toString();
         }
 
-        public Object getKey() {
+        public String getKey() {
             return mPhotoIdentifier.getKey();
         }
 
         public void applyDefaultImage() {
-            final Object key = getKey();
+            final String key = getKey();
             if (mView.getGeneration() != viewGeneration) {
                 // This can legitimately happen when an ImageCanvas is reused and re-purposed to
                 // house a new set of images (e.g. by ListView recycling).
