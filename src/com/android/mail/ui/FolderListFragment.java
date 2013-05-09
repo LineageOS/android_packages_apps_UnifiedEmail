@@ -657,7 +657,6 @@ public class FolderListFragment extends ListFragment implements
                 ((FolderItemView) view).overrideUnreadCount(
                         mCurrentFolderForUnreadCheck.unreadCount);
             }
-            LogUtils.d(LOG_TAG, "FLF.getView(%d) returns view of item %s", position, item);
             return view;
         }
 
