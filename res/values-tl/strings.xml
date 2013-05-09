@@ -378,22 +378,22 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> (na) bagong mensahe"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Naka-silent"</string>
-    <!-- no translation found for preference_removal_action_title (6585232628422090835) -->
-    <skip />
-    <!-- no translation found for prefEntries_removal_action:0 (1938422987822134657) -->
-    <!-- no translation found for prefEntries_removal_action:1 (5737880287951287278) -->
-    <!-- no translation found for prefEntries_removal_action:2 (4279948809971752573) -->
-    <!-- no translation found for prefSummaries_removal_action_summary:0 (492039800376391677) -->
-    <!-- no translation found for prefSummaries_removal_action_summary:1 (8350973578419775975) -->
-    <!-- no translation found for prefSummaries_removal_action_summary:2 (2967059853409454648) -->
-    <!-- no translation found for prefDialogTitle_removal_action (6225642737241938453) -->
-    <skip />
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"Mga pagkilos na i-archive at tanggalin"</string>
+  <string-array name="prefEntries_removal_action">
+    <item msgid="1938422987822134657">"I-archive lang ang ipakita"</item>
+    <item msgid="5737880287951287278">"Tanggalin lang ang ipakita"</item>
+    <item msgid="4279948809971752573">"Ipakita ang i-archive at tanggalin"</item>
+  </string-array>
+  <string-array name="prefSummaries_removal_action_summary">
+    <item msgid="492039800376391677">"Archive lang ang ipakita"</item>
+    <item msgid="8350973578419775975">"Tanggalin lang ang ipakita"</item>
+    <item msgid="2967059853409454648">"Ipakita ang i-archive at tanggalin"</item>
+  </string-array>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Mga pagkilos na i-archive at tanggalin"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Tumugon sa lahat"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Gamitin bilang default para sa mga tugon sa mensahe"</string>
-    <!-- no translation found for preference_swipe_title_archive (1178014339238995814) -->
-    <skip />
-    <!-- no translation found for preference_swipe_title_delete (8611320022727435597) -->
-    <skip />
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Mag-swipe upang i-archive"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"I-swipe upang tanggalin"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Sa listahan ng pag-uusap"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Larawan ng nagpadala"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Ipakita sa tabi ng pangalan sa listahan ng pag-uusap"</string>
@@ -409,6 +409,5 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Buksan ang drawer ng nabigasyon"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Isara ang drawer ng nabigasyon"</string>
-    <!-- no translation found for conversation_photo_welcome_text (4274875219447670662) -->
-    <skip />
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Pumidot ng larawan ng nagpadala upang piliin ang pag-uusap na iyon."</string>
 </resources>
