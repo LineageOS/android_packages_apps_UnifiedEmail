@@ -378,22 +378,22 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> imilayezo emisha"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Thulile"</string>
-    <!-- no translation found for preference_removal_action_title (6585232628422090835) -->
-    <skip />
-    <!-- no translation found for prefEntries_removal_action:0 (1938422987822134657) -->
-    <!-- no translation found for prefEntries_removal_action:1 (5737880287951287278) -->
-    <!-- no translation found for prefEntries_removal_action:2 (4279948809971752573) -->
-    <!-- no translation found for prefSummaries_removal_action_summary:0 (492039800376391677) -->
-    <!-- no translation found for prefSummaries_removal_action_summary:1 (8350973578419775975) -->
-    <!-- no translation found for prefSummaries_removal_action_summary:2 (2967059853409454648) -->
-    <!-- no translation found for prefDialogTitle_removal_action (6225642737241938453) -->
-    <skip />
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"Izenzo zokufaka kungobo yomlando nokususa"</string>
+  <string-array name="prefEntries_removal_action">
+    <item msgid="1938422987822134657">"Bonisa ingobo yomlando kuphela"</item>
+    <item msgid="5737880287951287278">"Bonisa ukususa kuphela"</item>
+    <item msgid="4279948809971752573">"Bonisa ingobo yomlando nokususa"</item>
+  </string-array>
+  <string-array name="prefSummaries_removal_action_summary">
+    <item msgid="492039800376391677">"Bonisa ingobo yomlando kuphela"</item>
+    <item msgid="8350973578419775975">"Bonisa ukususa kuphela"</item>
+    <item msgid="2967059853409454648">"Bonisa ingobo yomlando nokususa"</item>
+  </string-array>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Izenzo zokufaka kungobo yomlando nokususa"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Phendula konke"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Sebenzisa njengokuzenzakalelayo kuzimpendulo zomlayezo"</string>
-    <!-- no translation found for preference_swipe_title_archive (1178014339238995814) -->
-    <skip />
-    <!-- no translation found for preference_swipe_title_delete (8611320022727435597) -->
-    <skip />
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Swayipha ukuze ufake kungobo yomlando"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Swayipha ukuze ususe"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Ohlwini lengxoxo"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Isithombe somthumeli"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Bonisa eduze kwegama kuhlu lwengxoxo"</string>
@@ -409,4 +409,5 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Vula ukuzulazula kwekhabethe"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Vala ukuzulazula kwekhabethe"</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Thinta isithombe somthumeli ukuze ukhethe ingxoxo."</string>
 </resources>

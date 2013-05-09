@@ -378,22 +378,22 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> nouveaux messages"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g> : <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Mode silencieux"</string>
-    <!-- no translation found for preference_removal_action_title (6585232628422090835) -->
-    <skip />
-    <!-- no translation found for prefEntries_removal_action:0 (1938422987822134657) -->
-    <!-- no translation found for prefEntries_removal_action:1 (5737880287951287278) -->
-    <!-- no translation found for prefEntries_removal_action:2 (4279948809971752573) -->
-    <!-- no translation found for prefSummaries_removal_action_summary:0 (492039800376391677) -->
-    <!-- no translation found for prefSummaries_removal_action_summary:1 (8350973578419775975) -->
-    <!-- no translation found for prefSummaries_removal_action_summary:2 (2967059853409454648) -->
-    <!-- no translation found for prefDialogTitle_removal_action (6225642737241938453) -->
-    <skip />
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"Actions d\'archivage et de suppression"</string>
+  <string-array name="prefEntries_removal_action">
+    <item msgid="1938422987822134657">"N\'afficher que le bouton \"Archiver\""</item>
+    <item msgid="5737880287951287278">"N\'afficher que le bouton \"Supprimer\""</item>
+    <item msgid="4279948809971752573">"Afficher les boutons \"Archiver\" et \"Supprimer\""</item>
+  </string-array>
+  <string-array name="prefSummaries_removal_action_summary">
+    <item msgid="492039800376391677">"N\'afficher que le bouton \"Archiver\""</item>
+    <item msgid="8350973578419775975">"N\'afficher que le bouton \"Supprimer\""</item>
+    <item msgid="2967059853409454648">"Afficher les boutons \"Archiver\" et \"Supprimer\""</item>
+  </string-array>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Actions d\'archivage et de suppression"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Répondre à tous"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Utiliser ce paramètre par défaut pour les réponses"</string>
-    <!-- no translation found for preference_swipe_title_archive (1178014339238995814) -->
-    <skip />
-    <!-- no translation found for preference_swipe_title_delete (8611320022727435597) -->
-    <skip />
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Faire glisser les éléments pour les archiver"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Faire glisser les éléments pour les supprimer"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Dans la liste des conversations"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Image de l\'expéditeur"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Afficher à côté du nom dans la liste des conversations"</string>
@@ -409,4 +409,5 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Ouvrir le panneau de navigation"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Fermer le panneau de navigation"</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Appuyez sur l\'image d\'un expéditeur pour sélectionner cette conversation."</string>
 </resources>
