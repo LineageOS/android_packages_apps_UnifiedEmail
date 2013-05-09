@@ -27,9 +27,12 @@ import android.provider.ContactsContract.Data;
 import android.text.TextUtils;
 import android.util.LruCache;
 
+import com.android.mail.ContactInfo;
+import com.android.mail.SenderInfoLoader;
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogUtils;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -134,7 +137,7 @@ public class ContactPhotoManager extends PhotoManager {
         }
 
         @Override
-        public Object getKey() {
+        public String getKey() {
             return emailAddress;
         }
 
@@ -197,81 +200,17 @@ public class ContactPhotoManager extends PhotoManager {
         }
 
         @Override
-        protected Map<Object, byte[]> queryForPhotos(Set<Object> photoIds) {
-            Map<Object, byte[]> photos = new HashMap<Object, byte[]>(photoIds.size());
-
-            if (photoIds == null || photoIds.isEmpty()) {
-                return photos;
-            }
-
-            String[] photoIdArgs = new String[photoIds.size()];
-            int i = 0;
-            for (Object id : photoIds) {
-                photoIdArgs[i++] = String.valueOf(id);
-            }
-
-            // first try getting photos from Contacts
-            Cursor contactCursor = null;
-            try {
-                contactCursor = getResolver().query(Data.CONTENT_URI, COLUMNS,
-                        createInQuery(Photo._ID, photoIdArgs.length),
-                        photoIdArgs, null);
-                while (contactCursor.moveToNext()) {
-                    Long id = contactCursor.getLong(0);
-                    byte[] bytes = contactCursor.getBlob(1);
-                    photoIds.remove(id);
-                    photos.put(id, bytes);
-                }
-            } finally {
-                if (contactCursor != null) {
-                    contactCursor.close();
-                }
-            }
-
-            Iterator<Object> iterator = photoIds.iterator();
-            // then try to get the rest from Profiles
-            // FIXME: try to do this in a single query, if possible
-            while (iterator.hasNext()) {
-                Long id = (Long) iterator.next();
-                if (ContactsContract.isProfileId(id)) {
-                    Cursor profileCursor = null;
-                    try {
-                        profileCursor = getResolver().query(
-                                ContentUris.withAppendedId(Data.CONTENT_URI, id),
-                                COLUMNS, null, null, null);
-                        if (profileCursor != null && profileCursor.moveToFirst()) {
-                            photos.put(profileCursor.getLong(0), profileCursor.getBlob(1));
-                        } else {
-                            // Couldn't load a photo this way either.
-                            photos.put(id, null);
-                        }
-                    } finally {
-                        if (profileCursor != null) {
-                            profileCursor.close();
-                        }
-                    }
-                } else {
-                    // Not a profile photo and not found - mark the cache accordingly
-                    photos.put(id, null);
-                }
-                iterator.remove();
-            }
-
-            return photos;
-        }
-
-        @Override
-        protected Map<Object, byte[]> loadPhotos(Collection<Request> requests) {
-            Map<Object, byte[]> photos = new HashMap<Object, byte[]>(requests.size());
+        protected Map<String, byte[]> loadPhotos(Collection<Request> requests) {
+            Map<String, byte[]> photos = new HashMap<String, byte[]>(requests.size());
 
             Set<String> addresses = new HashSet<String>();
-            Set<Object> photoIds = new HashSet<Object>();
+            Set<Long> photoIds = new HashSet<Long>();
             HashMap<Long, String> photoIdMap = new HashMap<Long, String>();
 
             Long match;
             String emailAddress;
             for (Request request : requests) {
-                emailAddress = (String) request.getKey();
+                emailAddress = request.getKey();
                 match = mPhotoIdCache.get(emailAddress);
                 if (match != null) {
                     photoIds.add(match);
@@ -281,58 +220,14 @@ public class ContactPhotoManager extends PhotoManager {
                 }
             }
 
-            if (addresses.size() > 0) {
-                String[] selectionArgs = new String[addresses.size()];
-                addresses.toArray(selectionArgs);
-                Cursor photoIdsCursor = null;
-                try {
-                    StringBuilder query = new StringBuilder().append(Data.MIMETYPE).append("='")
-                            .append(Email.CONTENT_ITEM_TYPE).append("' AND ").append(Email.DATA)
-                            .append(" IN (");
-                    appendQuestionMarks(query, addresses.size());
-                    query.append(')');
-                    photoIdsCursor = getResolver().query(Data.CONTENT_URI, DATA_COLS,
-                            query.toString(), selectionArgs, null /* sortOrder */);
-                    Long id;
-                    String contactAddress;
-                    if (photoIdsCursor != null) {
-                        while (photoIdsCursor.moveToNext()) {
-                            id = photoIdsCursor.getLong(DATA_PHOTO_ID_COLUMN);
-                            // In case there are multiple contacts for this
-                            // contact, try to always pick the one that actually
-                            // has a photo.
-                            if (!photoIdsCursor.isNull(DATA_PHOTO_ID_COLUMN)) {
-                                contactAddress = photoIdsCursor.getString(DATA_EMAIL_COLUMN);
-                                photoIds.add(id);
-                                photoIdMap.put(id, contactAddress);
-                                cachePhotoId(id, contactAddress);
-                            }
-                        }
-                    }
-                } finally {
-                    if (photoIdsCursor != null) {
-                        photoIdsCursor.close();
-                    }
-                }
-            }
-            if (photoIds != null && photoIds.size() > 0) {
-                Map<Object, byte[]> photosFromIds = queryForPhotos(photoIds);
+            // get the Map of email addresses to ContactInfo
+            ImmutableMap<String, ContactInfo> emailAddressToContactInfoMap =
+                    SenderInfoLoader.loadContactPhotos(
+                    getResolver(), addresses, false /* decodeBitmaps */);
 
-                for (Object id : photosFromIds.keySet()) {
-                    byte[] bytes = photosFromIds.get(id);
-                    photos.put(photoIdMap.get(id), bytes);
-                }
-            }
-
-            // TODO(mindyp): this optimization assumes that contact photos don't
-            // change/ update that often, and if you didn't have a matching id
-            // for a contact before, you probably won't be getting it any time soon.
-            for (String a : addresses) {
-                if (!photoIdMap.containsValue(a)) {
-                    // We couldn't find a matching photo id at all, so just
-                    // cache this as needing a default image.
-                    photos.put(a, null);
-                }
+            // put all entries into photos map: mapping of email addresses to photoBytes
+            for(Map.Entry<String, ContactInfo> entry : emailAddressToContactInfoMap.entrySet()) {
+                photos.put(entry.getKey(), entry.getValue().photoBytes);
             }
 
             return photos;
