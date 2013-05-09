@@ -225,9 +225,13 @@ public class ContactPhotoManager extends PhotoManager {
                     SenderInfoLoader.loadContactPhotos(
                     getResolver(), addresses, false /* decodeBitmaps */);
 
-            // put all entries into photos map: mapping of email addresses to photoBytes
-            for(Map.Entry<String, ContactInfo> entry : emailAddressToContactInfoMap.entrySet()) {
-                photos.put(entry.getKey(), entry.getValue().photoBytes);
+            // Put all entries into photos map: a mapping of email addresses to photoBytes.
+            // If there is no ContactInfo, it means we couldn't get a photo for this
+            // address so just put null in for the bytes so that the crazy caching
+            // works properly and we don't get an infinite loop of GC churn.
+            for (final String address : addresses) {
+                final ContactInfo info = emailAddressToContactInfoMap.get(address);
+                photos.put(address, info != null ? info.photoBytes : null);
             }
 
             return photos;
