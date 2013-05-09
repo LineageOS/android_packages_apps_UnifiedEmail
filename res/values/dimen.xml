@@ -31,7 +31,8 @@
     <dimen name="compose_scrollview_width">700dp</dimen>
     <dimen name="color_block_width">32dip</dimen>
     <dimen name="color_block_height">6dip</dimen>
-    <dimen name="star_touch_slop">4dip</dimen>
+    <!-- The star is pretty small and does not have padding anymore, so the slop needs to be bigger-->
+    <dimen name="star_touch_slop">16dip</dimen>
     <dimen name="sender_image_touch_slop">8dip</dimen>
     <dimen name="move_slop">4dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
