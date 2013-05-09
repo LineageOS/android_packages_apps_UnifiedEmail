@@ -679,7 +679,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (ViewMode.isWaitingForSync(mMode)) {
             // Account is not synced: clear title and update the subtitle.
             setTitle("");
-            removeUnreadCount();
+            removeUnreadCount(true);
             return;
         }
         // Check if we should be changing the actionbar at all, and back off if not.
@@ -705,27 +705,31 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         final int toDisplay = (folderUnreadCount > UNREAD_LIMIT)
                 ? (UNREAD_LIMIT + 1) : folderUnreadCount;
         if ((mUnreadCount != toDisplay || folderChanged) && toDisplay != 0) {
-            setSubtitle(Utils.getUnreadMessageString(
-                    mActivity.getApplicationContext(), toDisplay));
-            // This is a new update, remove previous messages, if any.
-            mHandler.removeMessages(SubtitleHandler.EMAIL);
-            // In a short while, show the account name in its place.
-            mHandler.sendEmptyMessageDelayed(SubtitleHandler.EMAIL, ACCOUNT_DELAY_MS);
-        } else {
-            removeUnreadCount();
+            setSubtitle(Utils.getUnreadMessageString(mActivity.getApplicationContext(), toDisplay));
         }
+        // Schedule a removal of unread count for the future, if there isn't one already.
+        removeUnreadCount(false);
         // Remember the new value for the next run
         mUnreadCount = toDisplay;
     }
 
     /**
      * Remove the unread count and show the account name, if required.
+     * @param now true if you want the change to happen immediately. False if you want to enforce
+     *            it happens later.
      */
-    private void removeUnreadCount() {
-        // Remove all previous messages which might change the subtitle
-        mHandler.removeMessages(SubtitleHandler.EMAIL);
-        // Update the subtitle: clear it or show account name.
-        mHandler.sendEmptyMessage(SubtitleHandler.EMAIL);
+    private void removeUnreadCount(boolean now) {
+        if (now) {
+            // Remove all previous messages which might change the subtitle
+            mHandler.removeMessages(SubtitleHandler.EMAIL);
+            // Update the subtitle: clear it or show account name.
+            mHandler.sendEmptyMessage(SubtitleHandler.EMAIL);
+        } else {
+            if (!mHandler.hasMessages(SubtitleHandler.EMAIL)) {
+                // In a short while, show the account name in its place.
+                mHandler.sendEmptyMessageDelayed(SubtitleHandler.EMAIL, ACCOUNT_DELAY_MS);
+            }
+        }
     }
 
     /**
