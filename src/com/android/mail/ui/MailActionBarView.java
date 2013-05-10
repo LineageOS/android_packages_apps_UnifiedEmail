@@ -759,8 +759,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if ((mUnreadCount != toDisplay || folderChanged) && toDisplay != 0) {
             setSubtitle(Utils.getUnreadMessageString(mActivity.getApplicationContext(), toDisplay));
         }
-        // Schedule a removal of unread count for the future, if there isn't one already.
-        removeUnreadCount(false);
+        // Schedule a removal of unread count for the future, if there isn't one already. If the
+        // unread count dropped to zero, remove it and show the account name right away.
+        removeUnreadCount(toDisplay == 0);
         // Remember the new value for the next run
         mUnreadCount = toDisplay;
     }
