@@ -36,7 +36,7 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
     final ForceLoadContentObserver mObserver;
     protected static final String LOG_TAG = LogTag.getLogTag();
 
-    final Uri mUri;
+    private Uri mUri;
     final String[] mProjection;
     // Copied over from CursorLoader, but none of our uses specify this. So these are hardcoded to
     // null right here.
@@ -60,15 +60,12 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
          * If these are null, it's going to crash anyway in loadInBackground(), but this stack trace
          * is much more useful.
          */
-        if (uri == null) {
-            throw new NullPointerException("The uri cannot be null");
-        }
         if (factory == null) {
             throw new NullPointerException("The factory cannot be null");
         }
 
         mObserver = new ForceLoadContentObserver();
-        mUri = uri;
+        setUri(uri);
         mProjection = projection;
         mFactory = factory;
     }
@@ -84,7 +81,7 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
             inner.registerContentObserver(mObserver);
         }
         // Modifications to the ObjectCursor, create an Object Cursor and fill the cache.
-        final ObjectCursor<T> cursor = new ObjectCursor<T>(inner, mFactory);
+        final ObjectCursor<T> cursor = getObjectCursor(inner);
         cursor.fillCache();
 
         try {
@@ -94,6 +91,10 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
         } catch (InterruptedException e) {}
 
         return cursor;
+    }
+
+    protected ObjectCursor<T> getObjectCursor(Cursor inner) {
+        return new ObjectCursor<T>(inner, mFactory);
     }
 
     /* Runs on the UI thread */
@@ -187,5 +188,16 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
     public ObjectCursorLoader<T> setDebugDelay(int delayMs) {
         mDebugDelayMs = delayMs;
         return this;
+    }
+
+    protected final Uri getUri() {
+        return mUri;
+    }
+
+    protected final void setUri(Uri uri) {
+        if (uri == null) {
+            throw new NullPointerException("The uri cannot be null");
+        }
+        mUri = uri;
     }
 }

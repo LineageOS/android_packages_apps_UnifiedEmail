@@ -25,7 +25,6 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.ActivityInfo;
@@ -56,7 +55,10 @@ import com.android.mail.browse.ConversationAccountController;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationController;
+import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
+import com.android.mail.content.ObjectCursor;
+import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Address;
@@ -193,7 +195,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * Subclasses must override this, since they may want to display a single or
      * many messages related to this conversation.
      */
-    protected abstract void onMessageCursorLoadFinished(Loader<Cursor> loader,
+    protected abstract void onMessageCursorLoadFinished(
+            Loader<ObjectCursor<ConversationMessage>> loader,
             MessageCursor newCursor, MessageCursor oldCursor);
 
     /**
@@ -502,15 +505,17 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
     }
 
-    private class MessageLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+    private class MessageLoaderCallbacks
+            implements LoaderManager.LoaderCallbacks<ObjectCursor<ConversationMessage>> {
 
         @Override
-        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        public Loader<ObjectCursor<ConversationMessage>> onCreateLoader(int id, Bundle args) {
             return new MessageLoader(mActivity.getActivityContext(), mConversation.messageListUri);
         }
 
         @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        public void onLoadFinished(Loader<ObjectCursor<ConversationMessage>> loader,
+                    ObjectCursor<ConversationMessage> data) {
             // ignore truly duplicate results
             // this can happen when restoring after rotation
             if (mCursor == data) {
@@ -538,7 +543,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                         // message list update fires first. nothing to do
                         // because we expect to be torn down soon.)
                         LogUtils.i(LOG_TAG, "CVF: offscreen conv has no messages, ignoring update"
-                                + " in anticipation of conv cursor update. c=%s", mConversation.uri);
+                                + " in anticipation of conv cursor update. c=%s",
+                                mConversation.uri);
                     }
                     // existing mCursor will imminently be closed, must stop referencing it
                     // since we expect to be kicked out soon, it doesn't matter what mCursor
@@ -563,7 +569,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
 
         @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
+        public void onLoaderReset(Loader<ObjectCursor<ConversationMessage>>  loader) {
             mCursor = null;
         }
 
@@ -641,20 +647,15 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         return new ConversationViewState();
     }
 
-    private static class MessageLoader extends CursorLoader {
+    private static class MessageLoader extends ObjectCursorLoader<ConversationMessage> {
         private boolean mDeliveredFirstResults = false;
 
         public MessageLoader(Context c, Uri messageListUri) {
-            super(c, messageListUri, UIProvider.MESSAGE_PROJECTION, null, null, null);
+            super(c, messageListUri, UIProvider.MESSAGE_PROJECTION, ConversationMessage.FACTORY);
         }
 
         @Override
-        public Cursor loadInBackground() {
-            return new MessageCursor(super.loadInBackground());
-        }
-
-        @Override
-        public void deliverResult(Cursor result) {
+        public void deliverResult(ObjectCursor<ConversationMessage> result) {
             // We want to deliver these results, and then we want to make sure
             // that any subsequent
             // queries do not hit the network
@@ -676,6 +677,11 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                                 listParams.serialize()).build();
                 setUri(uri);
             }
+        }
+
+        @Override
+        protected ObjectCursor<ConversationMessage> getObjectCursor(Cursor inner) {
+            return new MessageCursor(inner);
         }
     }
 
