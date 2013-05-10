@@ -22,13 +22,13 @@
          even in the conversation view. -->
     <item android:id="@+id/compose"
         android:title="@string/menu_compose"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:icon="@drawable/ic_menu_compose_normal_holo_light"
         android:alphabeticShortcut="@string/trigger_compose_char" />
 
     <item android:id="@+id/search"
         android:title="@string/menu_search"
-        android:showAsAction="ifRoom|collapseActionView"
+        android:showAsAction="always|collapseActionView"
         android:icon="@drawable/ic_menu_search_holo_light"
         android:actionLayout="@layout/mail_actionbar_searchview" />
 
@@ -40,13 +40,13 @@
     <item
         android:id="@+id/archive"
         android:title="@string/archive"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/archive"
         android:alphabeticShortcut="@string/trigger_y_char" />
     <item
         android:id="@+id/remove_folder"
         android:title="@string/remove_folder"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_remove_label"
         android:alphabeticShortcut="@string/trigger_y_char"
         android:visible="false" />
@@ -54,33 +54,33 @@
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/trash" />
     <!-- Depends on the user viewing a draft label, and the above menu item not being shown -->
     <item
         android:id="@+id/discard_drafts"
         android:title="@string/discard_drafts"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/trash"
         android:visible="false" />
 
     <item
         android:id="@+id/inside_conversation_unread"
         android:title="@string/mark_unread"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_mark_unread_holo_light" />
 
     <item
         android:id="@+id/move_to"
         android:title="@string/menu_move_to"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_move_to_holo_light" />
 
     <!-- Always available -->
     <item
         android:id="@+id/change_folder"
         android:title="@string/menu_change_folders"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_folders_holo_light" />
 
     <item
@@ -105,7 +105,6 @@
     <item
         android:id="@+id/report_spam"
         android:title="@string/report_spam"
-        android:icon="@drawable/ic_spam_normal_holo_light"
         android:showAsAction="never"/>
 
     <!-- Depends on AccountCapabilities.REPORT_SPAM -->
@@ -125,7 +124,6 @@
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
         android:showAsAction="never"
-        android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
     <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
@@ -139,13 +137,11 @@
 
     <item
         android:id="@+id/feedback_menu_item"
-        android:icon="@android:drawable/ic_menu_send"
         android:title="@string/feedback"
         android:showAsAction="never" />
 
     <item
         android:id="@+id/help_info_menu_item"
-        android:icon="@android:drawable/ic_menu_help"
         android:title="@string/help_and_info"
         android:showAsAction="never" />
 
