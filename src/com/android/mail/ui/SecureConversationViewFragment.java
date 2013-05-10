@@ -40,6 +40,7 @@ import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.MessageScrollView;
 import com.android.mail.browse.MessageWebView;
+import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
@@ -213,8 +214,8 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    protected void onMessageCursorLoadFinished(Loader<Cursor> loader, MessageCursor newCursor,
-            MessageCursor oldCursor) {
+    protected void onMessageCursorLoadFinished(Loader<ObjectCursor<ConversationMessage>> loader,
+            MessageCursor newCursor, MessageCursor oldCursor) {
         // ignore cursors that are still loading results
         if (newCursor == null || !newCursor.isLoaded()) {
             LogUtils.i(LOG_TAG, "CONV RENDER: existing cursor is null, rendering from scratch");
