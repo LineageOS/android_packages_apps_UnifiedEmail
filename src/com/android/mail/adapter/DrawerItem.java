@@ -26,11 +26,9 @@ import com.android.mail.ui.FolderItemView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 /** An account, a system folder, a recent folder, or a header (a resource string) */
@@ -62,8 +60,9 @@ public class DrawerItem {
     private final ControllableActivity mActivity;
     private final LayoutInflater mInflater;
 
+    // TODO(viki): Put all these constants in an interface.
     /**
-     * Either {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or {@link #FOLDER_USER} when
+     * Either {@link #FOLDER_INBOX}, {@link #FOLDER_RECENT} or {@link #FOLDER_OTHER} when
      * {@link #mType} is {@link #VIEW_FOLDER}, or an {@link #ACCOUNT} in the case of
      * accounts, and {@link #INERT_HEADER} otherwise.
      */
@@ -72,12 +71,12 @@ public class DrawerItem {
     public static final int UNSET = 0;
     /** An unclickable text-header visually separating the different types. */
     public static final int INERT_HEADER = 0;
-    /** A system-defined folder: Inbox/Drafts, ...*/
-    public static final int FOLDER_SYSTEM = 1;
+    /** An inbox folder: Inbox, ...*/
+    public static final int FOLDER_INBOX = 1;
     /** A folder from whom a conversation was recently viewed */
     public static final int FOLDER_RECENT = 2;
-    /** A user created folder */
-    public static final int FOLDER_USER = 3;
+    /** A non-inbox folder that is shown in the "everything else" group. */
+    public static final int FOLDER_OTHER = 3;
     /** An entry for the accounts the user has on the device. */
     public static final int ACCOUNT = 4;
 
@@ -107,8 +106,8 @@ public class DrawerItem {
      * @param activity the underlying activity
      * @param folder a non-null folder, if this is a folder type
      * @param folderType the type of the folder. For folders this is:
-     *            {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT},
-     *            {@link #FOLDER_USER}, or for non-folders this is
+     *            {@link #FOLDER_INBOX}, {@link #FOLDER_RECENT},
+     *            {@link #FOLDER_OTHER}, or for non-folders this is
      *            {@link #ACCOUNT}, or {@link #INERT_HEADER}
      * @param account the account object, for an account drawer element
      * @param resource either the string resource for a header, or the unread
@@ -134,8 +133,8 @@ public class DrawerItem {
      * Create a folder item with the given type.
      * @param activity the underlying activity
      * @param folder a folder that this item represents
-     * @param folderType one of {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or
-     * {@link #FOLDER_USER}
+     * @param folderType one of {@link #FOLDER_INBOX}, {@link #FOLDER_RECENT} or
+     * {@link #FOLDER_OTHER}
      * @param cursorPosition the position of the folder in the underlying cursor.
      * @return a drawer item for the folder.
      */
