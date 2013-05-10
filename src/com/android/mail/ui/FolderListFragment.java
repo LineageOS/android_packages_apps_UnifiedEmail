@@ -122,8 +122,8 @@ public class FolderListFragment extends ListFragment implements
     /** Listen to changes to list of all accounts */
     private AllAccountObserver mAllAccountsObserver = null;
     /**
-     * Type of currently selected folder: {@link DrawerItem#FOLDER_SYSTEM},
-     * {@link DrawerItem#FOLDER_RECENT} or {@link DrawerItem#FOLDER_USER}.
+     * Type of currently selected folder: {@link DrawerItem#FOLDER_INBOX},
+     * {@link DrawerItem#FOLDER_RECENT} or {@link DrawerItem#FOLDER_OTHER}.
      * Set as {@link DrawerItem#UNSET} to begin with, as there is nothing selected yet.
      */
     private int mSelectedFolderType = DrawerItem.UNSET;
@@ -301,7 +301,8 @@ public class FolderListFragment extends ListFragment implements
                     // First, check if there's a folder to change to
                     if (mNextFolder != null) {
                         mFolderChanger.onFolderSelected(mNextFolder);
-                        mNextFolder = null;
+                        // Wait for an update to the current folder. When we get the next folder,
+                        // then we null it out.
                     }
                     // Next, check if there's an account to change to
                     if (mNextAccount != null) {
@@ -434,8 +435,8 @@ public class FolderListFragment extends ListFragment implements
     }
 
     private void changeAccount(final Account account) {
-        // Switching accounts takes you to the inbox, which is always a system folder.
-        mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
+        // Switching accounts takes you to the default inbox for that account.
+        mSelectedFolderType = DrawerItem.FOLDER_INBOX;
         mNextAccount = account;
         mAccountChanger.closeDrawer(true, mNextAccount, getDefaultInbox(mNextAccount));
     }
@@ -771,11 +772,11 @@ public class FolderListFragment extends ListFragment implements
             }
 
             if (!mIsSectioned) {
-                // Adapter for a flat list. Everything is a FOLDER_USER, and there are no headers.
+                // Adapter for a flat list. Everything is a FOLDER_OTHER, and there are no headers.
                 do {
                     final Folder f = mCursor.getModel();
                     if (!isFolderTypeExcluded(f)) {
-                        itemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_USER,
+                        itemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_OTHER,
                                 mCursor.getPosition()));
                     }
                 } while (mCursor.moveToNext());
@@ -792,10 +793,10 @@ public class FolderListFragment extends ListFragment implements
                 if (!isFolderTypeExcluded(f)) {
                     if (f.isInbox()) {
                         inboxFolders.add(DrawerItem.ofFolder(
-                                mActivity, f, DrawerItem.FOLDER_SYSTEM, mCursor.getPosition()));
+                                mActivity, f, DrawerItem.FOLDER_INBOX, mCursor.getPosition()));
                     } else {
                         allFoldersList.add(DrawerItem.ofFolder(
-                                mActivity, f, DrawerItem.FOLDER_USER, mCursor.getPosition()));
+                                mActivity, f, DrawerItem.FOLDER_OTHER, mCursor.getPosition()));
                     }
                     if (f.equals(mCurrentFolderForUnreadCheck)) {
                         currentFolderFound = true;
@@ -1064,27 +1065,33 @@ public class FolderListFragment extends ListFragment implements
             LogUtils.e(LOG_TAG, "FolderListFragment.setSelectedFolder(null) called!");
             return;
         }
+        // Is this the folder we changed to previously?  If not, ignore the update
+        if (mNextFolder != null && !folder.uri.equals(mNextFolder.uri)) {
+            // Update to a folder that we don't care about.  Ignore
+            return;
+        }
+        mNextFolder = null;
+
         final boolean viewChanged =
                 !FolderItemView.areSameViews(folder, mCurrentFolderForUnreadCheck);
+
+        // There are two cases in which the folder type is not set by this class.
+        // 1. The activity starts up: from notification/widget/shortcut/launcher. Then we have a
+        //    folder but its type was never set.
+        // 2. The user backs into the default inbox. Going 'back' from the conversation list of
+        //    any folder will take you to the default inbox for that account. (If you are in the
+        //    default inbox already, back exits the app.)
+        // In both these cases, the selected folder type is not set, and must be set.
+        if (mSelectedFolderType == DrawerItem.UNSET || (mCurrentAccount != null
+                && folder.uri.equals(mCurrentAccount.settings.defaultInbox))) {
+            mSelectedFolderType =
+                    folder.isInbox() ? DrawerItem.FOLDER_INBOX : DrawerItem.FOLDER_OTHER;
+        }
+
         mCurrentFolderForUnreadCheck = folder;
         mSelectedFolderUri = folder.uri;
-        setSelectedFolderType(folder);
         if (mCursorAdapter != null && viewChanged) {
             mCursorAdapter.notifyDataSetChanged();
-        }
-    }
-
-    /**
-     * Sets the selected folder type safely.
-     * @param folder folder to set to.
-     */
-    private void setSelectedFolderType(Folder folder) {
-        if (mSelectedFolderType == DrawerItem.UNSET) {
-            mSelectedFolderType = folder.isInbox() ? DrawerItem.FOLDER_SYSTEM
-                    : DrawerItem.FOLDER_USER;
-        } else if (folder.isInbox()) {
-            // Handle when backing up in case we need to manually set the type
-            mSelectedFolderType = DrawerItem.FOLDER_SYSTEM;
         }
     }
 
