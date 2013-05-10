@@ -18,34 +18,30 @@
 package com.android.mail.browse;
 
 import android.database.Cursor;
-import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import com.android.mail.content.CursorCreator;
+import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.CursorExtraKeys;
 import com.android.mail.providers.UIProvider.CursorStatus;
 import com.android.mail.ui.ConversationUpdater;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * MessageCursor contains the messages within a conversation; the public methods within should
  * only be called by the UI thread, as cursor position isn't guaranteed to be maintained
  */
-public class MessageCursor extends CursorWrapper {
-
-    private final Map<Long, ConversationMessage> mCache = Maps.newHashMap();
+public class MessageCursor extends ObjectCursor<MessageCursor.ConversationMessage> {
     /**
      * The current controller that this cursor can use to reference the owning {@link Conversation},
      * and a current {@link ConversationUpdater}. Since this cursor will survive a rotation, but
@@ -79,7 +75,7 @@ public class MessageCursor extends CursorWrapper {
 
         private transient ConversationController mController;
 
-        private ConversationMessage(MessageCursor cursor) {
+        private ConversationMessage(Cursor cursor) {
             super(cursor);
         }
 
@@ -122,10 +118,26 @@ public class MessageCursor extends CursorWrapper {
             }
         }
 
+        /**
+         * Public object that knows how to construct Messages given Cursors.
+         */
+        public static final CursorCreator<ConversationMessage> FACTORY =
+                new CursorCreator<ConversationMessage>() {
+            @Override
+            public ConversationMessage createFromCursor(Cursor c) {
+                return new ConversationMessage(c);
+            }
+
+            @Override
+            public String toString() {
+                return "ConversationMessage CursorCreator";
+            }
+        };
+
     }
 
     public MessageCursor(Cursor inner) {
-        super(inner);
+        super(inner, ConversationMessage.FACTORY);
     }
 
     public void setController(ConversationController controller) {
@@ -133,12 +145,7 @@ public class MessageCursor extends CursorWrapper {
     }
 
     public ConversationMessage getMessage() {
-        final long id = getWrappedCursor().getLong(UIProvider.MESSAGE_ID_COLUMN);
-        ConversationMessage m = mCache.get(id);
-        if (m == null) {
-            m = new ConversationMessage(this);
-            mCache.put(id, m);
-        }
+        final ConversationMessage m = getModel();
         // ALWAYS set up each ConversationMessage with the latest controller.
         // Rotation invalidates everything except this Cursor, its Loader and the cached Messages,
         // so if we want to continue using them after rotate, we have to ensure their controller

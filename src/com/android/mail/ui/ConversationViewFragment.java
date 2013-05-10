@@ -63,6 +63,7 @@ import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
+import com.android.mail.content.ObjectCursor;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
@@ -1202,8 +1203,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void onMessageCursorLoadFinished(Loader<Cursor> loader, MessageCursor newCursor,
-            MessageCursor oldCursor) {
+    public void onMessageCursorLoadFinished(Loader<ObjectCursor<ConversationMessage>> loader,
+            MessageCursor newCursor, MessageCursor oldCursor) {
         /*
          * what kind of changes affect the MessageCursor? 1. new message(s) 2.
          * read/unread state change 3. deleted message, either regular or draft
