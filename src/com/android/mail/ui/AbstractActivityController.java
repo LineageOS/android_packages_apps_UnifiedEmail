@@ -352,7 +352,8 @@ public abstract class AbstractActivityController implements ActivityController,
     protected ActionBarDrawerToggle mDrawerToggle;
     protected ListView mListViewForAnimating;
     protected boolean mHasNewAccountOrFolder;
-    protected final MailDrawerListener mDrawerListener = new MailDrawerListener();
+    private boolean mConversationListLoadFinishedIgnored;
+    protected MailDrawerListener mDrawerListener;
 
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
@@ -383,6 +384,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mShowUndoBarDelay = r.getInteger(R.integer.show_undo_bar_delay_ms);
         mVeiledMatcher = VeiledAddressMatcher.newInstance(activity.getResources());
         mIsTablet = Utils.useTabletUI(r);
+        mConversationListLoadFinishedIgnored = false;
     }
 
     @Override
@@ -1004,7 +1006,8 @@ public abstract class AbstractActivityController implements ActivityController,
 
         mDrawerToggle = new ActionBarDrawerToggle((Activity) mActivity, mDrawerContainer,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
-        mDrawerContainer.setDrawerListener(new MailDrawerListener());
+        mDrawerListener = new MailDrawerListener();
+        mDrawerContainer.setDrawerListener(mDrawerListener);
         mDrawerContainer.setDrawerShadow(
                 mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.START);
 
@@ -3059,8 +3062,9 @@ public abstract class AbstractActivityController implements ActivityController,
         public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
             LogUtils.d(LOG_TAG, "IN AAC.ConversationCursor.onLoadFinished, data=%s loader=%s",
                     data, loader);
-            if (isDrawerEnabled() && mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
+            if (isDrawerEnabled() && mDrawerListener.getDrawerState() != DrawerLayout.STATE_IDLE) {
                 LogUtils.d(LOG_TAG, "ConversationListLoaderCallbacks.onLoadFinished: ignoring.");
+                mConversationListLoadFinishedIgnored = true;
                 return;
             }
             // Clear our all pending destructive actions before swapping the conversation cursor
@@ -3825,6 +3829,12 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     private class MailDrawerListener implements DrawerLayout.DrawerListener {
+        private int mDrawerState;
+
+        public MailDrawerListener() {
+            mDrawerState = DrawerLayout.STATE_IDLE;
+        }
+
         @Override
         public void onDrawerOpened(View drawerView) {
             mDrawerToggle.onDrawerOpened(drawerView);
@@ -3858,9 +3868,20 @@ public abstract class AbstractActivityController implements ActivityController,
          */
         @Override
         public void onDrawerStateChanged(int newState) {
-            mDrawerToggle.onDrawerStateChanged(newState);
-            if (mHasNewAccountOrFolder && newState == DrawerLayout.STATE_IDLE) {
-                refreshDrawer();
+            mDrawerState = newState;
+            mDrawerToggle.onDrawerStateChanged(mDrawerState);
+            if (mDrawerState == DrawerLayout.STATE_IDLE) {
+                if (mHasNewAccountOrFolder) {
+                    refreshDrawer();
+                }
+                if (mConversationListLoadFinishedIgnored) {
+                    mConversationListLoadFinishedIgnored = false;
+                    final Bundle args = new Bundle();
+                    args.putParcelable(BUNDLE_ACCOUNT_KEY, mAccount);
+                    args.putParcelable(BUNDLE_FOLDER_KEY, mFolder);
+                    mActivity.getLoaderManager().initLoader(
+                            LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
+                }
             }
         }
 
@@ -3877,6 +3898,17 @@ public abstract class AbstractActivityController implements ActivityController,
                 conversationList.clear();
             }
             mDrawerObservers.notifyChanged();
+        }
+
+        /**
+         * Returns the most recent update of the {@link DrawerLayout}'s state provided
+         * by {@link #onDrawerStateChanged(int)}.
+         * @return The {@link DrawerLayout}'s current state. One of
+         * {@link DrawerLayout#STATE_DRAGGING}, {@link DrawerLayout#STATE_IDLE},
+         * or {@link DrawerLayout#STATE_SETTLING}.
+         */
+        public int getDrawerState() {
+            return mDrawerState;
         }
     }
 
