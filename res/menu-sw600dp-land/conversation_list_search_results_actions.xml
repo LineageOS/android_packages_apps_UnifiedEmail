@@ -50,25 +50,21 @@
     <item
         android:id="@+id/mark_important"
         android:title="@string/mark_important"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_email_caret_double" />
+        android:showAsAction="never" />
 
     <item
         android:id="@+id/mark_not_important"
         android:title="@string/mark_not_important"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_email_caret_single" />
+        android:showAsAction="never" />
 
     <item
         android:id="@+id/report_spam"
         android:title="@string/report_spam"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_spam_normal_holo_light" />
+        android:showAsAction="never" />
 
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
         android:showAsAction="never"
-        android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
     <item android:id="@+id/settings"
@@ -77,13 +73,11 @@
 
     <item
         android:id="@+id/feedback_menu_item"
-        android:icon="@android:drawable/ic_menu_send"
         android:showAsAction="never"
         android:title="@string/feedback" />
 
     <item
         android:id="@+id/help_info_menu_item"
-        android:icon="@android:drawable/ic_menu_help"
         android:showAsAction="never"
         android:title="@string/help_and_info" />
 

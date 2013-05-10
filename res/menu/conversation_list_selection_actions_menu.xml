@@ -27,14 +27,14 @@
     <item
         android:id="@+id/archive"
         android:title="@string/archive"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:icon="@drawable/archive"
         android:alphabeticShortcut="@string/trigger_y_char"/>
 
     <item
         android:id="@+id/remove_folder"
         android:title="@string/remove_folder"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:icon="@drawable/ic_remove_label"
         android:alphabeticShortcut="@string/trigger_y_char"
         android:visible="false" />
@@ -43,13 +43,13 @@
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:icon="@drawable/trash"/>
     <!-- Depends on the user viewing a draft label, and the above menu item not being shown -->
     <item
         android:id="@+id/discard_drafts"
         android:title="@string/discard_drafts"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:icon="@drawable/trash"
         android:visible="false" />
 
@@ -57,48 +57,44 @@
     <item
         android:id="@+id/read"
         android:title="@string/mark_read"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_mark_read_holo_light" />
 
     <item
         android:id="@+id/unread"
         android:title="@string/mark_unread"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_mark_unread_holo_light" />
 
     <item
         android:id="@+id/move_to"
         android:title="@string/menu_move_to"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_move_to_holo_light" />
 
     <item
         android:id="@+id/change_folder"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:title="@string/menu_change_folders"
         android:icon="@drawable/ic_menu_folders_holo_light" />
 
     <item android:id="@+id/star"
         android:title="@string/add_star"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_menu_star_holo_light" />
+        android:showAsAction="never" />
 
     <item android:id="@+id/remove_star"
         android:title="@string/remove_star"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_menu_star_off_holo_light" />
+        android:showAsAction="never" />
 
     <item
         android:id="@+id/mark_important"
         android:title="@string/mark_important"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_email_caret_double" />
+        android:showAsAction="never" />
 
     <item
         android:id="@+id/mark_not_important"
         android:title="@string/mark_not_important"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_email_caret_single" />
+        android:showAsAction="never" />
 
     <!-- Availability based on account -->
     <item

@@ -112,6 +112,10 @@
     <bool name="inline_personal_level">true</bool>
 
     <integer name="swipe_senders_length">25</integer>
-    <!-- Is the screen narrow? Used to determine how many items to show in CAB mode. -->
-    <bool name="is_narrow">true</bool>
+
+    <!-- Number of menu items to display in the ActionBar -->
+    <integer name="actionbar_max_items">3</integer>
+
+    <!-- Number of menu items to hide from the ActionBar by subtracting from actionbar_max_items in non-cab mode -->
+    <integer name="actionbar_hidden_non_cab_items_no_physical_button">1</integer>
 </resources>
