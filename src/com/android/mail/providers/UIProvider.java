@@ -166,6 +166,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE, Integer.class)
             .put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN, String.class)
             .put(AccountColumns.UPDATE_SETTINGS_URI, String.class)
+            .put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, Integer.class)
             .build();
 
     public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
@@ -449,6 +450,10 @@ public class UIProvider {
          * the new values.
          */
         public static final String UPDATE_SETTINGS_URI = "updateSettingsUri";
+        /**
+         * Whether message transforms (HTML DOM manipulation) should be enabled.
+         */
+        public static final String ENABLE_MESSAGE_TRANSFORMS = "enableMessageTransforms";
 
         public static final class SettingsColumns {
             /**
