@@ -35,6 +35,7 @@ import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
@@ -268,7 +269,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 // 4: SEARCH_RESULTS_LIST
                 R.menu.conversation_list_search_results_actions,
                 // 5: SEARCH_RESULTS_CONVERSATION
-                R.menu.conversation_search_results_actions,
+                R.menu.conversation_actions,
                 // 6: WAITING_FOR_ACCOUNT_INITIALIZATION
                 R.menu.wait_mode_actions
         };
@@ -428,8 +429,15 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 // to show up during the time between the conversation is selected and the fragment
                 // is added.
                 setConversationModeOptions(menu);
-                // We want to use the user's preferred menu order here
-                reorderMenu(getContext(), mAccount, menu);
+                // We want to use the user's preferred menu items here
+                final Resources resources = getResources();
+                final int maxItems = resources.getInteger(R.integer.actionbar_max_items);
+                final int hiddenItems = resources.getInteger(
+                        R.integer.actionbar_hidden_non_cab_items_no_physical_button);
+                final int totalItems = maxItems
+                        - (ViewConfiguration.get(getContext()).hasPermanentMenuKey()
+                                ? 0 : hiddenItems);
+                reorderMenu(getContext(), mAccount, menu, totalItems);
                 break;
             case ViewMode.CONVERSATION_LIST:
                 // Show compose and search based on the account
@@ -451,7 +459,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Reorders the specified {@link Menu}, taking into account the user's Archive/Delete
      * preference.
      */
-    public static void reorderMenu(final Context context, final Account account, final Menu menu) {
+    public static void reorderMenu(final Context context, final Account account, final Menu menu,
+            final int maxItems) {
         final String removalAction = MailPrefs.get(context).getRemovalAction(
                 account.supportsCapability(AccountCapabilities.ARCHIVE));
         final boolean showArchive = MailPrefs.RemovalActions.ARCHIVE.equals(removalAction) ||
@@ -459,7 +468,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         final boolean showDelete = MailPrefs.RemovalActions.DELETE.equals(removalAction) ||
                 MailPrefs.RemovalActions.ARCHIVE_AND_DELETE.equals(removalAction);
 
-        // Do a first pass to extract necessary information on what is safe to move to the overflow
+        // Do a first pass to extract necessary information on what is safe to display
         boolean archiveVisibleEnabled = false;
         boolean deleteVisibleEnabled = false;
         for (int i = 0; i < menu.size(); i++) {
@@ -475,34 +484,77 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             }
         }
 
+        int actionItems = 0;
+
         for (int i = 0; i < menu.size(); i++) {
             final MenuItem menuItem = menu.getItem(i);
             final int itemId = menuItem.getItemId();
 
-            if (!showArchive && deleteVisibleEnabled) {
-                if (itemId == R.id.archive || itemId == R.id.remove_folder) {
-                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-                }
-            }
+            // We only want to promote it if it's visible and has an icon
+            if (menuItem.isVisible() && menuItem.getIcon() != null) {
+                switch (itemId) {
+                    case R.id.archive:
+                    case R.id.remove_folder:
+                        /*
+                         * If this is disabled, and we want to show both archive and delete, we will
+                         * hide archive (rather than showing it disabled), and take up one of our
+                         * spaces. If we only want to show archive, we'll hide it, but not take up
+                         * a space.
+                         */
+                        if (!menuItem.isEnabled() && showArchive) {
+                            menuItem.setVisible(false);
 
-            if (!showDelete && archiveVisibleEnabled) {
-                if (itemId == R.id.delete || itemId == R.id.discard_drafts) {
-                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-                }
-            }
+                            if (showDelete) {
+                                actionItems++;
+                            }
 
-            if (showArchive && archiveVisibleEnabled && showDelete && deleteVisibleEnabled) {
-                if (itemId == R.id.move_to) {
-                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-                }
-            }
+                            break;
+                        }
 
-            // TODO(skennedy) Refactor the above into this switch
-            switch (itemId) {
-                case R.id.change_folder:
-                    menuItem.setVisible(account
-                            .supportsCapability(AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV));
-                    break;
+                        /*
+                         * We show this if the following are all true:
+                         * 1. The user wants to display archive, or delete is not visible
+                         * 2. We have room for it
+                         */
+                        if ((showArchive || !deleteVisibleEnabled) && actionItems < maxItems) {
+                            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                            actionItems++;
+                        }
+                        break;
+                    case R.id.delete:
+                    case R.id.discard_drafts:
+                        /*
+                         * We show this if the following are all true:
+                         * 1. The user wants to display delete, or archive is not visible
+                         * 2. We have room for it
+                         */
+                        if ((showDelete || !archiveVisibleEnabled) && actionItems < maxItems) {
+                            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                            actionItems++;
+                        }
+                        break;
+                    case R.id.change_folder:
+                        final boolean showChangeFolder = account
+                                .supportsCapability(AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
+                        menuItem.setVisible(showChangeFolder);
+
+                        if (showChangeFolder && actionItems < maxItems) {
+                            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                            actionItems++;
+                        }
+                        break;
+                    case R.id.search:
+                        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
+                                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                        actionItems++;
+                        break;
+                    default:
+                        if (actionItems < maxItems) {
+                            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                            actionItems++;
+                        }
+                        break;
+                }
             }
         }
     }
