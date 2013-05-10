@@ -870,6 +870,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * @return {@code true} if the conversation should be transformed. {@code false}, otherwise.
      */
     public boolean shouldApplyTransforms() {
-        return !mHasConversationTransformBeenReverted;
+        return (mAccount.enableMessageTransforms > 0) &&
+                !mHasConversationTransformBeenReverted;
     }
 }

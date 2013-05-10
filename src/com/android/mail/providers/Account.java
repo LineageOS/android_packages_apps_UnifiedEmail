@@ -172,6 +172,10 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final Uri updateSettingsUri;
 
     /**
+     * Whether message transforms (HTML DOM manipulation) feature is enabled.
+     */
+    public final int enableMessageTransforms;
+    /**
      * Transient cache of parsed {@link #accountFromAddresses}, plus an entry for the main account
      * address.
      */
@@ -214,6 +218,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                     viewIntentProxyUri);
             json.put(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
             json.put(UIProvider.AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
+            json.put(UIProvider.AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -301,6 +306,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 json.optString(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI));
         updateSettingsUri = Utils.getValidUri(
                 json.optString(UIProvider.AccountColumns.UPDATE_SETTINGS_URI));
+        enableMessageTransforms = json.optInt(AccountColumns.ENABLE_MESSAGE_TRANSFORMS);
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -337,6 +343,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         viewIntentProxyUri = in.readParcelable(null);
         accoutCookieQueryUri = in.readParcelable(null);
         updateSettingsUri = in.readParcelable(null);
+        enableMessageTransforms = in.readInt();
         final String serializedSettings = in.readString();
         final Settings parcelSettings = Settings.newInstance(serializedSettings);
         if (parcelSettings != null) {
@@ -399,6 +406,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI)));
         updateSettingsUri = Utils.getValidUri(cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.UPDATE_SETTINGS_URI)));
+        enableMessageTransforms = cursor.getInt(
+                cursor.getColumnIndex(AccountColumns.ENABLE_MESSAGE_TRANSFORMS));
         settings = new Settings(cursor);
     }
 
@@ -472,6 +481,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(viewIntentProxyUri, 0);
         dest.writeParcelable(accoutCookieQueryUri, 0);
         dest.writeParcelable(updateSettingsUri, 0);
+        dest.writeInt(enableMessageTransforms);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
         }
@@ -562,6 +572,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(viewIntentProxyUri, other.viewIntentProxyUri) &&
                 Objects.equal(accoutCookieQueryUri, other.accoutCookieQueryUri) &&
                 Objects.equal(updateSettingsUri, other.updateSettingsUri) &&
+                Objects.equal(enableMessageTransforms, other.enableMessageTransforms) &&
                 Objects.equal(settings, other.settings);
     }
 
@@ -591,7 +602,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                         undoUri, settingsIntentUri, helpIntentUri, sendFeedbackIntentUri,
                         reauthenticationIntentUri, syncStatus, composeIntentUri, mimeType,
                         recentFolderListUri, color, defaultRecentFolderListUri, viewIntentProxyUri,
-                        accoutCookieQueryUri, updateSettingsUri);
+                        accoutCookieQueryUri, updateSettingsUri, enableMessageTransforms);
     }
 
     /**
@@ -721,6 +732,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         map.put(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
         map.put(UIProvider.AccountColumns.COLOR, color);
         map.put(UIProvider.AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
+        map.put(UIProvider.AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
         map.put(AccountColumns.SettingsColumns.SIGNATURE, settings.signature);
         map.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, settings.getAutoAdvanceSetting());
         map.put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, settings.messageTextSize);
