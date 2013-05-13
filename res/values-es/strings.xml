@@ -380,20 +380,20 @@
     <string name="silent_ringtone" msgid="5856834572357761687">"Silencio"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Archivar y eliminar"</string>
   <string-array name="prefEntries_removal_action">
-    <item msgid="1938422987822134657">"Mostrar solo mensajes archivados"</item>
-    <item msgid="5737880287951287278">"Mostrar solo mensajes eliminados"</item>
-    <item msgid="4279948809971752573">"Mostrar mensajes archivados y eliminados"</item>
+    <item msgid="1938422987822134657">"Mostrar solo archivados"</item>
+    <item msgid="5737880287951287278">"Mostrar solo eliminados"</item>
+    <item msgid="4279948809971752573">"Mostrar archivados y eliminados"</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="492039800376391677">"Mostrar solo mensajes archivados"</item>
-    <item msgid="8350973578419775975">"Mostrar solo mensajes eliminados"</item>
-    <item msgid="2967059853409454648">"Mostrar mensajes archivados y eliminados"</item>
+    <item msgid="492039800376391677">"Mostrar solo archivados"</item>
+    <item msgid="8350973578419775975">"Mostrar solo eliminados"</item>
+    <item msgid="2967059853409454648">"Mostrar archivados y eliminados"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Archivar y eliminar"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Responder a todos"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Usar como opción predeterminada para responder mensajes"</string>
-    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Deslizar para archivar"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Deslizar para eliminar"</string>
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Desliza para archivar"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Desliza para eliminar"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"En la lista de conversaciones"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Imagen del remitente"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Mostrar junto al nombre en la lista de conversaciones"</string>

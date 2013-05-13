@@ -391,7 +391,7 @@
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Arkib &amp; padam tindakan"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Balas kepada semua"</string>
-    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Gunakan secara lalai untuk balasan mesej"</string>
+    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Gunakan sebagai tetapan lalai untuk balasan mesej"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Leret untuk mengarkib"</string>
     <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Leret untuk memadam"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Dalam senarai perbualan"</string>
