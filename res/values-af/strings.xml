@@ -378,18 +378,18 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> nuwe boodskappe"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Stil"</string>
-    <string name="preference_removal_action_title" msgid="6585232628422090835">"Argiveer en vee handelinge uit"</string>
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"Argiveer- en uitvee-handelinge"</string>
   <string-array name="prefEntries_removal_action">
-    <item msgid="1938422987822134657">"Wys net argiveer"</item>
-    <item msgid="5737880287951287278">"Wys net uitvee"</item>
-    <item msgid="4279948809971752573">"Wys argiveer en uitvee"</item>
+    <item msgid="1938422987822134657">"Wys net geargiveer"</item>
+    <item msgid="5737880287951287278">"Wys net uitgevee"</item>
+    <item msgid="4279948809971752573">"Wys geargiveer en uitgevee"</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="492039800376391677">"Wys net argiveer"</item>
-    <item msgid="8350973578419775975">"Wys net uitvee"</item>
-    <item msgid="2967059853409454648">"Wys argiveer en uitvee"</item>
+    <item msgid="492039800376391677">"Wys net geargiveer"</item>
+    <item msgid="8350973578419775975">"Wys net uitgevee"</item>
+    <item msgid="2967059853409454648">"Wys geargiveer en uitgevee"</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Argiveer en vee handelinge uit"</string>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Argiveer- en uitvee-handelinge"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Antwoord almal"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Gebruik as verstek vir antwoorde op boodskappe"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Sleep om te argiveer"</string>
