@@ -409,5 +409,5 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Navigationsleiste öffnen"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Navigationsleiste schließen"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Absenderbild berühren, um die entsprechende Konversation auszuwählen"</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Auf Absenderbild tippen, um die entsprechende Konversation auszuwählen"</string>
 </resources>
