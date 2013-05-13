@@ -392,8 +392,8 @@
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Vitendo vya kuweka kwenye kumbukumbu na kufuta"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Jibu wote"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Tumia kama chaguo-msingi la majibu ya ujumbe"</string>
-    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Papasa hadi kwenye kumbukumbu"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Papasa ili kufuta"</string>
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Papasa kwa kasi ili kuweka kwenye kumbukumbu"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Papasa kwa kasi ili kufuta"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Katika orodha ya mazungumzo"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Picha ya mtumaji"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Onyesha kando ya jina katika orodha ya mazungumzo"</string>

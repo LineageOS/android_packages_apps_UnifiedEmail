@@ -409,5 +409,5 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"باز کردن کشوی پیمایش"</string>
     <string name="drawer_close" msgid="2764774620737876943">"بستن کشوی پیمایش"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"برای انتخاب این مکالمه، تصویر یک فرستنده را لمس کنید."</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"برای انتخاب مکالمه، تصویر فرستنده را لمس کنید."</string>
 </resources>
