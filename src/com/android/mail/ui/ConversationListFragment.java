@@ -383,7 +383,14 @@ public final class ConversationListFragment extends ListFragment implements
         if (mViewContext == null) {
             return s;
         }
-        return "(" + s + " folder=" + mViewContext.folder + ")";
+        final StringBuilder sb = new StringBuilder(s);
+        sb.setLength(sb.length() - 1);
+        sb.append(" mListAdapter=");
+        sb.append(mListAdapter);
+        sb.append(" folder=");
+        sb.append(mViewContext.folder);
+        sb.append("}");
+        return sb.toString();
     }
 
     @Override

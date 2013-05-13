@@ -2660,7 +2660,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public final void onRefreshRequired() {
         if (isAnimating() || isDragging()) {
-            LogUtils.d(LOG_TAG, "onRefreshRequired: delay until animating done");
+            LogUtils.i(ConversationCursor.LOG_TAG, "onRefreshRequired: delay until animating done");
             return;
         }
         // Refresh the query in the background
@@ -2678,12 +2678,12 @@ public abstract class AbstractActivityController implements ActivityController,
     public void stopDragMode() {
         mIsDragHappening = false;
         if (mConversationListCursor.isRefreshReady()) {
-            LogUtils.d(LOG_TAG, "Stopped animating: try sync");
+            LogUtils.i(ConversationCursor.LOG_TAG, "Stopped dragging: try sync");
             onRefreshReady();
         }
 
         if (mConversationListCursor.isRefreshRequired()) {
-            LogUtils.d(LOG_TAG, "Stopped animating: refresh");
+            LogUtils.i(ConversationCursor.LOG_TAG, "Stopped dragging: refresh");
             mConversationListCursor.refresh();
         }
     }
@@ -2788,12 +2788,12 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
         if (mConversationListCursor.isRefreshReady()) {
-            LogUtils.d(LOG_TAG, "Stopped animating: try sync");
+            LogUtils.i(ConversationCursor.LOG_TAG, "Stopped animating: try sync");
             onRefreshReady();
         }
 
         if (mConversationListCursor.isRefreshRequired()) {
-            LogUtils.d(LOG_TAG, "Stopped animating: refresh");
+            LogUtils.i(ConversationCursor.LOG_TAG, "Stopped animating: refresh");
             mConversationListCursor.refresh();
         }
         if (mRecentsDataUpdated) {
