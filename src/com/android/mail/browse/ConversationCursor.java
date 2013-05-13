@@ -40,6 +40,7 @@ import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.mail.content.ThreadSafeCursorWrapper;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderList;
@@ -95,6 +96,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * chosen empirically (long enough for UI changes to propagate in any reasonable case)
      */
     private static final long REQUERY_ALLOWANCE_TIME = 10000L;
+
+    private static final int MAX_INIT_CONVERSATION_PRELOAD = 100;
 
     /**
      * The index of the Uri whose data is reflected in the cached row. Updates/Deletes to this Uri
@@ -264,7 +267,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     private static class UnderlyingRowData {
         public final String wrappedUri;
         public final String innerUri;
-        public final Conversation conversation;
+        public Conversation conversation;
 
         public UnderlyingRowData(String wrappedUri, String innerUri, Conversation conversation) {
             this.wrappedUri = wrappedUri;
@@ -277,7 +280,37 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * Simple wrapper for a cursor that provides methods for quickly determining
      * the existence of a row.
      */
-    private static class UnderlyingCursorWrapper extends CursorWrapper {
+    private static class UnderlyingCursorWrapper extends ThreadSafeCursorWrapper {
+        private class CacheLoaderTask extends AsyncTask<Void, Void, Void> {
+            private final int mStartPos;
+
+            CacheLoaderTask(int startPosition) {
+                mStartPos = startPosition;
+            }
+
+            @Override
+            public Void doInBackground(Void... param) {
+                for (int i = mStartPos; i < getCount(); i++) {
+                    if (isCancelled()) {
+                        break;
+                    }
+
+                    final UnderlyingRowData rowData = mRowCache.get(i);
+                    if (rowData.conversation == null) {
+                        // We are running in a background thread.  Set the position to the row we
+                        // are interested in.
+                        if (moveToPosition(i)) {
+                            cacheConversation(new Conversation(UnderlyingCursorWrapper.this));
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+
+        private final CacheLoaderTask mCacheLoaderTask;
+
         // Ideally these two objects could be combined into a Map from
         // conversationId -> position, but the cached values uses the conversation
         // uri as a key.
@@ -294,6 +327,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     new ImmutableMap.Builder<Long, Integer>();
             final UnderlyingRowData[] cache;
             final int count;
+            int numCached = 0;
             final boolean networkWasEnabled;
             if (result != null) {
                 // We don't want iterating over this cursor to trigger a network request
@@ -301,8 +335,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             } else {
                 networkWasEnabled = false;
             }
-            if (result != null && result.moveToFirst()) {
-                count = result.getCount();
+            if (result != null && super.moveToFirst()) {
+                count = super.getCount();
                 cache = new UnderlyingRowData[count];
                 int i = 0;
 
@@ -323,16 +357,17 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     final String wrappedUriString;
                     final long convId;
 
-                    if (ENABLE_CONVERSATION_PRECACHING) {
+                    if (ENABLE_CONVERSATION_PRECACHING && i < MAX_INIT_CONVERSATION_PRELOAD) {
                         c = new Conversation(this);
                         innerUriString = c.uri.toString();
                         wrappedUriString = uriToCachingUriString(c.uri);
                         convId = c.id;
+                        numCached++;
                     } else {
                         c = null;
-                        innerUriString = result.getString(URI_COLUMN_INDEX);
+                        innerUriString = super.getString(URI_COLUMN_INDEX);
                         wrappedUriString = uriToCachingUriString(Uri.parse(innerUriString));
-                        convId = result.getLong(UIProvider.CONVERSATION_ID_COLUMN);
+                        convId = super.getLong(UIProvider.CONVERSATION_ID_COLUMN);
                     }
                     conversationUriPositionMapBuilder.put(innerUriString, i);
                     conversationIdPositionMapBuilder.put(convId, i);
@@ -356,7 +391,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                             wrappedUriString,
                             innerUriString,
                             c);
-                } while (result.moveToPosition(++i));
+                } while (super.moveToPosition(++i));
 
                 if (DEBUG_DUPLICATE_KEYS && (uriPositionMap.size() != count ||
                         idPositionMap.size() != count)) {
@@ -378,8 +413,17 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             mRowCache = Collections.unmodifiableList(Arrays.asList(cache));
             final long end = SystemClock.uptimeMillis();
             LogUtils.i(LOG_TAG, "*** ConversationCursor pre-loading took" +
-                    " %sms n=%s CONV_PRECACHING=%s",
-                    (end-start), count, ENABLE_CONVERSATION_PRECACHING);
+                    " %sms n=%s cached=%s CONV_PRECACHING=%s",
+                    (end-start), count, numCached, ENABLE_CONVERSATION_PRECACHING);
+
+            // If we haven't cached all of the conversations, start a task to do that
+            if (ENABLE_CONVERSATION_PRECACHING && numCached < count) {
+                mCacheLoaderTask = new CacheLoaderTask(numCached);
+                mCacheLoaderTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                mCacheLoaderTask = null;
+            }
+
         }
 
         public boolean contains(String uri) {
@@ -410,6 +454,23 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
         public Conversation getConversation() {
             return mRowCache.get(getPosition()).conversation;
+        }
+
+        public void cacheConversation(Conversation conversation) {
+            if (ENABLE_CONVERSATION_PRECACHING) {
+                final UnderlyingRowData rowData = mRowCache.get(getPosition());
+                if (rowData.conversation == null) {
+                    rowData.conversation = conversation;
+                }
+            }
+        }
+
+        @Override
+        public void close() {
+            if (mCacheLoaderTask != null) {
+                mCacheLoaderTask.cancel(true);
+            }
+            super.close();
         }
     }
 
@@ -1125,6 +1186,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         if (c == null) {
             // not pre-cached. fall back to just-in-time construction.
             c = new Conversation(this);
+            mUnderlyingCursor.cacheConversation(c);
         } else {
             // apply any cached values
             // but skip over any cached values that aren't part of the cursor projection
