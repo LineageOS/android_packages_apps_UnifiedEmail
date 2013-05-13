@@ -31,7 +31,6 @@ import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Displays a folder selection dialog for the conversation provided. It allows
