@@ -57,6 +57,10 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
             return null;
         }
 
+        /*
+         * TODO: This method should only be called with isMoveTo=true if this capability is not
+         * present on the account, so we should be able to remove the check here.
+         */
         if (isMoveTo || !account.supportsCapability(
                 UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
             return new SingleFolderSelectionDialog(
