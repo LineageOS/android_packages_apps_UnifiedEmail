@@ -26,7 +26,10 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationCursor;
+import com.android.mail.content.CursorCreator;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.ui.ConversationCursorLoader;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
@@ -640,4 +643,20 @@ public class Conversation implements Parcelable {
 
         return String.format(sSubjectAndSnippet, filteredSubject, snippet);
     }
+
+    /**
+     * Public object that knows how to construct Conversation given Cursors. This is not used by
+     * {@link ConversationCursor} or {@link ConversationCursorLoader}.
+     */
+    public static final CursorCreator<Conversation> FACTORY = new CursorCreator<Conversation>() {
+        @Override
+        public Conversation createFromCursor(final Cursor c) {
+            return new Conversation(c);
+        }
+
+        @Override
+        public String toString() {
+            return "Conversation CursorCreator";
+        }
+    };
 }
