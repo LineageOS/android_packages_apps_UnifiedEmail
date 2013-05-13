@@ -112,6 +112,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private Integer mListCopyWidthOnComplete;
 
     private final boolean mIsExpansiveLayout;
+    private boolean mDrawerInitialSetupComplete;
 
     public TwoPaneLayout(Context context) {
         this(context, null);
@@ -139,6 +140,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 / (convListWeight + convViewWeight);
 
         mIsExpansiveLayout = res.getBoolean(R.bool.use_expansive_tablet_ui);
+        mDrawerInitialSetupComplete = false;
     }
 
     @Override
@@ -545,6 +547,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             mController.disablePagerUpdates();
         }
 
+        mDrawerInitialSetupComplete = true;
         mCurrentMode = newMode;
         LogUtils.i(LOG_TAG, "onViewModeChanged(%d)", newMode);
 
@@ -580,7 +583,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     }
 
     public boolean isDrawerEnabled() {
-        return !mIsExpansiveLayout;
+        return !mIsExpansiveLayout && mDrawerInitialSetupComplete;
     }
 
 }

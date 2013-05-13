@@ -302,4 +302,11 @@ public interface ActivityController extends LayoutListener,
      * Note: the value returned should not change for this controller instance.
      */
     boolean isDrawerEnabled();
+
+    /**
+     * Called to determine if menu items in the action bar should be hidden.
+     * Currently this is used for when the drawer is open to hide certain
+     * items that are not applicable while the drawer is open.
+     */
+    public boolean shouldHideMenuItems();
 }
