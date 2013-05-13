@@ -196,7 +196,7 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected final ViewMode mViewMode;
     protected ContentResolver mResolver;
-    protected boolean isLoaderInitialized = false;
+    protected boolean mHaveAccountList = false;
     private AsyncRefreshTask mAsyncRefreshTask;
 
     private boolean mDestroyed;
@@ -1757,7 +1757,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onPause() {
-        isLoaderInitialized = false;
+        mHaveAccountList = false;
         enableNotifications();
     }
 
@@ -2314,8 +2314,11 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Returns true if the number of accounts is different, or if the current account has been
-     * removed from the device
+     * Returns true if the number of accounts is different, or if the current account has
+     * changed. This method is meant to filter frequent changes to the list of
+     * accounts, and only return true if the new list is substantially different from the existing
+     * list. Returning true is safe here, it leads to more work in creating the
+     * same account list again.
      * @param accountCursor the cursor which points to all the accounts.
      * @return true if the number of accounts is changed or current account missing from the list.
      */
@@ -2335,13 +2338,16 @@ public abstract class AbstractActivityController implements ActivityController,
         // the cursor.
         boolean foundCurrentAccount = false;
         do {
-            final Uri accountUri = Uri.parse(accountCursor.getString(
-                    accountCursor.getColumnIndex(UIProvider.AccountColumns.URI)));
-            if (!foundCurrentAccount && mAccount.uri.equals(accountUri)) {
+            final Account account = accountCursor.getModel();
+            if (!foundCurrentAccount && mAccount.uri.equals(account.uri)) {
+                if (mAccount.settingsDiffer(account)) {
+                    // Settings changed, and we don't need to look any further.
+                    return true;
+                }
                 foundCurrentAccount = true;
             }
             // Is there a new account that we do not know about?
-            if (!mCurrentAccountUris.contains(accountUri)) {
+            if (!mCurrentAccountUris.contains(account.uri)) {
                 return true;
             }
         } while (accountCursor.moveToNext());
@@ -3328,8 +3334,8 @@ public abstract class AbstractActivityController implements ActivityController,
                         }
                     } else {
                         final boolean accountListUpdated = accountsUpdated(data);
-                        if (!isLoaderInitialized || accountListUpdated) {
-                            isLoaderInitialized = updateAccounts(data);
+                        if (!mHaveAccountList || accountListUpdated) {
+                            mHaveAccountList = updateAccounts(data);
                         }
                     }
                     break;
