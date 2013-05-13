@@ -229,9 +229,17 @@ public class ContactPhotoManager extends PhotoManager {
             // If there is no ContactInfo, it means we couldn't get a photo for this
             // address so just put null in for the bytes so that the crazy caching
             // works properly and we don't get an infinite loop of GC churn.
-            for (final String address : addresses) {
-                final ContactInfo info = emailAddressToContactInfoMap.get(address);
-                photos.put(address, info != null ? info.photoBytes : null);
+            if (emailAddressToContactInfoMap != null) {
+                for (final String address : addresses) {
+                    final ContactInfo info = emailAddressToContactInfoMap.get(address);
+                    photos.put(address, info != null ? info.photoBytes : null);
+                }
+            } else {
+                // Still need to set a null result for all addresses, otherwise we end
+                // up in the loop where photo manager attempts to load these again.
+                for (final String address: addresses) {
+                    photos.put(address, null);
+                }
             }
 
             return photos;
