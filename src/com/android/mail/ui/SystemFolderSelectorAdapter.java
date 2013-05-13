@@ -21,7 +21,6 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
 
 import java.util.Set;
 
@@ -43,8 +42,14 @@ public final class SystemFolderSelectorAdapter extends FolderSelectorAdapter {
      */
     @Override
     protected boolean meetsRequirements(Folder folder) {
+        /*
+         * TODO: Only show inboxes until we have a way to exclude things like STARRED and SPAM,
+         * but allow other system folders.
+         */
+        return folder.isInbox();
+
         // We only want to show system folders.
-        return folder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
-                && folder.isProviderFolder();
+        // return folder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
+        //             && folder.isProviderFolder();
     }
 }
