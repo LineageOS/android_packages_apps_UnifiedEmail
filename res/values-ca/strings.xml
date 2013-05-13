@@ -62,7 +62,7 @@
     <string name="archive" msgid="847250094775910499">"Arxiva"</string>
     <string name="report_spam" msgid="6467567747975393907">"Informa de correu brossa"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Indica que no és correu brossa"</string>
-    <string name="report_phishing" msgid="5714205737453138338">"Informa de pesca"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"Informa de suplantació d\'identitat"</string>
     <string name="delete" msgid="844871204175957681">"Suprimeix"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Descarta els esborranys"</string>
     <string name="next" msgid="4674401197968248302">"Més antic"</string>
@@ -120,7 +120,7 @@
     <string name="more_info_attachment" msgid="717244337981816703">"Informació"</string>
     <string name="attachment_type_blocked" msgid="7878184764428642891">"Aquest tipus de fitxer adjunt no es pot desar ni obrir."</string>
     <string name="no_application_found" msgid="1945184804521392093">"No hi ha cap aplicació que pugui obrir aquest fitxer adjunt per a la visualització."</string>
-    <string name="fetching_attachment" msgid="2599763030649526179">"Obtenció del fitxer adjunt"</string>
+    <string name="fetching_attachment" msgid="2599763030649526179">"S\'està obtenint el fitxer adjunt"</string>
     <string name="please_wait" msgid="8797634225088247121">"Espera…"</string>
     <string name="saved" msgid="6660844285730790469">"S\'ha desat, <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="442019281547315527">"No s\'ha pogut baixar. Toca per reintentar."</string>
@@ -348,7 +348,7 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Totes les carpetes"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Carpetes recents"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Detalls del missatge"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"Avança automàticament"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"Avançament automàtic"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Selecciona la pantalla que es mostrarà en suprimir un missatge"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"Estableix la preferència d\'avançament autom."\n"(després de suprimir, etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
