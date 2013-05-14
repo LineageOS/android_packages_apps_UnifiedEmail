@@ -382,6 +382,10 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // that are possible.
         LogUtils.d(LOG_TAG, "ActionBarView.onPrepareOptionsMenu().");
 
+        if (mController.shouldHideMenuItems()) {
+            setMenuItemsToHiddenForOpenDrawer(menu);
+            return false;
+        }
         // TODO: move refresh stuff into setRefreshInProgress. can just setActionView without
         // invalidating.
         if (mRefreshInProgress) {
@@ -556,6 +560,22 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                         break;
                 }
             }
+        }
+    }
+
+    /**
+     * Hides menu items while the drawer is open.
+     */
+    private void setMenuItemsToHiddenForOpenDrawer(Menu menu) {
+        final int size = menu.size();
+
+        for (int i = 0; i < size; i++) {
+            final MenuItem item = menu.getItem(i);
+
+            final int id = item.getItemId();
+            item.setVisible(id == R.id.settings ||
+                    id == R.id.feedback_menu_item ||
+                    id == R.id.help_info_menu_item);
         }
     }
 
