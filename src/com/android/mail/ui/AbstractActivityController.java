@@ -154,6 +154,8 @@ public abstract class AbstractActivityController implements ActivityController,
     private static final String SAVED_ACTION_FROM_SELECTED = "saved-action-from-selected";
     /** Tag for {@link #mDetachedConvUri} */
     private static final String SAVED_DETACHED_CONV_URI = "saved-detached-conv-uri";
+    /** Tag for {@link #mHideMenuItems} */
+    private static final String SAVED_HIDE_MENU_ITEMS = "save-hide-menu-items";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -354,6 +356,7 @@ public abstract class AbstractActivityController implements ActivityController,
     protected boolean mHasNewAccountOrFolder;
     private boolean mConversationListLoadFinishedIgnored;
     protected MailDrawerListener mDrawerListener;
+    private boolean mHideMenuItems;
 
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
@@ -1054,6 +1057,8 @@ public abstract class AbstractActivityController implements ActivityController,
     public void onPostCreate(Bundle savedState) {
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
+
+        mHideMenuItems = isDrawerEnabled() ? mDrawerContainer.isDrawerOpen(mDrawerPullout) : false;
     }
 
     @Override
@@ -1812,8 +1817,9 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mDetachedConvUri != null) {
             outState.putParcelable(SAVED_DETACHED_CONV_URI, mDetachedConvUri);
         }
-        mSafeToModifyFragments = false;
+
         outState.putParcelable(SAVED_HIERARCHICAL_FOLDER, mFolderListFolder);
+        mSafeToModifyFragments = false;
     }
 
     /**
@@ -3838,6 +3844,8 @@ public abstract class AbstractActivityController implements ActivityController,
         @Override
         public void onDrawerOpened(View drawerView) {
             mDrawerToggle.onDrawerOpened(drawerView);
+            mHideMenuItems = true;
+            mActivity.invalidateOptionsMenu();
         }
 
         @Override
@@ -3846,6 +3854,8 @@ public abstract class AbstractActivityController implements ActivityController,
             if (mHasNewAccountOrFolder) {
                 refreshDrawer();
             }
+            mHideMenuItems = false;
+            mActivity.invalidateOptionsMenu();
         }
 
         /**
@@ -3915,5 +3925,10 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public boolean isDrawerPullEnabled() {
         return getShouldAllowDrawerPull(mViewMode.getMode());
+    }
+
+    @Override
+    public boolean shouldHideMenuItems() {
+        return mHideMenuItems;
     }
 }
