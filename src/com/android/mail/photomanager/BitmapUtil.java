@@ -128,34 +128,44 @@ public class BitmapUtil {
 
     /**
      * Returns a new Bitmap copy with a center-crop effect a la
-     * {@link android.widget.ImageView.ScaleType#CENTER_CROP}.
+     * {@link android.widget.ImageView.ScaleType#CENTER_CROP}. May return the input bitmap if no
+     * scaling is necessary.
      *
      * @param src original bitmap of any size
      * @param w desired width in px
      * @param h desired height in px
-     * @return a copy of src conforming to the given width and height
+     * @return a copy of src conforming to the given width and height, or src itself if it already
+     *         matches the given width and height
      */
     public static Bitmap centerCrop(Bitmap src, int w, int h) {
+        final int srcWidth = src.getWidth();
+        final int srcHeight = src.getHeight();
+
+        // exit early if no resize/crop needed
+        if (w == srcWidth && h == srcHeight) {
+            return src;
+        }
+
         final Matrix m = new Matrix();
         final float scale = Math.max(
-                (float) w / src.getWidth(),
-                (float) h / src.getHeight());
+                (float) w / srcWidth,
+                (float) h / srcHeight);
         m.setScale(scale, scale);
 
-        final int srcX, srcY, srcW, srcH;
+        final int srcX, srcY, srcCroppedW, srcCroppedH;
 
-        srcW = Math.round(w / scale);
-        srcH = Math.round(h / scale);
-        srcX = (src.getWidth() - srcW) / 2;
-        srcY = (src.getHeight() - srcH) / 2;
+        srcCroppedW = Math.round(w / scale);
+        srcCroppedH = Math.round(h / scale);
+        srcX = (srcWidth - srcCroppedW) / 2;
+        srcY = (srcHeight - srcCroppedH) / 2;
 
-        final Bitmap cropped = Bitmap.createBitmap(src, srcX, srcY, srcW, srcH, m,
+        final Bitmap cropped = Bitmap.createBitmap(src, srcX, srcY, srcCroppedW, srcCroppedH, m,
                 true /* filter */);
 
         if (DEBUG) LogUtils.i(PhotoManager.TAG,
                 "IN centerCrop, srcW/H=%s/%s desiredW/H=%s/%s srcX/Y=%s/%s" +
                 " innerW/H=%s/%s scale=%s resultW/H=%s/%s",
-                src.getWidth(), src.getHeight(), w, h, srcX, srcY, srcW, srcH, scale,
+                srcWidth, srcHeight, w, h, srcX, srcY, srcCroppedW, srcCroppedH, scale,
                 cropped.getWidth(), cropped.getHeight());
         if (DEBUG && (w != cropped.getWidth() || h != cropped.getHeight())) {
             LogUtils.e(PhotoManager.TAG, new Error(), "last center crop violated assumptions.");
