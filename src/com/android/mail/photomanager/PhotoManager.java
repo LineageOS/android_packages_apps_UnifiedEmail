@@ -101,7 +101,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
 
         volatile boolean fresh;
 
-        public BitmapHolder(byte[] bytes, int originalSmallerExtent) {
+        public BitmapHolder(byte[] bytes) {
             this.bytes = bytes;
             this.fresh = true;
         }
@@ -417,8 +417,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             LogUtils.d(TAG, "Caching data: key=" + key + ", "
                     + (bytes == null ? "<null>" : btk(bytes.length)));
         }
-        BitmapHolder holder = new BitmapHolder(bytes, bytes == null ? -1
-                : BitmapUtil.getSmallerExtentFromBytes(bytes));
+        BitmapHolder holder = new BitmapHolder(bytes);
 
         sBitmapHolderCache.put(key, holder);
         sBitmapHolderCacheAllUnfresh = false;
