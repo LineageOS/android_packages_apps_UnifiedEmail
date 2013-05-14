@@ -214,7 +214,11 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 // If we used a limit, queue up a query without limit
                 if (mInitialConversationLimit) {
                     mInitialConversationLimit = false;
-                    refresh();
+                    // We want to notify about this change to allow the UI to requery.  We don't
+                    // want to directly call refresh() here as this will start an AyncTask which
+                    // is normally only run after the cursor is in the "refresh required"
+                    // state
+                    underlyingChanged();
                 }
             }
         }
@@ -696,12 +700,20 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * Add a listener for this cursor; we'll notify it when our data changes
      */
     public void addListener(ConversationListener listener) {
+        final int numPrevListeners;
         synchronized (mListeners) {
+            numPrevListeners = mListeners.size();
             if (!mListeners.contains(listener)) {
                 mListeners.add(listener);
             } else {
                 LogUtils.d(LOG_TAG, "Ignoring duplicate add of listener");
             }
+        }
+
+        if (numPrevListeners == 0 && mRefreshRequired) {
+            // A refresh is required, but it came when there were no listeners.  Since this is the
+            // first registered listener, we want to make sure that we don't drop this event.
+            notifyRefreshRequired();
         }
     }
 
