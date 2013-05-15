@@ -151,6 +151,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     /** Whether we are on a tablet device or not */
     private final boolean mTabletDevice;
+    /** Whether we are on an expansive tablet */
+    private final boolean mIsExpansiveTablet;
 
     @VisibleForTesting
     ConversationItemViewCoordinates mCoordinates;
@@ -188,7 +190,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static CharacterStyle sActivatedTextSpan;
     private static ContactPhotoManager sContactPhotoManager;
     private static ContactPhotoManager sAttachmentPreviewsManager;
-    private static final String EMPTY_SNIPPET = "";
 
     static {
         sPaint.setAntiAlias(true);
@@ -343,6 +344,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mContext = context.getApplicationContext();
         final Resources res = mContext.getResources();
         mTabletDevice = Utils.useTabletUI(res);
+        mIsExpansiveTablet =
+                mTabletDevice ? res.getBoolean(R.bool.use_expansive_tablet_ui) : false;
         mAccount = account;
 
         if (STAR_OFF == null) {
@@ -1251,7 +1254,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     @Override
     public void toggleSelectedStateOrBeginDrag() {
         ViewMode mode = mActivity.getViewMode();
-        if (mTabletDevice && mode.isListMode()) {
+        if (mIsExpansiveTablet && mode.isListMode()) {
             beginDragMode();
         } else {
             toggleSelectedState();
