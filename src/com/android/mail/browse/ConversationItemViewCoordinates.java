@@ -252,6 +252,7 @@ public class ConversationItemViewCoordinates {
      */
     private final int mMinListWidthIsSpacious;
     private final int mFolderCellWidth;
+    private final int mFolderMinimumWidth;
 
     private ConversationItemViewCoordinates(Context context, Config config) {
         final Resources res = context.getResources();
@@ -259,6 +260,7 @@ public class ConversationItemViewCoordinates {
         mMinListWidthForWide = res.getDimensionPixelSize(R.dimen.list_min_width_is_wide);
         mMinListWidthIsSpacious = res.getDimensionPixelSize(
                 R.dimen.list_normal_mode_min_width_is_spacious);
+        mFolderMinimumWidth = res.getDimensionPixelSize(R.dimen.folder_minimum_width);
 
         mMode = calculateMode(res, config);
 
@@ -635,6 +637,14 @@ public class ConversationItemViewCoordinates {
      */
     public int getFolderCellWidth() {
         return mFolderCellWidth;
+    }
+
+    /**
+     * Return the minimum width of a folder cell, period. This will affect the
+     * maximum number of folders we can display.
+     */
+    public int getFolderMinimumWidth() {
+        return mFolderMinimumWidth;
     }
 
     public static boolean isWideMode(int mode) {
