@@ -154,8 +154,6 @@ public abstract class AbstractActivityController implements ActivityController,
     private static final String SAVED_ACTION_FROM_SELECTED = "saved-action-from-selected";
     /** Tag for {@link #mDetachedConvUri} */
     private static final String SAVED_DETACHED_CONV_URI = "saved-detached-conv-uri";
-    /** Tag for {@link #mHideMenuItems} */
-    private static final String SAVED_HIDE_MENU_ITEMS = "save-hide-menu-items";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
