@@ -747,16 +747,16 @@ public final class ConversationListFragment extends ListFragment implements
 
         final ConversationCursor cursor = getConversationListCursor();
         Bundle extras = cursor != null ? cursor.getExtras() : Bundle.EMPTY;
-        int error = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
+        int errorStatus = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
                 extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
                 : UIProvider.LastSyncResult.SUCCESS;
-        int status = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
+        int cursorStatus = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
         // We want to update the UI with this information if either we are loaded or complete, or
         // we have a folder with a non-0 count.
         final int folderCount = mFolder != null ? mFolder.totalCount : 0;
-        if (error == UIProvider.LastSyncResult.SUCCESS
-                && (status == UIProvider.CursorStatus.LOADED
-                    || status == UIProvider.CursorStatus.COMPLETE) || folderCount > 0) {
+        if (errorStatus == UIProvider.LastSyncResult.SUCCESS
+                && (cursorStatus == UIProvider.CursorStatus.LOADED
+                || cursorStatus == UIProvider.CursorStatus.COMPLETE) || folderCount > 0) {
             updateSearchResultHeader(folderCount);
             if (folderCount == 0) {
                 mListView.setEmptyView(mEmptyView);
