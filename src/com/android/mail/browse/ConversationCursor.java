@@ -312,8 +312,23 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             }
         }
 
+        private class NewCursorUpdateObserver extends ContentObserver {
+            public NewCursorUpdateObserver(Handler handler) {
+                super(handler);
+            }
+
+            @Override
+            public void onChange(boolean selfChange) {
+                // Since this observer is used to keep track of changes that happen while
+                // the Conversation objects are being pre-cached, and the conversation maps are
+                // populated
+                mCursorUpdated = true;
+            }
+        }
 
         private final CacheLoaderTask mCacheLoaderTask;
+        private final NewCursorUpdateObserver mCursorUpdateObserver;
+        private boolean mUpdateObserverRegistered;
 
         // Ideally these two objects could be combined into a Map from
         // conversationId -> position, but the cached values uses the conversation
@@ -322,8 +337,18 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         private final Map<Long, Integer> mConversationIdPositionMap;
         private final List<UnderlyingRowData> mRowCache;
 
+        private boolean mCursorUpdated = false;
+
         public UnderlyingCursorWrapper(Cursor result) {
             super(result);
+
+            // Register the content observer immediately, as we want to make sure that we don't miss
+            // any updates
+            mCursorUpdateObserver =
+                    new NewCursorUpdateObserver(new Handler(Looper.getMainLooper()));
+            result.registerContentObserver(mCursorUpdateObserver);
+            mUpdateObserverRegistered = true;
+
             final long start = SystemClock.uptimeMillis();
             final ImmutableMap.Builder<String, Integer> conversationUriPositionMapBuilder =
                     new ImmutableMap.Builder<String, Integer>();
@@ -469,11 +494,26 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             }
         }
 
+        /**
+         * Returns a boolean indicating whether the cursor has been updated
+         */
+        public boolean isDataUpdated() {
+            return mCursorUpdated;
+        }
+
+        public void disableUpdateNotifications() {
+            if (mUpdateObserverRegistered) {
+                getWrappedCursor().unregisterContentObserver(mCursorUpdateObserver);
+                mUpdateObserverRegistered = false;
+            }
+        }
+
         @Override
         public void close() {
             if (mCacheLoaderTask != null) {
                 mCacheLoaderTask.cancel(true);
             }
+            disableUpdateNotifications();
             super.close();
         }
     }
@@ -613,8 +653,17 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             if (!mCursorObserverRegistered) {
                 mUnderlyingCursor.registerContentObserver(mCursorObserver);
                 mCursorObserverRegistered = true;
+
             }
             mRefreshRequired = false;
+
+            // If the underlying cursor has received an update before we have gotten to this
+            // point, we will want to make sure to refresh
+            final boolean underlyingCursorUpdated = mUnderlyingCursor.isDataUpdated();
+            mUnderlyingCursor.disableUpdateNotifications();
+            if (underlyingCursorUpdated) {
+                underlyingChanged();
+            }
         }
     }
 
