@@ -1852,6 +1852,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         throw new UnsupportedOperationException();
     }
 
+    public Uri getNotificationUri() {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public boolean getWantsAllOnMoveCalls() {
         throw new UnsupportedOperationException();
