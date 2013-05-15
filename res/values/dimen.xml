@@ -113,4 +113,5 @@
     <dimen name="attachment_preview_margin_top">8dip</dimen>
     <dimen name="attachment_preview_margin_top_wide">12dip</dimen>
     <dimen name="attachment_preview_margin_side">16dip</dimen>
+    <dimen name="folder_minimum_width">48dip</dimen>
 </resources>
