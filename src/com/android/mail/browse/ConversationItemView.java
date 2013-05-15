@@ -259,7 +259,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
             // Initialize space and cell size based on the current mode.
             int availableSpace = xEnd - xMinStart;
-            int averageWidth = availableSpace / mFoldersCount;
+            int maxFoldersCount = availableSpace / coordinates.getFolderMinimumWidth();
+            int foldersCount = Math.min(mFoldersCount, maxFoldersCount);
+            int averageWidth = availableSpace / foldersCount;
             int cellSize = coordinates.getFolderCellWidth();
 
             // TODO(ath): sFoldersPaint.measureText() is done 3x in this method. stop that.
@@ -283,7 +285,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 int width = textW + cellSize + sFoldersLeftPadding;
 
                 if (overflow && width > averageWidth) {
-                    if (i < mFoldersCount - 1) {
+                    if (i < foldersCount - 1) {
                         width = averageWidth;
                     } else {
                         // allow the last label to take all remaining space
