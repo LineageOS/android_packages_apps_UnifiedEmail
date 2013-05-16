@@ -845,6 +845,29 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 || !mSwipeDeletingItems.isEmpty();
     }
 
+    @Override
+    public String toString() {
+        final String s = super.toString();
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append(super.toString());
+        sb.append(" mUndoingItems=");
+        sb.append(mUndoingItems);
+        sb.append(" mSwipeUndoingItems=");
+        sb.append(mSwipeUndoingItems);
+        sb.append(" mDeletingItems=");
+        sb.append(mDeletingItems);
+        sb.append(" mSwipeDeletingItems=");
+        sb.append(mSwipeDeletingItems);
+        sb.append(" mLeaveBehindItems=");
+        sb.append(mLeaveBehindItems);
+        sb.append(" mFadeLeaveBehindItems=");
+        sb.append(mFadeLeaveBehindItems);
+        sb.append(" mLastDeletingItems=");
+        sb.append(mLastDeletingItems);
+        sb.append("}");
+        return sb.toString();
+    }
+
     /**
      * Get the ConversationCursor associated with this adapter.
      */
