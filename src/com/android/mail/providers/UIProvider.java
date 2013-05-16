@@ -1107,15 +1107,6 @@ public class UIProvider {
         public static final String COMMAND_RESPONSE_FAILED = "failed";
 
         /**
-         * This bundle key has a boolean value: true to allow cursor network access (whether this
-         * is true by default is up to the provider), false to temporarily disable network access.
-         * <p>
-         * A provider that implements this command should include this key in its response with a
-         * value of {@link #COMMAND_RESPONSE_OK} or {@link #COMMAND_RESPONSE_FAILED}.
-         */
-        public static final String COMMAND_KEY_ALLOW_NETWORK_ACCESS = "allowNetwork";
-
-        /**
          * This bundle key has a boolean value: true to indicate that this cursor has been shown
          * to the user.
          * <p>
@@ -1138,6 +1129,16 @@ public class UIProvider {
          * list is made visible.
          */
         public static final String COMMAND_KEY_ENTERED_FOLDER = "enteredFolder";
+
+        /**
+         * This key has an int value, indicating the position that the UI wants to notify the
+         * provider that the data from a specified row is being shown to the user.
+         * <p>
+         * A provider that implements this command should include the
+         * {@link #COMMAND_NOTIFY_CURSOR_UI_POSITION_CHANGE} key in its response with a value of
+         * {@link #COMMAND_RESPONSE_OK} or {@link #COMMAND_RESPONSE_FAILED}.
+         */
+        public static final String COMMAND_NOTIFY_CURSOR_UI_POSITION_CHANGE = "uiPositionChange";
 
         private ConversationCursorCommand() {}
     }
