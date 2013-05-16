@@ -419,6 +419,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
         ConversationCursor cursor = (ConversationCursor) getItem(position);
         final Conversation conv = cursor.getConversation();
+
+        // Notify the provider of this change in the position of Conversation cursor
+        cursor.notifyUIPositionChange();
+
         if (isPositionUndoing(conv.id)) {
             return getUndoingView(position - getPositionOffset(position), conv, parent,
                     false /* don't show swipe background */);
