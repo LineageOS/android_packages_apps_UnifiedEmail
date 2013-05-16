@@ -3840,16 +3840,16 @@ public abstract class AbstractActivityController implements ActivityController,
 
     private class MailDrawerListener implements DrawerLayout.DrawerListener {
         private int mDrawerState;
+        private float mOldSlideOffset;
 
         public MailDrawerListener() {
             mDrawerState = DrawerLayout.STATE_IDLE;
+            mOldSlideOffset = 0.f;
         }
 
         @Override
         public void onDrawerOpened(View drawerView) {
             mDrawerToggle.onDrawerOpened(drawerView);
-            mHideMenuItems = true;
-            mActivity.invalidateOptionsMenu();
         }
 
         @Override
@@ -3858,8 +3858,6 @@ public abstract class AbstractActivityController implements ActivityController,
             if (mHasNewAccountOrFolder) {
                 refreshDrawer();
             }
-            mHideMenuItems = false;
-            mActivity.invalidateOptionsMenu();
         }
 
         /**
@@ -3873,6 +3871,37 @@ public abstract class AbstractActivityController implements ActivityController,
             if (mHasNewAccountOrFolder && mListViewForAnimating != null) {
                 mListViewForAnimating.setAlpha(slideOffset);
             }
+
+            // This code handles when to change the visibility of action items
+            // based on drawer state. The basic logic is that right when we
+            // open the drawer, we hide the action items. We show the action items
+            // when the drawer closes. However, due to the animation of the drawer closing,
+            // to make the reshowing of the action items feel right, we make the items visible
+            // slightly sooner.
+            //
+            // However, to make the animating behavior work properly, we have to know whether
+            // we're animating open or closed. Only if we're animating closed do we want to
+            // show the action items early. We save the last slide offset so that we can compare
+            // the current slide offset to it to determine if we're opening or closing.
+            if (mDrawerState == DrawerLayout.STATE_SETTLING) {
+                if (mHideMenuItems && slideOffset < 0.15f && mOldSlideOffset > slideOffset) {
+                    mHideMenuItems = false;
+                    mActivity.invalidateOptionsMenu();
+                } else if (!mHideMenuItems && slideOffset > 0.f && mOldSlideOffset < slideOffset) {
+                    mHideMenuItems = true;
+                    mActivity.invalidateOptionsMenu();
+                }
+            } else {
+                if (mHideMenuItems && Float.compare(slideOffset, 0.f) == 0) {
+                    mHideMenuItems = false;
+                    mActivity.invalidateOptionsMenu();
+                } else if (!mHideMenuItems && slideOffset > 0.f) {
+                    mHideMenuItems = true;
+                    mActivity.invalidateOptionsMenu();
+                }
+            }
+
+            mOldSlideOffset = slideOffset;
         }
 
         /**
