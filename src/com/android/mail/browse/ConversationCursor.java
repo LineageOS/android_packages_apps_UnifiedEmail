@@ -27,7 +27,6 @@ import android.content.OperationApplicationException;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.CursorWrapper;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -48,7 +47,6 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.ui.ConversationListFragment;
-import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.NotificationActionUtils.NotificationAction;
@@ -80,7 +78,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
     private static final boolean ENABLE_CONVERSATION_PRECACHING = true;
 
-    private static final String LOG_TAG = LogTag.getLogTag();
+    public static final String LOG_TAG = "ConvCursor";
     /** Turn to true for debugging. */
     private static final boolean DEBUG = false;
     /** A deleted row is indicated by the presence of DELETED_COLUMN in the cache map */
@@ -228,39 +226,27 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * Pause notifications to UI
      */
     public void pause() {
-        if (DEBUG) {
-            LogUtils.i(LOG_TAG, "[Paused: %s]", mName);
-        }
         mPaused = true;
+        if (DEBUG) LogUtils.i(LOG_TAG, "[Paused: %s]", this);
     }
 
     /**
      * Resume notifications to UI; if any are pending, send them
      */
     public void resume() {
-        if (DEBUG) {
-            LogUtils.i(LOG_TAG, "[Resumed: %s]", mName);
-        }
         mPaused = false;
+        if (DEBUG) LogUtils.i(LOG_TAG, "[Resumed: %s]", this);
         checkNotifyUI();
     }
 
     private void checkNotifyUI() {
-        LogUtils.d(
-                LOG_TAG,
-                "Received notify ui callback and sending a notification is enabled?" +
-                " %s and refresh ready ? %s",
-                (!mPaused && !mDeferSync),
-                (mRefreshReady || (mRefreshRequired && mRefreshTask == null)));
+        if (DEBUG) LogUtils.i(LOG_TAG, "IN checkNotifyUI, this=%s", this);
         if (!mPaused && !mDeferSync) {
             if (mRefreshRequired && (mRefreshTask == null)) {
                 notifyRefreshRequired();
             } else if (mRefreshReady) {
                 notifyRefreshReady();
             }
-        } else {
-            LogUtils.d(LOG_TAG, "[checkNotifyUI: %s%s",
-                    (mPaused ? "Paused " : ""), (mDeferSync ? "Defer" : ""));
         }
     }
 
@@ -671,6 +657,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 underlyingChanged();
             }
         }
+        if (DEBUG) LogUtils.i(LOG_TAG, "OUT resetCursor, this=%s", this);
     }
 
     /**
@@ -924,9 +911,11 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 mCursorObserverRegistered = false;
             }
             mRefreshRequired = true;
+            if (DEBUG) LogUtils.i(LOG_TAG, "IN underlyingChanged, this=%s", this);
             if (!mPaused) {
                 notifyRefreshRequired();
             }
+            if (DEBUG) LogUtils.i(LOG_TAG, "OUT underlyingChanged, this=%s", this);
         }
     }
 
@@ -934,9 +923,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * Must be called on UI thread; notify listeners that a refresh is required
      */
     private void notifyRefreshRequired() {
-        if (DEBUG) {
-            LogUtils.i(LOG_TAG, "[Notify %s: onRefreshRequired()]", mName);
-        }
+        if (DEBUG) LogUtils.i(LOG_TAG, "[Notify: onRefreshRequired() this=%s]", this);
         if (!mDeferSync) {
             synchronized(mListeners) {
                 for (ConversationListener listener: mListeners) {
@@ -1015,9 +1002,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * NOTE: This will have to change, of course, when we start using loaders...
      */
     public boolean refresh() {
-        if (DEBUG) {
-            LogUtils.i(LOG_TAG, "[refresh() %s]", mName);
-        }
+        if (DEBUG) LogUtils.i(LOG_TAG, "[refresh() this=%s]", this);
         synchronized(mCacheMapLock) {
             if (mRefreshTask != null) {
                 if (DEBUG) {
@@ -1456,18 +1441,20 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         }
 
         public void undo(ConversationCursor conversationCursor) {
-            if (sSequence == mUndoSequence) {
-                for (Uri uri: mUndoDeleteUris) {
-                    if (!clearMostlyDead(uri, conversationCursor)) {
-                        undeleteLocal(uri, conversationCursor);
-                    }
-                }
-                mUndoSequence = 0;
-                conversationCursor.recalibratePosition();
-                // Notify listeners that there was a change to the underlying
-                // cursor to add back in some items.
-                conversationCursor.notifyDataChanged();
+            if (mUndoSequence == 0) {
+                return;
             }
+
+            for (Uri uri: mUndoDeleteUris) {
+                if (!clearMostlyDead(uri, conversationCursor)) {
+                    undeleteLocal(uri, conversationCursor);
+                }
+            }
+            mUndoSequence = 0;
+            conversationCursor.recalibratePosition();
+            // Notify listeners that there was a change to the underlying
+            // cursor to add back in some items.
+            conversationCursor.notifyDataChanged();
         }
 
         @VisibleForTesting
@@ -2124,8 +2111,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder(super.toString());
-        sb.setLength(sb.length() - 1);
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append(super.toString());
+        sb.append(" mName=");
+        sb.append(mName);
         sb.append(" mDeferSync=");
         sb.append(mDeferSync);
         sb.append(" mRefreshRequired=");
