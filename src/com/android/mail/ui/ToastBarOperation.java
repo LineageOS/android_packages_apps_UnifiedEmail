@@ -71,6 +71,24 @@ public class ToastBarOperation implements Parcelable {
     }
 
     @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append(super.toString());
+        sb.append(" mAction=");
+        sb.append(mAction);
+        sb.append(" mCount=");
+        sb.append(mCount);
+        sb.append(" mBatch=");
+        sb.append(mBatch);
+        sb.append(" mType=");
+        sb.append(mType);
+        sb.append(" mFolder=");
+        sb.append(mFolder);
+        sb.append("}");
+        return sb.toString();
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mCount);
         dest.writeInt(mAction);
