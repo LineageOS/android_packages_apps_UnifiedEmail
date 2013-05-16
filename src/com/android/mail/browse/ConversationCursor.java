@@ -280,9 +280,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
             @Override
             public Void doInBackground(Void... param) {
-                // We don't want iterating over this cursor to trigger a network request
-                final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(
-                        getWrappedCursor());
                 for (int i = mStartPos; i < getCount(); i++) {
                     if (isCancelled()) {
                         break;
@@ -290,15 +287,12 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
                     final UnderlyingRowData rowData = mRowCache.get(i);
                     if (rowData.conversation == null) {
-                        // We are running in a background thread.  Set the position to the row we
-                        // are interested in.
+                        // We are running in a background thread.  Set the position to the row
+                        // we are interested in.
                         if (moveToPosition(i)) {
                             cacheConversation(new Conversation(UnderlyingCursorWrapper.this));
                         }
                     }
-                }
-                if (networkWasEnabled) {
-                    Utils.enableConversationCursorNetworkAccess(getWrappedCursor());
                 }
                 return null;
             }
@@ -349,13 +343,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             final UnderlyingRowData[] cache;
             final int count;
             int numCached = 0;
-            final boolean networkWasEnabled;
-            if (result != null) {
-                // We don't want iterating over this cursor to trigger a network request
-                networkWasEnabled = Utils.disableConversationCursorNetworkAccess(result);
-            } else {
-                networkWasEnabled = false;
-            }
             if (result != null && super.moveToFirst()) {
                 count = super.getCount();
                 cache = new UnderlyingRowData[count];
@@ -424,9 +411,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 count = 0;
                 cache = new UnderlyingRowData[0];
             }
-            if (networkWasEnabled) {
-                Utils.enableConversationCursorNetworkAccess(result);
-            }
             mConversationUriPositionMap = conversationUriPositionMapBuilder.build();
             mConversationIdPositionMap = conversationIdPositionMapBuilder.build();
 
@@ -484,6 +468,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     rowData.conversation = conversation;
                 }
             }
+        }
+
+        private void notifyConversationUIPositionChange() {
+            Utils.notifyCursorUIPositionChange(this, getPosition());
         }
 
         /**
@@ -1234,7 +1222,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
     public Conversation getConversation() {
         Conversation c = mUnderlyingCursor.getConversation();
-
         if (c == null) {
             // not pre-cached. fall back to just-in-time construction.
             c = new Conversation(this);
@@ -1262,6 +1249,13 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         }
 
         return c;
+    }
+
+    /**
+     * Notifies the provider of the position of the conversation being accessed by the UI
+     */
+    public void notifyUIPositionChange() {
+        mUnderlyingCursor.notifyConversationUIPositionChange();
     }
 
     private static void putInValues(ContentValues dest, String key, Object value) {

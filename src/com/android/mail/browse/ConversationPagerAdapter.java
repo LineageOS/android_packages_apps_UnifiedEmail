@@ -168,7 +168,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     @Override
     public Fragment getItem(int position) {
         final Conversation c;
-        final Cursor cursor = getCursor();
+        final ConversationCursor cursor = getCursor();
 
         if (isPagingDisabled(cursor)) {
             // cursor-less adapter is a size-1 cursor that points to mInitialConversation.
@@ -185,6 +185,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                         cursor);
                 return null;
             }
+            cursor.notifyUIPositionChange();
             // TODO: switch to something like MessageCursor or AttachmentCursor
             // to re-use these models
             c = new Conversation(cursor);
