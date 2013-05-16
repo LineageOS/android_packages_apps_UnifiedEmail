@@ -1110,30 +1110,17 @@ public class Utils {
     }
 
     /**
-     * Commands a cursor representing a set of conversations to disable any network requests it may
-     * do as clients move through the cursor.
+     * Commands a cursor representing a set of conversations to indicate that an item is being shown
+     * in the UI.
      *
      * @param cursor a conversation cursor
-     * @return true iff the provider supports network requests and they were previously enabled
+     * @param position position of the item being shown.
      */
-    public static boolean disableConversationCursorNetworkAccess(Cursor cursor) {
+    public static boolean notifyCursorUIPositionChange(Cursor cursor, int position) {
         final Bundle request = new Bundle();
-        final String key = UIProvider.ConversationCursorCommand.COMMAND_KEY_ALLOW_NETWORK_ACCESS;
-        request.putBoolean(key, false);
-        return executeConversationCursorCommand(cursor, request, key);
-    }
-
-    /**
-     * Commands a cursor representing a set of conversations to [re-]enable any network requests it
-     * may do as clients move through the cursor.
-     *
-     * @param cursor a conversation cursor
-     * @return true iff the provider supports network requests and they are successfully enabled
-     */
-    public static boolean enableConversationCursorNetworkAccess(Cursor cursor) {
-        final Bundle request = new Bundle();
-        final String key = UIProvider.ConversationCursorCommand.COMMAND_KEY_ALLOW_NETWORK_ACCESS;
-        request.putBoolean(key, true);
+        final String key =
+                UIProvider.ConversationCursorCommand.COMMAND_NOTIFY_CURSOR_UI_POSITION_CHANGE;
+        request.putInt(key, position);
         return executeConversationCursorCommand(cursor, request, key);
     }
 
