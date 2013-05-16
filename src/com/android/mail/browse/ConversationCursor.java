@@ -993,10 +993,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             if (DEBUG) {
                 LogUtils.i(LOG_TAG, "[sync() %s]", mName);
             }
-            resetCursor(mRequeryCursor);
-            mRequeryCursor = null;
             mRefreshTask = null;
             mRefreshReady = false;
+            resetCursor(mRequeryCursor);
+            mRequeryCursor = null;
         }
         notifyDataChanged();
     }
