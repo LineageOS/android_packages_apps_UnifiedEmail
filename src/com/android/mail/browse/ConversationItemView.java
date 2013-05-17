@@ -404,7 +404,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         mSendersTextView = new TextView(mContext);
-        mSendersTextView.setEllipsize(TextUtils.TruncateAt.END);
         mSendersTextView.setIncludeFontPadding(false);
 
         mSubjectTextView = new TextView(mContext);
@@ -868,6 +867,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         // Second pass to layout each fragment.
         int sendersY = mCoordinates.sendersY - mCoordinates.sendersAscent;
 
+        sPaint.setTextSize(mCoordinates.sendersFontSize);
+        sPaint.setTypeface(Typeface.DEFAULT);
+
         if (mHeader.styledSenders != null) {
             ellipsizeStyledSenders();
             layoutSenders();
@@ -875,8 +877,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             // First pass to calculate width of each fragment.
             int totalWidth = 0;
             int fixedWidth = 0;
-            sPaint.setTextSize(mCoordinates.sendersFontSize);
-            sPaint.setTypeface(Typeface.DEFAULT);
             for (SenderFragment senderFragment : mHeader.senderFragments) {
                 CharacterStyle style = senderFragment.style;
                 int start = senderFragment.start;
@@ -901,8 +901,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
         }
 
-        sPaint.setTextSize(mCoordinates.sendersFontSize);
-        sPaint.setTypeface(Typeface.DEFAULT);
         if (mSendersWidth < 0) {
             mSendersWidth = 0;
         }
