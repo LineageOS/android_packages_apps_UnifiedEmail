@@ -104,6 +104,8 @@ public class MessageInfo implements Parcelable {
         builder.append(sender);
         builder.append(", senderEmail = ");
         builder.append(senderEmail);
+        builder.append(", priority = ");
+        builder.append(priority);
         builder.append("]");
         return builder.toString();
     }
