@@ -53,6 +53,9 @@ public class SendersView {
     public static final int DEFAULT_FORMATTING = 0;
     public static final int MERGED_FORMATTING = 1;
     private static final Integer DOES_NOT_EXIST = -5;
+    // FIXME(ath): make all of these statics instance variables, and have callers hold onto this
+    // instance as long as appropriate (e.g. activity lifetime).
+    // no need to listen for configuration changes.
     private static String sSendersSplitToken;
     public static String SENDERS_VERSION_SEPARATOR = "^**^";
     public static Pattern SENDERS_VERSION_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
