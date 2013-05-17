@@ -148,13 +148,12 @@
                     android:layout_marginTop="-1dp"
                     android:src="@drawable/ic_star_off" />
 
-                <!-- we assume the star asset is less than 48dp wide -->
                 <TextView
                     android:id="@+id/subject"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/star"
-                    android:layout_marginRight="14dp"
+                    android:layout_marginRight="7dp"
                     android:lines="2"
                     android:textSize="13sp"
                     android:includeFontPadding="false"
