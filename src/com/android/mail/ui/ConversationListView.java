@@ -1,7 +1,6 @@
 package com.android.mail.ui;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
@@ -10,9 +9,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -50,7 +47,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
     private View mSyncTriggerBar;
     private View mSyncProgressBar;
-    private AnimatorListenerAdapter mSyncProgressBarFadeListener;
+    private final AnimatorListenerAdapter mSyncDismissListener;
     private SwipeableListView mListView;
 
     // Whether to ignore events in {#dispatchTouchEvent}.
@@ -81,6 +78,14 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
     private ConversationListContext mConvListContext;
 
+    private final Runnable mOnSyncDismiss = new Runnable() {
+        @Override
+        public void run() {
+            mSyncProgressBar.setVisibility(GONE);
+            mSyncTriggerBar.setVisibility(GONE);
+        }
+    };
+
     // Instantiated through view inflation
     @SuppressWarnings("unused")
     public ConversationListView(Context context) {
@@ -96,13 +101,25 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mHintText = new ConversationListView.HintText(context);
+
+        mSyncDismissListener = new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator arg0) {
+                // Even though alpha is set to 0, still need to set visiblity to
+                // GONE, otherwise the progressbar animation continues to get drawn
+                // even though it's not visible.
+                //
+                // For some reason, setting this visibility to GONE immediately upon animation end
+                // occasionally does not terminate the periodic drawing of the progress bar.
+                // Posting it seems to alleviate this...
+                post(mOnSyncDismiss);
+            }
+        };
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mSyncTriggerBar = findViewById(R.id.sync_trigger);
-        mSyncProgressBar = findViewById(R.id.progress);
         mListView = (SwipeableListView) findViewById(android.R.id.list);
         mListView.setSwipeListener(this);
 
@@ -115,16 +132,6 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         mDistanceToTriggerSyncDp = Math.max(
                 Math.min(threshold, MAX_DISTANCE_TO_TRIGGER_SYNC),
                 MIN_DISTANCE_TO_TRIGGER_SYNC);
-
-        mSyncProgressBarFadeListener = new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator arg0) {
-                // Even though alpha is set to 0, still need to set visiblity to
-                // GONE, otherwise the progressbar animation continues to get drawn
-                // even though it's not visible.
-                mSyncProgressBar.setVisibility(GONE);
-            }
-        };
     }
 
     protected void setActivity(ControllableActivity activity) {
@@ -218,7 +225,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                     } else {
                         mHintText.displaySwipeToRefresh();
                     }
-                    mSyncTriggerBar.setScaleX(mAccelerateInterpolator.getInterpolation(
+                    setTriggerScale(mAccelerateInterpolator.getInterpolation(
                             verticalDistanceDp/mDistanceToTriggerSyncDp));
 
                     if (y > mTrackingScrollMaxY) {
@@ -242,23 +249,49 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         mTrackingScrollMovement = true;
         mTrackingScrollStartY = y;
         mTrackingScrollMaxY = mTrackingScrollStartY;
-
-        mSyncTriggerBar.setScaleX(0f);
-        mSyncTriggerBar.setAlpha(1f);
-        mSyncTriggerBar.setVisibility(VISIBLE);
     }
 
     private void cancelMovementTracking() {
         if (mTrackingScrollMovement) {
             // Shrink the status bar when user lifts finger and no sync has happened yet
-            mSyncTriggerBar.animate().scaleX(0f).setInterpolator(mDecelerateInterpolator)
-                    .setDuration(SYNC_TRIGGER_SHRINK_DURATION_IN_MILLIS).start();
+            if (mSyncTriggerBar != null) {
+                mSyncTriggerBar.animate()
+                        .scaleX(0f)
+                        .setInterpolator(mDecelerateInterpolator)
+                        .setDuration(SYNC_TRIGGER_SHRINK_DURATION_IN_MILLIS)
+                        .setListener(mSyncDismissListener)
+                        .start();
+            }
+            mTrackingScrollMovement = false;
         }
-        mTrackingScrollMovement = false;
         mHintText.hide();
     }
 
+    private void setTriggerScale(float scale) {
+        if (scale == 0f && mSyncTriggerBar == null) {
+            // No-op. A null trigger means it's uninitialized, and setting it to zero-scale
+            // means we're trying to reset state, so there's nothing to reset in this case.
+            return;
+        } else if (mSyncTriggerBar != null) {
+            // reset any leftover trigger visual state
+            mSyncTriggerBar.animate().cancel();
+            mSyncTriggerBar.setVisibility(VISIBLE);
+        }
+        ensureProgressBars();
+        mSyncTriggerBar.setScaleX(scale);
+    }
+
+    private void ensureProgressBars() {
+        if (mSyncTriggerBar == null || mSyncProgressBar == null) {
+            final LayoutInflater inflater = LayoutInflater.from(getContext());
+            inflater.inflate(R.layout.conversation_list_progress, this, true /* attachToRoot */);
+            mSyncTriggerBar = findViewById(R.id.sync_trigger);
+            mSyncProgressBar = findViewById(R.id.progress);
+        }
+    }
+
     private void triggerSync() {
+        ensureProgressBars();
         mSyncTriggerBar.setVisibility(View.GONE);
 
         // This will call back to showSyncStatusBar():
@@ -275,6 +308,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
             mIsSyncing = true;
 
             LogUtils.i(LOG_TAG, "ConversationListView show sync status bar");
+            ensureProgressBars();
             mSyncTriggerBar.setVisibility(GONE);
             mSyncProgressBar.setVisibility(VISIBLE);
             mSyncProgressBar.setAlpha(1f);
@@ -289,7 +323,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
             // Hide both the sync progress bar and sync trigger bar
             mSyncProgressBar.animate().alpha(0f)
                     .setDuration(SYNC_STATUS_BAR_FADE_DURATION_IN_MILLIS)
-                    .setListener(mSyncProgressBarFadeListener);
+                    .setListener(mSyncDismissListener);
             mSyncTriggerBar.setVisibility(GONE);
             // Hide the "Checking for mail" text in action bar if it isn't hidden already:
             mHintText.hide();
