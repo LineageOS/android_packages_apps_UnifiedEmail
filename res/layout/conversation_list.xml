@@ -49,26 +49,6 @@
             android:fadingEdge="none"
             android:layout_alignParentTop="true"/>
 
-        <ProgressBar
-            android:id="@+id/sync_trigger"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center"
-            android:visibility="gone"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:max="100"
-            android:progress="100"
-            android:progressDrawable="@drawable/progressbar_solid_holo" />
-
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:visibility="gone"
-            android:indeterminateDrawable="@drawable/progress_indeterminate_horizontal_holo"
-            android:indeterminate="true" />
-
     </com.android.mail.ui.ConversationListView>
 
 </RelativeLayout>
