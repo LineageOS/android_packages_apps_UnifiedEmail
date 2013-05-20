@@ -75,11 +75,14 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
     public ObjectCursor<T> loadInBackground() {
         final Cursor inner = getContext().getContentResolver().query(mUri, mProjection,
                 mSelection, mSelectionArgs, mSortOrder);
-        if (inner != null) {
-            // Ensure the cursor window is filled
-            inner.getCount();
-            inner.registerContentObserver(mObserver);
+        if (inner == null) {
+            // If there's no underlying cursor, there's nothing to do.
+            return null;
         }
+        // Ensure the cursor window is filled
+        inner.getCount();
+        inner.registerContentObserver(mObserver);
+
         // Modifications to the ObjectCursor, create an Object Cursor and fill the cache.
         final ObjectCursor<T> cursor = getObjectCursor(inner);
         cursor.fillCache();
