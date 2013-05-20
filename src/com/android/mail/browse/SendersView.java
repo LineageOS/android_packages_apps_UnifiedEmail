@@ -400,7 +400,7 @@ public class SendersView {
             for (int i = 0; i < senders.length; i++) {
                 senderTokens = Rfc822Tokenizer.tokenize(senders[i]);
                 if (senderTokens != null && senderTokens.length > 0) {
-                    display = senderTokens[0].getName();
+                    display = Address.decodeAddressName(senderTokens[0].getName());
                     if (TextUtils.isEmpty(display)) {
                         display = senderTokens[0].getAddress();
                     }
