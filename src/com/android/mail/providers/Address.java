@@ -153,9 +153,19 @@ public class Address {
      * Set name part from UTF-16 string. Optional surrounding double quote will be removed.
      * It will be also unquoted and MIME/base64 decoded.
      *
-     * @param personal name part of email address as UTF-16 string. Null is acceptable.
+     * @param name name part of email address as UTF-16 string. Null is acceptable.
      */
     public void setName(String name) {
+        mName = decodeAddressName(name);
+    }
+
+    /**
+     * Decodes name from UTF-16 string. Optional surrounding double quote will be removed.
+     * It will be also unquoted and MIME/base64 decoded.
+     *
+     * @param name name part of email address as UTF-16 string. Null is acceptable.
+     */
+    public static String decodeAddressName(String name) {
         if (name != null) {
             name = REMOVE_OPTIONAL_DQUOTE.matcher(name).replaceAll("$1");
             name = UNQUOTE.matcher(name).replaceAll("$1");
@@ -164,7 +174,7 @@ public class Address {
                 name = null;
             }
         }
-        mName = name;
+        return name;
     }
 
     /**
