@@ -65,6 +65,7 @@ import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.ContactPhotoManager;
 import com.android.mail.photomanager.ContactPhotoManager.ContactIdentifier;
 import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
+import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -669,7 +670,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(mHeader.conversation.senders);
                 for (int i = 0; i < tokens.length;i++) {
                     final Rfc822Token token = tokens[i];
-                    final String senderName = token.getName();
+                    final String senderName = Address.decodeAddressName(token.getName());
                     final String senderAddress = token.getAddress();
                     mHeader.displayableSenderEmails.add(senderAddress);
                     mHeader.displayableSenderNames.add(
