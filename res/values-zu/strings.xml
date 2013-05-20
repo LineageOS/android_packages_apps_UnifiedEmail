@@ -108,7 +108,7 @@
     <string name="attachment_audio" msgid="135527133955622936">"Umsindo"</string>
     <string name="attachment_text" msgid="5544874374971562759">"Umbhalo"</string>
     <string name="attachment_application_msword" msgid="2326909450865637910">"Idokhumenti"</string>
-    <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"Isethulo"</string>
+    <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"Iphrezentheshini"</string>
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"I-Spreadsheet"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"I-PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"Ifayela <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
