@@ -20,6 +20,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
@@ -308,8 +309,7 @@ public class Conversation implements Parcelable {
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) != 0;
             seen = cursor.getInt(UIProvider.CONVERSATION_SEEN_COLUMN) != 0;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) != 0;
-            rawFolders = FolderList.fromBlob(
-                    cursor.getBlob(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN));
+            rawFolders = readRawFolders(cursor);
             convFlags = cursor.getInt(UIProvider.CONVERSATION_FLAGS_COLUMN);
             personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
             spam = cursor.getInt(UIProvider.CONVERSATION_IS_SPAM_COLUMN) != 0;
@@ -320,8 +320,7 @@ public class Conversation implements Parcelable {
             accountUri = !TextUtils.isEmpty(account) ? Uri.parse(account) : null;
             position = NO_POSITION;
             localDeleteOnUpdate = false;
-            conversationInfo = ConversationInfo.fromBlob(
-                    cursor.getBlob(UIProvider.CONVERSATION_INFO_COLUMN));
+            conversationInfo = readConversationInfo(cursor);
             final String conversationBase =
                     cursor.getString(UIProvider.CONVERSATION_BASE_URI_COLUMN);
             conversationBaseUri = !TextUtils.isEmpty(conversationBase) ?
@@ -412,6 +411,44 @@ public class Conversation implements Parcelable {
         conversation.conversationBaseUri = conversationBase;
         conversation.isRemote = isRemote;
         return conversation;
+    }
+
+    private static final Bundle sConversationInfoRequest = new Bundle(1);
+    private static final Bundle sRawFoldersRequest = new Bundle(1);
+
+    private static ConversationInfo readConversationInfo(Cursor cursor) {
+        final ConversationInfo ci;
+
+        final String key = UIProvider.ConversationCursorCommand.COMMAND_GET_CONVERSATION_INFO;
+        if (sConversationInfoRequest.isEmpty()) {
+            sConversationInfoRequest.putBoolean(key, true);
+        }
+        final Bundle response = cursor.respond(sConversationInfoRequest);
+        if (response.containsKey(key)) {
+            ci = response.getParcelable(key);
+        } else {
+            // legacy fallback
+            ci = ConversationInfo.fromBlob(cursor.getBlob(UIProvider.CONVERSATION_INFO_COLUMN));
+        }
+        return ci;
+    }
+
+    private static FolderList readRawFolders(Cursor cursor) {
+        final FolderList fl;
+
+        final String key = UIProvider.ConversationCursorCommand.COMMAND_GET_RAW_FOLDERS;
+        if (sRawFoldersRequest.isEmpty()) {
+            sRawFoldersRequest.putBoolean(key, true);
+        }
+        final Bundle response = cursor.respond(sRawFoldersRequest);
+        if (response.containsKey(key)) {
+            fl = response.getParcelable(key);
+        } else {
+            // legacy fallback
+            fl = FolderList.fromBlob(
+                    cursor.getBlob(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN));
+        }
+        return fl;
     }
 
     /**
