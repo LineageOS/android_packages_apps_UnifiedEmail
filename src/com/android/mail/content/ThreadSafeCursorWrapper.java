@@ -18,6 +18,8 @@ package com.android.mail.content;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.os.Bundle;
+
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -95,6 +97,14 @@ public class ThreadSafeCursorWrapper extends CursorWrapper {
     }
 
     @Override
+    public Bundle respond(Bundle extras) {
+        synchronized (mLock) {
+            moveToCurrent();
+            return super.respond(extras);
+        }
+    }
+
+    @Override
     public void copyStringToBuffer(int columnIndex, CharArrayBuffer buffer) {
         synchronized (mLock) {
             moveToCurrent();
@@ -111,10 +121,13 @@ public class ThreadSafeCursorWrapper extends CursorWrapper {
     }
 
     private void moveToCurrent() {
-        final boolean result = super.moveToPosition(mPosition.get());
+        final int pos = mPosition.get();
+        final boolean result = super.moveToPosition(pos);
 
-        if (!result) {
-            LogUtils.e(LOG_TAG, "Unexpected failure to move to current position");
+        // AbstractCursor returns false on negative positions, although Cursor documentation
+        // states that -1 is a valid input. Let's just log positive values as failures.
+        if (!result && pos >= 0) {
+            LogUtils.e(LOG_TAG, "Unexpected failure to move to current position, pos=%d", pos);
         }
     }
 
