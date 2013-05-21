@@ -791,7 +791,7 @@ public abstract class AbstractActivityController implements ActivityController,
     protected void preloadConvList(Account nextAccount, Folder nextFolder) {
         // Fire off the conversation list loader for this account already with a fake
         // listener.
-        final Bundle args = new Bundle();
+        final Bundle args = new Bundle(2);
         if (nextAccount != null) {
             args.putParcelable(BUNDLE_ACCOUNT_KEY, nextAccount);
         } else {
@@ -814,7 +814,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param intent Intent that the app was started with. This intent contains the search query.
      */
     private void fetchSearchFolder(Intent intent) {
-        final Bundle args = new Bundle();
+        final Bundle args = new Bundle(1);
         args.putString(ConversationListContext.EXTRA_SEARCH_QUERY, intent
                 .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
         mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, mFolderCallbacks);
@@ -980,7 +980,7 @@ public abstract class AbstractActivityController implements ActivityController,
             // for the newly selected folder
             lm.destroyLoader(LOADER_CONVERSATION_LIST);
         }
-        final Bundle args = new Bundle();
+        final Bundle args = new Bundle(2);
         args.putParcelable(BUNDLE_ACCOUNT_KEY, mAccount);
         args.putParcelable(BUNDLE_FOLDER_KEY, mFolder);
         lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
@@ -1674,7 +1674,7 @@ public abstract class AbstractActivityController implements ActivityController,
         final int size = targets.size();
         final List<ConversationOperation> opList = new ArrayList<ConversationOperation>(size);
         for (final Conversation target : targets) {
-            final ContentValues value = new ContentValues();
+            final ContentValues value = new ContentValues(4);
             value.put(ConversationColumns.READ, read);
 
             // We never want to mark unseen here, but we do want to mark it seen
