@@ -21,6 +21,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
@@ -988,7 +989,11 @@ public class UIProvider {
         /**
          * This blob column contains the byte-array representation of the Parceled
          * ConversationInfo object for a conversation.
+         *
+         * @deprecated providers should implement
+         * {@link ConversationCursorCommand#COMMAND_GET_CONVERSATION_INFO} instead.
          */
+        @Deprecated
         public static final String CONVERSATION_INFO = "conversationInfo";
         /**
          * This long column contains the time in ms of the latest update to a
@@ -1046,7 +1051,11 @@ public class UIProvider {
          * This blob column contains the marshalled form of a Parceled
          * {@FolderList} object. Ideally, only ever use this for
          * rendering the folder list for a conversation.
+         *
+         * @deprecated providers should implement
+         * {@link ConversationCursorCommand#COMMAND_GET_RAW_FOLDERS} instead.
          */
+        @Deprecated
         public static final String RAW_FOLDERS = "rawFolders";
         public static final String FLAGS = "conversationFlags";
         /**
@@ -1139,6 +1148,34 @@ public class UIProvider {
          * {@link #COMMAND_RESPONSE_OK} or {@link #COMMAND_RESPONSE_FAILED}.
          */
         public static final String COMMAND_NOTIFY_CURSOR_UI_POSITION_CHANGE = "uiPositionChange";
+
+        /**
+         * Rather than jamming a {@link ConversationInfo} into a byte-array blob to be read out of
+         * a cursor, providers can optionally implement this command to directly return the object
+         * in a Bundle.
+         * <p>
+         * The requestor (UI code) will place a meaningless value in the request Bundle. Providers
+         * should just use {@link Bundle#containsKey(String)} to check for this kind of request.
+         * <p>
+         * A provider that implements this command should include the
+         * {@link #COMMAND_GET_CONVERSATION_INFO} key in its response with a
+         * {@link ConversationInfo} Parcelable object as its value.
+         */
+        public static final String COMMAND_GET_CONVERSATION_INFO = "getConvInfo";
+
+        /**
+         * Rather than jamming a {@link FolderList} into a byte-array blob to be read out of
+         * a cursor, providers can optionally implement this command to directly return the object
+         * in a Bundle.
+         * <p>
+         * The requestor (UI code) will place a meaningless value in the request Bundle. Providers
+         * should just use {@link Bundle#containsKey(String)} to check for this kind of request.
+         * <p>
+         * A provider that implements this command should include the
+         * {@link #COMMAND_GET_RAW_FOLDERS} key in its response with a
+         * {@link FolderList} Parcelable object as its value.
+         */
+        public static final String COMMAND_GET_RAW_FOLDERS = "getRawFolders";
 
         private ConversationCursorCommand() {}
     }
