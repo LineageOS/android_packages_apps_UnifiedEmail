@@ -1149,8 +1149,10 @@ public class UIProvider {
          * a cursor, providers can optionally implement this command to directly return the object
          * in a Bundle.
          * <p>
-         * The requestor (UI code) will place a meaningless value in the request Bundle. Providers
-         * should just use {@link Bundle#containsKey(String)} to check for this kind of request.
+         * The requestor (UI code) will place a meaningless value in the request Bundle. The UI will
+         * also move the cursor position to the desired place prior to calling respond(). Providers
+         * should just use {@link Bundle#containsKey(String)} to check for this kind of request and
+         * generate an object at the current cursor position.
          * <p>
          * A provider that implements this command should include the
          * {@link #COMMAND_GET_CONVERSATION_INFO} key in its response with a
@@ -1163,8 +1165,10 @@ public class UIProvider {
          * a cursor, providers can optionally implement this command to directly return the object
          * in a Bundle.
          * <p>
-         * The requestor (UI code) will place a meaningless value in the request Bundle. Providers
-         * should just use {@link Bundle#containsKey(String)} to check for this kind of request.
+         * The requestor (UI code) will place a meaningless value in the request Bundle. The UI will
+         * also move the cursor position to the desired place prior to calling respond(). Providers
+         * should just use {@link Bundle#containsKey(String)} to check for this kind of request and
+         * generate an object at the current cursor position.
          * <p>
          * A provider that implements this command should include the
          * {@link #COMMAND_GET_RAW_FOLDERS} key in its response with a
