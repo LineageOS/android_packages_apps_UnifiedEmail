@@ -32,13 +32,10 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts.Photo;
 import android.support.v4.app.NotificationCompat;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextUtils.SimpleStringSplitter;
 import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
 import android.util.Pair;
@@ -64,7 +61,6 @@ import com.google.android.common.html.parser.HtmlDocument;
 import com.google.android.common.html.parser.HtmlTree;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.io.ByteArrayInputStream;
@@ -73,7 +69,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -87,11 +82,6 @@ public class NotificationUtils {
 
     private static TextAppearanceSpan sNotificationUnreadStyleSpan;
     private static CharacterStyle sNotificationReadStyleSpan;
-
-    private static final Map<Integer, Integer> sPriorityToLength = Maps.newHashMap();
-    private static final SimpleStringSplitter SENDER_LIST_SPLITTER =
-            new SimpleStringSplitter(Utils.SENDER_LIST_SEPARATOR);
-    private static String[] sSenderFragments = new String[8];
 
     /** A factory that produces a plain text converter that removes elided text. */
     private static final HtmlTree.PlainTextConverterFactory MESSAGE_CONVERTER_FACTORY =
@@ -1201,44 +1191,6 @@ public class NotificationUtils {
             titleSpannable.setSpan(notificationSubjectSpan,
                     subjectOffset, subjectOffset + subject.length(), 0);
             return titleSpannable;
-        }
-    }
-
-    /**
-     * Adds a fragment with given style to a string builder.
-     *
-     * @param builder the current string builder
-     * @param fragment the fragment to be added
-     * @param style the style of the fragment
-     * @param withSpaces whether to add the whole fragment or to divide it into
-     *            smaller ones
-     */
-    private static void addStyledFragment(SpannableStringBuilder builder, String fragment,
-            CharacterStyle style, boolean withSpaces) {
-        if (withSpaces) {
-            int pos = builder.length();
-            builder.append(fragment);
-            builder.setSpan(CharacterStyle.wrap(style), pos, builder.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        } else {
-            int start = 0;
-            while (true) {
-                int pos = fragment.substring(start).indexOf(' ');
-                if (pos == -1) {
-                    addStyledFragment(builder, fragment.substring(start), style, true);
-                    break;
-                } else {
-                    pos += start;
-                    if (start < pos) {
-                        addStyledFragment(builder, fragment.substring(start, pos), style, true);
-                        builder.append(' ');
-                    }
-                    start = pos + 1;
-                    if (start >= fragment.length()) {
-                        break;
-                    }
-                }
-            }
         }
     }
 
