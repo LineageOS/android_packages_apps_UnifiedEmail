@@ -677,6 +677,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 }
                 prevCollapsedMsg = msg;
                 prevSafeForImages = safeForImages;
+
+                // This line puts the from address in the address cache so that
+                // we get the sender image for it if it's in a super-collapsed block.
+                getAddress(msg.getFrom());
                 continue;
             }
 
