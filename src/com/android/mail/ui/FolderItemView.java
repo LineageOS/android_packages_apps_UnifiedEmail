@@ -43,21 +43,8 @@ import android.widget.RelativeLayout;
  */
 public class FolderItemView extends RelativeLayout {
     private final String LOG_TAG = LogTag.getLogTag();
-    // Static colors
-    private static int NON_DROPPABLE_TARGET_TEXT_COLOR;
-
-    // Static bitmap
-    private static Bitmap SHORTCUT_ICON;
-
-    // These are fine to be static, as these Drawables only have one state
-    private static Drawable DROPPABLE_HOVER_BACKGROUND;
-    private static Drawable DRAG_STEADY_STATE_BACKGROUND;
 
     private static final int[] STATE_DRAG_MODE = {R.attr.state_drag_mode};
-
-    private Drawable mBackground;
-    private ColorStateList mInitialFolderTextColor;
-    private ColorStateList mInitialUnreadCountTextColor;
 
     private Folder mFolder;
     private TextView mFolderTextView;
@@ -102,23 +89,10 @@ public class FolderItemView extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (SHORTCUT_ICON == null) {
-            final Resources res = getResources();
-            SHORTCUT_ICON = BitmapFactory.decodeResource(
-                    res, R.mipmap.ic_launcher_shortcut_folder);
-            DROPPABLE_HOVER_BACKGROUND =
-                    res.getDrawable(R.drawable.folder_drag_target);
-            DRAG_STEADY_STATE_BACKGROUND =
-                    res.getDrawable(R.drawable.folder_no_hover);
-            NON_DROPPABLE_TARGET_TEXT_COLOR =
-                    res.getColor(R.color.folder_disabled_drop_target_text_color);
-        }
+
         mFolderTextView = (TextView)findViewById(R.id.name);
         mUnreadCountTextView = (TextView)findViewById(R.id.unread);
         mUnseenCountTextView = (TextView)findViewById(R.id.unseen);
-        mBackground = getBackground();
-        mInitialFolderTextColor = mFolderTextView.getTextColors();
-        mInitialUnreadCountTextColor = mUnreadCountTextView.getTextColors();
         mFolderParentIcon = (ImageView) findViewById(R.id.folder_parent_icon);
     }
 
@@ -227,48 +201,20 @@ public class FolderItemView extends RelativeLayout {
     public boolean onDragEvent(DragEvent event) {
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
-                // Set the background to a steady state background.
-                setBackgroundDrawable(DRAG_STEADY_STATE_BACKGROUND);
+                // Set drag mode state to true now that we have entered drag mode.
+                // This change updates the states of icons and text colors.
+                // Additional drawable states are updated by the framework
+                // based on the DragEvent.
                 setDragMode(true);
-
-                // If this folder is not a drop target, dim the text.
-                if (!isDroppableTarget(event)) {
-                    // Make sure we update this at the time we drop on the target.
-                    mInitialFolderTextColor = mFolderTextView.getTextColors();
-                    mInitialUnreadCountTextColor = mUnreadCountTextView.getTextColors();
-                    mFolderTextView.setTextColor(NON_DROPPABLE_TARGET_TEXT_COLOR);
-                    mUnreadCountTextView.setTextColor(NON_DROPPABLE_TARGET_TEXT_COLOR);
-                    return false;
-                }
-                return true;
-
             case DragEvent.ACTION_DRAG_ENTERED:
-                // Change background color to indicate this folder is the drop target.
-                if (isDroppableTarget(event)) {
-                    setBackgroundDrawable(DROPPABLE_HOVER_BACKGROUND);
-                    return true;
-                }
-                break;
-
             case DragEvent.ACTION_DRAG_EXITED:
-                // If this is a droppable target, make sure that it is set back to steady state,
-                // when the drag leaves the view.
-                if (isDroppableTarget(event)) {
-                    setBackgroundDrawable(DRAG_STEADY_STATE_BACKGROUND);
-                    return true;
-                }
-                break;
-
+                // All of these states return based on isDroppableTarget's return value.
+                // If modifying, watch the switch's drop-through effects.
+                return isDroppableTarget(event);
             case DragEvent.ACTION_DRAG_ENDED:
-                // Reset the text of the non draggable views back to the color it had been..
-                if (!isDroppableTarget(event)) {
-                    mFolderTextView.setTextColor(mInitialFolderTextColor);
-                    mUnreadCountTextView.setTextColor(mInitialUnreadCountTextColor);
-                }
-
+                // Set drag mode to false since we're leaving drag mode.
+                // Updates all the states of icons and text colors back to non-drag values.
                 setDragMode(false);
-                // Restore the background of the view.
-                setBackgroundDrawable(mBackground);
                 return true;
 
             case DragEvent.ACTION_DRAG_LOCATION:
