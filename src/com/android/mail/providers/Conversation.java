@@ -422,6 +422,9 @@ public class Conversation implements Parcelable {
         final String key = UIProvider.ConversationCursorCommand.COMMAND_GET_CONVERSATION_INFO;
         if (sConversationInfoRequest.isEmpty()) {
             sConversationInfoRequest.putBoolean(key, true);
+            sConversationInfoRequest.putInt(
+                    UIProvider.ConversationCursorCommand.COMMAND_KEY_OPTIONS,
+                    UIProvider.ConversationCursorCommand.OPTION_MOVE_POSITION);
         }
         final Bundle response = cursor.respond(sConversationInfoRequest);
         if (response.containsKey(key)) {
@@ -439,6 +442,9 @@ public class Conversation implements Parcelable {
         final String key = UIProvider.ConversationCursorCommand.COMMAND_GET_RAW_FOLDERS;
         if (sRawFoldersRequest.isEmpty()) {
             sRawFoldersRequest.putBoolean(key, true);
+            sRawFoldersRequest.putInt(
+                    UIProvider.ConversationCursorCommand.COMMAND_KEY_OPTIONS,
+                    UIProvider.ConversationCursorCommand.OPTION_MOVE_POSITION);
         }
         final Bundle response = cursor.respond(sRawFoldersRequest);
         if (response.containsKey(key)) {
