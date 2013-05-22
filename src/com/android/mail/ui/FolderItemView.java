@@ -53,6 +53,8 @@ public class FolderItemView extends RelativeLayout {
     private static Drawable DROPPABLE_HOVER_BACKGROUND;
     private static Drawable DRAG_STEADY_STATE_BACKGROUND;
 
+    private static final int[] STATE_DRAG_MODE = {R.attr.state_drag_mode};
+
     private Drawable mBackground;
     private ColorStateList mInitialFolderTextColor;
     private ColorStateList mInitialUnreadCountTextColor;
@@ -63,6 +65,8 @@ public class FolderItemView extends RelativeLayout {
     private TextView mUnseenCountTextView;
     private DropHandler mDropHandler;
     private ImageView mFolderParentIcon;
+
+    private boolean mIsDragMode;
 
     /**
      * A delegate for a handler to handle a drop of an item.
@@ -91,6 +95,8 @@ public class FolderItemView extends RelativeLayout {
 
     public FolderItemView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        mIsDragMode = false;
     }
 
     @Override
@@ -221,6 +227,10 @@ public class FolderItemView extends RelativeLayout {
     public boolean onDragEvent(DragEvent event) {
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
+                // Set the background to a steady state background.
+                setBackgroundDrawable(DRAG_STEADY_STATE_BACKGROUND);
+                setDragMode(true);
+
                 // If this folder is not a drop target, dim the text.
                 if (!isDroppableTarget(event)) {
                     // Make sure we update this at the time we drop on the target.
@@ -228,9 +238,8 @@ public class FolderItemView extends RelativeLayout {
                     mInitialUnreadCountTextColor = mUnreadCountTextView.getTextColors();
                     mFolderTextView.setTextColor(NON_DROPPABLE_TARGET_TEXT_COLOR);
                     mUnreadCountTextView.setTextColor(NON_DROPPABLE_TARGET_TEXT_COLOR);
+                    return false;
                 }
-                // Set the background to a steady state background.
-                setBackgroundDrawable(DRAG_STEADY_STATE_BACKGROUND);
                 return true;
 
             case DragEvent.ACTION_DRAG_ENTERED:
@@ -256,6 +265,8 @@ public class FolderItemView extends RelativeLayout {
                     mFolderTextView.setTextColor(mInitialFolderTextColor);
                     mUnreadCountTextView.setTextColor(mInitialUnreadCountTextColor);
                 }
+
+                setDragMode(false);
                 // Restore the background of the view.
                 setBackgroundDrawable(mBackground);
                 return true;
@@ -272,5 +283,19 @@ public class FolderItemView extends RelativeLayout {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    protected int[] onCreateDrawableState(int extraSpace) {
+        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        if (mIsDragMode) {
+            mergeDrawableStates(drawableState, STATE_DRAG_MODE);
+        }
+        return drawableState;
+    }
+
+    private void setDragMode(boolean isDragMode) {
+        mIsDragMode = isDragMode;
+        refreshDrawableState();
     }
 }

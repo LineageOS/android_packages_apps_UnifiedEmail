@@ -44,10 +44,12 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/folder_list_item_right_margin"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentRight="true"
+        android:duplicateParentState="true">
 
         <TextView
             android:id="@+id/unread"
+            android:duplicateParentState="true"
             style="@style/UnreadCount" />
 
         <TextView
@@ -63,6 +65,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/folder_list_item_left_margin"
         android:layout_alignParentLeft="true"
+        android:duplicateParentState="true"
         android:visibility="gone" />
 
     <TextView
@@ -75,6 +78,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginLeft="@dimen/folder_list_item_left_margin"
         android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:duplicateParentState="true"
         android:includeFontPadding="false"
         android:maxLines="2"
         android:ellipsize="end"
