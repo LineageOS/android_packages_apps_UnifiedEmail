@@ -20,6 +20,7 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.os.Bundle;
 
+import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -98,8 +99,13 @@ public class ThreadSafeCursorWrapper extends CursorWrapper {
 
     @Override
     public Bundle respond(Bundle extras) {
-        synchronized (mLock) {
-            moveToCurrent();
+        final int opts = extras.getInt(UIProvider.ConversationCursorCommand.COMMAND_KEY_OPTIONS);
+        if ((opts & UIProvider.ConversationCursorCommand.OPTION_MOVE_POSITION) != 0) {
+            synchronized (mLock) {
+                moveToCurrent();
+                return super.respond(extras);
+            }
+        } else {
             return super.respond(extras);
         }
     }

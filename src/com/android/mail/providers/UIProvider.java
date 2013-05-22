@@ -20,8 +20,10 @@ package com.android.mail.providers;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
@@ -1109,6 +1111,19 @@ public class UIProvider {
 
         public static final String COMMAND_RESPONSE_OK = "ok";
         public static final String COMMAND_RESPONSE_FAILED = "failed";
+
+        /**
+         * Incoming bundles may include this key with an Integer bitfield value. See below for bit
+         * values.
+         */
+        public static final String COMMAND_KEY_OPTIONS = "options";
+
+        /**
+         * Clients must set this bit when the {@link Cursor#respond(Bundle)} call is being used to
+         * fetch a {@link Parcelable}. It serves as a hint that this call requires the cursor
+         * position to first safely be moved.
+         */
+        public static final int OPTION_MOVE_POSITION = 0x01;
 
         /**
          * This bundle key has a boolean value: true to indicate that this cursor has been shown
