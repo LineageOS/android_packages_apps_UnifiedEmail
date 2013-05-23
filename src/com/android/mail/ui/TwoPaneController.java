@@ -161,6 +161,11 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void onFolderSelected(Folder folder) {
+        // It's possible that we are not in conversation list mode
+        if (mViewMode.getMode() != ViewMode.CONVERSATION_LIST) {
+            mViewMode.enterConversationListMode();
+        }
+
         if (folder.hasChildren && !folder.equals(getHierarchyFolder())) {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
