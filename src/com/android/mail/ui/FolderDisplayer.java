@@ -53,7 +53,7 @@ public class FolderDisplayer {
     /**
      * Configure the FolderDisplayer object by parsing the rawFolders string.
      *
-     * @param foldersString string containing serialized folders to display.
+     * @param conv {@link Conversation} containing the folders to display.
      * @param ignoreFolderUri (optional) folder to omit from the displayed set
      * @param ignoreFolderType -1, or the {@link FolderType} to omit from the displayed set
      */
