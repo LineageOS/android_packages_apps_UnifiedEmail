@@ -368,13 +368,13 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     if (ENABLE_CONVERSATION_PRECACHING && i < MAX_INIT_CONVERSATION_PRELOAD) {
                         c = new Conversation(this);
                         innerUriString = c.uri.toString();
-                        wrappedUriString = uriToCachingUriString(c.uri);
+                        wrappedUriString = uriToCachingUriString(innerUriString);
                         convId = c.id;
                         numCached++;
                     } else {
                         c = null;
                         innerUriString = super.getString(URI_COLUMN_INDEX);
-                        wrappedUriString = uriToCachingUriString(Uri.parse(innerUriString));
+                        wrappedUriString = uriToCachingUriString(innerUriString);
                         convId = super.getLong(UIProvider.CONVERSATION_ID_COLUMN);
                     }
                     conversationUriPositionMapBuilder.put(innerUriString, i);
@@ -669,8 +669,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 if (values.containsKey(DELETED_COLUMN)) {
                     // Since clients of the conversation cursor see conversation ConversationCursor
                     // provider uris, we need to make sure that this also returns these uris
-                    final Uri conversationUri = Uri.parse(entry.getKey());
-                    deletedItems.add(uriToCachingUriString(conversationUri)) ;
+                    deletedItems.add(uriToCachingUriString(entry.getKey()));
                 }
             }
             return deletedItems;
@@ -768,10 +767,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * @param uri the uri
      * @return a forwarding uri to ConversationProvider
      */
-    private static String uriToCachingUriString (Uri uri) {
-        final String provider = uri.getAuthority();
-        return uri.getScheme() + "://" + ConversationProvider.AUTHORITY
-                + "/" + provider + uri.getPath();
+    private static String uriToCachingUriString (String uriStr) {
+        return ConversationProvider.sUriPrefix + uriStr.substring(
+                uriStr.indexOf(ConversationProvider.URI_SEPARATOR)
+                + ConversationProvider.URI_SEPARATOR.length());
     }
 
     /**
@@ -1322,6 +1321,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      */
     public abstract static class ConversationProvider extends ContentProvider {
         public static String AUTHORITY;
+        public static String sUriPrefix;
+        public static final String URI_SEPARATOR = "://";
         private ContentResolver mResolver;
 
         /**
@@ -1333,6 +1334,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         public boolean onCreate() {
             sProvider = this;
             AUTHORITY = getAuthority();
+            sUriPrefix = "content://" + AUTHORITY + "/";
             mResolver = getContext().getContentResolver();
             return true;
         }
