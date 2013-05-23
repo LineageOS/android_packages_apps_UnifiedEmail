@@ -619,7 +619,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 || mSpecialViewPositions.get(position) != null) {
             return -1;
         }
-        return super.getItemId(position - getPositionOffset(position));
+        final int cursorPos = position - getPositionOffset(position);
+        final ConversationCursor cursor = getConversationCursor();
+        if (cursor != null) {
+            final Conversation conv = cursor.getCachedConversation(cursorPos);
+            if (conv != null) {
+                return conv.id;
+            }
+        }
+        return super.getItemId(cursorPos);
     }
 
     /**
