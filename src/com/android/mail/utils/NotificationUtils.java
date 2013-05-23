@@ -49,6 +49,7 @@ import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
@@ -1360,10 +1361,14 @@ public class NotificationUtils {
         final EmailAddress address = EmailAddress.getEmailAddress(sender);
 
         String displayableSender = address.getName();
-        // If that fails, default to the sender address.
-        if (TextUtils.isEmpty(displayableSender)) {
-            displayableSender = address.getAddress();
+
+        if (!TextUtils.isEmpty(displayableSender)) {
+            return Address.decodeAddressName(displayableSender);
         }
+
+        // If that fails, default to the sender address.
+        displayableSender = address.getAddress();
+
         // If we were unable to tokenize a name or address,
         // just use whatever was in the sender.
         if (TextUtils.isEmpty(displayableSender)) {
