@@ -32,7 +32,6 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts.Photo;
 import android.support.v4.app.NotificationCompat;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -60,6 +59,7 @@ import com.google.android.common.html.parser.HTML4;
 import com.google.android.common.html.parser.HtmlDocument;
 import com.google.android.common.html.parser.HtmlTree;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -1195,9 +1195,10 @@ public class NotificationUtils {
     }
 
     /**
-     * Clears the notifications for the specified account/folder/conversation.
+     * Clears the notifications for the specified account/folder.
      */
-    public static void clearFolderNotification(Context context, Account account, Folder folder) {
+    public static void clearFolderNotification(Context context, Account account, Folder folder,
+            final boolean markSeen) {
         LogUtils.v(LOG_TAG, "NotificationUtils: Clearing all notifications for %s/%s", account.name,
                 folder.name);
         final NotificationMap notificationMap = getNotificationMap(context);
@@ -1205,7 +1206,43 @@ public class NotificationUtils {
         notificationMap.remove(key);
         notificationMap.saveNotificationMap(context);
 
-        markSeen(context, folder);
+        final NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(getNotificationId(account.name, folder));
+
+        if (markSeen) {
+            markSeen(context, folder);
+        }
+    }
+
+    /**
+     * Clears all notifications for the specified account.
+     */
+    public static void clearAccountNotifications(final Context context, final String account) {
+        LogUtils.v(LOG_TAG, "NotificationUtils: Clearing all notifications for %s", account);
+        final NotificationMap notificationMap = getNotificationMap(context);
+
+        // Find all NotificationKeys for this account
+        final ImmutableList.Builder<NotificationKey> keyBuilder = ImmutableList.builder();
+
+        for (final NotificationKey key : notificationMap.keySet()) {
+            if (account.equals(key.account.name)) {
+                keyBuilder.add(key);
+            }
+        }
+
+        final List<NotificationKey> notificationKeys = keyBuilder.build();
+
+        final NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        for (final NotificationKey notificationKey : notificationKeys) {
+            final Folder folder = notificationKey.folder;
+            notificationManager.cancel(getNotificationId(account, folder));
+            notificationMap.remove(notificationKey);
+        }
+
+        notificationMap.saveNotificationMap(context);
     }
 
     private static ArrayList<Long> findContacts(Context context, Collection<String> addresses) {
