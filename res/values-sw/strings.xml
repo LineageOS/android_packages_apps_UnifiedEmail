@@ -306,7 +306,7 @@
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sawazisha: Hakuna"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Badilisha folda"</string>
-    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Sogeza hadi"</string>
+    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Hamisha hadi"</string>
     <string name="search_hint" msgid="3625734263059221350">"Tafuta barua pepe"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
