@@ -458,7 +458,11 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         }
 
         public Conversation getConversation() {
-            return mRowCache.get(getPosition()).conversation;
+            return getConversationAt(getPosition());
+        }
+
+        public Conversation getConversationAt(int position) {
+            return mRowCache.get(position).conversation;
         }
 
         public void cacheConversation(Conversation conversation) {
@@ -1221,34 +1225,52 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     }
 
     public Conversation getConversation() {
-        Conversation c = mUnderlyingCursor.getConversation();
+        Conversation c = applyCachedValues(mUnderlyingCursor.getConversation());
         if (c == null) {
             // not pre-cached. fall back to just-in-time construction.
             c = new Conversation(this);
             mUnderlyingCursor.cacheConversation(c);
-        } else {
-            // apply any cached values
-            // but skip over any cached values that aren't part of the cursor projection
-            final ContentValues values = mCacheMap.get(mUnderlyingCursor.getInnerUri());
-            if (values != null) {
-                final ContentValues queryableValues = new ContentValues();
-                for (String key : values.keySet()) {
-                    if (!mColumnNameSet.contains(key)) {
-                        continue;
-                    }
-                    putInValues(queryableValues, key, values.get(key));
-                }
-                if (queryableValues.size() > 0) {
-                    // copy-on-write to help ensure the underlying cached Conversation is immutable
-                    // of course, any callers this method should also try not to modify them
-                    // overmuch...
-                    c = new Conversation(c);
-                    c.applyCachedValues(queryableValues);
-                }
-            }
         }
 
         return c;
+    }
+
+    /**
+     * Returns a Conversation object for the given position, or null if it has not yet been cached.
+     * This call is fast and will not cause any cursor position changes.
+     *
+     */
+    public Conversation getCachedConversation(int position) {
+        return applyCachedValues(mUnderlyingCursor.getConversationAt(position));
+    }
+
+    /**
+     * Returns a copy of the conversation with any cached column data applied. Looks for cache data
+     * by the Conversation's URI. Null input is okay and will return null output.
+     *
+     */
+    private Conversation applyCachedValues(Conversation c) {
+        Conversation result = c;
+        // apply any cached values
+        // but skip over any cached values that aren't part of the cursor projection
+        final ContentValues values = (c != null) ? mCacheMap.get(c.uri.toString()) : null;
+        if (values != null) {
+            final ContentValues queryableValues = new ContentValues();
+            for (String key : values.keySet()) {
+                if (!mColumnNameSet.contains(key)) {
+                    continue;
+                }
+                putInValues(queryableValues, key, values.get(key));
+            }
+            if (queryableValues.size() > 0) {
+                // copy-on-write to help ensure the underlying cached Conversation is immutable
+                // of course, any callers this method should also try not to modify them
+                // overmuch...
+                result = new Conversation(c);
+                result.applyCachedValues(queryableValues);
+            }
+        }
+        return result;
     }
 
     /**
