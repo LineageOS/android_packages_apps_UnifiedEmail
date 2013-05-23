@@ -66,7 +66,7 @@ public class MailIntentService extends IntentService {
             final Account account = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
             final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
 
-            NotificationUtils.clearFolderNotification(this, account, folder);
+            NotificationUtils.clearFolderNotification(this, account, folder, true /* markSeen */);
         } else if (ACTION_RESEND_NOTIFICATIONS.equals(action)) {
             final Uri accountUri = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT_URI);
             final Uri folderUri = intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
