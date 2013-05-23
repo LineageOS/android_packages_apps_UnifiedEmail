@@ -96,7 +96,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mConversationHeaderView.setCallbacks(this, this);
-        mConversationHeaderView.setFoldersVisible(false);
+        mConversationHeaderView.setFolders(mConversation);
         mConversationHeaderView.setSubject(mConversation.subject);
         mMessageHeaderView.initialize(mDateBuilder, this, mAddressCache);
         mMessageHeaderView.setExpandMode(MessageHeaderView.POPUP_MODE);
