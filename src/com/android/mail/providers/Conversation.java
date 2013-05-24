@@ -419,6 +419,14 @@ public class Conversation implements Parcelable {
     private static ConversationInfo readConversationInfo(Cursor cursor) {
         final ConversationInfo ci;
 
+        if (cursor instanceof ConversationCursor) {
+            final byte[] blob = ((ConversationCursor) cursor).getCachedBlob(
+                    UIProvider.CONVERSATION_INFO_COLUMN);
+            if (blob != null && blob.length > 0) {
+                return ConversationInfo.fromBlob(blob);
+            }
+        }
+
         final String key = UIProvider.ConversationCursorCommand.COMMAND_GET_CONVERSATION_INFO;
         if (sConversationInfoRequest.isEmpty()) {
             sConversationInfoRequest.putBoolean(key, true);
@@ -438,6 +446,14 @@ public class Conversation implements Parcelable {
 
     private static FolderList readRawFolders(Cursor cursor) {
         final FolderList fl;
+
+        if (cursor instanceof ConversationCursor) {
+            final byte[] blob = ((ConversationCursor) cursor).getCachedBlob(
+                    UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN);
+            if (blob != null && blob.length > 0) {
+                return FolderList.fromBlob(blob);
+            }
+        }
 
         final String key = UIProvider.ConversationCursorCommand.COMMAND_GET_RAW_FOLDERS;
         if (sRawFoldersRequest.isEmpty()) {
