@@ -594,8 +594,10 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         mHandler.post(new FragmentRunnable("popOut") {
             @Override
             public void go() {
-                mActivity.getListHandler()
-                .onConversationSelected(null, true /* inLoaderCallbacks */);
+                if (mActivity != null) {
+                    mActivity.getListHandler()
+                            .onConversationSelected(null, true /* inLoaderCallbacks */);
+                }
             }
         });
     }
