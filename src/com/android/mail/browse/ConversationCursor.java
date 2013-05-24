@@ -1219,6 +1219,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         return mUnderlyingCursor.getBlob(columnIndex);
     }
 
+    public byte[] getCachedBlob(int columnIndex) {
+        return (byte[]) getCachedValue(columnIndex);
+    }
+
     public Conversation getConversation() {
         Conversation c = applyCachedValues(mUnderlyingCursor.getConversation());
         if (c == null) {
