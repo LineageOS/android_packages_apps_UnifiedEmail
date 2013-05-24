@@ -458,11 +458,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         }
 
         public Conversation getConversation() {
-            return getConversationAt(getPosition());
-        }
-
-        public Conversation getConversationAt(int position) {
-            return mRowCache.get(position).conversation;
+            return mRowCache.get(getPosition()).conversation;
         }
 
         public void cacheConversation(Conversation conversation) {
@@ -1235,12 +1231,12 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     }
 
     /**
-     * Returns a Conversation object for the given position, or null if it has not yet been cached.
-     * This call is fast and will not cause any cursor position changes.
+     * Returns a Conversation object for the current position, or null if it has not yet been
+     * cached.
      *
      */
-    public Conversation getCachedConversation(int position) {
-        return applyCachedValues(mUnderlyingCursor.getConversationAt(position));
+    public Conversation getCachedConversation() {
+        return applyCachedValues(mUnderlyingCursor.getConversation());
     }
 
     /**
