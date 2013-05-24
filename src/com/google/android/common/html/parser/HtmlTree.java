@@ -847,6 +847,7 @@ public class HtmlTree {
     private final PlainTextPrinter printer = new PlainTextPrinter();
 
     private int preDepth = 0;
+    private int styleDepth = 0;
 
     @Override
     public void addNode(HtmlDocument.Node n, int nodeNum, int endNum) {
@@ -858,6 +859,8 @@ public class HtmlTree {
         if (preDepth > 0) {
           printer.appendPreText(str);
 
+        } else if (styleDepth > 0) {
+          // Append nothing
         } else {
           printer.appendNormalText(str);
         }
@@ -890,6 +893,8 @@ public class HtmlTree {
 
         } else if (HTML4.PRE_ELEMENT.equals(element)) {
           preDepth++;
+        } else if (HTML4.STYLE_ELEMENT.equals(element)) {
+          styleDepth++;
         }
 
       } else if (n instanceof HtmlDocument.EndTag) {
@@ -911,6 +916,8 @@ public class HtmlTree {
 
         } else if (HTML4.PRE_ELEMENT.equals(element)) {
           preDepth--;
+        } else if (HTML4.STYLE_ELEMENT.equals(element)) {
+          styleDepth--;
         }
       }
     }
