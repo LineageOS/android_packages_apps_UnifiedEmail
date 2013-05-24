@@ -18,6 +18,7 @@ package com.google.android.common.html.parser;
 import com.google.android.common.base.CharMatcher;
 import com.google.android.common.base.Preconditions;
 import com.google.android.common.base.X;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;
@@ -46,6 +47,8 @@ import java.util.logging.Logger;
  * @author jlim@google.com (Jing Yee Lim)
  */
 public class HtmlTree {
+  // http://www.w3.org/TR/html4/struct/text.html#h-9.1
+  private static final CharMatcher HTML_WHITESPACE = CharMatcher.anyOf(" \t\f\u200b\r\n");
 
   /**
    * An interface that allows clients to provide their own implementation
@@ -88,6 +91,7 @@ public class HtmlTree {
   /** A factory that produces converters of the default implementation. */
   private static final PlainTextConverterFactory DEFAULT_CONVERTER_FACTORY =
       new PlainTextConverterFactory() {
+        @Override
         public PlainTextConverter createInstance() {
           return new DefaultPlainTextConverter();
         }
@@ -147,6 +151,35 @@ public class HtmlTree {
    */
   public int getNumNodes() {
     return nodes.size();
+  }
+
+  /**
+   * Returns number of matching open tag node, or {@code endTagNodeNum} itself
+   * if it does not point to a closing tag.
+   */
+  public int findOpenTag(int endTagNodeNum) {
+    X.assertTrue(endTagNodeNum >= 0 && endTagNodeNum < nodes.size());
+    return begins.get(endTagNodeNum);
+  }
+
+  /**
+   * Returns number of matching closing tag node, or {@code openTagNodeNum} itself
+   * if it does not point to an open tag or points to an open tag with no closing one.
+   */
+  public int findEndTag(int openTagNodeNum) {
+    X.assertTrue(openTagNodeNum >= 0 && openTagNodeNum < nodes.size());
+    return ends.get(openTagNodeNum);
+  }
+
+  /**
+   * Returns number of matching open/closing tag node, or {@code tagNodeNum} itself
+   * if it does not point to an open/closing tag (e.g text node or comment).
+   */
+  public int findPairedTag(int tagNodeNum) {
+    X.assertTrue(tagNodeNum >= 0 && tagNodeNum < nodes.size());
+    int openNodeNum = begins.get(tagNodeNum);
+    int endNodeNum = ends.get(tagNodeNum);
+    return tagNodeNum == openNodeNum ? endNodeNum : openNodeNum;
   }
 
   /**
@@ -238,13 +271,13 @@ public class HtmlTree {
 
       if (node instanceof HtmlDocument.Tag) {
         if (HTML4.TEXTAREA_ELEMENT.equals(
-            ((HtmlDocument.Tag)node).getElement())) {
+            ((HtmlDocument.Tag) node).getElement())) {
           stack++;
         }
       }
       if (node instanceof HtmlDocument.EndTag) {
         if (HTML4.TEXTAREA_ELEMENT.equals(
-            ((HtmlDocument.EndTag)node).getElement())) {
+            ((HtmlDocument.EndTag) node).getElement())) {
           if (stack == 0) {
             balanced = false;
           } else {
@@ -435,7 +468,7 @@ public class HtmlTree {
       if (ch == '\n') {
         return true;
       }
-      if (i < textPos && !Character.isWhitespace(ch)) {
+      if (i < textPos && !HTML_WHITESPACE.matches(ch)) {
         return false;
       }
     }
@@ -556,6 +589,7 @@ public class HtmlTree {
    * Encapsulates the logic for outputting plain text with respect to text
    * segments, white space separators, line breaks, and quote marks.
    */
+  @VisibleForTesting
   static final class PlainTextPrinter {
     /**
      * Separators are whitespace inserted between segments of text. The
@@ -814,6 +848,7 @@ public class HtmlTree {
 
     private int preDepth = 0;
 
+    @Override
     public void addNode(HtmlDocument.Node n, int nodeNum, int endNum) {
       if (n instanceof HtmlDocument.Text) {        // A string node
 
@@ -880,10 +915,12 @@ public class HtmlTree {
       }
     }
 
+    @Override
     public final int getPlainTextLength() {
       return printer.getTextLength();
     }
 
+    @Override
     public final String getPlainText() {
       return printer.getText();
     }
@@ -909,6 +946,7 @@ public class HtmlTree {
   }
 
   /**
+   * Adds a html start tag, there must followed later by a call to addEndTag()
    * to add the matching end tag
    */
   void addStartTag(HtmlDocument.Tag t) {
@@ -930,7 +968,6 @@ public class HtmlTree {
       ends.set(parent, nodenum);
     }
 
-    //is this the right pop?
     parent = stack.pop();
   }
 
@@ -951,7 +988,6 @@ public class HtmlTree {
 
   /** Adds a node */
   private void addNode(HtmlDocument.Node n, int begin, int end) {
-
     nodes.add(n);
     begins.add(begin);
     ends.add(end);
