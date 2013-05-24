@@ -1178,7 +1178,8 @@ public class UIProvider {
          * {@link #COMMAND_GET_CONVERSATION_INFO} key in its response with a
          * {@link ConversationInfo} Parcelable object as its value.
          */
-        public static final String COMMAND_GET_CONVERSATION_INFO = "getConvInfo";
+        public static final String COMMAND_GET_CONVERSATION_INFO =
+                ConversationColumns.CONVERSATION_INFO;
 
         /**
          * Rather than jamming a {@link FolderList} into a byte-array blob to be read out of
@@ -1194,7 +1195,7 @@ public class UIProvider {
          * {@link #COMMAND_GET_RAW_FOLDERS} key in its response with a
          * {@link FolderList} Parcelable object as its value.
          */
-        public static final String COMMAND_GET_RAW_FOLDERS = "getRawFolders";
+        public static final String COMMAND_GET_RAW_FOLDERS = ConversationColumns.RAW_FOLDERS;
 
         private ConversationCursorCommand() {}
     }
