@@ -620,9 +620,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             return -1;
         }
         final int cursorPos = position - getPositionOffset(position);
-        final ConversationCursor cursor = getConversationCursor();
+        // getItem() advances the cursor to the right position (and lets CursorAdapter check
+        // mDataValid)
+        final ConversationCursor cursor = (ConversationCursor) super.getItem(cursorPos);
         if (cursor != null) {
-            final Conversation conv = cursor.getCachedConversation(cursorPos);
+            final Conversation conv = cursor.getCachedConversation();
             if (conv != null) {
                 return conv.id;
             }
