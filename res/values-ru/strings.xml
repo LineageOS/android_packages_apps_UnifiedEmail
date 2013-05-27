@@ -169,7 +169,7 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Отправка…"</string>
     <string name="send_failed" msgid="750908595144529579">"Не отправлено."</string>
-    <string name="me" msgid="6480762904022198669">"мне"</string>
+    <string name="me" msgid="6480762904022198669">"я"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Входящие"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Удалить эту цепочку?"</item>
