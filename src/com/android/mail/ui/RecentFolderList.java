@@ -198,6 +198,12 @@ public final class RecentFolderList {
             }
         }
         assert (folder != null);
+
+        if (folder.isProviderFolder()) {
+            LogUtils.d(TAG, "Not touching recent folder because it's provider folder");
+            return;
+        }
+
         final RecentFolderListEntry entry = new RecentFolderListEntry(folder);
         mFolderCache.putElement(folder.uri.toString(), entry);
         new StoreRecent(mAccount, folder).execute();
