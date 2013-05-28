@@ -620,10 +620,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             return -1;
         }
         final int cursorPos = position - getPositionOffset(position);
-        // getItem() advances the cursor to the right position (and lets CursorAdapter check
-        // mDataValid)
-        final ConversationCursor cursor = (ConversationCursor) super.getItem(cursorPos);
-        if (cursor != null) {
+        // advance the cursor to the right position and read the cached conversation, if present
+        //
+        // (no need to have CursorAdapter check mDataValid because in our incarnation without
+        // FLAG_REGISTER_CONTENT_OBSERVER, mDataValid is effectively identical to mCursor being
+        // non-null)
+        final ConversationCursor cursor = getConversationCursor();
+        if (cursor != null && cursor.moveToPosition(cursorPos)) {
             final Conversation conv = cursor.getCachedConversation();
             if (conv != null) {
                 return conv.id;
