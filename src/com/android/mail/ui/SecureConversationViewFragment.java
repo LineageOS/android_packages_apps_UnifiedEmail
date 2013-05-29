@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.content.Loader;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -48,16 +49,24 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.util.HashSet;
+import java.util.Locale;
 
 public class SecureConversationViewFragment extends AbstractConversationViewFragment implements
         MessageHeaderViewCallbacks {
     private static final String LOG_TAG = LogTag.getLogTag();
+
+    private static final String BEGIN_HTML =
+            "<body style=\"margin: 0 %spx;\"><div style=\"margin: 16px 0;\">";
+    private static final String END_HTML = "</div></body>";
+
     private MessageWebView mWebView;
     private ConversationViewHeader mConversationHeaderView;
     private MessageHeaderView mMessageHeaderView;
     private MessageFooterView mMessageFooterView;
     private ConversationMessage mMessage;
     private MessageScrollView mScrollView;
+
+    private int mSideMarginInWebPx;
 
     private final WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
         @Override
@@ -109,6 +118,11 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mMessageFooterView.initialize(getLoaderManager(), getFragmentManager());
         getLoaderManager().initLoader(MESSAGE_LOADER, null, getMessageLoaderCallbacks());
         showLoadingStatus();
+
+        final Resources r = getResources();
+        mSideMarginInWebPx = (int) ((r.getDimensionPixelOffset(
+                R.dimen.conversation_view_margin_side) + r.getDimensionPixelOffset(
+                R.dimen.conversation_message_content_margin_side)) / r.getDisplayMetrics().density);
     }
 
     @Override
@@ -241,7 +255,15 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         final ConversationMessage m = messageCursor.getMessage();
         mMessage = messageCursor.getMessage();
         mWebView.getSettings().setBlockNetworkImage(!mMessage.alwaysShowImages);
-        mWebView.loadDataWithBaseURL(mBaseUri, m.getBodyAsHtml(), "text/html", "utf-8", null);
+
+        // Add formatting to message body
+        // At this point, only adds margins.
+        StringBuilder dataBuilder = new StringBuilder(
+                String.format(BEGIN_HTML, mSideMarginInWebPx));
+        dataBuilder.append(m.getBodyAsHtml());
+        dataBuilder.append(END_HTML);
+
+        mWebView.loadDataWithBaseURL(mBaseUri, dataBuilder.toString(), "text/html", "utf-8", null);
         final ConversationViewAdapter adapter = new ConversationViewAdapter(mActivity, null, null,
                 null, null, null, null, null, null);
         final MessageHeaderItem item = adapter.newMessageHeaderItem(mMessage, true,
