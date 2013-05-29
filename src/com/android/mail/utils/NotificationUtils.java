@@ -555,14 +555,15 @@ public class NotificationUtils {
             if (unreadCount > 0) {
                 // How can I order this properly?
                 if (cursor.moveToNext()) {
-                    Intent notificationIntent = createViewConversationIntent(context, account,
-                            folder, null);
+                    final Intent notificationIntent;
 
-                    // Launch directly to the conversation, if the
-                    // number of unseen conversations == 1
+                    // Launch directly to the conversation, if there is only 1 unseen conversation
                     if (unseenCount == 1) {
                         notificationIntent = createViewConversationIntent(context, account, folder,
                                 cursor);
+                    } else {
+                        notificationIntent = createViewConversationIntent(context, account, folder,
+                                null);
                     }
 
                     if (notificationIntent == null) {
