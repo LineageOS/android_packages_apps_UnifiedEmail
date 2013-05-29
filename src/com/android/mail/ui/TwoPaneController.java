@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -563,5 +564,11 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean isDrawerEnabled() {
         return mLayout.isDrawerEnabled();
+    }
+
+    @Override
+    public int getFolderListViewChoiceMode() {
+        // By default, we want to allow one item to be selected in the folder list
+        return ListView.CHOICE_MODE_SINGLE;
     }
 }

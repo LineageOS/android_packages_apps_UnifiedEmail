@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.widget.ListView;
+
 /**
  * A drawer that is shown in one pane mode, as a pull-out from the left.  All the
  * implementation is inherited from the FolderListFragment.
@@ -26,5 +28,11 @@ public class DrawerFragment extends FolderListFragment {
         super();
         // Drawer is always sectioned.
         mIsSectioned = true;
+    }
+
+    @Override
+    protected int getListViewChoiceMode() {
+        // Always let one item be selected
+        return ListView.CHOICE_MODE_SINGLE;
     }
 }

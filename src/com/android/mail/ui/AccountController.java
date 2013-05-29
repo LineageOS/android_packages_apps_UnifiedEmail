@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
+import android.widget.ListView;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
@@ -108,4 +109,10 @@ public interface AccountController {
      * @return <code>true</code> if the drawer pull action is enabled, <code>false</code> otherwise
      */
     boolean isDrawerPullEnabled();
+
+    /**
+     * @return the choice mode to use in the {@link ListView} in the default folder list (subclasses
+     * of {@link FolderListFragment} may override this
+     */
+    int getFolderListViewChoiceMode();
 }

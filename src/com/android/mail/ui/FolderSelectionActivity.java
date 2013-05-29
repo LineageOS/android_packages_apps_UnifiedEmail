@@ -32,6 +32,7 @@ import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
@@ -148,6 +149,11 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         public boolean isDrawerPullEnabled() {
             // Unsupported
             return false;
+        }
+
+        @Override
+        public int getFolderListViewChoiceMode() {
+            return ListView.CHOICE_MODE_NONE;
         }
     };
 

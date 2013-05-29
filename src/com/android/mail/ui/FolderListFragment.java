@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -75,7 +74,7 @@ public class FolderListFragment extends ListFragment implements
     /** Object that changes folders on our behalf. */
     private FolderListSelectionListener mFolderChanger;
     /** Object that changes accounts on our behalf */
-    private AccountController mAccountChanger;
+    private AccountController mAccountController;
 
     /** The currently selected folder (the folder being viewed).  This is never null. */
     private Uri mSelectedFolderUri = Uri.EMPTY;
@@ -87,7 +86,9 @@ public class FolderListFragment extends ListFragment implements
     /** Parent of the current folder, or null if the current folder is not a child. */
     private Folder mParentFolder;
 
-    private static final int FOLDER_LOADER_ID = 0;
+    private static final int FOLDER_LIST_LOADER_ID = 0;
+    /** Loader id for the full list of folders in the account */
+    private static final int FULL_FOLDER_LIST_LOADER_ID = 1;
     /** Key to store {@link #mParentFolder}. */
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
     /** Key to store {@link #mIsSectioned} */
@@ -292,7 +293,7 @@ public class FolderListFragment extends ListFragment implements
                 }
             };
             mAllAccountsObserver.initialize(accountController);
-            mAccountChanger = accountController;
+            mAccountController = accountController;
 
             // Observer for when the drawer is closed
             mDrawerObserver = new DrawerClosedObserver() {
@@ -301,12 +302,11 @@ public class FolderListFragment extends ListFragment implements
                     // First, check if there's a folder to change to
                     if (mNextFolder != null) {
                         mFolderChanger.onFolderSelected(mNextFolder);
-                        // Wait for an update to the current folder. When we get the next folder,
-                        // then we null it out.
+                        mNextFolder = null;
                     }
                     // Next, check if there's an account to change to
                     if (mNextAccount != null) {
-                        mAccountChanger.switchToDefaultInboxOrChangeAccount(mNextAccount);
+                        mAccountController.switchToDefaultInboxOrChangeAccount(mNextAccount);
                         mNextAccount = null;
                     }
                 }
@@ -318,6 +318,8 @@ public class FolderListFragment extends ListFragment implements
             // Activity is finishing, just bail.
             return;
         }
+
+        mListView.setChoiceMode(getListViewChoiceMode());
 
         setListAdapter(mCursorAdapter);
     }
@@ -346,13 +348,10 @@ public class FolderListFragment extends ListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedState) {
-        final Bundle args = getArguments();
-        if (args != null) {
-            mHideAccounts = args.getBoolean(ARG_HIDE_ACCOUNTS, false);
-        }
+        setInstanceFromBundle(getArguments());
+
         final View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
-        mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setEmptyView(null);
         mListView.setDivider(null);
         if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
@@ -438,7 +437,7 @@ public class FolderListFragment extends ListFragment implements
         // Switching accounts takes you to the default inbox for that account.
         mSelectedFolderType = DrawerItem.FOLDER_INBOX;
         mNextAccount = account;
-        mAccountChanger.closeDrawer(true, mNextAccount, getDefaultInbox(mNextAccount));
+        mAccountController.closeDrawer(true, mNextAccount, getDefaultInbox(mNextAccount));
     }
 
     /**
@@ -465,7 +464,7 @@ public class FolderListFragment extends ListFragment implements
                         mListView.setItemChecked(defaultInboxPosition, true);
                     }
                     // ... and close the drawer (no new target folders/accounts)
-                    mAccountChanger.closeDrawer(false, mNextAccount,
+                    mAccountController.closeDrawer(false, mNextAccount,
                             getDefaultInbox(mNextAccount));
                 } else {
                     changeAccount(account);
@@ -502,10 +501,10 @@ public class FolderListFragment extends ListFragment implements
             // Go to the conversation list for this folder.
             if (!folder.uri.equals(mSelectedFolderUri)) {
                 mNextFolder = folder;
-                mAccountChanger.closeDrawer(true, nextAccount, folder);
+                mAccountController.closeDrawer(true, nextAccount, folder);
             } else {
                 // Clicked on same folder, just close drawer
-                mAccountChanger.closeDrawer(false, nextAccount, folder);
+                mAccountController.closeDrawer(false, nextAccount, folder);
             }
         }
     }
@@ -514,10 +513,10 @@ public class FolderListFragment extends ListFragment implements
     public Loader<ObjectCursor<Folder>> onCreateLoader(int id, Bundle args) {
         mListView.setEmptyView(null);
         final Uri folderListUri;
-        if (mType == TYPE_TREE) {
+        if (id == FOLDER_LIST_LOADER_ID && mType == TYPE_TREE) {
             // Folder trees, they specify a URI at construction time.
             folderListUri = mFolderListUri;
-        } else if (mType == TYPE_DRAWER) {
+        } else if (id == FOLDER_LIST_LOADER_ID && mType == TYPE_DRAWER) {
             // Drawers should have a valid account
             if (mCurrentAccount != null) {
                 folderListUri = mCurrentAccount.folderListUri;
@@ -525,6 +524,8 @@ public class FolderListFragment extends ListFragment implements
                 LogUtils.wtf(LOG_TAG, "FLF.onCreateLoader() for Drawer with null account");
                 return null;
             }
+        } else if (id == FULL_FOLDER_LIST_LOADER_ID) {
+            folderListUri = mCurrentAccount.fullFolderListUri;
         } else {
             LogUtils.wtf(LOG_TAG, "FLF.onCreateLoader() with weird type");
             return null;
@@ -536,14 +537,22 @@ public class FolderListFragment extends ListFragment implements
     @Override
     public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
         if (mCursorAdapter != null) {
-            mCursorAdapter.setCursor(data);
+            if (loader.getId() == FOLDER_LIST_LOADER_ID) {
+                mCursorAdapter.setCursor(data);
+            } else if (loader.getId() == FULL_FOLDER_LIST_LOADER_ID) {
+                mCursorAdapter.setFullFolderListCursor(data);
+            }
         }
     }
 
     @Override
     public void onLoaderReset(Loader<ObjectCursor<Folder>> loader) {
         if (mCursorAdapter != null) {
-            mCursorAdapter.setCursor(null);
+            if (loader.getId() == FOLDER_LIST_LOADER_ID) {
+                mCursorAdapter.setCursor(null);
+            } else if (loader.getId() == FULL_FOLDER_LIST_LOADER_ID) {
+                mCursorAdapter.setFullFolderListCursor(null);
+            }
         }
     }
 
@@ -565,6 +574,8 @@ public class FolderListFragment extends ListFragment implements
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
         /** Update the folder list cursor with the cursor given here. */
         void setCursor(ObjectCursor<Folder> cursor);
+        /** Update the full folder list cursor with the cursor given here. */
+        void setFullFolderListCursor(ObjectCursor<Folder> cursor);
         /**
          * Given an item, find the type of the item, which should only be {@link
          * DrawerItem#VIEW_FOLDER} or {@link DrawerItem#VIEW_ACCOUNT}
@@ -591,7 +602,7 @@ public class FolderListFragment extends ListFragment implements
         private final RecentFolderObserver mRecentFolderObserver = new RecentFolderObserver() {
             @Override
             public void onChanged() {
-                if (!isCursorInvalid(mCursor)) {
+                if (!isCursorInvalid()) {
                     recalculateList();
                 }
             }
@@ -606,6 +617,8 @@ public class FolderListFragment extends ListFragment implements
         private List<DrawerItem> mItemList = new ArrayList<DrawerItem>();
         /** Cursor into the folder list. This might be null. */
         private ObjectCursor<Folder> mCursor = null;
+        /** Cursor into the full folder list. This might be null. */
+        private ObjectCursor<Folder> mFullFolderListCursor = null;
         /** Watcher for tracking and receiving unread counts for mail */
         private FolderWatcher mFolderWatcher = null;
         private boolean mRegistered = false;
@@ -630,9 +643,9 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         public void notifyAllAccountsChanged() {
-            if (!mRegistered && mAccountChanger != null) {
+            if (!mRegistered && mAccountController != null) {
                 // TODO(viki): Round-about way of setting the watcher. http://b/8750610
-                mAccountChanger.setFolderWatcher(mFolderWatcher);
+                mAccountController.setFolderWatcher(mFolderWatcher);
                 mRegistered = true;
             }
             mFolderWatcher.updateAccountList(getAllAccounts());
@@ -764,7 +777,7 @@ public class FolderListFragment extends ListFragment implements
             // If we are waiting for folder initialization, we don't have any kinds of folders,
             // just the "Waiting for initialization" item. Note, this should only be done
             // when we're waiting for account initialization or initial sync.
-            if (isCursorInvalid(mCursor)) {
+            if (isCursorInvalid()) {
                 if(!mCurrentAccount.isAccountReady()) {
                     itemList.add(DrawerItem.forWaitView(mActivity));
                 }
@@ -787,7 +800,6 @@ public class FolderListFragment extends ListFragment implements
             // Otherwise, this is an adapter for a sectioned list.
             final List<DrawerItem> allFoldersList = new ArrayList<DrawerItem>();
             final List<DrawerItem> inboxFolders = new ArrayList<DrawerItem>();
-            boolean currentFolderFound = false;
             do {
                 final Folder f = mCursor.getModel();
                 if (!isFolderTypeExcluded(f)) {
@@ -798,18 +810,36 @@ public class FolderListFragment extends ListFragment implements
                         allFoldersList.add(DrawerItem.ofFolder(
                                 mActivity, f, DrawerItem.FOLDER_OTHER, mCursor.getPosition()));
                     }
-                    if (f.equals(mCurrentFolderForUnreadCheck)) {
-                        currentFolderFound = true;
-                    }
                 }
             } while (mCursor.moveToNext());
 
-            if (!currentFolderFound && mCurrentFolderForUnreadCheck != null
-                    && mCurrentAccount != null && mAccountChanger != null
-                    && mAccountChanger.isDrawerPullEnabled()) {
-                LogUtils.d(LOG_TAG, "Current folder (%1$s) has disappeared for %2$s",
-                        mCurrentFolderForUnreadCheck.name, mCurrentAccount.name);
-                changeAccount(mCurrentAccount);
+            // If we have the full folder list, verify that the current folder exists
+            boolean currentFolderFound = false;
+            if (mFullFolderListCursor != null) {
+                final String folderName = mCurrentFolderForUnreadCheck == null
+                        ? "null" : mCurrentFolderForUnreadCheck.name;
+                LogUtils.d(LOG_TAG, "Checking if full folder list contains %s", folderName);
+
+                if (mFullFolderListCursor.moveToFirst()) {
+                    LogUtils.d(LOG_TAG, "Cursor for %s seems reasonably valid", folderName);
+                    do {
+                        final Folder f = mFullFolderListCursor.getModel();
+                        if (!isFolderTypeExcluded(f)) {
+                            if (f.equals(mCurrentFolderForUnreadCheck)) {
+                                LogUtils.d(LOG_TAG, "Found %s !", folderName);
+                                currentFolderFound = true;
+                            }
+                        }
+                    } while (mFullFolderListCursor.moveToNext());
+                }
+
+                if (!currentFolderFound && mCurrentFolderForUnreadCheck != null
+                        && mCurrentAccount != null && mAccountController != null
+                        && mAccountController.isDrawerPullEnabled()) {
+                    LogUtils.d(LOG_TAG, "Current folder (%1$s) has disappeared for %2$s",
+                            mCurrentFolderForUnreadCheck.name, mCurrentAccount.name);
+                    changeAccount(mCurrentAccount);
+                }
             }
 
             // Add all inboxes (sectioned included) before recents.
@@ -875,10 +905,9 @@ public class FolderListFragment extends ListFragment implements
 
         /**
          * Check if the cursor provided is valid.
-         * @param mCursor
          * @return True if cursor is invalid, false otherwise
          */
-        private boolean isCursorInvalid(Cursor mCursor) {
+        private boolean isCursorInvalid() {
             return mCursor == null || mCursor.isClosed()|| mCursor.getCount() <= 0
                     || !mCursor.moveToFirst();
         }
@@ -886,6 +915,12 @@ public class FolderListFragment extends ListFragment implements
         @Override
         public void setCursor(ObjectCursor<Folder> cursor) {
             mCursor = cursor;
+            recalculateList();
+        }
+
+        @Override
+        public void setFullFolderListCursor(final ObjectCursor<Folder> cursor) {
+            mFullFolderListCursor = cursor;
             recalculateList();
         }
 
@@ -940,7 +975,7 @@ public class FolderListFragment extends ListFragment implements
     }
 
     private class HierarchicalFolderListAdapter extends ArrayAdapter<Folder>
-            implements FolderListFragmentCursorAdapter{
+            implements FolderListFragmentCursorAdapter {
 
         private static final int PARENT = 0;
         private static final int CHILD = 1;
@@ -1015,6 +1050,11 @@ public class FolderListFragment extends ListFragment implements
         }
 
         @Override
+        public void setFullFolderListCursor(final ObjectCursor<Folder> cursor) {
+            // Not necessary in HierarchicalFolderListAdapter
+        }
+
+        @Override
         public void destroy() {
             // Do nothing.
         }
@@ -1065,12 +1105,6 @@ public class FolderListFragment extends ListFragment implements
             LogUtils.e(LOG_TAG, "FolderListFragment.setSelectedFolder(null) called!");
             return;
         }
-        // Is this the folder we changed to previously?  If not, ignore the update
-        if (mNextFolder != null && !folder.uri.equals(mNextFolder.uri)) {
-            // Update to a folder that we don't care about.  Ignore
-            return;
-        }
-        mNextFolder = null;
 
         final boolean viewChanged =
                 !FolderItemView.areSameViews(folder, mCurrentFolderForUnreadCheck);
@@ -1110,8 +1144,10 @@ public class FolderListFragment extends ListFragment implements
             // comment on {@link AbstractActivityController#restartOptionalLoader} to see why we
             // don't just do restartLoader.
             final LoaderManager manager = getLoaderManager();
-            manager.destroyLoader(FOLDER_LOADER_ID);
-            manager.restartLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
+            manager.destroyLoader(FOLDER_LIST_LOADER_ID);
+            manager.restartLoader(FOLDER_LIST_LOADER_ID, Bundle.EMPTY, this);
+            manager.destroyLoader(FULL_FOLDER_LIST_LOADER_ID);
+            manager.restartLoader(FULL_FOLDER_LIST_LOADER_ID, Bundle.EMPTY, this);
             // An updated cursor causes the entire list to refresh. No need to refresh the list.
             // But we do need to blank out the current folder, since the account might not be
             // synced.
@@ -1122,7 +1158,8 @@ public class FolderListFragment extends ListFragment implements
             // non-null account -> null account transition.
             LogUtils.e(LOG_TAG, "FLF.setSelectedAccount(null) called! Destroying existing loader.");
             final LoaderManager manager = getLoaderManager();
-            manager.destroyLoader(FOLDER_LOADER_ID);
+            manager.destroyLoader(FOLDER_LIST_LOADER_ID);
+            manager.destroyLoader(FULL_FOLDER_LIST_LOADER_ID);
         }
     }
 
@@ -1153,5 +1190,12 @@ public class FolderListFragment extends ListFragment implements
         }
 
         return false;
+    }
+
+    /**
+     * @return the choice mode to use for the {@link ListView}
+     */
+    protected int getListViewChoiceMode() {
+        return mAccountController.getFolderListViewChoiceMode();
     }
 }
