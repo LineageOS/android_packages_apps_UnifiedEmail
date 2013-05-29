@@ -380,18 +380,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         settings.setJavaScriptEnabled(true);
 
-        final float fontScale = getResources().getConfiguration().fontScale;
-        final int desiredFontSizePx = getResources()
-                .getInteger(R.integer.conversation_desired_font_size_px);
-        final int unstyledFontSizePx = getResources()
-                .getInteger(R.integer.conversation_unstyled_font_size_px);
-
-        int textZoom = settings.getTextZoom();
-        // apply a correction to the default body text style to get regular text to the size we want
-        textZoom = textZoom * desiredFontSizePx / unstyledFontSizePx;
-        // then apply any system font scaling
-        textZoom = (int) (textZoom * fontScale);
-        settings.setTextZoom(textZoom);
+        setTextZoom(settings);
 
         mViewsCreated = true;
         mWebViewLoadedData = false;

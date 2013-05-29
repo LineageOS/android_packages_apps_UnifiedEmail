@@ -43,6 +43,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -880,5 +881,22 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     public boolean shouldApplyTransforms() {
         return (mAccount.enableMessageTransforms > 0) &&
                 !mHasConversationTransformBeenReverted;
+    }
+
+    public void setTextZoom(WebSettings settings) {
+        final Resources resources = getResources();
+        final float fontScale = resources.getConfiguration().fontScale;
+        final int desiredFontSizePx = resources.getInteger(
+                R.integer.conversation_desired_font_size_px);
+        final int unstyledFontSizePx = resources.getInteger(
+                R.integer.conversation_unstyled_font_size_px);
+
+        int textZoom = settings.getTextZoom();
+        // apply a correction to the default body text style to get regular text to the size we want
+        textZoom = textZoom * desiredFontSizePx / unstyledFontSizePx;
+        // then apply any system font scaling
+        textZoom = (int) (textZoom * fontScale);
+        settings.setTextZoom(textZoom);
+
     }
 }

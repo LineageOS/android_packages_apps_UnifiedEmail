@@ -56,7 +56,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     private static final String LOG_TAG = LogTag.getLogTag();
 
     private static final String BEGIN_HTML =
-            "<body style=\"margin: 0 %spx;\"><div style=\"margin: 16px 0;\">";
+            "<body style=\"margin: 0 %spx;\"><div style=\"margin: 16px 0; font-size: 80%%\">";
     private static final String END_HTML = "</div></body>";
 
     private MessageWebView mWebView;
@@ -141,6 +141,8 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
 
         settings.setJavaScriptEnabled(false);
         settings.setLayoutAlgorithm(LayoutAlgorithm.NORMAL);
+
+        setTextZoom(settings);
 
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
