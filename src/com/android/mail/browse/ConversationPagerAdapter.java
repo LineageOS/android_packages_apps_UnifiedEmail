@@ -186,9 +186,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                 return null;
             }
             cursor.notifyUIPositionChange();
-            // TODO: switch to something like MessageCursor or AttachmentCursor
-            // to re-use these models
-            c = new Conversation(cursor);
+            c = cursor.getConversation();
             c.position = position;
         }
         final AbstractConversationViewFragment f = getConversationViewFragment(c);
@@ -343,7 +341,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         if (mController != null && !mDetachedMode && mPager != null) {
             final Conversation currConversation = mController.getCurrentConversation();
             final int pos = getConversationPosition(currConversation);
-            final Cursor cursor = getCursor();
+            final ConversationCursor cursor = getCursor();
             if (pos == POSITION_NONE && cursor != null && currConversation != null) {
                 // enable detached mode and do no more here. the fragment itself will figure out
                 // if the conversation is empty (using message list cursor) and back out if needed.
@@ -370,7 +368,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                         (AbstractConversationViewFragment) getFragmentAt(pos);
                 if (frag != null && cursor.moveToPosition(pos) && frag.isUserVisible()) {
                     // reload what we think is in the current position.
-                    final Conversation conv = new Conversation(cursor);
+                    final Conversation conv = cursor.getConversation();
                     conv.position = pos;
                     frag.onConversationUpdated(conv);
                     mController.setCurrentConversation(conv);
@@ -494,12 +492,12 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         if (mController == null) {
             return;
         }
-        final Cursor cursor = getCursor();
+        final ConversationCursor cursor = getCursor();
         if (cursor == null || !cursor.moveToPosition(position)) {
             // No valid cursor or it doesn't have the position we want. Bail.
             return;
         }
-        final Conversation c = new Conversation(cursor);
+        final Conversation c = cursor.getConversation();
         c.position = position;
         LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s", c);
         mController.setCurrentConversation(c);
