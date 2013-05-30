@@ -20,7 +20,6 @@ package com.android.mail.browse;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Context;
-import android.database.Cursor;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
@@ -56,13 +55,6 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
             boolean swipeEnabled, boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter) {
         mConversationItemView.bind(conversation, activity, set, folder, checkboxOrSenderImage,
-                swipeEnabled, priorityArrowsEnabled, animatedAdapter);
-    }
-
-    public void bind(Cursor cursor, ControllableActivity activity, ConversationSelectionSet set,
-            Folder folder, int checkboxOrSenderImage, boolean swipeEnabled,
-            boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter) {
-        mConversationItemView.bind(cursor, activity, set, folder, checkboxOrSenderImage,
                 swipeEnabled, priorityArrowsEnabled, animatedAdapter);
     }
 
