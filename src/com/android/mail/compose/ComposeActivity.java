@@ -686,6 +686,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        mSavedInstanceState = null;
+    }
+
+    @Override
     protected final void onActivityResult(int request, int result, Intent data) {
         if (request == RESULT_PICK_ATTACHMENT && result == RESULT_OK) {
             addAttachmentAndUpdateView(data);
