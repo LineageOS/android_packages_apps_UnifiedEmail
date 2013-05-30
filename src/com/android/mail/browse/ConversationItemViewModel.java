@@ -17,12 +17,7 @@
 
 package com.android.mail.browse;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
-
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.SpannableString;
@@ -39,6 +34,9 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.UIProvider;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,10 +144,6 @@ public class ConversationItemViewModel {
         synchronized(sConversationHeaderMap) {
             return sConversationHeaderMap.get(key);
         }
-    }
-
-    static ConversationItemViewModel forCursor(String account, Cursor cursor) {
-        return forConversation(account, new Conversation(cursor));
     }
 
     static ConversationItemViewModel forConversation(String account, Conversation conv) {
