@@ -675,11 +675,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        if (! (view instanceof SwipeableConversationItemView)) {
-            return;
-        }
-        ((SwipeableConversationItemView) view).bind(cursor, mActivity, mBatchConversations, mFolder,
-                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this);
+        // no-op. we only get here from newConversationItemView(), which will immediately bind
+        // on its own.
     }
 
     private SwipeableConversationItemView newConversationItemView(int position, ViewGroup parent,

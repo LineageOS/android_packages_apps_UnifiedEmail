@@ -24,7 +24,6 @@ import android.content.ClipData;
 import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -424,13 +423,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             }
         });
         mAttachmentPreviewsCanvas = new DividedImageCanvas(context, this);
-    }
-
-    public void bind(Cursor cursor, ControllableActivity activity, ConversationSelectionSet set,
-            Folder folder, int checkboxOrSenderImage, boolean swipeEnabled,
-            boolean priorityArrowEnabled, AnimatedAdapter adapter) {
-        bind(ConversationItemViewModel.forCursor(mAccount, cursor), activity, set, folder,
-                checkboxOrSenderImage, swipeEnabled, priorityArrowEnabled, adapter);
     }
 
     public void bind(Conversation conversation, ControllableActivity activity,
