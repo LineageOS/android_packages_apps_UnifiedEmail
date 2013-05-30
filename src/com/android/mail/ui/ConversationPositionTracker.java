@@ -57,7 +57,7 @@ public class ConversationPositionTracker {
     private Conversation conversationAtPosition(int position){
         final ConversationCursor cursor = mCallbacks.getConversationListCursor();
         cursor.moveToPosition(position);
-        final Conversation conv = new Conversation(cursor);
+        final Conversation conv = cursor.getConversation();
         conv.position = position;
         return conv;
     }
