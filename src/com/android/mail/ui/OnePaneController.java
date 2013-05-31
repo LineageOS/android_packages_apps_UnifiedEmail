@@ -24,6 +24,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -374,6 +375,12 @@ public final class OnePaneController extends AbstractActivityController {
             mActivity.finish();
         } else if (mViewMode.isListMode() && !inInbox(mAccount, mConvListContext)) {
             if (mLastFolderListTransactionId != INVALID_ID) {
+                // Set the hierarchy folder to what it will be once we go up
+                final Folder hierarchyFolder = getHierarchyFolder();
+                if (hierarchyFolder != null && hierarchyFolder.parent != null) {
+                    setHierarchyFolder(hierarchyFolder.parent);
+                }
+
                 // If the user got here by navigating via the folder list, back
                 // should bring them back to the folder list.
                 mViewMode.enterFolderListMode();
@@ -434,6 +441,7 @@ public final class OnePaneController extends AbstractActivityController {
                     FolderListFragment.ofTree(folder, false),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
         } else {
+            setHierarchyFolder(folder);
             super.onFolderSelected(folder);
         }
     }
@@ -651,5 +659,11 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean isDrawerEnabled() {
         // The drawer is enabled for one pane mode
         return true;
+    }
+
+    @Override
+    public int getFolderListViewChoiceMode() {
+        // By default, we do not want to allow any item to be selected in the folder list
+        return ListView.CHOICE_MODE_NONE;
     }
 }
