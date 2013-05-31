@@ -19,7 +19,6 @@ package com.android.mail.ui;
 
 import android.content.Loader;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -49,7 +48,6 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.util.HashSet;
-import java.util.Locale;
 
 public class SecureConversationViewFragment extends AbstractConversationViewFragment implements
         MessageHeaderViewCallbacks {
@@ -254,7 +252,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             LogUtils.e(LOG_TAG, "unable to open message cursor");
             return;
         }
-        final ConversationMessage m = messageCursor.getMessage();
         mMessage = messageCursor.getMessage();
         mWebView.getSettings().setBlockNetworkImage(!mMessage.alwaysShowImages);
 
@@ -262,7 +259,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         // At this point, only adds margins.
         StringBuilder dataBuilder = new StringBuilder(
                 String.format(BEGIN_HTML, mSideMarginInWebPx));
-        dataBuilder.append(m.getBodyAsHtml());
+        dataBuilder.append(mMessage.getBodyAsHtml());
         dataBuilder.append(END_HTML);
 
         mWebView.loadDataWithBaseURL(mBaseUri, dataBuilder.toString(), "text/html", "utf-8", null);
