@@ -586,4 +586,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         return !mIsExpansiveLayout && mDrawerInitialSetupComplete;
     }
 
+    public boolean isExpansiveLayout() {
+        return mIsExpansiveLayout;
+    }
 }
