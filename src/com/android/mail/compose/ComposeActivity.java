@@ -211,6 +211,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String MIME_TYPE_PHOTO = "image/*";
     private static final String MIME_TYPE_VIDEO = "video/*";
 
+    private static final String KEY_INNER_SAVED_STATE = "compose_state";
+
     /**
      * A single thread for running tasks in the background.
      */
@@ -264,7 +266,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private RecipientTextWatcher mBccListener;
     private Uri mRefMessageUri;
     private boolean mShowQuotedText = false;
-    private Bundle mSavedInstanceState;
+    private Bundle mInnerSavedState;
 
 
     // Array of the outstanding send or save tasks.  Access is synchronized
@@ -370,12 +372,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.compose);
-        mSavedInstanceState = savedInstanceState;
+        mInnerSavedState = (savedInstanceState != null) ?
+                savedInstanceState.getBundle(KEY_INNER_SAVED_STATE) : null;
         checkValidAccounts();
     }
 
     private void finishCreate() {
-        Bundle savedInstanceState = mSavedInstanceState;
+        final Bundle savedState = mInnerSavedState;
         findViews();
         Intent intent = getIntent();
         Message message;
@@ -384,13 +387,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         int action;
         // Check for any of the possibly supplied accounts.;
         Account account = null;
-        if (hadSavedInstanceStateMessage(savedInstanceState)) {
-            action = savedInstanceState.getInt(EXTRA_ACTION, COMPOSE);
-            account = savedInstanceState.getParcelable(Utils.EXTRA_ACCOUNT);
-            message = (Message) savedInstanceState.getParcelable(EXTRA_MESSAGE);
+        if (hadSavedInstanceStateMessage(savedState)) {
+            action = savedState.getInt(EXTRA_ACTION, COMPOSE);
+            account = savedState.getParcelable(Utils.EXTRA_ACCOUNT);
+            message = (Message) savedState.getParcelable(EXTRA_MESSAGE);
 
-            previews = savedInstanceState.getParcelableArrayList(EXTRA_ATTACHMENT_PREVIEWS);
-            mRefMessage = (Message) savedInstanceState.getParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE);
+            previews = savedState.getParcelableArrayList(EXTRA_ATTACHMENT_PREVIEWS);
+            mRefMessage = (Message) savedState.getParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE);
         } else {
             account = obtainAccount(intent);
             action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
@@ -439,7 +442,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else if (message != null && action != EDIT_DRAFT) {
             initFromDraftMessage(message);
             initQuotedTextFromRefMessage(mRefMessage, action);
-            showCcBcc(savedInstanceState);
+            showCcBcc(savedState);
             mShowQuotedText = message.appendRefMessageContent;
         } else if (action == EDIT_DRAFT) {
             initFromDraftMessage(message);
@@ -484,7 +487,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         mComposeMode = action;
-        finishSetup(action, intent, savedInstanceState);
+        finishSetup(action, intent, savedState);
     }
 
     private void checkValidAccounts() {
@@ -593,8 +596,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         updateHideOrShowCcBcc();
         updateHideOrShowQuotedText(mShowQuotedText);
 
-        mRespondedInline = mSavedInstanceState != null ?
-                mSavedInstanceState.getBoolean(EXTRA_RESPONDED_INLINE) : false;
+        mRespondedInline = mInnerSavedState != null ?
+                mInnerSavedState.getBoolean(EXTRA_RESPONDED_INLINE) : false;
         if (mRespondedInline) {
             mQuotedTextView.setVisibility(View.GONE);
         }
@@ -686,12 +689,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        mSavedInstanceState = null;
-    }
-
-    @Override
     protected final void onActivityResult(int request, int result, Intent data) {
         if (request == RESULT_PICK_ATTACHMENT && result == RESULT_OK) {
             addAttachmentAndUpdateView(data);
@@ -716,10 +713,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             clearChangeListeners();
         }
         super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(EXTRA_FOCUS_SELECTION_START)) {
-                int selectionStart = savedInstanceState.getInt(EXTRA_FOCUS_SELECTION_START);
-                int selectionEnd = savedInstanceState.getInt(EXTRA_FOCUS_SELECTION_END);
+        if (mInnerSavedState != null) {
+            if (mInnerSavedState.containsKey(EXTRA_FOCUS_SELECTION_START)) {
+                int selectionStart = mInnerSavedState.getInt(EXTRA_FOCUS_SELECTION_START);
+                int selectionEnd = mInnerSavedState.getInt(EXTRA_FOCUS_SELECTION_END);
                 // There should be a focus and it should be an EditText since we
                 // only save these extras if these conditions are true.
                 EditText focusEditText = (EditText) getCurrentFocus();
@@ -737,6 +734,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public final void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
+        final Bundle inner = new Bundle();
+        saveState(inner);
+        state.putBundle(KEY_INNER_SAVED_STATE, inner);
+    }
+
+    private void saveState(Bundle state) {
         // We have no accounts so there is nothing to compose, and therefore, nothing to save.
         if (mAccounts == null || mAccounts.length == 0) {
             return;
@@ -1818,8 +1821,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
          */
         mSave = menu.findItem(R.id.save);
         String action = getIntent() != null ? getIntent().getAction() : null;
-        enableSave(mSavedInstanceState != null ?
-                mSavedInstanceState.getBoolean(EXTRA_SAVE_ENABLED)
+        enableSave(mInnerSavedState != null ?
+                mInnerSavedState.getBoolean(EXTRA_SAVE_ENABLED)
                     : (Intent.ACTION_SEND.equals(action)
                             || Intent.ACTION_SEND_MULTIPLE.equals(action)
                             || Intent.ACTION_SENDTO.equals(action)
@@ -3175,7 +3178,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 if (data != null && data.moveToFirst()) {
                     mRefMessage = new Message(data);
                 }
-                finishSetup(mComposeMode, getIntent(), mSavedInstanceState);
+                finishSetup(mComposeMode, getIntent(), mInnerSavedState);
                 break;
             case LOADER_ACCOUNT_CURSOR:
                 if (data != null && data.moveToFirst()) {
