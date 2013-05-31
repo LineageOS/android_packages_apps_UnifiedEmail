@@ -431,6 +431,15 @@ public final class TwoPaneController extends AbstractActivityController {
                     createFolderListFragment(FolderListFragment.ofDrawer());
                     loadAccountInbox();
                 }
+            // Otherwise, if we are in the conversation list but not in the default
+            // inbox and not on expansive layouts, we want to switch back to the default
+            // inbox. This fixes b/9006969 so that on smaller tablets where we have this
+            // hybrid one and two-pane mode, we will return to the inbox. On larger tablets,
+            // we will instead exit the app.
+            } else if (mode == ViewMode.CONVERSATION_LIST
+                    && !mAccount.settings.defaultInbox.equals(mFolder.uri)
+                    && !mLayout.isExpansiveLayout()) {
+                loadAccountInbox();
             } else if (!preventClose) {
                 // There is nothing else to pop off the stack.
                 mActivity.finish();
