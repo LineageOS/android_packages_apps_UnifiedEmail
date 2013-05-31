@@ -76,7 +76,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"變更資料夾"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"移至"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"資料夾設定"</string>
-    <string name="menu_show_original" msgid="4227060689700765828">"取消自動調整大小"</string>
+    <string name="menu_show_original" msgid="4227060689700765828">"不要自動調整郵件顯示比例"</string>
     <string name="message_modified" msgid="2564340197585393687">"(這封郵件的原始版本已經過修改，調整為符合這個畫面的版本。)"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"資料夾"</string>
     <string name="folder_list_more" msgid="537172187223133825">"更多"</string>
