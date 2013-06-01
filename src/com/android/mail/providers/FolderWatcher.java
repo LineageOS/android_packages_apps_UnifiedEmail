@@ -129,11 +129,14 @@ public class FolderWatcher {
                 break;
             }
         }
-        // No hole found, return the current size;
+
         if (location < 0) {
+            // No hole found, return the current size;
             location = mUris.size();
+            mUris.add(location, newElement);
+        } else {
+            mUris.set(location, newElement);
         }
-        mUris.add(location, newElement);
         return location;
     }
 
@@ -152,6 +155,10 @@ public class FolderWatcher {
      * @param uri the URI for a folder
      */
     private void stopWatching(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+
         final int id = mUris.indexOf(uri);
         // Does not exist in the list, we have stopped watching it already.
         if (id < 0) {
@@ -161,7 +168,7 @@ public class FolderWatcher {
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(getLoaderFromPosition(id));
         mInbox.remove(uri);
-        mUris.add(id, null);
+        mUris.set(id, null);
     }
 
     /**
