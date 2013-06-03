@@ -407,7 +407,7 @@
     <item quantity="one" msgid="7530191630810420066">"Se suprimirà <xliff:g id="COUNT">%1$d</xliff:g> missatge de manera permanent."</item>
     <item quantity="other" msgid="2182899395748020953">"Se suprimiran <xliff:g id="COUNT">%1$d</xliff:g> missatges de manera permanent."</item>
   </plurals>
-    <string name="drawer_open" msgid="6074646853178471940">"Obre el calaix de navegació"</string>
-    <string name="drawer_close" msgid="2764774620737876943">"Tanca el calaix de navegació"</string>
+    <string name="drawer_open" msgid="6074646853178471940">"Obre el tauler de navegació"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"Tanca el tauler de navegació"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Toca la imatge d\'un remitent per seleccionar-ne la conversa."</string>
 </resources>
