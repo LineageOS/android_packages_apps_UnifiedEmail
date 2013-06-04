@@ -329,7 +329,9 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     public static final int LAST_FRAGMENT_LOADER_ID = 1000;
 
+    /** Code returned after an account has been added. */
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
+    /** Code returned when the user has to enter the new password on an existing account. */
     private static final int REAUTHENTICATE_REQUEST_CODE = 2;
 
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
@@ -918,6 +920,17 @@ public abstract class AbstractActivityController implements ActivityController,
         mFolderListFolder = folder;
     }
 
+    /**
+     * The mail activity calls other activities for two specific reasons:
+     * <ul>
+     *     <li>To add an account. And receives the result {@link #ADD_ACCOUNT_REQUEST_CODE}</li>
+     *     <li>To update the password on a current account. The result {@link
+     *     #REAUTHENTICATE_REQUEST_CODE} is received.</li>
+     * </ul>
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -1030,6 +1043,44 @@ public abstract class AbstractActivityController implements ActivityController,
         mHandler.post(mLogServiceChecker);
     }
 
+    /**
+     * The application can be started from the following entry points:
+     * <ul>
+     *     <li>Launcher: you tap on the Gmail icon in the launcher. This is what most users think of
+     *         as “Starting the app”.</li>
+     *     <li>Shortcut: Users can make a shortcut to take them directly to a label.</li>
+     *     <li>Widget: Shows the contents of a synced label, and allows:
+     *     <ul>
+     *         <li>Viewing the list (tapping on the title)</li>
+     *         <li>Composing a new message (tapping on the new message icon in the title. This
+     *         launches the {@link ComposeActivity}.
+     *         </li>
+     *         <li>Viewing a single message (tapping on a list element)</li>
+     *     </ul>
+     *
+     *     </li>
+     *     <li>Tapping on a notification:
+     *     <ul>
+     *         <li>Shows message list if more than one message</li>
+     *         <li>Shows the conversation if the notification is for a single message</li>
+     *     </ul>
+     *     </li>
+     *     <li>...and most importantly, the activity life cycle can tear down the application and
+     *     restart it:
+     *     <ul>
+     *         <li>Rotate the application: it is destroyed and recreated.</li>
+     *         <li>Navigate away, and return from recent applications.</li>
+     *     </ul>
+     *     </li>
+     *     <li>Add a new account: fires off an intent to add an account,
+     *     and returns in {@link #onActivityResult(int, int, android.content.Intent)} .</li>
+     *     <li>Re-authenticate your account: again returns in onActivityResult().</li>
+     *     <li>Composing can happen from many entry points: third party applications fire off an
+     *     intent to compose email, and launch directly into the {@link ComposeActivity}
+     *     .</li>
+     * </ul>
+     * {@inheritDoc}
+     */
     @Override
     public boolean onCreate(Bundle savedState) {
         initializeActionBar();
@@ -2074,6 +2125,10 @@ public abstract class AbstractActivityController implements ActivityController,
      * Handle an intent to open the app. This method is called only when there is no saved state,
      * so we need to set state that wasn't set before. It is correct to change the viewmode here
      * since it has not been previously set.
+     *
+     * This method is called for a subset of the reasons mentioned in
+     * {@link #onCreate(android.os.Bundle)}. Notably, this is called when launching the app from
+     * notifications, widgets, and shortcuts.
      * @param intent intent passed to the activity.
      */
     private void handleIntent(Intent intent) {
