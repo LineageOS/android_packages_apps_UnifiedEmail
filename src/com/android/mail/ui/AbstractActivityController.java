@@ -288,27 +288,98 @@ public abstract class AbstractActivityController implements ActivityController,
 
     protected static final String LOG_TAG = LogTag.getLogTag();
 
-    // Constants used to differentiate between the types of loaders.
-    // Accounts
-    /** The list of accounts. */
+    // Loader constants: Accounts
+    /**
+     * The list of accounts. This loader is started early in the application life-cycle since
+     * the list of accounts is central to all other data the application needs: unread counts for
+     * folders, critical UI settings like show/hide checkboxes, ...
+     * The loader is started when the application is created: both in
+     * {@link #onCreate(Bundle)} and in {@link #onActivityResult(int, int, Intent)}. It is never
+     * destroyed since the cursor is needed through the life of the application. When the list of
+     * accounts changes, we notify {@link #mAllAccountObservers}.
+     */
     private static final int LOADER_ACCOUNT_CURSOR = 0;
-    /** The current account. */
+
+    /**
+     * The current account. This loader is started when we have an account. The mail application
+     * <b>needs</b> a valid account to function. As soon as we set {@link #mAccount},
+     * we start a loader to observe for changes on the current account.
+     * The loader is always restarted when an account is set in {@link #setAccount(Account)}.
+     * When the current account object changes, we notify {@link #mAccountObservers}.
+     * A possible performance improvement would be to listen purely on
+     * {@link #LOADER_ACCOUNT_CURSOR}. The current account is guaranteed to be in the list,
+     * and would avoid two updates when a single setting on the current account changes.
+     */
     private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
 
-    // Folders
-    /** The current folder */
+    // Loader constants: Folders
+    /** The current folder. This loader watches for updates to the current folder in a manner
+     * analogous to the {@link #LOADER_ACCOUNT_UPDATE_CURSOR}. Updates to the current folder
+     * might be due to server-side changes (unread count), or local changes (sync window or sync
+     * status change).
+     * The change of current folder calls {@link #updateFolder(Folder)}.
+     * This is responsible for restarting a loader using the URI of the provided folder. When the
+     * loader returns, the current folder is updated and consumers, if any, are notified.
+     * When the current folder changes, we notify {@link #mFolderObservable}
+     */
     private static final int LOADER_FOLDER_CURSOR = 2;
-    /** The list of recent folders */
+    /**
+     * The list of recent folders. Recent folders are shown in the DrawerFragment. The recent
+     * folders are tied to the current account being viewed. When the account is changed,
+     * we restart this loader to retrieve the recent accounts. Recents are pre-populated for
+     * phones historically, when they were displayed in the spinner. On the tablet,
+     * they showed in the {@link FolderListFragment} and were not-populated.  The code to
+     * pre-populate the recents is somewhat convoluted: when the loader returns a short list of
+     * recent folders, it issues an update on the Recent Folder URI. The underlying provider then
+     * does the appropriate thing to populate recent folders, and notify of a change on the cursor.
+     * Recent folders are needed for the life of the current account.
+     * When the recent folders change, we notify {@link #mRecentFolderObservers}.
+     */
     private static final int LOADER_RECENT_FOLDERS = 3;
-    /** The primary inbox for the current account. */
+    /**
+     * The primary inbox for the current account. The mechanism to load the default inbox for the
+     * current account is (sadly) different from loading other folders. The method
+     * {@link #loadAccountInbox()} is called, and it restarts this loader. When the loader returns
+     * a valid cursor, we create a folder, call {@link #onFolderChanged{Folder)} eventually
+     * calling {@link #updateFolder(Folder)} which starts a loader {@link #LOADER_FOLDER_CURSOR}
+     * over the current folder.
+     * When we have a valid cursor, we destroy this loader, This convoluted flow is historical.
+     */
     private static final int LOADER_ACCOUNT_INBOX = 5;
-    /** The fake folder of search results for a term */
+    /**
+     * The fake folder of search results for a term. When we search for a term,
+     * a new activity is created with {@link Intent#ACTION_SEARCH}. For this new activity,
+     * we start a loader which returns conversations that match the user-provided query.
+     * We destroy the loader when we obtain a valid cursor since subsequent searches will create
+     * a new activity.
+     */
     private static final int LOADER_SEARCH = 6;
-    /** The initial folder at app start. */
+    /**
+     * The initial folder at app start. When the application is launched from an intent that
+     * specifies the initial folder (notifications/widgets/shortcuts),
+     * then we extract the folder URI from the intent, but we cannot trust the folder object. Since
+     * shortcuts and widgets persist past application update, they might have incorrect
+     * information encoded in them. So, to obtain a {@link Folder} object from a {@link Uri},
+     * we need to start another loader. Upon obtaining a valid cursor, the loader is destroyed.
+     * An additional complication arises if we have to view a specific conversation within this
+     * folder. This is the case when launching the app from a single conversation notification
+     * or tapping on a specific conversation in the widget. In these cases, the conversation is
+     * saved in {@link #mConversationToShow} and is retrieved when the loader returns.
+     */
     public static final int LOADER_FIRST_FOLDER = 8;
 
-    // Conversations
-    /** The conversation cursor over the current conversation list. */
+    // Loader constants: Conversations
+    /** The conversation cursor over the current conversation list. This loader provides
+     * a cursor over conversation entries from a folder to display a conversation
+     * list.
+     * This loader is started when the user switches folders (in {@link #updateFolder(Folder)},
+     * or when the controller is told that a folder/account change is imminent
+     * (in {@link #preloadConvList(Account, Folder)}. The loader is maintained for the life of
+     * the current folder. When the user switches folders, the old loader is destroyed and a new
+     * one is created.
+     *
+     * When the conversation list changes, we notify {@link #mConversationListObservable}.
+     */
     private static final int LOADER_CONVERSATION_LIST = 4;
 
     /**
@@ -709,8 +780,13 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Load the conversation list early for the given folder.
-     * @param nextFolder
+     * Load the conversation list early for the given folder. This happens when some UI element
+     * (usually the drawer) instructs the controller that an account change or folder change is
+     * imminent. While the UI element is animating, the controller can preload the conversation
+     * list for the default inbox of the account provided here or to the folder provided here.
+     *
+     * @param nextAccount The account which the app will switch to shortly, possibly null.
+     * @param nextFolder The folder which the app will switch to shortly, possibly null.
      */
     protected void preloadConvList(Account nextAccount, Folder nextFolder) {
         // Fire off the conversation list loader for this account already with a fake
@@ -732,6 +808,11 @@ public abstract class AbstractActivityController implements ActivityController,
         lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
     }
 
+    /**
+     * Initiates the async request to create a fake search folder, which returns conversations that
+     * match the query term provided by the user. Returns immediately.
+     * @param intent Intent that the app was started with. This intent contains the search query.
+     */
     private void fetchSearchFolder(Intent intent) {
         final Bundle args = new Bundle();
         args.putString(ConversationListContext.EXTRA_SEARCH_QUERY, intent
