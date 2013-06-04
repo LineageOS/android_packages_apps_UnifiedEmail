@@ -345,6 +345,16 @@ public abstract class AbstractActivityController implements ActivityController,
     /** Which conversation to show, if started from widget/notification. */
     private Conversation mConversationToShow = null;
 
+    /**
+     * A temporary reference to the pending destructive action that was deferred due to an
+     * auto-advance transition in progress.
+     * <p>
+     * In detail: when auto-advance triggers a mode change, we must wait until the transition
+     * completes before executing the destructive action to ensure a smooth mode change transition.
+     * This member variable houses the pending destructive action work to be run upon completion.
+     */
+    private Runnable mAutoAdvanceOp = null;
+
     private final Deque<UpOrBackHandler> mUpOrBackHandlers = Lists.newLinkedList();
 
     protected DrawerLayout mDrawerContainer;
@@ -937,6 +947,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void onConversationListVisibilityChanged(boolean visible) {
         informCursorVisiblity(visible);
+        commitAutoAdvanceOperation();
     }
 
     /**
@@ -945,6 +956,18 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     @Override
     public void onConversationVisibilityChanged(boolean visible) {
+        commitAutoAdvanceOperation();
+    }
+
+    /**
+     * Commits any pending destructive action that was earlier deferred by an auto-advance
+     * mode-change transition.
+     */
+    private void commitAutoAdvanceOperation() {
+        if (mAutoAdvanceOp != null) {
+            mAutoAdvanceOp.run();
+            mAutoAdvanceOp = null;
+        }
     }
 
     /**
@@ -1536,12 +1559,22 @@ public abstract class AbstractActivityController implements ActivityController,
      * conversation mode is affected (deleted, marked unread, etc.).
      *
      * <p>Does nothing if outside of conversation mode.</p>
+     * <p>
+     * Clients may pass an operation to execute on the target that this method will run after
+     * auto-advance is complete. The operation, if provided, may run immediately, or it may run
+     * later, or not at all. Reasons it may run later include:
+     * <ul>
+     * <li>the auto-advance setting is uninitialized and we need to wait for the user to set it</li>
+     * <li>auto-advance in this configuration requires a mode change, and we need to wait for the
+     * mode change transition to finish</li>
+     * </ul>
+     * <p>If the current conversation is not in the target collection, this method will do nothing,
+     * and will not execute the operation.
      *
      * @param target the set of conversations being deleted/marked unread
-     * @param operation if auto-advance setting is unset, this operation is run after the user
-     *        is prompted to select a setting.
-     * @return <code>false</code> if we aborted because the user has not yet specified a default
-     *         action, <code>true</code> otherwise
+     * @param operation (optional) the operation to execute after advancing
+     * @return <code>false</code> if this method handled or will execute the operation,
+     * <code>true</code> otherwise.
      */
     private boolean showNextConversation(final Collection<Conversation> target,
             final Runnable operation) {
@@ -1563,8 +1596,11 @@ public abstract class AbstractActivityController implements ActivityController,
 
                 final Conversation next = mTracker.getNextConversation(autoAdvance, target);
                 LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
+                // Set mAutoAdvanceOp *before* showConversation() to ensure that it runs when the
+                // transition doesn't run (i.e. it "completes" immediately).
+                mAutoAdvanceOp = operation;
                 showConversation(next);
-                return true;
+                return (mAutoAdvanceOp == null);
             }
         }
 
