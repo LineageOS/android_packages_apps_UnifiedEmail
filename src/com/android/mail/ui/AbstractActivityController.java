@@ -268,8 +268,9 @@ public abstract class AbstractActivityController implements ActivityController,
     protected ActionableToastBar mToastBar;
     protected ConversationPagerController mPagerController;
 
-    // this is split out from the general loader dispatcher because its loader doesn't return a
+    // This is split out from the general loader dispatcher because its loader doesn't return a
     // basic Cursor
+    /** Handles loader callbacks to create a convesation cursor. */
     private final ConversationListLoaderCallbacks mListCursorCallbacks =
             new ConversationListLoaderCallbacks();
 
@@ -286,16 +287,29 @@ public abstract class AbstractActivityController implements ActivityController,
     private final VeiledAddressMatcher mVeiledMatcher;
 
     protected static final String LOG_TAG = LogTag.getLogTag();
-    /** Constants used to differentiate between the types of loaders. */
+
+    // Constants used to differentiate between the types of loaders.
+    // Accounts
+    /** The list of accounts. */
     private static final int LOADER_ACCOUNT_CURSOR = 0;
-    private static final int LOADER_FOLDER_CURSOR = 2;
-    private static final int LOADER_RECENT_FOLDERS = 3;
-    private static final int LOADER_CONVERSATION_LIST = 4;
-    private static final int LOADER_ACCOUNT_INBOX = 5;
-    private static final int LOADER_SEARCH = 6;
+    /** The current account. */
     private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
-    /** Loader for showing the initial folder/conversation at app start. */
+
+    // Folders
+    /** The current folder */
+    private static final int LOADER_FOLDER_CURSOR = 2;
+    /** The list of recent folders */
+    private static final int LOADER_RECENT_FOLDERS = 3;
+    /** The primary inbox for the current account. */
+    private static final int LOADER_ACCOUNT_INBOX = 5;
+    /** The fake folder of search results for a term */
+    private static final int LOADER_SEARCH = 6;
+    /** The initial folder at app start. */
     public static final int LOADER_FIRST_FOLDER = 8;
+
+    // Conversations
+    /** The conversation cursor over the current conversation list. */
+    private static final int LOADER_CONVERSATION_LIST = 4;
 
     /**
      * Guaranteed to be the last loader ID used by the activity. Loaders are owned by Activity or
@@ -553,12 +567,11 @@ public abstract class AbstractActivityController implements ActivityController,
         LogUtils.d(LOG_TAG, "AAC.switchToDefaultAccount(%s)", account);
         final boolean firstLoad = mAccount == null;
         final boolean switchToDefaultInbox = !firstLoad && account.uri.equals(mAccount.uri);
-        // if the active account has been clicked in the drawer, go to default inbox
+        // If the active account has been clicked in the drawer, go to default inbox
         if (switchToDefaultInbox) {
             loadAccountInbox();
             return;
         }
-
         changeAccount(account);
     }
 
@@ -1079,7 +1092,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
 
-        mHideMenuItems = isDrawerEnabled() ? mDrawerContainer.isDrawerOpen(mDrawerPullout) : false;
+        mHideMenuItems = isDrawerEnabled() && mDrawerContainer.isDrawerOpen(mDrawerPullout);
     }
 
     @Override
@@ -3090,6 +3103,9 @@ public abstract class AbstractActivityController implements ActivityController,
         return in != null && in.isVisible() && mActivity.hasWindowFocus();
     }
 
+    /**
+     * This class handles callbacks that create a {@link ConversationCursor}.
+     */
     private class ConversationListLoaderCallbacks implements
         LoaderManager.LoaderCallbacks<ConversationCursor> {
 
@@ -3347,6 +3363,7 @@ public abstract class AbstractActivityController implements ActivityController,
             }
             switch (loader.getId()) {
                 case LOADER_ACCOUNT_CURSOR:
+                    // We have received an update on the list of accounts.
                     if (data == null) {
                         // Nothing useful to do if we have no valid data.
                         break;
@@ -3381,13 +3398,10 @@ public abstract class AbstractActivityController implements ActivityController,
                     break;
                 case LOADER_ACCOUNT_UPDATE_CURSOR:
                     // We have received an update for current account.
-
-                    // Make sure that this is an update for the current account
                     if (data != null && data.moveToFirst()) {
                         final Account updatedAccount = data.getModel();
-
+                        // Make sure that this is an update for the current account
                         if (updatedAccount.uri.equals(mAccount.uri)) {
-                            // Keep a reference to the previous settings object
                             final Settings previousSettings = mAccount.settings;
 
                             // Update the controller's reference to the current account
@@ -3414,6 +3428,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
         @Override
         public void onLoaderReset(Loader<ObjectCursor<Account>> loader) {
+            // Do nothing. In onLoadFinished() we copy the relevant data from the cursor.
         }
     }
 
