@@ -72,6 +72,11 @@
         android:showAsAction="never"
         android:icon="@drawable/ic_menu_folders_holo_light" />
 
+    <item
+        android:id="@+id/move_to_inbox"
+        android:showAsAction="never"
+        android:title="@string/menu_move_to_inbox" />
+
     <!-- Always available -->
     <item
         android:id="@+id/mark_important"

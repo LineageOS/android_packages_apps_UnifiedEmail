@@ -1401,6 +1401,25 @@ public abstract class AbstractActivityController implements ActivityController,
                     dialog.show();
                 }
                 break;
+            case R.id.move_to_inbox:
+                new AsyncTask<Void, Void, Folder>() {
+                    @Override
+                    protected Folder doInBackground(final Void... params) {
+                        // Get the "move to" inbox
+                        return Utils.getFolder(mContext, mAccount.settings.moveToInbox,
+                                true /* allowHidden */);
+                    }
+
+                    @Override
+                    protected void onPostExecute(final Folder moveToInbox) {
+                        final List<FolderOperation> ops = Lists.newArrayListWithCapacity(1);
+                        // Add inbox
+                        ops.add(new FolderOperation(moveToInbox, true));
+                        assignFolder(ops, Conversation.listOf(mCurrentConversation), true,
+                                true /* showUndo */, false /* isMoveTo */);
+                    }
+                }.execute((Void[]) null);
+                break;
             case R.id.empty_trash:
                 showEmptyDialog();
                 break;

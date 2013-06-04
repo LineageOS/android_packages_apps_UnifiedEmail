@@ -19,6 +19,7 @@ package com.android.mail.browse;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,14 +44,17 @@ import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
+import com.android.mail.ui.FolderOperation;
 import com.android.mail.ui.FolderSelectionDialog;
 import com.android.mail.ui.MailActionBarView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A component that displays a custom view for an {@code ActionBar}'s {@code
@@ -197,6 +201,25 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                         dialog.show();
                     }
                 }
+                break;
+            case R.id.move_to_inbox:
+                new AsyncTask<Void, Void, Folder>() {
+                    @Override
+                    protected Folder doInBackground(final Void... params) {
+                        // Get the "move to" inbox
+                        return Utils.getFolder(mContext, mAccount.settings.moveToInbox,
+                                true /* allowHidden */);
+                    }
+
+                    @Override
+                    protected void onPostExecute(final Folder moveToInbox) {
+                        final List<FolderOperation> ops = Lists.newArrayListWithCapacity(1);
+                        // Add inbox
+                        ops.add(new FolderOperation(moveToInbox, true));
+                        mUpdater.assignFolder(ops, mSelectionSet.values(), true,
+                                true /* showUndo */, false /* isMoveTo */);
+                    }
+                }.execute((Void[]) null);
                 break;
             case R.id.mark_important:
                 markConversationsImportant(true);
@@ -382,13 +405,18 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // archive icon if the setting for that is true.
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
         final MenuItem moveTo = menu.findItem(R.id.move_to);
+        final MenuItem moveToInbox = menu.findItem(R.id.move_to_inbox);
         final boolean showRemoveFolder = mFolder != null && mFolder.isType(FolderType.DEFAULT)
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
                 && !mFolder.isProviderFolder();
         final boolean showMoveTo = mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION);
+        final boolean showMoveToInbox = mFolder != null
+                && mFolder.supportsCapability(FolderCapabilities.ALLOWS_MOVE_TO_INBOX);
         removeFolder.setVisible(showRemoveFolder);
         moveTo.setVisible(showMoveTo);
+        moveToInbox.setVisible(showMoveToInbox);
+
         if (mFolder != null && showRemoveFolder) {
             removeFolder.setTitle(mActivity.getActivityContext().getString(R.string.remove_folder,
                     mFolder.name));
