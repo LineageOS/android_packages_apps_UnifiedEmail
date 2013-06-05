@@ -36,8 +36,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.android.mail.browse.MessageCursor.ConversationMessage;
-
 public class EmlViewerActivity extends Activity {
     private static final String LOG_TAG = LogTag.getLogTag();
 
