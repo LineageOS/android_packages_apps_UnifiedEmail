@@ -50,8 +50,6 @@ import java.net.URLEncoder;
  * conversation list or a conversation view).
  */
 public class MailActivity extends AbstractMailActivity implements ControllableActivity {
-    // TODO(viki) This class lacks: Sync Window Upgrade dialog
-
     /**
      * The activity controller to which we delegate most Activity lifecycle events.
      */
