@@ -65,8 +65,13 @@ public class FolderListFragment extends ListFragment implements
     private ListView mListView;
     /** URI that points to the list of folders for the current account. */
     private Uri mFolderListUri;
-    /** True if you want a sectioned FolderList, false otherwise. */
-    protected boolean mIsSectioned;
+    /**
+     * True if you want a divided FolderList. A divided folder list shows the following groups:
+     * Inboxes, Recent Folders, All folders.
+     *
+     * An undivided FolderList shows all folders without any divisions and without recent folders.
+     */
+    protected boolean mIsDivided;
     /** True if the folder list belongs to a folder selection activity (one account only) */
     private boolean mHideAccounts;
     /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
@@ -91,8 +96,8 @@ public class FolderListFragment extends ListFragment implements
     private static final int FULL_FOLDER_LIST_LOADER_ID = 1;
     /** Key to store {@link #mParentFolder}. */
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
-    /** Key to store {@link #mIsSectioned} */
-    private static final String ARG_IS_SECTIONED = "arg-is-sectioned";
+    /** Key to store {@link #mIsDivided} */
+    private static final String ARG_IS_DIVIDED = "arg-is-divided";
     /** Key to store {@link #mFolderListUri}. */
     private static final String ARG_FOLDER_LIST_URI = "arg-folder-list-uri";
     /** Key to store {@link #mExcludedFolderTypes} */
@@ -162,9 +167,9 @@ public class FolderListFragment extends ListFragment implements
      */
     public static FolderListFragment ofDrawer() {
         final FolderListFragment fragment = new FolderListFragment();
-        // The drawer is always sectioned
-        final boolean isSectioned = true;
-        fragment.setArguments(getBundleFromArgs(TYPE_DRAWER, null, null, isSectioned, null, false));
+        /** The drawer is always divided: see comments on {@link #mIsDivided} above. */
+        final boolean isDivided = true;
+        fragment.setArguments(getBundleFromArgs(TYPE_DRAWER, null, null, isDivided, null, false));
         return fragment;
     }
 
@@ -176,10 +181,10 @@ public class FolderListFragment extends ListFragment implements
      */
     public static FolderListFragment ofTree(Folder folder, final boolean hideAccounts) {
         final FolderListFragment fragment = new FolderListFragment();
-        // Trees are never sectioned.
-        final boolean isSectioned = false;
+        /** Trees are never divided: see comments on {@link #mIsDivided} above. */
+        final boolean isDivided = false;
         fragment.setArguments(getBundleFromArgs(TYPE_TREE, folder, folder.childFoldersListUri,
-                isSectioned, null, hideAccounts));
+                isDivided, null, hideAccounts));
         return fragment;
     }
 
@@ -193,10 +198,10 @@ public class FolderListFragment extends ListFragment implements
     public static FolderListFragment ofTopLevelTree(Uri folderListUri,
             final ArrayList<Integer> excludedFolderTypes, final boolean hideAccounts) {
         final FolderListFragment fragment = new FolderListFragment();
-        // Trees are never sectioned.
-        final boolean isSectioned = false;
+        /** Trees are never divided: see comments on {@link #mIsDivided} above. */
+        final boolean isDivided = false;
         fragment.setArguments(getBundleFromArgs(TYPE_TREE, null, folderListUri,
-                isSectioned, excludedFolderTypes, hideAccounts));
+                isDivided, excludedFolderTypes, hideAccounts));
         return fragment;
     }
 
@@ -204,14 +209,14 @@ public class FolderListFragment extends ListFragment implements
      * Construct a bundle that represents the state of this fragment.
      * @param type the type of FLF: {@link #TYPE_DRAWER} or {@link #TYPE_TREE}
      * @param parentFolder non-null for trees, the parent of this list
-     * @param isSectioned true if this drawer is sectioned, false otherwise
+     * @param isDivided true if this drawer is divided, false otherwise
      * @param folderListUri the URI which contains all the list of folders
      * @param excludedFolderTypes if non-null, this indicates folders to exclude in lists.
-     * @return Bundle containing parentFolder, sectioned list boolean and
+     * @return Bundle containing parentFolder, divided list boolean and
      *         excluded folder types
      */
     private static Bundle getBundleFromArgs(int type, Folder parentFolder, Uri folderListUri,
-            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes,
+            boolean isDivided, final ArrayList<Integer> excludedFolderTypes,
             final boolean hideAccounts) {
         final Bundle args = new Bundle();
         args.putInt(ARG_TYPE, type);
@@ -221,7 +226,7 @@ public class FolderListFragment extends ListFragment implements
         if (folderListUri != null) {
             args.putString(ARG_FOLDER_LIST_URI, folderListUri.toString());
         }
-        args.putBoolean(ARG_IS_SECTIONED, isSectioned);
+        args.putBoolean(ARG_IS_DIVIDED, isDivided);
         if (excludedFolderTypes != null) {
             args.putIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES, excludedFolderTypes);
         }
@@ -265,7 +270,7 @@ public class FolderListFragment extends ListFragment implements
             mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
             selectedFolder = mActivity.getHierarchyFolder();
         } else {
-            mCursorAdapter = new FolderListAdapter(mIsSectioned);
+            mCursorAdapter = new FolderListAdapter(mIsDivided);
             selectedFolder = currentFolder;
         }
         // Is the selected folder fresher than the one we have restored from a bundle?
@@ -339,7 +344,7 @@ public class FolderListFragment extends ListFragment implements
         } else {
             mFolderListUri = Uri.parse(folderUri);
         }
-        mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
+        mIsDivided = args.getBoolean(ARG_IS_DIVIDED);
         mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
         mType = args.getInt(ARG_TYPE);
         mHideAccounts = args.getBoolean(ARG_HIDE_ACCOUNTS, false);
@@ -611,8 +616,9 @@ public class FolderListFragment extends ListFragment implements
         private static final int NO_HEADER_RESOURCE = -1;
         /** Cache of most recently used folders */
         private final RecentFolderList mRecentFolders;
-        /** True if the list is sectioned, false otherwise */
-        private final boolean mIsSectioned;
+        /** True if the list is divided, false otherwise. See the comment on
+         * {@link FolderListFragment#mIsDivided} for more information */
+        private final boolean mIsDivided;
         /** All the items */
         private List<DrawerItem> mItemList = new ArrayList<DrawerItem>();
         /** Cursor into the folder list. This might be null. */
@@ -626,13 +632,14 @@ public class FolderListFragment extends ListFragment implements
         /**
          * Creates a {@link FolderListAdapter}.This is a list of all the accounts and folders.
          *
-         * @param isSectioned true if folder list is flat, false if sectioned by label group
+         * @param isDivided true if folder list is flat, false if divided by label group. See
+         *                   the comments on {@link #mIsDivided} for more information
          */
-        public FolderListAdapter(boolean isSectioned) {
+        public FolderListAdapter(boolean isDivided) {
             super();
-            mIsSectioned = isSectioned;
+            mIsDivided = isDivided;
             final RecentFolderController controller = mActivity.getRecentFolderController();
-            if (controller != null && mIsSectioned) {
+            if (controller != null && mIsDivided) {
                 mRecentFolders = mRecentFolderObserver.initialize(controller);
             } else {
                 mRecentFolders = null;
@@ -784,7 +791,7 @@ public class FolderListFragment extends ListFragment implements
                 return;
             }
 
-            if (!mIsSectioned) {
+            if (!mIsDivided) {
                 // Adapter for a flat list. Everything is a FOLDER_OTHER, and there are no headers.
                 do {
                     final Folder f = mCursor.getModel();
@@ -797,7 +804,7 @@ public class FolderListFragment extends ListFragment implements
                 return;
             }
 
-            // Otherwise, this is an adapter for a sectioned list.
+            // Otherwise, this is an adapter for a divided list.
             final List<DrawerItem> allFoldersList = new ArrayList<DrawerItem>();
             final List<DrawerItem> inboxFolders = new ArrayList<DrawerItem>();
             do {
@@ -842,28 +849,28 @@ public class FolderListFragment extends ListFragment implements
                 }
             }
 
-            // Add all inboxes (sectioned included) before recents.
-            addFolderSection(itemList, inboxFolders, R.string.inbox_folders_heading);
+            // Add all inboxes (sectioned Inboxes included) before recent folders.
+            addFolderDivision(itemList, inboxFolders, R.string.inbox_folders_heading);
 
-            // Add most recently folders (in alphabetical order) next.
+            // Add recent folders next.
             addRecentsToList(itemList);
 
-            // Add the remaining provider folders followed by all labels.
-            addFolderSection(itemList, allFoldersList,  R.string.all_folders_heading);
+            // Add the remaining folders.
+            addFolderDivision(itemList, allFoldersList, R.string.all_folders_heading);
         }
 
         /**
-         * Given a list of folders as {@link DrawerItem}s, add them to the item
-         * list as needed. Passing in a non-0 integer for the resource will
-         * enable a header
+         * Given a list of folders as {@link DrawerItem}s, add them as a group.
+         * Passing in a non-0 integer for the resource will enable a header.
          *
          * @param destination List of drawer items to populate
          * @param source List of drawer items representing folders to add to the drawer
          * @param headerStringResource
          *            {@link FolderListAdapter#NO_HEADER_RESOURCE} if no header
-         *            is required, or res-id otherwise
+         *            is required, or res-id otherwise. The integer is interpreted as the string
+         *            for the header's title.
          */
-        private void addFolderSection(List<DrawerItem> destination, List<DrawerItem> source,
+        private void addFolderDivision(List<DrawerItem> destination, List<DrawerItem> source,
                 int headerStringResource) {
             if (source.size() > 0) {
                 if(headerStringResource != NO_HEADER_RESOURCE) {

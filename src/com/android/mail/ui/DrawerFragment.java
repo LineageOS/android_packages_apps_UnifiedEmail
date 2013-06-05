@@ -22,12 +22,24 @@ import android.widget.ListView;
 /**
  * A drawer that is shown in one pane mode, as a pull-out from the left.  All the
  * implementation is inherited from the FolderListFragment.
+ *
+ * The drawer shows a list of accounts, the recent folders, and a list of top-level folders for
+ * the given account. This fragment is created using no arguments, it gets all its state from the
+ * controller in {@link #onActivityCreated(android.os.Bundle)}. In particular, it gets the current
+ * account, the list of accounts, and the current folder from the {@link ControllableActivity}.
+ *
+ * Once it has this information, the drawer sets itself up to observe for changes and allows the
+ * user to change folders and accounts.
+ *
+ * The drawer is always instantiated through XML resources: in one_pane_activity.xml and in
+ * two_pane_activity.xml
  */
 public class DrawerFragment extends FolderListFragment {
     public DrawerFragment() {
         super();
-        // Drawer is always sectioned.
-        mIsSectioned = true;
+        // Drawer is always divided: it shows groups for inboxes, recent folders and all other
+        // folders.
+        mIsDivided = true;
     }
 
     @Override
