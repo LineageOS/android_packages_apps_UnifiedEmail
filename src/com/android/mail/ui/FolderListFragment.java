@@ -786,7 +786,7 @@ public class FolderListFragment extends ListFragment implements
             // when we're waiting for account initialization or initial sync.
             if (isCursorInvalid()) {
                 if(!mCurrentAccount.isAccountReady()) {
-                    itemList.add(DrawerItem.forWaitView(mActivity));
+                    itemList.add(DrawerItem.ofWaitView(mActivity));
                 }
                 return;
             }
