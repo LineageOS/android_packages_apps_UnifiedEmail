@@ -172,8 +172,6 @@ public class Conversation implements Parcelable {
 
     private transient boolean viewed;
 
-    private ArrayList<Folder> cachedDisplayableFolders;
-
     private static String sSubjectAndSnippet;
 
     // Constituents of convFlags below
@@ -518,31 +516,7 @@ public class Conversation implements Parcelable {
     }
 
     public void setRawFolders(FolderList folders) {
-        clearCachedFolders();
         rawFolders = folders;
-    }
-
-    private void clearCachedFolders() {
-        cachedDisplayableFolders = null;
-    }
-
-    public ArrayList<Folder> getRawFoldersForDisplay(final Uri ignoreFolderUri,
-            final int ignoreFolderType) {
-        if (cachedDisplayableFolders == null) {
-            cachedDisplayableFolders = new ArrayList<Folder>();
-            for (Folder folder : rawFolders.folders) {
-                // skip the ignoreFolder
-                if (ignoreFolderUri != null && ignoreFolderUri.equals(folder.uri)) {
-                    continue;
-                }
-                // Skip the ignoreFolderType
-                if (ignoreFolderType >= 0 && folder.isType(ignoreFolderType)) {
-                    continue;
-                }
-                cachedDisplayableFolders.add(folder);
-            }
-        }
-        return cachedDisplayableFolders;
     }
 
     @Override
