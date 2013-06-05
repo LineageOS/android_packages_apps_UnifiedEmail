@@ -15,8 +15,6 @@
  */
 package com.android.mail.utils;
 
-import com.android.mail.utils.LogTag;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,14 +46,6 @@ public class MimeType {
     private static final Set<String> UNACCEPTABLE_ATTACHMENT_TYPES = ImmutableSet.of(
             "application/zip", "application/x-gzip", "application/x-bzip2",
             "application/x-compress", "application/x-compressed", "application/x-tar");
-
-    private static Set<String> sGviewSupportedTypes = ImmutableSet.of(
-            "application/pdf",
-            "application/vnd.ms-powerpoint",
-            "image/tiff",
-            "application/msword",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            "application/vnd.openxmlformats-officedocument.presentationml.presentation");
 
     /**
      * Returns whether or not an attachment of the specified type is installable (e.g. an apk).
@@ -119,16 +109,6 @@ public class MimeType {
     public static boolean isBlocked(String contentType) {
         return UNACCEPTABLE_ATTACHMENT_TYPES.contains(contentType);
     }
-
-    /* TODO: what do we want to do about GSF keys for the unified app?
-    public static boolean isPreviewable(Context context, String contentType) {
-        final String supportedTypes = Gservices.getString(
-                context.getContentResolver(), GservicesKeys.GMAIL_GVIEW_SUPPORTED_TYPES);
-        if (supportedTypes != null) {
-            sGviewSupportedTypes = ImmutableSet.of(TextUtils.split(supportedTypes, ","));
-        }
-        return sGviewSupportedTypes.contains(contentType);
-    }*/
 
     /**
      * Extract and return filename's extension, converted to lower case, and not including the "."
