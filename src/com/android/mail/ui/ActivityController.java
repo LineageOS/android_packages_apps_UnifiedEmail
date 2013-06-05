@@ -38,6 +38,23 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * An Activity controller knows how to combine views and listeners into a functioning activity.
  * ActivityControllers are delegates that implement methods by calling underlying views to modify,
  * or respond to user action.
+ *
+ * There are two ways of adding methods to this interface:
+ * <ul>
+ *     <li>When the methods pertain to a single logical grouping: consider adding a new
+ *     interface and putting all the methods in that interface. As an example,
+ *     look at {@link AccountController}. The controller implements this,
+ *     and returns itself in
+ *     {@link com.android.mail.ui.ControllableActivity#getAccountController()}. This allows
+ *     for account-specific methods to be added without creating new methods in this interface
+ *     .</li>
+ *     <li>Methods that relate to an activity can be added directly. As an example,
+ *     look at {@link #onActivityResult(int, int, android.content.Intent)} which is identical to
+ *     its declaration in {@link android.app.Activity}.</li>
+ *     <li>Everything else. As an example, look at {@link #isDrawerEnabled()}. Try to avoid
+ *     this path because an implementation has to provided in many classes:
+ *     {@link MailActivity}, {@link FolderSelectionActivity}, and the controllers.</li>
+ * </ul>
  */
 public interface ActivityController extends LayoutListener,
         ModeChangeListener, ConversationListCallbacks,
