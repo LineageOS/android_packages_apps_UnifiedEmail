@@ -54,7 +54,33 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * The folder list UI component.
+ * This fragment shows the list of folders and the list of accounts. Prior to June 2013,
+ * the mail application had a spinner in the top action bar. Now, the list of accounts is displayed
+ * in a drawer along with the list of folders.
+ *
+ * This class has the following use-cases:
+ * <ul>
+ *     <li>
+ *         Show a list of accounts and a divided list of folders. In this case, the list shows
+ *         Accounts, Inboxes, Recent Folders, All folders.
+ *         Tapping on Accounts takes the user to the default Inbox for that account. Tapping on
+ *         folders switches folders.
+ *         This is created through XML resources as a {@link DrawerFragment}. Since it is created
+ *         through resources, it receives all arguments through callbacks.
+ *     </li>
+ *     <li>
+ *         Show a list of folders for a specific level. At the top-level, this shows Inbox, Sent,
+ *         Drafts, Starred, and any user-created folders. For providers that allow nested folders,
+ *         this will only show the folders at the top-level.
+ *         <br /> Tapping on a parent folder creates a new fragment with the child folders at
+ *         that level.
+ *     </li>
+ *     <li>
+ *         Shows a list of folders that can be turned into widgets/shortcuts. This is used by the
+ *         {@link FolderSelectionActivity} to allow the user to create a shortcut or widget for
+ *         any folder for a given account.
+ *     </li>
+ * </ul>
  */
 public class FolderListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<ObjectCursor<Folder>> {
