@@ -20,38 +20,24 @@ package com.android.mail.browse;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 
-import com.android.emailcommon.internet.MimeMessage;
-import com.android.emailcommon.internet.MimeUtility;
-import com.android.emailcommon.mail.Address;
-import com.android.emailcommon.mail.Message.RecipientType;
-import com.android.emailcommon.mail.MessagingException;
-import com.android.emailcommon.mail.Part;
-import com.android.emailcommon.utility.ConversionUtilities;
-import com.android.emailcommon.utility.ConversionUtilities.BodyFieldData;
-import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Message;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.CursorExtraKeys;
 import com.android.mail.providers.UIProvider.CursorStatus;
 import com.android.mail.ui.ConversationUpdater;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * MessageCursor contains the messages within a conversation; the public methods within should
  * only be called by the UI thread, as cursor position isn't guaranteed to be maintained
  */
-public class MessageCursor extends ObjectCursor<MessageCursor.ConversationMessage> {
+public class MessageCursor extends ObjectCursor<ConversationMessage> {
     /**
      * The current controller that this cursor can use to reference the owning {@link Conversation},
      * and a current {@link ConversationUpdater}. Since this cursor will survive a rotation, but
@@ -67,120 +53,6 @@ public class MessageCursor extends ObjectCursor<MessageCursor.ConversationMessag
         ConversationUpdater getListController();
         MessageCursor getMessageCursor();
         Account getAccount();
-    }
-
-    /**
-     * A message created as part of a conversation view. Sometimes, like during star/unstar, it's
-     * handy to have the owning {@link Conversation} for context.
-     *
-     * <p>This class must remain separate from the {@link MessageCursor} from whence it came,
-     * because cursors can be closed by their Loaders at any time. The
-     * {@link ConversationController} intermediate is used to obtain the currently opened cursor.
-     *
-     * <p>(N.B. This is a {@link Parcelable}, so try not to add non-transient fields here.
-     * Parcelable state belongs either in {@link Message} or
-     * {@link com.android.mail.ui.ConversationViewState.MessageViewState}. The
-     * assumption is that this class never needs the state of its extra context saved.)
-     */
-    public static final class ConversationMessage extends Message {
-
-        private transient ConversationController mController;
-
-        private ConversationMessage(Cursor cursor) {
-            super(cursor);
-        }
-
-        public ConversationMessage(MimeMessage mimeMessage) throws MessagingException {
-            // Set message header values.
-            setFrom(Address.pack(mimeMessage.getFrom()));
-            setTo(Address.pack(mimeMessage.getRecipients(RecipientType.TO)));
-            setCc(Address.pack(mimeMessage.getRecipients(RecipientType.CC)));
-            setBcc(Address.pack(mimeMessage.getRecipients(RecipientType.BCC)));
-            setReplyTo(Address.pack(mimeMessage.getReplyTo()));
-            subject = mimeMessage.getSubject();
-            dateReceivedMs = mimeMessage.getSentDate().getTime();
-
-            // for now, always set defaults
-            alwaysShowImages = false;
-            viaDomain = null;
-            draftType = UIProvider.DraftType.NOT_A_DRAFT;
-            isSending = false;
-            starred = false;
-            spamWarningString = null;
-            messageFlags = 0;
-            hasAttachments = false;
-
-            // body values (snippet/bodyText/bodyHtml)
-            // Now process body parts & attachments
-            ArrayList<Part> viewables = new ArrayList<Part>();
-            ArrayList<Part> attachments = new ArrayList<Part>();
-            MimeUtility.collectParts(mimeMessage, viewables, attachments);
-
-            BodyFieldData data =
-                    ConversionUtilities.parseBodyFields(viewables);
-
-            snippet = data.snippet;
-            bodyText = data.textContent;
-            bodyHtml = data.htmlContent;
-            // TODO - attachments?
-            // TODO - synthesize conversation
-        }
-
-        public void setController(ConversationController controller) {
-            mController = controller;
-        }
-
-        public Conversation getConversation() {
-            return mController.getConversation();
-        }
-
-        /**
-         * Returns a hash code based on this message's identity, contents and current state.
-         * This is a separate method from hashCode() to allow for an instance of this class to be
-         * a functional key in a hash-based data structure.
-         *
-         */
-        public int getStateHashCode() {
-            return Objects.hashCode(uri, read, starred, getAttachmentsStateHashCode());
-        }
-
-        private int getAttachmentsStateHashCode() {
-            int hash = 0;
-            for (Attachment a : getAttachments()) {
-                final Uri uri = a.getIdentifierUri();
-                hash += (uri != null ? uri.hashCode() : 0);
-            }
-            return hash;
-        }
-
-        public boolean isConversationStarred() {
-            final MessageCursor c = mController.getMessageCursor();
-            return c != null && c.isConversationStarred();
-        }
-
-        public void star(boolean newStarred) {
-            final ConversationUpdater listController = mController.getListController();
-            if (listController != null) {
-                listController.starMessage(this, newStarred);
-            }
-        }
-
-        /**
-         * Public object that knows how to construct Messages given Cursors.
-         */
-        public static final CursorCreator<ConversationMessage> FACTORY =
-                new CursorCreator<ConversationMessage>() {
-            @Override
-            public ConversationMessage createFromCursor(Cursor c) {
-                return new ConversationMessage(c);
-            }
-
-            @Override
-            public String toString() {
-                return "ConversationMessage CursorCreator";
-            }
-        };
-
     }
 
     public MessageCursor(Cursor inner) {
