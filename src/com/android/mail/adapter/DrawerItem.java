@@ -31,7 +31,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/** An account, a system folder, a recent folder, or a header (a resource string) */
+/**
+ * An element that is shown in the {@link com.android.mail.ui.FolderListFragment}. This class is
+ * only used for elements that are shown in the {@link com.android.mail.ui.DrawerFragment}.
+ * This class is an enumeration of a few element types: Account, a folder, a recent folder,
+ * or a header (a resource string). A {@link DrawerItem} can only be one type and can never
+ * switch types. Items are created using methods like
+ * {@link DrawerItem#ofAccount(com.android.mail.ui.ControllableActivity,
+ com.android.mail.providers.Account, int, boolean)},
+ * {@link DrawerItem#ofWaitView(com.android.mail.ui.ControllableActivity)}, etc.
+ *
+ * Once created, the item can create a view using {@link #getView(int, android.view.View,
+ android.view.ViewGroup)}.
+ */
 public class DrawerItem {
     private static final String LOG_TAG = LogTag.getLogTag();
     // TODO(viki): Remove this: http://b/8478715
@@ -205,7 +217,7 @@ public class DrawerItem {
      * @param activity the underlying activity
      * @return a drawer item with an indeterminate progress indicator.
      */
-    public static DrawerItem forWaitView(ControllableActivity activity) {
+    public static DrawerItem ofWaitView(ControllableActivity activity) {
         return new DrawerItem(
                 VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false, -1);
     }
@@ -214,20 +226,24 @@ public class DrawerItem {
         return "[DrawerItem VIEW_WAITING_FOR_SYNC ]";
     }
 
+    /**
+     * Returns a view for the given item. The method signature is identical to that required by a
+     * {@link android.widget.ListAdapter#getView(int, android.view.View, android.view.ViewGroup)}.
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
         final View result;
         switch (mType) {
             case VIEW_FOLDER:
-                result = getFolderView(position, convertView, parent);
+                result = getFolderView(convertView, parent);
                 break;
             case VIEW_HEADER:
-                result = getHeaderView(position, convertView, parent);
+                result = getHeaderView(convertView, parent);
                 break;
             case VIEW_ACCOUNT:
-                result = getAccountView(position, convertView, parent);
+                result = getAccountView(convertView, parent);
                 break;
             case VIEW_WAITING_FOR_SYNC:
-                result = getEmptyView(position, convertView, parent);
+                result = getEmptyView(convertView, parent);
                 break;
             default:
                 LogUtils.wtf(LOG_TAG, "DrawerItem.getView(%d) for an invalid type!", mType);
@@ -246,8 +262,9 @@ public class DrawerItem {
     }
 
     /**
-     * Returns whether this view is enabled or not.
-     * @return
+     * Returns whether this view is enabled or not. An enabled view is one that accepts user taps
+     * and acts upon them.
+     * @return true if this view is enabled, false otherwise.
      */
     public boolean isItemEnabled() {
         return mIsEnabled;
@@ -277,9 +294,16 @@ public class DrawerItem {
     /**
      * Returns whether this view is highlighted or not.
      *
-     * @param currentFolder
-     * @param currentType
-     * @return
+     * @param currentFolder The current folder, according to the
+     *                      {@link com.android.mail.ui.FolderListFragment}
+     * @param currentType The type of the current folder. We want to only highlight a folder once.
+     *                    A folder might be in two places at once: in "All Folders", and in
+     *                    "Recent Folder". Valid types of selected folders are :
+     *                    {@link DrawerItem#FOLDER_INBOX}, {@link DrawerItem#FOLDER_RECENT} or
+     *                    {@link DrawerItem#FOLDER_OTHER}, or {@link DrawerItem#UNSET}.
+
+     * @return true if this DrawerItem results in a view that is highlighted (this DrawerItem is
+     *              the current folder.
      */
     public boolean isHighlighted(Folder currentFolder, int currentType){
         switch (mType) {
@@ -306,12 +330,12 @@ public class DrawerItem {
 
     /**
      * Return a view for an account object.
-     * @param position a zero indexed position in to the list.
+     *
      * @param convertView a view, possibly null, to be recycled.
      * @param parent the parent viewgroup to attach to.
      * @return a view to display at this position.
      */
-    private View getAccountView(int position, View convertView, ViewGroup parent) {
+    private View getAccountView(View convertView, ViewGroup parent) {
         final AccountItemView accountItemView;
         if (convertView != null) {
             accountItemView = (AccountItemView) convertView;
@@ -326,12 +350,13 @@ public class DrawerItem {
     }
 
     /**
-     * Returns a text divider between sections.
+     * Returns a text divider between divisions.
+     *
      * @param convertView a previous view, perhaps null
      * @param parent the parent of this view
      * @return a text header at the given position.
      */
-    private View getHeaderView(int position, View convertView, ViewGroup parent) {
+    private View getHeaderView(View convertView, ViewGroup parent) {
         final TextView headerView;
         if (convertView != null) {
             headerView = (TextView) convertView;
@@ -346,12 +371,12 @@ public class DrawerItem {
     /**
      * Return a folder: either a parent folder or a normal (child or flat)
      * folder.
-     * @param position a zero indexed position into the top level list.
+     *
      * @param convertView a view, possibly null, to be recycled.
      * @param parent the parent hosting this view.
      * @return a view showing a folder at the given position.
      */
-    private View getFolderView(int position, View convertView, ViewGroup parent) {
+    private View getFolderView(View convertView, ViewGroup parent) {
         final FolderItemView folderItemView;
         if (convertView != null) {
             folderItemView = (FolderItemView) convertView;
@@ -367,12 +392,12 @@ public class DrawerItem {
 
     /**
      * Return a view for the 'Waiting for sync' item with the indeterminate progress indicator.
-     * @param position a zero indexed position into the top level list.
+     *
      * @param convertView a view, possibly null, to be recycled.
      * @param parent the parent hosting this view.
      * @return a view for "Waiting for sync..." at given position.
      */
-    private View getEmptyView(int position, View convertView, ViewGroup parent) {
+    private View getEmptyView(View convertView, ViewGroup parent) {
         final ViewGroup emptyView;
         if (convertView != null) {
             emptyView = (ViewGroup) convertView;
