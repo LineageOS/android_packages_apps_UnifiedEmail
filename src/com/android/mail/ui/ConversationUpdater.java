@@ -23,7 +23,7 @@ import android.net.Uri;
 
 import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.MessageCursor.ConversationMessage;
+import com.android.mail.browse.ConversationMessage;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
