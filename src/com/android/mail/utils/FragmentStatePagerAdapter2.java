@@ -25,7 +25,6 @@ import android.support.v13.app.FragmentCompat;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -90,7 +89,7 @@ public abstract class FragmentStatePagerAdapter2 extends PagerAdapter {
         }
 
         Fragment fragment = getItem(position);
-        if (DEBUG) Log.v(TAG, "Adding item #" + position + ": f=" + fragment);
+        if (DEBUG) LogUtils.v(TAG, "Adding item #" + position + ": f=" + fragment);
         if (mEnableSavedStates && mSavedState.size() > position) {
             Fragment.SavedState fss = mSavedState.get(position);
             if (fss != null) {
@@ -113,7 +112,7 @@ public abstract class FragmentStatePagerAdapter2 extends PagerAdapter {
         if (mCurTransaction == null) {
             mCurTransaction = mFragmentManager.beginTransaction();
         }
-        if (DEBUG) Log.v(TAG, "Removing item #" + position + ": f=" + object
+        if (DEBUG) LogUtils.v(TAG, "Removing item #" + position + ": f=" + object
                 + " v=" + ((Fragment)object).getView());
         if (mEnableSavedStates) {
             while (mSavedState.size() <= position) {
@@ -199,7 +198,7 @@ public abstract class FragmentStatePagerAdapter2 extends PagerAdapter {
                         setItemVisible(f, false);
                         mFragments.put(index, f);
                     } else {
-                        Log.w(TAG, "Bad fragment at key " + key);
+                        LogUtils.w(TAG, "Bad fragment at key " + key);
                     }
                 }
             }

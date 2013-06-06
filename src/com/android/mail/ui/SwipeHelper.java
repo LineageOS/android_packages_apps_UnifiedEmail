@@ -26,7 +26,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -34,6 +33,7 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemView;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
@@ -197,7 +197,7 @@ public class SwipeHelper {
     public static void invalidateGlobalRegion(View view, RectF childBounds) {
         //childBounds.offset(view.getTranslationX(), view.getTranslationY());
         if (DEBUG_INVALIDATE)
-            Log.v(TAG, "-------------");
+            LogUtils.v(TAG, "-------------");
         while (view.getParent() != null && view.getParent() instanceof View) {
             view = (View) view.getParent();
             view.getMatrix().mapRect(childBounds);
@@ -206,7 +206,7 @@ public class SwipeHelper {
                             (int) Math.ceil(childBounds.right),
                             (int) Math.ceil(childBounds.bottom));
             if (DEBUG_INVALIDATE) {
-                Log.v(TAG, "INVALIDATE(" + (int) Math.floor(childBounds.left)
+                LogUtils.v(TAG, "INVALIDATE(" + (int) Math.floor(childBounds.left)
                         + "," + (int) Math.floor(childBounds.top)
                         + "," + (int) Math.ceil(childBounds.right)
                         + "," + (int) Math.ceil(childBounds.bottom));
@@ -482,7 +482,7 @@ public class SwipeHelper {
                             && (velocity > 0) == (mCurrAnimView.getTranslationX() > 0)
                             && translation > 0.05 * currAnimViewSize;
                     if (LOG_SWIPE_DISMISS_VELOCITY) {
-                        Log.v(TAG, "Swipe/Dismiss: " + velocity + "/" + escapeVelocity + "/"
+                        LogUtils.v(TAG, "Swipe/Dismiss: " + velocity + "/" + escapeVelocity + "/"
                                 + perpendicularVelocity + ", x: " + translation + "/"
                                 + currAnimViewSize);
                     }
