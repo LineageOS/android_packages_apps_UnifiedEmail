@@ -201,7 +201,8 @@ public final class OnePaneController extends AbstractActivityController {
         final int transition = mConversationListNeverShown
                 ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
-        Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
+        final Fragment conversationListFragment =
+                ConversationListFragment.newInstance(listContext);
 
         if (!inInbox(mAccount, listContext)) {
             // Maintain fragment transaction history so we can get back to the

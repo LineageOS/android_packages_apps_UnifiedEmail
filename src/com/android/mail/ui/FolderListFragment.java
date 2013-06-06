@@ -103,7 +103,7 @@ public class FolderListFragment extends ListFragment implements
     /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
     private ArrayList<Integer> mExcludedFolderTypes;
     /** Object that changes folders on our behalf. */
-    private FolderListSelectionListener mFolderChanger;
+    private FolderSelector mFolderChanger;
     /** Object that changes accounts on our behalf */
     private AccountController mAccountController;
 
@@ -312,7 +312,7 @@ public class FolderListFragment extends ListFragment implements
                 setSelectedAccount(newAccount);
             }
         };
-        mFolderChanger = mActivity.getFolderListSelectionListener();
+        mFolderChanger = mActivity.getFolderSelector();
         if (accountController != null) {
             // Current account and its observer.
             setSelectedAccount(mAccountObserver.initialize(accountController));
@@ -1194,10 +1194,6 @@ public class FolderListFragment extends ListFragment implements
             manager.destroyLoader(FOLDER_LIST_LOADER_ID);
             manager.destroyLoader(FULL_FOLDER_LIST_LOADER_ID);
         }
-    }
-
-    public interface FolderListSelectionListener {
-        public void onFolderSelected(Folder folder);
     }
 
     /**

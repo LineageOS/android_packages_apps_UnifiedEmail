@@ -911,4 +911,6 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string name="conversation_photo_welcome_text">Touch a sender image to select that conversation.</string>
+    <!-- Content description for the folder icon for nested folders. -->
+    <string name="folder_icon_desc">Folder icon</string>
 </resources>

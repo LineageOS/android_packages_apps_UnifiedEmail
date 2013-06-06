@@ -70,7 +70,8 @@ public final class TwoPaneController extends AbstractActivityController {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         // Use cross fading animation.
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        Fragment conversationListFragment = ConversationListFragment.newInstance(mConvListContext);
+        final Fragment conversationListFragment =
+                ConversationListFragment.newInstance(mConvListContext);
         fragmentTransaction.replace(R.id.conversation_list_pane, conversationListFragment,
                 TAG_CONVERSATION_LIST);
         fragmentTransaction.commitAllowingStateLoss();
@@ -167,26 +168,18 @@ public final class TwoPaneController extends AbstractActivityController {
             mViewMode.enterConversationListMode();
         }
 
-        if (folder.hasChildren && !folder.equals(getHierarchyFolder())) {
-            // Replace this fragment with a new FolderListFragment
-            // showing this folder's children if we are not already looking
-            // at the child view for this folder.
-            createFolderTree(folder);
+        if (folder.hasChildren) {
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
-        } else {
-            setHierarchyFolder(folder);
         }
+        setHierarchyFolder(folder);
         super.onFolderSelected(folder);
     }
 
     private void goUpFolderHierarchy(Folder current) {
-        Folder parent = current.parent;
-        if (parent.parent != null) {
-            createFolderTree(parent.parent);
-            // Show the up affordance when digging into child folders.
-            mActionBarView.setBackButton();
-        } else {
+        // If the current folder is a child, up should show the parent folder.
+        final Folder parent = current.parent;
+        if (parent != null) {
             onFolderSelected(parent);
         }
     }
