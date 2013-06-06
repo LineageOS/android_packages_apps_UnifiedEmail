@@ -377,6 +377,19 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             default:
                 mScrolling = true;
         }
+        if (!mScrolling) {
+            final Context c = getContext();
+            if (c instanceof ControllableActivity) {
+                final ControllableActivity activity = (ControllableActivity) c;
+                activity.onAnimationEnd(null /* adapter */);
+            } else {
+                LogUtils.wtf(LOG_TAG, "unexpected context=%s", c);
+            }
+        }
+    }
+
+    public boolean isScrolling() {
+        return mScrolling;
     }
 
     @Override
