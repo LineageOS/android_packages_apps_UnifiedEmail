@@ -590,6 +590,12 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
+    public boolean isAnimating() {
+        final AnimatedAdapter adapter = getAnimatedAdapter();
+        return (adapter != null && adapter.isAnimating()) ||
+                (mListView != null && mListView.isScrolling());
+    }
+
     private void clearChoicesAndActivated() {
         final int currentSelected = mListView.getCheckedItemPosition();
         if (currentSelected != ListView.INVALID_POSITION) {
