@@ -103,7 +103,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      */
     private static final int URI_COLUMN_INDEX = UIProvider.CONVERSATION_URI_COLUMN;
 
-    private static final boolean DEBUG_DUPLICATE_KEYS = false;
+    private static final boolean DEBUG_DUPLICATE_KEYS = true;
 
     /** The resolver for the cursor instantiator's context */
     private final ContentResolver mResolver;
