@@ -41,6 +41,8 @@ public class MimeType {
     static final String GENERIC_MIMETYPE = "application/octet-stream";
 
     @VisibleForTesting
+    public static final Set<String> EML_ATTACHMENT_CONTENT_TYPES = ImmutableSet.of(
+            "message/rfc822", "application/eml");
     public static final String EML_ATTACHMENT_CONTENT_TYPE = "message/rfc822";
     private static final String NULL_ATTACHMENT_CONTENT_TYPE = "null";
     private static final Set<String> UNACCEPTABLE_ATTACHMENT_TYPES = ImmutableSet.of(
