@@ -896,6 +896,13 @@ public class UIProvider {
         ConversationColumns.REMOTE
     };
 
+    /**
+     * This integer corresponds to the number of rows of queries that specify the
+     * {@link UIProvider#CONVERSATION_PROJECTION} projection will fit in a single
+     * {@link android.database.CursorWindow}
+     */
+    public static final int CONVERSATION_PROJECTION_QUERY_CURSOR_WINDOW_LIMT = 2000;
+
     // These column indexes only work when the caller uses the
     // default CONVERSATION_PROJECTION defined above.
     public static final int CONVERSATION_ID_COLUMN = 0;
