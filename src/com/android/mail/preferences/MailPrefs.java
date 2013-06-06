@@ -266,6 +266,6 @@ public final class MailPrefs extends VersionedPrefs {
 
     public void setRemovalActionDialogShown() {
         getEditor().putBoolean(PreferenceKeys.REMOVAL_ACTION_DIALOG_SHOWN, true).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        notifyBackupPreferenceChanged();
     }
 }
