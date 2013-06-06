@@ -17,12 +17,20 @@
 package com.android.mail.utils;
 
 public class LogTag {
-    private static String LOG_TAG = "UnifiedEmail";
+    private static String sLogTag = "UnifiedEmail";
 
     /**
      * Get the log tag to apply to logging.
      */
     public static String getLogTag() {
-        return LOG_TAG;
+        return sLogTag;
+    }
+
+    /**
+     * Sets the app-wide log tag to be used in most log messages, and for enabling logging
+     * verbosity. This should be called at most once, during app start-up.
+     */
+    public static void setLogTag(final String logTag) {
+        sLogTag = logTag;
     }
 }

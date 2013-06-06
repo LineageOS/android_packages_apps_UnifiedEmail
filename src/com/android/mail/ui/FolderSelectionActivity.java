@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -111,13 +110,14 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         @Override
         public void changeAccount(Account account) {
             // Never gets called, so do nothing here.
-            Log.wtf(LOG_TAG, "FolderSelectionActivity.changeAccount() called when NOT expected.");
+            LogUtils.wtf(LOG_TAG,
+                    "FolderSelectionActivity.changeAccount() called when NOT expected.");
         }
 
         @Override
         public void switchToDefaultInboxOrChangeAccount(Account account) {
             // Never gets called, so do nothing here.
-            Log.wtf(LOG_TAG,"FolderSelectionActivity.switchToDefaultInboxOrChangeAccount() " +
+            LogUtils.wtf(LOG_TAG,"FolderSelectionActivity.switchToDefaultInboxOrChangeAccount() " +
                     "called when NOT expected.");
         }
 

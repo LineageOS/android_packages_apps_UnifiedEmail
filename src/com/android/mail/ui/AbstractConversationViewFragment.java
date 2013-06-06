@@ -38,7 +38,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Browser;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -422,7 +421,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             LogUtils.e(LOG_TAG,
                     "ACVF ignoring onOptionsItemSelected b/c userVisibleHint is false. f=%s", this);
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
-                Log.e(LOG_TAG, Utils.dumpFragment(this));  // the dump has '%' chars in it...
+                LogUtils.e(LOG_TAG, Utils.dumpFragment(this));  // the dump has '%' chars in it...
             }
             return false;
         }

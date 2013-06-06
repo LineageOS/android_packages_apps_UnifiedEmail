@@ -23,7 +23,6 @@ import com.android.mail.utils.LogUtils;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 import android.util.Pair;
 
 import java.io.FileDescriptor;
@@ -143,7 +142,7 @@ public class MailLogService extends Service {
      * @return true if this service is functioning at the current log level. False otherwise.
      */
     public static boolean isLoggingLevelHighEnough() {
-        return LogUtils.isLoggable(LOG_TAG, Log.DEBUG);
+        return LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG);
     }
 
     /**

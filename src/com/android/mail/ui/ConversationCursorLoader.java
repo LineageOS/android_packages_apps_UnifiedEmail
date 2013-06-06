@@ -20,11 +20,11 @@ package com.android.mail.ui;
 import android.app.Activity;
 import android.content.AsyncTaskLoader;
 import android.net.Uri;
-import android.util.Log;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 
@@ -58,16 +58,16 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
 
     private static void dumpLoaders() {
         if (DEBUG) {
-            Log.d(TAG, "Loaders: ");
+            LogUtils.d(TAG, "Loaders: ");
             for (ConversationCursorLoader loader: sLoaders) {
-                Log.d(TAG, " >> " + loader.mName + " (" + loader.mUri + ")");
+                LogUtils.d(TAG, " >> " + loader.mName + " (" + loader.mUri + ")");
             }
         }
     }
 
     private void addLoader() {
         if (DEBUG) {
-            Log.d(TAG, "Add loader: " + mUri);
+            LogUtils.d(TAG, "Add loader: " + mUri);
             sLoaders.add(this);
             if (sLoaders.size() > 1) {
                 dumpLoaders();
@@ -90,7 +90,7 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
             mConversationCursor.disable();
             mClosed = true;
             if (DEBUG) {
-                Log.d(TAG, "Reset loader/disable cursor: " + mName);
+                LogUtils.d(TAG, "Reset loader/disable cursor: " + mName);
                 sLoaders.remove(this);
                 if (!sLoaders.isEmpty()) {
                     dumpLoaders();
@@ -98,7 +98,7 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
             }
         } else {
             if (DEBUG) {
-                Log.d(TAG, "Reset loader/retain cursor: " + mName);
+                LogUtils.d(TAG, "Reset loader/retain cursor: " + mName);
                 mRetained = true;
             }
         }
@@ -120,12 +120,12 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
             mConversationCursor.load();
             addLoader();
             if (DEBUG) {
-                Log.d(TAG, "Restarting reset loader: " + mName);
+                LogUtils.d(TAG, "Restarting reset loader: " + mName);
             }
         } else if (mRetained) {
             mRetained = false;
             if (DEBUG) {
-                Log.d(TAG, "Resuming retained loader: " + mName);
+                LogUtils.d(TAG, "Resuming retained loader: " + mName);
             }
         }
         forceLoad();
