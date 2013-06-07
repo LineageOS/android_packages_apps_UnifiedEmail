@@ -59,10 +59,7 @@ public class SwipeHelper {
     private static int MAX_ESCAPE_ANIMATION_DURATION;
     private static int MAX_DISMISS_VELOCITY;
     private static int SNAP_ANIM_LEN;
-    private static int DISMISS_ANIMATION_DURATION;
     private static float MIN_SWIPE;
-    private static float MIN_VERT;
-    private static float MIN_LOCK;
 
     public static float ALPHA_FADE_START = 0f; // fraction of thumbnail width
                                                  // where fade starts
@@ -70,7 +67,6 @@ public class SwipeHelper {
     static final float ALPHA_FADE_END = 0.7f; // fraction of thumbnail width
                                               // beyond which alpha->0
     private static final float FACTOR = 1.2f;
-    private float mMinAlpha = 0.5f;
 
     /* Dead region where swipe cannot be initiated. */
     private final static int DEAD_REGION_FOR_SWIPE = 56;
@@ -104,10 +100,7 @@ public class SwipeHelper {
             MAX_ESCAPE_ANIMATION_DURATION = res.getInteger(R.integer.max_escape_animation_duration);
             MAX_DISMISS_VELOCITY = res.getInteger(R.integer.max_dismiss_velocity);
             SNAP_ANIM_LEN = res.getInteger(R.integer.snap_animation_duration);
-            DISMISS_ANIMATION_DURATION = res.getInteger(R.integer.dismiss_animation_duration);
             MIN_SWIPE = res.getDimension(R.dimen.min_swipe);
-            MIN_VERT = res.getDimension(R.dimen.min_vert);
-            MIN_LOCK = res.getDimension(R.dimen.min_lock);
         }
     }
 
@@ -155,10 +148,6 @@ public class SwipeHelper {
                 v.getMeasuredHeight();
     }
 
-    public void setMinAlpha(float minAlpha) {
-        mMinAlpha = minAlpha;
-    }
-
     private float getAlphaForOffset(View view) {
         float viewSize = getSize(view);
         final float fadeSize = ALPHA_FADE_END * viewSize;
@@ -169,7 +158,8 @@ public class SwipeHelper {
         } else if (pos < viewSize * (1.0f - ALPHA_FADE_START)) {
             result = 1.0f + (viewSize * ALPHA_FADE_START + pos) / fadeSize;
         }
-        return Math.max(mMinAlpha, result);
+        float minAlpha = 0.5f;
+        return Math.max(minAlpha, result);
     }
 
     private float getTextAlphaForOffset(View view) {
@@ -221,6 +211,12 @@ public class SwipeHelper {
                 mLastY = ev.getY();
                 mDragging = false;
                 View view = mCallback.getChildAtPosition(ev);
+                if (view instanceof NestedFolderView) {
+                    // We don't want to allow nested folders to swipe at all. This would give the
+                    // false hope that they might be deleted by swiping away. Instead, treat them
+                    // like a plain list view element that doesn't allow any swipe gesture.
+                    return false;
+                }
                 if (view instanceof SwipeableItemView) {
                     mCurrView = (SwipeableItemView) view;
                 }
@@ -305,46 +301,6 @@ public class SwipeHelper {
         anim.start();
     }
 
-    private void dismissChildren(final Collection<ConversationItemView> views, float velocity,
-            AnimatorListenerAdapter listener) {
-        final View animView = mCurrView.getSwipeableView().getView();
-        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(mCurrView);
-        float newPos = determinePos(animView, velocity);
-        int duration = DISMISS_ANIMATION_DURATION;
-        ArrayList<Animator> animations = new ArrayList<Animator>();
-        ObjectAnimator anim;
-        for (final ConversationItemView view : views) {
-            Utils.enableHardwareLayer(view);
-            anim = createDismissAnimation(view, newPos, duration);
-            anim.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    if (FADE_OUT_DURING_SWIPE && canAnimViewBeDismissed) {
-                        view.setAlpha(getAlphaForOffset(view));
-                    }
-                    invalidateGlobalRegion(view);
-                }
-            });
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    view.setLayerType(View.LAYER_TYPE_NONE, null);
-                }
-            });
-            animations.add(anim);
-        }
-        AnimatorSet transitionSet = new AnimatorSet();
-        transitionSet.playTogether(animations);
-        transitionSet.addListener(listener);
-        transitionSet.start();
-    }
-
-    public void dismissChildren(ConversationItemView first,
-            final Collection<ConversationItemView> views, AnimatorListenerAdapter listener) {
-        mCurrView = first;
-        dismissChildren(views, 0f, listener);
-    }
-
     private static int determineDuration(View animView, float newPos, float velocity) {
         int duration = MAX_ESCAPE_ANIMATION_DURATION;
         if (velocity != 0) {
@@ -423,11 +379,6 @@ public class SwipeHelper {
                     // If the user has gone vertical and not gone horizontalish AT
                     // LEAST minBeforeLock, switch to scroll. Otherwise, cancel
                     // the swipe.
-                    if (!mDragging && deltaY > MIN_VERT && (Math.abs(deltaX)) < MIN_LOCK
-                            && deltaY > (FACTOR * Math.abs(deltaX))) {
-                        mCallback.onScroll();
-                        return false;
-                    }
                     float minDistance = MIN_SWIPE;
                     if (Math.abs(deltaX) < minDistance) {
                         // Don't start the drag until at least X distance has
