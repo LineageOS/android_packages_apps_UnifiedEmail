@@ -38,6 +38,10 @@ import java.lang.ref.WeakReference;
  * preferred action is (archive, delete, or both).
  */
 public class RemovalActionPreferenceDialogFragment extends DialogFragment {
+    /**
+     * A listener that can be attached to a {@link RemovalActionPreferenceDialogFragment} to receive
+     * onDismiss() events.
+     */
     public interface RemovalActionPreferenceDialogListener {
         void onDismiss();
     }
