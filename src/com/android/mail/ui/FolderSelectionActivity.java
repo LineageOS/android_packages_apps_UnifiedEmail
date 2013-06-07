@@ -37,7 +37,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
-import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -53,7 +52,7 @@ import java.util.ArrayList;
  */
 public class FolderSelectionActivity extends Activity implements OnClickListener,
         DialogInterface.OnClickListener, FolderChangeListener, ControllableActivity,
-        FolderListSelectionListener {
+        FolderSelector {
     public static final String EXTRA_ACCOUNT_SHORTCUT = "account-shortcut";
 
     private static final String LOG_TAG = LogTag.getLogTag();
@@ -364,7 +363,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public FolderListSelectionListener getFolderListSelectionListener() {
+    public FolderSelector getFolderSelector() {
         return this;
     }
 

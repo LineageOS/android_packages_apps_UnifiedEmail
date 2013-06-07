@@ -23,6 +23,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,6 +38,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.browse.SwipeableConversationItemView;
+import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -46,10 +48,13 @@ import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -134,10 +139,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     /**
      * The next action to perform. Do not read or write this. All accesses should
-     * be in {@link #performAndSetNextAction(DestructiveAction)} which commits the
-     * previous action, if any.
+     * be in {@link #performAndSetNextAction(SwipeableListView.ListItemsRemovedListener)} which
+     * commits the previous action, if any.
      */
     private ListItemsRemovedListener mPendingDestruction;
+
     /**
      * A destructive action that refreshes the list and performs no other action.
      */
@@ -169,33 +175,38 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
     };
 
-    private final List<ConversationSpecialItemView> mSpecialViews;
-    private final SparseArray<ConversationSpecialItemView> mSpecialViewPositions;
+    /**
+     * A list of all views that are not conversations. These include temporary views from
+     * {@link #mFleetingViews} and child folders from {@link #mFolderViews}.
+     */
+    private final SparseArray<ConversationSpecialItemView> mSpecialViews;
 
     private final SparseArray<ConversationItemViewCoordinates> mCoordinatesCache =
             new SparseArray<ConversationItemViewCoordinates>();
 
-    private final void setAccount(Account newAccount) {
+    /**
+     * Temporary views insert at specific positions relative to conversations. These can be
+     * related to showing new features (on-boarding) or showing information about new mailboxes
+     * that have been added by the system.
+     */
+    private final List<ConversationSpecialItemView> mFleetingViews;
+
+    /** List of all child folders for this folder. */
+    private List<NestedFolderView> mFolderViews;
+
+    private void setAccount(Account newAccount) {
         mAccount = newAccount;
         mPriorityMarkersEnabled = mAccount.settings.priorityArrowsEnabled;
         mSwipeEnabled = mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO);
     }
 
-    /**
-     * Used only for debugging.
-     */
     private static final String LOG_TAG = LogTag.getLogTag();
     private static final int INCREASE_WAIT_COUNT = 2;
 
     public AnimatedAdapter(Context context, ConversationCursor cursor,
             ConversationSelectionSet batch, ControllableActivity activity,
-            SwipeableListView listView) {
-        this(context, cursor, batch, activity, listView, null);
-    }
-
-    public AnimatedAdapter(Context context, ConversationCursor cursor,
-            ConversationSelectionSet batch, ControllableActivity activity,
-            SwipeableListView listView, final List<ConversationSpecialItemView> specialViews) {
+            SwipeableListView listView, final List<ConversationSpecialItemView> specialViews,
+            final ObjectCursor<Folder> childFolders) {
         super(context, -1, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
@@ -203,25 +214,59 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mActivity = activity;
         mShowFooter = false;
         mListView = listView;
+        mFolderViews = getNestedFolders(childFolders);
+
         mHandler = new Handler();
         if (sDismissAllShortDelay == -1) {
-            sDismissAllShortDelay =
-                    context.getResources()
-                        .getInteger(R.integer.dismiss_all_leavebehinds_short_delay);
-            sDismissAllLongDelay =
-                    context.getResources()
-                        .getInteger(R.integer.dismiss_all_leavebehinds_long_delay);
+            final Resources r = context.getResources();
+            sDismissAllShortDelay = r.getInteger(R.integer.dismiss_all_leavebehinds_short_delay);
+            sDismissAllLongDelay = r.getInteger(R.integer.dismiss_all_leavebehinds_long_delay);
         }
-        mSpecialViews =
-                specialViews == null ? new ArrayList<ConversationSpecialItemView>(0)
-                        : new ArrayList<ConversationSpecialItemView>(specialViews);
-        mSpecialViewPositions = new SparseArray<ConversationSpecialItemView>(mSpecialViews.size());
+        if (specialViews != null) {
+            mFleetingViews = new ArrayList<ConversationSpecialItemView>(specialViews);
+        } else {
+            mFleetingViews = new ArrayList<ConversationSpecialItemView>(0);
+        }
+        /** Total number of special views */
+        final int size = mFleetingViews.size() + mFolderViews.size();
+        mSpecialViews = new SparseArray<ConversationSpecialItemView>(size);
 
-        for (final ConversationSpecialItemView view : mSpecialViews) {
+        // Only set the adapter in teaser views. Folder views don't care about the adapter.
+        for (final ConversationSpecialItemView view : mFleetingViews) {
             view.setAdapter(this);
         }
-
         updateSpecialViews();
+    }
+
+    /**
+     * Returns a list containing views for all the nested folders.
+     * @param cursor cursor containing the folders nested within the current folder
+     * @return a list, possibly empty of the views representing the folders.
+     */
+    private List<NestedFolderView> getNestedFolders (final ObjectCursor<Folder> cursor) {
+        if (cursor == null || !cursor.moveToFirst()) {
+            // The cursor has nothing valid.  Return an empty list.
+            return ImmutableList.of();
+        }
+
+        final LayoutInflater inflater = LayoutInflater.from(mContext);
+        final List<NestedFolderView> folders = new ArrayList<NestedFolderView>(cursor.getCount());
+        do {
+            final NestedFolderView view =
+                    (NestedFolderView) inflater.inflate(R.layout.nested_folder, null);
+            view.setFolder(cursor.getModel());
+            folders.add(view);
+        } while (cursor.moveToNext());
+        return folders;
+    }
+
+    /**
+     * Updates the list of folders for the current list with the cursor provided here.
+     * @param childFolders A cursor containing child folders for the current folder.
+     */
+    public void updateNestedFolders (ObjectCursor<Folder> childFolders) {
+        mFolderViews = getNestedFolders(childFolders);
+        notifyDataSetChanged();
     }
 
     public void cancelDismissCounter() {
@@ -245,8 +290,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public int getCount() {
-        // mSpecialViewPositions only contains the views that are currently being displayed
-        final int specialViewCount = mSpecialViewPositions.size();
+        // mSpecialViews only contains the views that are currently being displayed
+        final int specialViewCount = mSpecialViews.size();
 
         final int count = super.getCount() + specialViewCount;
         return mShowFooter ? count + 1 : count;
@@ -339,7 +384,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             // types. In a future release, use position/id map to try to make
             // this cleaner / faster to determine if the view is animating.
             return TYPE_VIEW_DONT_RECYCLE;
-        } else if (mSpecialViewPositions.get(position) != null) {
+        } else if (mSpecialViews.get(position) != null) {
             // Don't recycle the special views
             return TYPE_VIEW_DONT_RECYCLE;
         }
@@ -412,12 +457,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
 
         // Check if this is a special view
-        final View specialView = (View) mSpecialViewPositions.get(position);
+        final View specialView = (View) mSpecialViews.get(position);
         if (specialView != null) {
             return specialView;
         }
 
-        ConversationCursor cursor = (ConversationCursor) getItem(position);
+        final ConversationCursor cursor = (ConversationCursor) getItem(position);
         final Conversation conv = cursor.getConversation();
 
         // Notify the provider of this change in the position of Conversation cursor
@@ -616,7 +661,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     @Override
     public long getItemId(int position) {
         if (mShowFooter && position == getCount() - 1
-                || mSpecialViewPositions.get(position) != null) {
+                || mSpecialViews.get(position) != null) {
             return -1;
         }
         final int cursorPos = position - getPositionOffset(position);
@@ -668,9 +713,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        SwipeableConversationItemView view = new SwipeableConversationItemView(context,
-                mAccount.name);
-        return view;
+        return new SwipeableConversationItemView(context, mAccount.name);
     }
 
     @Override
@@ -700,8 +743,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     public Object getItem(int position) {
         if (mShowFooter && position == getCount() - 1) {
             return mFooter;
-        } else if (mSpecialViewPositions.get(position) != null) {
-            return mSpecialViewPositions.get(position);
+        } else if (mSpecialViews.get(position) != null) {
+            return mSpecialViews.get(position);
         }
         return super.getItem(position - getPositionOffset(position));
     }
@@ -739,7 +782,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
      * @param next The next action that is to be performed, possibly null (if no next action is
      * needed).
      */
-    private final void performAndSetNextAction(ListItemsRemovedListener next) {
+    private void performAndSetNextAction(ListItemsRemovedListener next) {
         if (mPendingDestruction != null) {
             mPendingDestruction.onListItemsRemoved();
         }
@@ -763,26 +806,19 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public boolean areAllItemsEnabled() {
-        // The animating positions are not enabled.
+        // The animating items and some special views are not enabled.
         return false;
     }
 
     @Override
     public boolean isEnabled(final int position) {
-        if (mSpecialViewPositions.get(position) != null) {
-            // This is a special view
-            return false;
+        final ConversationSpecialItemView view = mSpecialViews.get(position);
+        if (view != null) {
+            final boolean enabled = view.acceptsUserTaps();
+            LogUtils.d(LOG_TAG, "AA.isEnabled(%d) = %b", position, enabled);
+            return enabled;
         }
-
         return !isPositionDeleting(position) && !isPositionUndoing(position);
-    }
-
-    public void showFooter() {
-        setFooterVisibility(true);
-    }
-
-    public void hideFooter() {
-        setFooterVisibility(false);
     }
 
     public void setFooterVisibility(boolean show) {
@@ -836,8 +872,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     public void onRestoreInstanceState(Bundle outState) {
         if (outState.containsKey(LAST_DELETING_ITEMS)) {
             final long[] lastDeleting = outState.getLongArray(LAST_DELETING_ITEMS);
-            for (int i = 0; i < lastDeleting.length; i++) {
-                mLastDeletingItems.add(lastDeleting[i]);
+            for (final long aLastDeleting : lastDeleting) {
+                mLastDeletingItems.add(aLastDeleting);
             }
         }
         if (outState.containsKey(LEAVE_BEHIND_ITEM_DATA)) {
@@ -910,24 +946,40 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
     }
 
+    /**
+     * Updates special (non-conversation view) when either {@link #mFolderViews} or
+     * {@link #mFleetingViews} changed
+     */
     private void updateSpecialViews() {
-        mSpecialViewPositions.clear();
+        // We recreate all the special views using mFolderViews and mFleetingViews (in that order).
+        mSpecialViews.clear();
 
-        for (int i = 0; i < mSpecialViews.size(); i++) {
-            final ConversationSpecialItemView specialView = mSpecialViews.get(i);
+        int folderCount = 0;
+        // Nested folders are added initially. They don't specify positions: we put them at the
+        // very top.
+        for (final NestedFolderView view : mFolderViews) {
+            mSpecialViews.put(folderCount, view);
+            folderCount++;
+        }
+
+        // Fleeting (temporary) views go after this. They specify a position,which is 0-indexed and
+        // has to be adjusted for the number of folders above it.
+        for (final ConversationSpecialItemView specialView : mFleetingViews) {
             specialView.onUpdate(mAccount.name, mFolder, getConversationCursor());
 
             if (specialView.getShouldDisplayInList()) {
-                int position = specialView.getPosition();
+                // If the special view asks for position 0, it wants to be at the top. However,
+                // if there are already 3 folders above it, the real position it needs is 0+3 (4th
+                // from top, since everything is 0-indexed).
+                int position = (specialView.getPosition() + folderCount);
 
                 // insert the special view into the position, but if there is
                 // already an item occupying that position, move that item back
                 // one position, and repeat
                 ConversationSpecialItemView insert = specialView;
                 while (insert != null) {
-                    final ConversationSpecialItemView kickedOut = mSpecialViewPositions.get(
-                            position);
-                    mSpecialViewPositions.put(position, insert);
+                    final ConversationSpecialItemView kickedOut = mSpecialViews.get(position);
+                    mSpecialViews.put(position, insert);
                     insert = kickedOut;
                     position++;
                 }
@@ -968,9 +1020,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     public int getPositionOffset(final int position) {
         int offset = 0;
 
-        for (int i = 0; i < mSpecialViewPositions.size(); i++) {
-            final int key = mSpecialViewPositions.keyAt(i);
-            final ConversationSpecialItemView specialView = mSpecialViewPositions.get(key);
+        for (int i = 0, size = mSpecialViews.size(); i < size; i++) {
+            final int key = mSpecialViews.keyAt(i);
             if (key <= position) {
                 offset++;
             }
@@ -980,14 +1031,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     }
 
     public void cleanup() {
-        for (final ConversationSpecialItemView view : mSpecialViews) {
+        // Only clean up teaser views. Folder views don't care about clean up.
+        for (final ConversationSpecialItemView view : mFleetingViews) {
             view.cleanup();
         }
     }
 
     public void onConversationSelected() {
-        for (int i = 0; i < mSpecialViews.size(); i++) {
-            final ConversationSpecialItemView specialView = mSpecialViews.get(i);
+        // Only notify teaser views. Folder views don't care about selected conversations.
+        for (final ConversationSpecialItemView specialView : mFleetingViews) {
             specialView.onConversationSelected();
         }
     }
