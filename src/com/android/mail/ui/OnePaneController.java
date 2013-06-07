@@ -399,22 +399,11 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private void goUpFolderHierarchy(Folder current) {
-        Folder top = current.parent;
+        final Folder top = current.parent;
         if (top != null) {
             // FIXME: This is silly. we worked so hard to add folder fragments to the back stack.
             // it should either just pop back, or should not use the back stack at all.
-
-            setHierarchyFolder(top);
-            // Replace this fragment with a new FolderListFragment
-            // showing this folder's children if we are not already
-            // looking at the child view for this folder.
-            mLastFolderListTransactionId = replaceFragmentWithBack(
-                    FolderListFragment.ofTree(top, false),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
-        } else {
-            // Otherwise, clear the selected folder and go back to whatever the
-            // last folder list displayed was.
-            // TODO(viki): Load folder list for parent folder.
+            onFolderSelected(top);
         }
     }
 
@@ -432,19 +421,8 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void onFolderSelected(Folder folder) {
-        if (folder.hasChildren && !folder.equals(getHierarchyFolder())) {
-            mViewMode.enterFolderListMode();
-            setHierarchyFolder(folder);
-            // Replace this fragment with a new FolderListFragment
-            // showing this folder's children if we are not already
-            // looking at the child view for this folder.
-            mLastFolderListTransactionId = replaceFragmentWithBack(
-                    FolderListFragment.ofTree(folder, false),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
-        } else {
-            setHierarchyFolder(folder);
-            super.onFolderSelected(folder);
-        }
+        setHierarchyFolder(folder);
+        super.onFolderSelected(folder);
     }
 
     private static boolean isTransactionIdValid(int id) {
@@ -518,10 +496,6 @@ public final class OnePaneController extends AbstractActivityController {
         }
         onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
-    }
-
-    private void safelyPopBackStack(boolean inLoaderCallbacks) {
-        safelyPopBackStack(-1, inLoaderCallbacks);
     }
 
     /**
