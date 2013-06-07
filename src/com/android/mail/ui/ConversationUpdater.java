@@ -82,10 +82,11 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * @param target the conversations to act upon.
      * @param action to perform after the UI has been updated to remove the conversations
      * @param isBatch true if this is a batch action, false otherwise.
+     * @param allowDialog <code>true</code> to allow dialogs to be displayed
      */
     void delete(
             int actionId, final Collection<Conversation> target, final DestructiveAction action,
-            boolean isBatch);
+            boolean isBatch, boolean allowDialog);
 
     /**
      * Mark a number of conversations as read or unread.
