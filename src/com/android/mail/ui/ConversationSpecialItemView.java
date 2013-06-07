@@ -34,8 +34,17 @@ public interface ConversationSpecialItemView {
      */
     void onUpdate(String account, Folder folder, ConversationCursor cursor);
 
+    /**
+     * Returns whether this view is to be displayed in the list or not. A view can be added freely
+     * and it might decide to disable itself by returning false here.
+     * @return true if this view should be displayed, false otherwise.
+     */
     boolean getShouldDisplayInList();
 
+    /**
+     * Returns the position (0 indexed) where this element expects to be inserted.
+     * @return
+     */
     int getPosition();
 
     void setAdapter(AnimatedAdapter adapter);
@@ -51,4 +60,7 @@ public interface ConversationSpecialItemView {
      * Called when a regular conversation item was clicked.
      */
     void onConversationSelected();
+
+    /** Returns whether this special view is enabled (= accepts user taps). */
+    boolean acceptsUserTaps();
 }
