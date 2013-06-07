@@ -160,7 +160,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     public View getChildAtPosition(MotionEvent ev) {
         // find the view under the pointer, accounting for GONE views
         final int count = getChildCount();
-        int touchY = (int) ev.getY();
+        final int touchY = (int) ev.getY();
         int childIdx = 0;
         View slidingChild;
         for (; childIdx < count; childIdx++) {
@@ -331,15 +331,15 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     @Override
     public boolean performItemClick(View view, int pos, long id) {
-        int previousPosition = getCheckedItemPosition();
-        boolean selectionSetEmpty = mConvSelectionSet.isEmpty();
+        final int previousPosition = getCheckedItemPosition();
+        final boolean selectionSetEmpty = mConvSelectionSet.isEmpty();
 
         // Superclass method modifies the selection set
-        boolean handled = super.performItemClick(view, pos, id);
+        final boolean handled = super.performItemClick(view, pos, id);
 
         // If we are in CAB mode with no checkboxes then a click shouldn't
         // activate the new item, it should only add it to the selection set
-        boolean showSenderImage = mAccount != null
+        final boolean showSenderImage = mAccount != null
                 && (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
         if (!showSenderImage && !selectionSetEmpty && previousPosition != -1) {
             setItemChecked(previousPosition, true);
