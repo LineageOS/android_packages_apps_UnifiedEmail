@@ -91,6 +91,7 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
+import com.android.mail.ui.RemovalActionPreferenceDialogFragment.RemovalActionPreferenceDialogListener;
 import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -1315,7 +1316,8 @@ public abstract class AbstractActivityController implements ActivityController,
             }
             case R.id.remove_folder:
                 delete(R.id.remove_folder, target,
-                        getDeferredRemoveFolder(target, mFolder, true, isBatch, true), isBatch);
+                        getDeferredRemoveFolder(target, mFolder, true, isBatch, true), isBatch,
+                        true /* allowDialog */);
                 break;
             case R.id.delete: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
@@ -1335,29 +1337,34 @@ public abstract class AbstractActivityController implements ActivityController,
             case R.id.mark_not_important:
                 if (mFolder != null && mFolder.isImportantOnly()) {
                     delete(R.id.mark_not_important, target,
-                            getDeferredAction(R.id.mark_not_important, target, isBatch), isBatch);
+                            getDeferredAction(R.id.mark_not_important, target, isBatch), isBatch,
+                            true /* allowDialog */);
                 } else {
                     updateConversation(Conversation.listOf(mCurrentConversation),
                             ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                 }
                 break;
             case R.id.mute:
-                delete(R.id.mute, target, getDeferredAction(R.id.mute, target, isBatch), isBatch);
+                delete(R.id.mute, target, getDeferredAction(R.id.mute, target, isBatch), isBatch,
+                        true /* allowDialog */);
                 break;
             case R.id.report_spam:
                 delete(R.id.report_spam, target,
-                        getDeferredAction(R.id.report_spam, target, isBatch), isBatch);
+                        getDeferredAction(R.id.report_spam, target, isBatch), isBatch,
+                        true /* allowDialog */);
                 break;
             case R.id.mark_not_spam:
                 // Currently, since spam messages are only shown in list with
                 // other spam messages,
                 // marking a message not as spam is a destructive action
                 delete(R.id.mark_not_spam, target,
-                        getDeferredAction(R.id.mark_not_spam, target, isBatch), isBatch);
+                        getDeferredAction(R.id.mark_not_spam, target, isBatch), isBatch,
+                        true /* allowDialog */);
                 break;
             case R.id.report_phishing:
                 delete(R.id.report_phishing, target,
-                        getDeferredAction(R.id.report_phishing, target, isBatch), isBatch);
+                        getDeferredAction(R.id.report_phishing, target, isBatch), isBatch,
+                        true /* allowDialog */);
                 break;
             case android.R.id.home:
                 onUpPressed();
@@ -1570,7 +1577,8 @@ public abstract class AbstractActivityController implements ActivityController,
             // Conversations are neither marked read, nor viewed, and we don't want to show
             // the next conversation.
             LogUtils.d(LOG_TAG, ". . doing full mark unread");
-            markConversationsRead(Collections.singletonList(conv), false, false, false);
+            markConversationsRead(Collections.singletonList(conv), false, false, false,
+                    true /* allowDialog */);
         } else {
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
                 final ConversationInfo info = ConversationInfo.fromBlob(originalConversationInfo);
@@ -1625,28 +1633,28 @@ public abstract class AbstractActivityController implements ActivityController,
             mConversationListLoadFinishedCallbacks.add(new LoadFinishedCallback() {
                 @Override
                 public void onLoadFinished() {
-                    markConversationsRead(targets, read, viewed, true);
+                    markConversationsRead(targets, read, viewed, true, true /* allowDialog */);
                 }
             });
         } else {
             // We want to show the next conversation if we are marking unread.
-            markConversationsRead(targets, read, viewed, true);
+            markConversationsRead(targets, read, viewed, true, true /* allowDialog */);
         }
     }
 
     private void markConversationsRead(final Collection<Conversation> targets, final boolean read,
-            final boolean markViewed, final boolean showNext) {
+            final boolean markViewed, final boolean showNext, final boolean allowDialog) {
         LogUtils.d(LOG_TAG, "performing markConversationsRead");
         // Auto-advance if requested and the current conversation is being marked unread
         if (showNext && !read) {
             final Runnable operation = new Runnable() {
                 @Override
                 public void run() {
-                    markConversationsRead(targets, read, markViewed, showNext);
+                    markConversationsRead(targets, read, markViewed, showNext, false);
                 }
             };
 
-            if (!showNextConversation(targets, operation)) {
+            if (!showNextConversation(targets, operation, allowDialog)) {
                 // This method will be called again if the user selects an autoadvance option
                 return;
             }
@@ -1696,7 +1704,7 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     @Override
     public void showNextConversation(final Collection<Conversation> target) {
-        showNextConversation(target, null);
+        showNextConversation(target, null, true /* allowDialog */);
     }
 
     /**
@@ -1722,7 +1730,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * <code>true</code> otherwise.
      */
     private boolean showNextConversation(final Collection<Conversation> target,
-            final Runnable operation) {
+            final Runnable operation, final boolean allowDialog) {
         final int viewMode = mViewMode.getMode();
         final boolean currentConversationInView = (viewMode == ViewMode.CONVERSATION
                 || viewMode == ViewMode.SEARCH_RESULTS_CONVERSATION)
@@ -1731,8 +1739,10 @@ public abstract class AbstractActivityController implements ActivityController,
         if (currentConversationInView) {
             final int autoAdvanceSetting = mAccount.settings.getAutoAdvanceSetting();
 
-            if (autoAdvanceSetting == AutoAdvance.UNSET && mIsTablet) {
+            if (allowDialog && autoAdvanceSetting == AutoAdvance.UNSET && mIsTablet) {
                 displayAutoAdvanceDialogAndPerformAction(operation);
+                return false;
+            } else if (allowDialog && displayRemovalActionDialogAndPerformAction(operation)) {
                 return false;
             } else {
                 // If we don't have one set, but we're here, just take the default
@@ -1747,6 +1757,8 @@ public abstract class AbstractActivityController implements ActivityController,
                 showConversation(next);
                 return (mAutoAdvanceOp == null);
             }
+        } else if (allowDialog && displayRemovalActionDialogAndPerformAction(operation)) {
+            return false;
         }
 
         return true;
@@ -1802,6 +1814,46 @@ public abstract class AbstractActivityController implements ActivityController,
                 .setPositiveButton(null, null)
                 .create()
                 .show();
+    }
+
+    private Runnable mRemovalActionDialogRunnable = null;
+
+    private void attachRemovalActionDialogListener() {
+        final RemovalActionPreferenceDialogFragment fragment =
+                (RemovalActionPreferenceDialogFragment) mActivity.getFragmentManager()
+                .findFragmentByTag(RemovalActionPreferenceDialogFragment.FRAGMENT_TAG);
+
+        if (fragment != null) {
+            fragment.setListener(mRemovalActionPreferenceDialogListener);
+        }
+    }
+
+    private final RemovalActionPreferenceDialogListener mRemovalActionPreferenceDialogListener =
+            new RemovalActionPreferenceDialogListener() {
+        @Override
+        public void onDismiss() {
+            if (mRemovalActionDialogRunnable != null) {
+                mRemovalActionDialogRunnable.run();
+                mRemovalActionDialogRunnable = null;
+            }
+        }
+    };
+
+    /**
+     * Displays a the removal action dialog, and when the user makes a selection, the preference is
+     * stored, and the specified operation is run.
+     *
+     * @return <code>true</code> if the dialog was shown, <code>false</code> otherwise
+     */
+    private boolean displayRemovalActionDialogAndPerformAction(final Runnable operation) {
+        final boolean shown =  RemovalActionPreferenceDialogFragment.showIfNecessary(mContext,
+                mAccount, mActivity.getFragmentManager(), mRemovalActionPreferenceDialogListener);
+
+        if (shown) {
+            mRemovalActionDialogRunnable = operation;
+        }
+
+        return shown;
     }
 
     @Override
@@ -1873,13 +1925,14 @@ public abstract class AbstractActivityController implements ActivityController,
             final ConfirmDialogFragment c = ConfirmDialogFragment.newInstance(message);
             c.displayDialog(mActivity.getFragmentManager());
         } else {
-            delete(0, target, getDeferredAction(actionId, target, isBatch), isBatch);
+            delete(0, target, getDeferredAction(actionId, target, isBatch), isBatch,
+                    true /* allowDialog */);
         }
     }
 
     @Override
     public void delete(final int actionId, final Collection<Conversation> target,
-                       final DestructiveAction action, final boolean isBatch) {
+            final DestructiveAction action, final boolean isBatch, final boolean allowDialog) {
         // Order of events is critical! The Conversation View Fragment must be
         // notified of the next conversation with showConversation(next) *before* the
         // conversation list
@@ -1890,11 +1943,11 @@ public abstract class AbstractActivityController implements ActivityController,
         final Runnable operation = new Runnable() {
             @Override
             public void run() {
-                delete(actionId, target, action, isBatch);
+                delete(actionId, target, action, isBatch, false);
             }
         };
 
-        if (!showNextConversation(target, operation)) {
+        if (!showNextConversation(target, operation, allowDialog)) {
             // This method will be called again if the user selects an autoadvance option
             return;
         }
@@ -1956,6 +2009,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mSafeToModifyFragments = true;
 
         attachEmptyFolderDialogFragmentListener();
+        attachRemovalActionDialogListener();
 
         // Invalidating the options menu so that when we make changes in settings,
         // the changes will always be updated in the action bar/options menu/
@@ -2834,7 +2888,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
             folderChange = getDeferredFolderChange(target, folderOps, isDestructive,
                     batch, showUndo, isMoveTo, actionFolder);
-            delete(0, target, folderChange, batch);
+            delete(0, target, folderChange, batch, true /* allowDialog */);
         } else {
             folderChange = getFolderChange(target, folderOps, isDestructive,
                     batch, showUndo, false /* isMoveTo */, mFolder);
@@ -3113,7 +3167,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 getFolderChange(conversations, dragDropOperations, isDestructive,
                         true /* isBatch */, true /* showUndo */, true /* isMoveTo */, folder);
         if (isDestructive) {
-            delete(0, conversations, action, true);
+            delete(0, conversations, action, true, true /* allowDialog */);
         } else {
             action.performAction();
         }
@@ -3971,7 +4025,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mDialogListener = new AlertDialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                delete(action, target, destructiveAction, isBatch);
+                delete(action, target, destructiveAction, isBatch, true /* allowDialog */);
                 // Afterwards, let's remove references to the listener and the action.
                 setListener(null, -1);
             }
