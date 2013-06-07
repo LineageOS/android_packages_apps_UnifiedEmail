@@ -20,7 +20,6 @@ package com.android.mail.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.android.mail.MailIntentService;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.widget.BaseWidgetProvider;
@@ -162,7 +161,7 @@ public final class MailPrefs extends VersionedPrefs {
 
     public void setDefaultReplyAll(final boolean replyAll) {
         getEditor().putBoolean(PreferenceKeys.DEFAULT_REPLY_ALL, replyAll).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        notifyBackupPreferenceChanged();
     }
 
     /**
@@ -183,7 +182,7 @@ public final class MailPrefs extends VersionedPrefs {
      */
     public void setRemovalAction(final String removalAction) {
         getEditor().putString(PreferenceKeys.REMOVAL_ACTION, removalAction).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        notifyBackupPreferenceChanged();
     }
 
     /**
@@ -196,7 +195,7 @@ public final class MailPrefs extends VersionedPrefs {
 
     public void setConversationListSwipeEnabled(final boolean enabled) {
         getEditor().putBoolean(PreferenceKeys.CONVERSATION_LIST_SWIPE, enabled).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        notifyBackupPreferenceChanged();
     }
 
     /**
