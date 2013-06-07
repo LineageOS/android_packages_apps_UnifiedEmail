@@ -20,10 +20,12 @@ package com.android.mail.preferences;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
+import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.android.mail.MailIntentService;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -249,5 +251,12 @@ public abstract class VersionedPrefs {
         }
 
         return false;
+    }
+
+    /**
+     * Notifies {@link BackupManager} that we have new data to back up.
+     */
+    protected void notifyBackupPreferenceChanged() {
+        MailIntentService.broadcastBackupDataChanged(getContext());
     }
 }

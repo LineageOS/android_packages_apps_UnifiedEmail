@@ -25,7 +25,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.Settings;
 
-import com.android.mail.MailIntentService;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
@@ -215,7 +214,7 @@ public class FolderPreferences extends VersionedPrefs {
 
     public void setNotificationsEnabled(final boolean enabled) {
         getEditor().putBoolean(PreferenceKeys.NOTIFICATIONS_ENABLED, enabled).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        notifyBackupPreferenceChanged();
     }
 
     public String getNotificationRingtoneUri() {
@@ -225,7 +224,7 @@ public class FolderPreferences extends VersionedPrefs {
 
     public void setNotificationRingtoneUri(final String uri) {
         getEditor().putString(PreferenceKeys.NOTIFICATION_RINGTONE, uri).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        notifyBackupPreferenceChanged();
     }
 
     public boolean isNotificationVibrateEnabled() {
@@ -234,7 +233,7 @@ public class FolderPreferences extends VersionedPrefs {
 
     public void setNotificationVibrateEnabled(final boolean enabled) {
         getEditor().putBoolean(PreferenceKeys.NOTIFICATION_VIBRATE, enabled).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        notifyBackupPreferenceChanged();
     }
 
     public boolean isEveryMessageNotificationEnabled() {
@@ -244,7 +243,7 @@ public class FolderPreferences extends VersionedPrefs {
 
     public void setEveryMessageNotificationEnabled(final boolean enabled) {
         getEditor().putBoolean(PreferenceKeys.NOTIFICATION_NOTIFY_EVERY_MESSAGE, enabled).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        notifyBackupPreferenceChanged();
     }
 
     public Set<String> getNotificationActions(final Account account) {
