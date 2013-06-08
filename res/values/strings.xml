@@ -795,6 +795,20 @@
         <item>list</item>
     </string-array>
 
+    <!-- Settings screen, title of "Restore default for "Show pictures"" [CHAR LIMIT=1000]-->
+    <string name="clear_display_images_whitelist_title">Clear picture approvals</string>
+
+    <!-- Settings screen, title of dialog shown to confirm action when user taps
+    "Clear picture approvals" in preferences [CHAR LIMIT=200]-->
+    <string name="clear_display_images_whitelist_dialog_title">Clear picture approvals?</string>
+    <!-- Settings screen, message of dialog shown to confirm action when tapping
+    "Clear picture approvals" [CHAR LIMIT=1000]-->
+    <string name="clear_display_images_whitelist_dialog_message">Stop displaying inline images from senders you previously allowed.</string>
+
+    <!-- Message shown in toast when the user taps "Restore default for "Show pictures"" in Gmail general preferences. [CHAR LIMIT=50] -->
+    <string name="sender_whitelist_cleared">Pictures won\'t be shown automatically.</string>
+
+
     <!-- Dialog title for the What's New dialog. [CHAR LIMIT=50] -->
     <string name="whats_new_dialog_title">What\'s new</string>
 
