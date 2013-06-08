@@ -899,8 +899,14 @@ public class Utils {
      * Show the feedback screen for the supplied account.
      */
     public static void sendFeedback(FeedbackEnabledActivity activity, Account account,
+                                    boolean reportingProblem) {
+        if (activity != null && account != null) {
+            sendFeedback(activity, account.sendFeedbackIntentUri, reportingProblem);
+        }
+    }
+    public static void sendFeedback(FeedbackEnabledActivity activity, Uri feedbackIntentUri,
             boolean reportingProblem) {
-        if (activity != null && account != null && !isEmpty(account.sendFeedbackIntentUri)) {
+        if (activity != null &&  !isEmpty(feedbackIntentUri)) {
             final Bundle optionalExtras = new Bundle(2);
             optionalExtras.putBoolean(
                     UIProvider.SendFeedbackExtras.EXTRA_REPORTING_PROBLEM, reportingProblem);
@@ -909,9 +915,10 @@ public class Utils {
                 optionalExtras.putParcelable(
                         UIProvider.SendFeedbackExtras.EXTRA_SCREEN_SHOT, screenBitmap);
             }
-            openUrl(activity.getActivityContext(), account.sendFeedbackIntentUri, optionalExtras);
+            openUrl(activity.getActivityContext(), feedbackIntentUri, optionalExtras);
         }
     }
+
 
     public static Bitmap getReducedSizeBitmap(FeedbackEnabledActivity activity) {
         final Window activityWindow = activity.getWindow();

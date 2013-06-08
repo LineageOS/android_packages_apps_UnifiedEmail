@@ -25,7 +25,10 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.widget.BaseWidgetProvider;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * A high-level API to store and retrieve unified mail preferences.
@@ -70,12 +73,17 @@ public final class MailPrefs extends VersionedPrefs {
         private static final String
                 CONVERSATION_PHOTO_TEASER_SHOWN = "conversation-photo-teaser-shown";
 
+        public static final String DISPLAY_IMAGES = "display_images";
+        public static final String DISPLAY_IMAGES_PATTERNS = "display_sender_images_patterns_set";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
                 .add(CONVERSATION_LIST_SWIPE)
                 .add(REMOVAL_ACTION)
                 .add(REMOVAL_ACTION_DIALOG_SHOWN)
+                .add(DISPLAY_IMAGES)
+                .add(DISPLAY_IMAGES_PATTERNS)
                 .build();
 
     }
@@ -267,5 +275,92 @@ public final class MailPrefs extends VersionedPrefs {
     public void setRemovalActionDialogShown() {
         getEditor().putBoolean(PreferenceKeys.REMOVAL_ACTION_DIALOG_SHOWN, true).apply();
         notifyBackupPreferenceChanged();
+    }
+
+    void setSenderWhitelist(Set<String> addresses) {
+        getEditor().putStringSet(PreferenceKeys.DISPLAY_IMAGES, addresses).apply();
+        notifyBackupPreferenceChanged();
+    }
+    void setSenderWhitelistPatterns(Set<String> patterns) {
+        getEditor().putStringSet(PreferenceKeys.DISPLAY_IMAGES_PATTERNS, patterns).apply();
+        notifyBackupPreferenceChanged();
+    }
+
+    /**
+     * Returns whether or not an email address is in the whitelist of senders to show images for.
+     * This method reads the entire whitelist, so if you have multiple emails to check, you should
+     * probably call getSenderWhitelist() and check membership yourself.
+     *
+     * @param sender raw email address ("foo@bar.com")
+     * @return whether we should show pictures for this sender
+     */
+    public boolean getDisplayImagesFromSender(String sender) {
+        boolean displayImages = getSenderWhitelist().contains(sender);
+        if (!displayImages) {
+            final SharedPreferences sharedPreferences = getSharedPreferences();
+            // Check the saved email address patterns to determine if this pattern matches
+            final Set<String> defaultPatternSet = Collections.emptySet();
+            final Set<String> currentPatterns = sharedPreferences.getStringSet(
+                        PreferenceKeys.DISPLAY_IMAGES_PATTERNS, defaultPatternSet);
+            for (String pattern : currentPatterns) {
+                displayImages = Pattern.compile(pattern).matcher(sender).matches();
+                if (displayImages) {
+                    break;
+                }
+            }
+        }
+
+        return displayImages;
+    }
+
+
+    public void setDisplayImagesFromSender(String sender, List<Pattern> allowedPatterns) {
+        if (allowedPatterns != null) {
+            // Look at the list of patterns where we want to allow a particular class of
+            // email address
+            for (Pattern pattern : allowedPatterns) {
+                if (pattern.matcher(sender).matches()) {
+                    // The specified email address matches one of the social network patterns.
+                    // Save the pattern itself
+                    final Set<String> currentPatterns = getSenderWhitelistPatterns();
+                    final String patternRegex = pattern.pattern();
+                    if (!currentPatterns.contains(patternRegex)) {
+                        currentPatterns.add(patternRegex);
+                        setSenderWhitelistPatterns(currentPatterns);
+                    }
+                    return;
+                }
+            }
+        }
+        final Set<String> whitelist = getSenderWhitelist();
+        if (!whitelist.contains(sender)) {
+            // Storing a JSONObject is slightly more nice in that maps are guaranteed to not have
+            // duplicate entries, but using a Set as intermediate representation guarantees this
+            // for us anyway. Also, using maps to represent sets forces you to pick values for
+            // them, and that's weird.
+            whitelist.add(sender);
+            setSenderWhitelist(whitelist);
+        }
+    }
+
+    private Set<String> getSenderWhitelist() {
+        final SharedPreferences sharedPreferences = getSharedPreferences();
+        final Set<String> defaultAddressSet = Collections.emptySet();
+        return sharedPreferences.getStringSet(PreferenceKeys.DISPLAY_IMAGES, defaultAddressSet);
+    }
+
+
+    private Set<String> getSenderWhitelistPatterns() {
+        final SharedPreferences sharedPreferences = getSharedPreferences();
+        final Set<String> defaultPatternSet = Collections.emptySet();
+        return sharedPreferences.getStringSet(PreferenceKeys.DISPLAY_IMAGES_PATTERNS,
+                defaultPatternSet);
+    }
+
+    public void clearSenderWhiteList() {
+        final SharedPreferences.Editor editor = getEditor();
+        editor.putStringSet(PreferenceKeys.DISPLAY_IMAGES, Collections.EMPTY_SET);
+        editor.putStringSet(PreferenceKeys.DISPLAY_IMAGES_PATTERNS, Collections.EMPTY_SET);
+        editor.apply();
     }
 }
