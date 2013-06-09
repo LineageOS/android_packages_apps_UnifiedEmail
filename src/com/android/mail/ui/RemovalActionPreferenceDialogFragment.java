@@ -127,7 +127,7 @@ public class RemovalActionPreferenceDialogFragment extends DialogFragment {
             final RemovalActionPreferenceDialogListener removalActionPreferenceDialogListener) {
         final boolean supportsArchive = account.supportsCapability(AccountCapabilities.ARCHIVE);
 
-        if (shouldDisplayDialog(context, account, supportsArchive)) {
+        if (shouldDisplayDialog(context, supportsArchive)) {
             final String defaultValue = MailPrefs.get(context).getRemovalAction(supportsArchive);
 
             final RemovalActionPreferenceDialogFragment fragment = newInstance(defaultValue);
@@ -147,13 +147,12 @@ public class RemovalActionPreferenceDialogFragment extends DialogFragment {
      * <li>We have not previously shown the dialog</li>
      * </ol>
      *
-     * @param account The account this is being requested for
      * @param supportsArchive <code>true</code> if the current account supports
      *            archive, <code>false</code> otherwise
      * @return <code>true</code> if the dialog needs to be displayed (because it
      *         hasn't been shown yet), <code>false</code> otherwise
      */
-    private static boolean shouldDisplayDialog(final Context context, final Account account,
+    private static boolean shouldDisplayDialog(final Context context,
             final boolean supportsArchive) {
         return supportsArchive && !MailPrefs.get(context).hasRemovalActionDialogShown();
     }
