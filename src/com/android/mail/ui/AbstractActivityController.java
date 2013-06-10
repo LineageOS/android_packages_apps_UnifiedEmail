@@ -1742,8 +1742,6 @@ public abstract class AbstractActivityController implements ActivityController,
             if (allowDialog && autoAdvanceSetting == AutoAdvance.UNSET && mIsTablet) {
                 displayAutoAdvanceDialogAndPerformAction(operation);
                 return false;
-            } else if (allowDialog && displayRemovalActionDialogAndPerformAction(operation)) {
-                return false;
             } else {
                 // If we don't have one set, but we're here, just take the default
                 final int autoAdvance = (autoAdvanceSetting == AutoAdvance.UNSET) ?
@@ -1757,8 +1755,6 @@ public abstract class AbstractActivityController implements ActivityController,
                 showConversation(next);
                 return (mAutoAdvanceOp == null);
             }
-        } else if (allowDialog && displayRemovalActionDialogAndPerformAction(operation)) {
-            return false;
         }
 
         return true;
@@ -1925,7 +1921,7 @@ public abstract class AbstractActivityController implements ActivityController,
             final ConfirmDialogFragment c = ConfirmDialogFragment.newInstance(message);
             c.displayDialog(mActivity.getFragmentManager());
         } else {
-            delete(0, target, getDeferredAction(actionId, target, isBatch), isBatch,
+            delete(actionId, target, getDeferredAction(actionId, target, isBatch), isBatch,
                     true /* allowDialog */);
         }
     }
@@ -1949,6 +1945,11 @@ public abstract class AbstractActivityController implements ActivityController,
 
         if (!showNextConversation(target, operation, allowDialog)) {
             // This method will be called again if the user selects an autoadvance option
+            return;
+        } else if (allowDialog && (actionId == R.id.delete || actionId == R.id.archive)
+                && displayRemovalActionDialogAndPerformAction(operation)) {
+            // Show a dialog to inform the user that they can configure the removal setting
+            // This method will be called again when the dialog is dismissed
             return;
         }
         // If the conversation is in the selected set, remove it from the set.
