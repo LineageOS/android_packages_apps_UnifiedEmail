@@ -45,15 +45,18 @@ public class AbstractConversationWebViewClient extends WebViewClient {
     private static final String LOG_TAG = LogTag.getLogTag();
 
     private Account mAccount;
-    private final Context mContext;
+    private Context mContext;
 
-    public AbstractConversationWebViewClient(Context context, Account account) {
+    public AbstractConversationWebViewClient(Account account) {
         mAccount = account;
-        mContext = context;
     }
 
     public void setAccount(Account account) {
         mAccount = account;
+    }
+
+    public void setContext(Context context) {
+        mContext = context;
     }
 
     @Override
