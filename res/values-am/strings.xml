@@ -361,6 +361,10 @@
     <item msgid="732746454445519134">"ከሰረዙ በኋላ ይበልጥ የቆዩ ውይይትን ያሳዩ"</item>
     <item msgid="2189929276292165301">"ከሰረዙ በኋላ የውይይት ዝርዝርን ያሳዩ"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"የስዕል ጽድቆችን አጽዳ"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"የስዕል ጽድቆች ይጽዱ?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"ከዚህ ቀደም ከፈቀዱላቸው ላኪዎች የሚመጡ የውስጠ-መስመር ምስሎችን ማሳየት ይቁም።"</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"ስዕሎች በራስ-ሰር አይታዩም።"</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"ምን አዲስ ነገር አለ"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"ምላሽ ይስጡ"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"ለሁሉም ምላሽ ይስጡ"</string>
@@ -390,6 +394,7 @@
     <item msgid="2967059853409454648">"በማህደር አስቀምጥ እና ሰርዝ አሳይ"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"በማህደር የማስቀመጥ እና የመሰረዝ እርምጃዎች"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"የማህደር እና ስረዛ ምርጫ ያዋቅሩ"\n"(በአጠቃላይ ቅንብሮች ውስጥ ይቀይሩ)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"ለሁሉም ምላሽ ይስጡ"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"ለመልዕክት ምላሾች እንደ ነባሪ ይጠቀሙ"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"በማህደር ለማስቀመጥ ያንሸራትቱ"</string>
@@ -410,4 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"የአሰሳ መሣቢያውን ክፈት"</string>
     <string name="drawer_close" msgid="2764774620737876943">"የአሰሳ መሣቢያውን ዝጋ"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"ያንን ውይይት ለመምረጥ የላኪ ምስል ይንኩ።"</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"የአቃፊ አዶ"</string>
 </resources>

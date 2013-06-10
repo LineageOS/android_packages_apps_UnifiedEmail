@@ -361,6 +361,10 @@
     <item msgid="732746454445519134">"आपके द्वारा हटाए जाने के बाद पुराना वार्तालाप दिखाएं"</item>
     <item msgid="2189929276292165301">"आपके द्वारा हटाए जाने के बाद वार्तालाप सूची दिखाएं"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"चित्र स्वीकृतियां साफ़ करें"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"चित्र स्वीकृतियां साफ़ करें?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"आपने जिन प्रेषकों को पहले अनुमति दे रखी है, उनके इनलाइन चित्रों का प्रदर्शन रोकें."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"चित्र अपने आप नहीं दिखाए जाएंगे."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"नया क्या है"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"जवाब दें"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"सभी को जवाब दें"</string>
@@ -390,6 +394,7 @@
     <item msgid="2967059853409454648">"संगृहीत करें और हटाएं दिखाएं"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"संगृहीत करें और हटाएं कार्यवाही"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"संगृहीत करें और हटाएं प्राथमिकता सेट करें "\n"(सामान्य सेटिंग में बदलें)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"सभी को जवाब दें"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"संदेश के जवाबों के लिए डिफ़ॉल्ट के रूप में उपयोग करें"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"संगृहीत करने के लिए स्वाइप करें"</string>
@@ -410,4 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"नेविगेशन ड्रॉवर खोलें"</string>
     <string name="drawer_close" msgid="2764774620737876943">"नेविगेशन ड्रॉवर बंद करें"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"उस बातचीत को चुनने के लिए प्रेषक के चित्र को स्पर्श करें."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"फ़ोल्डर आइकन"</string>
 </resources>

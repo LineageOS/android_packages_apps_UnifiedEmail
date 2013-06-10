@@ -361,6 +361,14 @@
     <item msgid="732746454445519134">"在刪除動作完成後顯示較舊的會話群組"</item>
     <item msgid="2189929276292165301">"在刪除動作完成後顯示會話群組清單"</item>
   </string-array>
+    <!-- no translation found for clear_display_images_whitelist_title (7120575487854245735) -->
+    <skip />
+    <!-- no translation found for clear_display_images_whitelist_dialog_title (3190704164490442683) -->
+    <skip />
+    <!-- no translation found for clear_display_images_whitelist_dialog_message (1169152185612117654) -->
+    <skip />
+    <!-- no translation found for sender_whitelist_cleared (917434007919176024) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"新功能"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"回覆"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"回覆所有人"</string>
@@ -380,16 +388,17 @@
     <string name="silent_ringtone" msgid="5856834572357761687">"靜音"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"封存及刪除動作"</string>
   <string-array name="prefEntries_removal_action">
-    <item msgid="1938422987822134657">"僅顯示封存的郵件"</item>
-    <item msgid="5737880287951287278">"僅顯示刪除的郵件"</item>
-    <item msgid="4279948809971752573">"顯示封存和刪除的郵件"</item>
+    <item msgid="1938422987822134657">"僅顯示封存郵件的按鈕"</item>
+    <item msgid="5737880287951287278">"僅顯示刪除郵件的按鈕"</item>
+    <item msgid="4279948809971752573">"顯示封存和刪除郵件的按鈕"</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="492039800376391677">"僅顯示封存的郵件"</item>
-    <item msgid="8350973578419775975">"僅顯示刪除的郵件"</item>
-    <item msgid="2967059853409454648">"顯示封存和刪除的郵件"</item>
+    <item msgid="492039800376391677">"僅顯示封存郵件的按鈕"</item>
+    <item msgid="8350973578419775975">"僅顯示刪除郵件的按鈕"</item>
+    <item msgid="2967059853409454648">"顯示封存和刪除郵件的按鈕"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"封存及刪除動作"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"調整封存及刪除偏好設定"\n"(在 [一般] 設定中變更)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"回覆所有人"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"設為預設回信方式"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"滑動即可封存"</string>
@@ -410,4 +419,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"開啟導覽匣"</string>
     <string name="drawer_close" msgid="2764774620737876943">"關閉導覽匣"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"輕觸寄件者圖片即可選取該會話群組。"</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"資料夾圖示"</string>
 </resources>
