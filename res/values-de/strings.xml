@@ -361,6 +361,10 @@
     <item msgid="732746454445519134">"Nach dem Löschen ältere Konversation anzeigen"</item>
     <item msgid="2189929276292165301">"Nach dem Löschen Konversationsliste anzeigen"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Bildgenehmigungen löschen"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Bildgenehmigungen löschen?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Keine Inline-Bilder mehr von zuvor zugelassenen Absendern anzeigen"</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Bilder werden nicht automatisch angezeigt."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Neue Funktionen"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Antworten"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Allen antworten"</string>
@@ -390,6 +394,7 @@
     <item msgid="2967059853409454648">"\"Archivieren\" und \"Löschen\" anzeigen"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Aktionen \"Archivieren\" und \"Löschen\""</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Einstellung für Archivieren &amp; Löschen festlegen "\n"(in allgemeinen Einstellungen ändern)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Allen antworten"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Als Standard für Antworten verwenden"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Zum Archivieren wischen"</string>
@@ -410,4 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"Navigationsleiste öffnen"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Navigationsleiste schließen"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Auf Absenderbild tippen, um die entsprechende Konversation auszuwählen"</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Ordnersymbol"</string>
 </resources>

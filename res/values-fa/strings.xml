@@ -361,6 +361,14 @@
     <item msgid="732746454445519134">"بعد از حذف مکالمه قدیمی‌تر را نشان می‌دهد"</item>
     <item msgid="2189929276292165301">"بعد از حذف فهرست مکالمات را نشان می‌دهد"</item>
   </string-array>
+    <!-- no translation found for clear_display_images_whitelist_title (7120575487854245735) -->
+    <skip />
+    <!-- no translation found for clear_display_images_whitelist_dialog_title (3190704164490442683) -->
+    <skip />
+    <!-- no translation found for clear_display_images_whitelist_dialog_message (1169152185612117654) -->
+    <skip />
+    <!-- no translation found for sender_whitelist_cleared (917434007919176024) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"ویژگی جدید چیست"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"پاسخ"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"پاسخ به همه"</string>
@@ -390,6 +398,7 @@
     <item msgid="2967059853409454648">"نمایش بایگانی و حذف"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"عملکردهای بایگانی و حذف"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"تنظیم بایگانی و حذف تنظیمات برگزیده"\n"(تغییر در تنظیمات کلی)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"پاسخ به همه"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"به‌ عنوان پیش‌فرض برای پاسخ‌ پیام استفاده شود"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"کشیدن انگشت روی صفحه برای بایگانی کردن"</string>
@@ -410,4 +419,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"باز کردن کشوی پیمایش"</string>
     <string name="drawer_close" msgid="2764774620737876943">"بستن کشوی پیمایش"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"برای انتخاب مکالمه، تصویر فرستنده را لمس کنید."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"نماد پوشه"</string>
 </resources>

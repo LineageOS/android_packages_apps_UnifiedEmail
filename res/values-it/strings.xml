@@ -361,6 +361,10 @@
     <item msgid="732746454445519134">"Mostra conversazione meno recente dopo eliminazione"</item>
     <item msgid="2189929276292165301">"Mostra elenco conversazioni dopo eliminazione"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Cancella approvazioni immagini"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Cancellare le approvazioni per le immagini?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Smetti di visualizzare immagini incorporate da mittenti in precedenza consentiti."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Le immagini non saranno mostrate automaticamente."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Novità"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Rispondi"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Rispondi a tutti"</string>
@@ -390,6 +394,7 @@
     <item msgid="2967059853409454648">"Mostra Archivia ed Elimina"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Azioni Archivia ed Elimina"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Imposta preferenza Archivia ed Elimina"\n"(modificala nelle Impostazioni generali)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Rispondi a tutti"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Usa come predefinito per le risposte ai messaggi"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Fai scorrere il dito per archiviare"</string>
@@ -410,4 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"Apri riquadro di navigazione"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Chiudi riquadro di navigazione"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tocca l\'immagine di un mittente per selezionare tale conversazione."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Icona cartella"</string>
 </resources>
