@@ -250,6 +250,7 @@ public class FolderListFragment extends ListFragment implements
         if (! (activity instanceof ControllableActivity)){
             LogUtils.wtf(LOG_TAG, "FolderListFragment expects only a ControllableActivity to" +
                     "create it. Cannot proceed.");
+            return;
         }
         mActivity = (ControllableActivity) activity;
         final FolderController controller = mActivity.getFolderController();
@@ -343,7 +344,7 @@ public class FolderListFragment extends ListFragment implements
         if (args == null) {
             return;
         }
-        mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
+        mParentFolder = args.getParcelable(ARG_PARENT_FOLDER);
         final String folderUri = args.getString(ARG_FOLDER_LIST_URI);
         if (folderUri != null) {
             mFolderListUri = Uri.parse(folderUri);
@@ -1062,7 +1063,7 @@ public class FolderListFragment extends ListFragment implements
 
     /**
      * Sets the currently selected folder safely.
-     * @param folder
+     * @param folder the folder to change to. It is an error to pass null here.
      */
     private void setSelectedFolder(Folder folder) {
         if (folder == null) {
