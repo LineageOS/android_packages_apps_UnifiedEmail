@@ -390,6 +390,7 @@
     <item msgid="2967059853409454648">"Приказују се архивирање и брисање"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Радње архивирања и брисања"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Постављање подешавања за архивирање и брисање"\n"(промените ово у Општим подешавањима)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Одговори свима"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Коришћење ове опције као подразумеване за одговоре на поруке"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Архивирање листањем"</string>
