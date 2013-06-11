@@ -196,7 +196,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         }
         firstButton.setOnClickListener(this);
         createFolderListFragment(FolderListFragment.ofTopLevelTree(mAccount.folderListUri,
-                getExcludedFolderTypes(), true));
+                getExcludedFolderTypes()));
     }
 
     /**
@@ -356,7 +356,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
-            createFolderListFragment(FolderListFragment.ofTree(folder, true));
+            createFolderListFragment(FolderListFragment.ofTree(folder));
             return;
         }
         onFolderChanged(folder);
