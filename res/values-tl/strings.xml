@@ -361,6 +361,14 @@
     <item msgid="732746454445519134">"Magpakita ng mas lumang pag-uusap pagkatapos mong magtanggal"</item>
     <item msgid="2189929276292165301">"Ipakita ang listahan ng pag-uusap pagkatapos mong magtanggal"</item>
   </string-array>
+    <!-- no translation found for clear_display_images_whitelist_title (7120575487854245735) -->
+    <skip />
+    <!-- no translation found for clear_display_images_whitelist_dialog_title (3190704164490442683) -->
+    <skip />
+    <!-- no translation found for clear_display_images_whitelist_dialog_message (1169152185612117654) -->
+    <skip />
+    <!-- no translation found for sender_whitelist_cleared (917434007919176024) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Ano\'ng bago"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Tumugon"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Tumugon sa lahat"</string>
@@ -390,6 +398,7 @@
     <item msgid="2967059853409454648">"Ipakita ang i-archive at tanggalin"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Mga pagkilos na i-archive at tanggalin"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Itakda ang archive at tanggalin ang kagustuhan"\n"(pagbabago sa mga setting na Pangkalahatan)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Tumugon sa lahat"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Gamitin bilang default para sa mga tugon sa mensahe"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Mag-swipe upang i-archive"</string>
@@ -410,4 +419,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"Buksan ang drawer ng nabigasyon"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Isara ang drawer ng nabigasyon"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Pumidot ng larawan ng nagpadala upang piliin ang pag-uusap na iyon."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Icon ng folder"</string>
 </resources>

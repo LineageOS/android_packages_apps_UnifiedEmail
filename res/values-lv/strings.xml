@@ -361,6 +361,10 @@
     <item msgid="732746454445519134">"Rādīt vecāku sarunu pēc dzēšanas"</item>
     <item msgid="2189929276292165301">"Rādīt sarunu sarakstu pēc dzēšanas"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Attēlu rādīšanas apstiprinājumu notīrīšana"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vai notīrīt attēlu rādīšanas apstiprinājumus?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Pārtraukt iekļauto attēlu rādīšanu no sūtītājiem, no kuriem iepriekš tā bija atļauta"</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Attēli netiks rādīti automātiski."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Jaunumi"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Atbildēt"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Atbildēt visiem"</string>
@@ -390,6 +394,7 @@
     <item msgid="2967059853409454648">"Rādīt arhivēšanas un dzēšanas darbību"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Arhivēšanas un dzēšanas darbības"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Arhivēšanas un dzēšanas preferences iestatīšana"\n"(mainīt vispārīgajos iestatījumos)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Atbildēt visiem"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Izmantot kā noklusējumu, atbildot uz ziņojumiem"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Vilkt, lai arhivētu"</string>
@@ -410,4 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"Atvērt navigācijas paneli"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Aizvērt navigācijas paneli"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Pieskarieties sūtītāja attēlam, lai atlasītu šo sarunu."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Mapes ikona"</string>
 </resources>

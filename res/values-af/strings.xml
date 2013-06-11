@@ -361,6 +361,10 @@
     <item msgid="732746454445519134">"Wys ouer gesprek nadat jy uitvee"</item>
     <item msgid="2189929276292165301">"Wys gespreklys nadat jy uitvee"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Vee prentgoedkeurings uit"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vee prentgoedkeurings uit?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Hou op om inlynprente vanaf afsenders wat jy voorheen toegelaat het, te wys."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Prente sal nie outomaties gewys word nie."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Wat\'s nuut"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Antwoord"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Antwoord almal"</string>
@@ -390,6 +394,7 @@
     <item msgid="2967059853409454648">"Wys geargiveer en uitgevee"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Argiveer- en uitvee-handelinge"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Stel argief &amp; vee voorkeur uit"\n"(verander in Algemene instellings)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Antwoord almal"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Gebruik as verstek vir antwoorde op boodskappe"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Sleep om te argiveer"</string>
@@ -410,4 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"Maak navigasielaai oop"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Maak navigasielaai toe"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Raak \'n stuurderbeeld om daardie gesprek te kies."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Vouer-ikoon"</string>
 </resources>

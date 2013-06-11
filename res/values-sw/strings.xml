@@ -361,6 +361,10 @@
     <item msgid="732746454445519134">"Onyesha mazungumzo ya zamani zaidi baada ya kufuta"</item>
     <item msgid="2189929276292165301">"Onyesha orodha ya mazungumzo baada ya kufuta"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Futa uidhinishaji wa picha"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Futa uidhinishaji wa picha?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Acha kuonyesha picha za mistari ya ndani kutoka kwa watumaji uliowaruhusu hapo awali."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Picha hazitaonyeshwa kiotomatiki."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Nini kipya"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Jibu"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Jibu wote"</string>
@@ -390,14 +394,16 @@
     <item msgid="2967059853409454648">"Onyesha kumbukumbu na futa"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Kuweka kwenye kumbukumbu na kufuta"</string>
+    <!-- no translation found for prefDialogTitle_removal_action_first_time (2355955859546346363) -->
+    <skip />
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Jibu wote"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Tumia kama chaguo-msingi la majibu ya ujumbe"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Telezesha ili uweke kwenye kumbukumbu"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Papasa kwa kasi ili kufuta"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Telezesha ili ufute"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Katika orodha ya mazungumzo"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Picha ya mtumaji"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Onyesha kando ya jina katika orodha ya mazungumzo"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Papasa kwa kasi kwenda chini ili kuonyesha upya"</string>
+    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Telezesha chini ili uonyeshe upya"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Inaangalia barua pepe"</string>
     <string name="empty_trash" msgid="652435297593538512">"Safisha Tupio"</string>
     <string name="empty_spam" msgid="6064497180615519589">"Ondoa Barua taka"</string>
@@ -410,4 +416,6 @@
     <string name="drawer_open" msgid="6074646853178471940">"Fungua menyu"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Funga menyu"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Gusa picha ya mtumaji ili uchague mazungumzo hayo."</string>
+    <!-- no translation found for folder_icon_desc (1500547397347480618) -->
+    <skip />
 </resources>

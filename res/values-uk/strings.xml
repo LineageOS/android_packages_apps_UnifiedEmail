@@ -361,6 +361,10 @@
     <item msgid="732746454445519134">"Показувати старішу бесіду після видалення"</item>
     <item msgid="2189929276292165301">"Показувати список бесід після видалення"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Очистити схвалення зображень"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Очистити схвалення зображень?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Не показувати раніше дозволені вставлені зображення від відправників."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Зображення не показуватимуться автоматично."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Новинки"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Відповісти"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Відповісти всім"</string>
@@ -390,6 +394,7 @@
     <item msgid="2967059853409454648">"Показувати архівування та видалення"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Архівування та видалення"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Налаштуйте параметри архівування та видалення"\n"(у Загальних налаштуваннях)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Відповісти всім"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Використовувати за умовчанням для відповідей на повідомлення"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Провести пальцем, щоб архівувати"</string>
@@ -410,4 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"Висунути навігаційну панель"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Сховати навігаційну панель"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Торкніться зображення відправника, щоб вибрати бесіду."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Значок папки"</string>
 </resources>
