@@ -96,10 +96,11 @@ public class FolderListFragment extends ListFragment implements
      * Inboxes, Recent Folders, All folders.
      *
      * An undivided FolderList shows all folders without any divisions and without recent folders.
+     * This is true only for the drawer: for all others it is false.
      */
-    protected boolean mIsDivided;
+    protected boolean mIsDivided = false;
     /** True if the folder list belongs to a folder selection activity (one account only) */
-    private boolean mHideAccounts;
+    protected boolean mHideAccounts = true;
     /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
     private ArrayList<Integer> mExcludedFolderTypes;
     /** Object that changes folders on our behalf. */
@@ -122,14 +123,10 @@ public class FolderListFragment extends ListFragment implements
     private static final int FULL_FOLDER_LIST_LOADER_ID = 1;
     /** Key to store {@link #mParentFolder}. */
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
-    /** Key to store {@link #mIsDivided} */
-    private static final String ARG_IS_DIVIDED = "arg-is-divided";
     /** Key to store {@link #mFolderListUri}. */
     private static final String ARG_FOLDER_LIST_URI = "arg-folder-list-uri";
     /** Key to store {@link #mExcludedFolderTypes} */
     private static final String ARG_EXCLUDED_FOLDER_TYPES = "arg-excluded-folder-types";
-    /** Key to store {@link #mHideAccounts} */
-    private static final String ARG_HIDE_ACCOUNTS = "arg-hide-accounts";
 
     private static final String BUNDLE_LIST_STATE = "flf-list-state";
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
@@ -182,31 +179,25 @@ public class FolderListFragment extends ListFragment implements
      * Creates a new instance of {@link FolderListFragment}, initialized
      * to display the folder and its immediate children.
      * @param folder parent folder whose children are shown
-     * @param hideAccounts True if accounts should be hidden, false otherwise
+     *
      */
-    public static FolderListFragment ofTree(Folder folder, final boolean hideAccounts) {
+    public static FolderListFragment ofTree(Folder folder) {
         final FolderListFragment fragment = new FolderListFragment();
-        /** Trees are never divided: see comments on {@link #mIsDivided} above. */
-        final boolean isDivided = false;
-        fragment.setArguments(getBundleFromArgs(folder, folder.childFoldersListUri,
-                isDivided, null, hideAccounts));
+        fragment.setArguments(getBundleFromArgs(folder, folder.childFoldersListUri, null));
         return fragment;
     }
 
     /**
      * Creates a new instance of {@link FolderListFragment}, initialized
-     * to display the folder and its immediate children.
+     * to display the top level: where we have no parent folder, but we have a list of folders
+     * from the account.
      * @param folderListUri the URI which contains all the list of folders
      * @param excludedFolderTypes A list of {@link FolderType}s to exclude from displaying
-     * @param hideAccounts True if accounts should be hidden, false otherwise
      */
     public static FolderListFragment ofTopLevelTree(Uri folderListUri,
-            final ArrayList<Integer> excludedFolderTypes, final boolean hideAccounts) {
+            final ArrayList<Integer> excludedFolderTypes) {
         final FolderListFragment fragment = new FolderListFragment();
-        /** Trees are never divided: see comments on {@link #mIsDivided} above. */
-        final boolean isDivided = false;
-        fragment.setArguments(getBundleFromArgs(null, folderListUri,
-                isDivided, excludedFolderTypes, hideAccounts));
+        fragment.setArguments(getBundleFromArgs(null, folderListUri, excludedFolderTypes));
         return fragment;
     }
 
@@ -215,14 +206,12 @@ public class FolderListFragment extends ListFragment implements
      *
      * @param parentFolder non-null for trees, the parent of this list
      * @param folderListUri the URI which contains all the list of folders
-     * @param isDivided true if this drawer is divided, false otherwise
      * @param excludedFolderTypes if non-null, this indicates folders to exclude in lists.
      * @return Bundle containing parentFolder, divided list boolean and
      *         excluded folder types
      */
     private static Bundle getBundleFromArgs(Folder parentFolder, Uri folderListUri,
-            boolean isDivided, final ArrayList<Integer> excludedFolderTypes,
-            final boolean hideAccounts) {
+            final ArrayList<Integer> excludedFolderTypes) {
         final Bundle args = new Bundle();
         if (parentFolder != null) {
             args.putParcelable(ARG_PARENT_FOLDER, parentFolder);
@@ -230,11 +219,9 @@ public class FolderListFragment extends ListFragment implements
         if (folderListUri != null) {
             args.putString(ARG_FOLDER_LIST_URI, folderListUri.toString());
         }
-        args.putBoolean(ARG_IS_DIVIDED, isDivided);
         if (excludedFolderTypes != null) {
             args.putIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES, excludedFolderTypes);
         }
-        args.putBoolean(ARG_HIDE_ACCOUNTS, hideAccounts);
         return args;
     }
 
@@ -349,9 +336,7 @@ public class FolderListFragment extends ListFragment implements
         if (folderUri != null) {
             mFolderListUri = Uri.parse(folderUri);
         }
-        mIsDivided = args.getBoolean(ARG_IS_DIVIDED);
         mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
-        mHideAccounts = args.getBoolean(ARG_HIDE_ACCOUNTS, false);
     }
 
     @Override
