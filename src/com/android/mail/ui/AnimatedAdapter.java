@@ -991,4 +991,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             specialView.onConversationSelected();
         }
     }
+
+    public void onCabModeEntered() {
+        for (final ConversationSpecialItemView specialView : mSpecialViews) {
+            specialView.onCabModeEntered();
+        }
+    }
 }
