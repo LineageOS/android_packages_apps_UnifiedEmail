@@ -92,15 +92,6 @@ public final class TwoPaneController extends AbstractActivityController {
         }
     }
 
-    /**
-     * Create a {@link FolderListFragment} for trees with the specified parent
-     * @param parent the parent folder whose children need to be displayed in this list
-     */
-    private void createFolderTree(Folder parent) {
-        setHierarchyFolder(parent);
-        createFolderListFragment(FolderListFragment.ofTree(parent, false));
-    }
-
     private void createFolderListFragment(Fragment folderList) {
         // Create a sectioned FolderListFragment.
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
@@ -422,7 +413,6 @@ public final class TwoPaneController extends AbstractActivityController {
                     // Show inbox; we are at the top of the hierarchy we were
                     // showing, and it doesn't have a parent, so we must want to
                     // the basic account folder list.
-                    createFolderListFragment(FolderListFragment.ofDrawer());
                     loadAccountInbox();
                 }
             // Otherwise, if we are in the conversation list but not in the default
