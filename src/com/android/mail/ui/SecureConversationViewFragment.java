@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.content.Context;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -37,20 +38,19 @@ import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView;
-import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.MessageScrollView;
 import com.android.mail.browse.MessageWebView;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
+import com.android.mail.utils.ConversationViewUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.util.HashSet;
 
-public class SecureConversationViewFragment extends AbstractConversationViewFragment implements
-        MessageHeaderViewCallbacks {
+public class SecureConversationViewFragment extends AbstractConversationViewFragment {
     private static final String LOG_TAG = LogTag.getLogTag();
 
     private static final String BEGIN_HTML =
@@ -66,14 +66,20 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
 
     private int mSideMarginInWebPx;
 
-    private final WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
+    private ConversationViewProgressController mProgressController;
+
+    private class SecureConversationWebViewClient extends AbstractConversationWebViewClient {
+        public SecureConversationWebViewClient(Context context, Account account) {
+            super(context, account);
+        }
+
         @Override
         public void onPageFinished(WebView view, String url) {
             if (isUserVisible()) {
                 onConversationSeen();
             }
 
-            dismissLoadingStatus();
+            mProgressController.dismissLoadingStatus();
         }
     };
 
@@ -100,8 +106,16 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
+    public void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
+
+        mWebViewClient = new SecureConversationWebViewClient(getContext(), mAccount);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         mConversationHeaderView.setCallbacks(this, this);
         mConversationHeaderView.setFolders(mConversation);
         mConversationHeaderView.setSubject(mConversation.subject);
@@ -115,7 +129,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
                         .getVeiledAddressMatcher());
         mMessageFooterView.initialize(getLoaderManager(), getFragmentManager());
         getLoaderManager().initLoader(MESSAGE_LOADER, null, getMessageLoaderCallbacks());
-        showLoadingStatus();
+        mProgressController.showLoadingStatus(isUserVisible());
 
         final Resources r = getResources();
         mSideMarginInWebPx = (int) ((r.getDimensionPixelOffset(
@@ -131,7 +145,9 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mConversationHeaderView = (ConversationViewHeader) rootView.findViewById(R.id.conv_header);
         mMessageHeaderView = (MessageHeaderView) rootView.findViewById(R.id.message_header);
         mMessageFooterView = (MessageFooterView) rootView.findViewById(R.id.message_footer);
-        instantiateProgressIndicators(rootView);
+
+        mProgressController = new ConversationViewProgressController(this, getHandler());
+        mProgressController.instantiateProgressIndicators(rootView);
         mWebView = (MessageWebView) rootView.findViewById(R.id.webview);
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setFocusable(false);
@@ -140,7 +156,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         settings.setJavaScriptEnabled(false);
         settings.setLayoutAlgorithm(LayoutAlgorithm.NORMAL);
 
-        setTextZoom(settings);
+        ConversationViewUtils.setTextZoom(getResources(), settings);
 
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
@@ -149,11 +165,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mScrollView.setInnerScrollableView(mWebView);
 
         return rootView;
-    }
-
-    @Override
-    protected WebView getWebView() {
-        return mWebView;
     }
 
     @Override
