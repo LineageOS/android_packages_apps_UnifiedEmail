@@ -35,6 +35,10 @@ import android.widget.ListView;
  * two_pane_activity.xml
  */
 public class DrawerFragment extends FolderListFragment {
+    /**
+     * The only way a drawer is constructed is through XML layouts, and so it needs no constructor
+     * like {@link FolderListFragment#ofTopLevelTree(android.net.Uri, java.util.ArrayList, boolean)}
+     */
     public DrawerFragment() {
         super();
         // Drawer is always divided: it shows groups for inboxes, recent folders and all other
