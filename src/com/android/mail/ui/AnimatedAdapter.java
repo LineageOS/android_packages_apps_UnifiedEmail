@@ -48,13 +48,11 @@ import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1045,7 +1043,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     }
 
     public void onCabModeEntered() {
-        for (final ConversationSpecialItemView specialView : mSpecialViews) {
+        for (final ConversationSpecialItemView specialView : mFleetingViews) {
             specialView.onCabModeEntered();
         }
     }
