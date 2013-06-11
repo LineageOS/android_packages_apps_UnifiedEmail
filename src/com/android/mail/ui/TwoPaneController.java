@@ -92,21 +92,6 @@ public final class TwoPaneController extends AbstractActivityController {
         }
     }
 
-    private void createFolderListFragment(Fragment folderList) {
-        // Create a sectioned FolderListFragment.
-        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
-        if (Utils.useFolderListFragmentTransition(mActivity.getActivityContext())) {
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        }
-        fragmentTransaction.replace(R.id.content_pane, folderList, TAG_FOLDER_LIST);
-        fragmentTransaction.commitAllowingStateLoss();
-        // We only set the action bar if the viewmode has been set previously. Otherwise, we leave
-        // the action bar in the state it is currently in.
-        if (mViewMode.getMode() != ViewMode.UNKNOWN) {
-            resetActionBarIcon();
-        }
-    }
-
     @Override
     protected boolean isConversationListVisible() {
         return !mLayout.isConversationListCollapsed();
@@ -125,8 +110,9 @@ public final class TwoPaneController extends AbstractActivityController {
         mDrawerPullout = mDrawerContainer.findViewById(R.id.content_pane);
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
         if (mLayout == null) {
-            // We need the layout for everything. Crash early if it is null.
+            // We need the layout for everything. Crash/Return early if it is null.
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
+            return false;
         }
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
         mLayout.setDrawerLayout(mDrawerContainer);
