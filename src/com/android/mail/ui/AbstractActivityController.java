@@ -2457,6 +2457,14 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
+    public final void onCabModeEntered() {
+        final ConversationListFragment convListFragment = getConversationListFragment();
+        if (convListFragment != null && convListFragment.getAnimatedAdapter() != null) {
+            convListFragment.getAnimatedAdapter().onCabModeEntered();
+        }
+    }
+
+    @Override
     public Conversation getCurrentConversation() {
         return mCurrentConversation;
     }

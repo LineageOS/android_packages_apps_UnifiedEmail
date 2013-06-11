@@ -131,8 +131,14 @@ public class ConversationPhotoTeaserView extends FrameLayout
 
     @Override
     public void onConversationSelected() {
+        // DO NOTHING
+    }
+
+    @Override
+    public void onCabModeEntered() {
         dismiss();
     }
+
 
     @Override
     public boolean acceptsUserTaps() {

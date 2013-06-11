@@ -510,6 +510,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         if (mSelectionSet.isEmpty()) {
             return;
         }
+        mListController.onCabModeEntered();
         mActivated = true;
         if (mActionMode == null) {
             mActivity.startActionMode(this);

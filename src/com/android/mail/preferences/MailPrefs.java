@@ -71,7 +71,7 @@ public final class MailPrefs extends VersionedPrefs {
                 "cache-active-notification-set";
 
         private static final String
-                CONVERSATION_PHOTO_TEASER_SHOWN = "conversation-photo-teaser-shown";
+                CONVERSATION_PHOTO_TEASER_SHOWN = "conversation-photo-teaser-shown-two";
 
         public static final String DISPLAY_IMAGES = "display_images";
         public static final String DISPLAY_IMAGES_PATTERNS = "display_sender_images_patterns_set";
