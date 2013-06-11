@@ -17,7 +17,6 @@
 package com.android.mail.ui;
 
 import android.app.LoaderManager;
-import android.view.View;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Folder;
@@ -51,4 +50,9 @@ public interface ConversationSpecialItemView {
      * Called when a regular conversation item was clicked.
      */
     void onConversationSelected();
+
+    /**
+     * Called whenever Cab Mode has been entered via long press or selecting a sender image.
+     */
+    void onCabModeEntered();
 }
