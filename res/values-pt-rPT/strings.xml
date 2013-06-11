@@ -169,7 +169,7 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"A enviar..."</string>
     <string name="send_failed" msgid="750908595144529579">"Mensagem não enviada."</string>
-    <string name="me" msgid="6480762904022198669">"utilizador"</string>
+    <string name="me" msgid="6480762904022198669">"eu"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Caixa de Entrada"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Eliminar esta conversa?"</item>
@@ -390,6 +390,8 @@
     <item msgid="2967059853409454648">"Mostrar arquivar e eliminar"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Arquivar e eliminar ações"</string>
+    <!-- no translation found for prefDialogTitle_removal_action_first_time (2355955859546346363) -->
+    <skip />
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Responder a todos"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Utilizar como predefinição para respostas a mensagens"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Deslize rapidamente para arquivar"</string>

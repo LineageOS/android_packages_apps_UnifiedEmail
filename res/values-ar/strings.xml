@@ -293,7 +293,7 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"لعرض المحادثات، عليك مزامنة هذا المجلد."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"مزامنة المجلد"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <string name="actionbar_unread_messages" msgid="3805594795629836031">"<xliff:g id="COUNT">%1$d</xliff:g> مقروءة"</string>
+    <string name="actionbar_unread_messages" msgid="3805594795629836031">"<xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</string>
     <string name="actionbar_large_unread_count" msgid="2780005218279965391">"أكثر من <xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"عرض المزيد من المحادثات"</string>
     <string name="loading_conversation" msgid="489160038366067983">"جارٍ التحميل…"</string>
@@ -390,6 +390,7 @@
     <item msgid="2967059853409454648">"عرض الأرشيف والحذف"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"إجراءات الأرشيف والحذف"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"تعيين الأرشفة وحذف التفضيل"\n"(تغيير في الإعدادات العامة)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"الرد على الكل"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"الاستخدام كافتراضي مع ردود الرسائل"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"مرر بسرعة لإجراء أرشفة"</string>

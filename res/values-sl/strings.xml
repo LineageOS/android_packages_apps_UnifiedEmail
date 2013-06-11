@@ -390,6 +390,7 @@
     <item msgid="2967059853409454648">"Pokaži arhiviranje in brisanje"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Dejanji arhiviranja in brisanja"</string>
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Nastavitev arhiviranja ali brisanja"\n"(sprememba v splošnih nastavitvah)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Odgovori vsem"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Uporabi kot privzeto za odgovore na sporočila"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Povlecite za arhiviranje"</string>
