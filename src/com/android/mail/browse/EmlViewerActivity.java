@@ -17,11 +17,13 @@
 
 package com.android.mail.browse;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.webkit.WebView;
 
 import com.android.emailcommon.TempDirectory;
@@ -41,17 +43,21 @@ public class EmlViewerActivity extends Activity {
 
     private WebView mWebView;
 
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eml_viewer_activity);
-        mWebView = (WebView) findViewById(R.id.eml_web_view);
+
+        final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        mWebView = (WebView) findViewById(R.id.webview);
 
         final Intent intent = getIntent();
         final String action = intent.getAction();
         final String type = intent.getType();
 
         if (Intent.ACTION_VIEW.equals(action) &&
-                MimeType.EML_ATTACHMENT_CONTENT_TYPE.equals(type)) {
+                MimeType.EML_ATTACHMENT_CONTENT_TYPES.contains(type)) {
             openEmlFile(intent.getData());
         } else {
             LogUtils.wtf(LOG_TAG,
@@ -86,5 +92,16 @@ public class EmlViewerActivity extends Activity {
         }
 
         mWebView.loadDataWithBaseURL("", convMessage.getBodyAsHtml(), "text/html", "utf-8", null);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
