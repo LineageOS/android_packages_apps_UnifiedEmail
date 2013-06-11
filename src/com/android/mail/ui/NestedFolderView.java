@@ -17,18 +17,18 @@
 
 package com.android.mail.ui;
 
-import com.android.mail.R;
-import com.android.mail.browse.ConversationCursor;
-import com.android.mail.providers.Folder;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
-
 import android.app.LoaderManager;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.android.mail.R;
+import com.android.mail.browse.ConversationCursor;
+import com.android.mail.providers.Folder;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 
 /**
  * For folders that might contain other folders, we show the nested folders within this view.
@@ -125,6 +125,11 @@ public class NestedFolderView extends LinearLayout implements ConversationSpecia
     @Override
     public void onConversationSelected() {
         // Do nothing. We don't care if conversations are selected.
+    }
+
+    @Override
+    public void onCabModeEntered() {
+        // Do nothing. We don't care if cab mode was entered.
     }
 
     @Override
