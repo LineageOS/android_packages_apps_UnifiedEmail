@@ -89,6 +89,12 @@ public class Settings implements Parcelable {
     public final Uri setupIntentUri;
     public final String veiledAddressPattern;
 
+    /**
+     * The {@link Uri} to use when moving a conversation to the inbox. May
+     * differ from {@link #defaultInbox}.
+     */
+    public final Uri moveToInbox;
+
     /** Cached value of hashCode */
     private int mHashCode;
 
@@ -114,6 +120,7 @@ public class Settings implements Parcelable {
         setupIntentUri = Uri.EMPTY;
         conversationViewMode = UIProvider.ConversationViewMode.UNDEFINED;
         veiledAddressPattern = null;
+        moveToInbox = Uri.EMPTY;
     }
 
     public Settings(Parcel inParcel) {
@@ -135,6 +142,7 @@ public class Settings implements Parcelable {
         setupIntentUri = Utils.getValidUri(inParcel.readString());
         conversationViewMode = inParcel.readInt();
         veiledAddressPattern = inParcel.readString();
+        moveToInbox = Utils.getValidUri(inParcel.readString());
     }
 
     public Settings(Cursor cursor) {
@@ -164,6 +172,8 @@ public class Settings implements Parcelable {
                 cursor.getInt(cursor.getColumnIndex(SettingsColumns.CONVERSATION_VIEW_MODE));
         veiledAddressPattern =
                 cursor.getString(cursor.getColumnIndex(SettingsColumns.VEILED_ADDRESS_PATTERN));
+        moveToInbox = Utils.getValidUri(
+                cursor.getString(cursor.getColumnIndex(SettingsColumns.MOVE_TO_INBOX)));
     }
 
     private Settings(JSONObject json) {
@@ -190,6 +200,7 @@ public class Settings implements Parcelable {
         conversationViewMode = json.optInt(SettingsColumns.CONVERSATION_VIEW_MODE,
                 UIProvider.ConversationViewMode.UNDEFINED);
         veiledAddressPattern = json.optString(SettingsColumns.VEILED_ADDRESS_PATTERN, null);
+        moveToInbox = Utils.getValidUri(json.optString(SettingsColumns.MOVE_TO_INBOX));
     }
 
     /**
@@ -232,6 +243,8 @@ public class Settings implements Parcelable {
             json.put(SettingsColumns.SETUP_INTENT_URI, setupIntentUri);
             json.put(SettingsColumns.CONVERSATION_VIEW_MODE, conversationViewMode);
             json.put(SettingsColumns.VEILED_ADDRESS_PATTERN, veiledAddressPattern);
+            json.put(SettingsColumns.MOVE_TO_INBOX,
+                    getNonNull(moveToInbox, sDefault.moveToInbox));
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not serialize settings");
         }
@@ -298,6 +311,7 @@ public class Settings implements Parcelable {
         dest.writeString(((Uri) getNonNull(setupIntentUri, sDefault.setupIntentUri)).toString());
         dest.writeInt(conversationViewMode);
         dest.writeString(veiledAddressPattern);
+        dest.writeString(((Uri) getNonNull(moveToInbox, sDefault.moveToInbox)).toString());
     }
 
     /**
@@ -403,7 +417,8 @@ public class Settings implements Parcelable {
                 && priorityArrowsEnabled == that.priorityArrowsEnabled
                 && setupIntentUri == that.setupIntentUri
                 && conversationViewMode == that.conversationViewMode
-                && TextUtils.equals(veiledAddressPattern, that.veiledAddressPattern));
+                && TextUtils.equals(veiledAddressPattern, that.veiledAddressPattern))
+                && Objects.equal(moveToInbox, that.moveToInbox);
     }
 
     @Override
@@ -423,6 +438,6 @@ public class Settings implements Parcelable {
                         snapHeaders, replyBehavior, convListIcon, confirmDelete, confirmArchive,
                         confirmSend, defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
                         priorityArrowsEnabled, setupIntentUri, conversationViewMode,
-                        veiledAddressPattern);
+                        veiledAddressPattern, moveToInbox);
     }
 }
