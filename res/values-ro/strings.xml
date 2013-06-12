@@ -361,14 +361,10 @@
     <item msgid="732746454445519134">"Afişaţi conversaţia mai veche după ce ştergeţi"</item>
     <item msgid="2189929276292165301">"Afişaţi lista de conversaţii după ce ştergeţi"</item>
   </string-array>
-    <!-- no translation found for clear_display_images_whitelist_title (7120575487854245735) -->
-    <skip />
-    <!-- no translation found for clear_display_images_whitelist_dialog_title (3190704164490442683) -->
-    <skip />
-    <!-- no translation found for clear_display_images_whitelist_dialog_message (1169152185612117654) -->
-    <skip />
-    <!-- no translation found for sender_whitelist_cleared (917434007919176024) -->
-    <skip />
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Ștergeți aprobările pentru imagini"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Ștergeți aprobările pentru imagini?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Nu mai afișați imaginile inline de la expeditori acceptați anterior."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Imaginile nu vor fi afișate în mod automat."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Ce este nou"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Răspundeți"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Răspundeți tuturor"</string>
@@ -398,8 +394,7 @@
     <item msgid="2967059853409454648">"Afișați opțiunile Arhivați și Ștergeți"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Arhivați și Ștergeți"</string>
-    <!-- no translation found for prefDialogTitle_removal_action_first_time (2355955859546346363) -->
-    <skip />
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Setați preferințele pentru arhivare și ștergere"\n"(modificați din Setări generale)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Răspundeți tuturor"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Utilizați ca setare prestabilită pentru răspunsurile la mesaje"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Glisați pentru a arhiva"</string>
@@ -420,6 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"Deschideți panoul de navigare"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Închideți panoul de navigare"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Atingeți imaginea unui expeditor pentru a selecta respectiva conversație."</string>
-    <!-- no translation found for folder_icon_desc (1500547397347480618) -->
-    <skip />
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Pictogramă dosar"</string>
 </resources>

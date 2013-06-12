@@ -361,14 +361,10 @@
     <item msgid="732746454445519134">"Magpakita ng mas lumang pag-uusap pagkatapos mong magtanggal"</item>
     <item msgid="2189929276292165301">"Ipakita ang listahan ng pag-uusap pagkatapos mong magtanggal"</item>
   </string-array>
-    <!-- no translation found for clear_display_images_whitelist_title (7120575487854245735) -->
-    <skip />
-    <!-- no translation found for clear_display_images_whitelist_dialog_title (3190704164490442683) -->
-    <skip />
-    <!-- no translation found for clear_display_images_whitelist_dialog_message (1169152185612117654) -->
-    <skip />
-    <!-- no translation found for sender_whitelist_cleared (917434007919176024) -->
-    <skip />
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"I-clear ang mga pag-apruba sa larawan"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"I-clear ang mga pag-apruba sa larawan?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Huminto sa pagpapakita ng mga inline na larawan mula sa mga nagpadalang dati mong pinayagan."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Hindi awtomatikong ipapakita ang mga larawan."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Ano\'ng bago"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Tumugon"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Tumugon sa lahat"</string>

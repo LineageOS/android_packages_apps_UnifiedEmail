@@ -394,8 +394,7 @@
     <item msgid="2967059853409454648">"Vis arkiverede og slettede"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Arkiverede og slettede handlinger"</string>
-    <!-- no translation found for prefDialogTitle_removal_action_first_time (2355955859546346363) -->
-    <skip />
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Indstil arkiv, og slet præferencer"\n"(ændring i Generelle indstillinger)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Svar alle"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Brug som standardsvar på meddelelser"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Stryg med fingeren for at arkivere"</string>
@@ -416,6 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"Åbn navigationsskuffen"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Luk navigationsskuffen"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tryk på et afsenderbillede for at vælge den samtale."</string>
-    <!-- no translation found for folder_icon_desc (1500547397347480618) -->
-    <skip />
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Mappeikon"</string>
 </resources>
