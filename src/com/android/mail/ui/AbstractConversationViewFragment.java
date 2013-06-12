@@ -239,7 +239,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
         mActivity = (ControllableActivity) activity;
         mContext = activity.getApplicationContext();
-        mWebViewClient.setContext(mContext);
+        mWebViewClient.setActivity(activity);
         mAccount = mAccountObserver.initialize(mActivity.getAccountController());
         mWebViewClient.setAccount(mAccount);
     }

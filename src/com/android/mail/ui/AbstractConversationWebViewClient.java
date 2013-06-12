@@ -17,8 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -45,7 +45,7 @@ public class AbstractConversationWebViewClient extends WebViewClient {
     private static final String LOG_TAG = LogTag.getLogTag();
 
     private Account mAccount;
-    private Context mContext;
+    private Activity mActivity;
 
     public AbstractConversationWebViewClient(Account account) {
         mAccount = account;
@@ -55,13 +55,13 @@ public class AbstractConversationWebViewClient extends WebViewClient {
         mAccount = account;
     }
 
-    public void setContext(Context context) {
-        mContext = context;
+    public void setActivity(Activity activity) {
+        mActivity = activity;
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        if (mContext == null) {
+        if (mActivity == null) {
             return false;
         }
 
@@ -72,12 +72,12 @@ public class AbstractConversationWebViewClient extends WebViewClient {
             intent = generateProxyIntent(uri);
         } else {
             intent = new Intent(Intent.ACTION_VIEW, uri);
-            intent.putExtra(Browser.EXTRA_APPLICATION_ID, mContext.getPackageName());
+            intent.putExtra(Browser.EXTRA_APPLICATION_ID, mActivity.getPackageName());
         }
 
         try {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            mContext.startActivity(intent);
+            mActivity.startActivity(intent);
             result = true;
         } catch (ActivityNotFoundException ex) {
             // If no application can handle the URL, assume that the
@@ -96,7 +96,7 @@ public class AbstractConversationWebViewClient extends WebViewClient {
         // We need to catch the exception to make CanvasConversationHeaderView
         // test pass.  Bug: http://b/issue?id=3470653.
         try {
-            manager = mContext.getPackageManager();
+            manager = mActivity.getPackageManager();
         } catch (UnsupportedOperationException e) {
             LogUtils.e(LOG_TAG, e, "Error getting package manager");
         }
@@ -106,7 +106,7 @@ public class AbstractConversationWebViewClient extends WebViewClient {
             final List<ResolveInfo> resolvedActivities = manager.queryIntentActivities(
                     intent, PackageManager.MATCH_DEFAULT_ONLY);
 
-            final String packageName = mContext.getPackageName();
+            final String packageName = mActivity.getPackageName();
 
             // Now try and find one that came from this package, if one is not found, the UI
             // provider must have specified an intent that is to be handled by a different apk.
