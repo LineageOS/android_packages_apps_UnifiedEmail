@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Loader;
@@ -42,7 +41,6 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.android.mail.FormattedDateBuilder;
@@ -85,13 +83,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * The conversation view UI component.
  */
 public final class ConversationViewFragment extends AbstractConversationViewFragment implements
-        SuperCollapsedBlock.OnClickListener,
-        OnLayoutChangeListener {
+        SuperCollapsedBlock.OnClickListener, OnLayoutChangeListener,
+        MessageHeaderView.MessageHeaderViewCallbacks {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -323,7 +320,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        mWebViewClient = new ConversationWebViewClient(getContext(), mAccount);
+        mWebViewClient = new ConversationWebViewClient(mAccount);
 
         if (savedState != null) {
             mWebViewYPercent = savedState.getFloat(BUNDLE_KEY_WEBVIEW_Y_PERCENT);
@@ -738,8 +735,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         for (int i = blockToReplace.getStart(), end = blockToReplace.getEnd(); i <= end; i++) {
             cursor.moveToPosition(i);
             final ConversationMessage msg = cursor.getMessage();
-            final MessageHeaderItem header = mAdapter.newMessageHeaderItem(msg,
-                    false /* expanded */, mViewState.getShouldShowImages(msg));
+            final MessageHeaderItem header = ConversationViewAdapter.newMessageHeaderItem(
+                    mAdapter, msg, false /* expanded */, mViewState.getShouldShowImages(msg));
             final MessageFooterItem footer = mAdapter.newMessageFooterItem(header);
 
             final int headerPx = measureOverlayHeight(header);
@@ -979,8 +976,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     private class ConversationWebViewClient extends AbstractConversationWebViewClient {
-        public ConversationWebViewClient(Context context, Account account) {
-            super(context, account);
+        public ConversationWebViewClient(Account account) {
+            super(account);
         }
 
         @Override
@@ -1012,8 +1009,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             for (Address addr : cacheCopy) {
                 emailAddresses.add(addr.getAddress());
             }
-            ContactLoaderCallbacks callbacks = getContactInfoSource();
-            getContactInfoSource().setSenders(emailAddresses);
+            final ContactLoaderCallbacks callbacks = getContactInfoSource();
+            callbacks.setSenders(emailAddresses);
             getLoaderManager().restartLoader(CONTACT_LOADER, Bundle.EMPTY, callbacks);
         }
 

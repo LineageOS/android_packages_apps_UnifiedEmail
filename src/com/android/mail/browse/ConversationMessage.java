@@ -53,7 +53,6 @@ public final class ConversationMessage extends Message {
 
     public ConversationMessage(MimeMessage mimeMessage) throws MessagingException {
         super(mimeMessage);
-        // TODO - synthesize conversation
     }
 
     public void setController(ConversationController controller) {
@@ -61,7 +60,7 @@ public final class ConversationMessage extends Message {
     }
 
     public Conversation getConversation() {
-        return mController.getConversation();
+        return mController != null ? mController.getConversation() : null;
     }
 
     /**

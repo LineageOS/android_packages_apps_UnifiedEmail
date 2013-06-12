@@ -19,30 +19,21 @@ package com.android.mail.browse;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.ContentResolver;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.webkit.WebView;
 
-import com.android.emailcommon.TempDirectory;
-import com.android.emailcommon.internet.MimeMessage;
-import com.android.emailcommon.mail.MessagingException;
 import com.android.mail.R;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
 public class EmlViewerActivity extends Activity {
     private static final String LOG_TAG = LogTag.getLogTag();
 
-    private WebView mWebView;
-
+    private static final String FRAGMENT_TAG = "eml_message_fragment";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +41,6 @@ public class EmlViewerActivity extends Activity {
 
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        mWebView = (WebView) findViewById(R.id.webview);
 
         final Intent intent = getIntent();
         final String action = intent.getAction();
@@ -58,7 +48,14 @@ public class EmlViewerActivity extends Activity {
 
         if (Intent.ACTION_VIEW.equals(action) &&
                 MimeType.EML_ATTACHMENT_CONTENT_TYPES.contains(type)) {
-            openEmlFile(intent.getData());
+            final FragmentManager manager = getFragmentManager();
+
+            if (manager.findFragmentByTag(FRAGMENT_TAG) == null) {
+                final FragmentTransaction transaction = manager.beginTransaction();
+                transaction.add(R.id.eml_root,
+                        EmlMessageViewFragment.newInstance(intent.getData()), FRAGMENT_TAG);
+                transaction.commit();
+            }
         } else {
             LogUtils.wtf(LOG_TAG,
                     "Entered EmlViewerActivity with wrong intent action or type: %s, %s",
@@ -67,32 +64,7 @@ public class EmlViewerActivity extends Activity {
         }
     }
 
-    private void openEmlFile(Uri uri) {
-        TempDirectory.setTempDirectory(this);
-        final ContentResolver resolver = getContentResolver();
-        final InputStream stream;
-        try {
-            stream = resolver.openInputStream(uri);
-        } catch (FileNotFoundException e) {
-            // TODO handle exception
-            return;
-        }
 
-        final MimeMessage mimeMessage;
-        final ConversationMessage convMessage;
-        try {
-            mimeMessage = new MimeMessage(stream);
-            convMessage = new ConversationMessage(mimeMessage);
-        } catch (IOException e) {
-            // TODO handle exception
-            return;
-        } catch (MessagingException e) {
-            // TODO handle exception
-            return;
-        }
-
-        mWebView.loadDataWithBaseURL("", convMessage.getBodyAsHtml(), "text/html", "utf-8", null);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -30,14 +30,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationAccountController;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationController;
-import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
@@ -59,7 +57,7 @@ import java.util.Map;
 
 
 public abstract class AbstractConversationViewFragment extends Fragment implements
-        ConversationController, ConversationAccountController, MessageHeaderViewCallbacks,
+        ConversationController, ConversationAccountController,
         ConversationViewHeaderCallbacks {
 
     private static final String ARG_ACCOUNT = "account";
@@ -70,7 +68,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     protected static final int CONTACT_LOADER = 1;
     protected ControllableActivity mActivity;
     private final MessageLoaderCallbacks mMessageLoaderCallbacks = new MessageLoaderCallbacks();
-    protected FormattedDateBuilder mDateBuilder;
     private ContactLoaderCallbacks mContactLoaderCallbacks;
     private MenuItem mChangeFoldersMenuItem;
     protected Conversation mConversation;
@@ -82,6 +79,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * Must be instantiated in a derived class's onCreate.
      */
     protected AbstractConversationWebViewClient mWebViewClient;
+
     /**
      * Cache of email address strings to parsed Address objects.
      * <p>
@@ -241,7 +239,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
         mActivity = (ControllableActivity) activity;
         mContext = activity.getApplicationContext();
-        mDateBuilder = new FormattedDateBuilder((Context) mActivity);
+        mWebViewClient.setContext(mContext);
         mAccount = mAccountObserver.initialize(mActivity.getAccountController());
         mWebViewClient.setAccount(mAccount);
     }
@@ -330,6 +328,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         Utils.setMenuItemVisibility(menu, R.id.show_original, supportsMessageTransforms() &&
                 mHasConversationBeenTransformed && !mHasConversationTransformBeenReverted);
     }
+
+    abstract boolean supportsMessageTransforms();
 
     // BEGIN conversation header callbacks
     @Override
