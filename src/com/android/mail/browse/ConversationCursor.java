@@ -279,19 +279,24 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
             @Override
             public Void doInBackground(Void... param) {
-                for (int i = mStartPos; i < getCount(); i++) {
-                    if (isCancelled()) {
-                        break;
-                    }
+                try {
+                    Utils.traceBeginSection("backgroundCaching");
+                    for (int i = mStartPos; i < getCount(); i++) {
+                        if (isCancelled()) {
+                            break;
+                        }
 
-                    final UnderlyingRowData rowData = mRowCache.get(i);
-                    if (rowData.conversation == null) {
-                        // We are running in a background thread.  Set the position to the row
-                        // we are interested in.
-                        if (moveToPosition(i)) {
-                            cacheConversation(new Conversation(UnderlyingCursorWrapper.this));
+                        final UnderlyingRowData rowData = mRowCache.get(i);
+                        if (rowData.conversation == null) {
+                            // We are running in a background thread.  Set the position to the row
+                            // we are interested in.
+                            if (moveToPosition(i)) {
+                                cacheConversation(new Conversation(UnderlyingCursorWrapper.this));
+                            }
                         }
                     }
+                } finally {
+                    Utils.traceEndSection();
                 }
                 return null;
             }
@@ -342,6 +347,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             final UnderlyingRowData[] cache;
             final int count;
             int numCached = 0;
+            Utils.traceBeginSection("blockingCaching");
             if (result != null && super.moveToFirst()) {
                 count = super.getCount();
                 cache = new UnderlyingRowData[count];
@@ -419,6 +425,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             LogUtils.i(LOG_TAG, "*** ConversationCursor pre-loading took" +
                     " %sms n=%s cached=%s CONV_PRECACHING=%s",
                     (end-start), count, numCached, ENABLE_CONVERSATION_PRECACHING);
+
+            Utils.traceEndSection();
 
             // If we haven't cached all of the conversations, start a task to do that
             if (ENABLE_CONVERSATION_PRECACHING && numCached < count) {
