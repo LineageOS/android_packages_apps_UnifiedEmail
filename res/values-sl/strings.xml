@@ -363,7 +363,7 @@
   </string-array>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Izbriši odobritve slik"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Želite izbrisati odobritve slik?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Nehaj prikazovati slike v sporočilih pošiljateljev, za katere ste to odobrili."</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Prenehanje prikazovanja slik v sporočilih pošiljateljev, za katere ste to v preteklosti odobrili."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Slike ne bodo samodejno prikazane."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Kaj je novega?"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Odgovori"</string>

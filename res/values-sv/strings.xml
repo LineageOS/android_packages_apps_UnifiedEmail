@@ -361,14 +361,10 @@
     <item msgid="732746454445519134">"Visa en äldre konversation efter borttagning"</item>
     <item msgid="2189929276292165301">"Visa konversationslistan efter borttagning"</item>
   </string-array>
-    <!-- no translation found for clear_display_images_whitelist_title (7120575487854245735) -->
-    <skip />
-    <!-- no translation found for clear_display_images_whitelist_dialog_title (3190704164490442683) -->
-    <skip />
-    <!-- no translation found for clear_display_images_whitelist_dialog_message (1169152185612117654) -->
-    <skip />
-    <!-- no translation found for sender_whitelist_cleared (917434007919176024) -->
-    <skip />
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Ta bort godkännanden av bilder"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vill du ta bort godkännanden av bilder?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Sluta visa infogade bilder från avsändare vars bilder du tidigare har godkänt."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Bilder kommer inte att visas automatiskt."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Nyheter"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Svara"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Svara alla"</string>
@@ -398,8 +394,7 @@
     <item msgid="2967059853409454648">"Visa arkivera och ta bort"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Åtgärderna arkivera och ta bort"</string>
-    <!-- no translation found for prefDialogTitle_removal_action_first_time (2355955859546346363) -->
-    <skip />
+    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Konfigurera inställningar för arkivering och radering"\n"(ändras i Allmänna inställningar)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Svara alla"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Använd som standard för svar på meddelanden"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Dra om du vill ta bort"</string>
@@ -420,6 +415,5 @@
     <string name="drawer_open" msgid="6074646853178471940">"Öppna navigeringsmenyn"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Stäng navigeringsmenyn"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tryck på avsändarens bild om du vill välja den konversationen."</string>
-    <!-- no translation found for folder_icon_desc (1500547397347480618) -->
-    <skip />
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Mappikon"</string>
 </resources>
