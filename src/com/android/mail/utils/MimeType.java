@@ -41,7 +41,7 @@ public class MimeType {
     static final String GENERIC_MIMETYPE = "application/octet-stream";
 
     @VisibleForTesting
-    public static final Set<String> EML_ATTACHMENT_CONTENT_TYPES = ImmutableSet.of(
+    private static final Set<String> EML_ATTACHMENT_CONTENT_TYPES = ImmutableSet.of(
             "message/rfc822", "application/eml");
     public static final String EML_ATTACHMENT_CONTENT_TYPE = "message/rfc822";
     private static final String NULL_ATTACHMENT_CONTENT_TYPE = "null";
@@ -163,5 +163,15 @@ public class MimeType {
                 return !TextUtils.isEmpty(mimeType) ? mimeType : GENERIC_MIMETYPE;
             }
         }
+    }
+
+    /**
+     * Checks the supplied mime type to determine if it is a valid eml file.
+     * Valid mime types are "message/rfc822" and "application/eml".
+     * @param mimeType the mime type to check
+     * @return {@code true} if the mime type is one of the valid mime types.
+     */
+    public static boolean isEmlMimeType(String mimeType) {
+        return EML_ATTACHMENT_CONTENT_TYPES.contains(mimeType);
     }
 }

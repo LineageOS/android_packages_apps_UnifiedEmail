@@ -47,7 +47,7 @@ public class EmlViewerActivity extends Activity {
         final String type = intent.getType();
 
         if (Intent.ACTION_VIEW.equals(action) &&
-                MimeType.EML_ATTACHMENT_CONTENT_TYPES.contains(type)) {
+                MimeType.isEmlMimeType(type)) {
             final FragmentManager manager = getFragmentManager();
 
             if (manager.findFragmentByTag(FRAGMENT_TAG) == null) {
