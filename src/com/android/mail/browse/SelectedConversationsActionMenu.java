@@ -299,7 +299,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private void destroy(int actionId, final Collection<Conversation> target,
             final DestructiveAction action) {
         LogUtils.i(LOG_TAG, "About to remove %d converations", target.size());
-        mUpdater.delete(actionId, target, action, true, true /* allowDialog */);
+        mUpdater.delete(actionId, target, action, true);
     }
 
     /**
