@@ -894,6 +894,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 && !mFolder.isProviderFolder());
         Utils.setMenuItemVisibility(menu, R.id.move_to, mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION));
+        Utils.setMenuItemVisibility(menu, R.id.move_to_inbox, mFolder != null
+                && mFolder.supportsCapability(FolderCapabilities.ALLOWS_MOVE_TO_INBOX));
+
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
         if (mFolder != null && removeFolder != null) {
             removeFolder.setTitle(mActivity.getApplicationContext().getString(

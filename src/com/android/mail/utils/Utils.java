@@ -1287,4 +1287,38 @@ public class Utils {
         return uri.buildUpon().appendQueryParameter(APP_VERSION_QUERY_PARAMETER,
                 Integer.toString(appVersion)).build();
     }
+
+    /**
+     * Gets the specified {@link Folder} object.
+     *
+     * @param folderUri The {@link Uri} for the folder
+     * @param allowHidden <code>true</code> to allow a hidden folder to be returned,
+     *        <code>false</code> to return <code>null</code> instead
+     * @return the specified {@link Folder} object, or <code>null</code>
+     */
+    public static Folder getFolder(final Context context, final Uri folderUri,
+            final boolean allowHidden) {
+        final Uri uri = folderUri
+                .buildUpon()
+                .appendQueryParameter(UIProvider.ALLOW_HIDDEN_FOLDERS_QUERY_PARAM,
+                        Boolean.toString(allowHidden))
+                .build();
+
+        final Cursor cursor = context.getContentResolver().query(uri,
+                UIProvider.FOLDERS_PROJECTION, null, null, null);
+
+        if (cursor == null) {
+            return null;
+        }
+
+        try {
+            if (cursor.moveToFirst()) {
+                return new Folder(cursor);
+            } else {
+                return null;
+            }
+        } finally {
+            cursor.close();
+        }
+    }
 }

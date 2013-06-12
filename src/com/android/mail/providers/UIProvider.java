@@ -170,6 +170,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN, String.class)
             .put(AccountColumns.UPDATE_SETTINGS_URI, String.class)
             .put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, Integer.class)
+            .put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, String.class)
             .build();
 
     public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
@@ -557,6 +558,11 @@ public class UIProvider {
              * constants from  {@link ConversationViewMode}
              */
             public static final String CONVERSATION_VIEW_MODE = "conversation_view_mode";
+            /**
+             * String containing the URI for the inbox conversations should be moved to for this
+             * account.
+             */
+            public static final String MOVE_TO_INBOX = "move_to_inbox";
         }
     }
 
@@ -676,9 +682,9 @@ public class UIProvider {
         public static final int STARRED = 1 << 7;
         /** Any other system label that we do not have a specific name for. */
         public static final int OTHER_PROVIDER_FOLDER = 1 << 8;
-        /** All mail folder **/
+        /** All mail folder */
         public static final int ALL_MAIL = 1 << 9;
-        /** Gmail's inbox sections **/
+        /** Gmail's inbox sections */
         public static final int INBOX_SECTION = 1 << 10;
     }
 
@@ -753,6 +759,12 @@ public class UIProvider {
          * {@link com.android.mail.ui.MultiFoldersSelectionDialog}).
          */
         public static final int MULTI_MOVE = 0x8000;
+
+        /**
+         * This flag indicates that a conversation may be moved from this folder into the account's
+         * inbox.
+         */
+        public static final int ALLOWS_MOVE_TO_INBOX = 0x10000;
     }
 
     public static final class FolderColumns {
@@ -1944,6 +1956,11 @@ public class UIProvider {
      * {@link ConversationOperations#OPERATION_KEY}.
      */
     public static final String FORCE_UI_NOTIFICATIONS_QUERY_PARAMETER = "forceUiNotifications";
+
+    /**
+     * Parameter used to allow returning hidden folders.
+     */
+    public static final String ALLOW_HIDDEN_FOLDERS_QUERY_PARAM = "allowHiddenFolders";
 
     public static final String AUTO_ADVANCE_MODE_OLDER = "older";
     public static final String AUTO_ADVANCE_MODE_NEWER = "newer";

@@ -756,6 +756,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 settings.conversationViewMode);
         map.put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN,
                 settings.veiledAddressPattern);
+        map.put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, settings.moveToInbox);
 
         return map;
     }
