@@ -876,8 +876,6 @@
     <string name="prefDialogTitle_removal_action">Archive &amp; delete actions</string>
     <!-- The default value -->
     <string translatable="false" name="prefDefault_removal_action">archive</string>
-    <!-- Dialog title for the choosing whether to use archive or delete as remove action, displayed the first time the user archives or deletes a message [CHAR LIMIT=150] -->
-    <string name="prefDialogTitle_removal_action_first_time">Set archive &amp; delete preference\n(change in General settings)</string>
 
     <!--  Settings screen, Reply to all default setting title  [CHAR LIMIT=30] -->
     <string name="preferences_default_reply_all_title">Reply all</string>
