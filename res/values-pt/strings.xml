@@ -363,7 +363,7 @@
   </string-array>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Limpar aprovações de fotos"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Limpar aprovações de fotos?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Não mostrar mais imagens in-line de remetentes que você autorizou anteriormente."</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Não mostrar mais imagens inline de remetentes que você autorizou anteriormente."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"As imagens não serão exibidas automaticamente."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"O que há de novo"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Responder"</string>

@@ -361,9 +361,9 @@
     <item msgid="732746454445519134">"Показувати старішу бесіду після видалення"</item>
     <item msgid="2189929276292165301">"Показувати список бесід після видалення"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Очистити схвалення зображень"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Очистити схвалення зображень?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Не показувати раніше дозволені вставлені зображення від відправників."</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Очистити дозволи для зображень"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Очистити дозволи для зображень?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Не показувати вставлені зображення від відправників, дозволені раніше."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Зображення не показуватимуться автоматично."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Новинки"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Відповісти"</string>
