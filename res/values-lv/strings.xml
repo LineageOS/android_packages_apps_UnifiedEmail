@@ -361,10 +361,10 @@
     <item msgid="732746454445519134">"Rādīt vecāku sarunu pēc dzēšanas"</item>
     <item msgid="2189929276292165301">"Rādīt sarunu sarakstu pēc dzēšanas"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Attēlu rādīšanas apstiprinājumu notīrīšana"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vai notīrīt attēlu rādīšanas apstiprinājumus?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Pārtraukt iekļauto attēlu rādīšanu no sūtītājiem, no kuriem iepriekš tā bija atļauta"</string>
-    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Attēli netiks rādīti automātiski."</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Attēlu rādīšanas apstiprinājumu atcelšana"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vai atcelt attēlu rādīšanas apstiprinājumus?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Vairs nerādīt iekļautos attēlus no sūtītājiem, kuriem iepriekš tas bija atļauts"</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Attēli netiks automātiski rādīti."</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Jaunumi"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Atbildēt"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Atbildēt visiem"</string>
