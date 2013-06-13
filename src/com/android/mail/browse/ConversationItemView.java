@@ -579,6 +579,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         startTimer(PERF_TAG_LAYOUT);
+        Utils.traceBeginSection("CIVC.layout");
 
         super.onLayout(changed, left, top, right, bottom);
 
@@ -599,6 +600,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sTimer = new Timer();
             sLayoutCount = 0;
         }
+        Utils.traceEndSection();
     }
 
     private void setContentDescription() {
@@ -633,7 +635,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         updateBackground(isUnread);
 
         mHeader.sendersDisplayText = new SpannableStringBuilder();
-        mHeader.styledSendersString = new SpannableStringBuilder();
+        mHeader.styledSendersString = null;
 
         // Parse senders fragments.
         if (mHeader.conversation.conversationInfo != null) {
@@ -782,7 +784,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void createSubject(final boolean isUnread) {
         final String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.getSnippet();
-        final SpannableStringBuilder displayedStringBuilder = new SpannableStringBuilder(
+        final Spannable displayedStringBuilder = new SpannableString(
                 Conversation.getSubjectAndSnippetForDisplay(mContext, subject, snippet));
 
         // since spans affect text metrics, add spans to the string before measure/layout or fancy
@@ -1088,6 +1090,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Utils.traceBeginSection("CIVC.draw");
         // Contact photo
         if (mGadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO) {
             canvas.save();
@@ -1190,6 +1193,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             final int y = (getHeight() - VISIBLE_CONVERSATION_CARET.getHeight()) / 2;
             canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
         }
+        Utils.traceEndSection();
     }
 
     private void drawContactImages(Canvas canvas) {

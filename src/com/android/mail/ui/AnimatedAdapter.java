@@ -48,6 +48,7 @@ import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
@@ -460,6 +461,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             return specialView;
         }
 
+        Utils.traceBeginSection("AA.getView");
+
         final ConversationCursor cursor = (ConversationCursor) getItem(position);
         final Conversation conv = cursor.getConversation();
 
@@ -511,8 +514,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         } else if (convertView != null) {
             ((SwipeableConversationItemView) convertView).reset();
         }
-        return createConversationItemView((SwipeableConversationItemView) convertView, mContext,
-                conv);
+        final View v = createConversationItemView((SwipeableConversationItemView) convertView,
+                mContext, conv);
+        Utils.traceEndSection();
+        return v;
     }
 
     private boolean hasLeaveBehinds() {
