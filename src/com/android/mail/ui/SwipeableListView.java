@@ -303,7 +303,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             position = getPositionForView(view);
         } catch (Exception e) {
             position = INVALID_POSITION;
-            LogUtils.w(LOG_TAG, "Exception finding position; using alternate strategy");
+            LogUtils.w(LOG_TAG, e, "Exception finding position; using alternate strategy");
         }
         if (position == INVALID_POSITION) {
             // Try the other way!
@@ -316,7 +316,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
                             .getConversation();
                     foundId = foundConv.id;
                     if (foundId == convId) {
-                        position = i;
+                        position = i + getFirstVisiblePosition();
                         break;
                     }
                 }
