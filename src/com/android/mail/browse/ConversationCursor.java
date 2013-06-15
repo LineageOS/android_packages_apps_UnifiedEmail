@@ -346,6 +346,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     new ImmutableMap.Builder<Long, Integer>();
             final UnderlyingRowData[] cache;
             final int count;
+            final StringBuilder uriBuilder = new StringBuilder();
             int numCached = 0;
             Utils.traceBeginSection("blockingCaching");
             if (result != null && super.moveToFirst()) {
@@ -373,13 +374,13 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     if (ENABLE_CONVERSATION_PRECACHING && i < MAX_INIT_CONVERSATION_PRELOAD) {
                         c = new Conversation(this);
                         innerUriString = c.uri.toString();
-                        wrappedUriString = uriToCachingUriString(innerUriString);
+                        wrappedUriString = uriToCachingUriString(innerUriString, uriBuilder);
                         convId = c.id;
                         numCached++;
                     } else {
                         c = null;
                         innerUriString = super.getString(URI_COLUMN_INDEX);
-                        wrappedUriString = uriToCachingUriString(innerUriString);
+                        wrappedUriString = uriToCachingUriString(innerUriString, uriBuilder);
                         convId = super.getLong(UIProvider.CONVERSATION_ID_COLUMN);
                     }
                     conversationUriPositionMapBuilder.put(innerUriString, i);
@@ -666,13 +667,14 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             final Set<String> deletedItems = Sets.newHashSet();
             final Iterator<Map.Entry<String, ContentValues>> iter =
                     mCacheMap.entrySet().iterator();
+            final StringBuilder uriBuilder = new StringBuilder();
             while (iter.hasNext()) {
                 final Map.Entry<String, ContentValues> entry = iter.next();
                 final ContentValues values = entry.getValue();
                 if (values.containsKey(DELETED_COLUMN)) {
                     // Since clients of the conversation cursor see conversation ConversationCursor
                     // provider uris, we need to make sure that this also returns these uris
-                    deletedItems.add(uriToCachingUriString(entry.getKey()));
+                    deletedItems.add(uriToCachingUriString(entry.getKey(), uriBuilder));
                 }
             }
             return deletedItems;
@@ -770,10 +772,20 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * @param uri the uri
      * @return a forwarding uri to ConversationProvider
      */
-    private static String uriToCachingUriString (String uriStr) {
-        return ConversationProvider.sUriPrefix + uriStr.substring(
+    private static String uriToCachingUriString(String uriStr, StringBuilder sb) {
+        final String withoutScheme = uriStr.substring(
                 uriStr.indexOf(ConversationProvider.URI_SEPARATOR)
                 + ConversationProvider.URI_SEPARATOR.length());
+        final String result;
+        if (sb != null) {
+            sb.setLength(0);
+            sb.append(ConversationProvider.sUriPrefix);
+            sb.append(withoutScheme);
+            result = sb.toString();
+        } else {
+            result = ConversationProvider.sUriPrefix + withoutScheme;
+        }
+        return result;
     }
 
     /**
