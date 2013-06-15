@@ -390,7 +390,6 @@
     <item msgid="2967059853409454648">"Rodyti archyvą ir ištrintus"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Archyvavimas ir ištrynimas"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Nustatykite archyvavimo ir ištrynimo nuostatas"\n"(bendrųjų nustatymų keitimas)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Atsakyti visiems"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Naudoti kaip numatytąjį atsakant į pranešimus"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Perbraukite, kad archyvuotumėte"</string>
