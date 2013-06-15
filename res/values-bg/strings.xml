@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Ново съобщение"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Промяна на папките"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Преместване във:"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Преместване във вх. поща"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Настройки за папките"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Възст. на авт. оразмеряв."</string>
     <string name="message_modified" msgid="2564340197585393687">"(Това съобщение е променено от оригиналната си версия, за да се побере на екрана.)"</string>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"Показване на архивирането и изтриването"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Действия за архивиране и изтриване"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Задаване на предпочитание за архивиране и изтриване"\n"(промяна от общите настройки)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Отговор до всички"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Използване като стандартна опция при отговор на съобщения"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Прекарайте пръст, за да архивирате"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"Затваряне на чекмеджето за навигация"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Докоснете изображението на подателя, за да изберете съответната кореспонденция."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Икона на папката"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>
