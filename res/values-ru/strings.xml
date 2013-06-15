@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Написать"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Изменить папки"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Переместить в"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Во Входящие"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Настройки папок"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Показать исходный размер"</string>
     <string name="message_modified" msgid="2564340197585393687">"Сообщение было изменено, чтобы оно поместилось на экране."</string>
@@ -293,8 +294,8 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Для просмотра цепочек писем синхронизируйте эту папку."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Синхронизировать папку"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <string name="actionbar_unread_messages" msgid="3805594795629836031">"Непрочитанных сообщений: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
-    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Непрочитанных сообщений: &gt; <xliff:g id="COUNT">%1$d</xliff:g>"</string>
+    <string name="actionbar_unread_messages" msgid="3805594795629836031">"Новых: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Новых: <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Другие цепочки писем"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Загрузка..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Выбрать аккаунт"</string>
@@ -382,7 +383,7 @@
     <string name="new_messages" msgid="4419173946074516420">"Новых сообщений: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Без звука"</string>
-    <string name="preference_removal_action_title" msgid="6585232628422090835">"Что делать, если выбрано удаление"</string>
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"Архивация и удаление"</string>
   <string-array name="prefEntries_removal_action">
     <item msgid="1938422987822134657">"Только архивировать"</item>
     <item msgid="5737880287951287278">"Только удалять"</item>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"Архивировать или удалять"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Архивация и удаление"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Настройки архивации и удаления"\n"(в разделе \"Общие\")"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Отвечать всем"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Использовать по умолчанию для всех ответов"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Быстрая архивация"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"Закрыть панель навигации"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Чтобы открыть цепочку писем, нажмите на фото отправителя."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Значок папки"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>
