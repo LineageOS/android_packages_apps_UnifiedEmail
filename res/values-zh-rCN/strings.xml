@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"写邮件"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"更改文件夹"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"移至"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"移至收件箱"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"文件夹设置"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"撤消自动重设大小"</string>
     <string name="message_modified" msgid="2564340197585393687">"（系统对此邮件进行了调整，使其适合此屏幕的大小。）"</string>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"显示归档和删除"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"归档和删除操作"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"设置归档和删除偏好设置"\n"（在“常规”设置中更改）"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"全部回复"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"用作默认的邮件回复方式"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"滑动即可归档"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"关闭抽屉式导航栏"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"触摸发件人头像即可选择该会话。"</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"文件夹图标"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>

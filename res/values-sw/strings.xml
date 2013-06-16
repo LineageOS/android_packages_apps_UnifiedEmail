@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Tunga"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Badilisha folda"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Hamisha hadi"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Sogeza kwenye Kikasha"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mipangilio ya folda"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Rejesha ukubwa wa kiotomatiki"</string>
     <string name="message_modified" msgid="2564340197585393687">"(Ujumbe huu umerekebishwa kutoka kwa toleo lake asili ili kutoshea kwenye skrini hii.)"</string>
@@ -220,7 +221,7 @@
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; imefutwa."</item>
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Imefutwa"</string>
-    <string name="archived" msgid="7533995360704366325">"Zilizojalidiwa"</string>
+    <string name="archived" msgid="7533995360704366325">"Imewekwa kwenye kumbukumbu"</string>
     <string name="folder_removed" msgid="1047474677580149436">"Imeondolewa kutoka <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_folder_changed">
     <item quantity="one" msgid="4930161390461457462">"Folda iliyobadilishwa."</item>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"Onyesha kumbukumbu na futa"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Kuweka kwenye kumbukumbu na kufuta"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Weka kumbukumbu na futa mapendeleo"\n"(badilisha katika mipangilio ya Jumla)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Jibu wote"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Tumia kama chaguo-msingi la majibu ya ujumbe"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Telezesha ili uweke kwenye kumbukumbu"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"Funga menyu"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Gusa picha ya mtumaji ili uchague mazungumzo hayo."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ikoni ya folda"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>

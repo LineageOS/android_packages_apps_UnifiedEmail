@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Novo"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Spremenite mape"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Premakni v"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Premakni v »Prejeto«"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Nastavitve mape"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Razveljavi sam. velikost"</string>
     <string name="message_modified" msgid="2564340197585393687">"(To sporočilo je bilo zaradi prilagajanja temu zaslonu spremenjeno iz prvotne oblike.)"</string>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"Pokaži arhiviranje in brisanje"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Dejanji arhiviranja in brisanja"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Nastavitev arhiviranja ali brisanja"\n"(sprememba v splošnih nastavitvah)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Odgovori vsem"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Uporabi kot privzeto za odgovore na sporočila"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Povlecite za arhiviranje"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"Zapri predal za navigacijo"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Če želite izbrati ta pogovor, se dotaknite slike pošiljatelja."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ikona mape"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>
