@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Напісаць"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Змена тэчкі"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Перанесці ў"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Перамясціць у папку \"Ўваходныя\""</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Налады тэчкi"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Вярнуць аўтаматычнае змяненне памераў"</string>
     <string name="message_modified" msgid="2564340197585393687">"(Гэтае паведамленне было змененае ў параўнанні з арыгіналам, каб адпавядаць гэтаму экрану.)"</string>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"Паказаць архіў і выдаленне"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Архіў і выдаленыя дзеянні"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Усталяваць архіў і выдаліць наладку"\n"(змяненне агульных налад)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Адказаць усім"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Выкарыстоўваць у якасці адказу на паведамленні па змаўчанні"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Перайсцi ў архiў"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"Закрыць скрыню навігацыі"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Націсніце на малюнак адпраўніка малюнак, каб выбраць размову."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Значок тэчкі"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>

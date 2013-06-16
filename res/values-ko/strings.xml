@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"편지쓰기"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"폴더 변경"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"이동"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"받은편지함으로 이동"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"폴더 설정"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"자동 크기 조정 되돌리기"</string>
     <string name="message_modified" msgid="2564340197585393687">"(이 메일은 원본 버전을 화면에 맞게 수정한 것입니다.)"</string>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"보관처리 및 삭제 모두 표시"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"보관처리 및 삭제 작업"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"보관 설정 및 환경설정 삭제"\n"(일반 설정에서 변경)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"전체답장"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"메일 답장 시 기본값으로 사용"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"스와이프하여 보관처리"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"내비게이션 폴더 닫기"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"대화를 선택하려면 발신자 이미지를 터치합니다."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"폴더 아이콘"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>

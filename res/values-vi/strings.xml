@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Soạn thư"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Thay đổi thư mục"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Di chuyển tới"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Chuyển đến Hộp thư đến"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Cài đặt thư mục"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"H.nguyên về t.động đặt cỡ"</string>
     <string name="message_modified" msgid="2564340197585393687">"(Thư này đã được sửa đổi từ phiên bản gốc để vừa với màn hình này)."</string>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"Hiển thị tác vụ lưu trữ và xóa"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Tác vụ lưu trữ và xóa"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Đặt tùy chọn lưu trữ và xóa"\n"(thay đổi trong cài đặt Chung)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Trả lời tất cả"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Sử dụng làm mặc định cho trả lời thư"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Vuốt để lưu trữ"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"Đóng ngăn kéo điều hướng"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Chạm vào hình ảnh của người gửi để chọn cuộc hội thoại đó."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Biểu tượng thư mục"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>

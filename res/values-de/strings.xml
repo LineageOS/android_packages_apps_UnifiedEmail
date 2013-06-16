@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Schreiben"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Ordner ändern"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Verschieben nach"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"In den Posteingang verschieben"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Ordnereinstellungen"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Original wiederherstellen"</string>
     <string name="message_modified" msgid="2564340197585393687">"Die Originalversion dieser Nachricht wurde an den Bildschirm angepasst."</string>
@@ -169,7 +170,7 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Senden..."</string>
     <string name="send_failed" msgid="750908595144529579">"Nicht gesendet"</string>
-    <string name="me" msgid="6480762904022198669">"ich"</string>
+    <string name="me" msgid="6480762904022198669">"Ich"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Posteingang"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Diese Konversation löschen?"</item>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"\"Archivieren\" und \"Löschen\" anzeigen"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Aktionen \"Archivieren\" und \"Löschen\""</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Einstellung für Archivieren &amp; Löschen festlegen "\n"(in allgemeinen Einstellungen ändern)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Allen antworten"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Als Standard für Antworten verwenden"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Zum Archivieren wischen"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"Navigationsleiste schließen"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Auf Absenderbild tippen, um die entsprechende Konversation auszuwählen"</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ordnersymbol"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>

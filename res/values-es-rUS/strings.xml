@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Redactar"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Cambiar carpetas"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Mover a"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Mover a Recibidos"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Configuración de carpetas"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Volver a tamaño automát."</string>
     <string name="message_modified" msgid="2564340197585393687">"La versión original de este mensaje se modificó para que se ajuste a esta pantalla."</string>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"Mostrar archivar y eliminar"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Acciones de archivar y eliminar"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Establecer preferencia para archivar y eliminar"\n"(cambiar desde la configuración general)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Responder a todos"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Usar como opción predeterminada para responder mensajes"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Deslizar para archivar"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"Cerrar panel de navegación"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Toca la imagen de un remitente para seleccionar esa conversación."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ícono de carpeta"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>

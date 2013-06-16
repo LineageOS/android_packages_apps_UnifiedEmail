@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"लिखें"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"फ़ोल्डर बदलें"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"इसमें ले जाएं"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"इनबॉक्स में ले जाएं"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"फ़ोल्डर सेटिंग"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"स्वत: आकार बदलें वापस लाएं"</string>
     <string name="message_modified" msgid="2564340197585393687">"(इस संदेश को इस स्क्रीन में फ़िट करने के लिए इसके मूल संस्करण में बदलाव किया गया है.)"</string>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"संगृहीत करें और हटाएं दिखाएं"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"संगृहीत करें और हटाएं कार्यवाही"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"संगृहीत करें और हटाएं प्राथमिकता सेट करें "\n"(सामान्य सेटिंग में बदलें)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"सभी को जवाब दें"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"संदेश के जवाबों के लिए डिफ़ॉल्ट के रूप में उपयोग करें"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"संगृहीत करने के लिए स्वाइप करें"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"नेविगेशन ड्रॉवर बंद करें"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"उस बातचीत को चुनने के लिए प्रेषक के चित्र को स्पर्श करें."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"फ़ोल्डर आइकन"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>

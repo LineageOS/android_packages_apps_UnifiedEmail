@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Bhala"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Shintsha amafolda"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Hambisa ku-"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Hambisa ebhokisini lokungenayo"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Izilungiselelo zefolda"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Buyela kusayizi ozenzakalelayo"</string>
     <string name="message_modified" msgid="2564340197585393687">"(Lo mlayezo ulungisiwe kusukela kunguqulo wayo wangempela ukuze ulingane nalesi sikrini)"</string>
@@ -394,7 +395,6 @@
     <item msgid="2967059853409454648">"Bonisa ingobo yomlando nokususa"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Izenzo zokufaka kungobo yomlando nokususa"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Setha ingobo yomlando uphinde ususe okuncamelayo"\n"(shintsha kwizilungiselelo ezijwayelekile)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Phendula konke"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Sebenzisa njengokuzenzakalelayo kuzimpendulo zomlayezo"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Swayipha ukuze ufake kungobo yomlando"</string>
@@ -416,4 +416,6 @@
     <string name="drawer_close" msgid="2764774620737876943">"Vala ukuzulazula kwekhabethe"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Thinta isithombe somthumeli ukuze ukhethe ingxoxo."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Isithonjana sefolda"</string>
+    <!-- no translation found for add_account (2162808366829269770) -->
+    <skip />
 </resources>
