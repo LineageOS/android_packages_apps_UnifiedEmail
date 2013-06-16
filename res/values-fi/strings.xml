@@ -390,7 +390,6 @@
     <item msgid="2967059853409454648">"Näytä arkistointi ja poisto"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Arkistointi- ja poistotoiminnot"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Määritä arkistointi/poisto-asetus"\n"(vaihda yleisasetuksissa)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Vastaa kaikille"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Käytä oletuksena vastauksissa"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Arkistoi liu\'uttamalla"</string>

@@ -390,7 +390,6 @@
     <item msgid="2967059853409454648">"Mostrar archivar y eliminar"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Archivar y eliminar"</string>
-    <string name="prefDialogTitle_removal_action_first_time" msgid="2355955859546346363">"Establecer preferencia de archivo y eliminación"\n"(cambiar en ajustes generales)"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Responder a todos"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Usar como opción predeterminada para responder mensajes"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Desliza para archivar"</string>
