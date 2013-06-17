@@ -416,6 +416,5 @@
     <string name="drawer_close" msgid="2764774620737876943">"Maak navigasielaai toe"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Raak \'n stuurderbeeld om daardie gesprek te kies."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Vouer-ikoon"</string>
-    <!-- no translation found for add_account (2162808366829269770) -->
-    <skip />
+    <string name="add_account" msgid="2162808366829269770">"Voeg rekening by"</string>
 </resources>
