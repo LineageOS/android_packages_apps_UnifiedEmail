@@ -153,6 +153,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private final boolean mTabletDevice;
     /** Whether we are on an expansive tablet */
     private final boolean mIsExpansiveTablet;
+    /** When in conversation mode, true if the list is hidden */
+    private final boolean mListCollapsible;
 
     @VisibleForTesting
     ConversationItemViewCoordinates mCoordinates;
@@ -346,6 +348,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mTabletDevice = Utils.useTabletUI(res);
         mIsExpansiveTablet =
                 mTabletDevice ? res.getBoolean(R.bool.use_expansive_tablet_ui) : false;
+        mListCollapsible = res.getBoolean(R.bool.list_collapsed);
         mAccount = account;
 
         if (STAR_OFF == null) {
@@ -1177,18 +1180,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             canvas.restore();
         }
 
-        // right-side edge effect when in tablet conversation mode
-        if (mTabletDevice && ViewMode.isConversationMode(mConfig.getViewMode())) {
+        // right-side edge effect when in tablet conversation mode and the list is not collapsed
+        if (mTabletDevice && !mListCollapsible &&
+                ViewMode.isConversationMode(mConfig.getViewMode())) {
             RIGHT_EDGE_TABLET.setBounds(getWidth() - RIGHT_EDGE_TABLET.getIntrinsicWidth(), 0,
                     getWidth(), getHeight());
             RIGHT_EDGE_TABLET.draw(canvas);
-        }
 
-        if (isActivated()) {
-            // draw caret on the right, centered vertically
-            final int x = getWidth() - VISIBLE_CONVERSATION_CARET.getWidth();
-            final int y = (getHeight() - VISIBLE_CONVERSATION_CARET.getHeight()) / 2;
-            canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
+            if (isActivated()) {
+                // draw caret on the right, centered vertically
+                final int x = getWidth() - VISIBLE_CONVERSATION_CARET.getWidth();
+                final int y = (getHeight() - VISIBLE_CONVERSATION_CARET.getHeight()) / 2;
+                canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
+            }
         }
     }
 
