@@ -214,8 +214,8 @@ public final class ConversationListFragment extends ListFragment implements
      * to display conversation list context.
      */
     public static ConversationListFragment newInstance(ConversationListContext viewContext) {
-        ConversationListFragment fragment = new ConversationListFragment();
-        Bundle args = new Bundle();
+        final ConversationListFragment fragment = new ConversationListFragment();
+        final Bundle args = new Bundle(1);
         args.putBundle(CONVERSATION_LIST_KEY, viewContext.toBundle());
         fragment.setArguments(args);
         return fragment;
