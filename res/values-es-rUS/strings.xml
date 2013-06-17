@@ -75,7 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Redactar"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Cambiar carpetas"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Mover a"</string>
-    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Mover a Recibidos"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Mover a la bandeja de entrada"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Configuración de carpetas"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Volver a tamaño automát."</string>
     <string name="message_modified" msgid="2564340197585393687">"La versión original de este mensaje se modificó para que se ajuste a esta pantalla."</string>
