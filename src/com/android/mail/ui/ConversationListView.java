@@ -62,8 +62,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     private float mTrackingScrollMaxY;
     private boolean mIsSyncing = false;
 
-    private Interpolator mAccelerateInterpolator = new AccelerateInterpolator(1.5f);
-    private Interpolator mDecelerateInterpolator = new DecelerateInterpolator(1.5f);
+    private final Interpolator mAccelerateInterpolator = new AccelerateInterpolator(1.5f);
+    private final Interpolator mDecelerateInterpolator = new DecelerateInterpolator(1.5f);
 
     private float mDensity;
 
@@ -381,8 +381,22 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
         private TextView mTextView;
 
-        private Interpolator mDecelerateInterpolator = new DecelerateInterpolator(1.5f);
-        private Interpolator mAccelerateInterpolator = new AccelerateInterpolator(1.5f);
+        private final Interpolator mDecelerateInterpolator = new DecelerateInterpolator(1.5f);
+        private final Interpolator mAccelerateInterpolator = new AccelerateInterpolator(1.5f);
+
+        private final Runnable mHideHintTextRunnable = new Runnable() {
+            @Override
+            public void run() {
+                hide();
+            }
+        };
+        private final Runnable mSetVisibilityGoneRunnable = new Runnable() {
+            @Override
+            public void run() {
+                setVisibility(View.GONE);
+            }
+        };
+        private static final int[] STYLE_ATTR = new int[] {android.R.attr.background};
 
         public HintText(final Context context) {
             this(context, null);
@@ -410,7 +424,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                     actionBarStyle.type == TypedValue.TYPE_REFERENCE) {
                 TypedValue backgroundValue = new TypedValue();
                 TypedArray attr = context.obtainStyledAttributes(actionBarStyle.resourceId,
-                        new int[] {android.R.attr.background});
+                        STYLE_ATTR);
                 attr.getValue(0, backgroundValue);
                 setBackgroundResource(backgroundValue.resourceId);
                 attr.recycle();
@@ -439,12 +453,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
             mTextView.setText(getResources().getText(R.string.checking_for_mail));
             setVisibility(View.VISIBLE);
             mDisplay = CHECKING_FOR_MAIL;
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    hide();
-                }
-            }, SHOW_CHECKING_FOR_MAIL_DURATION_IN_MILLIS);
+            postDelayed(mHideHintTextRunnable, SHOW_CHECKING_FOR_MAIL_DURATION_IN_MILLIS);
         }
 
         private void hide() {
@@ -456,12 +465,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                         .start();
                 animate().alpha(0f)
                         .setDuration(SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS);
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setVisibility(View.GONE);
-                    }
-                }, SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS);
+                postDelayed(mSetVisibilityGoneRunnable, SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS);
                 mDisplay = NONE;
             }
         }

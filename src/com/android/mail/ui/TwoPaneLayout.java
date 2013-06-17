@@ -94,6 +94,13 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private View mConversationView;
     private View mFoldersView;
     private View mListView;
+
+    private final Runnable mTransitionCompleteRunnable = new Runnable() {
+        @Override
+        public void run() {
+            onTransitionComplete();
+        }
+    };
     /**
      * A special view used during animation of the conversation list.
      * <p>
@@ -297,6 +304,21 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mPositionedMode = mCurrentMode;
     }
 
+    private final AnimatorListenerAdapter mPaneAnimationListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            mListCopyView.unbind();
+            useHardwareLayer(false);
+            fixupListCopyWidth();
+            onTransitionComplete();
+        }
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            mListCopyView.unbind();
+            useHardwareLayer(false);
+        }
+    };
+
     /**
      * @param foldersX
      * @param listX
@@ -315,12 +337,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
             // listeners need to know that the "transition" is complete, even if one is not run.
             // defer notifying listeners because we're in a layout pass, and they might do layout.
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    onTransitionComplete();
-                }
-            });
+            post(mTransitionCompleteRunnable);
             return;
         }
 
@@ -341,20 +358,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView.animate()
             .x(listX)
             .alpha(1.0f)
-            .setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mListCopyView.unbind();
-                    useHardwareLayer(false);
-                    fixupListCopyWidth();
-                    onTransitionComplete();
-                }
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    mListCopyView.unbind();
-                    useHardwareLayer(false);
-                }
-        });
+            .setListener(mPaneAnimationListener);
         configureAnimations(mConversationView, mFoldersView, mListView, mListCopyView);
     }
 
