@@ -592,15 +592,8 @@ public final class ConversationListFragment extends ListFragment implements
 
     private void clearChoicesAndActivated() {
         final int currentSelected = mListView.getCheckedItemPosition();
-        mListView.clearChoices();
-        // We use the activated state to show the blue highlight on tablet. Clearing the choices
-        // removes the checked state, but doesn't do anything to the activated state.  We must
-        // manually clear that.
         if (currentSelected != ListView.INVALID_POSITION) {
-            final View v = mListView.getChildAt(currentSelected);
-            if (v != null) {
-                v.setActivated(false);
-            }
+            mListView.setItemChecked(mListView.getCheckedItemPosition(), false);
         }
     }
 
