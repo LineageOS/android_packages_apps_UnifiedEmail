@@ -133,7 +133,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         // The conversation list might be visible now, depending on the layout: in portrait we
         // don't show the conversation list, but in landscape we do.  This information is stored
         // in the constants
-        mListCollapsible = res.getBoolean(R.bool.list_collapsed);
+        mListCollapsible = res.getBoolean(R.bool.list_collapsible);
 
         mSlideInterpolator = AnimationUtils.loadInterpolator(context,
                 android.R.interpolator.decelerate_cubic);

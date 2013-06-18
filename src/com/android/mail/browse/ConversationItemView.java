@@ -348,7 +348,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mTabletDevice = Utils.useTabletUI(res);
         mIsExpansiveTablet =
                 mTabletDevice ? res.getBoolean(R.bool.use_expansive_tablet_ui) : false;
-        mListCollapsible = res.getBoolean(R.bool.list_collapsed);
+        mListCollapsible = res.getBoolean(R.bool.list_collapsible);
         mAccount = account;
 
         if (STAR_OFF == null) {
@@ -824,8 +824,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private boolean showActivatedText() {
         // For activated elements in tablet in conversation mode, we show an activated color, since
         // the background is dark blue for activated versus gray for non-activated.
-        final boolean isListCollapsed = mContext.getResources().getBoolean(R.bool.list_collapsed);
-        return mTabletDevice && !isListCollapsed;
+        return mTabletDevice && !mListCollapsible;
     }
 
     private boolean canFitFragment(int width, int line, int fixedWidth) {
