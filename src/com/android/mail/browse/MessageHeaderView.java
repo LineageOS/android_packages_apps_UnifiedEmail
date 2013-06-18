@@ -250,7 +250,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         mEmailCopyMenu = new EmailCopyContextMenu(getContext());
         mInflater = LayoutInflater.from(context);
-        mMyName = context.getString(R.string.me);
+        mMyName = context.getString(R.string.me_object_pronun);
     }
 
     /**

@@ -227,7 +227,7 @@ public class Utils {
             sReadStyleSpan = new StyleSpan(Typeface.NORMAL);
             sDraftsStyleSpan = new ForegroundColorSpan(res.getColor(R.color.drafts));
 
-            sMeString = context.getText(R.string.me);
+            sMeString = context.getText(R.string.me_subject_pronun);
             sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
             sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
             SpannableString sendingString = new SpannableString(context.getText(R.string.sending));
