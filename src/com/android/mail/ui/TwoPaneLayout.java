@@ -341,12 +341,16 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             return;
         }
 
-        // freeze the current list view before it gets redrawn
-        mListCopyView.bind(mListView);
-        mListCopyView.setX(mListView.getX());
+        final boolean useListCopy = getPaneWidth(mListView) != getPaneWidth(mListCopyView);
 
-        mListCopyView.setAlpha(1.0f);
-        mListView.setAlpha(0.0f);
+        if (useListCopy) {
+            // freeze the current list view before it gets redrawn
+            mListCopyView.bind(mListView);
+            mListCopyView.setX(mListView.getX());
+
+            mListCopyView.setAlpha(1.0f);
+            mListView.setAlpha(0.0f);
+        }
 
         useHardwareLayer(true);
 
@@ -354,7 +358,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         if (!isDrawerView(mFoldersView)) {
             mFoldersView.animate().x(foldersX);
         }
-        mListCopyView.animate().x(listX).alpha(0.0f);
+        if (useListCopy) {
+            mListCopyView.animate().x(listX).alpha(0.0f);
+        }
         mListView.animate()
             .x(listX)
             .alpha(1.0f)
