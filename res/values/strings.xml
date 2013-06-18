@@ -933,6 +933,4 @@
 
     <!--  Button, "Add account" in the preference screen [CHAR LIMIT=30] -->
     <string name="add_account">Add account</string>
-
-    <string name="dismiss">Dismiss</string>
 </resources>
