@@ -416,6 +416,5 @@
     <string name="drawer_close" msgid="2764774620737876943">"ナビゲーションドロワーを閉じる"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"スレッドを選択するには送信者画像をタップしてください。"</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"フォルダアイコン"</string>
-    <!-- no translation found for add_account (2162808366829269770) -->
-    <skip />
+    <string name="add_account" msgid="2162808366829269770">"アカウントを追加"</string>
 </resources>

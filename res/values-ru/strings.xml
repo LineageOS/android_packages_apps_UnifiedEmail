@@ -75,7 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Написать"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Изменить папки"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Переместить в"</string>
-    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Во Входящие"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Во входящие"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Настройки папок"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Показать исходный размер"</string>
     <string name="message_modified" msgid="2564340197585393687">"Сообщение было изменено, чтобы оно поместилось на экране."</string>
@@ -416,6 +416,5 @@
     <string name="drawer_close" msgid="2764774620737876943">"Закрыть панель навигации"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Чтобы открыть цепочку писем, нажмите на фото отправителя."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Значок папки"</string>
-    <!-- no translation found for add_account (2162808366829269770) -->
-    <skip />
+    <string name="add_account" msgid="2162808366829269770">"Добавить аккаунт"</string>
 </resources>
