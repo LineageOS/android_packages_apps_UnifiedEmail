@@ -911,4 +911,6 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string name="conversation_photo_welcome_text">Touch a sender image to select that conversation.</string>
+
+    <string name="dismiss">Dismiss</string>
 </resources>
