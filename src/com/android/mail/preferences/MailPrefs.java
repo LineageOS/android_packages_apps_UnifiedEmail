@@ -61,9 +61,6 @@ public final class MailPrefs extends VersionedPrefs {
         /** A string indicating the user's removal action preference. */
         public static final String REMOVAL_ACTION = "removal-action";
 
-        /** A boolean indicating that the user has seen the removal action dialog. */
-        public static final String REMOVAL_ACTION_DIALOG_SHOWN = "removal-action-dialog-shown";
-
         /** Hidden preference used to cache the active notification set */
         private static final String CACHED_ACTIVE_NOTIFICATION_SET =
                 "cache-active-notification-set";
@@ -76,7 +73,6 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(DEFAULT_REPLY_ALL)
                 .add(CONVERSATION_LIST_SWIPE)
                 .add(REMOVAL_ACTION)
-                .add(REMOVAL_ACTION_DIALOG_SHOWN)
                 .build();
 
     }
@@ -255,18 +251,5 @@ public final class MailPrefs extends VersionedPrefs {
      */
     public void resetConversationPhotoTeaserAlreadyShown() {
         getEditor().putBoolean(PreferenceKeys.CONVERSATION_PHOTO_TEASER_SHOWN, false).apply();
-    }
-
-    /**
-     * @return <code>true</code> if the removal action dialog has been shown to the user,
-     * <code>false</code> otherwise
-     */
-    public boolean hasRemovalActionDialogShown() {
-        return getSharedPreferences().getBoolean(PreferenceKeys.REMOVAL_ACTION_DIALOG_SHOWN, false);
-    }
-
-    public void setRemovalActionDialogShown() {
-        getEditor().putBoolean(PreferenceKeys.REMOVAL_ACTION_DIALOG_SHOWN, true).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
     }
 }
