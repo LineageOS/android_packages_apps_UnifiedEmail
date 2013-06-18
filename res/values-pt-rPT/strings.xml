@@ -416,6 +416,5 @@
     <string name="drawer_close" msgid="2764774620737876943">"Fechar separador de navegação"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Toque numa imagem de remetente para selecionar essa conversa."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ícone de pasta"</string>
-    <!-- no translation found for add_account (2162808366829269770) -->
-    <skip />
+    <string name="add_account" msgid="2162808366829269770">"Adicionar conta"</string>
 </resources>

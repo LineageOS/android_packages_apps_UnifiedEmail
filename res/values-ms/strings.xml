@@ -75,7 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Karang"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Tukar folder"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Alih ke"</string>
-    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Alih ke Peti masuk"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Alih ke Peti Masuk"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Tetapan folder"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Kembalikan auto saiz"</string>
     <string name="message_modified" msgid="2564340197585393687">"(Mesej ini telah diubah suai daripada versi asal agar muat dalam skrin ini.)"</string>
