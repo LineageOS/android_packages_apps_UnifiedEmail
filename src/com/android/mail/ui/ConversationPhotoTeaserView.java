@@ -65,6 +65,13 @@ public class ConversationPhotoTeaserView extends FrameLayout
     @Override
     protected void onFinishInflate() {
         mSwipeableContent = findViewById(R.id.swipeable_content);
+
+        findViewById(R.id.dismiss_button).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
     @Override
