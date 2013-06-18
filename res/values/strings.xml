@@ -814,6 +814,13 @@
     <!-- Message shown in toast when the user taps "Restore default for "Show pictures"" in Gmail general preferences. [CHAR LIMIT=50] -->
     <string name="sender_whitelist_cleared">Pictures won\'t be shown automatically.</string>
 
+    <!-- Settings screen, name of the setting that lets the user choose their signature [CHAR LIMIT=50] -->
+    <string name="preferences_signature_title">Signature</string>
+    <!-- Settings screen, title of the dialog that lets the user configure their signature [CHAR LIMIT=50] -->
+    <string name="preferences_signature_dialog_title">Signature</string>
+    <!-- Settings screen, setting summary text when no signature set [CHAR LIMIT=100] -->
+    <string name="preferences_signature_summary_not_set">Not set</string>
+
 
     <!-- Dialog title for the What's New dialog. [CHAR LIMIT=50] -->
     <string name="whats_new_dialog_title">What\'s new</string>
