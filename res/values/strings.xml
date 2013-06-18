@@ -927,10 +927,12 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string name="conversation_photo_welcome_text">Touch a sender image to select that conversation.</string>
+
     <!-- Content description for the folder icon for nested folders. -->
     <string name="folder_icon_desc">Folder icon</string>
 
     <!--  Button, "Add account" in the preference screen [CHAR LIMIT=30] -->
     <string name="add_account">Add account</string>
 
+    <string name="dismiss">Dismiss</string>
 </resources>
