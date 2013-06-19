@@ -170,7 +170,10 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Отправка…"</string>
     <string name="send_failed" msgid="750908595144529579">"Не отправлено."</string>
-    <string name="me" msgid="6480762904022198669">"я"</string>
+    <!-- no translation found for me_object_pronun (7668994569594901571) -->
+    <skip />
+    <!-- no translation found for me_subject_pronun (1088657349831581116) -->
+    <skip />
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Входящие"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Удалить эту цепочку?"</item>
@@ -366,6 +369,12 @@
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Запретить показ изображений?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Изображения от ранее одобренных отправителей показываться не будут."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Автоматический показ изображений отключен."</string>
+    <!-- no translation found for preferences_signature_title (888167074398030574) -->
+    <skip />
+    <!-- no translation found for preferences_signature_dialog_title (5112192919923401319) -->
+    <skip />
+    <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Что нового"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Ответить"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Ответить всем"</string>

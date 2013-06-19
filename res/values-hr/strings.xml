@@ -170,7 +170,10 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Slanje…"</string>
     <string name="send_failed" msgid="750908595144529579">"Poruka nije poslana."</string>
-    <string name="me" msgid="6480762904022198669">"ja"</string>
+    <!-- no translation found for me_object_pronun (7668994569594901571) -->
+    <skip />
+    <!-- no translation found for me_subject_pronun (1088657349831581116) -->
+    <skip />
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Pristigla pošta"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Izbrisati ovaj razgovor?"</item>
@@ -366,6 +369,12 @@
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Želite li izbrisati odobrenja za slike?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Prestani prikazivati slike u tekstu od pošiljatelja koji su prethodno bili dopušteni."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Slike se neće prikazivati automatski."</string>
+    <!-- no translation found for preferences_signature_title (888167074398030574) -->
+    <skip />
+    <!-- no translation found for preferences_signature_dialog_title (5112192919923401319) -->
+    <skip />
+    <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Što je novo"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Odgovori"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Odgovori svima"</string>
