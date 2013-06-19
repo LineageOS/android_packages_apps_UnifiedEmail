@@ -469,6 +469,11 @@ public class NotificationUtils {
                     Boolean.FALSE.toString());
             cursor = context.getContentResolver().query(uriBuilder.build(),
                     UIProvider.CONVERSATION_PROJECTION, null, null, null);
+            if (cursor == null) {
+                // This folder doesn't exist.
+                clearFolderNotification(context, account, folder, false);
+                return;
+            }
             final int cursorUnseenCount = cursor.getCount();
 
             // Make sure the unseen count matches the number of items in the cursor.  But, we don't
