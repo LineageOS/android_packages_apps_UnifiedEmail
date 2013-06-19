@@ -410,6 +410,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return;
         }
 
+        initRecipients();
+
         // Clear the notification and mark the conversation as seen, if necessary
         final Folder notificationFolder =
                 intent.getParcelableExtra(EXTRA_NOTIFICATION_FOLDER);
@@ -576,7 +578,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (action == COMPOSE) {
             mQuotedTextView.setVisibility(View.GONE);
         }
-        initRecipients();
         // Don't bother with the intent if we have procured a message from the
         // intent already.
         if (!hadSavedInstanceStateMessage(savedInstanceState)) {
