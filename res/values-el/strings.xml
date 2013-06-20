@@ -170,7 +170,8 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Γίνεται αποστολή…"</string>
     <string name="send_failed" msgid="750908595144529579">"Μήνυμα δεν εστάλη."</string>
-    <string name="me" msgid="6480762904022198669">"εγώ"</string>
+    <string name="me_object_pronun" msgid="7668994569594901571">"εγώ"</string>
+    <string name="me_subject_pronun" msgid="1088657349831581116">"εγώ"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Εισερχόμενα"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Να διαγραφεί αυτή η συνομιλία;"</item>
@@ -366,6 +367,9 @@
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Να διαγραφούν οι εγκρίσεις εικόνας;"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Διακόψτε την εμφάνιση ενσωματωμένων εικόνων από αποστολείς που έχετε προηγουμένως επιτρέψει."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Οι εικόνες δεν θα εμφανίζονται αυτόματα."</string>
+    <string name="preferences_signature_title" msgid="888167074398030574">"Υπογραφή"</string>
+    <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Υπογραφή"</string>
+    <string name="preferences_signature_summary_not_set" msgid="2830886980620445857">"Δεν ορίστηκε"</string>
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Τι νέο υπάρχει"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Απάντηση"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Απάντηση σε όλους"</string>
