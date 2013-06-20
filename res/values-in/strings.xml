@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Tulis"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Ganti folder"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Pindahkan ke"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Pindahkan ke Kotak Masuk"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Setelan folder"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Balikkan ubah ukuran otomatis"</string>
     <string name="message_modified" msgid="2564340197585393687">"(Pesan ini telah diubah dari versi aslinya untuk menyesuaikan dengan layar.)"</string>
@@ -169,7 +170,10 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Mengirim…"</string>
     <string name="send_failed" msgid="750908595144529579">"Pesan tidak dikirim."</string>
-    <string name="me" msgid="6480762904022198669">"saya"</string>
+    <!-- no translation found for me_object_pronun (7668994569594901571) -->
+    <skip />
+    <!-- no translation found for me_subject_pronun (1088657349831581116) -->
+    <skip />
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Kotak Masuk"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Hapus percakapan ini?"</item>
@@ -361,6 +365,16 @@
     <item msgid="732746454445519134">"Tampilkan percakapan lama setelah menghapus"</item>
     <item msgid="2189929276292165301">"Tampilkan daftar percakapan setelah menghapus"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Hapus persetujuan gambar"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Hapus persetujuan gambar?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Berhenti menampilkan gambar sebaris dari pengirim yang sebelumnya Anda izinkan."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Gambar tidak akan ditampilkan secara otomatis."</string>
+    <!-- no translation found for preferences_signature_title (888167074398030574) -->
+    <skip />
+    <!-- no translation found for preferences_signature_dialog_title (5112192919923401319) -->
+    <skip />
+    <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"Yang baru"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Balas"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Balas ke semua"</string>
@@ -410,4 +424,6 @@
     <string name="drawer_open" msgid="6074646853178471940">"Buka laci navigasi"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Tutup laci navigasi"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Sentuh gambar pengirim untuk memilih percakapan tersebut."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Ikon folder"</string>
+    <string name="add_account" msgid="2162808366829269770">"Tambahkan akun"</string>
 </resources>

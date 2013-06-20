@@ -21,15 +21,15 @@ import com.google.common.collect.ImmutableList;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Loader;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.DateUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +46,8 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewModel;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.browse.ToggleableItem;
+import com.android.mail.content.ObjectCursor;
+import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -147,6 +149,52 @@ public final class ConversationListFragment extends ListFragment implements
     private int mConversationCursorHash;
 
     /**
+     * If the current list is for a folder with children, this set of loader callbacks will
+     * create a loader for all the child folders, and will return an {@link ObjectCursor} over the
+     * list.
+     */
+    private final class ChildFolderLoads
+            implements LoaderManager.LoaderCallbacks<ObjectCursor<Folder>> {
+        /** Load all child folders for the current folder. */
+        private static final int LOADER_CHIDREN = 0;
+        public static final String CHILD_URI = "arg-child-uri";
+        private final String[] projection = UIProvider.FOLDERS_PROJECTION;
+
+        @Override
+        public Loader<ObjectCursor<Folder>> onCreateLoader(int id, Bundle args) {
+            if (id != LOADER_CHIDREN) {
+                throw new IllegalStateException("ChildFolderLoads loading ID=" + id);
+            }
+            final Uri childUri = Uri.parse(args.getString(CHILD_URI));
+            return new ObjectCursorLoader<Folder>(
+                    getActivity(), childUri, projection, Folder.FACTORY);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
+            if (data != null && data.getCount() >= 0 && mListAdapter != null) {
+                mListAdapter.updateNestedFolders(data);
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ObjectCursor<Folder>> loader) {
+            // Do nothing.
+        }
+    }
+
+    /** Callbacks to handle creating a loader and receiving child folders from it. */
+    private final ChildFolderLoads mChildCallback = new ChildFolderLoads();
+
+    /**
+     * Include all the folders at the cursor provided here in the conversation list.
+     * @param cursor The cursor containing child folders for the current folder.
+     */
+    private void showChildFolders(ObjectCursor<Folder> cursor) {
+
+    }
+
+    /**
      * Constructor needs to be public to handle orientation changes and activity
      * lifecycle events.
      */
@@ -166,8 +214,8 @@ public final class ConversationListFragment extends ListFragment implements
      * to display conversation list context.
      */
     public static ConversationListFragment newInstance(ConversationListContext viewContext) {
-        ConversationListFragment fragment = new ConversationListFragment();
-        Bundle args = new Bundle();
+        final ConversationListFragment fragment = new ConversationListFragment();
+        final Bundle args = new Bundle(1);
         args.putBundle(CONVERSATION_LIST_KEY, viewContext.toBundle());
         fragment.setArguments(args);
         return fragment;
@@ -265,26 +313,35 @@ public final class ConversationListFragment extends ListFragment implements
         mFooterView.setClickListener(mActivity);
         mConversationListView.setActivity(mActivity);
         final ConversationCursor conversationCursor = getConversationListCursor();
+        final LoaderManager manager = getLoaderManager();
+
+        // If this a parent folder, load all the child folders.
+        if (mViewContext.folder.hasChildren) {
+            final Uri childUri = mViewContext.folder.childFoldersListUri;
+            final Bundle args = new Bundle();
+            args.putString(ChildFolderLoads.CHILD_URI, childUri.toString());
+            manager.initLoader(ChildFolderLoads.LOADER_CHIDREN, args, mChildCallback);
+        }
 
         final ConversationListHelper helper = mActivity.getConversationListHelper();
         final List<ConversationSpecialItemView> specialItemViews = helper != null ?
                 ImmutableList.copyOf(helper.makeConversationListSpecialViews(
-                        getActivity(), mAccount, mActivity.getFolderListSelectionListener()))
+                        activity, mAccount, mActivity.getFolderSelector()))
                 : null;
         if (specialItemViews != null) {
             // Attach to the LoaderManager
             for (final ConversationSpecialItemView view : specialItemViews) {
-                view.bindLoaderManager(getLoaderManager());
+                view.bindLoaderManager(manager);
             }
         }
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), conversationCursor,
-                        mActivity.getSelectedSet(), mActivity, mListView, specialItemViews);
+                        mActivity.getSelectedSet(), mActivity, mListView, specialItemViews, null);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mSelectedSet = mActivity.getSelectedSet();
         mListView.setSelectionSet(mSelectedSet);
-        mListAdapter.hideFooter();
+        mListAdapter.setFooterVisibility(false);
         mFolderObserver = new FolderObserver(){
             @Override
             public void onChanged(Folder newFolder) {
@@ -521,19 +578,22 @@ public final class ConversationListFragment extends ListFragment implements
      */
     @Override
     public void onListItemClick(ListView l, View view, int position, long id) {
-        // Ignore anything that is not a conversation item. Could be a footer.
-        // If we are using a keyboard, the highlighted item is the parent;
-        // otherwise, this is a direct call from the ConverationItemView
-        if (!(view instanceof ToggleableItem)) {
-            return;
-        }
-        boolean showSenderImage = (mAccount.settings.convListIcon ==
-                ConversationListIcon.SENDER_IMAGE);
-        if (!showSenderImage && !mSelectedSet.isEmpty()) {
-            ToggleableItem v = (ToggleableItem) view;
-            v.toggleSelectedState();
+        if (view instanceof NestedFolderView) {
+            final FolderSelector selector = mActivity.getFolderSelector();
+            selector.onFolderSelected(((NestedFolderView) view).getFolder());
+        } else if (view instanceof ToggleableItem) {
+            final boolean showSenderImage =
+                    (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
+            if (!showSenderImage && !mSelectedSet.isEmpty()) {
+                ((ToggleableItem) view).toggleSelectedState();
+            } else {
+                viewConversation(position);
+            }
         } else {
-            viewConversation(position);
+            // Ignore anything that is not a conversation item. Could be a footer.
+            // If we are using a keyboard, the highlighted item is the parent;
+            // otherwise, this is a direct call from the ConverationItemView
+            return;
         }
         // When a new list item is clicked, commit any existing leave behind
         // items. Wait until we have opened the desired conversation to cause

@@ -27,17 +27,16 @@ import android.content.Intent;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
-import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -53,7 +52,7 @@ import java.util.ArrayList;
  */
 public class FolderSelectionActivity extends Activity implements OnClickListener,
         DialogInterface.OnClickListener, FolderChangeListener, ControllableActivity,
-        FolderListSelectionListener {
+        FolderSelector {
     public static final String EXTRA_ACCOUNT_SHORTCUT = "account-shortcut";
 
     private static final String LOG_TAG = LogTag.getLogTag();
@@ -110,13 +109,14 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         @Override
         public void changeAccount(Account account) {
             // Never gets called, so do nothing here.
-            Log.wtf(LOG_TAG, "FolderSelectionActivity.changeAccount() called when NOT expected.");
+            LogUtils.wtf(LOG_TAG,
+                    "FolderSelectionActivity.changeAccount() called when NOT expected.");
         }
 
         @Override
         public void switchToDefaultInboxOrChangeAccount(Account account) {
             // Never gets called, so do nothing here.
-            Log.wtf(LOG_TAG,"FolderSelectionActivity.switchToDefaultInboxOrChangeAccount() " +
+            LogUtils.wtf(LOG_TAG,"FolderSelectionActivity.switchToDefaultInboxOrChangeAccount() " +
                     "called when NOT expected.");
         }
 
@@ -148,6 +148,11 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         public boolean isDrawerPullEnabled() {
             // Unsupported
             return false;
+        }
+
+        @Override
+        public int getFolderListViewChoiceMode() {
+            return ListView.CHOICE_MODE_NONE;
         }
     };
 
@@ -191,7 +196,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         }
         firstButton.setOnClickListener(this);
         createFolderListFragment(FolderListFragment.ofTopLevelTree(mAccount.folderListUri,
-                getExcludedFolderTypes(), true));
+                getExcludedFolderTypes()));
     }
 
     /**
@@ -351,14 +356,14 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
-            createFolderListFragment(FolderListFragment.ofTree(folder, true));
+            createFolderListFragment(FolderListFragment.ofTree(folder));
             return;
         }
         onFolderChanged(folder);
     }
 
     @Override
-    public FolderListSelectionListener getFolderListSelectionListener() {
+    public FolderSelector getFolderSelector() {
         return this;
     }
 

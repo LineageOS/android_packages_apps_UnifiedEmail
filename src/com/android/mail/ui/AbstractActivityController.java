@@ -66,8 +66,8 @@ import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.ConversationItemViewModel;
+import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationPagerController;
-import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.SyncErrorDialogFragment;
 import com.android.mail.compose.ComposeActivity;
@@ -268,8 +268,9 @@ public abstract class AbstractActivityController implements ActivityController,
     protected ActionableToastBar mToastBar;
     protected ConversationPagerController mPagerController;
 
-    // this is split out from the general loader dispatcher because its loader doesn't return a
+    // This is split out from the general loader dispatcher because its loader doesn't return a
     // basic Cursor
+    /** Handles loader callbacks to create a convesation cursor. */
     private final ConversationListLoaderCallbacks mListCursorCallbacks =
             new ConversationListLoaderCallbacks();
 
@@ -286,16 +287,100 @@ public abstract class AbstractActivityController implements ActivityController,
     private final VeiledAddressMatcher mVeiledMatcher;
 
     protected static final String LOG_TAG = LogTag.getLogTag();
-    /** Constants used to differentiate between the types of loaders. */
+
+    // Loader constants: Accounts
+    /**
+     * The list of accounts. This loader is started early in the application life-cycle since
+     * the list of accounts is central to all other data the application needs: unread counts for
+     * folders, critical UI settings like show/hide checkboxes, ...
+     * The loader is started when the application is created: both in
+     * {@link #onCreate(Bundle)} and in {@link #onActivityResult(int, int, Intent)}. It is never
+     * destroyed since the cursor is needed through the life of the application. When the list of
+     * accounts changes, we notify {@link #mAllAccountObservers}.
+     */
     private static final int LOADER_ACCOUNT_CURSOR = 0;
-    private static final int LOADER_FOLDER_CURSOR = 2;
-    private static final int LOADER_RECENT_FOLDERS = 3;
-    private static final int LOADER_CONVERSATION_LIST = 4;
-    private static final int LOADER_ACCOUNT_INBOX = 5;
-    private static final int LOADER_SEARCH = 6;
+
+    /**
+     * The current account. This loader is started when we have an account. The mail application
+     * <b>needs</b> a valid account to function. As soon as we set {@link #mAccount},
+     * we start a loader to observe for changes on the current account.
+     * The loader is always restarted when an account is set in {@link #setAccount(Account)}.
+     * When the current account object changes, we notify {@link #mAccountObservers}.
+     * A possible performance improvement would be to listen purely on
+     * {@link #LOADER_ACCOUNT_CURSOR}. The current account is guaranteed to be in the list,
+     * and would avoid two updates when a single setting on the current account changes.
+     */
     private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
-    /** Loader for showing the initial folder/conversation at app start. */
+
+    // Loader constants: Folders
+    /** The current folder. This loader watches for updates to the current folder in a manner
+     * analogous to the {@link #LOADER_ACCOUNT_UPDATE_CURSOR}. Updates to the current folder
+     * might be due to server-side changes (unread count), or local changes (sync window or sync
+     * status change).
+     * The change of current folder calls {@link #updateFolder(Folder)}.
+     * This is responsible for restarting a loader using the URI of the provided folder. When the
+     * loader returns, the current folder is updated and consumers, if any, are notified.
+     * When the current folder changes, we notify {@link #mFolderObservable}
+     */
+    private static final int LOADER_FOLDER_CURSOR = 2;
+    /**
+     * The list of recent folders. Recent folders are shown in the DrawerFragment. The recent
+     * folders are tied to the current account being viewed. When the account is changed,
+     * we restart this loader to retrieve the recent accounts. Recents are pre-populated for
+     * phones historically, when they were displayed in the spinner. On the tablet,
+     * they showed in the {@link FolderListFragment} and were not-populated.  The code to
+     * pre-populate the recents is somewhat convoluted: when the loader returns a short list of
+     * recent folders, it issues an update on the Recent Folder URI. The underlying provider then
+     * does the appropriate thing to populate recent folders, and notify of a change on the cursor.
+     * Recent folders are needed for the life of the current account.
+     * When the recent folders change, we notify {@link #mRecentFolderObservers}.
+     */
+    private static final int LOADER_RECENT_FOLDERS = 3;
+    /**
+     * The primary inbox for the current account. The mechanism to load the default inbox for the
+     * current account is (sadly) different from loading other folders. The method
+     * {@link #loadAccountInbox()} is called, and it restarts this loader. When the loader returns
+     * a valid cursor, we create a folder, call {@link #onFolderChanged{Folder)} eventually
+     * calling {@link #updateFolder(Folder)} which starts a loader {@link #LOADER_FOLDER_CURSOR}
+     * over the current folder.
+     * When we have a valid cursor, we destroy this loader, This convoluted flow is historical.
+     */
+    private static final int LOADER_ACCOUNT_INBOX = 5;
+    /**
+     * The fake folder of search results for a term. When we search for a term,
+     * a new activity is created with {@link Intent#ACTION_SEARCH}. For this new activity,
+     * we start a loader which returns conversations that match the user-provided query.
+     * We destroy the loader when we obtain a valid cursor since subsequent searches will create
+     * a new activity.
+     */
+    private static final int LOADER_SEARCH = 6;
+    /**
+     * The initial folder at app start. When the application is launched from an intent that
+     * specifies the initial folder (notifications/widgets/shortcuts),
+     * then we extract the folder URI from the intent, but we cannot trust the folder object. Since
+     * shortcuts and widgets persist past application update, they might have incorrect
+     * information encoded in them. So, to obtain a {@link Folder} object from a {@link Uri},
+     * we need to start another loader. Upon obtaining a valid cursor, the loader is destroyed.
+     * An additional complication arises if we have to view a specific conversation within this
+     * folder. This is the case when launching the app from a single conversation notification
+     * or tapping on a specific conversation in the widget. In these cases, the conversation is
+     * saved in {@link #mConversationToShow} and is retrieved when the loader returns.
+     */
     public static final int LOADER_FIRST_FOLDER = 8;
+
+    // Loader constants: Conversations
+    /** The conversation cursor over the current conversation list. This loader provides
+     * a cursor over conversation entries from a folder to display a conversation
+     * list.
+     * This loader is started when the user switches folders (in {@link #updateFolder(Folder)},
+     * or when the controller is told that a folder/account change is imminent
+     * (in {@link #preloadConvList(Account, Folder)}. The loader is maintained for the life of
+     * the current folder. When the user switches folders, the old loader is destroyed and a new
+     * one is created.
+     *
+     * When the conversation list changes, we notify {@link #mConversationListObservable}.
+     */
+    private static final int LOADER_CONVERSATION_LIST = 4;
 
     /**
      * Guaranteed to be the last loader ID used by the activity. Loaders are owned by Activity or
@@ -315,7 +400,9 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     public static final int LAST_FRAGMENT_LOADER_ID = 1000;
 
+    /** Code returned after an account has been added. */
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
+    /** Code returned when the user has to enter the new password on an existing account. */
     private static final int REAUTHENTICATE_REQUEST_CODE = 2;
 
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
@@ -553,12 +640,11 @@ public abstract class AbstractActivityController implements ActivityController,
         LogUtils.d(LOG_TAG, "AAC.switchToDefaultAccount(%s)", account);
         final boolean firstLoad = mAccount == null;
         final boolean switchToDefaultInbox = !firstLoad && account.uri.equals(mAccount.uri);
-        // if the active account has been clicked in the drawer, go to default inbox
+        // If the active account has been clicked in the drawer, go to default inbox
         if (switchToDefaultInbox) {
             loadAccountInbox();
             return;
         }
-
         changeAccount(account);
     }
 
@@ -694,13 +780,18 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Load the conversation list early for the given folder.
-     * @param nextFolder
+     * Load the conversation list early for the given folder. This happens when some UI element
+     * (usually the drawer) instructs the controller that an account change or folder change is
+     * imminent. While the UI element is animating, the controller can preload the conversation
+     * list for the default inbox of the account provided here or to the folder provided here.
+     *
+     * @param nextAccount The account which the app will switch to shortly, possibly null.
+     * @param nextFolder The folder which the app will switch to shortly, possibly null.
      */
     protected void preloadConvList(Account nextAccount, Folder nextFolder) {
         // Fire off the conversation list loader for this account already with a fake
         // listener.
-        final Bundle args = new Bundle();
+        final Bundle args = new Bundle(2);
         if (nextAccount != null) {
             args.putParcelable(BUNDLE_ACCOUNT_KEY, nextAccount);
         } else {
@@ -717,8 +808,13 @@ public abstract class AbstractActivityController implements ActivityController,
         lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
     }
 
+    /**
+     * Initiates the async request to create a fake search folder, which returns conversations that
+     * match the query term provided by the user. Returns immediately.
+     * @param intent Intent that the app was started with. This intent contains the search query.
+     */
     private void fetchSearchFolder(Intent intent) {
-        final Bundle args = new Bundle();
+        final Bundle args = new Bundle(1);
         args.putString(ConversationListContext.EXTRA_SEARCH_QUERY, intent
                 .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
         mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, mFolderCallbacks);
@@ -884,7 +980,7 @@ public abstract class AbstractActivityController implements ActivityController,
             // for the newly selected folder
             lm.destroyLoader(LOADER_CONVERSATION_LIST);
         }
-        final Bundle args = new Bundle();
+        final Bundle args = new Bundle(2);
         args.putParcelable(BUNDLE_ACCOUNT_KEY, mAccount);
         args.putParcelable(BUNDLE_FOLDER_KEY, mFolder);
         lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
@@ -905,6 +1001,17 @@ public abstract class AbstractActivityController implements ActivityController,
         mFolderListFolder = folder;
     }
 
+    /**
+     * The mail activity calls other activities for two specific reasons:
+     * <ul>
+     *     <li>To add an account. And receives the result {@link #ADD_ACCOUNT_REQUEST_CODE}</li>
+     *     <li>To update the password on a current account. The result {@link
+     *     #REAUTHENTICATE_REQUEST_CODE} is received.</li>
+     * </ul>
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -1017,6 +1124,44 @@ public abstract class AbstractActivityController implements ActivityController,
         mHandler.post(mLogServiceChecker);
     }
 
+    /**
+     * The application can be started from the following entry points:
+     * <ul>
+     *     <li>Launcher: you tap on the Gmail icon in the launcher. This is what most users think of
+     *         as “Starting the app”.</li>
+     *     <li>Shortcut: Users can make a shortcut to take them directly to a label.</li>
+     *     <li>Widget: Shows the contents of a synced label, and allows:
+     *     <ul>
+     *         <li>Viewing the list (tapping on the title)</li>
+     *         <li>Composing a new message (tapping on the new message icon in the title. This
+     *         launches the {@link ComposeActivity}.
+     *         </li>
+     *         <li>Viewing a single message (tapping on a list element)</li>
+     *     </ul>
+     *
+     *     </li>
+     *     <li>Tapping on a notification:
+     *     <ul>
+     *         <li>Shows message list if more than one message</li>
+     *         <li>Shows the conversation if the notification is for a single message</li>
+     *     </ul>
+     *     </li>
+     *     <li>...and most importantly, the activity life cycle can tear down the application and
+     *     restart it:
+     *     <ul>
+     *         <li>Rotate the application: it is destroyed and recreated.</li>
+     *         <li>Navigate away, and return from recent applications.</li>
+     *     </ul>
+     *     </li>
+     *     <li>Add a new account: fires off an intent to add an account,
+     *     and returns in {@link #onActivityResult(int, int, android.content.Intent)} .</li>
+     *     <li>Re-authenticate your account: again returns in onActivityResult().</li>
+     *     <li>Composing can happen from many entry points: third party applications fire off an
+     *     intent to compose email, and launch directly into the {@link ComposeActivity}
+     *     .</li>
+     * </ul>
+     * {@inheritDoc}
+     */
     @Override
     public boolean onCreate(Bundle savedState) {
         initializeActionBar();
@@ -1079,7 +1224,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
 
-        mHideMenuItems = isDrawerEnabled() ? mDrawerContainer.isDrawerOpen(mDrawerPullout) : false;
+        mHideMenuItems = isDrawerEnabled() && mDrawerContainer.isDrawerOpen(mDrawerPullout);
     }
 
     @Override
@@ -1248,6 +1393,25 @@ public abstract class AbstractActivityController implements ActivityController,
                 if (dialog != null) {
                     dialog.show();
                 }
+                break;
+            case R.id.move_to_inbox:
+                new AsyncTask<Void, Void, Folder>() {
+                    @Override
+                    protected Folder doInBackground(final Void... params) {
+                        // Get the "move to" inbox
+                        return Utils.getFolder(mContext, mAccount.settings.moveToInbox,
+                                true /* allowHidden */);
+                    }
+
+                    @Override
+                    protected void onPostExecute(final Folder moveToInbox) {
+                        final List<FolderOperation> ops = Lists.newArrayListWithCapacity(1);
+                        // Add inbox
+                        ops.add(new FolderOperation(moveToInbox, true));
+                        assignFolder(ops, Conversation.listOf(mCurrentConversation), true,
+                                true /* showUndo */, false /* isMoveTo */);
+                    }
+                }.execute((Void[]) null);
                 break;
             case R.id.empty_trash:
                 showEmptyDialog();
@@ -1510,7 +1674,7 @@ public abstract class AbstractActivityController implements ActivityController,
         final int size = targets.size();
         final List<ConversationOperation> opList = new ArrayList<ConversationOperation>(size);
         for (final Conversation target : targets) {
-            final ContentValues value = new ContentValues();
+            final ContentValues value = new ContentValues(4);
             value.put(ConversationColumns.READ, read);
 
             // We never want to mark unseen here, but we do want to mark it seen
@@ -2061,6 +2225,10 @@ public abstract class AbstractActivityController implements ActivityController,
      * Handle an intent to open the app. This method is called only when there is no saved state,
      * so we need to set state that wasn't set before. It is correct to change the viewmode here
      * since it has not been previously set.
+     *
+     * This method is called for a subset of the reasons mentioned in
+     * {@link #onCreate(android.os.Bundle)}. Notably, this is called when launching the app from
+     * notifications, widgets, and shortcuts.
      * @param intent intent passed to the activity.
      */
     private void handleIntent(Intent intent) {
@@ -3098,6 +3266,9 @@ public abstract class AbstractActivityController implements ActivityController,
         return in != null && in.isVisible() && mActivity.hasWindowFocus();
     }
 
+    /**
+     * This class handles callbacks that create a {@link ConversationCursor}.
+     */
     private class ConversationListLoaderCallbacks implements
         LoaderManager.LoaderCallbacks<ConversationCursor> {
 
@@ -3355,6 +3526,7 @@ public abstract class AbstractActivityController implements ActivityController,
             }
             switch (loader.getId()) {
                 case LOADER_ACCOUNT_CURSOR:
+                    // We have received an update on the list of accounts.
                     if (data == null) {
                         // Nothing useful to do if we have no valid data.
                         break;
@@ -3389,13 +3561,10 @@ public abstract class AbstractActivityController implements ActivityController,
                     break;
                 case LOADER_ACCOUNT_UPDATE_CURSOR:
                     // We have received an update for current account.
-
-                    // Make sure that this is an update for the current account
                     if (data != null && data.moveToFirst()) {
                         final Account updatedAccount = data.getModel();
-
+                        // Make sure that this is an update for the current account
                         if (updatedAccount.uri.equals(mAccount.uri)) {
-                            // Keep a reference to the previous settings object
                             final Settings previousSettings = mAccount.settings;
 
                             // Update the controller's reference to the current account
@@ -3422,6 +3591,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
         @Override
         public void onLoaderReset(Loader<ObjectCursor<Account>> loader) {
+            // Do nothing. In onLoadFinished() we copy the relevant data from the cursor.
         }
     }
 

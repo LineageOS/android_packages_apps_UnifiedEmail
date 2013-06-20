@@ -72,7 +72,7 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      * fragment so that activity controllers can track the last folder list
      * pushed for hierarchical folders.
      */
-    FolderListFragment.FolderListSelectionListener getFolderListSelectionListener();
+    FolderSelector getFolderSelector();
 
     /**
      * Get the folder currently being accessed by the activity.

@@ -227,7 +227,7 @@ public class Utils {
             sReadStyleSpan = new StyleSpan(Typeface.NORMAL);
             sDraftsStyleSpan = new ForegroundColorSpan(res.getColor(R.color.drafts));
 
-            sMeString = context.getText(R.string.me);
+            sMeString = context.getText(R.string.me_subject_pronun);
             sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
             sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
             SpannableString sendingString = new SpannableString(context.getText(R.string.sending));
@@ -899,8 +899,14 @@ public class Utils {
      * Show the feedback screen for the supplied account.
      */
     public static void sendFeedback(FeedbackEnabledActivity activity, Account account,
+                                    boolean reportingProblem) {
+        if (activity != null && account != null) {
+            sendFeedback(activity, account.sendFeedbackIntentUri, reportingProblem);
+        }
+    }
+    public static void sendFeedback(FeedbackEnabledActivity activity, Uri feedbackIntentUri,
             boolean reportingProblem) {
-        if (activity != null && account != null && !isEmpty(account.sendFeedbackIntentUri)) {
+        if (activity != null &&  !isEmpty(feedbackIntentUri)) {
             final Bundle optionalExtras = new Bundle(2);
             optionalExtras.putBoolean(
                     UIProvider.SendFeedbackExtras.EXTRA_REPORTING_PROBLEM, reportingProblem);
@@ -909,9 +915,10 @@ public class Utils {
                 optionalExtras.putParcelable(
                         UIProvider.SendFeedbackExtras.EXTRA_SCREEN_SHOT, screenBitmap);
             }
-            openUrl(activity.getActivityContext(), account.sendFeedbackIntentUri, optionalExtras);
+            openUrl(activity.getActivityContext(), feedbackIntentUri, optionalExtras);
         }
     }
+
 
     public static Bitmap getReducedSizeBitmap(FeedbackEnabledActivity activity) {
         final Window activityWindow = activity.getWindow();
@@ -1280,4 +1287,64 @@ public class Utils {
         return uri.buildUpon().appendQueryParameter(APP_VERSION_QUERY_PARAMETER,
                 Integer.toString(appVersion)).build();
     }
+
+    /**
+     * Gets the specified {@link Folder} object.
+     *
+     * @param folderUri The {@link Uri} for the folder
+     * @param allowHidden <code>true</code> to allow a hidden folder to be returned,
+     *        <code>false</code> to return <code>null</code> instead
+     * @return the specified {@link Folder} object, or <code>null</code>
+     */
+    public static Folder getFolder(final Context context, final Uri folderUri,
+            final boolean allowHidden) {
+        final Uri uri = folderUri
+                .buildUpon()
+                .appendQueryParameter(UIProvider.ALLOW_HIDDEN_FOLDERS_QUERY_PARAM,
+                        Boolean.toString(allowHidden))
+                .build();
+
+        final Cursor cursor = context.getContentResolver().query(uri,
+                UIProvider.FOLDERS_PROJECTION, null, null, null);
+
+        if (cursor == null) {
+            return null;
+        }
+
+        try {
+            if (cursor.moveToFirst()) {
+                return new Folder(cursor);
+            } else {
+                return null;
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    /**
+     * Begins systrace tracing for a given tag. No-op on unsupported platform versions.
+     *
+     * @param tag systrace tag to use
+     *
+     * @see android.os.Trace#beginSection(String)
+     */
+    public static void traceBeginSection(String tag) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            android.os.Trace.beginSection(tag);
+        }
+    }
+
+    /**
+     * Ends systrace tracing for the most recently begun section. No-op on unsupported platform
+     * versions.
+     *
+     * @see android.os.Trace#endSection()
+     */
+    public static void traceEndSection() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            android.os.Trace.endSection();
+        }
+    }
+
 }

@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"作成"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"フォルダを変更"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"移動"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"受信トレイに移動"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"フォルダの設定"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"自動サイズ変更を元に戻す"</string>
     <string name="message_modified" msgid="2564340197585393687">"（このメッセージは、画面に合わせて元のバージョンから変更されています。）"</string>
@@ -169,7 +170,10 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"送信しています…"</string>
     <string name="send_failed" msgid="750908595144529579">"送信に失敗しました。"</string>
-    <string name="me" msgid="6480762904022198669">"自分"</string>
+    <!-- no translation found for me_object_pronun (7668994569594901571) -->
+    <skip />
+    <!-- no translation found for me_subject_pronun (1088657349831581116) -->
+    <skip />
     <string name="inbox_folders_heading" msgid="3960094746248976565">"受信トレイ"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"このスレッドを削除しますか？"</item>
@@ -361,6 +365,16 @@
     <item msgid="732746454445519134">"削除後に古いスレッドを表示する"</item>
     <item msgid="2189929276292165301">"削除後にスレッドリストを表示する"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"写真の許可の取り消し"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"写真の許可を取り消しますか？"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"以前許可した送信者からのインライン画像の表示を停止します。"</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"画像が自動的に表示されることはありません。"</string>
+    <!-- no translation found for preferences_signature_title (888167074398030574) -->
+    <skip />
+    <!-- no translation found for preferences_signature_dialog_title (5112192919923401319) -->
+    <skip />
+    <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"新機能"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"返信"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"全員に返信"</string>
@@ -410,4 +424,6 @@
     <string name="drawer_open" msgid="6074646853178471940">"ナビゲーションドロワーを開く"</string>
     <string name="drawer_close" msgid="2764774620737876943">"ナビゲーションドロワーを閉じる"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"スレッドを選択するには送信者画像をタップしてください。"</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"フォルダアイコン"</string>
+    <string name="add_account" msgid="2162808366829269770">"アカウントを追加"</string>
 </resources>

@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"편지쓰기"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"폴더 변경"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"이동"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"받은편지함으로 이동"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"폴더 설정"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"자동 크기 조정 되돌리기"</string>
     <string name="message_modified" msgid="2564340197585393687">"(이 메일은 원본 버전을 화면에 맞게 수정한 것입니다.)"</string>
@@ -169,7 +170,10 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"전송 중..."</string>
     <string name="send_failed" msgid="750908595144529579">"메일이 전송되지 않았습니다."</string>
-    <string name="me" msgid="6480762904022198669">"나"</string>
+    <!-- no translation found for me_object_pronun (7668994569594901571) -->
+    <skip />
+    <!-- no translation found for me_subject_pronun (1088657349831581116) -->
+    <skip />
     <string name="inbox_folders_heading" msgid="3960094746248976565">"받은편지함"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"대화를 삭제하시겠습니까?"</item>
@@ -361,6 +365,16 @@
     <item msgid="732746454445519134">"삭제 후 이전 대화 표시"</item>
     <item msgid="2189929276292165301">"삭제 후 대화 목록 표시"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"이미지 승인 취소"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"이미지 승인을 취소하시겠습니까?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"이전에 이미지 표시를 허용했던 발신자가 보낸 이메일의 이미지를 표시하지 않습니다."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"사진이 자동으로 표시되지 않습니다."</string>
+    <!-- no translation found for preferences_signature_title (888167074398030574) -->
+    <skip />
+    <!-- no translation found for preferences_signature_dialog_title (5112192919923401319) -->
+    <skip />
+    <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"새로운 기능"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"답장"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"전체답장"</string>
@@ -410,4 +424,6 @@
     <string name="drawer_open" msgid="6074646853178471940">"내비게이션 폴더 열기"</string>
     <string name="drawer_close" msgid="2764774620737876943">"내비게이션 폴더 닫기"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"대화를 선택하려면 발신자 이미지를 터치합니다."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"폴더 아이콘"</string>
+    <string name="add_account" msgid="2162808366829269770">"계정 추가"</string>
 </resources>

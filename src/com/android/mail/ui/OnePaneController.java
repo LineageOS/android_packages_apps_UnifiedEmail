@@ -24,6 +24,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -200,7 +201,8 @@ public final class OnePaneController extends AbstractActivityController {
         final int transition = mConversationListNeverShown
                 ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
-        Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
+        final Fragment conversationListFragment =
+                ConversationListFragment.newInstance(listContext);
 
         if (!inInbox(mAccount, listContext)) {
             // Maintain fragment transaction history so we can get back to the
@@ -374,6 +376,12 @@ public final class OnePaneController extends AbstractActivityController {
             mActivity.finish();
         } else if (mViewMode.isListMode() && !inInbox(mAccount, mConvListContext)) {
             if (mLastFolderListTransactionId != INVALID_ID) {
+                // Set the hierarchy folder to what it will be once we go up
+                final Folder hierarchyFolder = getHierarchyFolder();
+                if (hierarchyFolder != null && hierarchyFolder.parent != null) {
+                    setHierarchyFolder(hierarchyFolder.parent);
+                }
+
                 // If the user got here by navigating via the folder list, back
                 // should bring them back to the folder list.
                 mViewMode.enterFolderListMode();
@@ -391,22 +399,11 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private void goUpFolderHierarchy(Folder current) {
-        Folder top = current.parent;
+        final Folder top = current.parent;
         if (top != null) {
             // FIXME: This is silly. we worked so hard to add folder fragments to the back stack.
             // it should either just pop back, or should not use the back stack at all.
-
-            setHierarchyFolder(top);
-            // Replace this fragment with a new FolderListFragment
-            // showing this folder's children if we are not already
-            // looking at the child view for this folder.
-            mLastFolderListTransactionId = replaceFragmentWithBack(
-                    FolderListFragment.ofTree(top, false),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
-        } else {
-            // Otherwise, clear the selected folder and go back to whatever the
-            // last folder list displayed was.
-            // TODO(viki): Load folder list for parent folder.
+            onFolderSelected(top);
         }
     }
 
@@ -424,18 +421,8 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void onFolderSelected(Folder folder) {
-        if (folder.hasChildren && !folder.equals(getHierarchyFolder())) {
-            mViewMode.enterFolderListMode();
-            setHierarchyFolder(folder);
-            // Replace this fragment with a new FolderListFragment
-            // showing this folder's children if we are not already
-            // looking at the child view for this folder.
-            mLastFolderListTransactionId = replaceFragmentWithBack(
-                    FolderListFragment.ofTree(folder, false),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST, R.id.content_pane);
-        } else {
-            super.onFolderSelected(folder);
-        }
+        setHierarchyFolder(folder);
+        super.onFolderSelected(folder);
     }
 
     private static boolean isTransactionIdValid(int id) {
@@ -509,10 +496,6 @@ public final class OnePaneController extends AbstractActivityController {
         }
         onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
-    }
-
-    private void safelyPopBackStack(boolean inLoaderCallbacks) {
-        safelyPopBackStack(-1, inLoaderCallbacks);
     }
 
     /**
@@ -651,5 +634,11 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean isDrawerEnabled() {
         // The drawer is enabled for one pane mode
         return true;
+    }
+
+    @Override
+    public int getFolderListViewChoiceMode() {
+        // By default, we do not want to allow any item to be selected in the folder list
+        return ListView.CHOICE_MODE_NONE;
     }
 }

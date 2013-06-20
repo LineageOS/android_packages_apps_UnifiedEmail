@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<!-- View that displays folders that are contained in a folder. These are shown at the top of
+     the conversation list. Email has them, Gmail doesn't currently. -->
+<com.android.mail.ui.NestedFolderView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="@dimen/folder_list_item_minimum_height"
+        android:background="@drawable/folder_item" >
+
+    <!--This is a rough layout. We don't have UX specs yet, so all the values are hardcoded.
+        Also, it looks totally ugly. The ugliness is intentional.-->
+    <RelativeLayout
+            android:id="@+id/swipeable_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            >
+
+        <ImageView
+                android:id="@+id/nested_folder_icon"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_menu_folders_holo_light"
+                android:layout_alignParentLeft="true"
+                android:contentDescription="@string/folder_icon_desc"
+                android:layout_centerVertical="true"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/nested_folder_name"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="@color/folder_item_text_color"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_centerVertical="true"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/nested_folder_icon" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/nested_folder_unread"
+                style="@style/UnreadCount"
+                android:layout_alignBaseline="@id/nested_folder_name"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                />
+    </RelativeLayout>
+</com.android.mail.ui.NestedFolderView>

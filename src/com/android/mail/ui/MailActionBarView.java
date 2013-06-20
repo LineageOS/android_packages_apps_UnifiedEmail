@@ -90,11 +90,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private SearchView mSearchWidget;
     private MenuItem mHelpItem;
     private MenuItem mSendFeedbackItem;
-    private MenuItem mRefreshItem;
     private MenuItem mFolderSettingsItem;
     private MenuItem mEmptyTrashItem;
     private MenuItem mEmptySpamItem;
-    private View mRefreshActionView;
     private boolean mUseLegacyTitle;
     private View mLegacyTitleContainer;
     private TextView mLegacyTitle;
@@ -102,17 +100,10 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     /** True if the current device is a tablet, false otherwise. */
     protected final boolean mIsOnTablet;
-    private boolean mRefreshInProgress;
     private Conversation mCurrentConversation;
 
     public static final String LOG_TAG = LogTag.getLogTag();
 
-    private final Runnable mInvalidateMenu = new Runnable() {
-        @Override
-        public void run() {
-            mActivity.invalidateOptionsMenu();
-        }
-    };
     private FolderObserver mFolderObserver;
 
     /** A handler that changes the subtitle when it receives a message. */
@@ -248,7 +239,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
         mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
-        mRefreshItem = menu.findItem(R.id.refresh);
         mFolderSettingsItem = menu.findItem(R.id.folder_options);
         mEmptyTrashItem = menu.findItem(R.id.empty_trash);
         mEmptySpamItem = menu.findItem(R.id.empty_spam);
@@ -312,10 +302,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Called by the owner of the ActionBar to change the current folder.
      */
     public void setFolder(Folder folder) {
-        setRefreshInProgress(false);
         mFolder = folder;
         setFolderAndAccount(true);
-        mActivity.invalidateOptionsMenu();
     }
 
     public void onDestroy() {
@@ -385,22 +373,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (mController.shouldHideMenuItems()) {
             setMenuItemsToHiddenForOpenDrawer(menu);
             return false;
-        }
-        // TODO: move refresh stuff into setRefreshInProgress. can just setActionView without
-        // invalidating.
-        if (mRefreshInProgress) {
-            if (mRefreshItem != null) {
-                if (mRefreshActionView == null) {
-                    mRefreshItem.setActionView(R.layout.action_bar_indeterminate_progress);
-                    mRefreshActionView = mRefreshItem.getActionView();
-                } else {
-                    mRefreshItem.setActionView(mRefreshActionView);
-                }
-            }
-        } else {
-            if (mRefreshItem != null) {
-                mRefreshItem.setActionView(null);
-            }
         }
         if (mHelpItem != null) {
             mHelpItem.setVisible(mAccount != null
@@ -598,7 +570,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     private void setSubtitle(CharSequence subtitle) {
-        mActionBar.setSubtitle(subtitle);
+        if (!TextUtils.equals(subtitle, mActionBar.getSubtitle())) {
+            mActionBar.setSubtitle(subtitle);
+        }
         if (mLegacySubTitle != null) {
             mLegacySubTitle.setText(subtitle);
         }
@@ -612,7 +586,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     private void setTitle(CharSequence title) {
-        mActionBar.setTitle(title);
+        if (!TextUtils.equals(title, mActionBar.getTitle())) {
+            mActionBar.setTitle(title);
+        }
         if (mLegacyTitle != null) {
             mLegacyTitle.setText(title);
         }
@@ -666,25 +642,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
-    }
-
-    private boolean setRefreshInProgress(boolean inProgress) {
-        if (inProgress != mRefreshInProgress) {
-            mRefreshInProgress = inProgress;
-            if (mSearch == null || !mSearch.isActionViewExpanded()) {
-                mHandler.post(mInvalidateMenu);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void onRefreshStarted() {
-        setRefreshInProgress(true);
-    }
-
-    private void onRefreshStopped() {
-        setRefreshInProgress(false);
     }
 
     // Next two methods are called when search suggestions are clicked.
@@ -816,12 +773,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         final boolean changingFolders = (mFolder == null || !mFolder.uri.equals(folder.uri));
         mFolder = folder;
         setFolderAndAccount(changingFolders);
-        if (folder.isSyncInProgress()) {
-            onRefreshStarted();
-        } else {
-            // Stop the spinner here.
-            onRefreshStopped();
-        }
         final ConversationListContext listContext = mController == null ? null :
                 mController.getCurrentListContext();
         if (changingFolders && !ConversationListContext.isSearchResult(listContext)) {
@@ -894,6 +845,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 && !mFolder.isProviderFolder());
         Utils.setMenuItemVisibility(menu, R.id.move_to, mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION));
+        Utils.setMenuItemVisibility(menu, R.id.move_to_inbox, mFolder != null
+                && mFolder.supportsCapability(FolderCapabilities.ALLOWS_MOVE_TO_INBOX));
+
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
         if (mFolder != null && removeFolder != null) {
             removeFolder.setTitle(mActivity.getApplicationContext().getString(

@@ -30,7 +30,6 @@ import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
-import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock.OnClickListener;
 import com.android.mail.providers.Address;
@@ -120,7 +119,10 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     }
 
-    public class MessageHeaderItem extends ConversationOverlayItem {
+    public static class MessageHeaderItem extends ConversationOverlayItem {
+
+        private final ConversationViewAdapter mAdapter;
+
         private ConversationMessage mMessage;
 
         // view state variables
@@ -133,7 +135,9 @@ public class ConversationViewAdapter extends BaseAdapter {
         public CharSequence timestampLong;
         public CharSequence recipientSummaryText;
 
-        MessageHeaderItem(ConversationMessage message, boolean expanded, boolean showImages) {
+        MessageHeaderItem(ConversationViewAdapter adapter, ConversationMessage message,
+                boolean expanded, boolean showImages) {
+            mAdapter = adapter;
             mMessage = message;
             mExpanded = expanded;
             mShowImages = showImages;
@@ -154,10 +158,11 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageHeaderView v = (MessageHeaderView) inflater.inflate(
                     R.layout.conversation_message_header, parent, false);
-            v.initialize(mDateBuilder, mAccountController, mAddressCache);
-            v.setCallbacks(mMessageCallbacks);
-            v.setContactInfoSource(mContactInfoSource);
-            v.setVeiledMatcher(mMatcher);
+            v.initialize(mAdapter.mDateBuilder, mAdapter.mAccountController,
+                    mAdapter.mAddressCache);
+            v.setCallbacks(mAdapter.mMessageCallbacks);
+            v.setContactInfoSource(mAdapter.mContactInfoSource);
+            v.setVeiledMatcher(mAdapter.mMatcher);
             return v;
         }
 
@@ -403,16 +408,16 @@ public class ConversationViewAdapter extends BaseAdapter {
     }
 
     public int addMessageHeader(ConversationMessage msg, boolean expanded, boolean showImages) {
-        return addItem(new MessageHeaderItem(msg, expanded, showImages));
+        return addItem(new MessageHeaderItem(this, msg, expanded, showImages));
     }
 
     public int addMessageFooter(MessageHeaderItem headerItem) {
         return addItem(new MessageFooterItem(headerItem));
     }
 
-    public MessageHeaderItem newMessageHeaderItem(ConversationMessage message, boolean expanded,
-            boolean showImages) {
-        return new MessageHeaderItem(message, expanded, showImages);
+    public static MessageHeaderItem newMessageHeaderItem(ConversationViewAdapter adapter,
+            ConversationMessage message, boolean expanded, boolean showImages) {
+        return new MessageHeaderItem(adapter, message, expanded, showImages);
     }
 
     public MessageFooterItem newMessageFooterItem(MessageHeaderItem headerItem) {

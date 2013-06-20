@@ -29,6 +29,11 @@ public interface SwipeableItemView {
 
     public void dismiss();
 
+    /**
+     * Returns the minimum allowed displacement in the Y axis that is considered a scroll. After
+     * this displacement, all future events are considered scroll events rather than swipes.
+     * @return
+     */
     public float getMinAllowScrollDistance();
 
     public static class SwipeableView {

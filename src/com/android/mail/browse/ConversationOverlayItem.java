@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.CursorAdapter;
 
-import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.LogUtils;
 

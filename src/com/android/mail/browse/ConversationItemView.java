@@ -348,7 +348,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mTabletDevice = Utils.useTabletUI(res);
         mIsExpansiveTablet =
                 mTabletDevice ? res.getBoolean(R.bool.use_expansive_tablet_ui) : false;
-        mListCollapsible = res.getBoolean(R.bool.list_collapsed);
+        mListCollapsible = res.getBoolean(R.bool.list_collapsible);
         mAccount = account;
 
         if (STAR_OFF == null) {
@@ -582,6 +582,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         startTimer(PERF_TAG_LAYOUT);
+        Utils.traceBeginSection("CIVC.layout");
 
         super.onLayout(changed, left, top, right, bottom);
 
@@ -602,6 +603,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sTimer = new Timer();
             sLayoutCount = 0;
         }
+        Utils.traceEndSection();
     }
 
     private void setContentDescription() {
@@ -636,7 +638,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         updateBackground(isUnread);
 
         mHeader.sendersDisplayText = new SpannableStringBuilder();
-        mHeader.styledSendersString = new SpannableStringBuilder();
+        mHeader.styledSendersString = null;
 
         // Parse senders fragments.
         if (mHeader.conversation.conversationInfo != null) {
@@ -785,7 +787,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void createSubject(final boolean isUnread) {
         final String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.getSnippet();
-        final SpannableStringBuilder displayedStringBuilder = new SpannableStringBuilder(
+        final Spannable displayedStringBuilder = new SpannableString(
                 Conversation.getSubjectAndSnippetForDisplay(mContext, subject, snippet));
 
         // since spans affect text metrics, add spans to the string before measure/layout or fancy
@@ -822,8 +824,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private boolean showActivatedText() {
         // For activated elements in tablet in conversation mode, we show an activated color, since
         // the background is dark blue for activated versus gray for non-activated.
-        final boolean isListCollapsed = mContext.getResources().getBoolean(R.bool.list_collapsed);
-        return mTabletDevice && !isListCollapsed;
+        return mTabletDevice && !mListCollapsible;
     }
 
     private boolean canFitFragment(int width, int line, int fixedWidth) {
@@ -1091,6 +1092,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Utils.traceBeginSection("CIVC.draw");
         // Contact photo
         if (mGadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO) {
             canvas.save();
@@ -1194,6 +1196,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
             }
         }
+        Utils.traceEndSection();
     }
 
     private void drawContactImages(Canvas canvas) {
@@ -1406,10 +1409,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     @Override
     public boolean performClick() {
-        boolean handled = super.performClick();
-        SwipeableListView list = getListView();
+        final boolean handled = super.performClick();
+        final SwipeableListView list = getListView();
         if (list != null && list.getAdapter() != null) {
-            int pos = list.findConversation(this, mHeader.conversation);
+            final int pos = list.findConversation(this, mHeader.conversation);
             list.performItemClick(this, pos, mHeader.conversation.id);
         }
         return handled;

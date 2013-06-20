@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Loader;
@@ -42,13 +41,13 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationContainer.OverlayPosition;
+import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
 import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
@@ -58,7 +57,6 @@ import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MailWebView.ContentSizeChangeListener;
 import com.android.mail.browse.MessageCursor;
-import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
@@ -71,6 +69,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ConversationViewState.ExpansionState;
+import com.android.mail.utils.ConversationViewUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -84,13 +83,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * The conversation view UI component.
  */
 public final class ConversationViewFragment extends AbstractConversationViewFragment implements
-        SuperCollapsedBlock.OnClickListener,
-        OnLayoutChangeListener {
+        SuperCollapsedBlock.OnClickListener, OnLayoutChangeListener,
+        MessageHeaderView.MessageHeaderViewCallbacks {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -127,13 +125,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private ScrollIndicatorsView mScrollIndicators;
 
+    private ConversationViewProgressController mProgressController;
+
     private View mNewMessageBar;
 
     private HtmlConversationTemplates mTemplates;
 
     private final MailJsBridge mJsBridge = new MailJsBridge();
-
-    private final WebViewClient mWebViewClient = new ConversationWebViewClient();
 
     private ConversationViewAdapter mAdapter;
 
@@ -179,7 +177,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private final DataSetObserver mLoadedObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
-            getHandler().post(new FragmentRunnable("delayedConversationLoad") {
+            getHandler().post(new FragmentRunnable("delayedConversationLoad",
+                    ConversationViewFragment.this) {
                 @Override
                 public void go() {
                     LogUtils.d(LOG_TAG, "CVF load observer fired, this=%s",
@@ -190,7 +189,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
     };
 
-    private final Runnable mOnProgressDismiss = new FragmentRunnable("onProgressDismiss") {
+    private final Runnable mOnProgressDismiss = new FragmentRunnable("onProgressDismiss", this) {
         @Override
         public void go() {
             LogUtils.d(LOG_TAG, "onProgressDismiss go() - isUserVisible() = %b", isUserVisible());
@@ -295,7 +294,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // the initial primary item
         // Then CPC immediately sets the primary item to #10, which tears down #0/#1 and sets up
         // #9/#10/#11.
-        getHandler().post(new FragmentRunnable("showConversation") {
+        getHandler().post(new FragmentRunnable("showConversation", this) {
             @Override
             public void go() {
                 showConversation();
@@ -321,6 +320,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
+        mWebViewClient = new ConversationWebViewClient(mAccount);
+
         if (savedState != null) {
             mWebViewYPercent = savedState.getFloat(BUNDLE_KEY_WEBVIEW_Y_PERCENT);
         }
@@ -343,7 +344,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
         });
 
-        instantiateProgressIndicators(rootView);
+        mProgressController = new ConversationViewProgressController(this, getHandler());
+        mProgressController.instantiateProgressIndicators(rootView);
 
         mWebView = (ConversationWebView) mConversationContainer.findViewById(R.id.webview);
 
@@ -380,18 +382,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         settings.setJavaScriptEnabled(true);
 
-        final float fontScale = getResources().getConfiguration().fontScale;
-        final int desiredFontSizePx = getResources()
-                .getInteger(R.integer.conversation_desired_font_size_px);
-        final int unstyledFontSizePx = getResources()
-                .getInteger(R.integer.conversation_unstyled_font_size_px);
-
-        int textZoom = settings.getTextZoom();
-        // apply a correction to the default body text style to get regular text to the size we want
-        textZoom = textZoom * desiredFontSizePx / unstyledFontSizePx;
-        // then apply any system font scaling
-        textZoom = (int) (textZoom * fontScale);
-        settings.setTextZoom(textZoom);
+        ConversationViewUtils.setTextZoom(getResources(), settings);
 
         mViewsCreated = true;
         mWebViewLoadedData = false;
@@ -406,11 +397,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mAdapter = null;
         resetLoadWaiting(); // be sure to unregister any active load observer
         mViewsCreated = false;
-    }
-
-    @Override
-    protected WebView getWebView() {
-        return mWebView;
     }
 
     @Override
@@ -476,7 +462,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 userVisible);
 
         if (!userVisible) {
-            dismissLoadingStatus();
+            mProgressController.dismissLoadingStatus();
         } else if (mViewsCreated) {
             if (getMessageCursor() != null) {
                 LogUtils.d(LOG_TAG, "Fragment is now user-visible, onConversationSeen: %s", this);
@@ -543,12 +529,12 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // TODO(mindyp): don't show loading status for a previously rendered
         // conversation. Ielieve this is better done by making sure don't show loading status
         // until XX ms have passed without loading completed.
-        showLoadingStatus();
+        mProgressController.showLoadingStatus(isUserVisible());
     }
 
     private void revealConversation() {
         timerMark("revealing conversation");
-        dismissLoadingStatus(mOnProgressDismiss);
+        mProgressController.dismissLoadingStatus(mOnProgressDismiss);
     }
 
     private boolean isLoadWaiting() {
@@ -677,6 +663,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 }
                 prevCollapsedMsg = msg;
                 prevSafeForImages = safeForImages;
+
+                // This line puts the from address in the address cache so that
+                // we get the sender image for it if it's in a super-collapsed block.
+                getAddress(msg.getFrom());
                 continue;
             }
 
@@ -745,8 +735,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         for (int i = blockToReplace.getStart(), end = blockToReplace.getEnd(); i <= end; i++) {
             cursor.moveToPosition(i);
             final ConversationMessage msg = cursor.getMessage();
-            final MessageHeaderItem header = mAdapter.newMessageHeaderItem(msg,
-                    false /* expanded */, mViewState.getShouldShowImages(msg));
+            final MessageHeaderItem header = ConversationViewAdapter.newMessageHeaderItem(
+                    mAdapter, msg, false /* expanded */, mViewState.getShouldShowImages(msg));
             final MessageFooterItem footer = mAdapter.newMessageFooterItem(header);
 
             final int headerPx = measureOverlayHeight(header);
@@ -986,6 +976,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     private class ConversationWebViewClient extends AbstractConversationWebViewClient {
+        public ConversationWebViewClient(Account account) {
+            super(account);
+        }
+
         @Override
         public void onPageFinished(WebView view, String url) {
             // Ignore unsafe calls made after a fragment is detached from an activity.
@@ -1015,8 +1009,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             for (Address addr : cacheCopy) {
                 emailAddresses.add(addr.getAddress());
             }
-            ContactLoaderCallbacks callbacks = getContactInfoSource();
-            getContactInfoSource().setSenders(emailAddresses);
+            final ContactLoaderCallbacks callbacks = getContactInfoSource();
+            callbacks.setSenders(emailAddresses);
             getLoaderManager().restartLoader(CONTACT_LOADER, Bundle.EMPTY, callbacks);
         }
 
@@ -1037,7 +1031,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         @JavascriptInterface
         public void onWebContentGeometryChange(final String[] overlayTopStrs,
                 final String[] overlayBottomStrs) {
-            getHandler().post(new FragmentRunnable("onWebContentGeometryChange") {
+            getHandler().post(new FragmentRunnable("onWebContentGeometryChange",
+                    ConversationViewFragment.this) {
 
                 @Override
                 public void go() {
@@ -1134,7 +1129,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         @SuppressWarnings("unused")
         @JavascriptInterface
         public void onContentReady() {
-            getHandler().post(new FragmentRunnable("onContentReady") {
+            getHandler().post(new FragmentRunnable("onContentReady",
+                    ConversationViewFragment.this) {
                 @Override
                 public void go() {
                     try {

@@ -75,6 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"撰寫"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"變更資料夾"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"移至"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"移至收件匣"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"資料夾設定"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"不要自動調整郵件顯示比例"</string>
     <string name="message_modified" msgid="2564340197585393687">"(這封郵件的原始版本已經過修改，調整為符合這個畫面的版本。)"</string>
@@ -169,7 +170,10 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"傳送中…"</string>
     <string name="send_failed" msgid="750908595144529579">"郵件未傳送。"</string>
-    <string name="me" msgid="6480762904022198669">"我"</string>
+    <!-- no translation found for me_object_pronun (7668994569594901571) -->
+    <skip />
+    <!-- no translation found for me_subject_pronun (1088657349831581116) -->
+    <skip />
     <string name="inbox_folders_heading" msgid="3960094746248976565">"收件匣"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"刪除這個會話群組？"</item>
@@ -361,6 +365,16 @@
     <item msgid="732746454445519134">"在刪除動作完成後顯示較舊的會話群組"</item>
     <item msgid="2189929276292165301">"在刪除動作完成後顯示會話群組清單"</item>
   </string-array>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"取消圖片許可"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"要取消圖片許可嗎？"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"不再顯示先前許可的寄件者寄來的郵件內置圖片。"</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"系統不會自動顯示圖片。"</string>
+    <!-- no translation found for preferences_signature_title (888167074398030574) -->
+    <skip />
+    <!-- no translation found for preferences_signature_dialog_title (5112192919923401319) -->
+    <skip />
+    <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"新功能"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"回覆"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"回覆所有人"</string>
@@ -410,4 +424,6 @@
     <string name="drawer_open" msgid="6074646853178471940">"開啟導覽匣"</string>
     <string name="drawer_close" msgid="2764774620737876943">"關閉導覽匣"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"輕觸寄件者圖片即可選取該會話群組。"</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"資料夾圖示"</string>
+    <string name="add_account" msgid="2162808366829269770">"新增帳戶"</string>
 </resources>

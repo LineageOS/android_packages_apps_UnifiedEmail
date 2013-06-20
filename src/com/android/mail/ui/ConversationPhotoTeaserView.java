@@ -148,6 +148,12 @@ public class ConversationPhotoTeaserView extends FrameLayout
 
 
     @Override
+    public boolean acceptsUserTaps() {
+        // No, we don't allow user taps.
+        return false;
+    }
+
+    @Override
     public void dismiss() {
         setDismissed();
         startDestroyAnimation();

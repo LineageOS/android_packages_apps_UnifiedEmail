@@ -32,7 +32,7 @@ import java.util.SortedSet;
 
 /**
  * Used to generate folder display information given a raw folders string.
- * (The raw folders string can be obtained from {@link Conversation#rawFolders}.)
+ * (The raw folders string can be obtained from {@link Conversation#getRawFolders()}.)
  *
  */
 public class FolderDisplayer {
@@ -51,16 +51,26 @@ public class FolderDisplayer {
     }
 
     /**
-     * Configure the FolderDisplayer object by parsing the rawFolders string.
+     * Configure the FolderDisplayer object by filtering and copying from the list of raw folders.
      *
-     * @param foldersString string containing serialized folders to display.
+     * @param conv {@link Conversation} containing the folders to display.
      * @param ignoreFolderUri (optional) folder to omit from the displayed set
      * @param ignoreFolderType -1, or the {@link FolderType} to omit from the displayed set
      */
     public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri,
             final int ignoreFolderType) {
         mFoldersSortedSet.clear();
-        mFoldersSortedSet.addAll(conv.getRawFoldersForDisplay(ignoreFolderUri, ignoreFolderType));
+        for (Folder folder : conv.getRawFolders()) {
+            // Skip the ignoreFolderType
+            if (ignoreFolderType >= 0 && folder.isType(ignoreFolderType)) {
+                continue;
+            }
+            // skip the ignoreFolder
+            if (ignoreFolderUri != null && ignoreFolderUri.equals(folder.uri)) {
+                continue;
+            }
+            mFoldersSortedSet.add(folder);
+        }
     }
 
     /**

@@ -36,8 +36,16 @@ public class ConversationInfo implements Parcelable {
         messageInfos = new ArrayList<MessageInfo>();
     }
 
+    /**
+     * Alternate constructor that allows clients to specify the intended number of messages to
+     * reduce garbage from resizing.
+     */
+    public ConversationInfo(int count) {
+        messageInfos = new ArrayList<MessageInfo>(count);
+    }
+
     public ConversationInfo(int count, int draft, String first, String firstUnread, String last) {
-        messageInfos = new ArrayList<MessageInfo>();
+        messageInfos = new ArrayList<MessageInfo>(count);
         set(count, draft, first, firstUnread, last);
     }
 

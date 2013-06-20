@@ -94,6 +94,13 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private View mConversationView;
     private View mFoldersView;
     private View mListView;
+
+    private final Runnable mTransitionCompleteRunnable = new Runnable() {
+        @Override
+        public void run() {
+            onTransitionComplete();
+        }
+    };
     /**
      * A special view used during animation of the conversation list.
      * <p>
@@ -126,7 +133,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         // The conversation list might be visible now, depending on the layout: in portrait we
         // don't show the conversation list, but in landscape we do.  This information is stored
         // in the constants
-        mListCollapsible = res.getBoolean(R.bool.list_collapsed);
+        mListCollapsible = res.getBoolean(R.bool.list_collapsible);
 
         mSlideInterpolator = AnimationUtils.loadInterpolator(context,
                 android.R.interpolator.decelerate_cubic);
@@ -297,6 +304,21 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mPositionedMode = mCurrentMode;
     }
 
+    private final AnimatorListenerAdapter mPaneAnimationListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            mListCopyView.unbind();
+            useHardwareLayer(false);
+            fixupListCopyWidth();
+            onTransitionComplete();
+        }
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            mListCopyView.unbind();
+            useHardwareLayer(false);
+        }
+    };
+
     /**
      * @param foldersX
      * @param listX
@@ -315,21 +337,20 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
             // listeners need to know that the "transition" is complete, even if one is not run.
             // defer notifying listeners because we're in a layout pass, and they might do layout.
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    onTransitionComplete();
-                }
-            });
+            post(mTransitionCompleteRunnable);
             return;
         }
 
-        // freeze the current list view before it gets redrawn
-        mListCopyView.bind(mListView);
-        mListCopyView.setX(mListView.getX());
+        final boolean useListCopy = getPaneWidth(mListView) != getPaneWidth(mListCopyView);
 
-        mListCopyView.setAlpha(1.0f);
-        mListView.setAlpha(0.0f);
+        if (useListCopy) {
+            // freeze the current list view before it gets redrawn
+            mListCopyView.bind(mListView);
+            mListCopyView.setX(mListView.getX());
+
+            mListCopyView.setAlpha(1.0f);
+            mListView.setAlpha(0.0f);
+        }
 
         useHardwareLayer(true);
 
@@ -337,24 +358,13 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         if (!isDrawerView(mFoldersView)) {
             mFoldersView.animate().x(foldersX);
         }
-        mListCopyView.animate().x(listX).alpha(0.0f);
+        if (useListCopy) {
+            mListCopyView.animate().x(listX).alpha(0.0f);
+        }
         mListView.animate()
             .x(listX)
             .alpha(1.0f)
-            .setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mListCopyView.unbind();
-                    useHardwareLayer(false);
-                    fixupListCopyWidth();
-                    onTransitionComplete();
-                }
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    mListCopyView.unbind();
-                    useHardwareLayer(false);
-                }
-        });
+            .setListener(mPaneAnimationListener);
         configureAnimations(mConversationView, mFoldersView, mListView, mListCopyView);
     }
 

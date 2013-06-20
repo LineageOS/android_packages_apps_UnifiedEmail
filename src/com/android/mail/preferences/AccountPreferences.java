@@ -19,8 +19,6 @@ import com.google.common.collect.ImmutableSet;
 
 import android.content.Context;
 
-import com.android.mail.MailIntentService;
-
 /**
  * Preferences relevant to one specific account.
  */
@@ -91,6 +89,6 @@ public class AccountPreferences extends VersionedPrefs {
 
     public void setNotificationsEnabled(final boolean enabled) {
         getEditor().putBoolean(PreferenceKeys.NOTIFICATIONS_ENABLED, enabled).apply();
-        MailIntentService.broadcastBackupDataChanged(getContext());
+        notifyBackupPreferenceChanged();
     }
 }

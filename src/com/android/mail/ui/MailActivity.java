@@ -36,7 +36,6 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Folder;
-import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
@@ -50,8 +49,6 @@ import java.net.URLEncoder;
  * conversation list or a conversation view).
  */
 public class MailActivity extends AbstractMailActivity implements ControllableActivity {
-    // TODO(viki) This class lacks: Sync Window Upgrade dialog
-
     /**
      * The activity controller to which we delegate most Activity lifecycle events.
      */
@@ -310,7 +307,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public FolderListSelectionListener getFolderListSelectionListener() {
+    public FolderSelector getFolderSelector() {
         return mController;
     }
 

@@ -380,7 +380,7 @@ public class SendersView {
         final Locale locale = resources.getConfiguration().locale;
 
         if (sMeString == null || !locale.equals(sMeStringLocale)) {
-            sMeString = resources.getString(R.string.me);
+            sMeString = resources.getString(R.string.me_subject_pronun);
             sMeStringLocale = locale;
         }
         return sMeString;

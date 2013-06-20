@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class LogUtils {
 
-    public static final String TAG = "UnifiedEmail";
+    public static final String TAG = LogTag.getLogTag();
 
     // "GMT" + "+" or "-" + 4 digits
     private static final Pattern DATE_CLEANUP_PATTERN_WRONG_TIMEZONE =
@@ -61,7 +61,7 @@ public class LogUtils {
      * production releases.  This should be set to DEBUG for production releases, and VERBOSE for
      * internal builds.
      */
-    private static final int MAX_ENABLED_LOG_LEVEL = DEBUG;
+    private static final int MAX_ENABLED_LOG_LEVEL = VERBOSE;
 
     private static Boolean sDebugLoggingEnabledForTests = null;
 
@@ -69,7 +69,7 @@ public class LogUtils {
      * Enable debug logging for unit tests.
      */
     @VisibleForTesting
-    static void setDebugLoggingEnabledForTests(boolean enabled) {
+    public static void setDebugLoggingEnabledForTests(boolean enabled) {
         setDebugLoggingEnabledForTestsInternal(enabled);
     }
 
@@ -95,7 +95,15 @@ public class LogUtils {
         if (sDebugLoggingEnabledForTests != null) {
             return sDebugLoggingEnabledForTests.booleanValue();
         }
-        return Log.isLoggable(tag, Log.DEBUG);
+        return Log.isLoggable(tag, Log.DEBUG) || Log.isLoggable(TAG, Log.DEBUG);
+    }
+
+    /**
+     * Returns a String for the specified content provider uri.  This will do
+     * sanitation of the uri to remove PII if debug logging is not enabled.
+     */
+    public static String contentUriToString(final Uri uri) {
+        return contentUriToString(TAG, uri);
     }
 
     /**
@@ -128,39 +136,6 @@ public class LogUtils {
         }
     }
 
-   /* TODO: what is the correct behavior for base case and the Gmail case? Seems like this
-    * belongs in override code in UnifiedGmail.
-    *Converts the specified set of labels to a string, and removes any PII as necessary
-    * public static String labelSetToString(Set<String> labelSet) {
-        if (isDebugLoggingEnabled() || labelSet == null) {
-            return labelSet != null ? labelSet.toString() : "";
-        } else {
-            final StringBuilder builder = new StringBuilder("[");
-            int i = 0;
-            for(String label : labelSet) {
-                if (i > 0) {
-                    builder.append(", ");
-                }
-                builder.append(sanitizeLabelName(label));
-                i++;
-            }
-            builder.append(']');
-            return builder.toString();
-        }
-    }
-
-    private static String sanitizeLabelName(String canonicalName) {
-        if (TextUtils.isEmpty(canonicalName)) {
-            return "";
-        }
-
-        if (Gmail.isSystemLabel(canonicalName)) {
-            return canonicalName;
-        }
-
-        return USER_LABEL_PREFIX + String.valueOf(canonicalName.hashCode());
-    }*/
-
     /**
      * Checks to see whether or not a log for the specified tag is loggable at the specified level.
      */
@@ -168,7 +143,7 @@ public class LogUtils {
         if (MAX_ENABLED_LOG_LEVEL > level) {
             return false;
         }
-        return Log.isLoggable(tag, level);
+        return Log.isLoggable(tag, level) || Log.isLoggable(TAG, level);
     }
 
     /**

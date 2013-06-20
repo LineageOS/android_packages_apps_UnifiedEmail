@@ -17,46 +17,25 @@
 
 package com.android.mail.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.content.Loader;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.DataSetObservable;
-import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Browser;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
-import com.android.mail.ContactInfo;
-import com.android.mail.ContactInfoSource;
-import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
-import com.android.mail.SenderInfoLoader;
 import com.android.mail.browse.ConversationAccountController;
+import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationController;
-import com.android.mail.browse.MessageCursor.ConversationMessage;
-import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
@@ -70,17 +49,15 @@ import com.android.mail.providers.UIProvider.CursorStatus;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.common.collect.ImmutableMap;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 
 public abstract class AbstractConversationViewFragment extends Fragment implements
-        ConversationController, ConversationAccountController, MessageHeaderViewCallbacks,
+        ConversationController, ConversationAccountController,
         ConversationViewHeaderCallbacks {
 
     private static final String ARG_ACCOUNT = "account";
@@ -89,17 +66,20 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private static final String LOG_TAG = LogTag.getLogTag();
     protected static final int MESSAGE_LOADER = 0;
     protected static final int CONTACT_LOADER = 1;
-    private static int sMinDelay = -1;
-    private static int sMinShowTime = -1;
     protected ControllableActivity mActivity;
     private final MessageLoaderCallbacks mMessageLoaderCallbacks = new MessageLoaderCallbacks();
-    protected FormattedDateBuilder mDateBuilder;
-    private final ContactLoaderCallbacks mContactLoaderCallbacks = new ContactLoaderCallbacks();
+    private ContactLoaderCallbacks mContactLoaderCallbacks;
     private MenuItem mChangeFoldersMenuItem;
     protected Conversation mConversation;
     protected Folder mFolder;
     protected String mBaseUri;
     protected Account mAccount;
+
+    /**
+     * Must be instantiated in a derived class's onCreate.
+     */
+    protected AbstractConversationWebViewClient mWebViewClient;
+
     /**
      * Cache of email address strings to parsed Address objects.
      * <p>
@@ -115,8 +95,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * this flag is saved and restored.
      */
     private boolean mUserVisible;
-    private View mProgressView;
-    private View mBackgroundView;
+
     private final Handler mHandler = new Handler();
     /** True if we want to avoid marking the conversation as viewed and read. */
     private boolean mSuppressMarkingViewed;
@@ -126,26 +105,17 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      */
     protected ConversationViewState mViewState;
 
-    private long mLoadingShownTime = -1;
-
     private boolean mIsDetached;
 
     private boolean mHasConversationBeenTransformed;
     private boolean mHasConversationTransformBeenReverted;
-
-    private final Runnable mDelayedShow = new FragmentRunnable("mDelayedShow") {
-        @Override
-        public void go() {
-            mLoadingShownTime = System.currentTimeMillis();
-            mProgressView.setVisibility(View.VISIBLE);
-        }
-    };
 
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
             final Account oldAccount = mAccount;
             mAccount = newAccount;
+            mWebViewClient.setAccount(mAccount);
             onAccountChanged(newAccount, oldAccount);
         }
     };
@@ -255,81 +225,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         return "(" + s + " conv=" + mConversation + ")";
     }
 
-    protected abstract WebView getWebView();
-
-    public void instantiateProgressIndicators(View rootView) {
-        mBackgroundView = rootView.findViewById(R.id.background_view);
-        mProgressView = rootView.findViewById(R.id.loading_progress);
-    }
-
-    protected void dismissLoadingStatus() {
-        dismissLoadingStatus(null);
-    }
-
-    /**
-     * Begin the fade-out animation to hide the Progress overlay, either immediately or after some
-     * timeout (to ensure that the progress minimum time elapses).
-     *
-     * @param doAfter an optional Runnable action to execute after the animation completes
-     */
-    protected void dismissLoadingStatus(final Runnable doAfter) {
-        if (mLoadingShownTime == -1) {
-            // The runnable hasn't run yet, so just remove it.
-            mHandler.removeCallbacks(mDelayedShow);
-            dismiss(doAfter);
-            return;
-        }
-        final long diff = Math.abs(System.currentTimeMillis() - mLoadingShownTime);
-        if (diff > sMinShowTime) {
-            dismiss(doAfter);
-        } else {
-            mHandler.postDelayed(new FragmentRunnable("dismissLoadingStatus") {
-                @Override
-                public void go() {
-                    dismiss(doAfter);
-                }
-            }, Math.abs(sMinShowTime - diff));
-        }
-    }
-
-    private void dismiss(final Runnable doAfter) {
-        // Reset loading shown time.
-        mLoadingShownTime = -1;
-        mProgressView.setVisibility(View.GONE);
-        if (mBackgroundView.getVisibility() == View.VISIBLE) {
-            animateDismiss(doAfter);
-        } else {
-            if (doAfter != null) {
-                doAfter.run();
-            }
-        }
-    }
-
-    private void animateDismiss(final Runnable doAfter) {
-        // the animation can only work (and is only worth doing) if this fragment is added
-        // reasons it may not be added: fragment is being destroyed, or in the process of being
-        // restored
-        if (!isAdded()) {
-            mBackgroundView.setVisibility(View.GONE);
-            return;
-        }
-
-        Utils.enableHardwareLayer(mBackgroundView);
-        final Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
-        animator.setTarget(mBackgroundView);
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mBackgroundView.setVisibility(View.GONE);
-                mBackgroundView.setLayerType(View.LAYER_TYPE_NONE, null);
-                if (doAfter != null) {
-                    doAfter.run();
-                }
-            }
-        });
-        animator.start();
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -344,31 +239,15 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
         mActivity = (ControllableActivity) activity;
         mContext = activity.getApplicationContext();
-        mDateBuilder = new FormattedDateBuilder((Context) mActivity);
+        mWebViewClient.setActivity(activity);
         mAccount = mAccountObserver.initialize(mActivity.getAccountController());
+        mWebViewClient.setAccount(mAccount);
     }
 
     @Override
     public ConversationUpdater getListController() {
         final ControllableActivity activity = (ControllableActivity) getActivity();
         return activity != null ? activity.getConversationUpdater() : null;
-    }
-
-
-    protected void showLoadingStatus() {
-        if (!mUserVisible) {
-            return;
-        }
-        if (sMinDelay == -1) {
-            Resources res = getContext().getResources();
-            sMinDelay = res.getInteger(R.integer.conversationview_show_loading_delay);
-            sMinShowTime = res.getInteger(R.integer.conversationview_min_show_loading);
-        }
-        // If the loading view isn't already showing, show it and remove any
-        // pending calls to show the loading screen.
-        mBackgroundView.setVisibility(View.VISIBLE);
-        mHandler.removeCallbacks(mDelayedShow);
-        mHandler.postDelayed(mDelayedShow, sMinDelay);
     }
 
     public Context getContext() {
@@ -394,6 +273,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     public ContactLoaderCallbacks getContactInfoSource() {
+        if (mContactLoaderCallbacks == null) {
+            mContactLoaderCallbacks = new ContactLoaderCallbacks(mActivity.getActivityContext());
+        }
         return mContactLoaderCallbacks;
     }
 
@@ -421,7 +303,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             LogUtils.e(LOG_TAG,
                     "ACVF ignoring onOptionsItemSelected b/c userVisibleHint is false. f=%s", this);
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
-                Log.e(LOG_TAG, Utils.dumpFragment(this));  // the dump has '%' chars in it...
+                LogUtils.e(LOG_TAG, Utils.dumpFragment(this));  // the dump has '%' chars in it...
             }
             return false;
         }
@@ -446,6 +328,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         Utils.setMenuItemVisibility(menu, R.id.show_original, supportsMessageTransforms() &&
                 mHasConversationBeenTransformed && !mHasConversationTransformBeenReverted);
     }
+
+    abstract boolean supportsMessageTransforms();
 
     // BEGIN conversation header callbacks
     @Override
@@ -591,7 +475,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     private void popOut() {
-        mHandler.post(new FragmentRunnable("popOut") {
+        mHandler.post(new FragmentRunnable("popOut", this) {
             @Override
             public void go() {
                 if (mActivity != null) {
@@ -687,153 +571,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
     }
 
-    /**
-     * Inner class to to asynchronously load contact data for all senders in the conversation,
-     * and notify observers when the data is ready.
-     *
-     */
-    protected class ContactLoaderCallbacks implements ContactInfoSource,
-            LoaderManager.LoaderCallbacks<ImmutableMap<String, ContactInfo>> {
-
-        private Set<String> mSenders;
-        private ImmutableMap<String, ContactInfo> mContactInfoMap;
-        private DataSetObservable mObservable = new DataSetObservable();
-
-        public void setSenders(Set<String> emailAddresses) {
-            mSenders = emailAddresses;
-        }
-
-        @Override
-        public Loader<ImmutableMap<String, ContactInfo>> onCreateLoader(int id, Bundle args) {
-            return new SenderInfoLoader(mActivity.getActivityContext(), mSenders);
-        }
-
-        @Override
-        public void onLoadFinished(Loader<ImmutableMap<String, ContactInfo>> loader,
-                ImmutableMap<String, ContactInfo> data) {
-            mContactInfoMap = data;
-            mObservable.notifyChanged();
-        }
-
-        @Override
-        public void onLoaderReset(Loader<ImmutableMap<String, ContactInfo>> loader) {
-        }
-
-        @Override
-        public ContactInfo getContactInfo(String email) {
-            if (mContactInfoMap == null) {
-                return null;
-            }
-            return mContactInfoMap.get(email);
-        }
-
-        @Override
-        public void registerObserver(DataSetObserver observer) {
-            mObservable.registerObserver(observer);
-        }
-
-        @Override
-        public void unregisterObserver(DataSetObserver observer) {
-            mObservable.unregisterObserver(observer);
-        }
-    }
-
-    protected class AbstractConversationWebViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            final Activity activity = getActivity();
-            if (activity == null) {
-                return false;
-            }
-
-            boolean result = false;
-            final Intent intent;
-            Uri uri = Uri.parse(url);
-            if (!Utils.isEmpty(mAccount.viewIntentProxyUri)) {
-                intent = generateProxyIntent(uri);
-            } else {
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-                intent.putExtra(Browser.EXTRA_APPLICATION_ID, activity.getPackageName());
-            }
-
-            try {
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                activity.startActivity(intent);
-                result = true;
-            } catch (ActivityNotFoundException ex) {
-                // If no application can handle the URL, assume that the
-                // caller can handle it.
-            }
-
-            return result;
-        }
-
-        private Intent generateProxyIntent(Uri uri) {
-            final Intent intent = new Intent(Intent.ACTION_VIEW, mAccount.viewIntentProxyUri);
-            intent.putExtra(UIProvider.ViewProxyExtras.EXTRA_ORIGINAL_URI, uri);
-            intent.putExtra(UIProvider.ViewProxyExtras.EXTRA_ACCOUNT, mAccount);
-
-            final Context context = getContext();
-            PackageManager manager = null;
-            // We need to catch the exception to make CanvasConversationHeaderView
-            // test pass.  Bug: http://b/issue?id=3470653.
-            try {
-                manager = context.getPackageManager();
-            } catch (UnsupportedOperationException e) {
-                LogUtils.e(LOG_TAG, e, "Error getting package manager");
-            }
-
-            if (manager != null) {
-                // Try and resolve the intent, to find an activity from this package
-                final List<ResolveInfo> resolvedActivities = manager.queryIntentActivities(
-                        intent, PackageManager.MATCH_DEFAULT_ONLY);
-
-                final String packageName = context.getPackageName();
-
-                // Now try and find one that came from this package, if one is not found, the UI
-                // provider must have specified an intent that is to be handled by a different apk.
-                // In that case, the class name will not be set on the intent, so the default
-                // intent resolution will be used.
-                for (ResolveInfo resolveInfo: resolvedActivities) {
-                    final ActivityInfo activityInfo = resolveInfo.activityInfo;
-                    if (packageName.equals(activityInfo.packageName)) {
-                        intent.setClassName(activityInfo.packageName, activityInfo.name);
-                        break;
-                    }
-                }
-            }
-
-            return intent;
-        }
-    }
-
     public abstract void onConversationUpdated(Conversation conversation);
-
-    /**
-     * Small Runnable-like wrapper that first checks that the Fragment is in a good state before
-     * doing any work. Ideal for use with a {@link Handler}.
-     */
-    protected abstract class FragmentRunnable implements Runnable {
-
-        private final String mOpName;
-
-        public FragmentRunnable(String opName) {
-            mOpName = opName;
-        }
-
-        public abstract void go();
-
-        @Override
-        public void run() {
-            if (!isAdded()) {
-                LogUtils.i(LOG_TAG, "Unable to run op='%s' b/c fragment is not attached: %s",
-                        mOpName, AbstractConversationViewFragment.this);
-                return;
-            }
-            go();
-        }
-
-    }
 
     public void onDetachedModeEntered() {
         // If we have no messages, then we have nothing to display, so leave this view.
@@ -854,7 +592,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      */
     public void onConversationTransformed() {
         mHasConversationBeenTransformed = true;
-        mHandler.post(new FragmentRunnable("invalidateOptionsMenu") {
+        mHandler.post(new FragmentRunnable("invalidateOptionsMenu", this) {
             @Override
             public void go() {
                 mActivity.invalidateOptionsMenu();

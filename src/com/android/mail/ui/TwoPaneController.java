@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -69,7 +70,8 @@ public final class TwoPaneController extends AbstractActivityController {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         // Use cross fading animation.
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        Fragment conversationListFragment = ConversationListFragment.newInstance(mConvListContext);
+        final Fragment conversationListFragment =
+                ConversationListFragment.newInstance(mConvListContext);
         fragmentTransaction.replace(R.id.conversation_list_pane, conversationListFragment,
                 TAG_CONVERSATION_LIST);
         fragmentTransaction.commitAllowingStateLoss();
@@ -87,30 +89,6 @@ public final class TwoPaneController extends AbstractActivityController {
                 return true;
             default:
                 return false;
-        }
-    }
-
-    /**
-     * Create a {@link FolderListFragment} for trees with the specified parent
-     * @param parent the parent folder whose children need to be displayed in this list
-     */
-    private void createFolderTree(Folder parent) {
-        setHierarchyFolder(parent);
-        createFolderListFragment(FolderListFragment.ofTree(parent, false));
-    }
-
-    private void createFolderListFragment(Fragment folderList) {
-        // Create a sectioned FolderListFragment.
-        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
-        if (Utils.useFolderListFragmentTransition(mActivity.getActivityContext())) {
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        }
-        fragmentTransaction.replace(R.id.content_pane, folderList, TAG_FOLDER_LIST);
-        fragmentTransaction.commitAllowingStateLoss();
-        // We only set the action bar if the viewmode has been set previously. Otherwise, we leave
-        // the action bar in the state it is currently in.
-        if (mViewMode.getMode() != ViewMode.UNKNOWN) {
-            resetActionBarIcon();
         }
     }
 
@@ -132,8 +110,9 @@ public final class TwoPaneController extends AbstractActivityController {
         mDrawerPullout = mDrawerContainer.findViewById(R.id.content_pane);
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
         if (mLayout == null) {
-            // We need the layout for everything. Crash early if it is null.
+            // We need the layout for everything. Crash/Return early if it is null.
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
+            return false;
         }
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
         mLayout.setDrawerLayout(mDrawerContainer);
@@ -166,26 +145,18 @@ public final class TwoPaneController extends AbstractActivityController {
             mViewMode.enterConversationListMode();
         }
 
-        if (folder.hasChildren && !folder.equals(getHierarchyFolder())) {
-            // Replace this fragment with a new FolderListFragment
-            // showing this folder's children if we are not already looking
-            // at the child view for this folder.
-            createFolderTree(folder);
+        if (folder.hasChildren) {
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
-        } else {
-            setHierarchyFolder(folder);
         }
+        setHierarchyFolder(folder);
         super.onFolderSelected(folder);
     }
 
     private void goUpFolderHierarchy(Folder current) {
-        Folder parent = current.parent;
-        if (parent.parent != null) {
-            createFolderTree(parent.parent);
-            // Show the up affordance when digging into child folders.
-            mActionBarView.setBackButton();
-        } else {
+        // If the current folder is a child, up should show the parent folder.
+        final Folder parent = current.parent;
+        if (parent != null) {
             onFolderSelected(parent);
         }
     }
@@ -428,7 +399,6 @@ public final class TwoPaneController extends AbstractActivityController {
                     // Show inbox; we are at the top of the hierarchy we were
                     // showing, and it doesn't have a parent, so we must want to
                     // the basic account folder list.
-                    createFolderListFragment(FolderListFragment.ofDrawer());
                     loadAccountInbox();
                 }
             // Otherwise, if we are in the conversation list but not in the default
@@ -572,5 +542,11 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean isDrawerEnabled() {
         return mLayout.isDrawerEnabled();
+    }
+
+    @Override
+    public int getFolderListViewChoiceMode() {
+        // By default, we want to allow one item to be selected in the folder list
+        return ListView.CHOICE_MODE_SINGLE;
     }
 }

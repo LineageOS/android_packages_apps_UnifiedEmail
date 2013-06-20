@@ -151,6 +151,8 @@
     <string name="menu_change_folders">Change folders</string>
     <!-- Menu item: moves to folders for selected conversation(s). [CHAR LIMIT = 30] -->
     <string name="menu_move_to">Move to</string>
+    <!-- Menu item: moves current or selected conversation(s) to Inbox. [CHAR LIMIT = 30] -->
+    <string name="menu_move_to_inbox">Move to Inbox</string>
     <!-- Menu item: manages the folders for this account. [CHAR LIMIT = 30] -->
     <string name="menu_manage_folders">Folder settings</string>
     <!-- Menu item: report an email was not readable or poorly rendered -->
@@ -355,8 +357,12 @@
     <string name="sending">Sending\u2026</string>
     <!-- Message displayed in a browse list item for one second after a send failed [CHAR LIMIT=26]-->
     <string name="send_failed">Message wasn\'t sent.</string>
-    <!-- Strings used to show myself in a To/Cc list. [CHAR LIMIT=15] -->
-    <string name="me">me</string>
+    <!-- String used to represent "me" when used as an object pronoun. This string is used when
+         showing the list of recipients of a message [CHAR LIMIT=15] -->
+    <string name="me_object_pronun">me</string>
+    <!-- String used to represent "me"/"I" when used as an subject pronoun. This string is use when
+         showing the list of senders for a conversation list item. [CHAR LIMIT=15] -->
+    <string name="me_subject_pronun">me</string>
     <!-- Header for list of inboxes in the drawer (Inbox, Priority) [CHAR LIMIT=50] -->
     <string name="inbox_folders_heading">Inbox</string>
 
@@ -795,6 +801,27 @@
         <item>list</item>
     </string-array>
 
+    <!-- Settings screen, title of "Restore default for "Show pictures"" [CHAR LIMIT=1000]-->
+    <string name="clear_display_images_whitelist_title">Clear picture approvals</string>
+
+    <!-- Settings screen, title of dialog shown to confirm action when user taps
+    "Clear picture approvals" in preferences [CHAR LIMIT=200]-->
+    <string name="clear_display_images_whitelist_dialog_title">Clear picture approvals?</string>
+    <!-- Settings screen, message of dialog shown to confirm action when tapping
+    "Clear picture approvals" [CHAR LIMIT=1000]-->
+    <string name="clear_display_images_whitelist_dialog_message">Stop displaying inline images from senders you previously allowed.</string>
+
+    <!-- Message shown in toast when the user taps "Restore default for "Show pictures"" in Gmail general preferences. [CHAR LIMIT=50] -->
+    <string name="sender_whitelist_cleared">Pictures won\'t be shown automatically.</string>
+
+    <!-- Settings screen, name of the setting that lets the user choose their signature [CHAR LIMIT=50] -->
+    <string name="preferences_signature_title">Signature</string>
+    <!-- Settings screen, title of the dialog that lets the user configure their signature [CHAR LIMIT=50] -->
+    <string name="preferences_signature_dialog_title">Signature</string>
+    <!-- Settings screen, setting summary text when no signature set [CHAR LIMIT=100] -->
+    <string name="preferences_signature_summary_not_set">Not set</string>
+
+
     <!-- Dialog title for the What's New dialog. [CHAR LIMIT=50] -->
     <string name="whats_new_dialog_title">What\'s new</string>
 
@@ -911,4 +938,10 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string name="conversation_photo_welcome_text">Touch a sender image to select that conversation.</string>
+
+    <!-- Content description for the folder icon for nested folders. -->
+    <string name="folder_icon_desc">Folder icon</string>
+
+    <!--  Button, "Add account" in the preference screen [CHAR LIMIT=30] -->
+    <string name="add_account">Add account</string>
 </resources>

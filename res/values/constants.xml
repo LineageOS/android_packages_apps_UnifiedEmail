@@ -28,10 +28,6 @@
     <!-- Frequency (in milliseconds) for the refresh of timestamps in conversation list fragments. -->
     <integer name="timestamp_update_interval">60000</integer>
 
-    <!-- Boolean value indicating whether the conversation list be
-         removed from the UI. This is something only tablets can do,
-         so false in the default case.  Set this true for tablets. -->
-    <integer name="conversation_list_collapsible">0</integer>
     <!-- Relative weights of the different views.  These three
          determine how much of the screen width is taken by the
          different views. For the default layout (phone), these values
@@ -58,8 +54,8 @@
     <integer name="conversation_unstyled_font_size_px">13</integer>
     <integer name="conversation_webview_viewport_px">980</integer>
 
-    <!-- Whether the list is collapsed in conversation view mode -->
-    <bool name="list_collapsed">true</bool>
+    <!-- Whether the list is collapsible in conversation view mode -->
+    <bool name="list_collapsible">true</bool>
 
     <!-- Whether to show single or 2 pane search results -->
     <bool name="show_two_pane_search_results">false</bool>

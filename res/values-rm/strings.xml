@@ -125,6 +125,8 @@
     <skip />
     <!-- no translation found for menu_move_to (9138296669516358542) -->
     <skip />
+    <!-- no translation found for menu_move_to_inbox (3201472943201077389) -->
+    <skip />
     <!-- no translation found for menu_manage_folders (6755623004628177492) -->
     <skip />
     <!-- no translation found for menu_show_original (4227060689700765828) -->
@@ -287,7 +289,9 @@
     <skip />
     <!-- no translation found for send_failed (750908595144529579) -->
     <skip />
-    <!-- no translation found for me (6480762904022198669) -->
+    <!-- no translation found for me_object_pronun (7668994569594901571) -->
+    <skip />
+    <!-- no translation found for me_subject_pronun (1088657349831581116) -->
     <skip />
     <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
     <skip />
@@ -560,6 +564,20 @@
     <!-- no translation found for prefSummaries_autoAdvance:0 (6389534341359835440) -->
     <!-- no translation found for prefSummaries_autoAdvance:1 (732746454445519134) -->
     <!-- no translation found for prefSummaries_autoAdvance:2 (2189929276292165301) -->
+    <!-- no translation found for clear_display_images_whitelist_title (7120575487854245735) -->
+    <skip />
+    <!-- no translation found for clear_display_images_whitelist_dialog_title (3190704164490442683) -->
+    <skip />
+    <!-- no translation found for clear_display_images_whitelist_dialog_message (1169152185612117654) -->
+    <skip />
+    <!-- no translation found for sender_whitelist_cleared (917434007919176024) -->
+    <skip />
+    <!-- no translation found for preferences_signature_title (888167074398030574) -->
+    <skip />
+    <!-- no translation found for preferences_signature_dialog_title (5112192919923401319) -->
+    <skip />
+    <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
+    <skip />
     <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
     <skip />
     <!-- no translation found for notification_action_reply (6015299134424685297) -->
@@ -633,5 +651,9 @@
     <!-- no translation found for drawer_close (2764774620737876943) -->
     <skip />
     <!-- no translation found for conversation_photo_welcome_text (4274875219447670662) -->
+    <skip />
+    <!-- no translation found for folder_icon_desc (1500547397347480618) -->
+    <skip />
+    <!-- no translation found for add_account (2162808366829269770) -->
     <skip />
 </resources>

@@ -15,8 +15,6 @@
  */
 package com.android.mail.utils;
 
-import com.android.mail.utils.LogTag;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,19 +41,13 @@ public class MimeType {
     static final String GENERIC_MIMETYPE = "application/octet-stream";
 
     @VisibleForTesting
-    static final String EML_ATTACHMENT_CONTENT_TYPE = "application/eml";
+    private static final Set<String> EML_ATTACHMENT_CONTENT_TYPES = ImmutableSet.of(
+            "message/rfc822", "application/eml");
+    public static final String EML_ATTACHMENT_CONTENT_TYPE = "message/rfc822";
     private static final String NULL_ATTACHMENT_CONTENT_TYPE = "null";
     private static final Set<String> UNACCEPTABLE_ATTACHMENT_TYPES = ImmutableSet.of(
             "application/zip", "application/x-gzip", "application/x-bzip2",
             "application/x-compress", "application/x-compressed", "application/x-tar");
-
-    private static Set<String> sGviewSupportedTypes = ImmutableSet.of(
-            "application/pdf",
-            "application/vnd.ms-powerpoint",
-            "image/tiff",
-            "application/msword",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            "application/vnd.openxmlformats-officedocument.presentationml.presentation");
 
     /**
      * Returns whether or not an attachment of the specified type is installable (e.g. an apk).
@@ -120,16 +112,6 @@ public class MimeType {
         return UNACCEPTABLE_ATTACHMENT_TYPES.contains(contentType);
     }
 
-    /* TODO: what do we want to do about GSF keys for the unified app?
-    public static boolean isPreviewable(Context context, String contentType) {
-        final String supportedTypes = Gservices.getString(
-                context.getContentResolver(), GservicesKeys.GMAIL_GVIEW_SUPPORTED_TYPES);
-        if (supportedTypes != null) {
-            sGviewSupportedTypes = ImmutableSet.of(TextUtils.split(supportedTypes, ","));
-        }
-        return sGviewSupportedTypes.contains(contentType);
-    }*/
-
     /**
      * Extract and return filename's extension, converted to lower case, and not including the "."
      *
@@ -151,7 +133,7 @@ public class MimeType {
      * Returns the mime type of the attachment based on its name and
      * original mime type. This is an workaround for bugs where Gmail
      * server doesn't set content-type for certain types correctly.
-     * 1) EML files -> "application/eml".
+     * 1) EML files -> "message/rfc822".
      * @param name name of the attachment.
      * @param mimeType original mime type of the attachment.
      * @return the inferred mime type of the attachment.
@@ -174,12 +156,22 @@ public class MimeType {
             if (!TextUtils.isEmpty(type)) {
                 return type;
             } if (extension.equals("eml")) {
-                // Extension is ".eml", return mime type "application/eml"
+                // Extension is ".eml", return mime type "message/rfc822"
                 return EML_ATTACHMENT_CONTENT_TYPE;
             } else {
                 // Extension is not ".eml", just return original mime type.
                 return !TextUtils.isEmpty(mimeType) ? mimeType : GENERIC_MIMETYPE;
             }
         }
+    }
+
+    /**
+     * Checks the supplied mime type to determine if it is a valid eml file.
+     * Valid mime types are "message/rfc822" and "application/eml".
+     * @param mimeType the mime type to check
+     * @return {@code true} if the mime type is one of the valid mime types.
+     */
+    public static boolean isEmlMimeType(String mimeType) {
+        return EML_ATTACHMENT_CONTENT_TYPES.contains(mimeType);
     }
 }

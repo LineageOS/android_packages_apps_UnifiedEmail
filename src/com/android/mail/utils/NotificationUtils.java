@@ -32,13 +32,9 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts.Photo;
 import android.support.v4.app.NotificationCompat;
-import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextUtils.SimpleStringSplitter;
 import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
 import android.util.Pair;
@@ -53,6 +49,7 @@ import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
@@ -63,17 +60,15 @@ import com.google.android.common.html.parser.HTML4;
 import com.google.android.common.html.parser.HtmlDocument;
 import com.google.android.common.html.parser.HtmlTree;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -87,11 +82,6 @@ public class NotificationUtils {
 
     private static TextAppearanceSpan sNotificationUnreadStyleSpan;
     private static CharacterStyle sNotificationReadStyleSpan;
-
-    private static final Map<Integer, Integer> sPriorityToLength = Maps.newHashMap();
-    private static final SimpleStringSplitter SENDER_LIST_SPLITTER =
-            new SimpleStringSplitter(Utils.SENDER_LIST_SEPARATOR);
-    private static String[] sSenderFragments = new String[8];
 
     /** A factory that produces a plain text converter that removes elided text. */
     private static final HtmlTree.PlainTextConverterFactory MESSAGE_CONVERTER_FACTORY =
@@ -479,6 +469,11 @@ public class NotificationUtils {
                     Boolean.FALSE.toString());
             cursor = context.getContentResolver().query(uriBuilder.build(),
                     UIProvider.CONVERSATION_PROJECTION, null, null, null);
+            if (cursor == null) {
+                // This folder doesn't exist.
+                clearFolderNotification(context, account, folder, false);
+                return;
+            }
             final int cursorUnseenCount = cursor.getCount();
 
             // Make sure the unseen count matches the number of items in the cursor.  But, we don't
@@ -565,14 +560,15 @@ public class NotificationUtils {
             if (unreadCount > 0) {
                 // How can I order this properly?
                 if (cursor.moveToNext()) {
-                    Intent notificationIntent = createViewConversationIntent(context, account,
-                            folder, null);
+                    final Intent notificationIntent;
 
-                    // Launch directly to the conversation, if the
-                    // number of unseen conversations == 1
+                    // Launch directly to the conversation, if there is only 1 unseen conversation
                     if (unseenCount == 1) {
                         notificationIntent = createViewConversationIntent(context, account, folder,
                                 cursor);
+                    } else {
+                        notificationIntent = createViewConversationIntent(context, account, folder,
+                                null);
                     }
 
                     if (notificationIntent == null) {
@@ -1205,47 +1201,10 @@ public class NotificationUtils {
     }
 
     /**
-     * Adds a fragment with given style to a string builder.
-     *
-     * @param builder the current string builder
-     * @param fragment the fragment to be added
-     * @param style the style of the fragment
-     * @param withSpaces whether to add the whole fragment or to divide it into
-     *            smaller ones
+     * Clears the notifications for the specified account/folder.
      */
-    private static void addStyledFragment(SpannableStringBuilder builder, String fragment,
-            CharacterStyle style, boolean withSpaces) {
-        if (withSpaces) {
-            int pos = builder.length();
-            builder.append(fragment);
-            builder.setSpan(CharacterStyle.wrap(style), pos, builder.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        } else {
-            int start = 0;
-            while (true) {
-                int pos = fragment.substring(start).indexOf(' ');
-                if (pos == -1) {
-                    addStyledFragment(builder, fragment.substring(start), style, true);
-                    break;
-                } else {
-                    pos += start;
-                    if (start < pos) {
-                        addStyledFragment(builder, fragment.substring(start, pos), style, true);
-                        builder.append(' ');
-                    }
-                    start = pos + 1;
-                    if (start >= fragment.length()) {
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Clears the notifications for the specified account/folder/conversation.
-     */
-    public static void clearFolderNotification(Context context, Account account, Folder folder) {
+    public static void clearFolderNotification(Context context, Account account, Folder folder,
+            final boolean markSeen) {
         LogUtils.v(LOG_TAG, "NotificationUtils: Clearing all notifications for %s/%s", account.name,
                 folder.name);
         final NotificationMap notificationMap = getNotificationMap(context);
@@ -1253,7 +1212,43 @@ public class NotificationUtils {
         notificationMap.remove(key);
         notificationMap.saveNotificationMap(context);
 
-        markSeen(context, folder);
+        final NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(getNotificationId(account.name, folder));
+
+        if (markSeen) {
+            markSeen(context, folder);
+        }
+    }
+
+    /**
+     * Clears all notifications for the specified account.
+     */
+    public static void clearAccountNotifications(final Context context, final String account) {
+        LogUtils.v(LOG_TAG, "NotificationUtils: Clearing all notifications for %s", account);
+        final NotificationMap notificationMap = getNotificationMap(context);
+
+        // Find all NotificationKeys for this account
+        final ImmutableList.Builder<NotificationKey> keyBuilder = ImmutableList.builder();
+
+        for (final NotificationKey key : notificationMap.keySet()) {
+            if (account.equals(key.account.name)) {
+                keyBuilder.add(key);
+            }
+        }
+
+        final List<NotificationKey> notificationKeys = keyBuilder.build();
+
+        final NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        for (final NotificationKey notificationKey : notificationKeys) {
+            final Folder folder = notificationKey.folder;
+            notificationManager.cancel(getNotificationId(account, folder));
+            notificationMap.remove(notificationKey);
+        }
+
+        notificationMap.saveNotificationMap(context);
     }
 
     private static ArrayList<Long> findContacts(Context context, Collection<String> addresses) {
@@ -1371,10 +1366,14 @@ public class NotificationUtils {
         final EmailAddress address = EmailAddress.getEmailAddress(sender);
 
         String displayableSender = address.getName();
-        // If that fails, default to the sender address.
-        if (TextUtils.isEmpty(displayableSender)) {
-            displayableSender = address.getAddress();
+
+        if (!TextUtils.isEmpty(displayableSender)) {
+            return Address.decodeAddressName(displayableSender);
         }
+
+        // If that fails, default to the sender address.
+        displayableSender = address.getAddress();
+
         // If we were unable to tokenize a name or address,
         // just use whatever was in the sender.
         if (TextUtils.isEmpty(displayableSender)) {
@@ -1450,14 +1449,7 @@ public class NotificationUtils {
         private static final HtmlDocument.Node ELIDED_TEXT_REPLACEMENT_NODE =
                 HtmlDocument.createSelfTerminatingTag(HTML4.BR_ELEMENT, null, null, null);
 
-        private static final String STYLE_ELEMENT_ATTRIBUTE_CLASS_VALUE = "style";
-
         private int mEndNodeElidedTextBlock = -1;
-        /**
-         * A stack of the end tag numbers for <style /> tags. We don't want to
-         * include anything between these.
-         */
-        private Deque<Integer> mStyleNodeEnds = Lists.newLinkedList();
 
         @Override
         public void addNode(HtmlDocument.Node n, int nodeNum, int endNum) {
@@ -1487,8 +1479,6 @@ public class NotificationUtils {
                             break;
                         }
                     }
-                } else if (STYLE_ELEMENT_ATTRIBUTE_CLASS_VALUE.equals(htmlElement.getName())) {
-                    mStyleNodeEnds.push(endNum);
                 }
 
                 if (foundElidedTextTag) {
@@ -1496,13 +1486,7 @@ public class NotificationUtils {
                 }
             }
 
-            if (!mStyleNodeEnds.isEmpty() && mStyleNodeEnds.peek() == nodeNum) {
-                mStyleNodeEnds.pop();
-            }
-
-            if (mStyleNodeEnds.isEmpty()) {
-                super.addNode(n, nodeNum, endNum);
-            }
+            super.addNode(n, nodeNum, endNum);
         }
     }
 

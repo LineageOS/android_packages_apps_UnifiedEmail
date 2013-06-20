@@ -29,10 +29,16 @@ import android.text.TextUtils;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
+import com.android.emailcommon.internet.MimeMessage;
+import com.android.emailcommon.internet.MimeUtility;
+import com.android.emailcommon.mail.MessagingException;
+import com.android.emailcommon.mail.Part;
+import com.android.emailcommon.utility.ConversionUtilities;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -352,6 +358,44 @@ public class Message implements Parcelable {
             viaDomain = cursor.getString(UIProvider.MESSAGE_VIA_DOMAIN_COLUMN);
             isSending = cursor.getInt(UIProvider.MESSAGE_IS_SENDING_COLUMN) != 0;
         }
+    }
+
+    public Message(MimeMessage mimeMessage) throws MessagingException {
+        // Set message header values.
+        setFrom(com.android.emailcommon.mail.Address.pack(mimeMessage.getFrom()));
+        setTo(com.android.emailcommon.mail.Address.pack(mimeMessage.getRecipients(
+                com.android.emailcommon.mail.Message.RecipientType.TO)));
+        setCc(com.android.emailcommon.mail.Address.pack(mimeMessage.getRecipients(
+                com.android.emailcommon.mail.Message.RecipientType.CC)));
+        setBcc(com.android.emailcommon.mail.Address.pack(mimeMessage.getRecipients(
+                com.android.emailcommon.mail.Message.RecipientType.BCC)));
+        setReplyTo(com.android.emailcommon.mail.Address.pack(mimeMessage.getReplyTo()));
+        subject = mimeMessage.getSubject();
+        dateReceivedMs = mimeMessage.getSentDate().getTime();
+
+        // for now, always set defaults
+        alwaysShowImages = false;
+        viaDomain = null;
+        draftType = UIProvider.DraftType.NOT_A_DRAFT;
+        isSending = false;
+        starred = false;
+        spamWarningString = null;
+        messageFlags = 0;
+        hasAttachments = false;
+
+        // body values (snippet/bodyText/bodyHtml)
+        // Now process body parts & attachments
+        ArrayList<Part> viewables = new ArrayList<Part>();
+        ArrayList<Part> attachments = new ArrayList<Part>();
+        MimeUtility.collectParts(mimeMessage, viewables, attachments);
+
+        ConversionUtilities.BodyFieldData data =
+                ConversionUtilities.parseBodyFields(viewables);
+
+        snippet = data.snippet;
+        bodyText = data.textContent;
+        bodyHtml = data.htmlContent;
+        // TODO - attachments?
     }
 
     public boolean isFlaggedReplied() {
