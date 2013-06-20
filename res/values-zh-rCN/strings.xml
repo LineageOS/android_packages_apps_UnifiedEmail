@@ -170,7 +170,10 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"正在发送..."</string>
     <string name="send_failed" msgid="750908595144529579">"邮件发送失败。"</string>
-    <string name="me" msgid="6480762904022198669">"我"</string>
+    <!-- no translation found for me_object_pronun (7668994569594901571) -->
+    <skip />
+    <!-- no translation found for me_subject_pronun (1088657349831581116) -->
+    <skip />
     <string name="inbox_folders_heading" msgid="3960094746248976565">"收件箱"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"要删除此会话吗？"</item>
@@ -366,6 +369,12 @@
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"清除图片显示许可？"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"对于您之前允许显示其邮件内嵌图片的发件人，停止显示其邮件内的图片。"</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"图片不会自动显示。"</string>
+    <!-- no translation found for preferences_signature_title (888167074398030574) -->
+    <skip />
+    <!-- no translation found for preferences_signature_dialog_title (5112192919923401319) -->
+    <skip />
+    <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
+    <skip />
     <string name="whats_new_dialog_title" msgid="4230806739326698666">"新功能"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"回复"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"全部回复"</string>
@@ -416,6 +425,5 @@
     <string name="drawer_close" msgid="2764774620737876943">"关闭抽屉式导航栏"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"触摸发件人头像即可选择该会话。"</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"文件夹图标"</string>
-    <!-- no translation found for add_account (2162808366829269770) -->
-    <skip />
+    <string name="add_account" msgid="2162808366829269770">"添加帐户"</string>
 </resources>

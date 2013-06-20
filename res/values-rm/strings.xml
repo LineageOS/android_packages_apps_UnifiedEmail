@@ -289,7 +289,9 @@
     <skip />
     <!-- no translation found for send_failed (750908595144529579) -->
     <skip />
-    <!-- no translation found for me (6480762904022198669) -->
+    <!-- no translation found for me_object_pronun (7668994569594901571) -->
+    <skip />
+    <!-- no translation found for me_subject_pronun (1088657349831581116) -->
     <skip />
     <!-- no translation found for inbox_folders_heading (3960094746248976565) -->
     <skip />
@@ -569,6 +571,12 @@
     <!-- no translation found for clear_display_images_whitelist_dialog_message (1169152185612117654) -->
     <skip />
     <!-- no translation found for sender_whitelist_cleared (917434007919176024) -->
+    <skip />
+    <!-- no translation found for preferences_signature_title (888167074398030574) -->
+    <skip />
+    <!-- no translation found for preferences_signature_dialog_title (5112192919923401319) -->
+    <skip />
+    <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
     <skip />
     <!-- no translation found for whats_new_dialog_title (4230806739326698666) -->
     <skip />
