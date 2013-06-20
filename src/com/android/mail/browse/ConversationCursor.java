@@ -52,7 +52,6 @@ import com.android.mail.utils.NotificationActionUtils.NotificationAction;
 import com.android.mail.utils.NotificationActionUtils.NotificationActionType;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -254,12 +253,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     }
 
     private static class UnderlyingRowData {
-        public final String wrappedUri;
         public final String innerUri;
         public Conversation conversation;
 
-        public UnderlyingRowData(String wrappedUri, String innerUri, Conversation conversation) {
-            this.wrappedUri = wrappedUri;
+        public UnderlyingRowData(String innerUri, Conversation conversation) {
             this.innerUri = innerUri;
             this.conversation = conversation;
         }
@@ -340,10 +337,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             mUpdateObserverRegistered = true;
 
             final long start = SystemClock.uptimeMillis();
-            final ImmutableMap.Builder<String, Integer> conversationUriPositionMapBuilder =
-                    new ImmutableMap.Builder<String, Integer>();
-            final ImmutableMap.Builder<Long, Integer> conversationIdPositionMapBuilder =
-                    new ImmutableMap.Builder<Long, Integer>();
+            final Map<String, Integer> uriPositionMap;
+            final Map<Long, Integer> idPositionMap;
             final UnderlyingRowData[] cache;
             final int count;
             final StringBuilder uriBuilder = new StringBuilder();
@@ -354,37 +349,24 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 cache = new UnderlyingRowData[count];
                 int i = 0;
 
-                final Map<String, Integer> uriPositionMap;
-                final Map<Long, Integer> idPositionMap;
-
-                if (DEBUG_DUPLICATE_KEYS) {
-                    uriPositionMap = Maps.newHashMap();
-                    idPositionMap = Maps.newHashMap();
-                } else {
-                    uriPositionMap = null;
-                    idPositionMap = null;
-                }
+                uriPositionMap = Maps.newHashMapWithExpectedSize(count);
+                idPositionMap = Maps.newHashMapWithExpectedSize(count);
 
                 do {
                     final Conversation c;
                     final String innerUriString;
-                    final String wrappedUriString;
                     final long convId;
 
                     if (ENABLE_CONVERSATION_PRECACHING && i < MAX_INIT_CONVERSATION_PRELOAD) {
                         c = new Conversation(this);
                         innerUriString = c.uri.toString();
-                        wrappedUriString = uriToCachingUriString(innerUriString, uriBuilder);
                         convId = c.id;
                         numCached++;
                     } else {
                         c = null;
                         innerUriString = super.getString(URI_COLUMN_INDEX);
-                        wrappedUriString = uriToCachingUriString(innerUriString, uriBuilder);
                         convId = super.getLong(UIProvider.CONVERSATION_ID_COLUMN);
                     }
-                    conversationUriPositionMapBuilder.put(innerUriString, i);
-                    conversationIdPositionMapBuilder.put(convId, i);
 
                     if (DEBUG_DUPLICATE_KEYS) {
                         if (uriPositionMap.containsKey(innerUriString)) {
@@ -398,28 +380,35 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                                     "Cursor position: %d, iteration: %d map position: %d",
                                     convId, getPosition(), i, idPositionMap.get(convId));
                         }
-                        uriPositionMap.put(innerUriString, i);
-                        idPositionMap.put(convId, i);
                     }
+
+                    uriPositionMap.put(innerUriString, i);
+                    idPositionMap.put(convId, i);
+
                     cache[i] = new UnderlyingRowData(
-                            wrappedUriString,
                             innerUriString,
                             c);
                 } while (super.moveToPosition(++i));
 
-                if (DEBUG_DUPLICATE_KEYS && (uriPositionMap.size() != count ||
-                        idPositionMap.size() != count)) {
-                    LogUtils.e(LOG_TAG, "Unexpected map sizes.  Cursor size: %d, " +
-                            "uri position map size: %d, id position map size: %d", count,
-                            uriPositionMap.size(), idPositionMap.size());
+                if (uriPositionMap.size() != count || idPositionMap.size() != count) {
+                    if (DEBUG_DUPLICATE_KEYS)  {
+                        throw new IllegalStateException("Unexpected map sizes: cursorN=" + count
+                                + " uriN=" + uriPositionMap.size() + " idN="
+                                + idPositionMap.size());
+                    } else {
+                        LogUtils.e(LOG_TAG, "Unexpected map sizes.  Cursor size: %d, " +
+                                "uri position map size: %d, id position map size: %d", count,
+                                uriPositionMap.size(), idPositionMap.size());
+                    }
                 }
             } else {
                 count = 0;
                 cache = new UnderlyingRowData[0];
+                uriPositionMap = Maps.newHashMap();
+                idPositionMap = Maps.newHashMap();
             }
-            mConversationUriPositionMap = conversationUriPositionMapBuilder.build();
-            mConversationIdPositionMap = conversationIdPositionMapBuilder.build();
-
+            mConversationUriPositionMap = Collections.unmodifiableMap(uriPositionMap);
+            mConversationIdPositionMap = Collections.unmodifiableMap(idPositionMap);
 
             mRowCache = Collections.unmodifiableList(Arrays.asList(cache));
             final long end = SystemClock.uptimeMillis();
@@ -455,10 +444,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         public int getPosition(String conversationUri) {
             final Integer position = mConversationUriPositionMap.get(conversationUri);
             return position != null ? position.intValue() : -1;
-        }
-
-        public String getWrappedUri() {
-            return mRowCache.get(getPosition()).wrappedUri;
         }
 
         public String getInnerUri() {
@@ -1224,7 +1209,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         // If we're asking for the Uri for the conversation list, we return a forwarding URI
         // so that we can intercept update/delete and handle it ourselves
         if (columnIndex == URI_COLUMN_INDEX) {
-            return mUnderlyingCursor.getWrappedUri();
+            return uriToCachingUriString(mUnderlyingCursor.getInnerUri(), null);
         }
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (String)obj;
