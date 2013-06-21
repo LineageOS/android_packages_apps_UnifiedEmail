@@ -17,6 +17,7 @@
 
 package com.android.mail.browse;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -51,8 +52,9 @@ public final class ConversationMessage extends Message {
         super(cursor);
     }
 
-    public ConversationMessage(MimeMessage mimeMessage) throws MessagingException {
-        super(mimeMessage);
+    public ConversationMessage(Context context, MimeMessage mimeMessage, Uri emlFileUri)
+            throws MessagingException {
+        super(context, mimeMessage, emlFileUri);
     }
 
     public void setController(ConversationController controller) {

@@ -146,6 +146,14 @@
             <grant-uri-permission android:pathPattern=".*" />
         </provider>
 
+        <provider
+                android:authorities="@string/eml_attachment_provider"
+                android:multiprocess="false"
+                android:exported="false"
+                android:name="com.android.mail.providers.EmlAttachmentProvider" >
+            <grant-uri-permission android:pathPattern=".*" />
+        </provider>
+
         <!-- The android:name is the name of the Provider class which is stored in
           UnifiedEmail, and has package name com.android.mail.providers and the class is
           called SuggestionsProvider. The authority name is specified in the MailAppProvider
@@ -170,6 +178,7 @@
                  android:permission="android.permission.BIND_REMOTEVIEWS"
                  android:exported="false" />
         <service android:name=".MailLogService"/>
+        <service android:name=".browse.EmlTempFileDeletionService" />
 
     </application>
 

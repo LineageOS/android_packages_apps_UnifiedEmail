@@ -18,6 +18,7 @@ package com.android.mail.providers;
 
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
@@ -37,6 +38,7 @@ import com.android.emailcommon.utility.ConversionUtilities;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -360,7 +362,8 @@ public class Message implements Parcelable {
         }
     }
 
-    public Message(MimeMessage mimeMessage) throws MessagingException {
+    public Message(Context context, MimeMessage mimeMessage, Uri emlFileUri)
+            throws MessagingException {
         // Set message header values.
         setFrom(com.android.emailcommon.mail.Address.pack(mimeMessage.getFrom()));
         setTo(com.android.emailcommon.mail.Address.pack(mimeMessage.getRecipients(
@@ -395,7 +398,21 @@ public class Message implements Parcelable {
         snippet = data.snippet;
         bodyText = data.textContent;
         bodyHtml = data.htmlContent;
-        // TODO - attachments?
+
+        // populate mAttachments
+        mAttachments = Lists.newArrayList();
+
+        int partId = 0;
+        final String messageId = mimeMessage.getMessageId();
+        for (final Part attachmentPart : attachments) {
+            mAttachments.add(new Attachment(context, attachmentPart,
+                    emlFileUri, messageId, Integer.toString(partId++)));
+        }
+
+        hasAttachments = !mAttachments.isEmpty();
+
+        attachmentListUri =  hasAttachments ?
+                EmlAttachmentProvider.getAttachmentsListUri(emlFileUri, messageId) : null;
     }
 
     public boolean isFlaggedReplied() {
