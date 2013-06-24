@@ -34,6 +34,7 @@ import com.android.ex.photo.provider.PhotoContract;
 import com.android.mail.R;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.MimeType;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -313,6 +314,11 @@ public class EmlAttachmentProvider extends ContentProvider {
                     if (SystemClock.elapsedRealtime() - now > READ_TIMEOUT) {
                         throw new IOException("Timed out copying attachment.");
                     }
+                }
+
+                // if the attachment is an APK, change contentUri to be a direct file uri
+                if (MimeType.isInstallable(attachment.getContentType())) {
+                    attachment.contentUri = Uri.parse("file://" + newFilePath);
                 }
 
                 // 3. add file to download manager
