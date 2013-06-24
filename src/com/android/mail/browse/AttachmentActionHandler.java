@@ -104,7 +104,7 @@ public class AttachmentActionHandler {
     private void startDownloadingAttachment(
             Attachment attachment, int destination, int rendition, int additionalPriority,
             boolean delayDownload) {
-        final ContentValues params = new ContentValues(2);
+        final ContentValues params = new ContentValues(5);
         params.put(AttachmentColumns.STATE, AttachmentState.DOWNLOADING);
         params.put(AttachmentColumns.DESTINATION, destination);
         params.put(AttachmentContentValueKeys.RENDITION, rendition);

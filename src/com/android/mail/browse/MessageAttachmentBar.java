@@ -261,7 +261,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
     private boolean shouldShowDownloadAgain() {
         // implies state == SAVED || state == FAILED
-        return mAttachment.isDownloadFinishedOrFailed();
+        // and the attachment supports re-download
+        return mAttachment.supportsDownloadAgain() && mAttachment.isDownloadFinishedOrFailed();
     }
 
     private boolean shouldShowOverflow() {
