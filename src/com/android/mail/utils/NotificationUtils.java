@@ -738,9 +738,6 @@ public class NotificationUtils {
                 final NotificationCompat.InboxStyle digest =
                         new NotificationCompat.InboxStyle(notification);
 
-                // TODO(skennedy) I do not believe this line is necessary
-                digest.setBigContentTitle(newMessagesString);
-
                 int numDigestItems = 0;
                 do {
                     final Conversation conversation = new Conversation(conversationCursor);
