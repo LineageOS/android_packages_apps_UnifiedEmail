@@ -7,7 +7,7 @@
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *and
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.content.AsyncTaskLoader;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 
 import com.android.emailcommon.TempDirectory;
@@ -28,6 +29,7 @@ import com.android.emailcommon.mail.MessagingException;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,7 +65,7 @@ public class EmlMessageLoader extends AsyncTaskLoader<ConversationMessage> {
         final ConversationMessage convMessage;
         try {
             mimeMessage = new MimeMessage(stream);
-            convMessage = new ConversationMessage(mimeMessage);
+            convMessage = new ConversationMessage(context, mimeMessage, mEmlFileUri);
         } catch (IOException e) {
             LogUtils.e(LOG_TAG, e, "Could not read eml file");
             return null;
@@ -76,6 +78,15 @@ public class EmlMessageLoader extends AsyncTaskLoader<ConversationMessage> {
             } catch (IOException e) {
                 return null;
             }
+
+            // delete temp files created during parsing
+            final File[] cacheFiles = TempDirectory.getTempDirectory().listFiles();
+            for (final File file : cacheFiles) {
+                if (file.getName().startsWith("body")) {
+                    file.delete();
+                }
+            }
+
         }
 
         return convMessage;
@@ -175,6 +186,13 @@ public class EmlMessageLoader extends AsyncTaskLoader<ConversationMessage> {
      * with an actively loaded data set.
      */
     protected void onReleaseResources(ConversationMessage message) {
-        // DO NOTHING
+        // if this eml message had attachments, start a service to clean up the cache files
+        if (message.attachmentListUri != null) {
+            final Intent intent = new Intent(Intent.ACTION_DELETE);
+            intent.setClass(getContext(), EmlTempFileDeletionService.class);
+            intent.setData(message.attachmentListUri);
+
+            getContext().startService(intent);
+        }
     }
 }

@@ -16,15 +16,18 @@
 
 package com.android.mail.providers;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
-
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.android.emailcommon.internet.MimeUtility;
+import com.android.emailcommon.mail.MessagingException;
+import com.android.emailcommon.mail.Part;
 import com.android.mail.browse.MessageAttachmentBar;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
@@ -33,11 +36,18 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -136,6 +146,11 @@ public class Attachment implements Parcelable {
 
     private transient Uri mIdentifierUri;
 
+    /**
+     * True if this attachment can be downloaded again.
+     */
+    private boolean supportsDownloadAgain;
+
     public Attachment() {
     }
 
@@ -151,6 +166,7 @@ public class Attachment implements Parcelable {
         thumbnailUri = in.readParcelable(null);
         previewIntentUri = in.readParcelable(null);
         providerData = in.readString();
+        supportsDownloadAgain = in.readInt() == 1;
     }
 
     public Attachment(Cursor cursor) {
@@ -172,6 +188,8 @@ public class Attachment implements Parcelable {
         previewIntentUri = parseOptionalUri(
                 cursor.getString(cursor.getColumnIndex(AttachmentColumns.PREVIEW_INTENT_URI)));
         providerData = cursor.getString(cursor.getColumnIndex(AttachmentColumns.PROVIDER_DATA));
+        supportsDownloadAgain = cursor.getInt(
+                cursor.getColumnIndex(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN)) == 1;
     }
 
     public Attachment(JSONObject srcJson) {
@@ -186,6 +204,99 @@ public class Attachment implements Parcelable {
         thumbnailUri = parseOptionalUri(srcJson, AttachmentColumns.THUMBNAIL_URI);
         previewIntentUri = parseOptionalUri(srcJson, AttachmentColumns.PREVIEW_INTENT_URI);
         providerData = srcJson.optString(AttachmentColumns.PROVIDER_DATA);
+        supportsDownloadAgain = srcJson.optBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, true);
+    }
+
+    /**
+     * Constructor for use when creating attachments in eml files.
+     */
+    public Attachment(Context context, Part part, Uri emlFileUri, String messageId, String partId) {
+        try {
+            // Transfer fields from mime format to provider format
+            final String contentTypeHeader = MimeUtility.unfoldAndDecode(part.getContentType());
+            name = MimeUtility.getHeaderParameter(contentTypeHeader, "name");
+            if (name == null) {
+                final String contentDisposition =
+                        MimeUtility.unfoldAndDecode(part.getDisposition());
+                name = MimeUtility.getHeaderParameter(contentDisposition, "filename");
+            }
+
+            contentType = MimeType.inferMimeType(name, part.getMimeType());
+            uri = EmlAttachmentProvider.getAttachmentUri(emlFileUri, messageId, partId);
+            contentUri = uri;
+            thumbnailUri = uri;
+            previewIntentUri = null;
+            state = AttachmentState.SAVED;
+            providerData = null;
+            supportsDownloadAgain = false;
+            destination = AttachmentDestination.CACHE;
+
+            // insert attachment into content provider so that we can open the file
+            final ContentResolver resolver = context.getContentResolver();
+            resolver.insert(uri, toContentValues());
+
+            // save the file in the cache
+            try {
+                final InputStream in = part.getBody().getInputStream();
+                final OutputStream out = resolver.openOutputStream(uri, "rwt");
+                size = IOUtils.copy(in, out);
+                downloadedSize = size;
+                in.close();
+                out.close();
+            } catch (FileNotFoundException e) {
+                LogUtils.e(LOG_TAG, e, "Error in writing attachment to cache");
+            } catch (IOException e) {
+                LogUtils.e(LOG_TAG, e, "Error in writing attachment to cache");
+            }
+            // perform a second insert to put the updated size and downloaded size values in
+            resolver.insert(uri, toContentValues());
+        } catch (MessagingException e) {
+            LogUtils.e(LOG_TAG, e, "Error parsing eml attachment");
+        }
+    }
+
+    /**
+     * Create an attachment from a {@link ContentValues} object.
+     * The keys should be {@link AttachmentColumns}.
+     */
+    public Attachment(ContentValues values) {
+        name = values.getAsString(AttachmentColumns.NAME);
+        size = values.getAsInteger(AttachmentColumns.SIZE);
+        uri = parseOptionalUri(values.getAsString(AttachmentColumns.URI));
+        contentType = values.getAsString(AttachmentColumns.CONTENT_TYPE);
+        state = values.getAsInteger(AttachmentColumns.STATE);
+        destination = values.getAsInteger(AttachmentColumns.DESTINATION);
+        downloadedSize = values.getAsInteger(AttachmentColumns.DOWNLOADED_SIZE);
+        contentUri = parseOptionalUri(values.getAsString(AttachmentColumns.CONTENT_URI));
+        thumbnailUri = parseOptionalUri(values.getAsString(AttachmentColumns.THUMBNAIL_URI));
+        previewIntentUri =
+                parseOptionalUri(values.getAsString(AttachmentColumns.PREVIEW_INTENT_URI));
+        providerData = values.getAsString(AttachmentColumns.PROVIDER_DATA);
+        supportsDownloadAgain = values.getAsBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN);
+    }
+
+    /**
+     * Returns the various attachment fields in a {@link ContentValues} object.
+     * The keys for each field should be {@link AttachmentColumns}.
+     */
+    public ContentValues toContentValues() {
+        final ContentValues values = new ContentValues(12);
+
+        values.put(AttachmentColumns.NAME, name);
+        values.put(AttachmentColumns.SIZE, size);
+        values.put(AttachmentColumns.URI, uri.toString());
+        values.put(AttachmentColumns.CONTENT_TYPE, contentType);
+        values.put(AttachmentColumns.STATE, state);
+        values.put(AttachmentColumns.DESTINATION, destination);
+        values.put(AttachmentColumns.DOWNLOADED_SIZE, downloadedSize);
+        values.put(AttachmentColumns.CONTENT_URI, contentUri.toString());
+        values.put(AttachmentColumns.THUMBNAIL_URI, thumbnailUri.toString());
+        values.put(AttachmentColumns.PREVIEW_INTENT_URI,
+                previewIntentUri == null ? null : previewIntentUri.toString());
+        values.put(AttachmentColumns.PROVIDER_DATA, providerData);
+        values.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
+
+        return values;
     }
 
     @Override
@@ -201,6 +312,7 @@ public class Attachment implements Parcelable {
         dest.writeParcelable(thumbnailUri, flags);
         dest.writeParcelable(previewIntentUri, flags);
         dest.writeString(providerData);
+        dest.writeInt(supportsDownloadAgain ? 1 : 0);
     }
 
     public JSONObject toJSON() throws JSONException {
@@ -217,6 +329,7 @@ public class Attachment implements Parcelable {
         result.put(AttachmentColumns.THUMBNAIL_URI, stringify(thumbnailUri));
         result.put(AttachmentColumns.PREVIEW_INTENT_URI, stringify(previewIntentUri));
         result.put(AttachmentColumns.PROVIDER_DATA, providerData);
+        result.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
 
         return result;
     }
@@ -292,6 +405,10 @@ public class Attachment implements Parcelable {
 
     public boolean isDownloadFinishedOrFailed() {
         return state == AttachmentState.FAILED || state == AttachmentState.SAVED;
+    }
+
+    public boolean supportsDownloadAgain() {
+        return supportsDownloadAgain;
     }
 
     public boolean canPreview() {

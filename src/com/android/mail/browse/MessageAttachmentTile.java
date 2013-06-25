@@ -174,7 +174,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
             getContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {
             // couldn't find activity for View intent
-            LogUtils.e(LOG_TAG, "Coun't find Activity for intent", e);
+            LogUtils.e(LOG_TAG, "Couldn't find Activity for intent", e);
         }
     }
 

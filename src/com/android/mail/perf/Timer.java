@@ -15,12 +15,11 @@
  */
 package com.android.mail.perf;
 
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
-
 import android.os.Debug;
 import android.os.SystemClock;
 
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;

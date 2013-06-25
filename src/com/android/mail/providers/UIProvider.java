@@ -1721,7 +1721,8 @@ public class UIProvider {
         AttachmentColumns.CONTENT_URI,
         AttachmentColumns.THUMBNAIL_URI,
         AttachmentColumns.PREVIEW_INTENT_URI,
-        AttachmentColumns.PROVIDER_DATA
+        AttachmentColumns.PROVIDER_DATA,
+        AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN
     };
     public static final int ATTACHMENT_NAME_COLUMN = 0;
     public static final int ATTACHMENT_SIZE_COLUMN = 1;
@@ -1733,6 +1734,7 @@ public class UIProvider {
     public static final int ATTACHMENT_CONTENT_URI_COLUMN = 7;
     public static final int ATTACHMENT_THUMBNAIL_URI_COLUMN = 8;
     public static final int ATTACHMENT_PREVIEW_INTENT_COLUMN = 9;
+    public static final int ATTACHMENT_SUPPORTS_DOWNLOAD_AGAIN_COLUMN = 10;
 
     /**
      * Valid states for the {@link AttachmentColumns#STATE} column.
@@ -1888,6 +1890,11 @@ public class UIProvider {
          * This column contains provider-specific private data as JSON string.
          */
         public static final String PROVIDER_DATA = "providerData";
+
+        /**
+         * This column tells whether this attachment supports the ability to be downloaded again.
+         */
+        public static final String SUPPORTS_DOWNLOAD_AGAIN = "supportsDownloadAgain";
 
         private AttachmentColumns() {}
     }
