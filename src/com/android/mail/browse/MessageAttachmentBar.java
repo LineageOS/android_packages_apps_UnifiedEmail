@@ -22,6 +22,7 @@ import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -68,6 +69,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
     private final AttachmentActionHandler mActionHandler;
     private boolean mSaveClicked;
+    private Uri mAccountUri;
 
     private final Runnable mUpdateRunnable = new Runnable() {
             @Override
@@ -77,6 +79,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     };
 
     private static final String LOG_TAG = LogTag.getLogTag();
+
 
     public MessageAttachmentBar(Context context) {
         this(context, null);
@@ -102,9 +105,11 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
      * Render or update an attachment's view. This happens immediately upon instantiation, and
      * repeatedly as status updates stream in, so only properties with new or changed values will
      * cause sub-views to update.
-     *
      */
-    public void render(Attachment attachment, boolean loaderResult) {
+    public void render(Attachment attachment, Uri accountUri, boolean loaderResult) {
+        // get account uri for potential eml viewer usage
+        mAccountUri = accountUri;
+
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
         mActionHandler.setAttachment(mAttachment);
@@ -293,6 +298,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         // viewer rather than let any activity open it.
         if (MimeType.isEmlMimeType(contentType)) {
             intent.setClass(getContext(), EmlViewerActivity.class);
+            intent.putExtra(EmlViewerActivity.EXTRA_ACCOUNT_URI, mAccountUri);
         }
 
         try {
