@@ -51,7 +51,7 @@ public class CcBccView extends RelativeLayout {
         mCc.setVisibility(showCc ? View.VISIBLE : View.GONE);
         mBcc.setVisibility(showBcc ? View.VISIBLE : View.GONE);
         if (animate) {
-            animate(showCc, showBcc, ccWasAlreadyShown);
+            animate(ccWasAlreadyShown);
         } else {
             if (showCc) {
                 mCc.setAlpha(1);
@@ -63,7 +63,7 @@ public class CcBccView extends RelativeLayout {
         }
     }
 
-    private void animate(Boolean showCc, boolean showBcc, boolean ccWasAlreadyShown) {
+    private void animate(boolean ccWasAlreadyShown) {
         Resources res = getResources();
         // Then, have cc/ bcc fade in
         int fadeDuration = res.getInteger(R.integer.fadein_cc_bcc_dur);

@@ -114,10 +114,10 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
 
     @Override
     public void onClick(View v) {
-        onClick(v.getId(), v);
+        onClick();
     }
 
-    private boolean onClick(int res, View v) {
+    private boolean onClick() {
         showAndDownloadAttachments();
         return true;
     }

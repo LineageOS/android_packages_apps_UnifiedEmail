@@ -33,16 +33,13 @@ import com.android.mail.utils.LogUtils;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -142,16 +139,6 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     /** Cache size for {@link #sBitmapCache} for devices with "large" RAM. */
     private static final int BITMAP_CACHE_SIZE = 36864 * 48; // 1728K
 
-    /**
-     * {@code true} if ALL entries in {@link #sBitmapHolderCache} are NOT fresh.
-     */
-    private static volatile boolean sBitmapHolderCacheAllUnfresh = true;
-
-    /**
-     * Cache size threshold at which bitmaps will not be preloaded.
-     */
-    private static final int sBitmapHolderCacheRedZoneBytes;
-
     /** For debug: How many times we had to reload cached photo for a stale entry */
     private static final AtomicInteger sStaleCacheOverwrite = new AtomicInteger();
 
@@ -184,7 +171,6 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                 if (DEBUG) dumpStats();
             }
         };
-        sBitmapHolderCacheRedZoneBytes = (int) (holderCacheSize * 0.75);
         LogUtils.i(TAG, "Cache adj: " + cacheSizeAdjustment);
         if (DEBUG) {
             LogUtils.d(TAG, "Cache size: " + btk(sBitmapHolderCache.maxSize())
@@ -284,7 +270,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      *
      * @return false if the photo needs to be (re)loaded from the provider.
      */
-    private boolean loadCachedPhoto(Request request, boolean fadeIn) {
+    private static boolean loadCachedPhoto(Request request, boolean fadeIn) {
         final Bitmap decoded = sBitmapCache.get(request.bitmapKey);
         if (decoded != null) {
             if (DEBUG) LogUtils.v(TAG, "%s, key=%s decodedSize=%s r=%s thread=%s",
@@ -420,7 +406,6 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         BitmapHolder holder = new BitmapHolder(bytes);
 
         sBitmapHolderCache.put(key, holder);
-        sBitmapHolderCacheAllUnfresh = false;
     }
 
     // ComponentCallbacks2

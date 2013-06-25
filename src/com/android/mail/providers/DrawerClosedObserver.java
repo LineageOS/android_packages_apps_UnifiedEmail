@@ -21,8 +21,6 @@ import android.database.DataSetObserver;
 
 import com.android.mail.ui.AccountController;
 import com.android.mail.ui.RecentFolderController;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 
 /**
  * Observes when the drawer is closed for the purpose of computing after the drawer is,
@@ -30,8 +28,6 @@ import com.android.mail.utils.LogUtils;
  */
 public abstract class DrawerClosedObserver extends DataSetObserver {
     private AccountController mController;
-
-    private static final String LOG_TAG = LogTag.getLogTag();
 
     /**
      * The no-argument constructor leaves the object unusable till

@@ -166,7 +166,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
      * @param undo true if an operation is being undone. We animate the item
      *            away during delete. Undoing populates the item.
      */
-    public void startShrinkAnimation(ViewMode viewMode, AnimatorListener listener) {
+    public void startShrinkAnimation(AnimatorListener listener) {
         if (!mAnimating) {
             mAnimating = true;
             final ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", mHeight, 0);

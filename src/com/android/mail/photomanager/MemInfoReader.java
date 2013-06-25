@@ -27,7 +27,7 @@ public class MemInfoReader {
     private long mFreeSize;
     private long mCachedSize;
 
-    private boolean matchText(byte[] buffer, int index, String text) {
+    private static boolean matchText(byte[] buffer, int index, String text) {
         int N = text.length();
         if ((index + N) >= buffer.length) {
             return false;
@@ -40,7 +40,7 @@ public class MemInfoReader {
         return true;
     }
 
-    private long extractMemValue(byte[] buffer, int index) {
+    private static long extractMemValue(byte[] buffer, int index) {
         while (index < buffer.length && buffer[index] != '\n') {
             if (buffer[index] >= '0' && buffer[index] <= '9') {
                 int start = index;

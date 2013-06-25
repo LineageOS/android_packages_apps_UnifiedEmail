@@ -175,7 +175,7 @@ public class ConversationPagerController {
         }
     }
 
-    public void onConversationSeen(Conversation conv) {
+    public void onConversationSeen() {
         if (mPagerAdapter == null) {
             return;
         }

@@ -483,7 +483,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         if (hasFadeLeaveBehinds()) {
             if(isPositionFadeLeaveBehind(conv)) {
                 LeaveBehindItem fade  = getFadeLeaveBehindItem(position, conv);
-                fade.startShrinkAnimation(mActivity.getViewMode(), mAnimatorListener);
+                fade.startShrinkAnimation(mAnimatorListener);
                 return fade;
             }
         }
@@ -900,7 +900,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public String toString() {
-        final String s = super.toString();
         final StringBuilder sb = new StringBuilder("{");
         sb.append(super.toString());
         sb.append(" mUndoingItems=");

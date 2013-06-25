@@ -64,7 +64,7 @@ public interface ConversationListCallbacks {
      * Coordinates actions that might occur in response to a conversation that has finished loading
      * and is now user-visible.
      */
-    void onConversationSeen(Conversation conv);
+    void onConversationSeen();
 
     void registerConversationListObserver(DataSetObserver observer);
     void unregisterConversationListObserver(DataSetObserver observer);

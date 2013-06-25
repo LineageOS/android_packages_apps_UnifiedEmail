@@ -68,7 +68,7 @@ public class TestProviderTests extends ProviderTestCase2<TestProvider> {
         super.tearDown();
     }
 
-    private ContentValues ponyValues(String name, String type, int legs, boolean canRide) {
+    private static ContentValues ponyValues(String name, String type, int legs, boolean canRide) {
         ContentValues cv = new ContentValues();
         cv.put(PONY_COLUMN_NAME, name);
         cv.put(PONY_COLUMN_TYPE, type);
@@ -94,7 +94,7 @@ public class TestProviderTests extends ProviderTestCase2<TestProvider> {
         return mMockResolver.applyBatch(TestProvider.AUTHORITY, ops);
     }
 
-    private Uri getPonyUri() {
+    private static Uri getPonyUri() {
         return new Uri.Builder().scheme("content").authority(CANHAZ_AUTHORITY)
             .path(PONY_TABLE).build();
     }

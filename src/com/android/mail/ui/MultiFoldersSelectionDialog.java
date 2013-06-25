@@ -82,7 +82,7 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
             final HashSet<String> checked = new HashSet<String>();
             for (final Conversation conversation : mTarget) {
                 final List<Folder> rawFolders = conversation.getRawFolders();
-                if (conversation != null && rawFolders != null && rawFolders.size() > 0) {
+                if (rawFolders != null && rawFolders.size() > 0) {
                     // Parse the raw folders and get all the uris.
                     checked.addAll(Arrays.asList(Folder.getUriArray(rawFolders)));
                 } else {

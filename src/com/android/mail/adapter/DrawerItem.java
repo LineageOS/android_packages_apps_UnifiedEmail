@@ -222,7 +222,7 @@ public class DrawerItem {
                 VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false, -1);
     }
 
-    private String waitToString() {
+    private static String waitToString() {
         return "[DrawerItem VIEW_WAITING_FOR_SYNC ]";
     }
 

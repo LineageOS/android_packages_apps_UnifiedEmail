@@ -2089,7 +2089,7 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
-    private boolean getShouldShowDrawerIndicator(final int viewMode) {
+    private static boolean getShouldShowDrawerIndicator(final int viewMode) {
         // if search list/conv mode, disable indicator
         // only allow indicator at top level of app
         if (ViewMode.isSearchMode(viewMode)) {
@@ -2099,7 +2099,7 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
-    private boolean getShouldAllowDrawerPull(final int viewMode) {
+    private static boolean getShouldAllowDrawerPull(final int viewMode) {
         // if search list/conv mode, disable drawer pull
         // allow drawer pull everywhere except conversation mode where the list is hidden
         if (ViewMode.isSearchMode(viewMode)) {
@@ -3246,8 +3246,8 @@ public abstract class AbstractActivityController implements ActivityController,
     protected abstract void hideOrRepositionToastBar(boolean animated);
 
     @Override
-    public void onConversationSeen(Conversation conv) {
-        mPagerController.onConversationSeen(conv);
+    public void onConversationSeen() {
+        mPagerController.onConversationSeen();
     }
 
     @Override

@@ -311,7 +311,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         }
     }
 
-    private void setButtonVisible(View button, boolean visible) {
+    private static void setButtonVisible(View button, boolean visible) {
         button.setVisibility(visible ? VISIBLE : GONE);
     }
 
