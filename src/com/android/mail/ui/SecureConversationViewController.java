@@ -149,7 +149,7 @@ public class SecureConversationViewController implements
         mMessageHeaderView.bind(item, false);
         if (mMessage.hasAttachments) {
             mMessageFooterView.setVisibility(View.VISIBLE);
-            mMessageFooterView.bind(item, false);
+            mMessageFooterView.bind(item, mCallbacks.getAccountUri(), false);
         }
     }
 
