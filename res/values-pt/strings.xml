@@ -170,7 +170,7 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Enviando..."</string>
     <string name="send_failed" msgid="750908595144529579">"A mensagem não foi enviada."</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"eu"</string>
+    <string name="me_object_pronun" msgid="7668994569594901571">"mim"</string>
     <string name="me_subject_pronun" msgid="1088657349831581116">"eu"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Caixa de entrada"</string>
   <plurals name="confirm_delete_conversation">
