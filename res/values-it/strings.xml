@@ -409,5 +409,5 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Apri riquadro di navigazione"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Chiudi riquadro di navigazione"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tocca l\'immagine di un mittente per selezionare tale conversazione."</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tocca l\'immagine del mittente per selezionare la conversazione."</string>
 </resources>
