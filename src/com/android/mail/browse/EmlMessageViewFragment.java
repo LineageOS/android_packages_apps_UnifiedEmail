@@ -19,17 +19,22 @@ package com.android.mail.browse;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AbstractConversationWebViewClient;
 import com.android.mail.ui.ContactLoaderCallbacks;
 import com.android.mail.ui.SecureConversationViewController;
@@ -49,12 +54,14 @@ import java.util.Set;
  * of the rendering work.
  */
 public class EmlMessageViewFragment extends Fragment
-        implements SecureConversationViewControllerCallbacks,
-        LoaderManager.LoaderCallbacks<ConversationMessage> {
+        implements SecureConversationViewControllerCallbacks {
     private static final String ARG_EML_FILE_URI = "eml_file_uri";
+    private static final String ARG_ACCOUNT_URI = "account_uri";
     private static final String BASE_URI = "x-thread://message/rfc822/";
+
     private static final int MESSAGE_LOADER = 0;
     private static final int CONTACT_LOADER = 1;
+    private static final int FILENAME_LOADER = 2;
 
     private final Handler mHandler = new Handler();
 
@@ -62,7 +69,11 @@ public class EmlMessageViewFragment extends Fragment
     private SecureConversationViewController mViewController;
     private ContactLoaderCallbacks mContactLoaderCallbacks;
 
+    private final MessageLoadCallbacks mMessageLoadCallbacks = new MessageLoadCallbacks();
+    private final FilenameLoadCallbacks mFilenameLoadCallbacks = new FilenameLoadCallbacks();
+
     private Uri mEmlFileUri;
+    private Uri mAccountUri;
 
     /**
      * Cache of email address strings to parsed Address objects.
@@ -100,10 +111,11 @@ public class EmlMessageViewFragment extends Fragment
      * Creates a new instance of {@link EmlMessageViewFragment},
      * initialized to display an eml file from the specified {@link Uri}.
      */
-    public static EmlMessageViewFragment newInstance(Uri emlFileUri) {
+    public static EmlMessageViewFragment newInstance(Uri emlFileUri, Uri accountUri) {
         EmlMessageViewFragment f = new EmlMessageViewFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_EML_FILE_URI, emlFileUri);
+        args.putParcelable(ARG_ACCOUNT_URI, accountUri);
         f.setArguments(args);
         return f;
     }
@@ -122,9 +134,12 @@ public class EmlMessageViewFragment extends Fragment
 
         Bundle args = getArguments();
         mEmlFileUri = args.getParcelable(ARG_EML_FILE_URI);
+        mAccountUri = args.getParcelable(ARG_ACCOUNT_URI);
 
         mWebViewClient = new EmlWebViewClient(null);
         mViewController = new SecureConversationViewController(this);
+
+        getActivity().getActionBar().setTitle(R.string.attached_message);
     }
 
     @Override
@@ -192,7 +207,9 @@ public class EmlMessageViewFragment extends Fragment
 
     @Override
     public void startMessageLoader() {
-        getLoaderManager().initLoader(MESSAGE_LOADER, null, this);
+        final LoaderManager manager = getLoaderManager();
+        manager.initLoader(MESSAGE_LOADER, null, mMessageLoadCallbacks);
+        manager.initLoader(FILENAME_LOADER, null, mFilenameLoadCallbacks);
     }
 
     @Override
@@ -205,30 +222,59 @@ public class EmlMessageViewFragment extends Fragment
         return true;
     }
 
+    @Override
+    public Uri getAccountUri() {
+        return mAccountUri;
+    }
+
     // End SecureConversationViewControllerCallbacks
 
-    // Start LoaderCallbacks
+    private class MessageLoadCallbacks
+            implements LoaderManager.LoaderCallbacks<ConversationMessage> {
+        @Override
+        public Loader<ConversationMessage> onCreateLoader(int id, Bundle args) {
+            switch (id) {
+                case MESSAGE_LOADER:
+                    return new EmlMessageLoader(getActivity(), mEmlFileUri);
+                default:
+                    return null;
+            }
+        }
 
-    @Override
-    public Loader<ConversationMessage> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case MESSAGE_LOADER:
-                return new EmlMessageLoader(getActivity(), mEmlFileUri);
-            default:
-                return null;
+        @Override
+        public void onLoadFinished(Loader<ConversationMessage> loader, ConversationMessage data) {
+            mViewController.setSubject(data.subject);
+            mViewController.renderMessage(data);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ConversationMessage> loader) {
+            // Do nothing
         }
     }
 
-    @Override
-    public void onLoadFinished(Loader<ConversationMessage> loader, ConversationMessage data) {
-        mViewController.setSubject(data.subject);
-        mViewController.renderMessage(data);
+    private class FilenameLoadCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            switch (id) {
+                case FILENAME_LOADER:
+                    return new CursorLoader(getActivity(), mEmlFileUri,
+                            UIProvider.ATTACHMENT_PROJECTION, null, null, null);
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            data.moveToFirst();
+            getActivity().getActionBar().setSubtitle(
+                    data.getString(data.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+        }
     }
 
-    @Override
-    public void onLoaderReset(Loader<ConversationMessage> loader) {
-        // Do nothing
-    }
-
-    // End LoaderCallbacks
 }

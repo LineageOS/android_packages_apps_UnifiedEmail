@@ -250,7 +250,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public void bindView(View v, boolean measureOnly) {
             final MessageFooterView attachmentsView = (MessageFooterView) v;
-            attachmentsView.bind(headerItem, measureOnly);
+            attachmentsView.bind(headerItem, mAccountController.getAccount().uri, measureOnly);
         }
 
         @Override

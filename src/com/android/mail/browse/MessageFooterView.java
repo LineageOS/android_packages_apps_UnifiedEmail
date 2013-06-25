@@ -63,6 +63,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
+    private Uri mAccountUri;
+
     public MessageFooterView(Context context) {
         this(context, null);
     }
@@ -88,7 +90,9 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mFragmentManager = fragmentManager;
     }
 
-    public void bind(MessageHeaderItem headerItem, boolean measureOnly) {
+    public void bind(MessageHeaderItem headerItem, Uri accountUri, boolean measureOnly) {
+        mAccountUri = accountUri;
+
         // Resets the footer view. This step is only done if the
         // attachmentsListUri changes so that we don't
         // repeat the work of layout and measure when
@@ -200,7 +204,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 mAttachmentBarList.addView(barAttachmentView);
             }
 
-            barAttachmentView.render(attachment, loaderResult);
+            barAttachmentView.render(attachment, mAccountUri, loaderResult);
         }
     }
 

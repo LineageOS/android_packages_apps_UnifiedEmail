@@ -947,4 +947,7 @@
 
     <!-- Content Provider Authority for Eml Attachments -->
     <string name="eml_attachment_provider" translatable="false">com.android.mail.provider.eml.attachment</string>
+
+    <!-- Action bar title for viewing messages that are attached to another message. -->
+    <string name="attached_message">Attached message</string>
 </resources>
