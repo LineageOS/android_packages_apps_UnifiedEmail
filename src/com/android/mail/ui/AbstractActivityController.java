@@ -2741,10 +2741,7 @@ public abstract class AbstractActivityController implements ActivityController,
         boolean isAnimating = false;
         ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
-            AnimatedAdapter adapter = convListFragment.getAnimatedAdapter();
-            if (adapter != null) {
-                isAnimating = adapter.isAnimating();
-            }
+            isAnimating = convListFragment.isAnimating();
         }
         return isAnimating;
     }
