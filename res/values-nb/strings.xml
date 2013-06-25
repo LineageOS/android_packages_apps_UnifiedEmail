@@ -171,7 +171,7 @@
     <string name="sending" msgid="8214361929125649771">"Sender …"</string>
     <string name="send_failed" msgid="750908595144529579">"E-post ikke sendt."</string>
     <string name="me_object_pronun" msgid="7668994569594901571">"meg"</string>
-    <string name="me_subject_pronun" msgid="1088657349831581116">"meg"</string>
+    <string name="me_subject_pronun" msgid="1088657349831581116">"jeg"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Innboks"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Vil du slette denne samtalen?"</item>
