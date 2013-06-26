@@ -421,4 +421,6 @@
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tryck på avsändarens bild om du vill välja den konversationen."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Mappikon"</string>
     <string name="add_account" msgid="2162808366829269770">"Lägg till konto"</string>
+    <!-- no translation found for attached_message (4267189489654642035) -->
+    <skip />
 </resources>
