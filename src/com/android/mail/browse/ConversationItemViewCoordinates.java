@@ -510,7 +510,6 @@ public class ConversationItemViewCoordinates {
     // forConfig's measure/layout
     public static void refreshConversationDimens(Context context) {
         Resources res = context.getResources();
-        float density = res.getDisplayMetrics().scaledDensity;
 
         // Attachment previews height
         sAttachmentPreviewsHeights = new int[ATTACHMENT_PREVIEW_MODE_COUNT];

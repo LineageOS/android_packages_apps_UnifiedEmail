@@ -584,7 +584,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return TextUtils.isEmpty(displayName) ? null : sender.getAddress();
     }
 
-    private void setChildVisibility(int visibility, View... children) {
+    private static void setChildVisibility(int visibility, View... children) {
         for (View v : children) {
             if (v != null) {
                 v.setVisibility(visibility);

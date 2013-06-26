@@ -17,13 +17,7 @@
 package com.android.mail.photomanager;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
-import android.database.Cursor;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.Email;
-import android.provider.ContactsContract.Contacts.Photo;
-import android.provider.ContactsContract.Data;
 import android.text.TextUtils;
 import android.util.LruCache;
 
@@ -37,7 +31,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,8 +39,6 @@ import java.util.Set;
  */
 public class ContactPhotoManager extends PhotoManager {
     public static final String CONTACT_PHOTO_SERVICE = "contactPhotos";
-
-    private static final String[] COLUMNS = new String[] { Photo._ID, Photo.PHOTO };
 
     /**
      * An LRU cache for photo ids mapped to contact addresses.
@@ -110,16 +101,6 @@ public class ContactPhotoManager extends PhotoManager {
         mPhotoIdCache.evictAll();
     }
 
-    /**
-     * Store the supplied photo id to contact address mapping so that we don't
-     * have to lookup the contact again.
-     * @param id Id of the photo matching the contact
-     * @param contactAddress Email address of the contact
-     */
-    private void cachePhotoId(Long id, String contactAddress) {
-        mPhotoIdCache.put(contactAddress, id);
-    }
-
     public static class ContactIdentifier implements PhotoIdentifier {
         public final String name;
         public final String emailAddress;
@@ -179,22 +160,6 @@ public class ContactPhotoManager extends PhotoManager {
     }
 
     public class ContactPhotoLoaderThread extends PhotoLoaderThread {
-        private static final int PHOTO_PRELOAD_DELAY = 1000;
-        private static final int PRELOAD_BATCH = 25;
-        /**
-         * Maximum number of photos to preload.  If the cache size is 2Mb and
-         * the expected average size of a photo is 4kb, then this number should be 2Mb/4kb = 500.
-         */
-        private static final int MAX_PHOTOS_TO_PRELOAD = 100;
-
-        private final String[] DATA_COLS = new String[] {
-            Email.DATA,                 // 0
-            Email.PHOTO_ID              // 1
-        };
-
-        private static final int DATA_EMAIL_COLUMN = 0;
-        private static final int DATA_PHOTO_ID_COLUMN = 1;
-
         public ContactPhotoLoaderThread(ContentResolver resolver) {
             super(resolver);
         }

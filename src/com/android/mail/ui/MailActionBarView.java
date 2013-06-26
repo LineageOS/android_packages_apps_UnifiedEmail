@@ -538,7 +538,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     /**
      * Hides menu items while the drawer is open.
      */
-    private void setMenuItemsToHiddenForOpenDrawer(Menu menu) {
+    private static void setMenuItemsToHiddenForOpenDrawer(Menu menu) {
         final int size = menu.size();
 
         for (int i = 0; i < size; i++) {

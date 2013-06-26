@@ -149,19 +149,17 @@ public class ConversationItemViewModel {
     static ConversationItemViewModel forConversation(String account, Conversation conv) {
         ConversationItemViewModel header = ConversationItemViewModel.forConversationId(account,
                 conv.id);
-        if (conv != null) {
-            header.conversation = conv;
-            header.unread = !conv.read;
-            header.hasBeenForwarded =
-                    (conv.convFlags & UIProvider.ConversationFlags.FORWARDED)
-                    == UIProvider.ConversationFlags.FORWARDED;
-            header.hasBeenRepliedTo =
-                    (conv.convFlags & UIProvider.ConversationFlags.REPLIED)
-                    == UIProvider.ConversationFlags.REPLIED;
-            header.isInvite =
-                    (conv.convFlags & UIProvider.ConversationFlags.CALENDAR_INVITE)
-                    == UIProvider.ConversationFlags.CALENDAR_INVITE;
-        }
+        header.conversation = conv;
+        header.unread = !conv.read;
+        header.hasBeenForwarded =
+                (conv.convFlags & UIProvider.ConversationFlags.FORWARDED)
+                == UIProvider.ConversationFlags.FORWARDED;
+        header.hasBeenRepliedTo =
+                (conv.convFlags & UIProvider.ConversationFlags.REPLIED)
+                == UIProvider.ConversationFlags.REPLIED;
+        header.isInvite =
+                (conv.convFlags & UIProvider.ConversationFlags.CALENDAR_INVITE)
+                == UIProvider.ConversationFlags.CALENDAR_INVITE;
         return header;
     }
 
@@ -208,7 +206,7 @@ public class ConversationItemViewModel {
     /**
      * Returns the hashcode to compare if the data in the header is valid.
      */
-    private static int getHashCode(Context context, CharSequence dateText, Object convInfo,
+    private static int getHashCode(CharSequence dateText, Object convInfo,
             List<Folder> rawFolders, boolean starred, boolean read, int priority,
             int sendingState) {
         if (dateText == null) {
@@ -233,8 +231,8 @@ public class ConversationItemViewModel {
     /**
      * Marks this header as having valid data and layout.
      */
-    void validate(Context context) {
-        mDataHashCode = getHashCode(context, dateText,
+    void validate() {
+        mDataHashCode = getHashCode(dateText,
                 getConvInfo(), conversation.getRawFolders(), conversation.starred,
                 conversation.read, conversation.priority, conversation.sendingState);
         mLayoutHashCode = getLayoutHashCode();
@@ -243,8 +241,8 @@ public class ConversationItemViewModel {
     /**
      * Returns if the data in this model is valid.
      */
-    boolean isDataValid(Context context) {
-        return mDataHashCode == getHashCode(context, dateText,
+    boolean isDataValid() {
+        return mDataHashCode == getHashCode(dateText,
                 getConvInfo(), conversation.getRawFolders(), conversation.starred,
                 conversation.read, conversation.priority, conversation.sendingState);
     }
@@ -252,8 +250,8 @@ public class ConversationItemViewModel {
     /**
      * Returns if the layout in this model is valid.
      */
-    boolean isLayoutValid(Context context) {
-        return isDataValid(context) && mLayoutHashCode == getLayoutHashCode();
+    boolean isLayoutValid() {
+        return isDataValid() && mLayoutHashCode == getLayoutHashCode();
     }
 
     /**

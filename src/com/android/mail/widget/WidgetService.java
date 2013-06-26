@@ -182,7 +182,7 @@ public class WidgetService extends RemoteViewsService {
         if (account != null) {
             Account[] accounts = AccountUtils.getSyncingAccounts(context);
             for (Account existing : accounts) {
-                if (account != null && existing != null && account.uri.equals(existing.uri)) {
+                if (existing != null && account.uri.equals(existing.uri)) {
                     return true;
                 }
             }

@@ -86,7 +86,7 @@ public class EmailAddress {
                 address = Html.fromHtml(tokens[0].getAddress()).toString();
             } else {
                 name = "";
-                address = rawAddress == null ? "" : Html.fromHtml(rawAddress).toString();
+                address = Html.fromHtml(rawAddress).toString();
             }
         }
         return new EmailAddress(name, address);

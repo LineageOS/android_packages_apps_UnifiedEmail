@@ -592,10 +592,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         // Subject.
         createSubject(mHeader.unread);
 
-        if (!mHeader.isLayoutValid(mContext)) {
+        if (!mHeader.isLayoutValid()) {
             setContentDescription();
         }
-        mHeader.validate(mContext);
+        mHeader.validate();
 
         pauseTimer(PERF_TAG_LAYOUT);
         if (sTimer != null && ++sLayoutCount >= PERF_LAYOUT_ITERATIONS) {
@@ -681,7 +681,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             loadAttachmentPreviews();
         }
 
-        if (mHeader.isLayoutValid(mContext)) {
+        if (mHeader.isLayoutValid()) {
             pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
             return;
         }
@@ -983,9 +983,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             builder.append(fragmentDisplayText);
         }
         mHeader.styledMessageInfoStringOffset = builder.length();
-        if (messageInfoString != null) {
-            builder.append(messageInfoString);
-        }
+        builder.append(messageInfoString);
         mHeader.styledSendersString = builder;
         return (int)totalWidth;
     }

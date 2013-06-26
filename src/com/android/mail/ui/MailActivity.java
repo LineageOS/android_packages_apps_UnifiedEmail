@@ -137,7 +137,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        mViewMode = new ViewMode(this);
+        mViewMode = new ViewMode();
         final boolean tabletUi = Utils.useTabletUI(this.getResources());
         mController = ControllerFactory.forActivity(this, mViewMode, tabletUi);
         mController.onCreate(savedState);

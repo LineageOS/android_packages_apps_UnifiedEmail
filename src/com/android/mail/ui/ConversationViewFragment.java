@@ -62,7 +62,6 @@ import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.content.ObjectCursor;
-import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
@@ -689,8 +688,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
         final boolean applyTransforms = shouldApplyTransforms();
-
-        final MailPrefs prefs = MailPrefs.get(getContext());
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
