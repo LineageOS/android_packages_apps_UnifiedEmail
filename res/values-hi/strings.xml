@@ -421,4 +421,6 @@
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"उस बातचीत को चुनने के लिए प्रेषक के चित्र को स्पर्श करें."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"फ़ोल्डर आइकन"</string>
     <string name="add_account" msgid="2162808366829269770">"खाता जोड़ें"</string>
+    <!-- no translation found for attached_message (4267189489654642035) -->
+    <skip />
 </resources>

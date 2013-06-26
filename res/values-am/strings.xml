@@ -170,8 +170,8 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"በመላክ ላይ…"</string>
     <string name="send_failed" msgid="750908595144529579">"መልዕክት አልተላከም።"</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"የእኔ"</string>
-    <string name="me_subject_pronun" msgid="1088657349831581116">"የእኔ"</string>
+    <string name="me_object_pronun" msgid="7668994569594901571">"እኔ"</string>
+    <string name="me_subject_pronun" msgid="1088657349831581116">"እኔ"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"ገቢ መልዕክት ሳጥን"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"ይሄ ውይይት ይሰረዝ?"</item>
@@ -421,4 +421,6 @@
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"ያንን ውይይት ለመምረጥ የላኪ ምስል ይንኩ።"</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"የአቃፊ አዶ"</string>
     <string name="add_account" msgid="2162808366829269770">"መለያ ያክሉ"</string>
+    <!-- no translation found for attached_message (4267189489654642035) -->
+    <skip />
 </resources>
