@@ -237,7 +237,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         public void onRespondInline(String text);
     }
 
-    private String getHtmlText(Message message) {
+    private static String getHtmlText(Message message) {
         if (message.bodyHtml != null) {
             return message.bodyHtml;
         } else if (message.bodyText != null) {

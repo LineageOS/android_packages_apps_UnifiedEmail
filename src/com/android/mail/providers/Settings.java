@@ -353,8 +353,6 @@ public class Settings implements Parcelable {
      * {@link UIProvider.ConversationViewMode.DEFAULT}.
      */
     public boolean isOverviewMode() {
-        final boolean isDefined = (conversationViewMode
-                != UIProvider.ConversationViewMode.UNDEFINED);
         final int val = (conversationViewMode != UIProvider.ConversationViewMode.UNDEFINED) ?
                 conversationViewMode : UIProvider.ConversationViewMode.DEFAULT;
         return (val == UIProvider.ConversationViewMode.OVERVIEW);

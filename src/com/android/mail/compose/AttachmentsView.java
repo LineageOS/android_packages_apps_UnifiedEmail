@@ -331,8 +331,7 @@ class AttachmentsView extends LinearLayout {
         return attachment.size;
     }
 
-    @VisibleForTesting
-    private int getSizeFromFile(Uri uri, ContentResolver contentResolver) {
+    private static int getSizeFromFile(Uri uri, ContentResolver contentResolver) {
         int size = -1;
         ParcelFileDescriptor file = null;
         try {
@@ -358,7 +357,8 @@ class AttachmentsView extends LinearLayout {
      * @return a cursor to the requested column or null if an exception occurs while trying
      * to query it.
      */
-    private Cursor getOptionalColumn(ContentResolver contentResolver, Uri uri, String columnName) {
+    private static Cursor getOptionalColumn(ContentResolver contentResolver, Uri uri,
+            String columnName) {
         Cursor result = null;
         try {
             result = contentResolver.query(uri, new String[]{columnName}, null, null, null);

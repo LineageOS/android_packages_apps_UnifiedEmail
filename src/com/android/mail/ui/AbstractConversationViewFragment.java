@@ -526,7 +526,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                 }
             }
         }
-        activity.getListHandler().onConversationSeen(mConversation);
+        activity.getListHandler().onConversationSeen();
     }
 
     protected ConversationViewState getNewViewState() {

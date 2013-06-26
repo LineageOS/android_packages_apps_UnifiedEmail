@@ -32,11 +32,11 @@ public class ViewModeTests extends AndroidTestCase {
     @SmallTest
     public void testBundleSaveRestorePreserveState() {
         Bundle state = new Bundle();
-        ViewMode first = new ViewMode(this.mContext);
+        ViewMode first = new ViewMode();
         // Set the state to something known.
         first.enterConversationListMode();
         first.handleSaveInstanceState(state);
-        ViewMode second = new ViewMode(this.mContext);
+        ViewMode second = new ViewMode();
         second.handleRestore(state);
         assertEquals(ViewMode.CONVERSATION_LIST, second.getMode());
     }
@@ -48,7 +48,6 @@ public class ViewModeTests extends AndroidTestCase {
      */
     @SmallTest
     public void testListenerCalledAfterRegistering() {
-        Bundle state = new Bundle();
         class Ears implements ModeChangeListener {
             public int numCalls = 0;
             @Override
@@ -57,7 +56,7 @@ public class ViewModeTests extends AndroidTestCase {
             }
         }
 
-        ViewMode mode = new ViewMode(this.mContext);
+        ViewMode mode = new ViewMode();
         Ears ears = new Ears();
         mode.addListener(ears);
         mode.enterConversationListMode();
@@ -72,8 +71,7 @@ public class ViewModeTests extends AndroidTestCase {
      */
     @SmallTest
     public void testMultipleTransitionsFail() {
-        Bundle state = new Bundle();
-        ViewMode first = new ViewMode(this.mContext);
+        ViewMode first = new ViewMode();
         // Set the state to something known.
         first.enterConversationListMode();
         assertEquals(ViewMode.CONVERSATION_LIST, first.getMode());

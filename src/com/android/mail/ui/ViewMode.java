@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
-import android.content.Context;
 import android.os.Bundle;
 import java.util.ArrayList;
 
@@ -82,7 +81,7 @@ public class ViewMode {
 
     public static final String LOG_TAG = "ViewMode";
 
-    public ViewMode(Context context) {
+    public ViewMode() {
         // Do nothing
     }
 

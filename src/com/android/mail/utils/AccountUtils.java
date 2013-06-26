@@ -55,8 +55,7 @@ public class AccountUtils {
             final String accountName = accounts[i].name;
             // If the account is in the cached list or the caller requested
             // that we prioritize the list of Account objects, put it in the new list
-            if (prioritizeAccountList
-                    || (existingList != null && existingList.contains(accountName))) {
+            if (prioritizeAccountList || existingList.contains(accountName)) {
                 newAccountList.add(accounts[i]);
             }
         }

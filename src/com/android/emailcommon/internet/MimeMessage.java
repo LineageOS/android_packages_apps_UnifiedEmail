@@ -94,7 +94,7 @@ public class MimeMessage extends Message {
      * installed lazily.  Any remote (typically server-assigned) message id takes precedence.
      * @return a long, locally-generated message-ID value
      */
-    private String generateMessageId() {
+    private static String generateMessageId() {
         StringBuffer sb = new StringBuffer();
         sb.append("<");
         for (int i = 0; i < 24; i++) {
@@ -524,7 +524,7 @@ public class MimeMessage extends Message {
         public MimeMessageBuilder() {
         }
 
-        private void expect(Class c) {
+        private void expect(Class<?> c) {
             if (!c.isInstance(stack.peek())) {
                 throw new IllegalStateException("Internal stack error: " + "Expected '"
                         + c.getName() + "' found '" + stack.peek().getClass().getName() + "'");

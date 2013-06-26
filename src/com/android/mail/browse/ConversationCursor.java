@@ -341,10 +341,9 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             final Map<Long, Integer> idPositionMap;
             final UnderlyingRowData[] cache;
             final int count;
-            final StringBuilder uriBuilder = new StringBuilder();
             int numCached = 0;
             Utils.traceBeginSection("blockingCaching");
-            if (result != null && super.moveToFirst()) {
+            if (super.moveToFirst()) {
                 count = super.getCount();
                 cache = new UnderlyingRowData[count];
                 int i = 0;
