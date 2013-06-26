@@ -821,10 +821,6 @@
     <!-- Settings screen, setting summary text when no signature set [CHAR LIMIT=100] -->
     <string name="preferences_signature_summary_not_set">Not set</string>
 
-
-    <!-- Dialog title for the What's New dialog. [CHAR LIMIT=50] -->
-    <string name="whats_new_dialog_title">What\'s new</string>
-
     <!-- Notification action for replying to a message. [CHAR LIMIT=20] -->
     <string name="notification_action_reply">Reply</string>
     <!-- Notification action for replying-all to a message. [CHAR LIMIT=20] -->
