@@ -19,7 +19,6 @@ package com.android.mail.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -32,12 +31,8 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationItemView;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class SwipeHelper {
     static final String TAG = "com.android.systemui.SwipeHelper";
@@ -371,7 +366,6 @@ public class SwipeHelper {
             case MotionEvent.ACTION_MOVE:
                 if (mCurrView != null) {
                     float deltaX = ev.getX() - mInitialTouchPosX;
-                    float deltaY = Math.abs(ev.getY() - mInitialTouchPosY);
                     // If the swipe started in the dead region, ignore it.
                     if (mInitialTouchPosX <= (DEAD_REGION_FOR_SWIPE * mDensityScale)){
                             return true;

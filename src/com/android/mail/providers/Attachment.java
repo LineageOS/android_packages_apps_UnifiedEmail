@@ -352,7 +352,7 @@ public class Attachment implements Parcelable {
         }
     }
 
-    private String stringify(Object object) {
+    private static String stringify(Object object) {
         return object != null ? object.toString() : null;
     }
 

@@ -1327,7 +1327,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @param toReplace Input string
      * @return The string with all "+" characters replaced with "%2B"
      */
-    private String replacePlus(String toReplace) {
+    private static String replacePlus(String toReplace) {
         return toReplace.replace("+", "%2B");
     }
 

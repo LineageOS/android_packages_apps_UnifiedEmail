@@ -837,7 +837,7 @@ public final class ConversationListFragment extends ListFragment implements
                 || (mFolder != null && mFolder.isTrash())) {
             mListView.enableSwipe(false);
         } else {
-            int action;
+            final int action;
             mListView.enableSwipe(true);
             if (ConversationListContext.isSearchResult(mViewContext)
                     || (mFolder != null && mFolder.isType(FolderType.SPAM))) {
@@ -858,6 +858,12 @@ public final class ConversationListFragment extends ListFragment implements
                                 break;
                             }
                         }
+
+                        /*
+                         * If we get here, we don't support archive, on either the account or the
+                         * folder, so we want to fall through into the delete case.
+                         */
+                        //$FALL-THROUGH$
                     case Swipe.DELETE:
                     default:
                         action = R.id.delete;

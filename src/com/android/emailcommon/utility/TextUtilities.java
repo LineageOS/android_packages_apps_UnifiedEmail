@@ -545,7 +545,7 @@ public class TextUtilities {
         int mMatchLength = 0;
         int mMatchStart = -1;
 
-        SearchTerm(String term, boolean html) {
+        SearchTerm(String term) {
             mTerm = term;
             mTermLowerCase = term.toLowerCase();
             mLength = term.length();
@@ -575,7 +575,7 @@ public class TextUtilities {
         if (query != null) {
             StringTokenizer st = new StringTokenizer(query);
             while (st.hasMoreTokens()) {
-                terms.add(new SearchTerm(st.nextToken(), html));
+                terms.add(new SearchTerm(st.nextToken()));
             }
         }
 

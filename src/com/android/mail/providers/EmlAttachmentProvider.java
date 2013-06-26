@@ -229,7 +229,7 @@ public class EmlAttachmentProvider extends ContentProvider {
     /**
      * Adds a new row to the cursor for the specific attachment.
      */
-    private void addRow(MatrixCursor cursor, Attachment attachment) {
+    private static void addRow(MatrixCursor cursor, Attachment attachment) {
         cursor.newRow()
                 .add(attachment.getName())                          // displayName
                 .add(attachment.size)                               // size

@@ -368,9 +368,7 @@ public class Utils {
         SpannableStringBuilder fixedFragment = null;
         int fixedFragmentLength = 0;
         if (draftsFragment.length() != 0 && allowDraft) {
-            if (fixedFragment == null) {
-                fixedFragment = new SpannableStringBuilder();
-            }
+            fixedFragment = new SpannableStringBuilder();
             fixedFragment.append(draftsFragment);
             if (draftsStyle != null) {
                 fixedFragment.setSpan(CharacterStyle.wrap(draftsStyle), 0, fixedFragment.length(),
