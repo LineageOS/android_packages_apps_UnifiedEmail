@@ -53,6 +53,9 @@ import java.nio.charset.Charset;
 public class WebViewContextMenu implements OnCreateContextMenuListener,
         MenuItem.OnMenuItemClickListener {
 
+    private final boolean mSupportsDial;
+    private final boolean mSupportsSms;
+
     private Activity mActivity;
 
     protected static enum MenuType {
@@ -78,6 +81,18 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
 
     public WebViewContextMenu(Activity host) {
         mActivity = host;
+
+        // Query the package manager to see if the device
+        // has an app that supports ACTION_DIAL or ACTION_SENDTO
+        // with the appropriate uri schemes.
+        final PackageManager pm = mActivity.getPackageManager();
+        mSupportsDial = !pm.queryIntentActivities(
+                new Intent(Intent.ACTION_DIAL, Uri.parse(WebView.SCHEME_TEL)),
+                PackageManager.MATCH_DEFAULT_ONLY).isEmpty();
+        mSupportsSms = !pm.queryIntentActivities(
+                new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:")),
+                PackageManager.MATCH_DEFAULT_ONLY).isEmpty();
+        ;
     }
 
     // For our copy menu items.
@@ -201,18 +216,27 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
                 // Dial
                 final MenuItem dialMenuItem =
                         menu.findItem(getMenuResIdForMenuType(MenuType.DIAL_MENU));
-                // remove the on click listener
-                dialMenuItem.setOnMenuItemClickListener(null);
-                dialMenuItem.setIntent(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(WebView.SCHEME_TEL + extra)));
+
+                if (mSupportsDial) {
+                    // remove the on click listener
+                    dialMenuItem.setOnMenuItemClickListener(null);
+                    dialMenuItem.setIntent(new Intent(Intent.ACTION_DIAL,
+                            Uri.parse(WebView.SCHEME_TEL + extra)));
+                } else {
+                    dialMenuItem.setVisible(false);
+                }
 
                 // Send SMS
                 final MenuItem sendSmsMenuItem =
                         menu.findItem(getMenuResIdForMenuType(MenuType.SMS_MENU));
-                // remove the on click listener
-                sendSmsMenuItem.setOnMenuItemClickListener(null);
-                sendSmsMenuItem.setIntent(new Intent(Intent.ACTION_SENDTO,
-                        Uri.parse("smsto:" + extra)));
+                if (mSupportsSms) {
+                    // remove the on click listener
+                    sendSmsMenuItem.setOnMenuItemClickListener(null);
+                    sendSmsMenuItem.setIntent(new Intent(Intent.ACTION_SENDTO,
+                            Uri.parse("smsto:" + extra)));
+                } else {
+                    sendSmsMenuItem.setVisible(false);
+                }
 
                 // Add to contacts
                 final Intent addIntent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
