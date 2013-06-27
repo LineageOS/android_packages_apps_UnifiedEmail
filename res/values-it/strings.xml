@@ -421,4 +421,6 @@
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tocca l\'immagine del mittente per selezionare la conversazione."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Icona cartella"</string>
     <string name="add_account" msgid="2162808366829269770">"Aggiungi account"</string>
+    <!-- no translation found for attached_message (4267189489654642035) -->
+    <skip />
 </resources>
