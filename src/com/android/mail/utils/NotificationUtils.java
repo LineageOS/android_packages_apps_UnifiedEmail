@@ -32,6 +32,7 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts.Photo;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.text.BidiFormatter;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -91,6 +92,8 @@ public class NotificationUtils {
                     return new MailMessagePlainTextConverter();
                 }
             };
+
+    private static final BidiFormatter sBidiFormatter = BidiFormatter.getInstance();
 
     /**
      * Clears all notifications in response to the user tapping "Clear" in the status bar.
@@ -1073,7 +1076,9 @@ public class NotificationUtils {
             final TextAppearanceSpan notificationSecondarySpan =
                     new TextAppearanceSpan(context, R.style.NotificationSecondaryText);
 
-            final String instantiatedString = String.format(formatString, senders, subjectSnippet);
+            final String instantiatedString = String.format(formatString,
+                    sBidiFormatter.unicodeWrap(senders),
+                    sBidiFormatter.unicodeWrap(subjectSnippet));
 
             final SpannableString spannableString = new SpannableString(instantiatedString);
 
@@ -1097,7 +1102,8 @@ public class NotificationUtils {
      * Sets the bigtext for a notification for a single new conversation
      * @param context
      * @param subject Subject of the new message that triggered the notification
-     * @return a {@link CharSequence} suitable for use in {@link Notification.ContentText}
+     * @return a {@link CharSequence} suitable for use in
+     * {@link NotificationCompat.Builder#setContentText}
      */
     private static CharSequence getSingleMessageLittleText(Context context, String subject) {
         final TextAppearanceSpan notificationSubjectSpan = new TextAppearanceSpan(
