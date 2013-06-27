@@ -102,19 +102,28 @@ public class LetterTileProvider implements DefaultImageProvider {
             return;
         }
 
-        Bitmap bitmap = null;
-        final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
-        final char firstChar = display.charAt(0);
         dividedImageView.getDesiredDimensions(address, mDims);
 
-        // get an empty bitmap
-        bitmap = getBitmap(mDims, false /* getDefault */);
+        final Bitmap bitmap = getLetterTile(mDims, displayName, address);
+
         if (bitmap == null) {
-            LogUtils.w(TAG, "LetterTileProvider width(%d) or height(%d) is 0" +
-                    " for name %s and address %s.",
-                    dividedImageView.getWidth(), dividedImageView.getHeight(), displayName,
-                    address);
             return;
+        }
+
+        dividedImageView.addDivisionImage(bitmap, address);
+    }
+
+    public Bitmap getLetterTile(final Dimensions dimensions, final String displayName,
+            final String address) {
+        final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
+        final char firstChar = display.charAt(0);
+
+        // get an empty bitmap
+        final Bitmap bitmap = getBitmap(dimensions, false /* getDefault */);
+        if (bitmap == null) {
+            LogUtils.w(TAG, "LetterTileProvider width(%d) or height(%d) is 0 for name %s and "
+                    + "address %s.", dimensions.width, dimensions.height, displayName, address);
+            return null;
         }
 
         final Canvas c = mCanvas;
@@ -125,15 +134,15 @@ public class LetterTileProvider implements DefaultImageProvider {
         // draw the letter on top of the color
         if (isEnglishLetterOrDigit(firstChar)) {
             mFirstChar[0] = Character.toUpperCase(firstChar);
-            mPaint.setTextSize(getFontSize(mDims.scale));
+            mPaint.setTextSize(getFontSize(dimensions.scale));
             mPaint.getTextBounds(mFirstChar, 0, 1, mBounds);
-            c.drawText(mFirstChar, 0, 1, 0 + mDims.width / 2,
-                    0 + mDims.height / 2 + (mBounds.bottom - mBounds.top) / 2, mPaint);
+            c.drawText(mFirstChar, 0, 1, 0 + dimensions.width / 2,
+                    0 + dimensions.height / 2 + (mBounds.bottom - mBounds.top) / 2, mPaint);
         } else { // draw the generic icon on top
-            c.drawBitmap(getBitmap(mDims, true /* getDefault */), 0, 0, null);
+            c.drawBitmap(getBitmap(dimensions, true /* getDefault */), 0, 0, null);
         }
 
-        dividedImageView.addDivisionImage(bitmap, address);
+        return bitmap;
     }
 
     private static boolean isEnglishLetterOrDigit(char c) {

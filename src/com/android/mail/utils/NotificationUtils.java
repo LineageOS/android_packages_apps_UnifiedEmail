@@ -46,6 +46,7 @@ import com.android.mail.MailIntentService;
 import com.android.mail.R;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.SendersView;
+import com.android.mail.photomanager.ContactPhotoManager;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
 import com.android.mail.preferences.MailPrefs;
@@ -55,6 +56,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.ImageCanvas.Dimensions;
 import com.android.mail.utils.NotificationActionUtils.NotificationAction;
 import com.google.android.common.html.parser.HTML;
 import com.google.android.common.html.parser.HTML4;
@@ -673,14 +675,21 @@ public class NotificationUtils {
 
     private static Bitmap getDefaultNotificationIcon(
             final Context context, final Folder folder, final boolean multipleNew) {
-        final Bitmap icon;
+        final int resId;
         if (folder.notificationIconResId != 0) {
-            icon = getIcon(context, folder.notificationIconResId);
+            resId = folder.notificationIconResId;
         } else if (multipleNew) {
-            icon = getIcon(context, R.drawable.ic_notification_multiple_mail_holo_dark);
+            resId = R.drawable.ic_notification_multiple_mail_holo_dark;
         } else {
-            icon = getIcon(context, R.drawable.ic_contact_picture);
+            resId = R.drawable.ic_contact_picture;
         }
+
+        final Bitmap icon = getIcon(context, resId);
+
+        if (icon == null) {
+            LogUtils.e(LOG_TAG, "Couldn't decode notif icon res id %d", resId);
+        }
+
         return icon;
     }
 
@@ -841,7 +850,7 @@ public class NotificationUtils {
                     fromAddress = message.getFrom();
                     from = getDisplayableSender(fromAddress);
                     notification.setLargeIcon(
-                            getContactIcon(context, getSenderAddress(fromAddress), folder));
+                            getContactIcon(context, from, getSenderAddress(fromAddress), folder));
                 }
 
                 // Assume that the last message in this conversation is unread
@@ -1284,22 +1293,25 @@ public class NotificationUtils {
         return contactIds;
     }
 
-    private static Bitmap getContactIcon(
-            Context context, String senderAddress, final Folder folder) {
+    private static Bitmap getContactIcon(final Context context, final String displayName,
+            final String senderAddress, final Folder folder) {
         if (senderAddress == null) {
             return null;
         }
+
         Bitmap icon = null;
-        final List<Long> contactIds = findContacts(
-                context, Arrays.asList(new String[] { senderAddress }));
+
+        final List<Long> contactIds = findContacts( context, Arrays.asList(
+                new String[] { senderAddress }));
+
+        // Get the ideal size for this icon.
+        final Resources res = context.getResources();
+        final int idealIconHeight =
+                res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
+        final int idealIconWidth =
+                res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
 
         if (contactIds != null) {
-            // Get the ideal size for this icon.
-            final Resources res = context.getResources();
-            final int idealIconHeight =
-                    res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-            final int idealIconWidth =
-                    res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
             for (final long id : contactIds) {
                 final Uri contactUri =
                         ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
@@ -1329,8 +1341,21 @@ public class NotificationUtils {
                 }
             }
         }
+
         if (icon == null) {
-            // icon should be the default gmail icon.
+            // Make a colorful tile!
+            final ContactPhotoManager contactPhotoManager =
+                    ContactPhotoManager.getInstance(context);
+
+            final Dimensions dimensions = new Dimensions(idealIconWidth, idealIconHeight,
+                    Dimensions.SCALE_ONE);
+
+            icon = contactPhotoManager.getDefaultImageProvider().getLetterTile(dimensions,
+                    displayName, senderAddress);
+        }
+
+        if (icon == null) {
+            // Icon should be the default mail icon.
             icon = getDefaultNotificationIcon(context, folder, false /* single new message */);
         }
         return icon;
