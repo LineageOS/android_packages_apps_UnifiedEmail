@@ -686,6 +686,8 @@ public class UIProvider {
         public static final int ALL_MAIL = 1 << 9;
         /** Gmail's inbox sections */
         public static final int INBOX_SECTION = 1 << 10;
+        /** A system defined unread folder */
+        public static final int UNREAD = 1 << 11;
     }
 
     public static final class FolderCapabilities {
