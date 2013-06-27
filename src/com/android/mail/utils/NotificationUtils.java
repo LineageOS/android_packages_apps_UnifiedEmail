@@ -1290,7 +1290,7 @@ public class NotificationUtils {
             return null;
         }
         Bitmap icon = null;
-        ArrayList<Long> contactIds = findContacts(
+        final List<Long> contactIds = findContacts(
                 context, Arrays.asList(new String[] { senderAddress }));
 
         if (contactIds != null) {
@@ -1300,7 +1300,7 @@ public class NotificationUtils {
                     res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
             final int idealIconWidth =
                     res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
-            for (long id : contactIds) {
+            for (final long id : contactIds) {
                 final Uri contactUri =
                         ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
                 final Uri photoUri = Uri.withAppendedPath(contactUri, Photo.CONTENT_DIRECTORY);
@@ -1310,7 +1310,7 @@ public class NotificationUtils {
                 if (cursor != null) {
                     try {
                         if (cursor.moveToFirst()) {
-                            byte[] data = cursor.getBlob(0);
+                            final byte[] data = cursor.getBlob(0);
                             if (data != null) {
                                 icon = BitmapFactory.decodeStream(new ByteArrayInputStream(data));
                                 if (icon != null && icon.getHeight() < idealIconHeight) {
