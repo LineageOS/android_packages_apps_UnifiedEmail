@@ -421,4 +421,6 @@
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"المس صورة أحد المرسلين لتحديد تلك المحادثة."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"رمز المجلد"</string>
     <string name="add_account" msgid="2162808366829269770">"إضافة حساب"</string>
+    <!-- no translation found for attached_message (4267189489654642035) -->
+    <skip />
 </resources>
