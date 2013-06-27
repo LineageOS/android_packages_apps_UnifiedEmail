@@ -46,6 +46,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.ui.ConversationListFragment;
+import com.android.mail.utils.DrawIdler;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.NotificationActionUtils.NotificationAction;
@@ -72,9 +73,8 @@ import java.util.Set;
  * caching for quick UI response. This is effectively a singleton class, as the cache is
  * implemented as a static HashMap.
  */
-public final class ConversationCursor implements Cursor, ConversationCursorOperationListener {
-
-    private static final boolean ENABLE_CONVERSATION_PRECACHING = true;
+public final class ConversationCursor implements Cursor, ConversationCursorOperationListener,
+        DrawIdler.IdleListener {
 
     public static final String LOG_TAG = "ConvCursor";
     /** Turn to true for debugging. */
@@ -92,8 +92,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * chosen empirically (long enough for UI changes to propagate in any reasonable case)
      */
     private static final long REQUERY_ALLOWANCE_TIME = 10000L;
-
-    private static final int MAX_INIT_CONVERSATION_PRELOAD = 100;
 
     /**
      * The index of the Uri whose data is reflected in the cached row. Updates/Deletes to this Uri
@@ -266,7 +264,18 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * Simple wrapper for a cursor that provides methods for quickly determining
      * the existence of a row.
      */
-    private static class UnderlyingCursorWrapper extends ThreadSafeCursorWrapper {
+    private static class UnderlyingCursorWrapper extends ThreadSafeCursorWrapper
+            implements DrawIdler.IdleListener {
+
+        /**
+         * An AsyncTask that will fill as much of the cache as possible until either the cache is
+         * full or the task is cancelled. If not cancelled and we're not done caching, it will
+         * schedule another iteration to run upon completion.
+         * <p>
+         * Generally, only one task instance per {@link UnderlyingCursorWrapper} will run at a time.
+         * But if an old task is cancelled, it may continue to execute at most one iteration (due
+         * to the per-iteration cancellation-signal read), possibly concurrently with a new task.
+         */
         private class CacheLoaderTask extends AsyncTask<Void, Void, Void> {
             private final int mStartPos;
 
@@ -278,25 +287,43 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             public Void doInBackground(Void... param) {
                 try {
                     Utils.traceBeginSection("backgroundCaching");
-                    for (int i = mStartPos; i < getCount(); i++) {
-                        if (isCancelled()) {
+                    if (DEBUG) LogUtils.i(LOG_TAG, "in cache job pos=%s c=%s", mStartPos,
+                            getWrappedCursor());
+                    final int count = getCount();
+                    while (true) {
+                        // It is possible for two instances of this loop to execute at once if
+                        // an earlier task is cancelled but gets preempted. As written, this loop
+                        // safely shares mCachePos without mutexes by only reading it once and
+                        // writing it once (writing based on the previously-read value).
+                        // The most that can happen is that one row's values is read twice.
+                        final int pos = mCachePos;
+                        if (isCancelled() || pos >= count) {
                             break;
                         }
 
-                        final UnderlyingRowData rowData = mRowCache.get(i);
+                        final UnderlyingRowData rowData = mRowCache.get(pos);
                         if (rowData.conversation == null) {
                             // We are running in a background thread.  Set the position to the row
                             // we are interested in.
-                            if (moveToPosition(i)) {
-                                cacheConversation(new Conversation(UnderlyingCursorWrapper.this));
+                            if (moveToPosition(pos)) {
+                                rowData.conversation = new Conversation(
+                                        UnderlyingCursorWrapper.this);
                             }
                         }
+                        mCachePos = pos + 1;
                     }
                 } finally {
                     Utils.traceEndSection();
                 }
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                mCacheLoaderTask = null;
+                LogUtils.i(LOG_TAG, "ConversationCursor caching complete pos=%s", mCachePos);
+            }
+
         }
 
         private class NewCursorUpdateObserver extends ContentObserver {
@@ -313,7 +340,22 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             }
         }
 
-        private final CacheLoaderTask mCacheLoaderTask;
+        // be polite by default; assume the device is initially busy and don't start pre-caching
+        // until the idler connects and says we're idle
+        private int mDrawState = DrawIdler.STATE_ACTIVE;
+        /**
+         * The one currently active cache task. We try to only run one at a time, but because we
+         * don't interrupt the old task when cancelling, it may still run for a bit. See
+         * {@link CacheLoaderTask#doInBackground(Void...)} for notes on thread safety.
+         */
+        private CacheLoaderTask mCacheLoaderTask;
+        /**
+         * The current row that the cache task is working on, or should work on next.
+         * <p>
+         * Not synchronized; see comments in {@link CacheLoaderTask#doInBackground(Void...)} for
+         * notes on thread safety.
+         */
+        private int mCachePos;
         private final NewCursorUpdateObserver mCursorUpdateObserver;
         private boolean mUpdateObserverRegistered;
 
@@ -341,7 +383,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             final Map<Long, Integer> idPositionMap;
             final UnderlyingRowData[] cache;
             final int count;
-            int numCached = 0;
             Utils.traceBeginSection("blockingCaching");
             if (super.moveToFirst()) {
                 count = super.getCount();
@@ -352,20 +393,11 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 idPositionMap = Maps.newHashMapWithExpectedSize(count);
 
                 do {
-                    final Conversation c;
                     final String innerUriString;
                     final long convId;
 
-                    if (ENABLE_CONVERSATION_PRECACHING && i < MAX_INIT_CONVERSATION_PRELOAD) {
-                        c = new Conversation(this);
-                        innerUriString = c.uri.toString();
-                        convId = c.id;
-                        numCached++;
-                    } else {
-                        c = null;
-                        innerUriString = super.getString(URI_COLUMN_INDEX);
-                        convId = super.getLong(UIProvider.CONVERSATION_ID_COLUMN);
-                    }
+                    innerUriString = super.getString(URI_COLUMN_INDEX);
+                    convId = super.getLong(UIProvider.CONVERSATION_ID_COLUMN);
 
                     if (DEBUG_DUPLICATE_KEYS) {
                         if (uriPositionMap.containsKey(innerUriString)) {
@@ -386,7 +418,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
                     cache[i] = new UnderlyingRowData(
                             innerUriString,
-                            c);
+                            null /* conversation */);
                 } while (super.moveToPosition(++i));
 
                 if (uriPositionMap.size() != count || idPositionMap.size() != count) {
@@ -411,20 +443,34 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
             mRowCache = Collections.unmodifiableList(Arrays.asList(cache));
             final long end = SystemClock.uptimeMillis();
-            LogUtils.i(LOG_TAG, "*** ConversationCursor pre-loading took" +
-                    " %sms n=%s cached=%s CONV_PRECACHING=%s",
-                    (end-start), count, numCached, ENABLE_CONVERSATION_PRECACHING);
+            LogUtils.i(LOG_TAG, "*** ConversationCursor pre-loading took %sms n=%s", (end-start),
+                    count);
 
             Utils.traceEndSection();
 
-            // If we haven't cached all of the conversations, start a task to do that
-            if (ENABLE_CONVERSATION_PRECACHING && numCached < count) {
-                mCacheLoaderTask = new CacheLoaderTask(numCached);
-                mCacheLoaderTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } else {
-                mCacheLoaderTask = null;
+            // Later, when the idler signals that the activity is idle, start a task to cache
+            // conversations in pieces.
+            mCachePos = 0;
+        }
+
+        private void startCaching() {
+            if (mCacheLoaderTask != null) {
+                throw new IllegalStateException("unexpected existing task: " + mCacheLoaderTask);
             }
 
+            if (mCachePos < getCount()) {
+                mCacheLoaderTask = new CacheLoaderTask(mCachePos);
+                mCacheLoaderTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }
+
+        private void stopCaching() {
+            if (mCacheLoaderTask != null) {
+                LogUtils.i(LOG_TAG, "Cancelling caching startPos=%s pos=%s",
+                        mCacheLoaderTask.mStartPos, mCachePos);
+                mCacheLoaderTask.cancel(false /* interrupt */);
+                mCacheLoaderTask = null;
+            }
         }
 
         public boolean contains(String uri) {
@@ -454,11 +500,9 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         }
 
         public void cacheConversation(Conversation conversation) {
-            if (ENABLE_CONVERSATION_PRECACHING) {
-                final UnderlyingRowData rowData = mRowCache.get(getPosition());
-                if (rowData.conversation == null) {
-                    rowData.conversation = conversation;
-                }
+            final UnderlyingRowData rowData = mRowCache.get(getPosition());
+            if (rowData.conversation == null) {
+                rowData.conversation = conversation;
             }
         }
 
@@ -482,12 +526,29 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
         @Override
         public void close() {
-            if (mCacheLoaderTask != null) {
-                mCacheLoaderTask.cancel(true);
-            }
+            stopCaching();
             disableUpdateNotifications();
             super.close();
         }
+
+        @Override
+        public void onStateChanged(DrawIdler idler, int newState) {
+            final int oldState = mDrawState;
+            mDrawState = newState;
+            if (oldState != newState) {
+                if (newState == DrawIdler.STATE_IDLE) {
+                    // begin/resume caching
+                    startCaching();
+                    if (mCachePos < getCount()) {
+                        LogUtils.i(LOG_TAG, "Resuming caching, pos=%s idler=%s", mCachePos, idler);
+                    }
+                } else {
+                    // pause caching
+                    stopCaching();
+                }
+            }
+        }
+
     }
 
     /**
@@ -745,6 +806,13 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     public void removeListener(ConversationListener listener) {
         synchronized(mListeners) {
             mListeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void onStateChanged(DrawIdler idler, int newState) {
+        if (mUnderlyingCursor != null) {
+            mUnderlyingCursor.onStateChanged(idler, newState);
         }
     }
 

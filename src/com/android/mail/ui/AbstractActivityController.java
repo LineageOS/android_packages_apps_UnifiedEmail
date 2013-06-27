@@ -92,6 +92,7 @@ import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
 import com.android.mail.utils.ContentProviderTask;
+import com.android.mail.utils.DrawIdler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
@@ -452,6 +453,8 @@ public abstract class AbstractActivityController implements ActivityController,
     private boolean mConversationListLoadFinishedIgnored;
     protected MailDrawerListener mDrawerListener;
     private boolean mHideMenuItems;
+
+    private final DrawIdler mDrawIdler = new DrawIdler();
 
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
@@ -1190,6 +1193,8 @@ public abstract class AbstractActivityController implements ActivityController,
         mToastBar = (ActionableToastBar) mActivity.findViewById(R.id.toast_bar);
         attachActionBar();
         FolderSelectionDialog.setDialogDismissed();
+
+        mDrawIdler.setRootView(mActivity.getWindow().getDecorView());
 
         final Intent intent = mActivity.getIntent();
         // Immediately handle a clean launch with intent, and any state restoration
@@ -2049,6 +2054,8 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mConversationListCursor != null) {
             mConversationListCursor.removeListener(this);
         }
+        mDrawIdler.setListener(null);
+        mDrawIdler.setRootView(null);
         // unregister the ViewPager's observer on the conversation cursor
         mPagerController.onDestroy();
         mActionBarView.onDestroy();
@@ -3282,8 +3289,9 @@ public abstract class AbstractActivityController implements ActivityController,
 
         @Override
         public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
-            LogUtils.d(LOG_TAG, "IN AAC.ConversationCursor.onLoadFinished, data=%s loader=%s",
-                    data, loader);
+            LogUtils.d(LOG_TAG,
+                    "IN AAC.ConversationCursor.onLoadFinished, data=%s loader=%s this=%s",
+                    data, loader, this);
             if (isDrawerEnabled() && mDrawerListener.getDrawerState() != DrawerLayout.STATE_IDLE) {
                 LogUtils.d(LOG_TAG, "ConversationListLoaderCallbacks.onLoadFinished: ignoring.");
                 mConversationListLoadFinishedIgnored = true;
@@ -3293,6 +3301,7 @@ public abstract class AbstractActivityController implements ActivityController,
             destroyPending(null);
             mConversationListCursor = data;
             mConversationListCursor.addListener(AbstractActivityController.this);
+            mDrawIdler.setListener(mConversationListCursor);
             mTracker.onCursorUpdated();
             mConversationListObservable.notifyChanged();
             // Handle actions that were deferred until after the conversation list was loaded.
@@ -3313,12 +3322,14 @@ public abstract class AbstractActivityController implements ActivityController,
 
         @Override
         public void onLoaderReset(Loader<ConversationCursor> loader) {
-            LogUtils.d(LOG_TAG, "IN AAC.ConversationCursor.onLoaderReset, data=%s loader=%s",
-                    mConversationListCursor, loader);
+            LogUtils.d(LOG_TAG,
+                    "IN AAC.ConversationCursor.onLoaderReset, data=%s loader=%s this=%s",
+                    mConversationListCursor, loader, this);
 
             if (mConversationListCursor != null) {
                 // Unregister the listener
                 mConversationListCursor.removeListener(AbstractActivityController.this);
+                mDrawIdler.setListener(null);
                 mConversationListCursor = null;
 
                 // Inform anyone who is interested about the change
