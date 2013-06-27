@@ -56,18 +56,14 @@ public class ContactPhotoManager extends PhotoManager {
     }
 
     @Override
-    public DefaultImageProvider getDefaultImageProvider() {
+    public LetterTileProvider getDefaultImageProvider() {
         return mLetterTileProvider;
     }
 
     @Override
     public long getHash(PhotoIdentifier id, ImageCanvas view) {
-        ContactIdentifier contact = (ContactIdentifier) id;
-        int hash = 23;
-        hash = 31 * hash + view.hashCode();
-        hash = 31 * hash + contact.pos;
-        hash = 31 * hash + (contact.emailAddress != null ? contact.emailAddress.hashCode() : 0);
-        return hash;
+        final ContactIdentifier contact = (ContactIdentifier) id;
+        return Objects.hashCode(view, contact.pos, contact.emailAddress);
     }
 
     @Override
