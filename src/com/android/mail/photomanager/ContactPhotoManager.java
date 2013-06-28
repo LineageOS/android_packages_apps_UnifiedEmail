@@ -56,7 +56,7 @@ public class ContactPhotoManager extends PhotoManager {
     }
 
     @Override
-    public LetterTileProvider getDefaultImageProvider() {
+    public DefaultImageProvider getDefaultImageProvider() {
         return mLetterTileProvider;
     }
 

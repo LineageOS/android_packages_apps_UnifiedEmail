@@ -47,6 +47,7 @@ import com.android.mail.R;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.SendersView;
 import com.android.mail.photomanager.ContactPhotoManager;
+import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
 import com.android.mail.preferences.MailPrefs;
@@ -1344,13 +1345,10 @@ public class NotificationUtils {
 
         if (icon == null) {
             // Make a colorful tile!
-            final ContactPhotoManager contactPhotoManager =
-                    ContactPhotoManager.getInstance(context);
-
             final Dimensions dimensions = new Dimensions(idealIconWidth, idealIconHeight,
                     Dimensions.SCALE_ONE);
 
-            icon = contactPhotoManager.getDefaultImageProvider().getLetterTile(dimensions,
+            icon = new LetterTileProvider(context).getLetterTile(dimensions,
                     displayName, senderAddress);
         }
 
