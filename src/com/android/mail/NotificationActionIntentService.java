@@ -21,10 +21,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
+import android.os.Parcel;
 
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.NotificationActionUtils.NotificationAction;
 
@@ -32,6 +33,8 @@ import com.android.mail.utils.NotificationActionUtils.NotificationAction;
  * Processes notification action {@link Intent}s that need to run off the main thread.
  */
 public class NotificationActionIntentService extends IntentService {
+    private static final String LOG_TAG = "NotifActionIS";
+
     // Compose actions
     public static final String ACTION_REPLY = "com.android.mail.action.notification.REPLY";
     public static final String ACTION_REPLY_ALL = "com.android.mail.action.notification.REPLY_ALL";
@@ -67,9 +70,26 @@ public class NotificationActionIntentService extends IntentService {
     protected void onHandleIntent(final Intent intent) {
         final Context context = this;
         final String action = intent.getAction();
-        final Bundle extras = intent.getExtras();
-        final NotificationAction notificationAction =
-                extras.getParcelable(EXTRA_NOTIFICATION_ACTION);
+
+        /*
+         * Grab the alarm from the intent. Since the remote AlarmManagerService fills in the Intent
+         * to add some extra data, it must unparcel the NotificationAction object. It throws a
+         * ClassNotFoundException when unparcelling.
+         * To avoid this, do the marshalling ourselves.
+         */
+        final NotificationAction notificationAction;
+        final byte[] data = intent.getByteArrayExtra(EXTRA_NOTIFICATION_ACTION);
+        if (data != null) {
+            final Parcel in = Parcel.obtain();
+            in.unmarshall(data, 0, data.length);
+            in.setDataPosition(0);
+            notificationAction = NotificationAction.CREATOR.createFromParcel(in,
+                    NotificationAction.class.getClassLoader());
+        } else {
+            LogUtils.wtf(LOG_TAG, "data was null trying to unparcel the NotificationAction");
+            return;
+        }
+
         final Message message = notificationAction.getMessage();
 
         final ContentResolver contentResolver = getContentResolver();

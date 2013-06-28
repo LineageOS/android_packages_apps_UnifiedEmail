@@ -346,8 +346,7 @@ public class NotificationActionUtils {
 
                 final Intent intent = new Intent(intentAction);
                 intent.setPackage(context.getPackageName());
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                        notificationAction);
+                putNotificationActionExtra(intent, notificationAction);
 
                 return PendingIntent.getService(
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -356,8 +355,7 @@ public class NotificationActionUtils {
 
                 final Intent intent = new Intent(intentAction);
                 intent.setPackage(context.getPackageName());
-                intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                        notificationAction);
+                putNotificationActionExtra(intent, notificationAction);
 
                 return PendingIntent.getService(
                         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -530,8 +528,7 @@ public class NotificationActionUtils {
 
         final Intent clickIntent = new Intent(NotificationActionIntentService.ACTION_UNDO);
         clickIntent.setPackage(packageName);
-        clickIntent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                notificationAction);
+        putNotificationActionExtra(clickIntent, notificationAction);
         final PendingIntent clickPendingIntent = PendingIntent.getService(context, notificationId,
                 clickIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -542,8 +539,7 @@ public class NotificationActionUtils {
         // When the notification is cleared, we perform the destructive action
         final Intent deleteIntent = new Intent(NotificationActionIntentService.ACTION_DESTRUCT);
         deleteIntent.setPackage(packageName);
-        deleteIntent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION,
-                notificationAction);
+        putNotificationActionExtra(deleteIntent, notificationAction);
         final PendingIntent deletePendingIntent = PendingIntent.getService(context,
                 notificationId, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         builder.setDeleteIntent(deletePendingIntent);
@@ -599,8 +595,7 @@ public class NotificationActionUtils {
             final Context context, final NotificationAction notificationAction) {
         final Intent intent = new Intent(NotificationActionIntentService.ACTION_UNDO_TIMEOUT);
         intent.setPackage(context.getPackageName());
-        intent.putExtra(
-                NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION, notificationAction);
+        putNotificationActionExtra(intent, notificationAction);
 
         final int requestCode = notificationAction.getAccount().hashCode()
                 ^ notificationAction.getFolder().hashCode();
@@ -682,8 +677,7 @@ public class NotificationActionUtils {
         final Account account = notificationAction.getAccount();
         final Folder folder = notificationAction.getFolder();
         final Conversation conversation = notificationAction.getConversation();
-        final int notificationId = NotificationUtils.getNotificationId(
-                account.name, folder);
+        final int notificationId = NotificationUtils.getNotificationId(account.name, folder);
 
         // Note: we must add the conversation before removing the undo notification
         // Otherwise, the observer for sUndoNotifications gets called, which calls
@@ -745,5 +739,25 @@ public class NotificationActionUtils {
 
     public static void unregisterUndoNotificationObserver(final DataSetObserver observer) {
         sUndoNotifications.getDataSetObservable().unregisterObserver(observer);
+    }
+
+    /**
+     * <p>
+     * This is a slight hack to avoid an exception in the remote AlarmManagerService process. The
+     * AlarmManager adds extra data to this Intent which causes it to inflate. Since the remote
+     * process does not know about the NotificationAction class, it throws a ClassNotFoundException.
+     * </p>
+     * <p>
+     * To avoid this, we marshall the data ourselves and then parcel a plain byte[] array. The
+     * NotificationActionIntentService class knows to build the NotificationAction object from the
+     * byte[] array.
+     * </p>
+     */
+    private static void putNotificationActionExtra(final Intent intent,
+            final NotificationAction notificationAction) {
+        final Parcel out = Parcel.obtain();
+        notificationAction.writeToParcel(out, 0);
+        out.setDataPosition(0);
+        intent.putExtra(NotificationActionIntentService.EXTRA_NOTIFICATION_ACTION, out.marshall());
     }
 }
