@@ -312,6 +312,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                         }
                         mCachePos = pos + 1;
                     }
+                    System.gc();
                 } finally {
                     Utils.traceEndSection();
                 }
@@ -356,6 +357,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
          * notes on thread safety.
          */
         private int mCachePos;
+        private boolean mCachingEnabled = true;
         private final NewCursorUpdateObserver mCursorUpdateObserver;
         private boolean mUpdateObserverRegistered;
 
@@ -453,24 +455,36 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             mCachePos = 0;
         }
 
-        private void startCaching() {
+        /**
+         * Resumes caching at {@link #mCachePos}.
+         *
+         * @return true if we actually resumed, false if we're done or stopped
+         */
+        private boolean resumeCaching() {
             if (mCacheLoaderTask != null) {
                 throw new IllegalStateException("unexpected existing task: " + mCacheLoaderTask);
             }
 
-            if (mCachePos < getCount()) {
+            if (mCachingEnabled && mCachePos < getCount()) {
                 mCacheLoaderTask = new CacheLoaderTask(mCachePos);
                 mCacheLoaderTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                return true;
             }
+            return false;
         }
 
-        private void stopCaching() {
+        private void pauseCaching() {
             if (mCacheLoaderTask != null) {
                 LogUtils.i(LOG_TAG, "Cancelling caching startPos=%s pos=%s",
                         mCacheLoaderTask.mStartPos, mCachePos);
                 mCacheLoaderTask.cancel(false /* interrupt */);
                 mCacheLoaderTask = null;
             }
+        }
+
+        public void stopCaching() {
+            pauseCaching();
+            mCachingEnabled = false;
         }
 
         public boolean contains(String uri) {
@@ -538,13 +552,13 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             if (oldState != newState) {
                 if (newState == DrawIdler.STATE_IDLE) {
                     // begin/resume caching
-                    startCaching();
-                    if (mCachePos < getCount()) {
+                    final boolean resumed = resumeCaching();
+                    if (resumed) {
                         LogUtils.i(LOG_TAG, "Resuming caching, pos=%s idler=%s", mCachePos, idler);
                     }
                 } else {
                     // pause caching
-                    stopCaching();
+                    pauseCaching();
                 }
             }
         }
@@ -612,7 +626,9 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         }
         long time = System.currentTimeMillis();
 
+        Utils.traceBeginSection("query");
         final Cursor result = mResolver.query(uri, qProjection, null, null, null);
+        Utils.traceEndSection();
         if (result == null) {
             LogUtils.w(LOG_TAG, "doQuery returning null cursor, uri: " + uri);
         } else if (DEBUG) {
@@ -620,6 +636,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             LogUtils.i(LOG_TAG, "ConversationCursor query: %s, %dms, %d results",
                     uri, time, result.getCount());
         }
+        System.gc();
         return new UnderlyingCursorWrapper(result);
     }
 
@@ -1068,6 +1085,9 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                             mName, mRefreshTask.hashCode());
                 }
                 return false;
+            }
+            if (mUnderlyingCursor != null) {
+                mUnderlyingCursor.stopCaching();
             }
             mRefreshTask = new RefreshTask();
             mRefreshTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
