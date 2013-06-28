@@ -406,13 +406,28 @@ public final class TwoPaneController extends AbstractActivityController {
             // inbox. This fixes b/9006969 so that on smaller tablets where we have this
             // hybrid one and two-pane mode, we will return to the inbox. On larger tablets,
             // we will instead exit the app.
-            } else if (mode == ViewMode.CONVERSATION_LIST
-                    && !mAccount.settings.defaultInbox.equals(mFolder.uri)
-                    && !mLayout.isExpansiveLayout()) {
-                loadAccountInbox();
-            } else if (!preventClose) {
-                // There is nothing else to pop off the stack.
-                mActivity.finish();
+
+            } else {
+                // Adding some logging to see why one of these would be null
+                if (mAccount == null) {
+                    LogUtils.wtf(LOG_TAG, new Throwable(), "mAccount is null");
+                }
+                if (mFolder == null) {
+                    LogUtils.wtf(LOG_TAG, new Throwable(), "mFolder is null");
+                }
+                if (mLayout == null) {
+                    LogUtils.wtf(LOG_TAG, new Throwable(), "mLayout is null");
+                }
+                final boolean shouldLoadInbox = mode == ViewMode.CONVERSATION_LIST &&
+                        mAccount != null && mFolder != null &&
+                        !mAccount.settings.defaultInbox.equals(mFolder.uri) &&
+                        mLayout != null && !mLayout.isExpansiveLayout();
+                if (shouldLoadInbox) {
+                    loadAccountInbox();
+                } else if (!preventClose) {
+                    // There is nothing else to pop off the stack.
+                    mActivity.finish();
+                }
             }
         }
     }
