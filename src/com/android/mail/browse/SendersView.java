@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.support.v4.text.BidiFormatter;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -74,6 +75,7 @@ public class SendersView {
     private static BroadcastReceiver sConfigurationChangedReceiver;
     private static TextAppearanceSpan sMessageInfoReadStyleSpan;
     private static TextAppearanceSpan sMessageInfoUnreadStyleSpan;
+    private static BidiFormatter sBidiFormatter;
 
     // We only want to have at most 2 Priority to length maps.  This will handle the case where
     // there is a widget installed on the launcher while the user is scrolling in the app
@@ -128,6 +130,7 @@ public class SendersView {
             sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersReadTextAppearance);
             sMessageCountSpacerString = res.getString(R.string.message_count_spacer);
             sSendingString = res.getString(R.string.sending);
+            sBidiFormatter = BidiFormatter.getInstance();
         }
     }
 
@@ -303,7 +306,7 @@ public class SendersView {
             style = !currentMessage.read ? getWrappedStyleSpan(unreadStyleSpan)
                     : getWrappedStyleSpan(readStyleSpan);
             if (priority <= maxPriorityToInclude) {
-                spannableDisplay = new SpannableString(nameString);
+                spannableDisplay = new SpannableString(sBidiFormatter.unicodeWrap(nameString));
                 // Don't duplicate senders; leave the first instance, unless the
                 // current instance is also unread.
                 int oldPos = displayHash.containsKey(currentMessage.sender) ? displayHash

@@ -46,7 +46,6 @@ import com.android.mail.MailIntentService;
 import com.android.mail.R;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.SendersView;
-import com.android.mail.photomanager.ContactPhotoManager;
 import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
@@ -800,7 +799,7 @@ public class NotificationUtils {
                                             "configureLatestEventInfoFromConversation");
                                     from = "";
                                 }
-                                sendersBuilder = new SpannableStringBuilder(from);
+                                sendersBuilder = new SpannableStringBuilder(sBidiFormatter.unicodeWrap(from));
                             }
                             final CharSequence digestLine = getSingleMessageInboxLine(context,
                                     sendersBuilder.toString(),
@@ -883,6 +882,7 @@ public class NotificationUtils {
                         // For a single new conversation, the ticker is based on the sender's name.
                         notificationTicker = sendersBuilder.toString();
                     } else {
+                        from = sBidiFormatter.unicodeWrap(from);
                         // The title of a single message the sender.
                         notification.setContentTitle(from);
                         // For a single new conversation, the ticker is based on the sender's name.
@@ -1086,8 +1086,9 @@ public class NotificationUtils {
             final TextAppearanceSpan notificationSecondarySpan =
                     new TextAppearanceSpan(context, R.style.NotificationSecondaryText);
 
+            // senders is already individually unicode wrapped so it does not need to be done here
             final String instantiatedString = String.format(formatString,
-                    sBidiFormatter.unicodeWrap(senders),
+                    senders,
                     sBidiFormatter.unicodeWrap(subjectSnippet));
 
             final SpannableString spannableString = new SpannableString(instantiatedString);
