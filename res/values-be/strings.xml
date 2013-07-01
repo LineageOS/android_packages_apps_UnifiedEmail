@@ -375,7 +375,6 @@
     <skip />
     <!-- no translation found for preferences_signature_summary_not_set (2830886980620445857) -->
     <skip />
-    <string name="whats_new_dialog_title" msgid="4230806739326698666">"Што новага"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Адказаць"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Адказаць усім"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Архіваваць"</string>
@@ -427,6 +426,5 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"Значок тэчкі"</string>
     <!-- no translation found for add_account (2162808366829269770) -->
     <skip />
-    <!-- no translation found for attached_message (4267189489654642035) -->
-    <skip />
+    <string name="attached_message" msgid="4267189489654642035">"Прымацаванае паведамленне"</string>
 </resources>
