@@ -105,6 +105,7 @@ public class EmlMessageLoader extends AsyncTaskLoader<ConversationMessage> {
             if (result != null) {
                 onReleaseResources(result);
             }
+            return;
         }
         ConversationMessage oldMessage = mMessage;
         mMessage = result;
