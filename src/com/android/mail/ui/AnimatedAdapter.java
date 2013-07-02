@@ -1020,16 +1020,17 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
      * that may be above it.
      */
     public int getPositionOffset(final int position) {
-        int offset = 0;
+        // Folder views show at the very top.
+        int viewsAbove = mFolderViews.size();
 
-        for (int i = 0, size = mSpecialViews.size(); i < size; i++) {
-            final int key = mSpecialViews.keyAt(i);
-            if (key <= position) {
-                offset++;
+        // Now find out how many fleeting views are above the current one.
+        for (final ConversationSpecialItemView view :  mFleetingViews) {
+            if (view.getPosition() <= position) {
+                viewsAbove++;
             }
         }
 
-        return offset;
+        return viewsAbove;
     }
 
     public void cleanup() {
