@@ -370,7 +370,6 @@
     <string name="preferences_signature_title" msgid="888167074398030574">"서명"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"서명"</string>
     <string name="preferences_signature_summary_not_set" msgid="2830886980620445857">"설정되지 않음"</string>
-    <string name="whats_new_dialog_title" msgid="4230806739326698666">"새로운 기능"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"답장"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"전체답장"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"보관처리"</string>
@@ -421,6 +420,5 @@
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"대화를 선택하려면 발신자 이미지를 터치합니다."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"폴더 아이콘"</string>
     <string name="add_account" msgid="2162808366829269770">"계정 추가"</string>
-    <!-- no translation found for attached_message (4267189489654642035) -->
-    <skip />
+    <string name="attached_message" msgid="4267189489654642035">"첨부된 메시지"</string>
 </resources>
