@@ -194,7 +194,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
         // Since the uri specified in the conversation base uri may not be unique, we specify a
         // base uri that us guaranteed to be unique for this conversation.
-        mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
+        mBaseUri = "x-thread://" + mAccount.name.hashCode() + "/" + mConversation.id;
 
         LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
         // Not really, we just want to get a crack to store a reference to the change_folder item
