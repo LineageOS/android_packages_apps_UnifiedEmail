@@ -106,6 +106,8 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
                             .getString(UIProvider.FOLDER_HIERARCHICAL_DESC_COLUMN);
                     folder[UIProvider.FOLDER_LAST_MESSAGE_TIMESTAMP_COLUMN] = folderCursor
                             .getLong(UIProvider.FOLDER_LAST_MESSAGE_TIMESTAMP_COLUMN);
+                    folder[UIProvider.FOLDER_PARENT_URI_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_PARENT_URI_COLUMN);
                     cursor.addRow(folder);
                 }
             } while (folderCursor.moveToNext());

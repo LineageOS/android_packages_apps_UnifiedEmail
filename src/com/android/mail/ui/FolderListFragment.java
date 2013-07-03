@@ -485,11 +485,6 @@ public class FolderListFragment extends ListFragment implements
         if (folder != null) {
             // Not changing the account.
             final Account nextAccount = null;
-            // Since we may be looking at hierarchical views, if we can
-            // determine the parent of the folder we have tapped, set it here.
-            // If we are looking at the folder we are already viewing, don't
-            // update its parent!
-            folder.parent = folder.equals(mParentFolder) ? null : mParentFolder;
             // Go to the conversation list for this folder.
             if (!folder.uri.equals(mSelectedFolderUri)) {
                 mNextFolder = folder;
@@ -1008,9 +1003,7 @@ public class FolderListFragment extends ListFragment implements
             if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    Folder f = cursor.getModel();
-                    f.parent = mParent;
-                    add(f);
+                    add(cursor.getModel());
                 } while (cursor.moveToNext());
             }
         }
