@@ -636,7 +636,8 @@ public class UIProvider {
         FolderColumns.FG_COLOR,
         FolderColumns.LOAD_MORE_URI,
         FolderColumns.HIERARCHICAL_DESC,
-        FolderColumns.LAST_MESSAGE_TIMESTAMP
+        FolderColumns.LAST_MESSAGE_TIMESTAMP,
+        FolderColumns.PARENT_URI
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
@@ -662,6 +663,7 @@ public class UIProvider {
     public static final int FOLDER_LOAD_MORE_URI_COLUMN = 20;
     public static final int FOLDER_HIERARCHICAL_DESC_COLUMN = 21;
     public static final int FOLDER_LAST_MESSAGE_TIMESTAMP_COLUMN = 22;
+    public static final int FOLDER_PARENT_URI_COLUMN = 23;
 
     public static final class FolderType {
         /** A user defined label. */
@@ -870,6 +872,11 @@ public class UIProvider {
          * The timestamp of the last message received in this folder.
          */
         public static final String LAST_MESSAGE_TIMESTAMP = "lastMessageTimestamp";
+
+        /**
+         * The URI, possibly null, of the parent folder.
+         */
+        public static final String PARENT_URI = "parentUri";
 
         public FolderColumns() {}
     }
