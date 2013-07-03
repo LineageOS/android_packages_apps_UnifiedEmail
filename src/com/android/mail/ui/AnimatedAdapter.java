@@ -1020,16 +1020,18 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
      * that may be above it.
      */
     public int getPositionOffset(final int position) {
-        int offset = 0;
+        int viewsAbove = 0;
 
         for (int i = 0, size = mSpecialViews.size(); i < size; i++) {
-            final int key = mSpecialViews.keyAt(i);
-            if (key <= position) {
-                offset++;
+            final int bidPosition = mSpecialViews.keyAt(i);
+            // If the view bid for a position above the cursor position,
+            // it is above the conversation. Also, every nested folder is above the conversations.
+            if (bidPosition <= position || (mSpecialViews.get(i) instanceof NestedFolderView)) {
+                viewsAbove++;
             }
         }
 
-        return offset;
+        return viewsAbove;
     }
 
     public void cleanup() {
