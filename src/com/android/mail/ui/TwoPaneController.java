@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
@@ -155,10 +156,11 @@ public final class TwoPaneController extends AbstractActivityController {
 
     private void goUpFolderHierarchy(Folder current) {
         // If the current folder is a child, up should show the parent folder.
-        final Folder parent = current.parent;
-        if (parent != null) {
-            onFolderSelected(parent);
-        }
+        // Fix this to load the parent folder: http://b/9694899
+//        final Folder parent = current.parent;
+//        if (parent != null) {
+//            onFolderSelected(parent);
+//        }
     }
 
     @Override
@@ -392,8 +394,9 @@ public final class TwoPaneController extends AbstractActivityController {
                     && folderList.showingHierarchy()) {
                 // If the user navigated via the left folders list into a child folder,
                 // back should take the user up to the parent folder's conversation list.
+                // TODO: Clean this code up: http://b/9694899
                 final Folder hierarchyFolder = getHierarchyFolder();
-                if (hierarchyFolder.parent != null) {
+                if (hierarchyFolder.parent != Uri.EMPTY) {
                     goUpFolderHierarchy(hierarchyFolder);
                 } else  {
                     // Show inbox; we are at the top of the hierarchy we were

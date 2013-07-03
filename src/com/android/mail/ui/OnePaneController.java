@@ -361,7 +361,7 @@ public final class OnePaneController extends AbstractActivityController {
             final FolderListFragment folderListFragment = getFolderListFragment();
             final boolean parentHasChildren = folderListFragment != null &&
                     folderListFragment.showingHierarchy() && hierarchyFolder != null
-                    && hierarchyFolder.parent != null;
+                    && hierarchyFolder.parent != Uri.EMPTY;
             if (parentHasChildren) {
                 // If we are showing the folder list and the user is exploring
                 // the children of a single parent folder,
@@ -377,10 +377,13 @@ public final class OnePaneController extends AbstractActivityController {
         } else if (mViewMode.isListMode() && !inInbox(mAccount, mConvListContext)) {
             if (mLastFolderListTransactionId != INVALID_ID) {
                 // Set the hierarchy folder to what it will be once we go up
-                final Folder hierarchyFolder = getHierarchyFolder();
-                if (hierarchyFolder != null && hierarchyFolder.parent != null) {
-                    setHierarchyFolder(hierarchyFolder.parent);
-                }
+
+                // The hierarchy folder stuff is not required. We need to clean this stuff up.
+                // TODO: http://b/9694899
+//                final Folder hierarchyFolder = getHierarchyFolder();
+//                if (hierarchyFolder != null && hierarchyFolder.parent != null) {
+//                    setHierarchyFolder(hierarchyFolder.parent);
+//                }
 
                 // If the user got here by navigating via the folder list, back
                 // should bring them back to the folder list.
@@ -399,12 +402,9 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private void goUpFolderHierarchy(Folder current) {
-        final Folder top = current.parent;
-        if (top != null) {
-            // FIXME: This is silly. we worked so hard to add folder fragments to the back stack.
-            // it should either just pop back, or should not use the back stack at all.
-            onFolderSelected(top);
-        }
+        // This code is currently never called. Now that we have the URI, load the parent, if
+        // required. http://b/9694899
+        // onFolderSelected(current.parent);
     }
 
     /**
@@ -465,7 +465,7 @@ public final class OnePaneController extends AbstractActivityController {
             final FolderListFragment folderListFragment = getFolderListFragment();
             if (folderListFragment != null) {
                 final Folder parentFolder = folderListFragment.getParentFolder();
-                if (parentFolder == null || parentFolder.parent == null) {
+                if (parentFolder == null || parentFolder.parent == Uri.EMPTY) {
                     toggleFolderListState();
                     return true;
                 }
