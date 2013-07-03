@@ -144,7 +144,7 @@
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Legg til kontakt"</string>
     <string name="contextmenu_send_mail" msgid="8301941130009797208">"Send e-post"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Kart"</string>
-    <string name="contextmenu_sharelink" msgid="6213520416250245200">"Del kobling"</string>
+    <string name="contextmenu_sharelink" msgid="6213520416250245200">"Del link"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Hjelp"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"Send tilbakemelding"</string>
     <!-- no translation found for num_selected (5723323585692387843) -->
