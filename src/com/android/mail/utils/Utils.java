@@ -659,16 +659,14 @@ public class Utils {
         if (sMaxUnreadCount == -1) {
             sMaxUnreadCount = resources.getInteger(R.integer.maxUnreadCount);
         }
-        final int stringFormatResId;
         if (unreadCount > sMaxUnreadCount) {
-            stringFormatResId = R.string.actionbar_large_unread_count;
-            unreadCount = sMaxUnreadCount;
+            message = new SpannableString(
+                    resources.getString(R.string.actionbar_large_unread_count, sMaxUnreadCount));
         } else {
-            stringFormatResId = R.string.actionbar_unread_messages;
+             message = new SpannableString(resources.getQuantityString(
+                     R.plurals.actionbar_unread_messages, unreadCount, unreadCount));
         }
 
-        message = new SpannableString(
-                resources.getString(stringFormatResId, unreadCount));
         message.setSpan(CharacterStyle.wrap(ACTION_BAR_UNREAD_STYLE), 0,
                 message.toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 

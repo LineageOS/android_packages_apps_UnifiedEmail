@@ -611,8 +611,10 @@
     <!-- Displayed in widget when unread count > 100. [CHAR LIMIT=4] -->
     <string name="widget_large_unread_count">%d+</string>
 
-    <!-- Suffix for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
-    <string name="actionbar_unread_messages"><xliff:g id="count" example="4">%1$d</xliff:g> unread</string>
+    <plurals name="actionbar_unread_messages">
+        <!-- String for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
+        <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> unread</item>
+    </plurals>
 
     <!-- Displayed in the actionbar when unread count > 999. [CHAR LIMIT=30] -->
     <string name="actionbar_large_unread_count"><xliff:g id="count">%1$d</xliff:g>+ unread</string>
