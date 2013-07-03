@@ -370,7 +370,6 @@
     <string name="preferences_signature_title" msgid="888167074398030574">"Semnătură"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Semnătură"</string>
     <string name="preferences_signature_summary_not_set" msgid="2830886980620445857">"Nesetată"</string>
-    <string name="whats_new_dialog_title" msgid="4230806739326698666">"Ce este nou"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Răspundeți"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Răspundeți tuturor"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Arhivați"</string>
@@ -421,6 +420,5 @@
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Atingeți imaginea unui expeditor pentru a selecta respectiva conversație."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Pictogramă dosar"</string>
     <string name="add_account" msgid="2162808366829269770">"Adăugați un cont"</string>
-    <!-- no translation found for attached_message (4267189489654642035) -->
-    <skip />
+    <string name="attached_message" msgid="4267189489654642035">"Mesaj atașat"</string>
 </resources>

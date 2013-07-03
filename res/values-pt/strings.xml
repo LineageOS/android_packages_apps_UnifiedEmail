@@ -370,7 +370,6 @@
     <string name="preferences_signature_title" msgid="888167074398030574">"Assinatura"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Assinatura"</string>
     <string name="preferences_signature_summary_not_set" msgid="2830886980620445857">"Não definida"</string>
-    <string name="whats_new_dialog_title" msgid="4230806739326698666">"O que há de novo"</string>
     <string name="notification_action_reply" msgid="6015299134424685297">"Responder"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Responder a todos"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Arquivar"</string>
@@ -421,6 +420,5 @@
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Toque na imagem do remetente para selecionar a conversa."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ícone de pasta"</string>
     <string name="add_account" msgid="2162808366829269770">"Adicionar conta"</string>
-    <!-- no translation found for attached_message (4267189489654642035) -->
-    <skip />
+    <string name="attached_message" msgid="4267189489654642035">"Mensagem anexa"</string>
 </resources>
