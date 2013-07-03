@@ -386,7 +386,7 @@
     <string name="new_messages" msgid="4419173946074516420">"Новых сообщений: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Без звука"</string>
-    <string name="preference_removal_action_title" msgid="6585232628422090835">"Архивация и удаление"</string>
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"Архивация или удаление"</string>
   <string-array name="prefEntries_removal_action">
     <item msgid="1938422987822134657">"Только архивировать"</item>
     <item msgid="5737880287951287278">"Только удалять"</item>
@@ -397,7 +397,7 @@
     <item msgid="8350973578419775975">"Только удалять"</item>
     <item msgid="2967059853409454648">"Архивировать или удалять"</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Архивация и удаление"</string>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Я предпочитаю:"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Отвечать всем"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Использовать по умолчанию для всех ответов"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Быстрая архивация"</string>
