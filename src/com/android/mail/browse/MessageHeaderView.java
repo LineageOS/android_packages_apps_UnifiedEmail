@@ -17,14 +17,13 @@
 package com.android.mail.browse;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.AsyncQueryHandler;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -52,6 +51,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
+import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
@@ -59,6 +59,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -94,8 +95,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private static final String LOG_TAG = LogTag.getLogTag();
 
     public static final int DEFAULT_MODE = 0;
-
     public static final int POPUP_MODE = 1;
+
+    private static final int[] STATE_DRAFT = {R.attr.state_draft};
 
     // This is a debug only feature
     public static final boolean ENABLE_REPORT_RENDERING_PROBLEM =
@@ -114,9 +116,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private SpamWarningView mSpamWarningView;
     private ViewGroup mImagePromptView;
     private MessageInviteView mInviteView;
-    private View mBottomBorderView;
     private ImageView mPresenceView;
-    private View mPhotoSpacerView;
     private View mForwardButton;
     private View mOverflowButton;
     private View mDraftIcon;
@@ -125,8 +125,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private View mReplyButton;
     private View mReplyAllButton;
     private View mAttachmentIcon;
-    private View mLeftSpacer;
-    private View mRightSpacer;
     private final EmailCopyContextMenu mEmailCopyMenu;
 
     // temporary fields to reference raw data between initial render and details
@@ -174,12 +172,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private boolean mStarShown;
 
     /**
-     * Take the initial right margin of the header title container to mean its
-     * right margin when collapsed. There's currently no need for additional
-     * margin when expanded, but if that need ever arises, title_container can
-     * simply tack on some extra right padding.
+     * End margin of the text when collapsed. When expanded, the margin is 0.
      */
-    private int mTitleContainerCollapsedMarginRight;
+    private int mTitleContainerCollapsedMarginEnd;
 
     private PopupMenu mPopup;
 
@@ -213,12 +208,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private AlertDialog mDetailsPopup;
 
-    private Dialog mEmailCopyPopup;
-    private String mCopyAddress;
-
     private VeiledAddressMatcher mVeiledMatcher;
 
     private boolean mIsViewOnlyMode = false;
+
+    private LetterTileProvider sLetterTileProvider;
 
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
@@ -267,7 +261,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mSenderNameView = (TextView) findViewById(R.id.sender_name);
         mSenderEmailView = (TextView) findViewById(R.id.sender_email);
         mPhotoView = (QuickContactBadge) findViewById(R.id.photo);
-        mPhotoSpacerView = findViewById(R.id.photo_spacer);
         mReplyButton = findViewById(R.id.reply);
         mReplyAllButton = findViewById(R.id.reply_all);
         mForwardButton = findViewById(R.id.forward);
@@ -281,12 +274,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mAttachmentIcon = findViewById(R.id.attachment);
 
         mCollapsedStarVisible = mStarView.getVisibility() == VISIBLE;
-        mTitleContainerCollapsedMarginRight = ((MarginLayoutParams) mTitleContainerView
-                .getLayoutParams()).rightMargin;
-
-        mBottomBorderView = findViewById(R.id.details_bottom_border);
-        mLeftSpacer = findViewById(R.id.left_spacer);
-        mRightSpacer = findViewById(R.id.right_spacer);
+        final Resources resources = getResources();
+        mTitleContainerCollapsedMarginEnd = resources.getDimensionPixelSize(
+                R.dimen.message_header_title_container_margin_end_collapsed);
 
         setExpanded(true);
 
@@ -330,15 +320,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mIsSnappy = snappy;
         hideMessageDetails();
         if (snappy) {
-            setBackgroundDrawable(null);
-            // snappy header overlay has no padding so we need spacers
-            mLeftSpacer.setVisibility(View.VISIBLE);
-            mRightSpacer.setVisibility(View.VISIBLE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                setBackground(null);
+            } else {
+                setBackgroundDrawable(null);
+            }
         } else {
             setBackgroundColor(getResources().getColor(android.R.color.white));
-            // scrolling layer does have padding so we don't need spacers
-            mLeftSpacer.setVisibility(View.GONE);
-            mRightSpacer.setVisibility(View.GONE);
         }
     }
 
@@ -419,9 +407,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         /**
          * Turns draft mode on or off. Draft mode hides message operations other
          * than "edit", hides contact photo, hides presence, and changes the
-         * sender name to "Draft".
+         * sender name to "Draft". Do not set mIsDraft directly.
          */
-        mIsDraft = mMessage.draftType != UIProvider.DraftType.NOT_A_DRAFT;
+        setIsDraft(mMessage.draftType != UIProvider.DraftType.NOT_A_DRAFT);
         mIsSending = mMessage.isSending;
 
         // If this was a sent message AND:
@@ -615,10 +603,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             setChildVisibility(GONE, mReplyButton, mReplyAllButton, mForwardButton,
                     mOverflowButton, mDraftIcon, mEditDraftButton, mStarView,
                     mAttachmentIcon, mUpperDateView);
-            setChildVisibility(VISIBLE, mPhotoView, mPhotoSpacerView,
-                    mSenderEmailView);
+            setChildVisibility(VISIBLE, mPhotoView, mSenderEmailView);
 
-            setChildMarginRight(mTitleContainerView, 0);
+            setChildMarginEnd(mTitleContainerView, 0);
         } else if (isExpanded()) {
             int normalVis, draftVis;
 
@@ -633,13 +620,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             }
 
             setReplyOrReplyAllVisible();
-            setChildVisibility(normalVis, mPhotoView, mPhotoSpacerView, mForwardButton,
+            setChildVisibility(normalVis, mPhotoView, mForwardButton,
                     mSenderEmailView, mOverflowButton);
             setChildVisibility(draftVis, mDraftIcon, mEditDraftButton);
             setChildVisibility(GONE, mAttachmentIcon, mUpperDateView);
             setChildVisibility(mStarShown ? VISIBLE : GONE, mStarView);
 
-            setChildMarginRight(mTitleContainerView, 0);
+            setChildMarginEnd(mTitleContainerView, 0);
 
         } else {
 
@@ -655,17 +642,17 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
             setChildVisibility(mCollapsedStarVisible && mStarShown ? VISIBLE : GONE, mStarView);
 
-            setChildMarginRight(mTitleContainerView, mTitleContainerCollapsedMarginRight);
+            setChildMarginEnd(mTitleContainerView, mTitleContainerCollapsedMarginEnd);
 
             if (mIsDraft) {
 
                 setChildVisibility(VISIBLE, mDraftIcon);
-                setChildVisibility(GONE, mPhotoView, mPhotoSpacerView);
+                setChildVisibility(GONE, mPhotoView);
 
             } else {
 
                 setChildVisibility(GONE, mDraftIcon);
-                setChildVisibility(VISIBLE, mPhotoView, mPhotoSpacerView);
+                setChildVisibility(VISIBLE, mPhotoView);
 
             }
         }
@@ -695,9 +682,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         setChildVisibility(defaultReplyAll ? VISIBLE : GONE, mReplyAllButton);
     }
 
-    private static void setChildMarginRight(View childView, int marginRight) {
+    private static void setChildMarginEnd(View childView, int marginEnd) {
         MarginLayoutParams mlp = (MarginLayoutParams) childView.getLayoutParams();
-        mlp.rightMargin = marginRight;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mlp.setMarginEnd(marginEnd);
+        } else {
+            mlp.rightMargin = marginEnd;
+        }
         childView.setLayoutParams(mlp);
     }
 
@@ -881,8 +872,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 !TextUtils.isEmpty(mSender.getName()) ? mSender.getName() : mSender.getAddress());
         mPhotoView.setContentDescription(contentDesc);
         boolean photoSet = false;
-        String email = mSender.getAddress();
-        ContactInfo info = mContactInfoSource.getContactInfo(email);
+        final String email = mSender.getAddress();
+        final ContactInfo info = mContactInfoSource.getContactInfo(email);
         if (info != null) {
             mPhotoView.assignContactUri(info.contactUri);
             if (info.photo != null) {
@@ -900,8 +891,20 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
 
         if (!photoSet) {
-            mPhotoView.setImageToDefault();
+            mPhotoView.setImageBitmap(makeLetterTile(
+                    mSender.getName(), email, mPhotoView.getWidth(), mPhotoView.getHeight()));
         }
+    }
+
+    private Bitmap makeLetterTile(
+            String displayName, String senderAddress, int width, int height) {
+        final ImageCanvas.Dimensions dimensions = new ImageCanvas.Dimensions(
+                width, height, ImageCanvas.Dimensions.SCALE_ONE);
+
+        if (sLetterTileProvider == null) {
+            sLetterTileProvider = new LetterTileProvider(getContext());
+        }
+        return sLetterTileProvider.getLetterTile(dimensions, displayName, senderAddress);
     }
 
 
@@ -929,14 +932,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         boolean handled = true;
 
         switch (id) {
-            case android.R.id.button1:
-                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(
-                        Context.CLIPBOARD_SERVICE);
-                clipboard.setPrimaryClip(ClipData.newPlainText("", mCopyAddress));
-                if(mEmailCopyPopup!=null) {
-                    mEmailCopyPopup.dismiss();
-                }
-                break;
             case R.id.reply:
                 ComposeActivity.reply(getContext(), getAccount(), mMessage);
                 break;
@@ -1104,9 +1099,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 hideInvite();
             }
             mUpperHeaderView.setOnCreateContextMenuListener(mEmailCopyMenu);
-        }
-        if (mBottomBorderView != null) {
-            mBottomBorderView.setVisibility(vis);
         }
     }
 
@@ -1462,4 +1454,17 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
+    @Override
+    protected int[] onCreateDrawableState(int extraSpace) {
+        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        if (mIsDraft) {
+            mergeDrawableStates(drawableState, STATE_DRAFT);
+        }
+        return drawableState;
+    }
+
+    private void setIsDraft(boolean isDraft) {
+        mIsDraft = isDraft;
+        refreshDrawableState();
+    }
 }

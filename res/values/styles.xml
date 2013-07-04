@@ -249,13 +249,13 @@
     </style>
 
     <style name="MessageSenderNameStyle">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/message_sender_name</item>
+        <item name="android:textColor">@color/conv_header_text_dark</item>
     </style>
 
     <style name="MessageSenderEmailStyle">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/message_sender_email</item>
         <item name="android:layout_marginTop">-2dip</item>
     </style>

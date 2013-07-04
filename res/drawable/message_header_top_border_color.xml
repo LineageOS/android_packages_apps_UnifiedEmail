@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2013 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,10 @@
      limitations under the License.
 -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_activated="true"
-        android:color="@color/conv_header_text_dark" />
-    <item
-        android:color="@color/message_header_text_light" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item app:state_draft="true" android:state_activated="true"
+          android:drawable="@android:color/white" />
+    <item android:state_activated="true" android:drawable="@color/conv_subject_border" />
+    <item android:drawable="@android:color/white" />
 </selector>

@@ -17,14 +17,19 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/message_header_height"
-    android:background="@drawable/message_header_bg">
-    <View
-        android:id="@+id/left_spacer"
-        android:layout_width="@dimen/conversation_view_margin_side"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:visibility="gone" />
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/conversation_view_margin_side"
+    android:layout_marginRight="@dimen/conversation_view_margin_side"
+    android:layout_marginStart="@dimen/conversation_view_margin_side"
+    android:layout_marginEnd="@dimen/conversation_view_margin_side"
+    android:background="@drawable/message_header_bg"
+    android:duplicateParentState="true"
+    android:paddingLeft="@dimen/message_header_padding_start"
+    android:paddingRight="@dimen/message_header_padding_end"
+    android:paddingStart="@dimen/message_header_padding_start"
+    android:paddingEnd="@dimen/message_header_padding_end"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp" >
 
     <QuickContactBadge
         android:id="@+id/photo"
@@ -32,29 +37,15 @@
         android:layout_height="@dimen/contact_photo_height"
         android:scaleType="centerCrop"
         android:contentDescription="@string/contact_info_string" />
-    <View
-        android:id="@+id/photo_spacer"
-        android:layout_width="1dip"
-        android:layout_height="@dimen/contact_photo_height"
-        android:background="@android:color/white" />
     <!-- draft should match photo in dimensions -->
     <ImageView
         android:id="@+id/draft"
-        android:layout_width="@dimen/message_header_height"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/contact_photo_width"
+        android:layout_height="@dimen/contact_photo_height"
         android:visibility="gone"
         android:scaleType="center"
         android:src="@drawable/ic_email_draft" />
     <include layout="@layout/conversation_message_upper_header_text" />
     <include layout="@layout/conversation_message_upper_header_actions" />
 
-    <View
-        android:layout_width="@dimen/message_header_padding_right"
-        android:layout_height="match_parent" />
-    <View
-        android:id="@+id/right_spacer"
-        android:layout_width="@dimen/conversation_view_margin_side"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:visibility="gone" />
 </LinearLayout>
