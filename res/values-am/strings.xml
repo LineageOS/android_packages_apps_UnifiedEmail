@@ -75,7 +75,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"አዲስ ጻፍ"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"አቃፊዎችን ቀይር"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"አንቀሳቅስ ወደ"</string>
-    <string name="menu_move_to_inbox" msgid="3201472943201077389">"ወደ ገቢ መልእክት ሳጥን ውሰድ"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"ወደ ገቢ መልዕክት ሳጥን ውሰድ"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"የአቃፊ ቅንብሮች"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"ራስ-መጠን መቀየርን አድህር"</string>
     <string name="message_modified" msgid="2564340197585393687">"(ይህ መልዕክት ከዚህ ማያ ገጽ ጋር እንዲመጣጠን ተብሎ ከመጀመሪያው ስሪት ተሻሽሏል።)"</string>
@@ -295,7 +295,9 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"ውይይቶችን ለማየት ይህንን እቃፊ አመሳስል።"</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"አቃፊ አመሳስል"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <string name="actionbar_unread_messages" msgid="3805594795629836031">"<xliff:g id="COUNT">%1$d</xliff:g> ያልተነበቡ"</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> ያልተነበቡ"</item>
+  </plurals>
     <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>+ ያልተነበቡ"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"ተጨማሪ ውይይቶችን ዕይ"</string>
     <string name="loading_conversation" msgid="489160038366067983">"በመጫን ላይ…"</string>

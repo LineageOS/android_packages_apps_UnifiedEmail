@@ -295,7 +295,9 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Para ver as conversações, sincronize esta pasta."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sincronizar pasta"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <string name="actionbar_unread_messages" msgid="3805594795629836031">"<xliff:g id="COUNT">%1$d</xliff:g> não lidas"</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> não lidas"</item>
+  </plurals>
     <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>+ não lidas"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ver mais conversas"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Carregando…"</string>
