@@ -15,9 +15,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item app:state_draft="true" android:state_activated="true"
+          android:drawable="@drawable/header_convo_view_thread_bg_holo_repeat"/>
     <item android:state_activated="true"
-        android:drawable="@color/mail_app_blue" />
-    <item
-        android:drawable="@drawable/header_convo_view_thread_bg_holo_repeat" />
+          android:drawable="@color/expanded_message_header_background_color" />
+    <item android:drawable="@color/collapsed_message_header_background_color" />
 </selector>
