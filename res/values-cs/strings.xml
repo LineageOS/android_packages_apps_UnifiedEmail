@@ -170,7 +170,7 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Odesílání..."</string>
     <string name="send_failed" msgid="750908595144529579">"Zpráva nebyla odeslána."</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"já"</string>
+    <string name="me_object_pronun" msgid="7668994569594901571">"mně"</string>
     <string name="me_subject_pronun" msgid="1088657349831581116">"já"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Doručená pošta"</string>
   <plurals name="confirm_delete_conversation">
@@ -295,7 +295,9 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Chcete-li zobrazit konverzace, synchronizujte tuto složku."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synchronizovat složku"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"&gt;%d"</string>
-    <string name="actionbar_unread_messages" msgid="3805594795629836031">"Nepřečteno: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="other" msgid="6210217540181960613">"Nepřečteno: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+  </plurals>
     <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Nepřečteno: <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Zobrazit další konverzace"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Načítá se..."</string>
