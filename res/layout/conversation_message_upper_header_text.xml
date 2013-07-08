@@ -24,7 +24,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
     android:paddingLeft="@dimen/message_header_inner_side_padding"
-    android:layout_marginRight="@dimen/message_header_title_container_margin_right"
+    android:paddingStart="@dimen/message_header_inner_side_padding"
     android:layout_weight="1">
 
     <TextView
@@ -32,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:visibility="gone"
         android:lines="1"
         style="@style/MessageHeaderUpperDateStyle" />
@@ -40,8 +41,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/upper_date"
-        android:layout_marginRight="5dp"
+        android:layout_toStartOf="@id/upper_date"
         android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:src="@drawable/ic_attachment_holo_light"
         style="@style/MessageHeaderAttachmentIconStyle" />
     <TextView
@@ -49,7 +53,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/attachment"
+        android:layout_toStartOf="@id/attachment"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         style="@style/MessageSenderNameStyle"
         android:singleLine="true" />
     <ImageView
@@ -60,9 +66,10 @@
         android:id="@+id/sender_email"
         android:layout_below="@id/sender_name"
         android:layout_toRightOf="@id/presence"
+        android:layout_toEndOf="@id/presence"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
+        android:lines="2"
         style="@style/MessageSenderEmailStyle" />
 
 </RelativeLayout>
