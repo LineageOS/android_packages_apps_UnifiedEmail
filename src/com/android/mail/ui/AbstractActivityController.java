@@ -825,6 +825,15 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onFolderChanged(Folder folder) {
+        /** If the folder doesn't exist, or its parent URI is empty,
+         * this is not a child folder */
+        final boolean isTopLevel = (folder == null) || (folder.parent == Uri.EMPTY);
+        final int mode = mViewMode.getMode();
+        mDrawerToggle.setDrawerIndicatorEnabled(
+                getShouldShowDrawerIndicator(mode, isTopLevel));
+        mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(mode, isTopLevel)
+                ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
         mDrawerContainer.closeDrawers();
         changeFolder(folder, null);
     }
@@ -2089,33 +2098,46 @@ public abstract class AbstractActivityController implements ActivityController,
         }
 
         if (isDrawerEnabled()) {
-            mDrawerToggle.setDrawerIndicatorEnabled(getShouldShowDrawerIndicator(newMode));
-            mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(newMode)
+            /** If the folder doesn't exist, or its parent URI is empty,
+             * this is not a child folder */
+            final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
+            mDrawerToggle.setDrawerIndicatorEnabled(
+                    getShouldShowDrawerIndicator(newMode, isTopLevel));
+            mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(newMode, isTopLevel)
                     ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             closeDrawerIfOpen();
         }
     }
 
-    private static boolean getShouldShowDrawerIndicator(final int viewMode) {
-        // if search list/conv mode, disable indicator
-        // only allow indicator at top level of app
-        if (ViewMode.isSearchMode(viewMode)) {
-            return false;
-        } else {
-            return viewMode == ViewMode.CONVERSATION_LIST || viewMode == ViewMode.FOLDER_LIST;
-        }
+    /**
+     * Returns true if the drawer icon is shown
+     * @param viewMode the current view mode
+     * @param isTopLevel true if the current folder is not a child
+     * @return whether the drawer indicator is shown
+     */
+    private static boolean getShouldShowDrawerIndicator(final int viewMode,
+            final boolean isTopLevel) {
+        // If search list/conv mode: disable indicator
+        // Indicator is enabled either in conversation list or folder list mode.
+        return !ViewMode.isSearchMode(viewMode)
+            && (viewMode == ViewMode.FOLDER_LIST
+                || (viewMode == ViewMode.CONVERSATION_LIST  && isTopLevel));
     }
 
-    private static boolean getShouldAllowDrawerPull(final int viewMode) {
+    /**
+     * Returns true if the left-screen swipe action (or Home icon tap) should pull a drawer out.
+     * @param viewMode the current view mode.
+     * @param isTopLevel true if the current folder is not a child
+     * @return whether the drawer can be opened using a swipe action or action bar tap.
+     */
+    private static boolean getShouldAllowDrawerPull(final int viewMode, final boolean isTopLevel) {
         // if search list/conv mode, disable drawer pull
         // allow drawer pull everywhere except conversation mode where the list is hidden
-        if (ViewMode.isSearchMode(viewMode)) {
-            return false;
-        } else {
-            return !(ViewMode.isConversationMode(viewMode)
-            // TODO(ath): get this to work to allow drawer pull in 2-pane conv mode.
-            /* && !isConversationListVisible() */);
-        }
+        return !ViewMode.isSearchMode(viewMode) && !(ViewMode.isConversationMode(viewMode))
+                && isTopLevel;
+
+        // TODO(ath): get this to work to allow drawer pull in 2-pane conv mode.
+    /* && !isConversationListVisible() */
     }
 
     public void disablePagerUpdates() {
@@ -4179,7 +4201,8 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public boolean isDrawerPullEnabled() {
-        return getShouldAllowDrawerPull(mViewMode.getMode());
+        final boolean notChild = (mFolder == null || mFolder.parent == Uri.EMPTY);
+        return getShouldAllowDrawerPull(mViewMode.getMode(), notChild);
     }
 
     @Override
