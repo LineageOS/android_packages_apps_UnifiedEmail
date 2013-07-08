@@ -15,7 +15,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:butterbar="http://schemas.android.com/apk/res-auto">
 
     <ProgressBar
         android:id="@+id/sync_trigger"
@@ -28,13 +30,14 @@
         android:progress="100"
         android:progressDrawable="@drawable/progressbar_solid_holo" />
 
-    <ProgressBar
+    <com.android.mail.ui.ButteryProgressBar
         android:id="@+id/progress"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
+        android:layout_height="30dp"
         android:layout_gravity="top"
-        android:visibility="gone"
-        android:indeterminateDrawable="@drawable/progress_indeterminate_horizontal_holo"
-        android:indeterminate="true" />
+        butterbar:barColor="@android:color/holo_blue_dark"
+        butterbar:barHeight="2.5dp"
+        butterbar:detentWidth="4dp"
+        android:visibility="gone" />
 
 </merge>
