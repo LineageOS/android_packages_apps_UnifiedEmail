@@ -78,14 +78,6 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
     private ConversationListContext mConvListContext;
 
-    private final Runnable mOnSyncDismiss = new Runnable() {
-        @Override
-        public void run() {
-            mSyncProgressBar.setVisibility(GONE);
-            mSyncTriggerBar.setVisibility(GONE);
-        }
-    };
-
     // Instantiated through view inflation
     @SuppressWarnings("unused")
     public ConversationListView(Context context) {
@@ -105,14 +97,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         mSyncDismissListener = new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator arg0) {
-                // Even though alpha is set to 0, still need to set visiblity to
-                // GONE, otherwise the progressbar animation continues to get drawn
-                // even though it's not visible.
-                //
-                // For some reason, setting this visibility to GONE immediately upon animation end
-                // occasionally does not terminate the periodic drawing of the progress bar.
-                // Posting it seems to alleviate this...
-                post(mOnSyncDismiss);
+                mSyncProgressBar.setVisibility(GONE);
+                mSyncTriggerBar.setVisibility(GONE);
             }
         };
     }
