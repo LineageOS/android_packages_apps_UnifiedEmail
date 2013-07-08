@@ -170,7 +170,7 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Enviando..."</string>
     <string name="send_failed" msgid="750908595144529579">"No se envió el mensaje."</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"para mí"</string>
+    <string name="me_object_pronun" msgid="7668994569594901571">"mí"</string>
     <string name="me_subject_pronun" msgid="1088657349831581116">"yo"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Recibidos"</string>
   <plurals name="confirm_delete_conversation">
@@ -295,7 +295,9 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Para ver conversaciones, sincroniza esta carpeta."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sincronizar carpeta"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <string name="actionbar_unread_messages" msgid="3805594795629836031">"<xliff:g id="COUNT">%1$d</xliff:g> mensajes sin leer"</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> mensaje(s) sin leer"</item>
+  </plurals>
     <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Más de <xliff:g id="COUNT">%1$d</xliff:g> mensajes sin leer"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ver más conversaciones"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Cargando…"</string>
