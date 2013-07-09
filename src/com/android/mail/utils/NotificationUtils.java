@@ -76,7 +76,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NotificationUtils {
-    public static final String LOG_TAG = LogTag.getLogTag();
+    public static final String LOG_TAG = "NotifUtils";
 
     /** Contains a list of <(account, label), unread conversations> */
     private static NotificationMap sActiveNotificationMap = null;
