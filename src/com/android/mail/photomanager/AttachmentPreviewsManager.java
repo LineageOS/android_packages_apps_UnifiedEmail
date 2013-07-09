@@ -85,6 +85,18 @@ public class AttachmentPreviewsManager extends PhotoManager {
     }
 
     @Override
+    protected void onImageLoadStarted(final Request request) {
+        if (request == null) {
+            return;
+        }
+        final Object key = request.getKey();
+        if (mCallbacks.containsKey(key)) {
+            AttachmentPreviewsManagerCallback callback = mCallbacks.get(key);
+            callback.onImageLoadStarted(request.getKey());
+        }
+    }
+
+    @Override
     protected boolean isSizeCompatible(int prevWidth, int prevHeight, int newWidth, int newHeight) {
         float ratio = (float) newWidth / prevWidth;
         boolean previousRequestSmaller = newWidth > prevWidth
@@ -235,7 +247,7 @@ public class AttachmentPreviewsManager extends PhotoManager {
                 }
                 Attachment attachment = null;
                 try {
-                    LogUtils.d(TAG, "AttachmentPreviewsManager: found %d attachments for uri %s",
+                    LogUtils.v(TAG, "AttachmentPreviewsManager: found %d attachments for uri %s",
                             cursor.getCount(), uri);
                     if (cursor.moveToFirst()) {
                         attachment = new Attachment(cursor);
@@ -245,7 +257,7 @@ public class AttachmentPreviewsManager extends PhotoManager {
                 }
 
                 if (attachment == null) {
-                    LogUtils.d(TAG, "AttachmentPreviewsManager: attachment not found for uri %s",
+                    LogUtils.w(TAG, "AttachmentPreviewsManager: attachment not found for uri %s",
                             uri);
                     Utils.traceEndSection();
                     continue;
@@ -258,14 +270,14 @@ public class AttachmentPreviewsManager extends PhotoManager {
                 } else if (id.rendition == AttachmentRendition.SIMPLE) {
                     contentUri = attachment.thumbnailUri;
                 } else {
-                    LogUtils.d(TAG,
+                    LogUtils.w(TAG,
                             "AttachmentPreviewsManager: Cannot load rendition %d for uri %s",
                             id.rendition, uri);
                     Utils.traceEndSection();
                     continue;
                 }
 
-                LogUtils.d(TAG, "AttachmentPreviewsManager: attachments has contentUri %s",
+                LogUtils.v(TAG, "AttachmentPreviewsManager: attachments has contentUri %s",
                         contentUri);
                 final InputStreamFactory factory = new InputStreamFactory() {
                     @Override
@@ -348,5 +360,7 @@ public class AttachmentPreviewsManager extends PhotoManager {
     public interface AttachmentPreviewsManagerCallback {
 
         public void onImageDrawn(Object key, boolean success);
+
+        public void onImageLoadStarted(Object key);
     }
 }

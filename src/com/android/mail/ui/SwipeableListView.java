@@ -373,7 +373,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
+    public void onScrollStateChanged(final AbsListView view, final int scrollState) {
         mScrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
 
         if (!mScrolling) {
@@ -387,7 +387,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         }
 
         if (SCROLL_PAUSE_ENABLE) {
-            ConversationItemView.setPhotoManagersPaused(mScrolling);
+            ConversationItemView.setScrollStateChanged(scrollState);
         }
     }
 
