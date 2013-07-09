@@ -49,14 +49,17 @@ public class PriorityIndicatorSpan extends ReplacementSpan {
     private final int mResId;
     private final int mPaddingV;
     private final int mPaddingH;
+    private final int mPaddingAbove;
 
     private WeakReference<Drawable> mDrawableRef;
 
-    public PriorityIndicatorSpan(Context context, int resId, int paddingV, int paddingH) {
+    public PriorityIndicatorSpan(Context context, int resId, int paddingV, int paddingH,
+            int paddingAbove) {
         mContext = context;
         mResId = resId;
         mPaddingV = paddingV;
         mPaddingH = paddingH;
+        mPaddingAbove = paddingAbove;
     }
 
     private Drawable getDrawable() {
@@ -102,7 +105,7 @@ public class PriorityIndicatorSpan extends ReplacementSpan {
         Drawable b = getCachedDrawable();
         canvas.save();
 
-        int transY = (top + bottom - b.getBounds().bottom) / 2;
+        final int transY = (top + bottom + mPaddingAbove - b.getBounds().bottom) / 2;
 
         canvas.translate(x + mPaddingH, transY);
         b.draw(canvas);
