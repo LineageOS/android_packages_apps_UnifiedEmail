@@ -46,15 +46,12 @@ public interface ImageCanvas {
             height = h;
             scale = s;
         }
-    }
 
-    /**
-     * Draw the image, given an optional {@link PhotoIdentifier#getKey()} id.
-     *
-     * @deprecated use {@link #drawImage(Bitmap, Object)} instead.
-     */
-    @Deprecated
-    Bitmap loadImage(byte[] bytes, Object id);
+        @Override
+        public String toString() {
+            return String.format("Dimens [%d x %d]", width, height);
+        }
+    }
 
     /**
      * Draw/composite the given Bitmap corresponding with the key 'id'. It will be sized according
@@ -62,9 +59,9 @@ public interface ImageCanvas {
      * decode request was made.
      *
      * @param decoded an exactly-sized, decoded bitmap to display
-     * @param id
+     * @param key
      */
-    void drawImage(Bitmap decoded, Object id);
+    void drawImage(Bitmap decoded, Object key);
 
     /**
      * Reset all state associated with this view so that it can be reused.
@@ -74,10 +71,10 @@ public interface ImageCanvas {
     /**
      * Outputs the desired dimensions that the object with key 'id' would like to be drawn to.
      *
-     * @param id
+     * @param key
      * @param outDim caller-allocated {@link Dimensions} object to house the result
      */
-    void getDesiredDimensions(Object id, Dimensions outDim);
+    void getDesiredDimensions(Object key, Dimensions outDim);
 
     /**
      * Return an arbitrary integer to associate with any asynchronous requests for images that

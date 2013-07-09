@@ -164,16 +164,23 @@
         </LinearLayout>
 
     </LinearLayout>
+    <!-- There are 16dp bottom margins here for when there are no labels -->
 
-    <ImageView
-        android:id="@+id/attachment_previews"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/attachment_preview_margin_top"
-        android:layout_marginLeft="@dimen/attachment_preview_margin_side"
-        android:layout_marginRight="@dimen/attachment_preview_margin_side"
+    <include
+            layout="@layout/conversation_attachment_previews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/attachment_preview_margin_top_spacious"/>
+
+    <!-- Margin between attachment previews and folders. 16dp bottom margins match above -->
+    <View
+        android:id="@+id/attachment_previews_bottom_margin"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/attachment_preview_margin_bottom"
+        android:layout_marginBottom="16dp"
         android:visibility="gone" />
 
+    <!-- Labels should be 0dp below the subject, so we cancel out the 16dp bottom margin -->
     <TextView
         android:id="@+id/folders"
         android:layout_width="match_parent"

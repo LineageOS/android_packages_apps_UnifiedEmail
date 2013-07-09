@@ -157,16 +157,23 @@
             android:layout_gravity="top|right" />
 
     </FrameLayout>
+    <!-- There are 10dp bottom margins here for when there are no folders -->
 
-    <ImageView
-        android:id="@+id/attachment_previews"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/attachment_preview_margin_top"
-        android:layout_marginLeft="@dimen/attachment_preview_margin_side"
-        android:layout_marginRight="@dimen/attachment_preview_margin_side"
+    <include
+            layout="@layout/conversation_attachment_previews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/attachment_preview_margin_top_wide"/>
+
+    <!-- Margin between attachment previews and folders. 10dp bottom margins match above -->
+    <View
+        android:id="@+id/attachment_previews_bottom_margin"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/attachment_preview_margin_bottom_wide"
+        android:layout_marginBottom="10dp"
         android:visibility="gone" />
 
+    <!-- Folders should be 0dp below the subject, so we cancel out the 10dp bottom margin above -->
     <TextView
         android:id="@+id/folders"
         android:layout_width="match_parent"

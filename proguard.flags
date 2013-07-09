@@ -60,6 +60,7 @@
 
 -keepclasseswithmembers class com.android.mail.browse.ConversationItemView {
   *** setAnimatedHeightFraction(...);
+  *** setAnimatedProgressFraction(...);
 }
 
 -keepclasseswithmembers class com.android.mail.ui.MailActivity {

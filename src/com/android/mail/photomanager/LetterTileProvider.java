@@ -95,7 +95,7 @@ public class LetterTileProvider implements DefaultImageProvider {
         DividedImageCanvas dividedImageView = (DividedImageCanvas) view;
 
         final String displayName = contactIdentifier.name;
-        final String address = contactIdentifier.emailAddress;
+        final String address = (String) contactIdentifier.getKey();
 
         // don't apply again if existing letter is there (and valid)
         if (dividedImageView.hasImageFor(address)) {

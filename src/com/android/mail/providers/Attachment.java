@@ -31,6 +31,7 @@ import com.android.emailcommon.mail.Part;
 import com.android.mail.browse.MessageAttachmentBar;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
+import com.android.mail.providers.UIProvider.AttachmentRendition;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -52,6 +53,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class Attachment implements Parcelable {
+    public static final int MAX_ATTACHMENT_PREVIEWS = 2;
     public static final String LOG_TAG = LogTag.getLogTag();
     /**
      * Workaround for b/8070022 so that appending a null partId to the end of a
@@ -65,7 +67,7 @@ public class Attachment implements Parcelable {
     public String partId;
 
     /**
-     * Attachment file name. See {@link AttachmentColumns#NAME}.
+     * Attachment file name. See {@link AttachmentColumns#NAME} Use {@link #setName(String)}.
      */
     private String name;
 
@@ -84,7 +86,7 @@ public class Attachment implements Parcelable {
     public Uri uri;
 
     /**
-     * MIME type of the file.
+     * MIME type of the file. Use {@link #getContentType()} and {@link #setContentType(String)}.
      *
      * @see AttachmentColumns#CONTENT_TYPE
      */
@@ -92,7 +94,7 @@ public class Attachment implements Parcelable {
     private String inferredContentType;
 
     /**
-     * @see AttachmentColumns#STATE
+     * @see AttachmentColumns#STATE. Use {@link #setState(int)}
      */
     public int state;
 
@@ -529,14 +531,64 @@ public class Attachment implements Parcelable {
     private static final String LOCAL_FILE = "LOCAL_FILE";
 
     public String toJoinedString() {
-        return TextUtils.join("|", Lists.newArrayList(
+        return TextUtils.join(UIProvider.ATTACHMENT_INFO_DELIMITER, Lists.newArrayList(
                 partId == null ? "" : partId,
-                name == null ? "" : name.replaceAll("[|\n]", ""),
+                name == null ? ""
+                : name.replaceAll("[" + UIProvider.ATTACHMENT_INFO_DELIMITER
+                        + UIProvider.ATTACHMENT_INFO_SEPARATOR + "]", ""),
                 getContentType(),
                 String.valueOf(size),
                 getContentType(),
                 contentUri != null ? SERVER_ATTACHMENT : LOCAL_FILE,
                 contentUri));
+    }
+
+    /**
+     * For use with {@link UIProvider.ConversationColumns#ATTACHMENT_PREVIEW_STATES}.
+     *
+     * @param previewStates The packed int describing the states of multiple attachments.
+     * @param attachmentIndex The index of the attachment to update.
+     * @param rendition The rendition of that attachment to update.
+     * @param downloaded Whether that specific rendition is downloaded.
+     * @return A packed int describing the updated downloaded states of the multiple attachments.
+     */
+    public static int updatePreviewStates(int previewStates, int attachmentIndex, int rendition,
+            boolean downloaded) {
+        // find the bit that describes that specific attachment index and rendition
+        int shift = attachmentIndex * 2 + rendition;
+        int mask = 1 << shift;
+        // update the packed int at that bit
+        if (downloaded) {
+            // turns that bit into a 1
+            return previewStates | mask;
+        } else {
+            // turns that bit into a 0
+            return previewStates & ~mask;
+        }
+    }
+
+    /**
+     * For use with {@link UIProvider.ConversationColumns#ATTACHMENT_PREVIEW_STATES}.
+     *
+     * @param previewStates The packed int describing the states of multiple attachments.
+     * @param attachmentIndex The index of the attachment.
+     * @param rendition The rendition of the attachment.
+     * @return The downloaded state of that particular rendition of that particular attachment.
+     */
+    public static boolean getPreviewState(int previewStates, int attachmentIndex, int rendition) {
+        // find the bit that describes that specific attachment index
+        int shift = attachmentIndex * 2;
+        int mask = 1 << shift;
+
+        if (rendition == AttachmentRendition.SIMPLE) {
+            // implicit shift of 0 finds the SIMPLE rendition bit
+            return (previewStates & mask) != 0;
+        } else if (rendition == AttachmentRendition.BEST) {
+            // shift of 1 finds the BEST rendition bit
+            return (previewStates & (mask << 1)) != 0;
+        } else {
+            return false;
+        }
     }
 
     public static final Creator<Attachment> CREATOR = new Creator<Attachment>() {

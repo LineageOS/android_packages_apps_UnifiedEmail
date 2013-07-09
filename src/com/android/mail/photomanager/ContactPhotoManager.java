@@ -49,32 +49,9 @@ public class ContactPhotoManager extends PhotoManager {
     /** Cache size for {@link #mPhotoIdCache}. Starting with 500 entries. */
     private static final int PHOTO_ID_CACHE_SIZE = 500;
 
-    private ContactPhotoManager(Context context) {
-        super(context);
-        mPhotoIdCache = new LruCache<String, Long>(PHOTO_ID_CACHE_SIZE);
-        mLetterTileProvider = new LetterTileProvider(context);
-    }
-
-    @Override
-    public DefaultImageProvider getDefaultImageProvider() {
-        return mLetterTileProvider;
-    }
-
-    @Override
-    public long getHash(PhotoIdentifier id, ImageCanvas view) {
-        final ContactIdentifier contact = (ContactIdentifier) id;
-        return Objects.hashCode(view, contact.pos, contact.emailAddress);
-    }
-
-    @Override
-    public PhotoLoaderThread getLoaderThread(ContentResolver contentResolver) {
-        return new ContactPhotoLoaderThread(contentResolver);
-    }
-
     /**
-     * Requests the singleton instance of {@link AccountTypeManager} with data
-     * bound from the available authenticators. This method can safely be called
-     * from the UI thread.
+     * Requests the singleton instance with data bound from the available authenticators. This
+     * method can safely be called from the UI thread.
      */
     public static ContactPhotoManager getInstance(Context context) {
         Context applicationContext = context.getApplicationContext();
@@ -91,13 +68,39 @@ public class ContactPhotoManager extends PhotoManager {
         return new ContactPhotoManager(context);
     }
 
+    public static int generateHash(ImageCanvas view, int pos, Object key) {
+        return Objects.hashCode(view, pos, key);
+    }
+
+    private ContactPhotoManager(Context context) {
+        super(context);
+        mPhotoIdCache = new LruCache<String, Long>(PHOTO_ID_CACHE_SIZE);
+        mLetterTileProvider = new LetterTileProvider(context);
+    }
+
+    @Override
+    protected DefaultImageProvider getDefaultImageProvider() {
+        return mLetterTileProvider;
+    }
+
+    @Override
+    protected int getHash(PhotoIdentifier id, ImageCanvas view) {
+        final ContactIdentifier contactId = (ContactIdentifier) id;
+        return generateHash(view, contactId.pos, contactId.getKey());
+    }
+
+    @Override
+    protected PhotoLoaderThread getLoaderThread(ContentResolver contentResolver) {
+        return new ContactPhotoLoaderThread(contentResolver);
+    }
+
     @Override
     public void clear() {
         super.clear();
         mPhotoIdCache.evictAll();
     }
 
-    public static class ContactIdentifier implements PhotoIdentifier {
+    public static class ContactIdentifier extends PhotoIdentifier {
         public final String name;
         public final String emailAddress;
         public final int pos;
@@ -114,7 +117,7 @@ public class ContactPhotoManager extends PhotoManager {
         }
 
         @Override
-        public String getKey() {
+        public Object getKey() {
             return emailAddress;
         }
 
@@ -153,6 +156,11 @@ public class ContactPhotoManager extends PhotoManager {
             sb.append("}");
             return sb.toString();
         }
+
+        @Override
+        public int compareTo(PhotoIdentifier another) {
+            return 0;
+        }
     }
 
     public class ContactPhotoLoaderThread extends PhotoLoaderThread {
@@ -161,8 +169,8 @@ public class ContactPhotoManager extends PhotoManager {
         }
 
         @Override
-        protected Map<String, byte[]> loadPhotos(Collection<Request> requests) {
-            Map<String, byte[]> photos = new HashMap<String, byte[]>(requests.size());
+        protected Map<String, BitmapHolder> loadPhotos(Collection<Request> requests) {
+            Map<String, BitmapHolder> photos = new HashMap<String, BitmapHolder>(requests.size());
 
             Set<String> addresses = new HashSet<String>();
             Set<Long> photoIds = new HashSet<Long>();
@@ -171,7 +179,7 @@ public class ContactPhotoManager extends PhotoManager {
             Long match;
             String emailAddress;
             for (Request request : requests) {
-                emailAddress = request.getKey();
+                emailAddress = (String) request.getKey();
                 match = mPhotoIdCache.get(emailAddress);
                 if (match != null) {
                     photoIds.add(match);
@@ -193,7 +201,8 @@ public class ContactPhotoManager extends PhotoManager {
             if (emailAddressToContactInfoMap != null) {
                 for (final String address : addresses) {
                     final ContactInfo info = emailAddressToContactInfoMap.get(address);
-                    photos.put(address, info != null ? info.photoBytes : null);
+                    photos.put(address,
+                            new BitmapHolder(info != null ? info.photoBytes : null, -1, -1));
                 }
             } else {
                 // Still need to set a null result for all addresses, otherwise we end

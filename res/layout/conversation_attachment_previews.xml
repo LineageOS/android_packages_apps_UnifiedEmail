@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/attachment_previews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/attachment_preview_margin_top"
+        android:layout_marginLeft="@dimen/attachment_preview_margin_side"
+        android:layout_marginRight="@dimen/attachment_preview_margin_side"
+        android:visibility="gone" >
+    <!--todo:markwei get font color, typeface, and size from channah-->
+    <TextView
+            android:id="@+id/ap_overflow"
+            android:layout_width="@dimen/ap_overflow_count_diameter"
+            android:layout_height="@dimen/ap_overflow_count_diameter"
+            android:layout_marginRight="@dimen/ap_margin_side"
+            android:layout_marginBottom="@dimen/ap_margin_side"
+            android:layout_gravity="bottom|right"
+            android:includeFontPadding="false"
+            android:textStyle="bold"
+            android:textSize="12sp"/>
+    <!--todo:markwei get actual spinner asset from channah-->
+    <ImageView
+            android:id="@+id/ap_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/spinner_holo" />
+</FrameLayout>

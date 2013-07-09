@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class UIProvider {
     public static final String EMAIL_SEPARATOR = ",";
@@ -914,7 +915,12 @@ public class UIProvider {
         ConversationColumns.ACCOUNT_URI,
         ConversationColumns.SENDER_INFO,
         ConversationColumns.CONVERSATION_BASE_URI,
-        ConversationColumns.REMOTE
+        ConversationColumns.REMOTE,
+        ConversationColumns.ATTACHMENT_PREVIEW_URI0,
+        ConversationColumns.ATTACHMENT_PREVIEW_URI1,
+        ConversationColumns.ATTACHMENT_PREVIEW_STATES,
+        ConversationColumns.ATTACHMENT_PREVIEWS_COUNT,
+        ConversationColumns.ATTACHMENT_PREVIEWS_LIST_URI
     };
 
     /**
@@ -952,6 +958,11 @@ public class UIProvider {
     public static final int CONVERSATION_SENDER_INFO_COLUMN = 23;
     public static final int CONVERSATION_BASE_URI_COLUMN = 24;
     public static final int CONVERSATION_REMOTE_COLUMN = 25;
+    public static final int CONVERSATION_ATTACHMENT_PREVIEW_URI0_COLUMN = 26;
+    public static final int CONVERSATION_ATTACHMENT_PREVIEW_URI1_COLUMN = 27;
+    public static final int CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN = 28;
+    public static final int CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN = 29;
+    public static final int CONVERSATION_ATTACHMENT_PREVIEWS_LIST_URI_COLUMN = 30;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -1130,6 +1141,40 @@ public class UIProvider {
          * when handling relative urls in the message content
          */
         public static final String CONVERSATION_BASE_URI = "conversationBaseUri";
+
+        /**
+         * This string column contains the uri of the first attachment preview of the first unread
+         * message, denoted by UNREAD_MESSAGE_ID.
+         */
+        public static final String ATTACHMENT_PREVIEW_URI0 = "attachmentPreviewUri0";
+
+        /**
+         * This string column contains the uri of the second attachment preview of the first unread
+         * message, denoted by UNREAD_MESSAGE_ID.
+         */
+        public static final String ATTACHMENT_PREVIEW_URI1 = "attachmentPreviewUri1";
+
+        /**
+         * This int column contains the states of the attachment previews of the first unread
+         * message, the same message used for the snippet. The states is a packed int,
+         * where the first and second bits represent the SIMPLE and BEST state of the first
+         * attachment preview, while the third and fourth bits represent those states for the
+         * second attachment preview. For each bit, a one means that rendition of that attachment
+         * preview is downloaded.
+         */
+        public static final String ATTACHMENT_PREVIEW_STATES = "attachmentPreviewStates";
+
+        /**
+         * This int column contains the total count of images in the first unread message. The
+         * total count may be higher than the number of ATTACHMENT_PREVIEW_URI columns.
+         */
+        public static final String ATTACHMENT_PREVIEWS_COUNT = "attachmentPreviewsCount";
+
+        /**
+         * This String column contains the image list uri for the first unread message. We can
+         * pass this uri to the MailPhotoViewActivity to view all images.
+         */
+        public static final String ATTACHMENT_PREVIEWS_LIST_URI = "attachmentPreviewsListUri";
 
         private ConversationColumns() {
         }
@@ -1745,6 +1790,14 @@ public class UIProvider {
     public static final int ATTACHMENT_PREVIEW_INTENT_COLUMN = 9;
     public static final int ATTACHMENT_SUPPORTS_DOWNLOAD_AGAIN_COLUMN = 10;
 
+    /** Separates attachment info parts in strings in the database. */
+    public static final String ATTACHMENT_INFO_SEPARATOR = "\n"; // use to join
+    public static final Pattern ATTACHMENT_INFO_SEPARATOR_PATTERN =
+            Pattern.compile(ATTACHMENT_INFO_SEPARATOR); // use to split
+    public static final String ATTACHMENT_INFO_DELIMITER = "|"; // use to join
+    // use to split
+    public static final Pattern ATTACHMENT_INFO_DELIMITER_PATTERN = Pattern.compile("\\|");
+
     /**
      * Valid states for the {@link AttachmentColumns#STATE} column.
      *
@@ -1932,12 +1985,29 @@ public class UIProvider {
         private static final String SIMPLE_STRING = "SIMPLE";
         private static final String BEST_STRING = "BEST";
 
+        /**
+         * Prefer renditions in this order.
+         */
+        public static final int[] PREFERRED_RENDITIONS = new int[]{BEST, SIMPLE};
+
         public static int parseRendition(String rendition) {
-            return TextUtils.equals(rendition, SIMPLE_STRING) ? SIMPLE : BEST;
+            if (TextUtils.equals(rendition, SIMPLE_STRING)) {
+                return SIMPLE;
+            } else if (TextUtils.equals(rendition, BEST_STRING)) {
+                return BEST;
+            }
+
+            throw new IllegalArgumentException(String.format("Unknown rendition %s", rendition));
         }
 
         public static String toString(int rendition) {
-            return rendition == BEST ? BEST_STRING : SIMPLE_STRING;
+            if (rendition == BEST) {
+                return BEST_STRING;
+            } else if (rendition == SIMPLE) {
+                return SIMPLE_STRING;
+            }
+
+            throw new IllegalArgumentException(String.format("Unknown rendition %d", rendition));
         }
     }
 

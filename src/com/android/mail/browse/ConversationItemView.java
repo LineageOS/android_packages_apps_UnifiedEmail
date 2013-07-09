@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ClipData;
@@ -30,6 +31,7 @@ import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -56,18 +58,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.R.color;
+import com.android.mail.R.drawable;
+import com.android.mail.R.integer;
+import com.android.mail.R.string;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
+import com.android.mail.photo.MailPhotoViewActivity;
+import com.android.mail.photomanager.AttachmentPreviewsManager;
+import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreviewsDividedImageCanvas;
+import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreviewsManagerCallback;
 import com.android.mail.photomanager.ContactPhotoManager;
 import com.android.mail.photomanager.ContactPhotoManager.ContactIdentifier;
+import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreviewIdentifier;
 import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
 import com.android.mail.providers.Address;
+import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AttachmentRendition;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderType;
@@ -77,6 +91,7 @@ import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
 import com.android.mail.ui.FolderDisplayer;
+import com.android.mail.ui.ImageCanvas;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.ViewMode;
@@ -85,11 +100,14 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem,
-        InvalidateCallback {
+        InvalidateCallback, AttachmentPreviewsManagerCallback {
+
     // Timer.
     private static int sLayoutCount = 0;
     private static Timer sTimer; // Create the sTimer here if you need to do
@@ -117,15 +135,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static Bitmap STATE_CALENDAR_INVITE;
     private static Bitmap VISIBLE_CONVERSATION_CARET;
     private static Drawable RIGHT_EDGE_TABLET;
+    private static Bitmap PROGRESS_BAR;
 
     private static String sSendersSplitToken;
     private static String sElidedPaddingToken;
+    private static String sOverflowCountFormat;
 
     // Static colors.
     private static int sActivatedTextColor;
     private static int sSendersTextColorRead;
     private static int sSendersTextColorUnread;
     private static int sDateTextColor;
+    private static int sOverflowBadgeColor;
+    private static int sOverflowTextColor;
     private static int sStarTouchSlop;
     private static int sSenderImageTouchSlop;
     @Deprecated
@@ -133,10 +155,15 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sShrinkAnimationDuration;
     private static int sSlideAnimationDuration;
     private static int sAnimatingBackgroundColor;
+    // todo:markwei get duration from channah
+    private static int sProgressAnimationDuration;
+    private static int sOverflowCountMax;
 
     // Static paints.
     private static TextPaint sPaint = new TextPaint();
     private static TextPaint sFoldersPaint = new TextPaint();
+
+    private static Rect sRect = new Rect();
 
     // Backgrounds for different states.
     private final SparseArray<Drawable> mBackgrounds = new SparseArray<Drawable>();
@@ -145,9 +172,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mViewWidth = -1;
     /** The view mode at which we calculated mViewWidth previously. */
     private int mPreviousMode;
+
     private int mDateX;
     private int mPaperclipX;
     private int mSendersWidth;
+    private int mOverflowX;
+    private int mOverflowY;
 
     /** Whether we are on a tablet device or not */
     private final boolean mTabletDevice;
@@ -180,8 +210,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private final TextView mSendersTextView;
     private int mGadgetMode;
     private final DividedImageCanvas mContactImagesHolder;
-    private int mAttachmentPreviewMode;
-    private final DividedImageCanvas mAttachmentPreviewsCanvas;
+    private static ContactPhotoManager sContactPhotoManager;
+
 
     private static int sFoldersLeftPadding;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
@@ -190,12 +220,35 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static ForegroundColorSpan sSnippetTextReadSpan;
     private static int sScrollSlop;
     private static CharacterStyle sActivatedTextSpan;
-    private static ContactPhotoManager sContactPhotoManager;
-    private static ContactPhotoManager sAttachmentPreviewsManager;
+
+    private final AttachmentPreviewsDividedImageCanvas mAttachmentPreviewsCanvas;
+    private static AttachmentPreviewsManager sAttachmentPreviewsManager;
+    /**
+     * Animates the mAnimatedProgressFraction field to make the progress bars spin. Cancelling
+     * this animator does not remove the progress bars.
+     */
+    private final ObjectAnimator mProgressAnimator;
+    private float mAnimatedProgressFraction;
+    private boolean[] mImagesLoaded = new boolean[0];
+    private static final boolean CONVLIST_ATTACHMENT_PREVIEWS_ENABLED = true;
 
     static {
         sPaint.setAntiAlias(true);
         sFoldersPaint.setAntiAlias(true);
+    }
+
+    public static void setPhotoManagersPaused(boolean shouldPause) {
+        if (sContactPhotoManager == null) {
+            return;
+        }
+
+        if (shouldPause) {
+            sContactPhotoManager.pause();
+            sAttachmentPreviewsManager.pause();
+        } else {
+            sContactPhotoManager.resume();
+            sAttachmentPreviewsManager.resume();
+        }
     }
 
     /**
@@ -341,6 +394,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     public ConversationItemView(Context context, String account) {
         super(context);
+        Utils.traceBeginSection("CIVC constructor");
         setClickable(true);
         setLongClickable(true);
         mContext = context.getApplicationContext();
@@ -374,8 +428,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
             VISIBLE_CONVERSATION_CARET = BitmapFactory.decodeResource(res,
                     R.drawable.ic_carrot_holo);
-
             RIGHT_EDGE_TABLET = res.getDrawable(R.drawable.list_edge_tablet);
+//            todo:markwei get actual spinner asset from channah
+            PROGRESS_BAR = BitmapFactory.decodeResource(res, drawable.spinner_holo);
 
             // Initialize colors.
             sActivatedTextColor = res.getColor(R.color.senders_text_color_read);
@@ -391,6 +446,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSnippetTextReadSpan =
                     new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_read));
             sDateTextColor = res.getColor(R.color.date_text_color);
+            sOverflowBadgeColor = res.getColor(color.ap_overflow_badge_color);
+            sOverflowTextColor = res.getColor(color.ap_overflow_text_color);
             sStarTouchSlop = res.getDimensionPixelSize(R.dimen.star_touch_slop);
             sSenderImageTouchSlop = res.getDimensionPixelSize(R.dimen.sender_image_touch_slop);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
@@ -399,11 +456,15 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             // Initialize static color.
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
+            sOverflowCountFormat = res.getString(string.ap_overflow_format);
             sAnimatingBackgroundColor = res.getColor(R.color.animating_item_background_color);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
             sFoldersLeftPadding = res.getDimensionPixelOffset(R.dimen.folders_left_padding);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
-            sAttachmentPreviewsManager = ContactPhotoManager.createContactPhotoManager(context);
+            sAttachmentPreviewsManager = new AttachmentPreviewsManager(context);
+            // todo:markwei get animation duration from channah
+            sProgressAnimationDuration = 1000;
+            sOverflowCountMax = res.getInteger(integer.ap_overflow_max_count);
         }
 
         mSendersTextView = new TextView(mContext);
@@ -425,29 +486,73 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                         mCoordinates.contactImagesY + mCoordinates.contactImagesHeight);
             }
         });
-        mAttachmentPreviewsCanvas = new DividedImageCanvas(context, this);
+        mAttachmentPreviewsCanvas = new AttachmentPreviewsDividedImageCanvas(context,
+                new InvalidateCallback() {
+                    @Override
+                    public void invalidate() {
+                        if (mCoordinates == null) {
+                            return;
+                        }
+                        ConversationItemView.this.invalidate(
+                                mCoordinates.attachmentPreviewsX, mCoordinates.attachmentPreviewsY,
+                                mCoordinates.attachmentPreviewsX
+                                        + mCoordinates.attachmentPreviewsWidth,
+                                mCoordinates.attachmentPreviewsY
+                                        + mCoordinates.attachmentPreviewsHeight);
+                    }
+                });
+
+        mProgressAnimator = createProgressAnimator();
+        Utils.traceEndSection();
     }
 
     public void bind(Conversation conversation, ControllableActivity activity,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
+        Utils.traceBeginSection("CIVC.bind");
         bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity, set,
                 folder, checkboxOrSenderImage, swipeEnabled, priorityArrowEnabled, adapter);
+        Utils.traceEndSection();
     }
 
     private void bind(ConversationItemViewModel header, ControllableActivity activity,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
-        // If this was previously bound to a conversation, remove any contact
-        // photo manager requests.
-        // TODO:MARKWEI attachment previews
         if (mHeader != null) {
-            final ArrayList<String> divisionIds = mContactImagesHolder.getDivisionIds();
-            if (divisionIds != null) {
-                mContactImagesHolder.reset();
-                for (int pos = 0; pos < divisionIds.size(); pos++) {
-                    sContactPhotoManager.removePhoto(DividedImageCanvas.generateHash(
-                            mContactImagesHolder, pos, divisionIds.get(pos)));
+            // If this was previously bound to a different conversation, remove any contact photo
+            // manager requests.
+            if (header.conversation.id != mHeader.conversation.id || !header.displayableSenderNames
+                    .equals(mHeader.displayableSenderNames)) {
+                ArrayList<String> divisionIds = mContactImagesHolder.getDivisionIds();
+                if (divisionIds != null) {
+                    mContactImagesHolder.reset();
+                    for (int pos = 0; pos < divisionIds.size(); pos++) {
+                        sContactPhotoManager.removePhoto(ContactPhotoManager.generateHash(
+                                mContactImagesHolder, pos, divisionIds.get(pos)));
+                    }
+                }
+            }
+
+            // If this was previously bound to a different conversation,
+            // remove any attachment preview manager requests.
+            if (header.conversation.id != mHeader.conversation.id
+                    || header.conversation.attachmentPreviewsCount
+                            != mHeader.conversation.attachmentPreviewsCount
+                    || !header.conversation.getAttachmentPreviewUris()
+                            .equals(mHeader.conversation.getAttachmentPreviewUris())) {
+                ArrayList<String> divisionIds = mAttachmentPreviewsCanvas.getDivisionIds();
+                if (divisionIds != null) {
+                    mAttachmentPreviewsCanvas.reset();
+                    for (int pos = 0; pos < divisionIds.size(); pos++) {
+                        String uri = divisionIds.get(pos);
+                        for (int rendition : AttachmentRendition.PREFERRED_RENDITIONS) {
+                            AttachmentPreviewIdentifier id = new AttachmentPreviewIdentifier(uri,
+                                    rendition, 0, 0);
+                            sAttachmentPreviewsManager
+                                    .removePhoto(AttachmentPreviewsManager.generateHash(
+                                            mAttachmentPreviewsCanvas, id.getKey()));
+                        }
+                    }
                 }
             }
         }
@@ -459,13 +564,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
         mAdapter = adapter;
-        if (mHeader.conversation.getAttachmentsCount() == 0) {
-            mAttachmentPreviewMode = ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE;
-        } else {
-            mAttachmentPreviewMode = mHeader.conversation.read ?
-                    ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_SHORT
-                    : ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_TALL;
-        }
+        mImagesLoaded = new boolean[mHeader.conversation.getAttachmentPreviewUris().size()];
 
         if (checkboxOrSenderImage == ConversationListIcon.SENDER_IMAGE) {
             mGadgetMode = ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO;
@@ -495,7 +594,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         mConfig = new ConversationItemViewCoordinates.Config()
             .withGadget(mGadgetMode)
-            .withAttachmentPreviews(mAttachmentPreviewMode);
+            .withAttachmentPreviews(getAttachmentPreviewsMode());
         if (header.folderDisplayer.hasVisibleFolders()) {
             mConfig.showFolders();
         }
@@ -527,6 +626,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mConfig.showPersonalIndicator();
         }
 
+        int overflowCount = Math.min(getOverflowCount(), sOverflowCountMax);
+        mHeader.overflowText = String.format(sOverflowCountFormat, overflowCount);
+
         setContentDescription();
         requestLayout();
     }
@@ -552,6 +654,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Utils.traceBeginSection("CIVC.measure");
         final int wSize = MeasureSpec.getSize(widthMeasureSpec);
 
         final int currentMode = mActivity.getViewMode().getMode();
@@ -565,11 +668,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         Resources res = getResources();
         mHeader.standardScaledDimen = res.getDimensionPixelOffset(R.dimen.standard_scaled_dimen);
-        if (mHeader.standardScaledDimen != sStandardScaledDimen) {
-            // Large Text has been toggle on/off. Update the static dimens.
-            sStandardScaledDimen = mHeader.standardScaledDimen;
-            ConversationItemViewCoordinates.refreshConversationDimens(mContext);
-        }
 
         mCoordinates = ConversationItemViewCoordinates.forConfig(mContext, mConfig,
                 mAdapter.getCoordinatesCache());
@@ -577,6 +675,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         final int h = (mAnimatedHeightFraction != 1.0f) ?
                 Math.round(mAnimatedHeightFraction * mCoordinates.height) : mCoordinates.height;
         setMeasuredDimension(mConfig.getWidth(), h);
+        Utils.traceEndSection();
     }
 
     @Override
@@ -615,6 +714,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     @Override
     public void setBackgroundResource(int resourceId) {
+        Utils.traceBeginSection("set background resource");
         Drawable drawable = mBackgrounds.get(resourceId);
         if (drawable == null) {
             drawable = getResources().getDrawable(resourceId);
@@ -623,6 +723,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (getBackground() != drawable) {
             super.setBackgroundDrawable(drawable);
         }
+        Utils.traceEndSection();
     }
 
     private void calculateTextsAndBitmaps() {
@@ -677,7 +778,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             }
         }
 
-        if (mAttachmentPreviewMode != ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE) {
+        if (isAttachmentPreviewsEnabled()) {
             loadAttachmentPreviews();
         }
 
@@ -702,6 +803,30 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
     }
 
+    private boolean isAttachmentPreviewsEnabled() {
+        return CONVLIST_ATTACHMENT_PREVIEWS_ENABLED
+                && mHeader.conversation.attachmentPreviewsCount != 0;
+    }
+
+    private boolean getOverflowCountVisible() {
+        return isAttachmentPreviewsEnabled() && getOverflowCount() > 0;
+    }
+
+    private int getOverflowCount() {
+        return mHeader.conversation.attachmentPreviewsCount - mHeader.conversation
+                .getAttachmentPreviewUris().size();
+    }
+
+    private int getAttachmentPreviewsMode() {
+        if (isAttachmentPreviewsEnabled()) {
+            return mHeader.conversation.read
+                    ? ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_READ
+                    : ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_UNREAD;
+        } else {
+            return ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE;
+        }
+    }
+
     // FIXME(ath): maybe move this to bind(). the only dependency on layout is on tile W/H, which
     // is immutable.
     private void loadSenderImages() {
@@ -715,10 +840,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                         mCoordinates.getMode());
                 return;
             }
+
+            int size = mHeader.displayableSenderEmails.size();
+            final List<Object> keys = Lists.newArrayListWithCapacity(size);
+            for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < size; i++) {
+                keys.add(mHeader.displayableSenderEmails.get(i));
+            }
+
             mContactImagesHolder.setDimensions(mCoordinates.contactImagesWidth,
                     mCoordinates.contactImagesHeight);
-            mContactImagesHolder.setDivisionIds(mHeader.displayableSenderEmails);
-            int size = mHeader.displayableSenderEmails.size();
+            mContactImagesHolder.setDivisionIds(keys);
             String emailAddress;
             for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < size; i++) {
                 emailAddress = mHeader.displayableSenderEmails.get(i);
@@ -730,29 +861,122 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private void loadAttachmentPreviews() {
-        if (mAttachmentPreviewMode != ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE) {
-            final int attachmentPreviewsHeight = ConversationItemViewCoordinates
-                    .getAttachmentPreviewsHeight(mContext, mAttachmentPreviewMode);
-            if (mCoordinates.attachmentPreviewsWidth <= 0 || attachmentPreviewsHeight <= 0) {
-                LogUtils.w(LOG_TAG,
-                        "Attachment preview width(%d) or height(%d) is 0 for mode: (%d,%d).",
-                        mCoordinates.attachmentPreviewsWidth, attachmentPreviewsHeight,
-                        mCoordinates.getMode(), mAttachmentPreviewMode);
-                return;
+        if (!isAttachmentPreviewsEnabled()) {
+            return;
+        }
+        if (mCoordinates.attachmentPreviewsWidth <= 0
+                || mCoordinates.attachmentPreviewsHeight <= 0) {
+            LogUtils.w(LOG_TAG,
+                    "Attachment preview width(%d) or height(%d) is 0 for mode: (%d,%d).",
+                    mCoordinates.attachmentPreviewsWidth, mCoordinates.attachmentPreviewsHeight,
+                    mCoordinates.getMode(), getAttachmentPreviewsMode());
+            return;
+        }
+        Utils.traceBeginSection("attachment previews");
+
+        Utils.traceBeginSection("Setup load attachment previews");
+
+        LogUtils.d(LOG_TAG,
+                "loadAttachmentPreviews: ###############################################");
+        LogUtils.d(LOG_TAG,
+                "loadAttachmentPreviews: Loading attachment previews for conversation %s",
+                mHeader.conversation);
+
+        // Get list of attachments and states from conversation
+        final ArrayList<String> attachmentUris = mHeader.conversation.getAttachmentPreviewUris();
+        final int previewStates = mHeader.conversation.attachmentPreviewStates;
+        final int displayCount = Math.min(attachmentUris.size(), DividedImageCanvas.MAX_DIVISIONS);
+        Utils.traceEndSection();
+
+        final List<AttachmentPreviewIdentifier> ids = Lists.newArrayListWithCapacity(displayCount);
+        final List<Object> keys = Lists.newArrayListWithCapacity(displayCount);
+        // First pass: Create and set the rendition on each load request
+        for (int i = 0; i < displayCount; i++) {
+            Utils.traceBeginSection("finding rendition of attachment preview");
+            final String uri = attachmentUris.get(i);
+
+            // Find the rendition to load based on availability.
+            LogUtils.d(LOG_TAG, "loadAttachmentPreviews: state [BEST, SIMPLE] is [%s, %s] for %s ",
+                    Attachment.getPreviewState(previewStates, i, AttachmentRendition.BEST),
+                    Attachment.getPreviewState(previewStates, i, AttachmentRendition.SIMPLE),
+                    uri);
+            int bestAvailableRendition = -1;
+            // BEST first, else use less preferred renditions
+            for (int rendition : AttachmentRendition.PREFERRED_RENDITIONS) {
+                if (Attachment.getPreviewState(previewStates, i, rendition)) {
+                    bestAvailableRendition = rendition;
+                    break;
+                }
             }
-            mAttachmentPreviewsCanvas.setDimensions(mCoordinates.attachmentPreviewsWidth,
-                    attachmentPreviewsHeight);
-            ArrayList<String> attachments = mHeader.conversation.getAttachments();
-            mAttachmentPreviewsCanvas.setDivisionIds(attachments);
-            int size = attachments.size();
-            for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < size; i++) {
-                String attachment = attachments.get(i);
-                PhotoIdentifier photoIdentifier = new ContactIdentifier(
-                        attachment, attachment, i);
-                sAttachmentPreviewsManager.loadThumbnail(
-                        photoIdentifier, mAttachmentPreviewsCanvas);
+
+            final AttachmentPreviewIdentifier photoIdentifier = new AttachmentPreviewIdentifier(uri,
+                    bestAvailableRendition, mHeader.conversation.id, i);
+            ids.add(photoIdentifier);
+            keys.add(photoIdentifier.getKey());
+            Utils.traceEndSection();
+        }
+
+        Utils.traceBeginSection("preparing divided image canvas");
+        // Prepare the canvas.
+        mAttachmentPreviewsCanvas.setDimensions(mCoordinates.attachmentPreviewsWidth,
+                mCoordinates.attachmentPreviewsHeight);
+        mAttachmentPreviewsCanvas.setDivisionIds(keys);
+        Utils.traceEndSection();
+
+        // Second pass: Find the dimensions to load and start the load request
+        final ImageCanvas.Dimensions canvasDimens = new ImageCanvas.Dimensions();
+        for (int i = 0; i < displayCount; i++) {
+            final PhotoIdentifier photoIdentifier = ids.get(i);
+            final Object key = keys.get(i);
+            mAttachmentPreviewsCanvas.getDesiredDimensions(key, canvasDimens);
+            if (i < mImagesLoaded.length) {
+                // We want to show default progress image
+                mImagesLoaded[i] = false;
+                if (!mProgressAnimator.isStarted()) {
+                    LogUtils.d(LOG_TAG, "progress animator: >> started");
+                    mProgressAnimator.setCurrentPlayTime(
+                            (long) (sProgressAnimationDuration * mAnimatedProgressFraction));
+                    mProgressAnimator.start();
+                }
+            }
+            LogUtils.d(LOG_TAG, "loadAttachmentPreviews: start loading %s", photoIdentifier);
+            sAttachmentPreviewsManager
+                    .loadThumbnail(photoIdentifier, mAttachmentPreviewsCanvas, canvasDimens, this);
+        }
+        Utils.traceEndSection();
+    }
+
+    @Override
+    public void onImageDrawn(Object key, boolean success) {
+        Utils.traceBeginSection("on image drawn");
+        String uri = AttachmentPreviewsManager.transformKeyToUri(key);
+        int index = mHeader.conversation.getAttachmentPreviewUris().indexOf(uri);
+
+        if (index < 0 || index >= mImagesLoaded.length) {
+            Utils.traceEndSection();
+            return;
+        }
+
+        LogUtils.d(LOG_TAG,
+                "loadAttachmentPreviews: <= onImageDrawn callback [%b] on index %d for %s", success,
+                index, key);
+        // We want to hide the spinning progress bar when we draw something.
+        mImagesLoaded[index] = success;
+
+        if (mProgressAnimator.isStarted() && areAllImagesLoaded()) {
+            LogUtils.d(LOG_TAG, "progress animator: << stopped");
+            mProgressAnimator.cancel();
+        }
+        Utils.traceEndSection();
+    }
+
+    private boolean areAllImagesLoaded() {
+        for (int i = 0; i < mImagesLoaded.length; i++) {
+            if (!mImagesLoaded[i]) {
+                return false;
             }
         }
+        return true;
     }
 
     private static int makeExactSpecForSize(int size) {
@@ -901,6 +1125,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mSendersWidth < 0) {
             mSendersWidth = 0;
         }
+
+        String overflowText = mHeader.overflowText != null ? mHeader.overflowText : "";
+        sPaint.setTextSize(mCoordinates.overflowFontSize);
+        sPaint.setTypeface(mCoordinates.overflowTypeface);
+
+        sPaint.getTextBounds(overflowText, 0, overflowText.length(), sRect);
+
+        final int overflowWidth = (int) sPaint.measureText(overflowText);
+        final int overflowHeight = sRect.height();
+        mOverflowX = mCoordinates.overflowXEnd - mCoordinates.overflowDiameter / 2
+                - overflowWidth / 2;
+        mOverflowY = mCoordinates.overflowYEnd - mCoordinates.overflowDiameter / 2
+                + overflowHeight / 2;
 
         pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
     }
@@ -1091,12 +1328,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     @Override
     protected void onDraw(Canvas canvas) {
         Utils.traceBeginSection("CIVC.draw");
+
         // Contact photo
         if (mGadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO) {
             canvas.save();
             drawContactImages(canvas);
             canvas.restore();
         }
+
         // Senders.
         boolean isUnread = mHeader.unread;
         // Old style senders; apply text colors/ sizes/ styling.
@@ -1174,10 +1413,36 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         // Attachment previews
-        if (mAttachmentPreviewMode != ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE) {
+        if (isAttachmentPreviewsEnabled()) {
             canvas.save();
             drawAttachmentPreviews(canvas);
             canvas.restore();
+
+            // Overflow badge and count
+            if (getOverflowCountVisible() && areAllImagesLoaded()) {
+                float radius = mCoordinates.overflowDiameter / 2;
+                // todo:markwei get color of overflow badge from channah
+                sPaint.setColor(sOverflowBadgeColor);
+                canvas.drawCircle(mCoordinates.overflowXEnd - radius,
+                        mCoordinates.overflowYEnd - radius, radius, sPaint);
+
+                sPaint.setTextSize(mCoordinates.overflowFontSize);
+                sPaint.setTypeface(mCoordinates.overflowTypeface);
+                sPaint.setColor(sOverflowTextColor);
+                drawText(canvas, mHeader.overflowText, mOverflowX, mOverflowY, sPaint);
+            }
+
+            // Progress bar
+            if (mProgressAnimator.isRunning()) {
+                final int count = mImagesLoaded.length;
+                for (int i = 0; i < count; i++) {
+                    if (!mImagesLoaded[i]) {
+                        canvas.save();
+                        drawProgressBar(canvas, i, count);
+                        canvas.restore();
+                    }
+                }
+            }
         }
 
         // right-side edge effect when in tablet conversation mode and the list is not collapsed
@@ -1215,6 +1480,50 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void drawSenders(Canvas canvas) {
         canvas.translate(mCoordinates.sendersX, mCoordinates.sendersY);
         mSendersTextView.draw(canvas);
+    }
+
+    /**
+     * Draws the specified progress bar on the canvas.
+     * @param canvas The canvas to draw on.
+     * @param index If drawing multiple progress bars, this determines which one we are drawing.
+     * @param total Whether we are drawing multiple progress bars.
+     */
+    private void drawProgressBar(Canvas canvas, int index, int total) {
+        int progressBarX = getProgressBarX(index, total);
+        if (progressBarX == -1) {
+            return;
+        }
+
+        // We want to rotate counter-clockwise, because that's the direction the asset faces
+        canvas.rotate(360 - mAnimatedProgressFraction * 360,
+                progressBarX + mCoordinates.progressBarWidth / 2,
+                mCoordinates.progressBarY + mCoordinates.progressBarHeight / 2);
+
+        canvas.drawBitmap(PROGRESS_BAR, progressBarX, mCoordinates.progressBarY, null);
+    }
+
+    /**
+     * @see com.android.mail.browse.ConversationItemView#drawProgressBar
+     */
+    private void invalidateProgressBar(int index, int total) {
+        int progressBarX = getProgressBarX(index, total);
+        if (progressBarX == -1) {
+            return;
+        }
+
+        invalidate(progressBarX, mCoordinates.progressBarY,
+                progressBarX + mCoordinates.progressBarWidth,
+                mCoordinates.progressBarY + mCoordinates.progressBarHeight);
+    }
+
+    private int getProgressBarX(int index, int total) {
+        if (mCoordinates == null) {
+            return -1;
+        }
+        int sectionWidth = mCoordinates.attachmentPreviewsWidth / total;
+        int sectionOffset = index * sectionWidth;
+        return mCoordinates.attachmentPreviewsX + sectionOffset + sectionWidth / 2
+                - mCoordinates.progressBarWidth / 2;
     }
 
     private Bitmap getStarBitmap() {
@@ -1297,16 +1606,49 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
     }
 
-    private boolean isTouchInContactPhoto(float x) {
+    public void viewAttachmentPreview(int index) {
+        Uri imageListUri = mHeader.conversation.attachmentPreviewsListUri;
+        LogUtils.d(LOG_TAG,
+                "ConversationItemView: tapped on attachment preview %d, "
+                        + "opening photoviewer for image list uri %s",
+                index, imageListUri);
+        MailPhotoViewActivity
+                .startMailPhotoViewActivity(mActivity.getActivityContext(), imageListUri, index);
+    }
+
+    private boolean isTouchInContactPhoto(float x, float y) {
         // Everything before the right edge of contact photo
-        return (mHeader.gadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
-                && x < (mCoordinates.contactImagesX + mCoordinates.contactImagesWidth
-                        + sSenderImageTouchSlop));
+        return mHeader.gadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
+                && x < mCoordinates.contactImagesX + mCoordinates.contactImagesWidth
+                        + sSenderImageTouchSlop
+                && (!isAttachmentPreviewsEnabled() || y < mCoordinates.attachmentPreviewsY);
     }
 
     private boolean isTouchInStar(float x, float y) {
         // Everything after the star and include a touch slop.
-        return mStarEnabled && x > mCoordinates.starX - sStarTouchSlop;
+        return mStarEnabled
+                && x > mCoordinates.starX - sStarTouchSlop
+                && (!isAttachmentPreviewsEnabled() || y < mCoordinates.attachmentPreviewsY);
+    }
+
+    /**
+     * If the touch is in the attachment previews, return the index of the attachment under that
+     * point (for multiple previews). Return -1 if the touch is outside of the previews.
+     */
+    private int getAttachmentPreviewsIndexForTouch(float x, float y) {
+        if (!isAttachmentPreviewsEnabled()) {
+            return -1;
+        }
+        if (y > mCoordinates.attachmentPreviewsY
+                && y < mCoordinates.attachmentPreviewsY + mCoordinates.attachmentPreviewsHeight
+                && x > mCoordinates.attachmentPreviewsX
+                && x < mCoordinates.attachmentPreviewsX + mCoordinates.attachmentPreviewsWidth) {
+            int eachWidth = mCoordinates.attachmentPreviewsWidth / mHeader.conversation
+                    .getAttachmentPreviewUris().size();
+            int offset = (int) (x - mCoordinates.attachmentPreviewsX);
+            return offset / eachWidth;
+        }
+        return -1;
     }
 
     @Override
@@ -1323,6 +1665,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private boolean onTouchEventNoSwipe(MotionEvent event) {
+        Utils.traceBeginSection("on touch event no swipe");
         boolean handled = false;
 
         int x = (int) event.getX();
@@ -1331,7 +1674,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mLastTouchY = y;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTouchInContactPhoto(x) || isTouchInStar(x, y)) {
+                if (isTouchInContactPhoto(x, y) || isTouchInStar(x, y)
+                        || getAttachmentPreviewsIndexForTouch(x, y) > -1) {
                     mDownEvent = true;
                     handled = true;
                 }
@@ -1343,12 +1687,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
-                    if (isTouchInContactPhoto(x)) {
+                    int index;
+                    if (isTouchInContactPhoto(x, y)) {
                         // Touch on the check mark
                         toggleSelectedState();
                     } else if (isTouchInStar(x, y)) {
                         // Touch on the star
                         toggleStar();
+                    } else if ((index = getAttachmentPreviewsIndexForTouch(x, y)) > -1) {
+                        // Touch on an attachment preview
+                        viewAttachmentPreview(index);
                     }
                     handled = true;
                 }
@@ -1359,6 +1707,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             handled = super.onTouchEvent(event);
         }
 
+        Utils.traceEndSection();
         return handled;
     }
 
@@ -1367,31 +1716,45 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Utils.traceBeginSection("on touch event");
         int x = (int) event.getX();
         int y = (int) event.getY();
         mLastTouchX = x;
         mLastTouchY = y;
         if (!mSwipeEnabled) {
+            Utils.traceEndSection();
             return onTouchEventNoSwipe(event);
         }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTouchInContactPhoto(x) || isTouchInStar(x, y)) {
+                if (isTouchInContactPhoto(x, y) || isTouchInStar(x, y)
+                        || getAttachmentPreviewsIndexForTouch(x, y) > -1) {
                     mDownEvent = true;
+                    Utils.traceEndSection();
                     return true;
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
-                    if (isTouchInContactPhoto(x)) {
+                    int index;
+                    if (isTouchInContactPhoto(x, y)) {
                         // Touch on the check mark
+                        Utils.traceEndSection();
                         mDownEvent = false;
                         toggleSelectedState();
+                        Utils.traceEndSection();
                         return true;
                     } else if (isTouchInStar(x, y)) {
                         // Touch on the star
                         mDownEvent = false;
                         toggleStar();
+                        Utils.traceEndSection();
+                        return true;
+                    } else if ((index = getAttachmentPreviewsIndexForTouch(x, y)) > -1) {
+                        // Touch on an attachment preview
+                        mDownEvent = false;
+                        viewAttachmentPreview(index);
+                        Utils.traceEndSection();
                         return true;
                     }
                 }
@@ -1400,8 +1763,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         // Let View try to handle it as well.
         boolean handled = super.onTouchEvent(event);
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            Utils.traceEndSection();
             return true;
         }
+        Utils.traceEndSection();
         return handled;
     }
 
@@ -1430,9 +1795,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      * can be reused.
      */
     public void reset() {
+        Utils.traceBeginSection("reset");
         setAlpha(1f);
         setTranslationX(0f);
         mAnimatedHeightFraction = 1.0f;
+        LogUtils.d(LOG_TAG, "progress animator: cancelling after %dms", sProgressAnimationDuration);
+        if (mProgressAnimator.isStarted()) {
+            LogUtils.d(LOG_TAG, "progress animator: << stopped");
+            mProgressAnimator.cancel();
+        }
+        Utils.traceEndSection();
     }
 
     @SuppressWarnings("deprecation")
@@ -1523,6 +1895,44 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     public void setAnimatedHeightFraction(float height) {
         mAnimatedHeightFraction = height;
         requestLayout();
+    }
+
+    private ObjectAnimator createProgressAnimator() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(this, "animatedProgressFraction", 0f, 1.0f)
+                .setDuration(sProgressAnimationDuration);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setRepeatCount(ObjectAnimator.INFINITE);
+        animator.setRepeatMode(ObjectAnimator.RESTART);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                invalidateAll();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                invalidateAll();
+            }
+
+            private void invalidateAll() {
+                int count = mHeader.conversation.getAttachmentPreviewUris().size();
+                for (int i = 0; i < count; i++) {
+                    invalidateProgressBar(i, count);
+                }
+            }
+        });
+        return animator;
+    }
+
+    // Used by animator
+    public void setAnimatedProgressFraction(float fraction) {
+        mAnimatedProgressFraction = fraction;
+        final int count = mImagesLoaded.length;
+        for (int i = 0; i < count; i++) {
+            if (!mImagesLoaded[i]) {
+                invalidateProgressBar(i, count);
+            }
+        }
     }
 
     @Override

@@ -114,4 +114,7 @@
 
     <!-- Number of menu items to hide from the ActionBar by subtracting from actionbar_max_items in non-cab mode -->
     <integer name="actionbar_hidden_non_cab_items_no_physical_button">1</integer>
+
+    <!-- Max overflow count to show for attachment previews -->
+    <integer name="ap_overflow_max_count">99</integer>
 </resources>

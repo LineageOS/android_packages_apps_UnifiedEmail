@@ -464,5 +464,4 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         // Unsupported
         return null;
     }
-
 }
