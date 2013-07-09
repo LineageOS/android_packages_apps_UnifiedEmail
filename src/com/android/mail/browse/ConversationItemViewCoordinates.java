@@ -28,9 +28,12 @@ import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.R.dimen;
+import com.android.mail.R.id;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
@@ -56,10 +59,9 @@ public class ConversationItemViewCoordinates {
     static final int GADGET_CHECKBOX = 2;
 
     // Attachment previews modes
-    static final int ATTACHMENT_PREVIEW_MODE_COUNT = 3;
     static final int ATTACHMENT_PREVIEW_NONE = 0;
-    static final int ATTACHMENT_PREVIEW_TALL = 1;
-    static final int ATTACHMENT_PREVIEW_SHORT = 2;
+    static final int ATTACHMENT_PREVIEW_UNREAD = 1;
+    static final int ATTACHMENT_PREVIEW_READ = 2;
 
     // For combined views
     private static int COLOR_BLOCK_WIDTH = -1;
@@ -167,13 +169,6 @@ public class ConversationItemViewCoordinates {
 
     final int height;
 
-    // Attachments view
-    static int sAttachmentPreviewsHeights[];
-    static int sAttachmentPreviewsMarginTops[];
-    final int attachmentPreviewsX;
-    final int attachmentPreviewsY;
-    final int attachmentPreviewsWidth;
-
     // Checkmark.
     final int checkmarkX;
     final int checkmarkY;
@@ -181,6 +176,7 @@ public class ConversationItemViewCoordinates {
     // Star.
     final int starX;
     final int starY;
+    final int starWidth;
 
     // Senders.
     final int sendersX;
@@ -241,6 +237,24 @@ public class ConversationItemViewCoordinates {
     final int contactImagesX;
     final int contactImagesY;
 
+    // Attachment previews
+    final int attachmentPreviewsX;
+    final int attachmentPreviewsY;
+    final int attachmentPreviewsWidth;
+    final int attachmentPreviewsHeight;
+
+    // Attachment previews overflow badge and count
+    final int overflowXEnd;
+    final int overflowYEnd;
+    final int overflowDiameter;
+    final float overflowFontSize;
+    final Typeface overflowTypeface;
+
+    // Attachment previews progress bar
+    final int progressBarY;
+    final int progressBarWidth;
+    final int progressBarHeight;
+
     /**
      * The smallest item width for which we use the "wide" layout.
      */
@@ -255,6 +269,7 @@ public class ConversationItemViewCoordinates {
     private final int mFolderMinimumWidth;
 
     private ConversationItemViewCoordinates(Context context, Config config) {
+        Utils.traceBeginSection("CIV coordinates constructor");
         final Resources res = context.getResources();
         mFolderCellWidth = res.getDimensionPixelSize(R.dimen.folder_cell_width);
         mMinListWidthForWide = res.getDimensionPixelSize(R.dimen.list_min_width_is_wide);
@@ -276,21 +291,26 @@ public class ConversationItemViewCoordinates {
         }
         final ViewGroup view = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
 
-        final TextView folders = (TextView) view.findViewById(R.id.folders);
-        folders.setVisibility(config.areFoldersVisible() ? View.VISIBLE : View.GONE);
-
         // Show/hide optional views before measure/layout call
+
         View attachmentPreviews = null;
         if (config.getAttachmentPreviewMode() != ATTACHMENT_PREVIEW_NONE) {
             attachmentPreviews = view.findViewById(R.id.attachment_previews);
-            if (attachmentPreviews != null) {
-                LayoutParams params = attachmentPreviews.getLayoutParams();
-                attachmentPreviews.setVisibility(View.VISIBLE);
-                params.height = getAttachmentPreviewsHeight(
-                        context, config.getAttachmentPreviewMode());
-                attachmentPreviews.setLayoutParams(params);
-            }
+            LayoutParams params = attachmentPreviews.getLayoutParams();
+            attachmentPreviews.setVisibility(View.VISIBLE);
+            params.height = getAttachmentPreviewsHeight(context, config.getAttachmentPreviewMode());
+            attachmentPreviews.setLayoutParams(params);
         }
+
+        final TextView folders = (TextView) view.findViewById(R.id.folders);
+        folders.setVisibility(config.areFoldersVisible() ? View.VISIBLE : View.GONE);
+
+        // Add margin between attachment previews and folders
+        View attachmentPreviewsBottomMargin = view
+                .findViewById(R.id.attachment_previews_bottom_margin);
+        attachmentPreviewsBottomMargin.setVisibility(
+                attachmentPreviews != null && config.areFoldersVisible() ? View.VISIBLE
+                        : View.GONE);
 
         View contactImagesView = view.findViewById(R.id.contact_image);
         View checkmark = view.findViewById(R.id.checkmark);
@@ -351,6 +371,7 @@ public class ConversationItemViewCoordinates {
         final View star = view.findViewById(R.id.star);
         starX = getX(star);
         starY = getY(star);
+        starWidth = star.getWidth();
 
         final TextView senders = (TextView) view.findViewById(R.id.senders);
         final int sendersTopAdjust = getLatinTopAdjustment(senders);
@@ -440,16 +461,50 @@ public class ConversationItemViewCoordinates {
         paperclipPaddingLeft = paperclip.getPaddingLeft();
 
         if (attachmentPreviews != null) {
-            attachmentPreviewsX = getX(attachmentPreviews);
-            attachmentPreviewsY = getY(attachmentPreviews);
-            attachmentPreviewsWidth = attachmentPreviews.getWidth();
+            attachmentPreviewsX = getAttachmentPreviewsX(attachmentPreviews,
+                    config.mAttachmentPreviewMode);
+            attachmentPreviewsY = getY(attachmentPreviews) + sendersTopAdjust;
+            final int attachmentPreviewsXEnd;
+            if (isWide()) {
+                attachmentPreviewsXEnd = subjectX + subjectWidth;
+            } else {
+                attachmentPreviewsXEnd = starX + starWidth;
+            }
+
+            attachmentPreviewsWidth = attachmentPreviewsXEnd - attachmentPreviewsX;
+            attachmentPreviewsHeight = attachmentPreviews.getHeight();
+
+            // We only care about the right and bottom of the overflow count
+            final TextView overflow = (TextView) view.findViewById(id.ap_overflow);
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) overflow.getLayoutParams();
+            overflowXEnd = attachmentPreviewsX + attachmentPreviewsWidth - params.rightMargin;
+            overflowYEnd = attachmentPreviewsY + attachmentPreviewsHeight - params.bottomMargin;
+            overflowDiameter = overflow.getWidth();
+            overflowFontSize = overflow.getTextSize();
+            overflowTypeface = overflow.getTypeface();
+
+            final View progressBar = view.findViewById(id.ap_progress_bar);
+            progressBarWidth = progressBar.getWidth();
+            progressBarHeight = progressBar.getHeight();
+            progressBarY = attachmentPreviewsY + attachmentPreviewsHeight / 2
+                    - progressBarHeight / 2;
         } else {
             attachmentPreviewsX = 0;
             attachmentPreviewsY = 0;
             attachmentPreviewsWidth = 0;
+            attachmentPreviewsHeight = 0;
+            overflowXEnd = 0;
+            overflowYEnd = 0;
+            overflowDiameter = 0;
+            overflowFontSize = 0;
+            overflowTypeface = null;
+            progressBarY = 0;
+            progressBarWidth = 0;
+            progressBarHeight = 0;
         }
 
         height = view.getHeight() + (isWide() ? 0 : sendersTopAdjust);
+        Utils.traceEndSection();
     }
 
     public int getMode() {
@@ -490,48 +545,24 @@ public class ConversationItemViewCoordinates {
         }
     }
 
-    /**
-     * Returns a value array multiplied by the specified density.
-     */
-    public static int[] getDensityDependentArray(int[] values, float density) {
-        int result[] = new int[values.length];
-        for (int i = 0; i < values.length; ++i) {
-            result[i] = (int) (values[i] * density);
+    private int getAttachmentPreviewsX(View attachmentPreviews, int attachmentPreviewMode) {
+        if (isWide() || attachmentPreviewMode == ATTACHMENT_PREVIEW_READ) {
+            return subjectX;
         }
-        return result;
+        return getX(attachmentPreviews);
     }
 
-    /**
-     * Refreshes the conversation heights array.
-     */
-    @Deprecated
-    // TODO: heights are now dynamic and should be members of this class. the fixed attachment
-    // heights can still be stored in a dimensional array, but should only be used as input into
-    // forConfig's measure/layout
-    public static void refreshConversationDimens(Context context) {
+    private int getAttachmentPreviewsHeight(Context context, int attachmentPreviewMode) {
         Resources res = context.getResources();
-
-        // Attachment previews height
-        sAttachmentPreviewsHeights = new int[ATTACHMENT_PREVIEW_MODE_COUNT];
-        sAttachmentPreviewsHeights[ATTACHMENT_PREVIEW_TALL] = 0;
-        sAttachmentPreviewsHeights[ATTACHMENT_PREVIEW_TALL] = (int) res.getDimension(
-                R.dimen.attachment_preview_height_tall);
-        sAttachmentPreviewsHeights[ATTACHMENT_PREVIEW_SHORT] = (int) res.getDimension(
-                R.dimen.attachment_preview_height_short);
-
-        // Attachment previews margin top
-        sAttachmentPreviewsMarginTops = new int[MODE_COUNT];
-        sAttachmentPreviewsMarginTops[NORMAL_MODE] = (int) res.getDimension(
-                R.dimen.attachment_preview_margin_top);
-        sAttachmentPreviewsMarginTops[WIDE_MODE] = (int) res.getDimension(
-                R.dimen.attachment_preview_margin_top_wide);
-    }
-
-    public static int getAttachmentPreviewsHeight(Context context, int attachmentPreviewMode) {
-        if (sAttachmentPreviewsHeights == null) {
-            refreshConversationDimens(context);
+        switch (attachmentPreviewMode) {
+            case ATTACHMENT_PREVIEW_UNREAD:
+                return (int) (isWide() ? res.getDimension(dimen.attachment_preview_height_tall_wide)
+                        : res.getDimension(dimen.attachment_preview_height_tall));
+            case ATTACHMENT_PREVIEW_READ:
+                return (int) res.getDimension(dimen.attachment_preview_height_short);
+            default:
+                return 0;
         }
-        return sAttachmentPreviewsHeights[attachmentPreviewMode];
     }
 
     /**

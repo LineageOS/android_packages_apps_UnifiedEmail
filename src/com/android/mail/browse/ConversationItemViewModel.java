@@ -86,6 +86,9 @@ public class ConversationItemViewModel {
 
     boolean hasDraftMessage;
 
+    // Attachment Previews overflow
+    String overflowText;
+
     // View Width
     public int viewWidth;
 
