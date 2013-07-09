@@ -212,7 +212,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private boolean mIsViewOnlyMode = false;
 
-    private LetterTileProvider sLetterTileProvider;
+    private LetterTileProvider mLetterTileProvider;
+    private final int mContactPhotoWidth;
+    private final int mContactPhotoHeight;
 
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
@@ -245,6 +247,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mEmailCopyMenu = new EmailCopyContextMenu(getContext());
         mInflater = LayoutInflater.from(context);
         mMyName = context.getString(R.string.me_object_pronun);
+
+        final Resources resources = getResources();
+        mContactPhotoWidth = resources.getDimensionPixelSize(R.dimen.contact_photo_width);
+        mContactPhotoHeight = resources.getDimensionPixelSize(R.dimen.contact_photo_height);
     }
 
     /**
@@ -891,20 +897,19 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
 
         if (!photoSet) {
-            mPhotoView.setImageBitmap(makeLetterTile(
-                    mSender.getName(), email, mPhotoView.getWidth(), mPhotoView.getHeight()));
+            mPhotoView.setImageBitmap(makeLetterTile(mSender.getName(), email));
         }
     }
 
     private Bitmap makeLetterTile(
-            String displayName, String senderAddress, int width, int height) {
-        final ImageCanvas.Dimensions dimensions = new ImageCanvas.Dimensions(
-                width, height, ImageCanvas.Dimensions.SCALE_ONE);
-
-        if (sLetterTileProvider == null) {
-            sLetterTileProvider = new LetterTileProvider(getContext());
+            String displayName, String senderAddress) {
+        if (mLetterTileProvider == null) {
+            mLetterTileProvider = new LetterTileProvider(getContext());
         }
-        return sLetterTileProvider.getLetterTile(dimensions, displayName, senderAddress);
+
+        final ImageCanvas.Dimensions dimensions = new ImageCanvas.Dimensions(
+                mContactPhotoWidth, mContactPhotoHeight, ImageCanvas.Dimensions.SCALE_ONE);
+        return mLetterTileProvider.getLetterTile(dimensions, displayName, senderAddress);
     }
 
 
