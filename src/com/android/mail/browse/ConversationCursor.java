@@ -838,7 +838,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * changing the authority to ours, but otherwise leaving the Uri intact.
      * NOTE: This won't handle query parameters, so the functionality will need to be added if
      * parameters are used in the future
-     * @param uri the uri
+     * @param uriStr the uri
      * @return a forwarding uri to ConversationProvider
      */
     private static String uriToCachingUriString(String uriStr, StringBuilder sb) {
