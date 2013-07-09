@@ -169,14 +169,11 @@ public class ConversationItemViewCoordinates {
 
     final int height;
 
-    // Checkmark.
-    final int checkmarkX;
-    final int checkmarkY;
-
     // Star.
     final int starX;
     final int starY;
     final int starWidth;
+    final int starHeight;
 
     // Senders.
     final int sendersX;
@@ -313,24 +310,18 @@ public class ConversationItemViewCoordinates {
                         : View.GONE);
 
         View contactImagesView = view.findViewById(R.id.contact_image);
-        View checkmark = view.findViewById(R.id.checkmark);
 
         switch (config.getGadgetMode()) {
             case GADGET_CONTACT_PHOTO:
                 contactImagesView.setVisibility(View.VISIBLE);
-                checkmark.setVisibility(View.GONE);
-                checkmark = null;
                 break;
             case GADGET_CHECKBOX:
                 contactImagesView.setVisibility(View.GONE);
-                checkmark.setVisibility(View.VISIBLE);
                 contactImagesView = null;
                 break;
             default:
                 contactImagesView.setVisibility(View.GONE);
-                checkmark.setVisibility(View.GONE);
                 contactImagesView = null;
-                checkmark = null;
                 break;
         }
 
@@ -351,12 +342,6 @@ public class ConversationItemViewCoordinates {
 //        Utils.dumpViewTree((ViewGroup) view);
 
         // Records coordinates.
-        if (checkmark != null) {
-            checkmarkX = getX(checkmark);
-            checkmarkY = getY(checkmark);
-        } else {
-            checkmarkX = checkmarkY = 0;
-        }
 
         // Contact images view
         if (contactImagesView != null) {
@@ -372,6 +357,7 @@ public class ConversationItemViewCoordinates {
         starX = getX(star);
         starY = getY(star);
         starWidth = star.getWidth();
+        starHeight = star.getHeight();
 
         final TextView senders = (TextView) view.findViewById(R.id.senders);
         final int sendersTopAdjust = getLatinTopAdjustment(senders);

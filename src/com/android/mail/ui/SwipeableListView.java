@@ -341,11 +341,9 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         // Superclass method modifies the selection set
         final boolean handled = super.performItemClick(view, pos, id);
 
-        // If we are in CAB mode with no checkboxes then a click shouldn't
+        // If we are in CAB mode then a click shouldn't
         // activate the new item, it should only add it to the selection set
-        final boolean showSenderImage = mAccount != null
-                && (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
-        if (!showSenderImage && !selectionSetEmpty && previousPosition != -1) {
+        if (!selectionSetEmpty && previousPosition != -1) {
             setItemChecked(previousPosition, true);
         }
         // Commit any existing destructive actions when the user selects a

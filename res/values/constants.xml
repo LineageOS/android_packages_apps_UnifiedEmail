@@ -125,4 +125,7 @@
     <integer name="ap_progress_animation_delay">2000</integer>
     <!-- Max overflow count to show for attachment previews -->
     <integer name="ap_overflow_max_count">99</integer>
+
+    <!-- Duration of the animations for entering/exiting CAB mode -->
+    <integer name="conv_item_view_cab_anim_duration">350</integer>
 </resources>

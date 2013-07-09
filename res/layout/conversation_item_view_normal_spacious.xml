@@ -35,14 +35,6 @@
         android:layout_marginRight="16dp"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/checkmark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/btn_check_on_normal_holo_light" />
-
         <View
             android:id="@+id/contact_image"
             android:layout_width="48dp"
@@ -144,9 +136,11 @@
                     android:id="@+id/star"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/subject"
                     android:layout_alignParentRight="true"
+                    android:layout_marginBottom="6dp"
                     android:layout_marginTop="-1dp"
-                    android:src="@drawable/ic_star_off" />
+                    android:src="@drawable/ic_btn_star_off" />
 
                 <TextView
                     android:id="@+id/subject"
@@ -180,12 +174,12 @@
         android:layout_marginBottom="16dp"
         android:visibility="gone" />
 
-    <!-- Labels should be 0dp below the subject, so we cancel out the 16dp bottom margin -->
+    <!-- Labels should be 10dp below the subject, so we cancel out part of the 16dp bottom margin -->
     <TextView
         android:id="@+id/folders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-16dp"
+        android:layout_marginTop="-6dp"
         android:fontFamily="sans-serif-light"
         android:includeFontPadding="false"
         android:text="@string/long_string"

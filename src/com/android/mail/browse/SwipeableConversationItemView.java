@@ -26,6 +26,7 @@ import android.widget.ListView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.AnimatedAdapter;
+import com.android.mail.ui.AnimatedAdapter.ConversationListListener;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 
@@ -52,10 +53,13 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
     }
 
     public void bind(Conversation conversation, ControllableActivity activity,
+            final ConversationListListener conversationListListener,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
-            boolean swipeEnabled, boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter) {
-        mConversationItemView.bind(conversation, activity, set, folder, checkboxOrSenderImage,
-                swipeEnabled, priorityArrowsEnabled, animatedAdapter);
+            boolean swipeEnabled, boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter,
+            final int adapterPosition) {
+        mConversationItemView.bind(conversation, activity, conversationListListener, set, folder,
+                checkboxOrSenderImage, swipeEnabled, priorityArrowsEnabled, animatedAdapter,
+                adapterPosition);
     }
 
     public void startUndoAnimation(AnimatorListener listener, boolean swipe) {

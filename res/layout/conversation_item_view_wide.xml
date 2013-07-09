@@ -44,13 +44,6 @@
             android:minHeight="66dp"
             android:gravity="center_vertical">
 
-            <ImageView
-                android:id="@+id/checkmark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/btn_check_on_normal_holo_light" />
-
             <View
                 android:id="@+id/contact_image"
                 android:layout_width="46dp"
@@ -135,14 +128,14 @@
                     android:includeFontPadding="false"
                     android:text="@string/date" />
 
-                <!-- align to date -->
+                <!-- align to bottom of subject text -->
                 <ImageView
                     android:id="@+id/star"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-1dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginLeft="32dp"
-                    android:src="@drawable/ic_star_off" />
+                    android:src="@drawable/ic_btn_star_off" />
 
             </LinearLayout>
 
