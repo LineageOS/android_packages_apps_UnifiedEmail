@@ -19,16 +19,18 @@ package com.android.mail.browse;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -48,7 +50,7 @@ import com.android.mail.utils.Utils;
  * there is enough room to fit both without wrapping. If they overlap, it
  * adjusts the layout to position the folders below the subject.
  */
-public class ConversationViewHeader extends RelativeLayout implements OnClickListener {
+public class ConversationViewHeader extends LinearLayout implements OnClickListener {
 
     public interface ConversationViewHeaderCallbacks {
         /**
@@ -72,6 +74,10 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
     private ConversationFolderDisplayer mFolderDisplayer;
     private ConversationHeaderItem mHeaderItem;
 
+    private boolean mLargeText;
+    private final float mCondensedTextSize;
+    private final int mCondensedTopPadding;
+
     /**
      * Instantiated from this layout: conversation_view_header.xml
      * @param context
@@ -82,6 +88,12 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
 
     public ConversationViewHeader(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mLargeText = true;
+        final Resources resources = getResources();
+        mCondensedTextSize =
+                resources.getDimensionPixelSize(R.dimen.conversation_header_font_size_condensed);
+        mCondensedTopPadding = resources.getDimensionPixelSize(
+                R.dimen.conversation_header_vertical_item_padding_condensed);
     }
 
     @Override
@@ -99,23 +111,24 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        // reposition the folders if they don't fit horizontally next to the
-        // subject
-        // (taking into account child margins and parent padding)
-        final int childWidthSum = getTotalMeasuredChildWidth(mSubjectView)
-                + getTotalMeasuredChildWidth(mFoldersView) + getPaddingLeft() + getPaddingRight();
+        // If we currently have large text and we have greater than 2 lines,
+        // switch to smaller text size with smaller top padding and re-measure
+        if (mLargeText && mSubjectView.getLineCount() > 2) {
+            mSubjectView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCondensedTextSize);
 
-        if (childWidthSum > getMeasuredWidth()) {
-            LayoutParams params = (LayoutParams) mFoldersView.getLayoutParams();
-            params.addRule(RelativeLayout.BELOW, R.id.subject);
-            params.addRule(RelativeLayout.ALIGN_BASELINE, 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                // start, top, end, bottom
+                mSubjectView.setPaddingRelative(mSubjectView.getPaddingStart(),
+                        mCondensedTopPadding, mSubjectView.getPaddingEnd(),
+                        mSubjectView.getPaddingBottom());
+            } else {
+                mSubjectView.setPadding(mSubjectView.getPaddingLeft(),
+                        mCondensedTopPadding, mSubjectView.getPaddingRight(),
+                        mSubjectView.getPaddingBottom());
+            }
+
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
-    }
-
-    private static int getTotalMeasuredChildWidth(View child) {
-        final LayoutParams p = (LayoutParams) child.getLayoutParams();
-        return child.getMeasuredWidth() + p.leftMargin + p.rightMargin;
     }
 
     public void setCallbacks(ConversationViewHeaderCallbacks callbacks,
@@ -142,7 +155,8 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         if (settings.priorityArrowsEnabled && conv.isImportant()) {
             sb.append('.');
             sb.setSpan(new PriorityIndicatorSpan(getContext(),
-                    R.drawable.ic_email_caret_none_important_unread, mFoldersView.getPadding(), 0),
+                    R.drawable.ic_email_caret_none_important_unread, mFoldersView.getPadding(), 0,
+                    mFoldersView.getPaddingAbove()),
                     0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
 

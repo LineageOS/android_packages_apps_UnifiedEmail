@@ -235,8 +235,9 @@
     </style>
 
     <style name="ConversationSubjectStyle">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/conversation_header_font_size</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/conv_header_text_dark</item>
     </style>
 
     <!-- Conversation view message header styles -->
