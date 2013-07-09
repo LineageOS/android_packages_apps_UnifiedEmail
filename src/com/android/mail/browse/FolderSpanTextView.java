@@ -35,6 +35,8 @@ public class FolderSpanTextView extends TextView implements FolderSpan.FolderSpa
     private final int mFolderPadding;
     private final int mFolderPaddingExtraWidth;
     private final int mFolderPaddingBefore;
+    private final int mFolderPaddingAbove;
+
     private int mMaxSpanWidth;
 
     public FolderSpanTextView(Context context) {
@@ -50,6 +52,7 @@ public class FolderSpanTextView extends TextView implements FolderSpan.FolderSpa
                 R.dimen.conversation_folder_padding_extra_width);
         mFolderPaddingBefore = r.getDimensionPixelOffset(
                 R.dimen.conversation_folder_padding_before);
+        mFolderPaddingAbove = r.getDimensionPixelOffset(R.dimen.conversation_folder_padding_above);
     }
 
     @Override
@@ -76,8 +79,12 @@ public class FolderSpanTextView extends TextView implements FolderSpan.FolderSpa
     }
 
     @Override
+    public int getPaddingAbove() {
+        return mFolderPaddingAbove;
+    }
+
+    @Override
     public int getMaxWidth() {
         return mMaxSpanWidth;
     }
-
 }
