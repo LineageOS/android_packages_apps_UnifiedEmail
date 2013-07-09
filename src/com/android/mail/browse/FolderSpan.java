@@ -36,8 +36,22 @@ public class FolderSpan extends ReplacementSpan {
 
     public interface FolderSpanDimensions {
         int getPadding();
+
+        /**
+         * Returns the padding value that corresponds to the horizontal padding
+         * surrounding the text inside the background color.
+         */
         int getPaddingExtraWidth();
+
+        /**
+         * Returns the padding value for the space between folders.
+         */
         int getPaddingBefore();
+
+        /**
+         * Returns the spacing above each line outside of the .
+         */
+        int getPaddingAbove();
         int getMaxWidth();
     }
 
@@ -70,10 +84,10 @@ public class FolderSpan extends ReplacementSpan {
 
     private int measureWidth(Paint paint, CharSequence text, int start, int end,
             boolean includePaddingBefore) {
-        final int paddingH = mDims.getPadding() + mDims.getPaddingExtraWidth();
+        final int paddingW = mDims.getPadding() + mDims.getPaddingExtraWidth();
         final int maxWidth = mDims.getMaxWidth();
 
-        int w = (int) paint.measureText(text, start, end) + 2 * paddingH;
+        int w = (int) paint.measureText(text, start, end) + 2 * paddingW;
         if (includePaddingBefore) {
             w += mDims.getPaddingBefore();
         }
@@ -88,8 +102,9 @@ public class FolderSpan extends ReplacementSpan {
     public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top,
             int y, int bottom, Paint paint) {
 
-        final int paddingH = mDims.getPadding() + mDims.getPaddingExtraWidth();
+        final int paddingW = mDims.getPadding() + mDims.getPaddingExtraWidth();
         final int paddingBefore = mDims.getPaddingBefore();
+        final int paddingAbove = mDims.getPaddingAbove();
         final int maxWidth = mDims.getMaxWidth();
 
         mWorkPaint.set(paint);
@@ -109,7 +124,7 @@ public class FolderSpan extends ReplacementSpan {
 
             mWorkPaint.setColor(mWorkPaint.bgColor);
             mWorkPaint.setStyle(Paint.Style.FILL);
-            canvas.drawRect(x + paddingBefore, top, x + bgWidth + paddingBefore, bottom,
+            canvas.drawRect(x + paddingBefore, top + paddingAbove, x + bgWidth + paddingBefore, bottom,
                     mWorkPaint);
 
             mWorkPaint.setColor(prevColor);
@@ -119,11 +134,11 @@ public class FolderSpan extends ReplacementSpan {
         // middle-ellipsize long strings
         if (bgWidth == maxWidth) {
             text = TextUtils.ellipsize(text.subSequence(start, end).toString(), mWorkPaint,
-                    bgWidth - 2 * paddingH, TextUtils.TruncateAt.MIDDLE);
+                    bgWidth - 2 * paddingW, TextUtils.TruncateAt.MIDDLE);
             start = 0;
             end = text.length();
         }
-        canvas.drawText(text, start, end, x + paddingH + paddingBefore, y, mWorkPaint);
+        canvas.drawText(text, start, end, x + paddingW + paddingBefore, y + paddingAbove, mWorkPaint);
     }
 
 }

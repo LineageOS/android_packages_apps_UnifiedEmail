@@ -20,20 +20,23 @@
     android:id="@+id/conversation_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingTop="@dimen/conversation_header_vertical_padding"
     android:paddingBottom="@dimen/conversation_header_vertical_padding"
     android:layout_marginLeft="@dimen/conversation_view_margin_side"
-    android:layout_marginRight="@dimen/conversation_view_margin_side" >
+    android:layout_marginRight="@dimen/conversation_view_margin_side"
+    android:layout_marginStart="@dimen/conversation_view_margin_side"
+    android:layout_marginEnd="@dimen/conversation_view_margin_side" >
 
     <TextView
         android:id="@+id/subject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:paddingTop="@dimen/conversation_header_vertical_item_padding"
-        android:paddingBottom="@dimen/conversation_header_vertical_item_padding"
         android:paddingLeft="@dimen/conversation_header_side_padding"
-        android:paddingRight="10dp"
+        android:paddingRight="@dimen/conversation_header_side_padding"
+        android:paddingStart="@dimen/conversation_header_side_padding"
+        android:paddingEnd="@dimen/conversation_header_side_padding"
         android:includeFontPadding="false"
         style="@style/ConversationSubjectStyle" />
 
@@ -41,15 +44,13 @@
         android:id="@+id/folders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignBaseline="@id/subject"
+        android:layout_gravity="right|end"
         android:background="?android:attr/selectableItemBackground"
-        android:paddingTop="@dimen/conversation_header_vertical_item_padding"
-        android:paddingBottom="@dimen/conversation_header_vertical_item_padding"
-        android:paddingLeft="@dimen/conversation_header_side_padding"
-        android:paddingRight="@dimen/conversation_header_side_padding"
+        android:gravity="right|end"
         android:includeFontPadding="false"
-        android:textSize="@dimen/conversation_folder_font_size"
-        android:gravity="right" />
+        android:lineSpacingExtra="4dp"
+        android:paddingLeft="@dimen/conversation_header_side_padding"
+        android:paddingStart="@dimen/conversation_header_side_padding"
+        android:textSize="@dimen/conversation_folder_font_size" />
 
 </com.android.mail.browse.ConversationViewHeader>
