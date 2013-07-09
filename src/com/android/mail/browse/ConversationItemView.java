@@ -521,8 +521,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mHeader != null) {
             // If this was previously bound to a different conversation, remove any contact photo
             // manager requests.
-            if (header.conversation.id != mHeader.conversation.id || !header.displayableSenderNames
-                    .equals(mHeader.displayableSenderNames)) {
+            if (header.conversation.id != mHeader.conversation.id ||
+                    (mHeader.displayableSenderNames != null && !mHeader.displayableSenderNames
+                    .equals(header.displayableSenderNames))) {
                 ArrayList<String> divisionIds = mContactImagesHolder.getDivisionIds();
                 if (divisionIds != null) {
                     mContactImagesHolder.reset();
