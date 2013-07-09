@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
@@ -116,7 +117,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
-        RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
+        RespondInlineListener, TextWatcher,
         AttachmentAddedOrDeletedListener, OnAccountChangedListener,
         LoaderManager.LoaderCallbacks<Cursor>, TextView.OnEditorActionListener,
         FeedbackEnabledActivity {
@@ -246,8 +247,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private boolean mReplyFromChanged;
     private MenuItem mSave;
     private MenuItem mSend;
-    private AlertDialog mRecipientErrorDialog;
-    private AlertDialog mSendConfirmDialog;
     @VisibleForTesting
     protected Message mRefMessage;
     private long mDraftId = UIProvider.INVALID_MESSAGE_ID;
@@ -676,12 +675,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     protected void onPause() {
         super.onPause();
 
-        if (mSendConfirmDialog != null) {
-            mSendConfirmDialog.dismiss();
-        }
-        if (mRecipientErrorDialog != null) {
-            mRecipientErrorDialog.dismiss();
-        }
         // When the user exits the compose view, see if this draft needs saving.
         // Don't save unnecessary drafts if we are only changing the orientation.
         if (!isChangingConfigurations()) {
@@ -2244,33 +2237,48 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
+    public static class RecipientErrorDialogFragment extends DialogFragment {
+        public static RecipientErrorDialogFragment newInstance(final String message) {
+            final RecipientErrorDialogFragment frag = new RecipientErrorDialogFragment();
+            final Bundle args = new Bundle(1);
+            args.putString("message", message);
+            frag.setArguments(args);
+            return frag;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final String message = getArguments().getString("message");
+            return new AlertDialog.Builder(getActivity()).setMessage(message).setTitle(
+                    R.string.recipient_error_dialog_title)
+                    .setIconAttribute(android.R.attr.alertDialogIcon)
+                    .setPositiveButton(
+                            R.string.ok, new Dialog.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ((ComposeActivity)getActivity()).finishRecipientErrorDialog();
+                        }
+                    }).create();
+        }
+    }
+
+    private void finishRecipientErrorDialog() {
+        // after the user dismisses the recipient error
+        // dialog we want to make sure to refocus the
+        // recipient to field so they can fix the issue
+        // easily
+        if (mTo != null) {
+            mTo.requestFocus();
+        }
+    }
+
     /**
      * Show an error because the user has entered an invalid recipient.
      * @param message
      */
-    public void showRecipientErrorDialog(String message) {
-        // Only 1 invalid recipients error dialog should be allowed up at a
-        // time.
-        if (mRecipientErrorDialog != null) {
-            mRecipientErrorDialog.dismiss();
-        }
-        mRecipientErrorDialog = new AlertDialog.Builder(this).setMessage(message).setTitle(
-                R.string.recipient_error_dialog_title)
-                .setIconAttribute(android.R.attr.alertDialogIcon)
-                .setPositiveButton(
-                        R.string.ok, new Dialog.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // after the user dismisses the recipient error
-                                // dialog we want to make sure to refocus the
-                                // recipient to field so they can fix the issue
-                                // easily
-                                if (mTo != null) {
-                                    mTo.requestFocus();
-                                }
-                                mRecipientErrorDialog = null;
-                            }
-                        }).show();
+    private void showRecipientErrorDialog(final String message) {
+        final DialogFragment frag = RecipientErrorDialogFragment.newInstance(message);
+        frag.show(getFragmentManager(), "recipient error");
     }
 
     /**
@@ -2347,7 +2355,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     /**
-     * @param body
      * @param save
      * @param showToast
      * @return Whether the send or save succeeded.
@@ -2363,7 +2370,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         final String[] to, cc, bcc;
-        final Editable body = mBodyView.getEditableText();
         if (orientationChanged) {
             to = cc = bcc = new String[0];
         } else {
@@ -2394,18 +2400,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return false;
         }
 
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                sendOrSave(mBodyView.getEditableText(), save, showToast);
-            }
-        };
-
         // Show a warning before sending only if there are no attachments.
         if (!save) {
             if (mAttachmentsView.getAttachments().isEmpty() && showEmptyTextWarnings()) {
                 boolean warnAboutEmptySubject = isSubjectEmpty();
-                boolean emptyBody = TextUtils.getTrimmedLength(body) == 0;
+                boolean emptyBody = TextUtils.getTrimmedLength(mBodyView.getEditableText()) == 0;
 
                 // A warning about an empty body may not be warranted when
                 // forwarding mails, since a common use case is to forward
@@ -2416,23 +2415,25 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // assume that they accept sending the message. If they do not,
                 // the dialog listener is required to enable sending again.
                 if (warnAboutEmptySubject) {
-                    showSendConfirmDialog(R.string.confirm_send_message_with_no_subject, listener);
+                    showSendConfirmDialog(R.string.confirm_send_message_with_no_subject, save,
+                            showToast);
                     return true;
                 }
 
                 if (warnAboutEmptyBody) {
-                    showSendConfirmDialog(R.string.confirm_send_message_with_no_body, listener);
+                    showSendConfirmDialog(R.string.confirm_send_message_with_no_body, save,
+                            showToast);
                     return true;
                 }
             }
             // Ask for confirmation to send (if always required)
             if (showSendConfirmation()) {
-                showSendConfirmDialog(R.string.confirm_send_message, listener);
+                showSendConfirmDialog(R.string.confirm_send_message, save, showToast);
                 return true;
             }
         }
 
-        sendOrSave(body, save, showToast);
+        sendOrSave(save, showToast);
         return true;
     }
 
@@ -2455,17 +2456,48 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return mCachedSettings != null ? mCachedSettings.confirmSend : false;
     }
 
-    private void showSendConfirmDialog(int messageId, DialogInterface.OnClickListener listener) {
-        if (mSendConfirmDialog != null) {
-            mSendConfirmDialog.dismiss();
-            mSendConfirmDialog = null;
+    public static class SendConfirmDialogFragment extends DialogFragment {
+        public static SendConfirmDialogFragment newInstance(final int messageId,
+                final boolean save, final boolean showToast) {
+            final SendConfirmDialogFragment frag = new SendConfirmDialogFragment();
+            final Bundle args = new Bundle(3);
+            args.putInt("messageId", messageId);
+            args.putBoolean("save", save);
+            args.putBoolean("showToast", showToast);
+            frag.setArguments(args);
+            return frag;
         }
-        mSendConfirmDialog = new AlertDialog.Builder(this).setMessage(messageId)
-                .setTitle(R.string.confirm_send_title)
-                .setIconAttribute(android.R.attr.alertDialogIcon)
-                .setPositiveButton(R.string.send, listener)
-                .setNegativeButton(R.string.cancel, this)
-                .show();
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final int messageId = getArguments().getInt("messageId");
+            final boolean save = getArguments().getBoolean("save");
+            final boolean showToast = getArguments().getBoolean("showToast");
+
+            return new AlertDialog.Builder(getActivity())
+                    .setMessage(messageId)
+                    .setTitle(R.string.confirm_send_title)
+                    .setIconAttribute(android.R.attr.alertDialogIcon)
+                    .setPositiveButton(R.string.send,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    ((ComposeActivity)getActivity()).finishSendConfirmDialog(save,
+                                            showToast);
+                                }
+                            })
+                    .create();
+        }
+    }
+
+    private void finishSendConfirmDialog(final boolean save, final boolean showToast) {
+        sendOrSave(save, showToast);
+    }
+
+    private void showSendConfirmDialog(final int messageId, final boolean save,
+            final boolean showToast) {
+        final DialogFragment frag = SendConfirmDialogFragment.newInstance(messageId, save,
+                showToast);
+        frag.show(getFragmentManager(), "send confirm");
     }
 
     /**
@@ -2587,12 +2619,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return draftType;
     }
 
-    private void sendOrSave(final Spanned body, final boolean save, final boolean showToast) {
+    private void sendOrSave(final boolean save, final boolean showToast) {
         // Check if user is a monkey. Monkeys can compose and hit send
         // button but are not allowed to send anything off the device.
         if (ActivityManager.isUserAMonkey()) {
             return;
         }
+
+        final Spanned body = mBodyView.getEditableText();
 
         SendOrSaveCallback callback = new SendOrSaveCallback() {
             // FIXME: unused
@@ -2932,46 +2966,33 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    public void enableSend(boolean enabled) {
-        if (mSend != null) {
-            mSend.setEnabled(enabled);
+    public static class DiscardConfirmDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return new AlertDialog.Builder(getActivity())
+                    .setMessage(R.string.confirm_discard_text)
+                    .setPositiveButton(R.string.discard,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ((ComposeActivity)getActivity()).doDiscardWithoutConfirmation();
+                                }
+                            })
+                    .create();
         }
-    }
-
-    /**
-     * Handles button clicks from any error dialogs dealing with sending
-     * a message.
-     */
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        switch (which) {
-            case DialogInterface.BUTTON_POSITIVE: {
-                doDiscardWithoutConfirmation(true /* show toast */ );
-                break;
-            }
-            case DialogInterface.BUTTON_NEGATIVE: {
-                // If the user cancels the send, re-enable the send button.
-                enableSend(true);
-                break;
-            }
-        }
-
     }
 
     private void doDiscard() {
-        new AlertDialog.Builder(this).setMessage(R.string.confirm_discard_text)
-                .setPositiveButton(R.string.ok, this)
-                .setNegativeButton(R.string.cancel, null)
-                .create().show();
+        final DialogFragment frag = new DiscardConfirmDialogFragment();
+        frag.show(getFragmentManager(), "discard confirm");
     }
     /**
      * Effectively discard the current message.
      *
      * This method is either invoked from the menu or from the dialog
      * once the user has confirmed that they want to discard the message.
-     * @param showToast show "Message discarded" toast if true
      */
-    private void doDiscardWithoutConfirmation(boolean showToast) {
+    private void doDiscardWithoutConfirmation() {
         synchronized (mDraftLock) {
             if (mDraftId != UIProvider.INVALID_MESSAGE_ID) {
                 ContentValues values = new ContentValues();
@@ -2989,10 +3010,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
         }
 
-        if (showToast) {
-            // Display a toast to let the user know
-            Toast.makeText(this, R.string.message_discarded, Toast.LENGTH_SHORT).show();
-        }
+        // Display a toast to let the user know
+        Toast.makeText(this, R.string.message_discarded, Toast.LENGTH_SHORT).show();
 
         // This prevents the draft from being saved in onPause().
         discardChanges();
