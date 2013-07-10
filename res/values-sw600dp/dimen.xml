@@ -32,7 +32,6 @@
     <dimen name="message_header_height">64sp</dimen>
     <dimen name="message_header_padding_right">4dip</dimen>
     <dimen name="message_header_action_button_width">56dip</dimen>
-    <dimen name="super_collapsed_height">32sp</dimen>
     <dimen name="attachment_tile_min_size">180dp</dimen>
     <dimen name="attachment_tile_max_size">254dp</dimen>
     <dimen name="wait_padding">32dp</dimen>
