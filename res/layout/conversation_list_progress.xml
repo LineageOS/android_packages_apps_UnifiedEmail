@@ -37,7 +37,6 @@
         android:layout_gravity="top"
         butterbar:barColor="@android:color/holo_blue_dark"
         butterbar:barHeight="2.5dp"
-        butterbar:detentWidth="4dp"
         android:visibility="gone" />
 
 </merge>
