@@ -1545,7 +1545,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         }
 
         boolean clearMostlyDead(Uri uri, ConversationCursor conversationCursor) {
-            String uriString =  uriStringFromCachingUri(uri);
+            String uriString = uriStringFromCachingUri(uri);
             return conversationCursor.clearMostlyDead(uriString);
         }
 
@@ -1659,6 +1659,9 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     }
 
     boolean clearMostlyDead(String uriString) {
+        LogUtils.d(LOG_TAG, "[Clearing mostly dead %s] ", uriString);
+        mMostlyDead.clear();
+        mDeferSync = false;
         Object val = getCachedValue(uriString,
                 UIProvider.CONVERSATION_FLAGS_COLUMN);
         if (val != null) {
