@@ -19,41 +19,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/super_collapsed_block"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/super_collapsed_height"
     android:layout_marginLeft="@dimen/conversation_view_margin_side"
     android:layout_marginRight="@dimen/conversation_view_margin_side"
-    android:paddingBottom="@dimen/message_header_vertical_margin">
-    <RelativeLayout
-        android:id="@+id/super_collapsed_background"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/super_collapsed_height"
-        android:paddingRight="@dimen/message_header_padding_right">
-        <View
-            android:id="@+id/super_collapsed_icon"
-            android:layout_width="@dimen/contact_photo_width"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:background="@drawable/super_collapsed_icon" />
-        <TextView
-            android:id="@+id/super_collapsed_count"
-            android:layout_width="@dimen/message_header_action_button_width"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_horizontal"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/message_sender_name" />
-        <TextView
-            android:id="@+id/super_collapsed_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/super_collapsed_icon"
-            android:layout_toLeftOf="@id/super_collapsed_count"
-            android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/message_header_inner_side_padding"
-            android:text="@string/show_messages_read"
-            android:textSize="14sp"
-            android:textColor="@color/message_sender_name" />
-    </RelativeLayout>
+    android:layout_marginStart="@dimen/conversation_view_margin_side"
+    android:layout_marginEnd="@dimen/conversation_view_margin_side"
+    android:layout_marginBottom="@dimen/message_header_vertical_margin"
+    android:background="@color/collapsed_message_header_background_color"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/message_header_padding"
+    android:paddingRight="@dimen/message_header_padding"
+    android:paddingStart="@dimen/message_header_padding"
+    android:paddingEnd="@dimen/message_header_padding">
+    <TextView
+        android:id="@+id/super_collapsed_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/dark_gray_text_color" />
 </com.android.mail.browse.SuperCollapsedBlock>
