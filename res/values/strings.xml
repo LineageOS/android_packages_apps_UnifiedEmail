@@ -520,7 +520,9 @@
     <string name="contact_info_string_default">Show contact information</string>
     <!-- Shown in collapsed mode when a conversation has more than one read message.
          The message count is shown to the right of this text. [CHAR LIMIT=70] -->
-    <string name="show_messages_read">Previously read messages</string>
+    <plurals name="show_messages_read">
+        <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> previously read messages</item>
+    </plurals>
     <!-- Shown to display the date of the message [CHAR LIMIT=10] -->
     <string name="date_heading">Date:</string>
     <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
