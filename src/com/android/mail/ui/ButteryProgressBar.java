@@ -32,11 +32,32 @@ public class ButteryProgressBar extends View {
 
     private final Paint mPaint = new Paint();
 
-    final int mBarColor;
-    final int mSolidBarHeight;
-    final int mSolidBarDetentWidth;
+    private final int mBarColor;
+    private final int mSolidBarHeight;
+    private final int mSolidBarDetentWidth;
 
-    private static final int SEGMENT_COUNT = 3;
+    private final float mDensity;
+
+    private int mSegmentCount;
+
+    /**
+     * The baseline width that the other constants below are optimized for.
+     */
+    private static final int BASE_WIDTH_DP = 300;
+    /**
+     * A reasonable animation duration for the given width above. It will be weakly scaled up and
+     * down for wider and narrower widths, respectively-- the goal is to provide a relatively
+     * constant detent velocity.
+     */
+    private static final int BASE_DURATION_MS = 500;
+    /**
+     * A reasonable number of detents for the given width above. It will be weakly scaled up and
+     * down for wider and narrower widths, respectively.
+     */
+    private static final int BASE_SEGMENT_COUNT = 5;
+
+    private static final int DEFAULT_BAR_HEIGHT_DP = 4;
+    private static final int DEFAULT_DETENT_WIDTH_DP = 3;
 
     public ButteryProgressBar(Context c) {
         this(c, null);
@@ -45,20 +66,24 @@ public class ButteryProgressBar extends View {
     public ButteryProgressBar(Context c, AttributeSet attrs) {
         super(c, attrs);
 
+        mDensity = c.getResources().getDisplayMetrics().density;
+
         final TypedArray ta = c.obtainStyledAttributes(attrs, R.styleable.ButteryProgressBar);
         try {
-            mBarColor = ta.getColor(R.styleable.ButteryProgressBar_barColor, 0);
+            mBarColor = ta.getColor(R.styleable.ButteryProgressBar_barColor,
+                    c.getResources().getColor(android.R.color.holo_blue_light));
             mSolidBarHeight = ta.getDimensionPixelSize(
-                    R.styleable.ButteryProgressBar_barHeight, 0);
+                    R.styleable.ButteryProgressBar_barHeight,
+                    Math.round(DEFAULT_BAR_HEIGHT_DP * mDensity));
             mSolidBarDetentWidth = ta.getDimensionPixelSize(
-                    R.styleable.ButteryProgressBar_detentWidth, 0);
+                    R.styleable.ButteryProgressBar_detentWidth,
+                    Math.round(DEFAULT_DETENT_WIDTH_DP * mDensity));
         } finally {
             ta.recycle();
         }
 
         mAnimator = new ValueAnimator();
         mAnimator.setFloatValues(1.0f, 2.0f);
-        mAnimator.setDuration(300);
         mAnimator.setRepeatCount(ValueAnimator.INFINITE);
         mAnimator.setInterpolator(new ExponentialInterpolator());
         mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -79,7 +104,16 @@ public class ButteryProgressBar extends View {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (changed) {
-            mShadow.setBounds(0, mSolidBarHeight, getWidth(), getHeight() - mSolidBarHeight);
+            final int w = getWidth();
+
+            mShadow.setBounds(0, mSolidBarHeight, w, getHeight() - mSolidBarHeight);
+
+            final float widthMultiplier = w / mDensity / BASE_WIDTH_DP;
+            // simple scaling by width is too aggressive, so dampen it first
+            final float durationMult = 0.3f * (widthMultiplier - 1) + 1;
+            final float segmentMult = 0.1f * (widthMultiplier - 1) + 1;
+            mAnimator.setDuration((int) (BASE_DURATION_MS * durationMult));
+            mSegmentCount = (int) (BASE_SEGMENT_COUNT * segmentMult);
         }
     }
 
@@ -93,17 +127,20 @@ public class ButteryProgressBar extends View {
 
         final float val = (Float) mAnimator.getAnimatedValue();
 
-        final int totalW = getWidth();
-        int w = totalW;
-        float l = val * w;
+        final int w = getWidth();
+        // Because the left-most segment doesn't start all the way on the left, and because it moves
+        // towards the right as it animates, we need to offset all drawing towards the left. This
+        // ensures that the left-most detent starts at the left origin, and that the left portion
+        // is never blank as the animation progresses towards the right.
+        final int offset = w >> mSegmentCount - 1;
         // segments are spaced at half-width, quarter, eighth (powers-of-two). to maintain a smooth
         // transition between segments, we used a power-of-two interpolator.
-        for (int i = 0; i < SEGMENT_COUNT; i++) {
-            w = totalW >> (i + 1);
-            l = val * w;
-            canvas.drawRect(l + mSolidBarDetentWidth, 0, l * 2, mSolidBarHeight, mPaint);
+        for (int i = 0; i < mSegmentCount; i++) {
+            final float l = val * (w >> (i + 1));
+            final float r = (i == 0) ? w + offset : l * 2;
+            canvas.drawRect(l + mSolidBarDetentWidth - offset, 0, r - offset, mSolidBarHeight,
+                    mPaint);
         }
-        canvas.drawRect(0, 0, l, mSolidBarHeight, mPaint);
     }
 
     @Override
