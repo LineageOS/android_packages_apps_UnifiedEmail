@@ -44,7 +44,7 @@
         android:layout_height="@dimen/contact_photo_height"
         android:visibility="gone"
         android:scaleType="center"
-        android:src="@drawable/ic_email_draft" />
+        android:src="@drawable/ic_draft" />
     <include layout="@layout/conversation_message_upper_header_text" />
     <include layout="@layout/conversation_message_upper_header_actions" />
 
