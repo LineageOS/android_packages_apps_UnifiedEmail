@@ -18,12 +18,9 @@
 package com.android.mail.browse;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Shader.TileMode;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -34,7 +31,7 @@ import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
  * so the listener can hide the block and reveal the corresponding collapsed message headers.
  *
  */
-public class SuperCollapsedBlock extends FrameLayout implements View.OnClickListener {
+public class SuperCollapsedBlock extends LinearLayout implements View.OnClickListener {
 
     public interface OnClickListener {
         /**
@@ -46,9 +43,7 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
 
     private SuperCollapsedBlockItem mModel;
     private OnClickListener mClick;
-    private View mIconView;
-    private TextView mCountView;
-    private View mBackgroundView;
+    private TextView mSuperCollapsedText;
 
     public SuperCollapsedBlock(Context context) {
         this(context, null);
@@ -67,16 +62,7 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        mIconView = findViewById(R.id.super_collapsed_icon);
-        mCountView = (TextView) findViewById(R.id.super_collapsed_count);
-        mBackgroundView = findViewById(R.id.super_collapsed_background);
-
-        // Work around Honeycomb bug where BitmapDrawable's tileMode is unreliable in XML (5160739)
-        BitmapDrawable bd = (BitmapDrawable) getResources().getDrawable(
-                R.drawable.header_convo_view_thread_bg_holo);
-        bd.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
-        mBackgroundView.setBackgroundDrawable(bd);
+        mSuperCollapsedText = (TextView) findViewById(R.id.super_collapsed_text);
     }
 
     public void bind(SuperCollapsedBlockItem item) {
@@ -85,15 +71,14 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     }
 
     public void setCount(int count) {
-        mCountView.setText(Integer.toString(count));
-        mIconView.getBackground().setLevel(count);
+        mSuperCollapsedText.setText(
+                getResources().getQuantityString(R.plurals.show_messages_read, count, count));
     }
 
     @Override
     public void onClick(final View v) {
-        ((TextView) findViewById(R.id.super_collapsed_label)).setText(
+        ((TextView) findViewById(R.id.super_collapsed_text)).setText(
                 R.string.loading_conversation);
-        mCountView.setVisibility(GONE);
 
         if (mClick != null) {
             getHandler().post(new Runnable() {
@@ -104,13 +89,4 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
             });
         }
     }
-
-    public static int getCannedHeight(Context context) {
-        Resources r = context.getResources();
-        // Rather than try to measure the height a super-collapsed block, just add up the known
-        // vertical dimension components.
-        return r.getDimensionPixelSize(R.dimen.super_collapsed_height)
-                + r.getDimensionPixelOffset(R.dimen.message_header_vertical_margin);
-    }
-
 }
