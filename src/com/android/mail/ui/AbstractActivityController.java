@@ -831,7 +831,7 @@ public abstract class AbstractActivityController implements ActivityController,
         final int mode = mViewMode.getMode();
         mDrawerToggle.setDrawerIndicatorEnabled(
                 getShouldShowDrawerIndicator(mode, isTopLevel));
-        mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(mode, isTopLevel)
+        mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(mode)
                 ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         mDrawerContainer.closeDrawers();
@@ -2103,7 +2103,7 @@ public abstract class AbstractActivityController implements ActivityController,
             final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
             mDrawerToggle.setDrawerIndicatorEnabled(
                     getShouldShowDrawerIndicator(newMode, isTopLevel));
-            mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(newMode, isTopLevel)
+            mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(newMode)
                     ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             closeDrawerIfOpen();
         }
@@ -2127,14 +2127,12 @@ public abstract class AbstractActivityController implements ActivityController,
     /**
      * Returns true if the left-screen swipe action (or Home icon tap) should pull a drawer out.
      * @param viewMode the current view mode.
-     * @param isTopLevel true if the current folder is not a child
      * @return whether the drawer can be opened using a swipe action or action bar tap.
      */
-    private static boolean getShouldAllowDrawerPull(final int viewMode, final boolean isTopLevel) {
+    private static boolean getShouldAllowDrawerPull(final int viewMode) {
         // if search list/conv mode, disable drawer pull
         // allow drawer pull everywhere except conversation mode where the list is hidden
-        return !ViewMode.isSearchMode(viewMode) && !(ViewMode.isConversationMode(viewMode))
-                && isTopLevel;
+        return !ViewMode.isSearchMode(viewMode) && !(ViewMode.isConversationMode(viewMode));
 
         // TODO(ath): get this to work to allow drawer pull in 2-pane conv mode.
     /* && !isConversationListVisible() */
@@ -4201,8 +4199,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public boolean isDrawerPullEnabled() {
-        final boolean notChild = (mFolder == null || mFolder.parent == Uri.EMPTY);
-        return getShouldAllowDrawerPull(mViewMode.getMode(), notChild);
+        return getShouldAllowDrawerPull(mViewMode.getMode());
     }
 
     @Override
