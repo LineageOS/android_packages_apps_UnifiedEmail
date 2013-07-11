@@ -15,96 +15,71 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/details_expanded_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingLeft="@dimen/message_details_header_padding_left"
-    android:paddingRight="@dimen/message_details_header_padding_right"
-    android:gravity="center_vertical">
-
-    <TableLayout
-        android:layout_width="match_parent"
+    android:paddingStart="@dimen/message_details_header_padding_start"
+    android:paddingEnd="@dimen/message_details_header_padding_end"
+    android:paddingLeft="@dimen/message_details_header_padding_start"
+    android:paddingRight="@dimen/message_details_header_padding_end"
+    android:columnCount="2"
+    android:rowCount="5" >
+    <TextView
+        android:id="@+id/from"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="14dp"
-        android:paddingBottom="7dp"
-        android:shrinkColumns="1">
-        <TableRow>
-            <TextView
-                android:id="@+id/date_heading"
-                android:text="@string/date_heading"
-                style="@style/MessageDetailsHeadingStyle" />
-            <TextView
-                android:id="@+id/date_value"
-                style="@style/MessageDetailsValueStyle" />
-        </TableRow>
-        <TableRow
-            android:id="@+id/from_row"
-            android:visibility="gone">
-            <TextView
-                android:id="@+id/from_heading"
-                android:text="@string/from_heading"
-                style="@style/MessageDetailsHeadingStyle" />
-            <TextView
-                android:id="@+id/from_value"
-                android:autoLink="email"
-                style="@style/MessageDetailsValueSelectableStyle" />
-        </TableRow>
-        <TableRow
-            android:id="@+id/replyto_row"
-            android:visibility="gone">
-            <TextView
-                android:id="@+id/replyto_heading"
-                android:text="@string/replyto_heading"
-                style="@style/MessageDetailsHeadingStyle" />
-            <TextView
-                android:id="@+id/replyto_value"
-                android:autoLink="email"
-                style="@style/MessageDetailsValueSelectableStyle" />
-        </TableRow>
-        <TableRow
-            android:id="@+id/to_row"
-            android:visibility="gone">
-            <TextView
-                android:id="@+id/to_heading"
-                android:text="@string/to_heading"
-                style="@style/MessageDetailsHeadingStyle" />
-            <TextView
-                android:id="@+id/to_value"
-                android:autoLink="email"
-                style="@style/MessageDetailsValueSelectableStyle" />
-        </TableRow>
-        <TableRow
-            android:id="@+id/cc_row"
-            android:visibility="gone">
-            <TextView
-                android:id="@+id/cc_heading"
-                android:text="@string/cc_heading"
-                style="@style/MessageDetailsHeadingStyle" />
-            <TextView
-                android:id="@+id/cc_value"
-                android:autoLink="email"
-                style="@style/MessageDetailsValueSelectableStyle" />
-        </TableRow>
-        <TableRow
-            android:id="@+id/bcc_row"
-            android:visibility="gone">
-            <TextView
-                android:id="@+id/bcc_heading"
-                android:text="@string/bcc_heading"
-                style="@style/MessageDetailsHeadingStyle" />
-            <TextView
-                android:id="@+id/bcc_value"
-                android:autoLink="email"
-                style="@style/MessageDetailsValueSelectableStyle" />
-        </TableRow>
-    </TableLayout>
-
+        android:layout_gravity="fill_horizontal"
+        android:layout_column="0"
+        android:layout_row="0"
+        android:autoLink="email"
+        android:visibility="gone"
+        style="@style/MessageDetailsItemStyle" />
+    <TextView
+        android:id="@+id/replyto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_column="0"
+        android:layout_row="1"
+        android:autoLink="email"
+        android:visibility="gone"
+        style="@style/MessageDetailsItemStyle" />
+    <TextView
+        android:id="@+id/to"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_column="0"
+        android:layout_row="2"
+        android:autoLink="email"
+        android:visibility="gone"
+        style="@style/MessageDetailsItemStyle" />
+    <TextView
+        android:id="@+id/cc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_column="0"
+        android:layout_row="3"
+        android:autoLink="email"
+        android:visibility="gone"
+        style="@style/MessageDetailsItemStyle" />
+    <TextView
+        android:id="@+id/bcc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_column="0"
+        android:layout_row="4"
+        android:autoLink="email"
+        android:visibility="gone"
+        style="@style/MessageDetailsItemStyle" />
     <ImageView
-        android:layout_gravity="top|right"
-        android:layout_marginTop="14dip"
         android:id="@+id/details_expander"
+        android:layout_column="1"
+        android:layout_row="0"
         style="@style/MessageHeaderExpanderMaximizedStyle" />
 
-</FrameLayout>
+</GridLayout>

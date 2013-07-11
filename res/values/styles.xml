@@ -250,57 +250,44 @@
     </style>
 
     <style name="MessageSenderNameStyle">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/conv_header_text_dark</item>
     </style>
 
-    <style name="MessageSenderEmailStyle">
+    <style name="MessageHeaderSubtitleStyle">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/message_sender_email</item>
-        <item name="android:layout_marginTop">-2dip</item>
+        <item name="android:textColor">@color/conv_header_text_dark</item>
+    </style>
+
+    <style name="MessageHeaderSnippetStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/conv_header_text_light</item>
     </style>
 
     <style name="MessageHeaderSmallStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:textColor">@color/conv_header_text_light</item>
-    </style>
-
-    <style name="MessageHeaderExtraSmallStyle" parent="MessageHeaderSmallStyle">
+        <item name="android:textColor">@color/conv_header_text_dark</item>
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderExtraSmallStyle">
+    <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderSmallStyle">
         <item name="android:minHeight">24dp</item>
-        <item name="android:layout_marginTop">4dp</item>
     </style>
 
-    <style name="MessageAttachmentsHeaderStyle" parent="MessageHeaderExtraSmallStyle">
+    <style name="MessageAttachmentsHeaderStyle" parent="MessageHeaderSmallStyle">
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">8dp</item>
-    </style>
-
-    <style name="MessageHeaderDateTextStyle" parent="MessageHeaderSmallStyle">
-        <item name="android:layout_marginRight">@dimen/message_details_header_date_margin_right</item>
-    </style>
-
-    <style name="MessageHeaderAttachmentIconStyle">
-        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="MessageDetailsItemStyle" parent="MessageHeaderSmallStyle">
         <item name="android:lineSpacingMultiplier">1.5</item>
     </style>
 
-    <style name="MessageDetailsHeadingStyle" parent="MessageDetailsItemStyle">
-        <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginRight">8dp</item>
-        <item name="android:maxWidth">60dp</item>
-    </style>
-
     <style name="MessageDetailsValueStyle" parent="MessageDetailsItemStyle">
-        <item name="android:layout_gravity">bottom</item>
+        <item name="android:textColor">@color/conv_header_text_light</item>
     </style>
 
     <style name="MessageDetailsValueSelectableStyle" parent="MessageDetailsValueStyle">

@@ -21,6 +21,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginStart="@dimen/conversation_view_margin_side"
+    android:layout_marginEnd="@dimen/conversation_view_margin_side"
     android:layout_marginLeft="@dimen/conversation_view_margin_side"
     android:layout_marginRight="@dimen/conversation_view_margin_side" >
     <TextView
@@ -28,9 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/attachments_header"
-        android:textAllCaps="true"
         android:visibility="gone"
-        android:paddingLeft="@dimen/message_details_header_padding_left"
+        android:paddingStart="@dimen/message_details_header_padding_start"
+        android:paddingLeft="@dimen/message_details_header_padding_start"
         style="@style/MessageAttachmentsHeaderStyle"/>
     <View
         android:id="@+id/attachments_header_bar"
@@ -44,6 +46,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"/>
     <LinearLayout
@@ -51,6 +55,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:orientation="vertical"/>
