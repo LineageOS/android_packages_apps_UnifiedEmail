@@ -2115,11 +2115,11 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param isTopLevel true if the current folder is not a child
      * @return whether the drawer indicator is shown
      */
-    private static boolean getShouldShowDrawerIndicator(final int viewMode,
+    private boolean getShouldShowDrawerIndicator(final int viewMode,
             final boolean isTopLevel) {
         // If search list/conv mode: disable indicator
         // Indicator is enabled either in conversation list or folder list mode.
-        return !ViewMode.isSearchMode(viewMode)
+        return isDrawerEnabled() && !ViewMode.isSearchMode(viewMode)
             && (viewMode == ViewMode.FOLDER_LIST
                 || (viewMode == ViewMode.CONVERSATION_LIST  && isTopLevel));
     }
