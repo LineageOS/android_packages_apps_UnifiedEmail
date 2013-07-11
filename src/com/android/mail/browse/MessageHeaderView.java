@@ -108,6 +108,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private ViewGroup mUpperHeaderView;
     private TextView mSenderNameView;
     private TextView mSenderEmailView;
+    private TextView mDateView;
+    private TextView mSnippetView;
     private QuickContactBadge mPhotoView;
     private ImageView mStarView;
     private ViewGroup mTitleContainerView;
@@ -266,6 +268,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mUpperHeaderView = (ViewGroup) findViewById(R.id.upper_header);
         mSenderNameView = (TextView) findViewById(R.id.sender_name);
         mSenderEmailView = (TextView) findViewById(R.id.sender_email);
+        mDateView = (TextView) findViewById(R.id.send_date);
+        mSnippetView = (TextView) findViewById(R.id.email_snippet);
         mPhotoView = (QuickContactBadge) findViewById(R.id.photo);
         mReplyButton = findViewById(R.id.reply);
         mReplyAllButton = findViewById(R.id.reply_all);
@@ -456,6 +460,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         mSenderNameView.setText(getHeaderTitle());
         mSenderEmailView.setText(getHeaderSubtitle());
+        mDateView.setText(getFormattedTimestampLong());
+        mSnippetView.setText(mSnippet);
         setAddressOnContextMenu();
 
         if (mUpperDateView != null) {
@@ -562,6 +568,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return sub;
     }
 
+    private CharSequence getFormattedTimestampLong() {
+        if (mMessageHeaderItem.timestampLong == null) {
+            mMessageHeaderItem.timestampLong = mDateBuilder.formatLongDateTime(mTimestampMs);
+        }
+
+        return mMessageHeaderItem.timestampLong;
+    }
+
     /**
      * Return the name, if known, or just the address.
      */
@@ -608,8 +622,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
             setChildVisibility(GONE, mReplyButton, mReplyAllButton, mForwardButton,
                     mOverflowButton, mDraftIcon, mEditDraftButton, mStarView,
-                    mAttachmentIcon, mUpperDateView);
-            setChildVisibility(VISIBLE, mPhotoView, mSenderEmailView);
+                    mAttachmentIcon, mUpperDateView, mSnippetView);
+            setChildVisibility(VISIBLE, mPhotoView, mSenderEmailView, mDateView);
 
             setChildMarginEnd(mTitleContainerView, 0);
         } else if (isExpanded()) {
@@ -627,21 +641,21 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
             setReplyOrReplyAllVisible();
             setChildVisibility(normalVis, mPhotoView, mForwardButton,
-                    mSenderEmailView, mOverflowButton);
+                    mSenderEmailView, mDateView, mOverflowButton);
             setChildVisibility(draftVis, mDraftIcon, mEditDraftButton);
-            setChildVisibility(GONE, mAttachmentIcon, mUpperDateView);
+            setChildVisibility(GONE, mAttachmentIcon, mUpperDateView, mSnippetView);
             setChildVisibility(mStarShown ? VISIBLE : GONE, mStarView);
 
             setChildMarginEnd(mTitleContainerView, 0);
+            mSenderNameView.setTypeface(Typeface.DEFAULT_BOLD);
 
         } else {
 
             setMessageDetailsVisibility(GONE);
-            setChildVisibility(VISIBLE, mSenderEmailView, mUpperDateView);
+            setChildVisibility(VISIBLE, mSnippetView, mUpperDateView);
 
             setChildVisibility(GONE, mEditDraftButton, mReplyButton, mReplyAllButton,
-                    mForwardButton);
-            setChildVisibility(GONE, mOverflowButton);
+                    mForwardButton, mOverflowButton, mSenderEmailView, mDateView);
 
             setChildVisibility(mMessage.hasAttachments ? VISIBLE : GONE,
                     mAttachmentIcon);
@@ -649,6 +663,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             setChildVisibility(mCollapsedStarVisible && mStarShown ? VISIBLE : GONE, mStarView);
 
             setChildMarginEnd(mTitleContainerView, mTitleContainerCollapsedMarginEnd);
+
+            mSenderNameView.setTypeface(Typeface.DEFAULT);
 
             if (mIsDraft) {
 
@@ -700,14 +716,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     /**
      * Render an email list for the expanded message details view.
-     * @param rowRes
-     * @param valueRes
+     * @param textViewId
+     * @param strRes
      * @param emails
      * @param showViaDomain
      * @param rootView
      */
-    private void renderEmailList(int rowRes, int valueRes, String[] emails, boolean showViaDomain,
-            View rootView) {
+    private void renderEmailList(int textViewId, int strRes, String[] emails,
+            boolean showViaDomain, View rootView) {
         if (emails == null || emails.length == 0) {
             return;
         }
@@ -752,8 +768,12 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 }
             }
         }
-        ((TextView) rootView.findViewById(valueRes)).setText(TextUtils.join("\n", formattedEmails));
-        rootView.findViewById(rowRes).setVisibility(VISIBLE);
+
+        final String finalFormattedString =
+                res.getString(strRes, TextUtils.join("\n", formattedEmails));
+        final TextView textView = (TextView) rootView.findViewById(textViewId);
+        textView.setText(finalFormattedString);
+        textView.setVisibility(VISIBLE);
     }
 
     /**
@@ -805,7 +825,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
             SpannableStringBuilder ssb = new SpannableStringBuilder(
                     mContext.getString(headingStrRes));
-            ssb.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb.length(),
+            ssb.setSpan(new StyleSpan(Typeface.NORMAL), 0, ssb.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             ssb.append(' ');
 
@@ -1028,6 +1048,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (!mIsSnappy) {
             mSenderNameView.setText(getHeaderTitle());
             mSenderEmailView.setText(getHeaderSubtitle());
+            mDateView.setText(getFormattedTimestampLong());
+            mSnippetView.setText(mSnippet);
         }
 
         updateChildVisibility();
@@ -1273,8 +1295,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             ((TextView) findViewById(R.id.recipients_summary))
                     .setText(mMessageHeaderItem.recipientSummaryText);
 
-            ((TextView) findViewById(R.id.date_summary)).setText(mTimestampShort);
-
             mCollapsedDetailsValid = true;
         }
         mCollapsedDetailsView.setVisibility(VISIBLE);
@@ -1305,18 +1325,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             viewCreated = true;
         }
         if (!mExpandedDetailsValid) {
-            if (mMessageHeaderItem.timestampLong == null) {
-                mMessageHeaderItem.timestampLong = mDateBuilder.formatLongDateTime(mTimestampMs);
-            }
-            ((TextView) mExpandedDetailsView.findViewById(R.id.date_value))
-                    .setText(mMessageHeaderItem.timestampLong);
-            renderEmailList(R.id.replyto_row, R.id.replyto_value, mReplyTo, false,
+            renderEmailList(R.id.from, R.string.from_details, mFrom, mMessage.viaDomain != null,
                     mExpandedDetailsView);
-            renderEmailList(R.id.from_row, R.id.from_value, mFrom, mMessage.viaDomain != null,
+            renderEmailList(R.id.replyto, R.string.replyto_details, mReplyTo, false,
                     mExpandedDetailsView);
-            renderEmailList(R.id.to_row, R.id.to_value, mTo, false, mExpandedDetailsView);
-            renderEmailList(R.id.cc_row, R.id.cc_value, mCc, false, mExpandedDetailsView);
-            renderEmailList(R.id.bcc_row, R.id.bcc_value, mBcc, false, mExpandedDetailsView);
+            renderEmailList(R.id.to, R.string.to_details, mTo, false, mExpandedDetailsView);
+            renderEmailList(R.id.cc, R.string.cc_details, mCc, false, mExpandedDetailsView);
+            renderEmailList(R.id.bcc, R.string.bcc_details, mBcc, false, mExpandedDetailsView);
 
             mExpandedDetailsValid = true;
         }

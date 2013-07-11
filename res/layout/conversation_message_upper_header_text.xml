@@ -23,16 +23,16 @@
     android:layout_width="0dip"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:paddingLeft="@dimen/message_header_inner_side_padding"
     android:paddingStart="@dimen/message_header_inner_side_padding"
+    android:paddingLeft="@dimen/message_header_inner_side_padding"
     android:layout_weight="1">
 
     <TextView
         android:id="@+id/upper_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:visibility="gone"
         android:lines="1"
         style="@style/MessageHeaderUpperDateStyle" />
@@ -40,22 +40,21 @@
         android:id="@+id/attachment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/upper_date"
         android:layout_toStartOf="@id/upper_date"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@id/upper_date"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:src="@drawable/ic_attachment_holo_light"
-        style="@style/MessageHeaderAttachmentIconStyle" />
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/ic_attachment_holo_light" />
     <TextView
         android:id="@+id/sender_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/attachment"
         android:layout_toStartOf="@id/attachment"
-        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/attachment"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         style="@style/MessageSenderNameStyle"
         android:singleLine="true" />
     <ImageView
@@ -64,12 +63,28 @@
         style="@style/MessageHeaderPresenceStyle" />
     <TextView
         android:id="@+id/sender_email"
-        android:layout_below="@id/sender_name"
-        android:layout_toRightOf="@id/presence"
-        android:layout_toEndOf="@id/presence"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/sender_name"
+        android:layout_toEndOf="@id/presence"
+        android:layout_toRightOf="@id/presence"
+        android:singleLine="true"
+        style="@style/MessageHeaderSubtitleStyle" />
+    <TextView
+        android:id="@+id/send_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sender_email"
+        android:layout_toEndOf="@id/presence"
+        android:layout_toRightOf="@id/presence"
+        android:singleLine="true"
+        style="@style/MessageHeaderSubtitleStyle" />
+    <TextView
+        android:id="@+id/email_snippet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sender_name"
         android:lines="2"
-        style="@style/MessageSenderEmailStyle" />
-
+        android:lineSpacingExtra="1dp"
+        style="@style/MessageHeaderSnippetStyle" />
 </RelativeLayout>
