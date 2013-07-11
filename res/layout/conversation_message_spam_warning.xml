@@ -25,7 +25,7 @@
         android:id="@+id/spam_warning_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/message_details_header_padding_left"
+        android:paddingLeft="@dimen/message_details_header_padding_start"
         android:paddingTop="8dp" />
 
     <TextView
@@ -36,7 +36,7 @@
         android:layout_toRightOf="@id/spam_warning_icon"
         android:gravity="center_vertical"
         android:minHeight="@dimen/message_details_header_collapsed_height"
-        android:paddingRight="@dimen/message_details_header_padding_right"
+        android:paddingRight="@dimen/message_details_header_padding_end"
         android:paddingTop="8dp" />
 
     <TextView
@@ -48,7 +48,7 @@
         android:layout_toRightOf="@id/spam_warning_icon"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
-        android:paddingRight="@dimen/message_details_header_padding_right"
+        android:paddingRight="@dimen/message_details_header_padding_end"
         android:textColor="@android:color/holo_blue_light" />
 
     <View

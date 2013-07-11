@@ -23,12 +23,4 @@
         <item name="android:layout_marginLeft">12dp</item>
         <item name="android:layout_width">wrap_content</item>
     </style>
-
-    <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderExtraSmallStyle">
-        <item name="android:layout_centerVertical">true</item>
-    </style>
-
-    <style name="MessageHeaderAttachmentIconStyle">
-        <item name="android:layout_centerVertical">true</item>
-    </style>
 </resources>

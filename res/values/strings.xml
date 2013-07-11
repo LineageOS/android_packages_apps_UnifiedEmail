@@ -521,20 +521,18 @@
     <!-- Shown in collapsed mode when a conversation has more than one read message.
          The message count is shown to the right of this text. [CHAR LIMIT=70] -->
     <plurals name="show_messages_read">
-        <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> previously read messages</item>
+        <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
     </plurals>
-    <!-- Shown to display the date of the message [CHAR LIMIT=10] -->
-    <string name="date_heading">Date:</string>
     <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
-    <string name="from_heading">From:</string>
+    <string name="from_details">From: <xliff:g id="display_address" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
     <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
-    <string name="replyto_heading">Reply-to:</string>
+    <string name="replyto_details">Reply-to: <xliff:g id="display_address" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
     <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
-    <string name="to_heading">To:</string>
+    <string name="to_details">To: <xliff:g id="display_address(es)" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
     <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
-    <string name="cc_heading">Cc:</string>
+    <string name="cc_details">Cc: <xliff:g id="display_address(es)" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
     <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
-    <string name="bcc_heading">Bcc:</string>
+    <string name="bcc_details">Bcc: <xliff:g id="display_address(es)" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
     <!-- Displayed above an HTML message to show the images in that message [CHAR LIMIT=40] -->
     <string name="show_images">Show pictures</string>
     <!-- Displayed above an HTML message to always show images in messages from that sender [CHAR LIMIT=40] -->
@@ -952,4 +950,14 @@
 
     <!-- Action bar title for viewing messages that are attached to another message. -->
     <string name="attached_message">Attached message</string>
+
+    <!-- Shown to display the date of the message [CHAR LIMIT=50] -->
+    <string name="date_message_received"><xliff:g id="day_and_date">%1$s</xliff:g>, <xliff:g id="time">%2$s</xliff:g></string>
+
+    <!-- Shown to display the date of the message when the message was received today. [CHAR LIMIT=50] -->
+    <string name="date_message_received_today">Today, <xliff:g id="time">%1$s</xliff:g></string>
+
+    <!-- Shown to display the date of the message when the message was received yesterday. [CHAR LIMIT=50] -->
+    <string name="date_message_received_yesterday">Yesterday, <xliff:g id="time">%1$s</xliff:g></string>
+
 </resources>
