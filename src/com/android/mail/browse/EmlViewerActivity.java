@@ -92,12 +92,20 @@ public class EmlViewerActivity extends Activity implements FeedbackEnabledActivi
             }
         }
 
-        getLoaderManager().initLoader(ACCOUNT_LOADER, Bundle.EMPTY, mAccountLoadCallbacks);
+        // Account uri will be null if we launched from outside of the app.
+        // So just don't load an account at all.
+        if (mAccountUri != null) {
+            getLoaderManager().initLoader(ACCOUNT_LOADER, Bundle.EMPTY, mAccountLoadCallbacks);
+        }
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if (mAccountUri == null) {
+            return false;
+        }
+
         getMenuInflater().inflate(R.menu.eml_viewer_menu, menu);
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
         mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
