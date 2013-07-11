@@ -146,7 +146,7 @@ public class SuppressNotificationReceiver extends BroadcastReceiver {
         final Uri intentFolderUri =
                 (Uri)intent.getParcelableExtra(UIProvider.UpdateNotificationExtras.EXTRA_FOLDER);
 
-        if (!listContextFolder.uri.equals(intentFolderUri)) {
+        if (!listContextFolder.folderUri.equals(intentFolderUri)) {
             return;
         }
         final int count = intent.getIntExtra(

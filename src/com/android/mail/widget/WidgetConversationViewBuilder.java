@@ -20,13 +20,13 @@ import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderDisplayer;
+import com.android.mail.utils.FolderUri;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
@@ -66,7 +66,7 @@ public class WidgetConversationViewBuilder {
          * Load Conversation Labels
          */
         @Override
-        public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri,
+        public void loadConversationFolders(Conversation conv, final FolderUri ignoreFolderUri,
                 final int ignoreFolderType) {
             super.loadConversationFolders(conv, ignoreFolderUri, ignoreFolderType);
         }
@@ -147,8 +147,8 @@ public class WidgetConversationViewBuilder {
      * Return the full View
      */
     public RemoteViews getStyledView(CharSequence date, Conversation conversation,
-            final Uri folderUri, final int ignoreFolderType, SpannableStringBuilder senders,
-            String filteredSubject) {
+            final FolderUri folderUri, final int ignoreFolderType,
+            SpannableStringBuilder senders, String filteredSubject) {
 
         final boolean isUnread = !conversation.read;
         String snippet = conversation.getSnippet();

@@ -632,8 +632,8 @@ public class NotificationActionUtils {
                     // Not inbox, so remove label
                     final ContentValues values = new ContentValues(1);
 
-                    final String removeFolderUri =
-                            folder.uri.buildUpon().appendPath(Boolean.FALSE.toString()).toString();
+                    final String removeFolderUri = folder.folderUri.fullUri.buildUpon()
+                            .appendPath(Boolean.FALSE.toString()).toString();
                     values.put(ConversationOperations.FOLDERS_UPDATED, removeFolderUri);
 
                     contentResolver.update(uri, values, null, null);
@@ -729,7 +729,7 @@ public class NotificationActionUtils {
         final Intent intent = new Intent(MailIntentService.ACTION_RESEND_NOTIFICATIONS);
         intent.setPackage(context.getPackageName()); // Make sure we only deliver this to ourself
         intent.putExtra(Utils.EXTRA_ACCOUNT_URI, account.uri);
-        intent.putExtra(Utils.EXTRA_FOLDER_URI, folder.uri);
+        intent.putExtra(Utils.EXTRA_FOLDER_URI, folder.folderUri.fullUri);
         context.startService(intent);
     }
 

@@ -218,7 +218,7 @@ public class NotificationUtils {
                 final Integer unseenCount = value.second;
                 if (unreadCount != null && unseenCount != null) {
                     final String[] partValues = new String[] {
-                            key.account.uri.toString(), key.folder.uri.toString(),
+                            key.account.uri.toString(), key.folder.folderUri.fullUri.toString(),
                             unreadCount.toString(), unseenCount.toString()};
                     notificationSet.add(TextUtils.join(NOTIFICATION_PART_SEPARATOR, partValues));
                 }
@@ -291,7 +291,7 @@ public class NotificationUtils {
      *                  upon which an action occurred.
      */
     public static void resendNotifications(Context context, final boolean cancelExisting,
-            final Uri accountUri, final Uri folderUri) {
+            final Uri accountUri, final FolderUri folderUri) {
         LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications ");
 
         if (cancelExisting) {
@@ -311,15 +311,15 @@ public class NotificationUtils {
             // Only resend notifications if the notifications are from the same folder
             // and same account as the undo notification that was previously displayed.
             if (accountUri != null && !Objects.equal(accountUri, notification.account.uri) &&
-                    folderUri != null && !Objects.equal(folderUri, folder.uri)) {
+                    folderUri != null && !Objects.equal(folderUri, folder.folderUri)) {
                 LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - not resending %s / %s"
                         + " because it doesn't match %s / %s",
-                        notification.account.uri, folder.uri, accountUri, folderUri);
+                        notification.account.uri, folder.folderUri, accountUri, folderUri);
                 continue;
             }
 
             LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - resending %s / %s",
-                    notification.account.uri, folder.uri);
+                    notification.account.uri, folder.folderUri);
 
             final NotificationAction undoableAction =
                     NotificationActionUtils.sUndoNotifications.get(notificationId);
@@ -361,8 +361,8 @@ public class NotificationUtils {
                     // If notification is not enabled for this label, remember this NotificationKey
                     // to later cancel the notification, and remove the entry from the map
                     final Folder folder = notification.folder;
-                    final boolean isInbox =
-                            notification.account.settings.defaultInbox.equals(folder.uri);
+                    final boolean isInbox = folder.folderUri.equals(
+                            notification.account.settings.defaultInbox);
                     final FolderPreferences folderPreferences = new FolderPreferences(
                             context, notification.account.name, folder, isInbox);
 
@@ -400,7 +400,7 @@ public class NotificationUtils {
             final boolean getAttention) {
         LogUtils.d(LOG_TAG, "NotificationUtils: setNewEmailIndicator unreadCount = %d, "
             + "unseenCount = %d, account = %s, folder = %s, getAttention = %b", unreadCount,
-            unseenCount, account.name, folder.uri, getAttention);
+            unseenCount, account.name, folder.folderUri, getAttention);
 
         boolean ignoreUnobtrusiveSetting = false;
 
@@ -535,7 +535,7 @@ public class NotificationUtils {
                     new Intent(MailIntentService.ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS);
             cancelNotificationIntent.setPackage(context.getPackageName());
             cancelNotificationIntent.setData(Utils.appendVersionQueryParameter(context,
-                    folder.uri));
+                    folder.folderUri.fullUri));
             cancelNotificationIntent.putExtra(Utils.EXTRA_ACCOUNT, account);
             cancelNotificationIntent.putExtra(Utils.EXTRA_FOLDER, folder);
 
@@ -547,7 +547,7 @@ public class NotificationUtils {
 
             boolean eventInfoConfigured = false;
 
-            final boolean isInbox = account.settings.defaultInbox.equals(folder.uri);
+            final boolean isInbox = folder.folderUri.equals(account.settings.defaultInbox);
             final FolderPreferences folderPreferences =
                     new FolderPreferences(context, account.name, folder, isInbox);
 
@@ -659,15 +659,15 @@ public class NotificationUtils {
         final Intent intent;
 
         if (cursor == null) {
-            intent = Utils.createViewFolderIntent(context, folder.uri, account);
+            intent = Utils.createViewFolderIntent(context, folder.folderUri.fullUri, account);
         } else {
             // A conversation cursor has been specified, so this intent is intended to be go
             // directly to the one new conversation
 
             // Get the Conversation object
             final Conversation conversation = new Conversation(cursor);
-            intent = Utils.createViewConversationIntent(context, conversation, folder.uri,
-                    account);
+            intent = Utils.createViewConversationIntent(context, conversation,
+                    folder.folderUri.fullUri, account);
         }
 
         return intent;
@@ -719,7 +719,7 @@ public class NotificationUtils {
         String notificationTicker = null;
 
         // Boolean indicating that this notification is for a non-inbox label.
-        final boolean isInbox = account.settings.defaultInbox.equals(folder.uri);
+        final boolean isInbox = folder.folderUri.fullUri.equals(account.settings.defaultInbox);
 
         // Notification label name for user label notifications.
         final String notificationLabelName = isInbox ? null : folder.name;
@@ -1376,7 +1376,7 @@ public class NotificationUtils {
     }
 
     public static void markSeen(final Context context, final Folder folder) {
-        final Uri uri = folder.uri;
+        final Uri uri = folder.folderUri.fullUri;
 
         final ContentValues values = new ContentValues(1);
         values.put(UIProvider.ConversationColumns.SEEN, 1);

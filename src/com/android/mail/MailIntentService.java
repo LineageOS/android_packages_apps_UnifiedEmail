@@ -16,6 +16,7 @@
 package com.android.mail;
 
 import android.net.Uri;
+
 import com.android.mail.utils.StorageLowState;
 
 import android.app.IntentService;
@@ -24,6 +25,7 @@ import android.content.Intent;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationUtils;
@@ -71,7 +73,8 @@ public class MailIntentService extends IntentService {
             final Uri accountUri = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT_URI);
             final Uri folderUri = intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
 
-            NotificationUtils.resendNotifications(this, false, accountUri, folderUri);
+            NotificationUtils.resendNotifications(this, false, accountUri,
+                    new FolderUri(folderUri));
         } else if (Intent.ACTION_DEVICE_STORAGE_LOW.equals(action)) {
             // The storage_low state is recorded centrally even though
             // no handler might be present to change application state

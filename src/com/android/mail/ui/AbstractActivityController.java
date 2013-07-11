@@ -99,7 +99,6 @@ import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.Observable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -941,7 +940,7 @@ public abstract class AbstractActivityController implements ActivityController,
         }
         // If the previous folder was null, or if the two folders represent different data, then we
         // consider that the folder has changed.
-        if (mFolder == null || !newFolder.uri.equals(mFolder.uri)) {
+        if (mFolder == null || !newFolder.equals(mFolder)) {
             mFolderChanged = true;
         }
     }
@@ -2285,7 +2284,7 @@ public abstract class AbstractActivityController implements ActivityController,
             } else if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
                 final Folder folder =
                         Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER));
-                folderUri = folder.uri;
+                folderUri = folder.folderUri.fullUri;
             } else {
                 final Bundle extras = intent.getExtras();
                 LogUtils.d(LOG_TAG, "Couldn't find a folder URI in the extras: %s",
@@ -3128,7 +3127,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     (UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
                 && folder.supportsCapability
                     (UIProvider.FolderCapabilities.CAN_HOLD_MAIL)
-                && !mFolder.uri.equals(folder.uri));
+                && !mFolder.equals(folder));
     }
 
     /**
@@ -3187,11 +3186,11 @@ public abstract class AbstractActivityController implements ActivityController,
             for (Conversation target : conversations) {
                 folderUris = new ArrayList<Uri>();
                 adds = new ArrayList<Boolean>();
-                folderUris.add(folder.uri);
+                folderUris.add(folder.folderUri.fullUri);
                 adds.add(Boolean.TRUE);
                 final HashMap<Uri, Folder> targetFolders =
                         Folder.hashMapForFolders(target.getRawFolders());
-                targetFolders.put(folder.uri, folder);
+                targetFolders.put(folder.folderUri.fullUri, folder);
                 ops.add(mConversationListCursor.getConversationFolderOperation(target,
                         folderUris, adds, targetFolders.values()));
             }
@@ -3243,14 +3242,14 @@ public abstract class AbstractActivityController implements ActivityController,
             for (Conversation target : mConversations) {
                 folderUris = new ArrayList<Uri>();
                 adds = new ArrayList<Boolean>();
-                folderUris.add(mStarred.uri);
+                folderUris.add(mStarred.folderUri.fullUri);
                 adds.add(Boolean.TRUE);
-                folderUris.add(mInitialFolder.uri);
+                folderUris.add(mInitialFolder.folderUri.fullUri);
                 adds.add(Boolean.FALSE);
                 final HashMap<Uri, Folder> targetFolders =
                         Folder.hashMapForFolders(target.getRawFolders());
-                targetFolders.put(mStarred.uri, mStarred);
-                targetFolders.remove(mInitialFolder.uri);
+                targetFolders.put(mStarred.folderUri.fullUri, mStarred);
+                targetFolders.remove(mInitialFolder.folderUri.fullUri);
                 values.put(ConversationColumns.STARRED, true);
                 operation = mConversationListCursor.getConversationFolderOperation(target,
                         folderUris, adds, targetFolders.values(), values);
@@ -3374,7 +3373,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     LogUtils.d(LOG_TAG, "LOADER_FOLDER_CURSOR created");
                     final ObjectCursorLoader<Folder> loader = new
                             ObjectCursorLoader<Folder>(
-                            mContext, mFolder.uri, everything, Folder.FACTORY);
+                            mContext, mFolder.folderUri.fullUri, everything, Folder.FACTORY);
                     loader.setUpdateThrottle(mFolderItemUpdateDelayMs);
                     return loader;
                 case LOADER_RECENT_FOLDERS:
@@ -3753,12 +3752,12 @@ public abstract class AbstractActivityController implements ActivityController,
                     target.localDeleteOnUpdate = true;
                 }
                 for (FolderOperation op : mFolderOps) {
-                    folderUris.add(op.mFolder.uri);
+                    folderUris.add(op.mFolder.folderUri.fullUri);
                     adds.add(op.mAdd ? Boolean.TRUE : Boolean.FALSE);
                     if (op.mAdd) {
-                        targetFolders.put(op.mFolder.uri, op.mFolder);
+                        targetFolders.put(op.mFolder.folderUri.fullUri, op.mFolder);
                     } else {
-                        targetFolders.remove(op.mFolder.uri);
+                        targetFolders.remove(op.mFolder.folderUri.fullUri);
                     }
                 }
                 ops.add(mConversationListCursor.getConversationFolderOperation(target,

@@ -220,7 +220,7 @@ public class FolderWatcher {
                 return;
             }
             final Folder f = data.getModel();
-            final Uri uri = f.uri;
+            final Uri uri = f.folderUri.comparisonUri;
             final int unreadCount = f.unreadCount;
             final Folder previousFolder = mInbox.get(uri);
             final boolean unreadCountChanged = previousFolder == null
