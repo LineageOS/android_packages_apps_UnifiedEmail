@@ -56,8 +56,8 @@
     <dimen name="message_details_header_bottom_border_height">1dip</dimen>
     <dimen name="message_details_header_date_margin_right">4dip</dimen>
     <dimen name="message_header_vertical_margin">1dip</dimen>
-    <dimen name="message_details_header_padding_left">24dip</dimen>
-    <dimen name="message_details_header_padding_right">16dip</dimen>
+    <dimen name="message_details_header_padding_start">76dip</dimen>
+    <dimen name="message_details_header_padding_end">16dip</dimen>
     <dimen name="message_header_height">48sp</dimen>
     <dimen name="message_header_presence_top_margin">-4dp</dimen>
     <dimen name="message_header_action_button_width">48dip</dimen>
@@ -67,8 +67,8 @@
     <dimen name="message_header_title_container_margin_end_collapsed">12dp</dimen>
     <dimen name="super_collapsed_height">34sp</dimen>
     <dimen name="notification_view_height">36dip</dimen>
-    <dimen name="contact_photo_width">48sp</dimen>
-    <dimen name="contact_photo_height">48sp</dimen>
+    <dimen name="contact_photo_width">48dp</dimen>
+    <dimen name="contact_photo_height">48dp</dimen>
     <dimen name="message_header_inner_side_padding">12dp</dimen>
     <dimen name="attachment_toast_yoffset">-100dip</dimen>
     <dimen name="spinner_frame_width">196dip</dimen>
