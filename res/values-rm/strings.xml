@@ -283,6 +283,8 @@
     <skip />
     <!-- no translation found for subject_and_snippet (7884124651812798896) -->
     <skip />
+    <!-- no translation found for ap_overflow_format (2285438422049030145) -->
+    <skip />
     <!-- no translation found for draft:one (333591132893648383) -->
     <!-- no translation found for draft:other (6961049507579977505) -->
     <!-- no translation found for sending (8214361929125649771) -->
@@ -379,8 +381,7 @@
     <skip />
     <!-- no translation found for contact_info_string_default (596531738469809159) -->
     <skip />
-    <!-- no translation found for show_messages_read (9132147830566909631) -->
-    <skip />
+    <!-- no translation found for show_messages_read:other (7344988174650303930) -->
     <!-- no translation found for date_heading (2414358582984879303) -->
     <skip />
     <!-- no translation found for from_heading (8950294114718418954) -->
