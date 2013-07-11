@@ -34,7 +34,6 @@ import android.webkit.WebView;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AbstractConversationWebViewClient;
 import com.android.mail.ui.ContactLoaderCallbacks;
 import com.android.mail.ui.SecureConversationViewController;
@@ -259,7 +258,8 @@ public class EmlMessageViewFragment extends Fragment
             switch (id) {
                 case FILENAME_LOADER:
                     return new CursorLoader(getActivity(), mEmlFileUri,
-                            UIProvider.ATTACHMENT_PROJECTION, null, null, null);
+                            new String[] { OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE },
+                            null, null, null);
                 default:
                     return null;
             }
