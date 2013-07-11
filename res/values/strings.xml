@@ -523,6 +523,13 @@
     <plurals name="show_messages_read">
         <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
     </plurals>
+
+    <!-- Shown in HTML to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="to_heading">To:</string>
+    <!-- Shown in HTML to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="cc_heading">Cc:</string>
+    <!-- Shown in HTML to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="bcc_heading">Bcc:</string>
     <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
     <string name="from_details">From: <xliff:g id="display_address" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
     <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
