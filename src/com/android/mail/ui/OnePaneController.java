@@ -21,7 +21,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
@@ -407,6 +409,33 @@ public final class OnePaneController extends AbstractActivityController {
         // onFolderSelected(current.parent);
     }
 
+    private void navigateUp() {
+        new AsyncTask<Void, Void, Folder>() {
+            @Override
+            protected Folder doInBackground(final Void... params) {
+                final Folder folder;
+
+                final Cursor cursor = mContext.getContentResolver().query(mFolder.parent,
+                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+
+                if (cursor == null) {
+                    folder = mInbox;
+                } else {
+                    cursor.moveToFirst();
+                    folder = new Folder(cursor);
+                    cursor.close();
+                }
+
+                return folder;
+            }
+
+            @Override
+            protected void onPostExecute(final Folder result) {
+                onFolderSelected(result);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
+    }
+
     /**
      * Switch to the Inbox by creating a new conversation list context that loads the inbox.
      */
@@ -447,8 +476,15 @@ public final class OnePaneController extends AbstractActivityController {
         }
         if (mode == ViewMode.CONVERSATION_LIST
                 || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
-            // Up affordance: show the drawer.
-            toggleFolderListState();
+            final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
+
+            if (isTopLevel) {
+                // Show the drawer.
+                toggleFolderListState();
+            } else {
+                navigateUp();
+            }
+
             return true;
         }
         if (mode == ViewMode.CONVERSATION
