@@ -346,7 +346,7 @@
     <!-- Displayed in Conversation Header View and Widget in the form of "subject - snippet"
          [CHAR LIMIT=5] -->
     <string name="subject_and_snippet"><xliff:g>%s</xliff:g> \u2014 <xliff:g>%s</xliff:g></string>
-    <!-- Displayed in attachment previews in conversation list [CHAR LIMIT=1] -->
+    <!-- Displayed in attachment previews in conversation list [CHAR LIMIT=2] -->
     <string name="ap_overflow_format">+<xliff:g>%d</xliff:g></string>
     <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
     <plurals name="draft">
