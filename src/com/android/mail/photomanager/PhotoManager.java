@@ -47,6 +47,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Asynchronously loads photos and maintains a cache of photos
  */
 public abstract class PhotoManager implements ComponentCallbacks2, Callback {
+    public static final int STATUS_NOT_LOADED = 0;
+    public static final int STATUS_LOADING = 1;
+    public static final int STATUS_LOADED = 2;
     /**
      * Get the default image provider that draws while the photo is being
      * loaded.
@@ -64,12 +67,20 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     protected abstract PhotoLoaderThread getLoaderThread(ContentResolver contentResolver);
 
     /**
-     * Subclasses can implement this method to alert callbacks of the images' loading progress.
+     * Subclasses can implement this method to alert callbacks that images finished loading.
      * @param request The original request made.
      * @param success True if we successfully loaded the image from cache. False if we fell back
      *                to the default image.
      */
-    protected void onImageDrawn(Request request, boolean success) {
+    protected void onImageDrawn(final Request request, final boolean success) {
+        // Subclasses can choose to do something about this
+    }
+
+    /**
+     * Subclasses can implement this method to alert callbacks that images started loading.
+     * @param request The original request made.
+     */
+    protected void onImageLoadStarted(final Request request) {
         // Subclasses can choose to do something about this
     }
 
@@ -107,6 +118,11 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * been loaded.
      */
     private static final int MESSAGE_PHOTOS_LOADED = 2;
+
+    /**
+     * Type of message sent by the loader thread to indicate that
+     */
+    private static final int MESSAGE_PHOTO_LOADING = 3;
 
     public interface DefaultImageProvider {
         /**
@@ -154,6 +170,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         }
     }
 
+    // todo:ath caches should be member vars
     /**
      * An LRU cache for bitmap holders. The cache contains bytes for photos just
      * as they come from the database. Each holder has a soft reference to the
@@ -326,13 +343,14 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     /**
      * Checks if the photo is present in cache.  If so, sets the photo on the view.
      *
-     * @param request Determines which image to load from cache.
+     * @param request                   Determines which image to load from cache.
      * @param afterLoaderThreadFinished Pass true if calling after the LoaderThread has run. Pass
      *                                  false if the Loader Thread hasn't made any attempts to
      *                                  load images yet.
      * @return false if the photo needs to be (re)loaded from the provider.
      */
-    private boolean loadCachedPhoto(Request request, boolean afterLoaderThreadFinished) {
+    private boolean loadCachedPhoto(final Request request,
+            final boolean afterLoaderThreadFinished) {
         Utils.traceBeginSection("Load cached photo");
         final Bitmap cached = getCachedPhoto(request.bitmapKey);
         if (cached != null) {
@@ -345,8 +363,8 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                         Thread.currentThread());
             }
             if (request.getView().getGeneration() == request.viewGeneration) {
-                onImageDrawn(request, true);
                 request.getView().drawImage(cached, request.getKey());
+                onImageDrawn(request, true);
             }
             Utils.traceEndSection();
             return true;
@@ -369,8 +387,8 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                             Thread.currentThread());
                 }
                 if (request.getView().getGeneration() == request.viewGeneration) {
-                    onImageDrawn(request, true);
                     request.getView().drawImage(cachedReplacement, request.getKey());
+                    onImageDrawn(request, true);
                 }
                 Utils.traceEndSection();
                 return false;
@@ -405,6 +423,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * Temporarily stops loading photos from the database.
      */
     public void pause() {
+        LogUtils.d(TAG, "%s paused.", getClass().getName());
         mPaused = true;
     }
 
@@ -412,6 +431,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * Resumes loading photos from the database.
      */
     public void resume() {
+        LogUtils.d(TAG, "%s resumed.", getClass().getName());
         mPaused = false;
         if (DEBUG) dumpStats();
         if (!mPendingRequests.isEmpty()) {
@@ -436,7 +456,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      * Processes requests on the main thread.
      */
     @Override
-    public boolean handleMessage(Message msg) {
+    public boolean handleMessage(final Message msg) {
         switch (msg.what) {
             case MESSAGE_REQUEST_LOADING: {
                 mLoadingRequested = false;
@@ -454,6 +474,15 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                 if (DEBUG) dumpStats();
                 return true;
             }
+
+            case MESSAGE_PHOTO_LOADING: {
+                if (!mPaused) {
+                    final int hashcode = msg.arg1;
+                    final Request request = mPendingRequests.get(hashcode);
+                    onImageLoadStarted(request);
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -468,16 +497,16 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         for (Integer hash : mPendingRequests.keySet()) {
             Request request = mPendingRequests.get(hash);
             boolean loaded = loadCachedPhoto(request, true);
-            if (loaded) {
+            // Request can go through multiple attempts if the LoaderThread fails to load any
+            // images for it, or if the images it loads are evicted from the cache before we
+            // could access them in the main thread.
+            if (loaded || request.attempts > 2) {
                 toRemove.add(hash);
             }
         }
         for (Integer key : toRemove) {
             mPendingRequests.remove(key);
         }
-
-        // TODO: this already seems to happen when calling loadCachedPhoto
-        //softenCache();
 
         if (!mPendingRequests.isEmpty()) {
             LogUtils.d(TAG, "Finished loading batch. %d still have to be loaded.",
@@ -695,6 +724,11 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                     loadRequests.add(request);
                     decodeRequests.add(request);
                     batchCount++;
+
+                    final Message msg = Message.obtain();
+                    msg.what = MESSAGE_PHOTO_LOADING;
+                    msg.arg1 = request.hashCode();
+                    mMainThreadHandler.sendMessage(msg);
                 } else {
                     // Even if the image load is already done, this particular decode configuration
                     // may not yet have run. Be sure to add it to the queue.
@@ -702,6 +736,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                         decodeRequests.add(request);
                     }
                 }
+                request.attempts++;
                 if (maxBatchCount > 0 && batchCount >= maxBatchCount) {
                     break;
                 }
@@ -869,6 +904,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         private final ImageCanvas mView;
         public final BitmapIdentifier bitmapKey;
         public final int viewGeneration;
+        public int attempts;
 
         private Request(PhotoIdentifier photoIdentifier, DefaultImageProvider defaultProvider,
                 ImageCanvas view, ImageCanvas.Dimensions dimensions) {
@@ -953,6 +989,10 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
 
         @Override
         public int compareTo(Request another) {
+            // Hold off on loading Requests which have failed before so it don't hold up others
+            if (attempts - another.attempts != 0) {
+                return attempts - another.attempts;
+            }
             return mPhotoIdentifier.compareTo(another.mPhotoIdentifier);
         }
     }

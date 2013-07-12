@@ -127,9 +127,7 @@
     <dimen name="attachment_preview_margin_bottom">4dp</dimen>
     <dimen name="attachment_preview_margin_bottom_wide">8dp</dimen>
 
-    <!--todo:markwei get the diameter from channah-->
     <dimen name="ap_overflow_count_diameter">20dp</dimen>
-    <!--todo:markwei channah wanted 8dp but only 4dp fits read previews-->
     <dimen name="ap_margin_side">4dp</dimen>
 
     <dimen name="folder_minimum_width">48dip</dimen>
