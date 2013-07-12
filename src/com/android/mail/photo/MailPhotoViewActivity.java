@@ -63,19 +63,40 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
     /**
      * Start a new MailPhotoViewActivity to view the given images.
+     *
      * @param imageListUri The uri to query for the images that you want to view. The resulting
      *                     cursor must have the columns as defined in
-     *                     {@link com.android.ex.photo.provider.PhotoContract.PhotoViewColumns}
-     * @param photoIndex The index of the photo to show first
+     *                     {@link com.android.ex.photo.provider.PhotoContract.PhotoViewColumns}.
+     * @param photoIndex The index of the photo to show first.
      */
-    public static void startMailPhotoViewActivity(Context context, Uri imageListUri,
-            int photoIndex) {
+    public static void startMailPhotoViewActivity(final Context context, final Uri imageListUri,
+            final int photoIndex) {
         final Intents.PhotoViewIntentBuilder builder =
                 Intents.newPhotoViewIntentBuilder(context, MailPhotoViewActivity.class);
         builder
                 .setPhotosUri(imageListUri.toString())
                 .setProjection(UIProvider.ATTACHMENT_PROJECTION)
                 .setPhotoIndex(photoIndex);
+
+        context.startActivity(builder.build());
+    }
+
+    /**
+     * Start a new MailPhotoViewActivity to view the given images.
+     *
+     * @param imageListUri The uri to query for the images that you want to view. The resulting
+     *                     cursor must have the columns as defined in
+     *                     {@link com.android.ex.photo.provider.PhotoContract.PhotoViewColumns}.
+     * @param initialPhotoUri The uri of the photo to show first.
+     */
+    public static void startMailPhotoViewActivity(final Context context, final Uri imageListUri,
+            final String initialPhotoUri) {
+        final Intents.PhotoViewIntentBuilder builder =
+                Intents.newPhotoViewIntentBuilder(context, MailPhotoViewActivity.class);
+        builder
+                .setPhotosUri(imageListUri.toString())
+                .setProjection(UIProvider.ATTACHMENT_PROJECTION)
+                .setInitialPhotoUri(initialPhotoUri);
 
         context.startActivity(builder.build());
     }
