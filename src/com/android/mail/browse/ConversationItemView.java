@@ -1771,14 +1771,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
     }
 
-    public void viewAttachmentPreview(int index) {
-        Uri imageListUri = mHeader.conversation.attachmentPreviewsListUri;
+    public void viewAttachmentPreview(final int index) {
+        final String attachmentUri = mHeader.conversation.getAttachmentPreviewUris().get(index);
+        final Uri imageListUri = mHeader.conversation.attachmentPreviewsListUri;
         LogUtils.d(LOG_TAG,
                 "ConversationItemView: tapped on attachment preview %d, "
                         + "opening photoviewer for image list uri %s",
                 index, imageListUri);
         MailPhotoViewActivity
-                .startMailPhotoViewActivity(mActivity.getActivityContext(), imageListUri, index);
+                .startMailPhotoViewActivity(mActivity.getActivityContext(), imageListUri,
+                        attachmentUri);
     }
 
     private boolean isTouchInContactPhoto(float x, float y) {
@@ -1799,6 +1801,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     /**
      * If the touch is in the attachment previews, return the index of the attachment under that
      * point (for multiple previews). Return -1 if the touch is outside of the previews.
+     *
+     * @return The index corresponding to where the attachment appears on the screen. This index
+     * may not be the same as the attachment's actual index in the message.
      */
     private int getAttachmentPreviewsIndexForTouch(float x, float y) {
         if (!isAttachmentPreviewsEnabled()) {
