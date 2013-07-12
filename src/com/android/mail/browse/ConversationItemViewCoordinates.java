@@ -250,6 +250,10 @@ public class ConversationItemViewCoordinates {
     final float overflowFontSize;
     final Typeface overflowTypeface;
 
+    // Attachment previews placeholder
+    final int placeholderY;
+    final int placeholderWidth;
+    final int placeholderHeight;
     // Attachment previews progress bar
     final int progressBarY;
     final int progressBarWidth;
@@ -483,6 +487,12 @@ public class ConversationItemViewCoordinates {
             overflowFontSize = overflow.getTextSize();
             overflowTypeface = overflow.getTypeface();
 
+            final View placeholder = view.findViewById(id.ap_placeholder);
+            placeholderWidth = placeholder.getWidth();
+            placeholderHeight = placeholder.getHeight();
+            placeholderY = attachmentPreviewsY + attachmentPreviewsHeight / 2
+                    - placeholderHeight / 2;
+
             final View progressBar = view.findViewById(id.ap_progress_bar);
             progressBarWidth = progressBar.getWidth();
             progressBarHeight = progressBar.getHeight();
@@ -498,6 +508,9 @@ public class ConversationItemViewCoordinates {
             overflowDiameter = 0;
             overflowFontSize = 0;
             overflowTypeface = null;
+            placeholderY = 0;
+            placeholderWidth = 0;
+            placeholderHeight = 0;
             progressBarY = 0;
             progressBarWidth = 0;
             progressBarHeight = 0;

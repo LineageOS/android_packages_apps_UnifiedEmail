@@ -36,6 +36,7 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -57,8 +58,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -75,6 +79,7 @@ import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreview
 import com.android.mail.photomanager.ContactPhotoManager;
 import com.android.mail.photomanager.ContactPhotoManager.ContactIdentifier;
 import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreviewIdentifier;
+import com.android.mail.photomanager.PhotoManager;
 import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
@@ -135,7 +140,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static Bitmap STATE_CALENDAR_INVITE;
     private static Bitmap VISIBLE_CONVERSATION_CARET;
     private static Drawable RIGHT_EDGE_TABLET;
-    private static Bitmap PROGRESS_BAR;
+    private static Bitmap PLACEHOLDER;
+    private static Drawable PROGRESS_BAR;
 
     private static String sSendersSplitToken;
     private static String sElidedPaddingToken;
@@ -155,8 +161,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sShrinkAnimationDuration;
     private static int sSlideAnimationDuration;
     private static int sAnimatingBackgroundColor;
-    // todo:markwei get duration from channah
     private static int sProgressAnimationDuration;
+    private static float sPlaceholderAnimationDurationRatio;
+    private static int sProgressAnimationDelay;
+    private static Interpolator sPulseAnimationInterpolator;
     private static int sOverflowCountMax;
 
     // Static paints.
@@ -228,8 +236,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
      * this animator does not remove the progress bars.
      */
     private final ObjectAnimator mProgressAnimator;
+    private long mProgressAnimatorCancelledTime;
+    /** Range from 0.0f to 1.0f. */
     private float mAnimatedProgressFraction;
-    private boolean[] mImagesLoaded = new boolean[0];
+    private int[] mImagesLoaded = new int[0];
+    private boolean mShowProgressBar;
+    private Runnable mSetShowProgressBarRunnable;
     private static final boolean CONVLIST_ATTACHMENT_PREVIEWS_ENABLED = true;
 
     static {
@@ -237,17 +249,23 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         sFoldersPaint.setAntiAlias(true);
     }
 
-    public static void setPhotoManagersPaused(boolean shouldPause) {
+    public static void setScrollStateChanged(final int scrollState) {
         if (sContactPhotoManager == null) {
             return;
         }
+        final boolean scrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
+        final boolean flinging = scrollState == OnScrollListener.SCROLL_STATE_FLING;
 
-        if (shouldPause) {
-            sContactPhotoManager.pause();
+        if (scrolling) {
             sAttachmentPreviewsManager.pause();
         } else {
-            sContactPhotoManager.resume();
             sAttachmentPreviewsManager.resume();
+        }
+
+        if (flinging) {
+            sContactPhotoManager.pause();
+        } else {
+            sContactPhotoManager.resume();
         }
     }
 
@@ -429,8 +447,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             VISIBLE_CONVERSATION_CARET = BitmapFactory.decodeResource(res,
                     R.drawable.ic_carrot_holo);
             RIGHT_EDGE_TABLET = res.getDrawable(R.drawable.list_edge_tablet);
-//            todo:markwei get actual spinner asset from channah
-            PROGRESS_BAR = BitmapFactory.decodeResource(res, drawable.spinner_holo);
+            PLACEHOLDER = BitmapFactory.decodeResource(res, drawable.ic_attachment_load);
+            PROGRESS_BAR = res.getDrawable(drawable.progress_holo);
 
             // Initialize colors.
             sActivatedTextColor = res.getColor(R.color.senders_text_color_read);
@@ -462,8 +480,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sFoldersLeftPadding = res.getDimensionPixelOffset(R.dimen.folders_left_padding);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
             sAttachmentPreviewsManager = new AttachmentPreviewsManager(context);
-            // todo:markwei get animation duration from channah
-            sProgressAnimationDuration = 1000;
+            sProgressAnimationDuration = res.getInteger(integer.ap_progress_animation_duration);
+            final int placeholderAnimationDuration = res
+                    .getInteger(integer.ap_placeholder_animation_duration);
+            sPlaceholderAnimationDurationRatio = sProgressAnimationDuration
+                    / placeholderAnimationDuration;
+            sProgressAnimationDelay = res.getInteger(integer.ap_progress_animation_delay);
+            sPulseAnimationInterpolator = new AccelerateDecelerateInterpolator();
             sOverflowCountMax = res.getInteger(integer.ap_overflow_max_count);
         }
 
@@ -503,6 +526,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 });
 
         mProgressAnimator = createProgressAnimator();
+        mSetShowProgressBarRunnable = new Runnable() {
+            @Override
+            public void run() {
+                LogUtils.v(LOG_TAG, "progress bar: >>> set to true");
+                // It's OK to set this field to true when the status is no longer LOADING.
+                mShowProgressBar = true;
+            }
+        };
         Utils.traceEndSection();
     }
 
@@ -518,6 +549,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void bind(ConversationItemViewModel header, ControllableActivity activity,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
+        boolean attachmentPreviewsChanged = false;
         if (mHeader != null) {
             // If this was previously bound to a different conversation, remove any contact photo
             // manager requests.
@@ -541,6 +573,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                             != mHeader.conversation.attachmentPreviewsCount
                     || !header.conversation.getAttachmentPreviewUris()
                             .equals(mHeader.conversation.getAttachmentPreviewUris())) {
+                attachmentPreviewsChanged = true;
                 ArrayList<String> divisionIds = mAttachmentPreviewsCanvas.getDivisionIds();
                 if (divisionIds != null) {
                     mAttachmentPreviewsCanvas.reset();
@@ -565,7 +598,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
         mAdapter = adapter;
-        mImagesLoaded = new boolean[mHeader.conversation.getAttachmentPreviewUris().size()];
+        final int attachmentPreviewsSize = mHeader.conversation.getAttachmentPreviewUris().size();
+        if (attachmentPreviewsChanged || mImagesLoaded.length != attachmentPreviewsSize) {
+            mImagesLoaded = new int[attachmentPreviewsSize];
+        }
 
         if (checkboxOrSenderImage == ConversationListIcon.SENDER_IMAGE) {
             mGadgetMode = ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO;
@@ -878,8 +914,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         Utils.traceBeginSection("Setup load attachment previews");
 
         LogUtils.d(LOG_TAG,
-                "loadAttachmentPreviews: ###############################################");
-        LogUtils.d(LOG_TAG,
                 "loadAttachmentPreviews: Loading attachment previews for conversation %s",
                 mHeader.conversation);
 
@@ -897,7 +931,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             final String uri = attachmentUris.get(i);
 
             // Find the rendition to load based on availability.
-            LogUtils.d(LOG_TAG, "loadAttachmentPreviews: state [BEST, SIMPLE] is [%s, %s] for %s ",
+            LogUtils.v(LOG_TAG, "loadAttachmentPreviews: state [BEST, SIMPLE] is [%s, %s] for %s ",
                     Attachment.getPreviewState(previewStates, i, AttachmentRendition.BEST),
                     Attachment.getPreviewState(previewStates, i, AttachmentRendition.SIMPLE),
                     uri);
@@ -927,57 +961,130 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         // Second pass: Find the dimensions to load and start the load request
         final ImageCanvas.Dimensions canvasDimens = new ImageCanvas.Dimensions();
         for (int i = 0; i < displayCount; i++) {
+            Utils.traceBeginSection("finding dimensions");
             final PhotoIdentifier photoIdentifier = ids.get(i);
             final Object key = keys.get(i);
             mAttachmentPreviewsCanvas.getDesiredDimensions(key, canvasDimens);
-            if (i < mImagesLoaded.length) {
-                // We want to show default progress image
-                mImagesLoaded[i] = false;
-                if (!mProgressAnimator.isStarted()) {
-                    LogUtils.d(LOG_TAG, "progress animator: >> started");
-                    mProgressAnimator.setCurrentPlayTime(
-                            (long) (sProgressAnimationDuration * mAnimatedProgressFraction));
-                    mProgressAnimator.start();
+            Utils.traceEndSection();
+
+            Utils.traceBeginSection("start animator");
+            // We want to show default progress image
+            setImageLoaded(i, PhotoManager.STATUS_NOT_LOADED);
+            if (!mProgressAnimator.isStarted()) {
+                LogUtils.v(LOG_TAG, "progress animator: >> started");
+                // Reduce progress bar stutter caused by reset()/bind() being called multiple
+                // times.
+                final long time = SystemClock.uptimeMillis();
+                final long dt = time - mProgressAnimatorCancelledTime;
+                float passedFraction = 0;
+                if (mProgressAnimatorCancelledTime != 0 && dt > 0) {
+                    mProgressAnimatorCancelledTime = 0;
+                    passedFraction = (float) dt / sProgressAnimationDuration % 1.0f;
+                    LogUtils.v(LOG_TAG, "progress animator: correction for dt %d, fraction %f",
+                            dt, passedFraction);
                 }
+                mProgressAnimator.start();
+                // Wow.. this must be called after start().
+                mProgressAnimator.setCurrentPlayTime((long) (sProgressAnimationDuration * (
+                        (mAnimatedProgressFraction + passedFraction) % 1.0f)));
             }
+            Utils.traceEndSection();
+
+            Utils.traceBeginSection("start load");
             LogUtils.d(LOG_TAG, "loadAttachmentPreviews: start loading %s", photoIdentifier);
             sAttachmentPreviewsManager
                     .loadThumbnail(photoIdentifier, mAttachmentPreviewsCanvas, canvasDimens, this);
+            Utils.traceEndSection();
         }
+
         Utils.traceEndSection();
     }
 
     @Override
-    public void onImageDrawn(Object key, boolean success) {
-        Utils.traceBeginSection("on image drawn");
-        String uri = AttachmentPreviewsManager.transformKeyToUri(key);
-        int index = mHeader.conversation.getAttachmentPreviewUris().indexOf(uri);
-
-        if (index < 0 || index >= mImagesLoaded.length) {
-            Utils.traceEndSection();
+    public void onImageDrawn(final Object key, final boolean success) {
+        if (mHeader == null || mHeader.conversation == null) {
             return;
         }
+        Utils.traceBeginSection("on image drawn");
+        final String uri = AttachmentPreviewsManager.transformKeyToUri(key);
+        final int index = mHeader.conversation.getAttachmentPreviewUris().indexOf(uri);
 
-        LogUtils.d(LOG_TAG,
+        LogUtils.v(LOG_TAG,
                 "loadAttachmentPreviews: <= onImageDrawn callback [%b] on index %d for %s", success,
                 index, key);
         // We want to hide the spinning progress bar when we draw something.
-        mImagesLoaded[index] = success;
+        setImageLoaded(index,
+                success ? PhotoManager.STATUS_LOADED : PhotoManager.STATUS_NOT_LOADED);
 
         if (mProgressAnimator.isStarted() && areAllImagesLoaded()) {
-            LogUtils.d(LOG_TAG, "progress animator: << stopped");
+            LogUtils.v(LOG_TAG, "progress animator: << stopped");
             mProgressAnimator.cancel();
         }
         Utils.traceEndSection();
     }
 
+    @Override
+    public void onImageLoadStarted(final Object key) {
+        if (mHeader == null || mHeader.conversation == null) {
+            return;
+        }
+        final String uri = AttachmentPreviewsManager.transformKeyToUri(key);
+        final int index = mHeader.conversation.getAttachmentPreviewUris().indexOf(uri);
+
+        LogUtils.v(LOG_TAG,
+                "loadAttachmentPreviews: <= onImageLoadStarted callback on index %d for %s", index,
+                key);
+        setImageLoaded(index, PhotoManager.STATUS_LOADING);
+    }
+
     private boolean areAllImagesLoaded() {
         for (int i = 0; i < mImagesLoaded.length; i++) {
-            if (!mImagesLoaded[i]) {
+            if (mImagesLoaded[i] != PhotoManager.STATUS_LOADED) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Update the #mImagesLoaded state array with special logic.
+     * @param index Which attachment preview's state to update.
+     * @param status What the new state is.
+     */
+    private void setImageLoaded(final int index, final int status) {
+        if (index < 0 || index >= mImagesLoaded.length) {
+            return;
+        }
+        final int prevStatus = mImagesLoaded[index];
+        switch (status) {
+            case PhotoManager.STATUS_NOT_LOADED:
+                // Cannot transition directly from LOADING to NOT_LOADED.
+                if (prevStatus != PhotoManager.STATUS_LOADING) {
+                    mImagesLoaded[index] = status;
+                }
+                break;
+            case PhotoManager.STATUS_LOADING:
+                // All other statuses must be set to not loading.
+                for (int i = 0; i < mImagesLoaded.length; i++) {
+                    if (i != index && mImagesLoaded[i] == PhotoManager.STATUS_LOADING) {
+                        mImagesLoaded[i] = PhotoManager.STATUS_NOT_LOADED;
+                    }
+                }
+                mImagesLoaded[index] = status;
+
+                if (prevStatus != PhotoManager.STATUS_LOADING) {
+                    // Progress bar should only be shown after a delay
+                    LogUtils.v(LOG_TAG, "progress bar: <<< set to false");
+                    mShowProgressBar = false;
+                    LogUtils.v(LOG_TAG, "progress bar: === start delay");
+                    removeCallbacks(mSetShowProgressBarRunnable);
+                    postDelayed(mSetShowProgressBarRunnable, sProgressAnimationDelay);
+                }
+                break;
+            case PhotoManager.STATUS_LOADED:
+                mImagesLoaded[index] = status;
+                break;
+        }
     }
 
     private static int makeExactSpecForSize(int size) {
@@ -1421,8 +1528,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
             // Overflow badge and count
             if (getOverflowCountVisible() && areAllImagesLoaded()) {
-                float radius = mCoordinates.overflowDiameter / 2;
-                // todo:markwei get color of overflow badge from channah
+                final float radius = mCoordinates.overflowDiameter / 2;
                 sPaint.setColor(sOverflowBadgeColor);
                 canvas.drawCircle(mCoordinates.overflowXEnd - radius,
                         mCoordinates.overflowYEnd - radius, radius, sPaint);
@@ -1435,12 +1541,35 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
             // Progress bar
             if (mProgressAnimator.isRunning()) {
+                // Fade from 55 -> 255 -> 55. Each cycle lasts for #sProgressAnimationDuration secs.
+                final int maxAlpha = 255, minAlpha = 55;
+                final int range = maxAlpha - minAlpha;
+                // We want the placeholder to pulse at a different rate from the progressbar to
+                // spin.
+                final float placeholderAnimFraction = mAnimatedProgressFraction
+                        * sPlaceholderAnimationDurationRatio;
+                // During the time that placeholderAnimFraction takes to go from 0 to 1, we
+                // want to go all the way to #maxAlpha and back down to #minAlpha. So from 0 to 0.5,
+                // we increase #modifiedProgress from 0 to 1, while from 0.5 to 1 we decrease
+                // accordingly from 1 to 0. Math.
+                final float modifiedProgress = -2 * Math.abs(placeholderAnimFraction - 0.5f) + 1;
+                // Make it feel like a heart beat.
+                final float interpolatedProgress = sPulseAnimationInterpolator
+                        .getInterpolation(modifiedProgress);
+                // More math.
+                final int alpha = (int) (interpolatedProgress * range + minAlpha);
+                sPaint.setAlpha(alpha);
+
                 final int count = mImagesLoaded.length;
                 for (int i = 0; i < count; i++) {
-                    if (!mImagesLoaded[i]) {
+                    if (mShowProgressBar && mImagesLoaded[i] == PhotoManager.STATUS_LOADING) {
+                        // status is LOADING and enough time has passed
                         canvas.save();
                         drawProgressBar(canvas, i, count);
                         canvas.restore();
+                    } else if (mImagesLoaded[i] != PhotoManager.STATUS_LOADED) {
+                        // status is either NOT_LOADED or LOADING
+                        drawPlaceholder(canvas, i, count);
                     }
                 }
             }
@@ -1484,6 +1613,21 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     /**
+     * Draws the specified placeholder on the canvas.
+     * @param canvas The canvas to draw on.
+     * @param index If drawing multiple progress bars, this determines which one we are drawing.
+     * @param total Whether we are drawing multiple progress bars.
+     */
+    private void drawPlaceholder(Canvas canvas, int index, int total) {
+        int placeholderX = getPlaceholderX(index, total);
+        if (placeholderX == -1) {
+            return;
+        }
+
+        canvas.drawBitmap(PLACEHOLDER, placeholderX, mCoordinates.placeholderY, sPaint);
+    }
+
+    /**
      * Draws the specified progress bar on the canvas.
      * @param canvas The canvas to draw on.
      * @param index If drawing multiple progress bars, this determines which one we are drawing.
@@ -1495,18 +1639,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             return;
         }
 
-        // We want to rotate counter-clockwise, because that's the direction the asset faces
-        canvas.rotate(360 - mAnimatedProgressFraction * 360,
-                progressBarX + mCoordinates.progressBarWidth / 2,
-                mCoordinates.progressBarY + mCoordinates.progressBarHeight / 2);
-
-        canvas.drawBitmap(PROGRESS_BAR, progressBarX, mCoordinates.progressBarY, null);
+        // Set the level from 0 to 10000 to animate the Drawable.
+        PROGRESS_BAR.setLevel((int) (mAnimatedProgressFraction * 10000));
+        // canvas.translate() for Bitmaps, setBounds() for Drawables.
+        PROGRESS_BAR.setBounds(progressBarX, mCoordinates.progressBarY,
+                progressBarX + mCoordinates.progressBarWidth,
+                mCoordinates.progressBarY + mCoordinates.progressBarHeight);
+        PROGRESS_BAR.draw(canvas);
     }
 
     /**
      * @see com.android.mail.browse.ConversationItemView#drawProgressBar
      */
-    private void invalidateProgressBar(int index, int total) {
+    private void invalidatePlaceholderAndProgressBar(int index, int total) {
         int progressBarX = getProgressBarX(index, total);
         if (progressBarX == -1) {
             return;
@@ -1515,6 +1660,25 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         invalidate(progressBarX, mCoordinates.progressBarY,
                 progressBarX + mCoordinates.progressBarWidth,
                 mCoordinates.progressBarY + mCoordinates.progressBarHeight);
+
+        int placeholderX = getPlaceholderX(index, total);
+        if (placeholderX == -1) {
+            return;
+        }
+
+        invalidate(placeholderX, mCoordinates.placeholderY,
+                placeholderX + mCoordinates.placeholderWidth,
+                mCoordinates.placeholderY + mCoordinates.placeholderHeight);
+    }
+
+    private int getPlaceholderX(int index, int total) {
+        if (mCoordinates == null) {
+            return -1;
+        }
+        int sectionWidth = mCoordinates.attachmentPreviewsWidth / total;
+        int sectionOffset = index * sectionWidth;
+        return mCoordinates.attachmentPreviewsX + sectionOffset + sectionWidth / 2
+                - mCoordinates.placeholderWidth / 2;
     }
 
     private int getProgressBarX(int index, int total) {
@@ -1800,9 +1964,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         setAlpha(1f);
         setTranslationX(0f);
         mAnimatedHeightFraction = 1.0f;
-        LogUtils.d(LOG_TAG, "progress animator: cancelling after %dms", sProgressAnimationDuration);
         if (mProgressAnimator.isStarted()) {
-            LogUtils.d(LOG_TAG, "progress animator: << stopped");
+            LogUtils.v(LOG_TAG, "progress animator: << stopped");
             mProgressAnimator.cancel();
         }
         Utils.traceEndSection();
@@ -1899,26 +2062,28 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private ObjectAnimator createProgressAnimator() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(this, "animatedProgressFraction", 0f, 1.0f)
-                .setDuration(sProgressAnimationDuration);
+        final ObjectAnimator animator = ObjectAnimator
+                .ofFloat(this, "animatedProgressFraction", 0f, 1.0f).setDuration(
+                        sProgressAnimationDuration);
         animator.setInterpolator(new LinearInterpolator());
         animator.setRepeatCount(ObjectAnimator.INFINITE);
         animator.setRepeatMode(ObjectAnimator.RESTART);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 invalidateAll();
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
+            public void onAnimationCancel(final Animator animation) {
                 invalidateAll();
+                mProgressAnimatorCancelledTime = SystemClock.uptimeMillis();
             }
 
             private void invalidateAll() {
-                int count = mHeader.conversation.getAttachmentPreviewUris().size();
+                final int count = mHeader.conversation.getAttachmentPreviewUris().size();
                 for (int i = 0; i < count; i++) {
-                    invalidateProgressBar(i, count);
+                    invalidatePlaceholderAndProgressBar(i, count);
                 }
             }
         });
@@ -1926,12 +2091,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     // Used by animator
-    public void setAnimatedProgressFraction(float fraction) {
+    public void setAnimatedProgressFraction(final float fraction) {
+        // ObjectAnimator.cancel() sets the field to 0.0f.
+        if (fraction == 0.0f) {
+            return;
+        }
         mAnimatedProgressFraction = fraction;
         final int count = mImagesLoaded.length;
         for (int i = 0; i < count; i++) {
-            if (!mImagesLoaded[i]) {
-                invalidateProgressBar(i, count);
+            if (mImagesLoaded[i] != PhotoManager.STATUS_LOADED) {
+                invalidatePlaceholderAndProgressBar(i, count);
             }
         }
     }

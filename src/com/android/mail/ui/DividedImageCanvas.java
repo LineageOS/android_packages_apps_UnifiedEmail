@@ -157,6 +157,7 @@ public class DividedImageCanvas implements ImageCanvas {
             // l t r b
             sSrc.set(0, srcTop, b.getWidth(), srcBottom);
             sDest.set(left, top, right, bottom);
+            mCanvas.drawRect(sDest, sClearPaint);
             mCanvas.drawBitmap(b, sSrc, sDest, sPaint);
         } else {
             // clear
@@ -372,8 +373,6 @@ public class DividedImageCanvas implements ImageCanvas {
      * Draw the contents of the DividedImageCanvas to the supplied canvas.
      */
     public void draw(Canvas canvas) {
-        // todo:markwei we can see the old image behind transparency regions. Should we also
-        // "clear" the canvas? ath
         if (mDividedBitmap != null && mBitmapValid) {
             canvas.drawBitmap(mDividedBitmap, 0, 0, null);
         }
