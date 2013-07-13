@@ -118,8 +118,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
                 mAccount.name, mAccount.name, customFrom, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
-        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null);
+        mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
+                currentAccount.account, null, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -151,8 +151,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
-        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null);
+        mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
+                currentAccount.account, null, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -189,8 +189,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
                 mAccount.name, mAccount.name, customFrom, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
-        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null);
+        mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
+                currentAccount.account, null, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -516,8 +516,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
-        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY, currentAccount.account,
-                null);
+        mActivity.mFromSpinner.initialize(ComposeActivity.REPLY, currentAccount.account,
+                null, null);
 
         mActivity.runOnUiThread(new Runnable() {
             @Override
@@ -556,8 +556,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
-        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null);
+        mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
+                currentAccount.account, null, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -598,8 +598,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
-        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null);
+        mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
+                currentAccount.account, null, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
