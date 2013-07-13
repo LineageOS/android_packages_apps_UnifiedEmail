@@ -667,7 +667,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Update the from spinner as other accounts
         // may now be available.
         if (mFromSpinner != null && mAccount != null) {
-            mFromSpinner.asyncInitFromSpinner(mComposeMode, mAccount, mAccounts);
+            mFromSpinner.initialize(mComposeMode, mAccount, mAccounts, mRefMessage);
         }
     }
 
@@ -863,17 +863,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initFromSpinner(Bundle bundle, int action) {
-        String accountString = null;
         if (action == EDIT_DRAFT && mDraft.draftType == UIProvider.DraftType.COMPOSE) {
             action = COMPOSE;
         }
-        mFromSpinner.asyncInitFromSpinner(action, mAccount, mAccounts);
+        mFromSpinner.initialize(action, mAccount, mAccounts, mRefMessage);
+
         if (bundle != null) {
             if (bundle.containsKey(EXTRA_SELECTED_REPLY_FROM_ACCOUNT)) {
                 mReplyFromAccount = ReplyFromAccount.deserialize(mAccount,
                         bundle.getString(EXTRA_SELECTED_REPLY_FROM_ACCOUNT));
             } else if (bundle.containsKey(EXTRA_FROM_ACCOUNT_STRING)) {
-                accountString = bundle.getString(EXTRA_FROM_ACCOUNT_STRING);
+                final String accountString = bundle.getString(EXTRA_FROM_ACCOUNT_STRING);
                 mReplyFromAccount = mFromSpinner.getMatchingReplyFromAccount(accountString);
             }
         }
@@ -895,11 +895,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Otherwise, give the user the ability to choose which account to
             // send mail from / save drafts to.
             mFromStatic.setVisibility(View.GONE);
-            mFromStaticText.setText(mAccount.name);
+            mFromStaticText.setText(mReplyFromAccount.name);
             mFromSpinnerWrapper.setVisibility(View.VISIBLE);
         } else {
             mFromStatic.setVisibility(View.VISIBLE);
-            mFromStaticText.setText(mAccount.name);
+            mFromStaticText.setText(mReplyFromAccount.name);
             mFromSpinnerWrapper.setVisibility(View.GONE);
         }
     }
