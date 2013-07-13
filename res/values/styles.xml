@@ -282,16 +282,10 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="MessageDetailsItemStyle" parent="MessageHeaderSmallStyle">
-        <item name="android:lineSpacingMultiplier">1.5</item>
-    </style>
-
-    <style name="MessageDetailsValueStyle" parent="MessageDetailsItemStyle">
-        <item name="android:textColor">@color/conv_header_text_light</item>
-    </style>
-
-    <style name="MessageDetailsValueSelectableStyle" parent="MessageDetailsValueStyle">
+    <style name="MessageDetailsValueStyle" parent="MessageHeaderSmallStyle">
         <item name="android:textIsSelectable">true</item>
+        <item name="android:textColor">@color/conv_header_text_light</item>
+        <item name="android:textColorLink">@color/conv_header_text_link_blue</item>
     </style>
 
     <style name="MessageHeaderActionButtonStyle" parent="android:Widget.Holo.Button.Borderless">
@@ -300,19 +294,6 @@
         <item name="android:scaleType">center</item>
     </style>
 
-    <style name="MessageHeaderExpanderMinimizedStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:src">@drawable/ic_menu_expander_minimized_holo_light</item>
-        <item name="android:contentDescription">@string/expand_recipient_details</item>
-    </style>
-
-    <style name="MessageHeaderExpanderMaximizedStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:src">@drawable/ic_menu_expander_maximized_holo_light</item>
-        <item name="android:contentDescription">@string/collapse_recipient_details</item>
-    </style>
     <style name="MessageAttachmentButtonBaseStyle" parent="@android:style/Widget.Holo.Button.Borderless">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:minHeight">0dip</item>

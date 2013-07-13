@@ -524,6 +524,10 @@
         <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
     </plurals>
 
+    <string name="from_heading">From:</string>
+    <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
+    <string name="replyto_heading">Reply-to:</string>
+    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
     <!-- Shown in HTML to display the recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="to_heading">To:</string>
     <!-- Shown in HTML to display the recipient(s) of the message [CHAR LIMIT=10] -->
@@ -531,15 +535,6 @@
     <!-- Shown in HTML to display the recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="bcc_heading">Bcc:</string>
     <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
-    <string name="from_details">From: <xliff:g id="display_address" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
-    <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
-    <string name="replyto_details">Reply-to: <xliff:g id="display_address" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
-    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
-    <string name="to_details">To: <xliff:g id="display_address(es)" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
-    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
-    <string name="cc_details">Cc: <xliff:g id="display_address(es)" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
-    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
-    <string name="bcc_details">Bcc: <xliff:g id="display_address(es)" example="John Doe jdoe@example.com">%1$s</xliff:g></string>
     <!-- Displayed above an HTML message to show the images in that message [CHAR LIMIT=40] -->
     <string name="show_images">Show pictures</string>
     <!-- Displayed above an HTML message to always show images in messages from that sender [CHAR LIMIT=40] -->
