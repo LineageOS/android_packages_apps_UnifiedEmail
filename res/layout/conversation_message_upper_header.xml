@@ -33,16 +33,16 @@
 
     <QuickContactBadge
         android:id="@+id/photo"
-        android:layout_width="@dimen/contact_photo_width"
-        android:layout_height="@dimen/contact_photo_height"
+        android:layout_width="@dimen/message_header_contact_photo_width"
+        android:layout_height="@dimen/message_header_contact_photo_height"
         android:layout_gravity="center_vertical"
         android:scaleType="centerCrop"
         android:contentDescription="@string/contact_info_string" />
     <!-- draft should match photo in dimensions -->
     <ImageView
         android:id="@+id/draft"
-        android:layout_width="@dimen/contact_photo_width"
-        android:layout_height="@dimen/contact_photo_height"
+        android:layout_width="@dimen/message_header_contact_photo_width"
+        android:layout_height="@dimen/message_header_contact_photo_height"
         android:layout_gravity="center_vertical"
         android:visibility="gone"
         android:scaleType="center"
