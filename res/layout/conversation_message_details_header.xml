@@ -20,9 +20,9 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/message_details_header_collapsed_height"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingStart="@dimen/message_details_header_padding_start"
+    android:paddingStart="@dimen/message_details_header_padding_start_collapsed"
     android:paddingEnd="@dimen/message_details_header_padding_end"
-    android:paddingLeft="@dimen/message_details_header_padding_start"
+    android:paddingLeft="@dimen/message_details_header_padding_start_collapsed"
     android:paddingRight="@dimen/message_details_header_padding_end" >
     <TextView
         android:id="@+id/recipients_summary"
@@ -33,6 +33,8 @@
         android:bufferType="spannable"
         style="@style/MessageHeaderSmallStyle" />
     <ImageView
-        android:layout_gravity="end|right"
-        style="@style/MessageHeaderExpanderMinimizedStyle" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/expand_recipient_details"
+        android:src="@drawable/ic_menu_expander_minimized_holo_light" />
 </GridLayout>
