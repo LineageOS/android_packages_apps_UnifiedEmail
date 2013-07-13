@@ -73,7 +73,7 @@
     <color name="conv_header_add_label_background">#eeeeee</color>
 
     <!-- Conversation message header colors -->
-    <color name="conv_subject_border">#c0c0c0</color>
+    <color name="conversation_border_color">#c0c0c0</color>
     <color name="conv_header_text_light">#a6a8ab</color>
     <color name="conv_header_text_dark">@color/dark_gray_text_color</color>
     <color name="conv_header_text_link_blue">#35b4e3</color>

@@ -24,8 +24,8 @@
     <dimen name="conversation_page_gutter">0dip</dimen>
     <dimen name="conversation_side_padding">16dip</dimen>
     <dimen name="message_header_inner_side_padding">16dip</dimen>
-    <dimen name="contact_photo_width">64dp</dimen>
-    <dimen name="contact_photo_height">64dp</dimen>
+    <dimen name="message_header_contact_photo_width">64dp</dimen>
+    <dimen name="message_header_contact_photo_height">64dp</dimen>
     <dimen name="message_details_header_padding_start">14dip</dimen>
     <dimen name="message_details_header_padding_end">4dip</dimen>
     <dimen name="message_header_height">64sp</dimen>

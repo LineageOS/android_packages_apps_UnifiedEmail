@@ -37,9 +37,9 @@
     <View
         android:id="@+id/attachments_header_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/message_details_header_bottom_border_height"
+        android:layout_height="@dimen/message_details_header_border_height"
         android:visibility="gone"
-        android:background="@color/conv_subject_border"
+        android:background="@color/conversation_border_color"
         android:layout_marginBottom="8dp" />
     <com.android.mail.ui.AttachmentTileGrid
         android:id="@+id/attachment_tile_grid"

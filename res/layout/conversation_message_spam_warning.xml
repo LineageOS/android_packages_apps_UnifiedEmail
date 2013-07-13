@@ -59,8 +59,8 @@
     <View
         android:id="@+id/spam_warning_bottom_border"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/message_details_header_bottom_border_height"
+        android:layout_height="@dimen/message_details_header_border_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/conv_subject_border" />
+        android:background="@color/conversation_border_color" />
 
 </com.android.mail.browse.SpamWarningView>
