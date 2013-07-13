@@ -24,8 +24,10 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
 
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Message;
 import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -86,16 +88,29 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
      *            accounts. Otherwise, show just the account this was launched
      *            with.
      * @param currentAccount Account used to launch activity.
-     * @param syncing accounts
+     * @param syncingAccounts
      */
-    public void asyncInitFromSpinner(int action, Account currentAccount,
-            Account[] syncingAccounts) {
+    public void initialize(int action, Account currentAccount, Account[] syncingAccounts,
+                Message refMessage) {
+        final List<Account> accounts = AccountUtils.mergeAccountLists(mAccounts,
+                syncingAccounts, true /* prioritizeAccountList */);
         if (action == ComposeActivity.COMPOSE) {
-            Account[] result = syncingAccounts;
-            mAccounts = AccountUtils
-                    .mergeAccountLists(mAccounts, result, true /* prioritizeAccountList */);
+            mAccounts = accounts;
         } else {
-            mAccounts = ImmutableList.of(currentAccount);
+            // First assume that we are going to use the current account as the reply account
+            Account replyAccount = currentAccount;
+
+            if (refMessage != null && refMessage.accountUri != null) {
+                // This is a reply or forward of a message access through the "combined" account.
+                // We want to make sure that the real account is in the spinner
+                for (Account account : accounts) {
+                    if (account.uri.equals(refMessage.accountUri)) {
+                        replyAccount = account;
+                        break;
+                    }
+                }
+            }
+            mAccounts = ImmutableList.of(replyAccount);
         }
         initFromSpinner();
     }
