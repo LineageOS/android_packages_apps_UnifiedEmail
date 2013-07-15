@@ -255,8 +255,7 @@
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Згарнуць дадзеныя пра атрымальніка"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Паказаць кантактную інфармацыю карыстальнiка <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Паказаць кантактную інфармацыю"</string>
-    <!-- no translation found for show_messages_read:other (7344988174650303930) -->
-    <string name="date_heading" msgid="2414358582984879303">"Дата:"</string>
+    <!-- no translation found for show_messages_read:other (7439716291751085801) -->
     <string name="from_heading" msgid="8950294114718418954">"Ад:"</string>
     <string name="replyto_heading" msgid="2081358811894701297">"Адказаць:"</string>
     <string name="to_heading" msgid="3219994961726691756">"Каму:"</string>
@@ -429,4 +428,10 @@
     <!-- no translation found for add_account (2162808366829269770) -->
     <skip />
     <string name="attached_message" msgid="4267189489654642035">"Прымацаванае паведамленне"</string>
+    <!-- no translation found for date_message_received (6302308934790266050) -->
+    <skip />
+    <!-- no translation found for date_message_received_today (7923108495669251362) -->
+    <skip />
+    <!-- no translation found for date_message_received_yesterday (2240669381396206434) -->
+    <skip />
 </resources>
