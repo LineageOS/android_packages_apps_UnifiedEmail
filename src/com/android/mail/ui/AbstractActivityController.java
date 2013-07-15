@@ -1185,8 +1185,11 @@ public abstract class AbstractActivityController implements ActivityController,
         mRecentFolderList.initialize(mActivity);
         mVeiledMatcher.initialize(this);
 
+        // the "open drawer description" argument is for when the drawer is open
+        // so tell the user that interacting will cause the drawer to close
+        // and vice versa for the "close drawer description" argument
         mDrawerToggle = new ActionBarDrawerToggle((Activity) mActivity, mDrawerContainer,
-                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
+                R.drawable.ic_drawer, R.string.drawer_close, R.string.drawer_open);
         mDrawerListener = new MailDrawerListener();
         mDrawerContainer.setDrawerListener(mDrawerListener);
         mDrawerContainer.setDrawerShadow(
