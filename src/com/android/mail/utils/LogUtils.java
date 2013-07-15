@@ -31,6 +31,8 @@ public class LogUtils {
     private static final Pattern DATE_CLEANUP_PATTERN_WRONG_TIMEZONE =
             Pattern.compile("GMT([-+]\\d{4})$");
 
+    private static final String ACCOUNT_PREFIX = "account:";
+
     /**
      * Priority constant for the println method; use LogUtils.v.
      */
@@ -111,7 +113,6 @@ public class LogUtils {
      * sanitation of the uri to remove PII if debug logging is not enabled.
      */
     public static String contentUriToString(String tag, Uri uri) {
-
         if (isDebugLoggingEnabled(tag)) {
             // Debug logging has been enabled, so log the uri as is
             return uri.toString();
@@ -128,13 +129,30 @@ public class LogUtils {
             // This assumes that the first path segment is the account
             final String account = pathSegments.get(0);
 
-            builder = builder.appendPath(String.valueOf(account.hashCode()));
+            builder = builder.appendPath(sanitizeAccountName(account));
             for (int i = 1; i < pathSegments.size(); i++) {
                 builder.appendPath(pathSegments.get(i));
             }
             return builder.toString();
         }
     }
+
+    /**
+     * Sanitizes an account name.  If debug logging is not enabled, a sanitized name
+     * is returned.
+     */
+    public static String sanitizeAccountName(String accountName) {
+        if (TextUtils.isEmpty(accountName)) {
+            return "";
+        }
+
+        if (isDebugLoggingEnabled(TAG)) {
+            return accountName;
+        }
+
+        return ACCOUNT_PREFIX + String.valueOf(accountName.hashCode());
+    }
+
 
     /**
      * Checks to see whether or not a log for the specified tag is loggable at the specified level.
