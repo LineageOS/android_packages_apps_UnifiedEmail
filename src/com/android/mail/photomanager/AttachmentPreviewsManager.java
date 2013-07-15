@@ -50,8 +50,8 @@ public class AttachmentPreviewsManager extends PhotoManager {
         mCallbacks = new HashMap<Object, AttachmentPreviewsManagerCallback>();
     }
 
-    public void loadThumbnail(PhotoIdentifier id, ImageCanvas view, Dimensions dimensions,
-            AttachmentPreviewsManagerCallback callback) {
+    public void loadThumbnail(final PhotoIdentifier id, final ImageCanvas view,
+            final Dimensions dimensions, final AttachmentPreviewsManagerCallback callback) {
         mCallbacks.put(id.getKey(), callback);
         super.loadThumbnail(id, view, dimensions);
     }
@@ -227,7 +227,7 @@ public class AttachmentPreviewsManager extends PhotoManager {
         }
 
         @Override
-        protected Map<String, BitmapHolder> loadPhotos(Collection<Request> requests) {
+        protected Map<String, BitmapHolder> loadPhotos(final Collection<Request> requests) {
             final Map<String, BitmapHolder> photos = new HashMap<String, BitmapHolder>(
                     requests.size());
 
@@ -300,12 +300,11 @@ public class AttachmentPreviewsManager extends PhotoManager {
 
                 Utils.traceBeginSection("Decode stream and crop");
                 // todo:markwei read EXIF data for orientation
-                // Crop it. I've seen that in real-world situations,
-                // a 5.5MB image will be cropped down to about a 200KB image,
-                // so this is definitely worth it.
+                // Crop it. I've seen that in real-world situations, a 5.5MB image will be
+                // cropped down to about a 200KB image, so this is definitely worth it.
                 final Bitmap bitmap = BitmapUtil
-                        .decodeStreamWithCenterCrop(factory, request.bitmapKey.w,
-                                request.bitmapKey.h);
+                        .decodeStreamWithCrop(factory, request.bitmapKey.w, request.bitmapKey.h,
+                                0.5f, 1.0f / 3);
                 Utils.traceEndSection();
 
                 if (bitmap == null) {

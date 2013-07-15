@@ -275,12 +275,12 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
      *
      * @param dimensions    Preferred dimensions
      */
-    public void loadThumbnail(PhotoIdentifier id, ImageCanvas view,
-            ImageCanvas.Dimensions dimensions) {
+    public void loadThumbnail(final PhotoIdentifier id, final ImageCanvas view,
+            final ImageCanvas.Dimensions dimensions) {
         Utils.traceBeginSection("Load thumbnail");
-        DefaultImageProvider defaultProvider = getDefaultImageProvider();
-        Request request = new Request(id, defaultProvider, view, dimensions);
-        int hashCode = request.hashCode();
+        final DefaultImageProvider defaultProvider = getDefaultImageProvider();
+        final Request request = new Request(id, defaultProvider, view, dimensions);
+        final int hashCode = request.hashCode();
 
         if (!id.isValid()) {
             // No photo is needed
@@ -906,8 +906,9 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
         public final int viewGeneration;
         public int attempts;
 
-        private Request(PhotoIdentifier photoIdentifier, DefaultImageProvider defaultProvider,
-                ImageCanvas view, ImageCanvas.Dimensions dimensions) {
+        private Request(final PhotoIdentifier photoIdentifier,
+                final DefaultImageProvider defaultProvider, final ImageCanvas view,
+                final ImageCanvas.Dimensions dimensions) {
             mPhotoIdentifier = photoIdentifier;
             mRequestedExtent = -1;
             mDefaultProvider = defaultProvider;
