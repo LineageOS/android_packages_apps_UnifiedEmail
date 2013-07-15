@@ -842,7 +842,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     private boolean isAttachmentPreviewsEnabled() {
         return CONVLIST_ATTACHMENT_PREVIEWS_ENABLED
-                && mHeader.conversation.attachmentPreviewsCount != 0;
+                && !mHeader.conversation.getAttachmentPreviewUris().isEmpty();
     }
 
     private boolean getOverflowCountVisible() {
