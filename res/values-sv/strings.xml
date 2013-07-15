@@ -164,8 +164,7 @@
     <string name="unread_string" msgid="588180203444398297">"konversationen är oläst"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
-    <!-- no translation found for ap_overflow_format (2285438422049030145) -->
-    <skip />
+    <string name="ap_overflow_format" msgid="2285438422049030145">"+<xliff:g id="ID_1">%d</xliff:g>"</string>
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"Utkast"</item>
     <item quantity="other" msgid="6961049507579977505">"Utkast"</item>
@@ -253,8 +252,9 @@
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Komprimera mottagardetaljer"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Visa kontaktuppgifter för <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Visa kontaktuppgifter"</string>
-    <!-- no translation found for show_messages_read:other (7344988174650303930) -->
-    <string name="date_heading" msgid="2414358582984879303">"Datum:"</string>
+  <plurals name="show_messages_read">
+    <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> äldre meddelanden"</item>
+  </plurals>
     <string name="from_heading" msgid="8950294114718418954">"Från:"</string>
     <string name="replyto_heading" msgid="2081358811894701297">"Svara till:"</string>
     <string name="to_heading" msgid="3219994961726691756">"Till:"</string>
@@ -425,4 +425,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"Mappikon"</string>
     <string name="add_account" msgid="2162808366829269770">"Lägg till konto"</string>
     <string name="attached_message" msgid="4267189489654642035">"Bifogat meddelande"</string>
+    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="date_message_received_today" msgid="7923108495669251362">"Idag kl. <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="2240669381396206434">"I går kl. <xliff:g id="TIME">%1$s</xliff:g>"</string>
 </resources>
