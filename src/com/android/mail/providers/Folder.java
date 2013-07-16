@@ -373,7 +373,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public static HashMap<Uri, Folder> hashMapForFolders(List<Folder> rawFolders) {
         final HashMap<Uri, Folder> folders = new HashMap<Uri, Folder>();
         for (Folder f : rawFolders) {
-            folders.put(f.folderUri.comparisonUri, f);
+            folders.put(f.folderUri.getComparisonUri(), f);
         }
         return folders;
     }
