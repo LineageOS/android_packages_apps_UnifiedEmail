@@ -18,8 +18,6 @@
 <resources>
     <!-- Help context for the compose screen  -->
     <string name="compose_help_context" translatable="false">compose</string>
-    <!-- Help context for the folder list, in one pane mode  -->
-    <string name="one_pane_folder_list_help_context" translatable="false">fl</string>
     <!-- Help context for the wait mode  -->
     <string name="wait_help_context" translatable="false">wait</string>
     <!-- Help context for the conversation list, and viewing the conversation (one or two pane)  -->

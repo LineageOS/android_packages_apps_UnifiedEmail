@@ -50,21 +50,17 @@ public class ViewMode {
      */
     public static final int CONVERSATION_LIST = 2;
     /**
-     * Mode when showing a list of folders.
+     * Mode when showing results from user search.
      */
-    public static final int FOLDER_LIST = 3;
+    public static final int SEARCH_RESULTS_LIST = 3;
     /**
      * Mode when showing results from user search.
      */
-    public static final int SEARCH_RESULTS_LIST = 4;
-    /**
-     * Mode when showing results from user search.
-     */
-    public static final int SEARCH_RESULTS_CONVERSATION = 5;
+    public static final int SEARCH_RESULTS_CONVERSATION = 4;
     /**
      * Mode when showing the "waiting for sync" message.
      */
-    public static final int WAITING_FOR_ACCOUNT_INITIALIZATION = 6;
+    public static final int WAITING_FOR_ACCOUNT_INITIALIZATION = 5;
     /**
      * Uncertain mode. The mode has not been initialized.
      */
@@ -124,14 +120,6 @@ public class ViewMode {
      */
     public void enterConversationMode() {
         setModeInternal(CONVERSATION);
-    }
-
-    /**
-     * Requests a transition of the mode to show the folder list as the prominent view.
-     *
-     */
-    public void enterFolderListMode() {
-        setModeInternal(FOLDER_LIST);
     }
 
     /**
