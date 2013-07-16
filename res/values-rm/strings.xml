@@ -381,9 +381,7 @@
     <skip />
     <!-- no translation found for contact_info_string_default (596531738469809159) -->
     <skip />
-    <!-- no translation found for show_messages_read:other (7344988174650303930) -->
-    <!-- no translation found for date_heading (2414358582984879303) -->
-    <skip />
+    <!-- no translation found for show_messages_read:other (7439716291751085801) -->
     <!-- no translation found for from_heading (8950294114718418954) -->
     <skip />
     <!-- no translation found for replyto_heading (2081358811894701297) -->
@@ -655,5 +653,11 @@
     <!-- no translation found for add_account (2162808366829269770) -->
     <skip />
     <!-- no translation found for attached_message (4267189489654642035) -->
+    <skip />
+    <!-- no translation found for date_message_received (6302308934790266050) -->
+    <skip />
+    <!-- no translation found for date_message_received_today (7923108495669251362) -->
+    <skip />
+    <!-- no translation found for date_message_received_yesterday (2240669381396206434) -->
     <skip />
 </resources>
