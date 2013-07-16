@@ -43,7 +43,8 @@ public class FolderUri {
     private static Uri buildComparisonUri(final Uri fullUri) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(fullUri .getScheme());
-        builder.path(fullUri.getPath());
+        builder.encodedAuthority(fullUri.getEncodedAuthority());
+        builder.encodedPath(fullUri.getEncodedPath());
 
         return builder.build();
     }
