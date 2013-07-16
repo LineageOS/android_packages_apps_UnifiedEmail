@@ -19,7 +19,6 @@ package com.android.mail.browse;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
@@ -34,6 +33,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.FolderUri;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -360,8 +360,9 @@ public class ConversationItemViewModel {
      * Clear cached header model objects when the folder changes.
      */
     public static void onFolderUpdated(Folder folder) {
-        Uri old = sCachedModelsFolder != null ? sCachedModelsFolder.uri : Uri.EMPTY;
-        Uri newUri = folder != null ? folder.uri : Uri.EMPTY;
+        final FolderUri old = sCachedModelsFolder != null
+                ? sCachedModelsFolder.folderUri : FolderUri.EMPTY;
+        final FolderUri newUri = folder != null ? folder.folderUri : FolderUri.EMPTY;
         if (!old.equals(newUri)) {
             sCachedModelsFolder = folder;
             sConversationHeaderMap.evictAll();

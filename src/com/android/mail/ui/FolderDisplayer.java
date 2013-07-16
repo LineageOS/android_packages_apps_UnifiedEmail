@@ -17,11 +17,11 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.google.common.collect.Sets;
 
 import android.content.Context;
-import android.net.Uri;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
@@ -57,7 +57,7 @@ public class FolderDisplayer {
      * @param ignoreFolderUri (optional) folder to omit from the displayed set
      * @param ignoreFolderType -1, or the {@link FolderType} to omit from the displayed set
      */
-    public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri,
+    public void loadConversationFolders(Conversation conv, final FolderUri ignoreFolderUri,
             final int ignoreFolderType) {
         mFoldersSortedSet.clear();
         for (Folder folder : conv.getRawFolders()) {
@@ -66,7 +66,7 @@ public class FolderDisplayer {
                 continue;
             }
             // skip the ignoreFolder
-            if (ignoreFolderUri != null && ignoreFolderUri.equals(folder.uri)) {
+            if (ignoreFolderUri != null && ignoreFolderUri.equals(folder.folderUri)) {
                 continue;
             }
             mFoldersSortedSet.add(folder);

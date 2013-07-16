@@ -770,7 +770,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             return;
         }
         /** True if we are changing folders. */
-        final boolean changingFolders = (mFolder == null || !mFolder.uri.equals(folder.uri));
+        final boolean changingFolders = (mFolder == null || !mFolder.equals(folder));
         mFolder = folder;
         setFolderAndAccount(changingFolders);
         final ConversationListContext listContext = mController == null ? null :

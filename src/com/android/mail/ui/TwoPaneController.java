@@ -423,7 +423,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 }
                 final boolean shouldLoadInbox = mode == ViewMode.CONVERSATION_LIST &&
                         mAccount != null && mFolder != null &&
-                        !mAccount.settings.defaultInbox.equals(mFolder.uri) &&
+                        !mFolder.folderUri.equals(mAccount.settings.defaultInbox) &&
                         mLayout != null && !mLayout.isExpansiveLayout();
                 if (shouldLoadInbox) {
                     loadAccountInbox();

@@ -46,6 +46,7 @@ import com.android.mail.providers.FolderWatcher;
 import com.android.mail.providers.RecentFolderObserver;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.FolderType;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -109,7 +110,7 @@ public class FolderListFragment extends ListFragment implements
     private AccountController mAccountController;
 
     /** The currently selected folder (the folder being viewed).  This is never null. */
-    private Uri mSelectedFolderUri = Uri.EMPTY;
+    private FolderUri mSelectedFolderUri = FolderUri.EMPTY;
     /**
      * The current folder from the controller.  This is meant only to check when the unread count
      * goes out of sync and fixing it.
@@ -268,7 +269,8 @@ public class FolderListFragment extends ListFragment implements
             selectedFolder = currentFolder;
         }
         // Is the selected folder fresher than the one we have restored from a bundle?
-        if (selectedFolder != null && !selectedFolder.uri.equals(mSelectedFolderUri)) {
+        if (selectedFolder != null
+                && !selectedFolder.folderUri.equals(mSelectedFolderUri)) {
             setSelectedFolder(selectedFolder);
         }
 
@@ -352,10 +354,11 @@ public class FolderListFragment extends ListFragment implements
             mListView.onRestoreInstanceState(savedState.getParcelable(BUNDLE_LIST_STATE));
         }
         if (savedState != null && savedState.containsKey(BUNDLE_SELECTED_FOLDER)) {
-            mSelectedFolderUri = Uri.parse(savedState.getString(BUNDLE_SELECTED_FOLDER));
+            mSelectedFolderUri =
+                    new FolderUri(Uri.parse(savedState.getString(BUNDLE_SELECTED_FOLDER)));
             mSelectedFolderType = savedState.getInt(BUNDLE_SELECTED_TYPE);
         } else if (mParentFolder != null) {
-            mSelectedFolderUri = mParentFolder.uri;
+            mSelectedFolderUri = mParentFolder.folderUri;
             // No selected folder type required for hierarchical lists.
         }
 
@@ -486,7 +489,7 @@ public class FolderListFragment extends ListFragment implements
             // Not changing the account.
             final Account nextAccount = null;
             // Go to the conversation list for this folder.
-            if (!folder.uri.equals(mSelectedFolderUri)) {
+            if (!folder.folderUri.equals(mSelectedFolderUri)) {
                 mNextFolder = folder;
                 mAccountController.closeDrawer(true, nextAccount, folder);
             } else {
@@ -942,7 +945,7 @@ public class FolderListFragment extends ListFragment implements
 
         private static final int PARENT = 0;
         private static final int CHILD = 1;
-        private final Uri mParentUri;
+        private final FolderUri mParentUri;
         private final Folder mParent;
         private final FolderItemView.DropHandler mDropHandler;
 
@@ -950,7 +953,7 @@ public class FolderListFragment extends ListFragment implements
             super(mActivity.getActivityContext(), R.layout.folder_item);
             mDropHandler = mActivity;
             mParent = parentFolder;
-            mParentUri = parentFolder.uri;
+            mParentUri = parentFolder.folderUri;
             setCursor(c);
         }
 
@@ -963,14 +966,14 @@ public class FolderListFragment extends ListFragment implements
         @Override
         public int getItemViewType(int position) {
             final Folder f = getItem(position);
-            return f.uri.equals(mParentUri) ? PARENT : CHILD;
+            return f.folderUri.equals(mParentUri) ? PARENT : CHILD;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             final FolderItemView folderItemView;
             final Folder folder = getItem(position);
-            boolean isParent = folder.uri.equals(mParentUri);
+            boolean isParent = folder.folderUri.equals(mParentUri);
             if (convertView != null) {
                 folderItemView = (FolderItemView) convertView;
             } else {
@@ -979,7 +982,7 @@ public class FolderListFragment extends ListFragment implements
                         mActivity.getActivityContext()).inflate(resId, null);
             }
             folderItemView.bind(folder, mDropHandler);
-            if (folder.uri.equals(mSelectedFolderUri)) {
+            if (folder.folderUri.equals(mSelectedFolderUri)) {
                 getListView().setItemChecked(position, true);
                 // If this is the current folder, also check to verify that the unread count
                 // matches what the action bar shows.
@@ -1045,7 +1048,7 @@ public class FolderListFragment extends ListFragment implements
      */
     private void setSelectedFolder(Folder folder) {
         if (folder == null) {
-            mSelectedFolderUri = Uri.EMPTY;
+            mSelectedFolderUri = FolderUri.EMPTY;
             mCurrentFolderForUnreadCheck = null;
             LogUtils.e(LOG_TAG, "FolderListFragment.setSelectedFolder(null) called!");
             return;
@@ -1062,13 +1065,13 @@ public class FolderListFragment extends ListFragment implements
         //    default inbox already, back exits the app.)
         // In both these cases, the selected folder type is not set, and must be set.
         if (mSelectedFolderType == DrawerItem.UNSET || (mCurrentAccount != null
-                && folder.uri.equals(mCurrentAccount.settings.defaultInbox))) {
+                && folder.folderUri.equals(mCurrentAccount.settings.defaultInbox))) {
             mSelectedFolderType =
                     folder.isInbox() ? DrawerItem.FOLDER_INBOX : DrawerItem.FOLDER_OTHER;
         }
 
         mCurrentFolderForUnreadCheck = folder;
-        mSelectedFolderUri = folder.uri;
+        mSelectedFolderUri = folder.folderUri;
         if (mCursorAdapter != null && viewChanged) {
             mCursorAdapter.notifyDataSetChanged();
         }

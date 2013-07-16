@@ -224,12 +224,12 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
                 FolderOperation folderOp = new FolderOperation(mFolder, false);
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFolders(conv.getRawFolders());
-                targetFolders.remove(folderOp.mFolder.uri);
+                targetFolders.remove(folderOp.mFolder.folderUri.fullUri);
                 final FolderList folders = FolderList.copyOf(targetFolders.values());
                 conv.setRawFolders(folders);
                 final ContentValues values = new ContentValues();
                 folderUris = new ArrayList<Uri>();
-                folderUris.add(mFolder.uri);
+                folderUris.add(mFolder.folderUri.fullUri);
                 adds = new ArrayList<Boolean>();
                 adds.add(Boolean.FALSE);
                 ConversationCursor.addFolderUpdates(folderUris, adds, values);

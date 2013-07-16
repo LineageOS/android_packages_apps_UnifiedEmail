@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.UIProvider.FolderType;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -79,7 +80,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     /**
      * The content provider URI that returns this folder for this account.
      */
-    public Uri uri;
+    public FolderUri folderUri;
 
     /**
      * The human visible name for this folder.
@@ -201,7 +202,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
             final long lastMessageTimestamp) {
         this.id = id;
         this.persistentId = persistentId;
-        this.uri = uri;
+        this.folderUri = new FolderUri(uri);
         this.name = name;
         this.capabilities = capabilities;
         this.hasChildren = hasChildren;
@@ -234,7 +235,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public Folder(Cursor cursor) {
         id = cursor.getInt(UIProvider.FOLDER_ID_COLUMN);
         persistentId = cursor.getString(UIProvider.FOLDER_PERSISTENT_ID_COLUMN);
-        uri = Uri.parse(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
+        folderUri =
+                new FolderUri(Uri.parse(cursor.getString(UIProvider.FOLDER_URI_COLUMN)));
         name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);
         capabilities = cursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
         // 1 for true, 0 for false.
@@ -290,7 +292,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public Folder(Parcel in, ClassLoader loader) {
         id = in.readInt();
         persistentId = in.readString();
-        uri = in.readParcelable(loader);
+        folderUri = new FolderUri((Uri) in.readParcelable(loader));
         name = in.readString();
         capabilities = in.readInt();
         // 1 for true, 0 for false.
@@ -326,7 +328,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(persistentId);
-        dest.writeParcelable(uri, 0);
+        dest.writeParcelable(folderUri.fullUri, 0);
         dest.writeString(name);
         dest.writeInt(capabilities);
         // 1 for true, 0 for false.
@@ -371,7 +373,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public static HashMap<Uri, Folder> hashMapForFolders(List<Folder> rawFolders) {
         final HashMap<Uri, Folder> folders = new HashMap<Uri, Folder>();
         for (Folder f : rawFolders) {
-            folders.put(f.uri, f);
+            folders.put(f.folderUri.comparisonUri, f);
         }
         return folders;
     }
@@ -421,12 +423,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
         if (o == null || !(o instanceof Folder)) {
             return false;
         }
-        return Objects.equal(uri, ((Folder) o).uri);
+        return Objects.equal(folderUri, ((Folder) o).folderUri);
     }
 
     @Override
     public int hashCode() {
-        return uri == null ? 0 : uri.hashCode();
+        return folderUri == null ? 0 : folderUri.hashCode();
     }
 
     @Override
@@ -436,7 +438,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         sb.append(id);
         if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
             sb.append(", uri=");
-            sb.append(uri);
+            sb.append(folderUri);
             sb.append(", name=");
             sb.append(name);
         }
@@ -521,7 +523,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         final String[] folderUris = new String[folders.size()];
         int i = 0;
         for (Folder folder : folders) {
-            folderUris[i] = folder.uri.toString();
+            folderUris[i] = folder.folderUri.toString();
             i++;
         }
         return folderUris;
@@ -621,7 +623,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
          }
          f.id = id;
          int index = 1;
-         f.uri = Folder.getValidUri(split[index++]);
+         f.folderUri = new FolderUri(Folder.getValidUri(split[index++]));
          f.name = split[index++];
          f.hasChildren = Integer.parseInt(split[index++]) != 0;
          f.capabilities = Integer.parseInt(split[index++]);

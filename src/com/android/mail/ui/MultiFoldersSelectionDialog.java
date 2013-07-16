@@ -88,7 +88,7 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
                 } else {
                     // There are no folders for this conversation, so it must
                     // belong to the folder we are currently looking at.
-                    checked.add(mCurrentFolder.uri.toString());
+                    checked.add(mCurrentFolder.folderUri.fullUri.toString());
                 }
             }
             // TODO(mindyp) : bring this back in UR8 when Email providers
@@ -142,14 +142,15 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
                 if (item instanceof FolderRow) {
                    ((FolderRow)item).setIsPresent(false);
                    final Folder folder = ((FolderRow)item).getFolder();
-                   mOperations.put(folder.uri, new FolderOperation(folder, false));
+                   mOperations.put(folder.folderUri.fullUri,
+                           new FolderOperation(folder, false));
                 }
             }
         }
         row.setIsPresent(add);
         mAdapter.notifyDataSetChanged();
         final Folder folder = row.getFolder();
-        mOperations.put(folder.uri, new FolderOperation(folder, add));
+        mOperations.put(folder.folderUri.fullUri, new FolderOperation(folder, add));
     }
 
     @Override

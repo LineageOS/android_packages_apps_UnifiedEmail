@@ -26,6 +26,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.LruCache;
 import com.android.mail.utils.Utils;
@@ -112,7 +113,7 @@ public final class RecentFolderList {
                 ContentValues values = new ContentValues();
                 // Only the folder URIs are provided. Providers are free to update their specific
                 // information, though most will probably write the current timestamp.
-                values.put(mFolder.uri.toString(), 0);
+                values.put(mFolder.folderUri.fullUri.toString(), 0);
                 LogUtils.i(TAG, "Save: %s", mFolder.name);
                 mContext.getContentResolver().update(uri, values, null, null);
             }
@@ -176,7 +177,7 @@ public final class RecentFolderList {
         do {
             final Folder folder = c.getModel();
             final RecentFolderListEntry entry = new RecentFolderListEntry(folder);
-            mFolderCache.putElement(folder.uri.toString(), entry);
+            mFolderCache.putElement(folder.folderUri.fullUri.toString(), entry);
             LogUtils.v(TAG, "Account %s, Recent: %s", mAccount.name, folder.name);
         } while (c.moveToPrevious());
     }
@@ -205,7 +206,7 @@ public final class RecentFolderList {
         }
 
         final RecentFolderListEntry entry = new RecentFolderListEntry(folder);
-        mFolderCache.putElement(folder.uri.toString(), entry);
+        mFolderCache.putElement(folder.folderUri.fullUri.toString(), entry);
         new StoreRecent(mAccount, folder).execute();
     }
 
@@ -216,14 +217,15 @@ public final class RecentFolderList {
      * Returns a list of size {@value #MAX_RECENT_FOLDERS} or smaller.
      * @param excludedFolderUri the uri of folder to be excluded (typically the current folder)
      */
-    public ArrayList<Folder> getRecentFolderList(Uri excludedFolderUri) {
-        final ArrayList<Uri> excludedUris = new ArrayList<Uri>();
+    public ArrayList<Folder> getRecentFolderList(final FolderUri excludedFolderUri) {
+        final ArrayList<FolderUri> excludedUris = new ArrayList<FolderUri>();
         if (excludedFolderUri != null) {
             excludedUris.add(excludedFolderUri);
         }
-        final Uri defaultInbox = (mAccount == null) ?
-                Uri.EMPTY : Settings.getDefaultInboxUri(mAccount.settings);
-        if (!defaultInbox.equals(Uri.EMPTY)) {
+        final FolderUri defaultInbox = (mAccount == null)
+                ? FolderUri.EMPTY
+                : new FolderUri(Settings.getDefaultInboxUri(mAccount.settings));
+        if (!defaultInbox.equals(FolderUri.EMPTY)) {
             excludedUris.add(defaultInbox);
         }
         final List<RecentFolderListEntry> recent = Lists.newArrayList();
@@ -232,7 +234,7 @@ public final class RecentFolderList {
 
         final ArrayList<Folder> recentFolders = Lists.newArrayList();
         for (final RecentFolderListEntry entry : recent) {
-            if (!excludedUris.contains(entry.mFolder.uri)) {
+            if (!excludedUris.contains(entry.mFolder.folderUri)) {
                 recentFolders.add(entry.mFolder);
             }
             if (recentFolders.size() == MAX_RECENT_FOLDERS) {

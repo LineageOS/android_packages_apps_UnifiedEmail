@@ -34,6 +34,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -117,7 +118,7 @@ public final class OnePaneController extends AbstractActivityController {
      * @param account the account whose default Inbox the candidate might be
      * @return true if the candidate is indeed the default inbox for the given account.
      */
-    private static boolean isDefaultInbox(Uri candidate, Account account) {
+    private static boolean isDefaultInbox(FolderUri candidate, Account account) {
         return (candidate != null && account != null)
                 && candidate.equals(account.settings.defaultInbox);
     }
@@ -131,7 +132,7 @@ public final class OnePaneController extends AbstractActivityController {
         // If we don't have valid state, then we are not in the inbox.
         return !(account == null || context == null || context.folder == null
                 || account.settings == null) && !ConversationListContext.isSearchResult(context)
-                && isDefaultInbox(context.folder.uri, account);
+                && isDefaultInbox(context.folder.folderUri, account);
     }
 
     /**
@@ -441,7 +442,7 @@ public final class OnePaneController extends AbstractActivityController {
      */
     private void transitionToInbox() {
         // The inbox could have changed, in which case we should load it again.
-        if (mInbox == null || !isDefaultInbox(mInbox.uri, mAccount)) {
+        if (mInbox == null || !isDefaultInbox(mInbox.folderUri, mAccount)) {
             loadAccountInbox();
         } else {
             onFolderChanged(mInbox);
