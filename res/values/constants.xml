@@ -117,6 +117,8 @@
 
     <!-- Duration of progress bar animation for attachment previews -->
     <integer name="ap_progress_animation_duration">4000</integer>
+    <!-- Duration of fade in/out animation for attachment previews -->
+    <integer name="ap_fade_animation_duration">500</integer>
     <!-- Duration of placeholder pulse animation for attachment previews -->
     <integer name="ap_placeholder_animation_duration">2000</integer>
     <!-- Delay before showing progress bar animations for attachment previews that are loading -->

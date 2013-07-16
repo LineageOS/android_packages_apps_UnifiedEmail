@@ -465,22 +465,15 @@ public class ConversationItemViewCoordinates {
         paperclipPaddingLeft = paperclip.getPaddingLeft();
 
         if (attachmentPreviews != null) {
-            attachmentPreviewsX = getAttachmentPreviewsX(attachmentPreviews,
-                    config.mAttachmentPreviewMode);
+            attachmentPreviewsX = subjectX;
             attachmentPreviewsY = getY(attachmentPreviews) + sendersTopAdjust;
-            final int attachmentPreviewsXEnd;
-            if (isWide()) {
-                attachmentPreviewsXEnd = subjectX + subjectWidth;
-            } else {
-                attachmentPreviewsXEnd = starX + starWidth;
-            }
-
-            attachmentPreviewsWidth = attachmentPreviewsXEnd - attachmentPreviewsX;
+            attachmentPreviewsWidth = subjectWidth;
             attachmentPreviewsHeight = attachmentPreviews.getHeight();
 
             // We only care about the right and bottom of the overflow count
             final TextView overflow = (TextView) view.findViewById(id.ap_overflow);
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) overflow.getLayoutParams();
+            final FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) overflow
+                    .getLayoutParams();
             overflowXEnd = attachmentPreviewsX + attachmentPreviewsWidth - params.rightMargin;
             overflowYEnd = attachmentPreviewsY + attachmentPreviewsHeight - params.bottomMargin;
             overflowDiameter = overflow.getWidth();
@@ -558,15 +551,9 @@ public class ConversationItemViewCoordinates {
         }
     }
 
-    private int getAttachmentPreviewsX(View attachmentPreviews, int attachmentPreviewMode) {
-        if (isWide() || attachmentPreviewMode == ATTACHMENT_PREVIEW_READ) {
-            return subjectX;
-        }
-        return getX(attachmentPreviews);
-    }
-
-    private int getAttachmentPreviewsHeight(Context context, int attachmentPreviewMode) {
-        Resources res = context.getResources();
+    private int getAttachmentPreviewsHeight(final Context context,
+            final int attachmentPreviewMode) {
+        final Resources res = context.getResources();
         switch (attachmentPreviewMode) {
             case ATTACHMENT_PREVIEW_UNREAD:
                 return (int) (isWide() ? res.getDimension(dimen.attachment_preview_height_tall_wide)
