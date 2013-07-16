@@ -68,7 +68,7 @@ public class FolderOperation {
      */
     public static boolean isDestructive(Collection<FolderOperation> folderOps, Folder folder) {
         for (FolderOperation op : folderOps) {
-            if (Objects.equal(op.mFolder.uri, folder.uri) && !op.mAdd) {
+            if (Objects.equal(op.mFolder, folder) && !op.mAdd) {
                 return true;
             }
             if (folder.isTrash() && op.mFolder.isInbox()) {

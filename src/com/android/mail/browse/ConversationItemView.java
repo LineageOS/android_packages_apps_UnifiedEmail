@@ -100,6 +100,7 @@ import com.android.mail.ui.ImageCanvas;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.ViewMode;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.HardwareLayerEnabler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -281,7 +282,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         @Override
-        public void loadConversationFolders(Conversation conv, final Uri ignoreFolderUri,
+        public void loadConversationFolders(Conversation conv, final FolderUri ignoreFolderUri,
                 final int ignoreFolderType) {
             super.loadConversationFolders(conv, ignoreFolderUri, ignoreFolderType);
             mFoldersCount = mFoldersSortedSet.size();
@@ -623,8 +624,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             ignoreFolderType = -1;
         }
 
-        mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation, mDisplayedFolder.uri,
-                ignoreFolderType);
+        mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation,
+                mDisplayedFolder.folderUri, ignoreFolderType);
 
         mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
                 mHeader.conversation.dateMs);

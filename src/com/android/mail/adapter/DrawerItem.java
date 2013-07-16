@@ -313,7 +313,7 @@ public class DrawerItem {
             case VIEW_FOLDER:
                 // True if folder types and URIs are the same
                 if (currentFolder != null && mFolder != null) {
-                    return (mFolderType == currentType) && mFolder.uri.equals(currentFolder.uri);
+                    return (mFolderType == currentType) && mFolder.equals(currentFolder);
                 }
                 return false;
             case VIEW_ACCOUNT:

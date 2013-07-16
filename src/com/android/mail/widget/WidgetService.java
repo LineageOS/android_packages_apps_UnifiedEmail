@@ -48,6 +48,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.DelayedTaskHandler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -241,7 +242,7 @@ public class WidgetService extends RemoteViewsService {
                 String folderString = intent.getStringExtra(Utils.EXTRA_FOLDER);
                 Folder folder = Folder.fromString(folderString);
                 if (folder != null) {
-                    mFolderUri = folder.uri;
+                    mFolderUri = folder.folderUri.fullUri;
                     mFolderConversationListUri = folder.conversationListUri;
                 } else {
                     mFolderUri = Uri.EMPTY;
@@ -414,8 +415,8 @@ public class WidgetService extends RemoteViewsService {
 
                 // Load up our remote view.
                 RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(date,
-                        conversation, mFolderUri, ignoreFolderType, senderBuilder,
-                                filterTag(conversation.subject));
+                        conversation, new FolderUri(mFolderUri), ignoreFolderType,
+                        senderBuilder, filterTag(conversation.subject));
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,

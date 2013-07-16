@@ -103,7 +103,7 @@ public class FolderItemView extends RelativeLayout {
             // a is not null because it would have returned above.
             return false;
         }
-        return (a == b || (a.uri.equals(b.uri)
+        return (a == b || (a.folderUri.equals(b.folderUri)
                 && a.name.equals(b.name)
                 && a.hasChildren == b.hasChildren
                 && a.unseenCount == b.unseenCount

@@ -248,8 +248,9 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
      * Create a widget for the specified account and folder
      */
     protected void createWidget(int id, Account account, Folder selectedFolder) {
-        WidgetProvider.updateWidget(this, id, account, selectedFolder.type, selectedFolder.uri,
-                selectedFolder.conversationListUri, selectedFolder.name);
+        WidgetProvider.updateWidget(this, id, account, selectedFolder.type,
+                selectedFolder.folderUri.fullUri, selectedFolder.conversationListUri,
+                selectedFolder.name);
         final Intent result = new Intent();
         result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
         setResult(RESULT_OK, result);
@@ -279,8 +280,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                  * account, calculate the human readable name of the folder and
                  * use it as the shortcut name, etc...
                  */
-                final Intent clickIntent = Utils.createViewFolderIntent(this, mSelectedFolder.uri,
-                        mAccount);
+                final Intent clickIntent = Utils.createViewFolderIntent(this,
+                        mSelectedFolder.folderUri.fullUri, mAccount);
                 resultIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, clickIntent);
                 resultIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                         Intent.ShortcutIconResource.fromContext(this,
