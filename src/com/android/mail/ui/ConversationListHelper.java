@@ -19,8 +19,11 @@ package com.android.mail.ui;
 import com.google.common.collect.Lists;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 
 import com.android.mail.providers.Account;
+
+import com.android.mail.R;
 
 import java.util.ArrayList;
 
@@ -30,8 +33,14 @@ public class ConversationListHelper {
      */
     public ArrayList<ConversationSpecialItemView> makeConversationListSpecialViews(Context context,
             Account account, FolderSelector listener) {
-        // TODO: Move conversation photo teaser view here once
-        // getConversationListIcon() is moved out of Persistence
-        return Lists.newArrayList();
+        // Conversation photo teaser view
+        final ConversationPhotoTeaserView conversationPhotoTeaser =
+                (ConversationPhotoTeaserView) LayoutInflater.from(context)
+                        .inflate(R.layout.conversation_photo_teaser_view, null);
+
+
+        final ArrayList<ConversationSpecialItemView> itemViews = Lists.newArrayList();
+        itemViews.add(conversationPhotoTeaser);
+        return itemViews;
     }
 }
