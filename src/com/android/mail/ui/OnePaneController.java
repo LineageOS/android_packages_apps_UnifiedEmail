@@ -45,8 +45,6 @@ import com.android.mail.utils.Utils;
 
 // Called OnePaneActivityController in Gmail.
 public final class OnePaneController extends AbstractActivityController {
-    /** Key used to store {@link #mLastFolderListTransactionId}. */
-    private static final String FOLDER_LIST_TRANSACTION_KEY = "folder-list-transaction";
     /** Key used to store {@link #mLastInboxConversationListTransactionId} */
     private static final String INBOX_CONVERSATION_LIST_TRANSACTION_KEY =
             "inbox_conversation-list-transaction";
@@ -66,7 +64,6 @@ public final class OnePaneController extends AbstractActivityController {
     private int mLastInboxConversationListTransactionId = INVALID_ID;
     private int mLastConversationListTransactionId = INVALID_ID;
     private int mLastConversationTransactionId = INVALID_ID;
-    private int mLastFolderListTransactionId = INVALID_ID;
     private Folder mInbox;
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
@@ -81,7 +78,6 @@ public final class OnePaneController extends AbstractActivityController {
         if (inState == null) {
             return;
         }
-        mLastFolderListTransactionId = inState.getInt(FOLDER_LIST_TRANSACTION_KEY, INVALID_ID);
         mLastInboxConversationListTransactionId =
                 inState.getInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY, INVALID_ID);
         mLastConversationListTransactionId =
@@ -95,7 +91,6 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(FOLDER_LIST_TRANSACTION_KEY, mLastFolderListTransactionId);
         outState.putInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY,
                 mLastInboxConversationListTransactionId);
         outState.putInt(CONVERSATION_LIST_TRANSACTION_KEY, mLastConversationListTransactionId);
@@ -181,8 +176,6 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("{lastFolderListTransId=");
-        sb.append(mLastFolderListTransactionId);
         sb.append(" lastInboxTransId=");
         sb.append(mLastInboxConversationListTransactionId);
         sb.append(" lastConvListTransId=");
@@ -217,11 +210,6 @@ public final class OnePaneController extends AbstractActivityController {
             mInbox = listContext.folder;
             mLastInboxConversationListTransactionId = replaceFragmentWithBack(
                     conversationListFragment, transition, TAG_CONVERSATION_LIST, R.id.content_pane);
-
-            // FIXME: "forgetting" the folder list entry in the back stack doesn't remove it from
-            // the back stack. only popping past it can remove it.
-            // Maybe we should clear the back stack prior to opening a folder.
-            mLastFolderListTransactionId = INVALID_ID;
 
             // If we ever to to the inbox, we want to unset the transation id for any other
             // non-inbox folder.
@@ -358,43 +346,10 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean handleBackPress() {
         final int mode = mViewMode.getMode();
 
-        //TODO(shahrk): Remove the folder list standalone view
-        if (mode == ViewMode.FOLDER_LIST) {
-            final Folder hierarchyFolder = getHierarchyFolder();
-            final FolderListFragment folderListFragment = getFolderListFragment();
-            final boolean parentHasChildren = folderListFragment != null &&
-                    folderListFragment.showingHierarchy() && hierarchyFolder != null
-                    && hierarchyFolder.parent != Uri.EMPTY;
-            if (parentHasChildren) {
-                // If we are showing the folder list and the user is exploring
-                // the children of a single parent folder,
-                // back should display the parent folder's parent and siblings.
-                goUpFolderHierarchy(hierarchyFolder);
-            } else {
-                // We are at the topmost list of folders: go back
-                mLastFolderListTransactionId = INVALID_ID;
-                transitionToInbox();
-            }
-        } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
+        if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         } else if (mViewMode.isListMode() && !inInbox(mAccount, mConvListContext)) {
-            if (mLastFolderListTransactionId != INVALID_ID) {
-                // Set the hierarchy folder to what it will be once we go up
-
-                // The hierarchy folder stuff is not required. We need to clean this stuff up.
-                // TODO: http://b/9694899
-//                final Folder hierarchyFolder = getHierarchyFolder();
-//                if (hierarchyFolder != null && hierarchyFolder.parent != null) {
-//                    setHierarchyFolder(hierarchyFolder.parent);
-//                }
-
-                // If the user got here by navigating via the folder list, back
-                // should bring them back to the folder list.
-                mViewMode.enterFolderListMode();
-                mActivity.getFragmentManager().popBackStack(mLastFolderListTransactionId, 0);
-            } else {
-                transitionToInbox();
-            }
+            transitionToInbox();
         } else if (mViewMode.isConversationMode()) {
             transitionBackToConversationListMode(false /* inLoaderCallbacks */);
         } else {
@@ -488,26 +443,10 @@ public final class OnePaneController extends AbstractActivityController {
 
             return true;
         }
-        if (mode == ViewMode.CONVERSATION
-                || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+        if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             // Same as go back.
             handleBackPress();
             return true;
-        }
-        if (mode == ViewMode.FOLDER_LIST) {
-            // If the folder is the top level of an heirarchy or flat, toggle the
-            // state of the drawer. Otherwise, let it pass on as a back press.
-            // We don't want this code in back press, otherwise pressing back
-            // will exhibit the same behavior
-            final FolderListFragment folderListFragment = getFolderListFragment();
-            if (folderListFragment != null) {
-                final Folder parentFolder = folderListFragment.getParentFolder();
-                if (parentFolder == null || parentFolder.parent == Uri.EMPTY) {
-                    toggleFolderListState();
-                    return true;
-                }
-            }
-            handleBackPress();
         }
         return true;
     }
@@ -627,16 +566,6 @@ public final class OnePaneController extends AbstractActivityController {
             default:
                 break;
         }
-    }
-
-    @Override
-    public String getHelpContext() {
-        final int mode = mViewMode.getMode();
-        switch (mode) {
-            case ViewMode.FOLDER_LIST:
-                return mContext.getString(R.string.one_pane_folder_list_help_context);
-        }
-        return super.getHelpContext();
     }
 
     private final class PopBackStackRunnable implements Runnable {
