@@ -99,6 +99,8 @@ public class Utils {
     public static final String EXTRA_COMPOSE_URI = "composeUri";
     public static final String EXTRA_CONVERSATION = "conversationUri";
 
+    private static final String MAILTO_SCHEME = "mailto";
+
     /** Extra tag for debugging the blank fragment problem. */
     public static final String VIEW_DEBUGGING_TAG = "MailBlankFragment";
 
@@ -1282,6 +1284,15 @@ public class Utils {
 
         return uri.buildUpon().appendQueryParameter(APP_VERSION_QUERY_PARAMETER,
                 Integer.toString(appVersion)).build();
+    }
+
+    /**
+     * Adds the Account extra to mailto intents.
+     */
+    public static void addAccountToMailtoIntent(Intent intent, Account account) {
+        if (TextUtils.equals(MAILTO_SCHEME, intent.getData().getScheme())) {
+            intent.putExtra(Utils.EXTRA_ACCOUNT, account);
+        }
     }
 
     /**
