@@ -232,7 +232,6 @@ public abstract class MailAppProvider extends ContentProvider
      * {@link ContentProvider#query()} for the specified uri.  The content provider handling the
      * query needs to handle the {@link UIProvider.ACCOUNTS_PROJECTION}
      * Any changes to the underlying provider will automatically be reflected.
-     * @param resolver
      * @param accountsQueryUri
      */
     private void addAccountsForUriAsync(Uri accountsQueryUri) {
@@ -264,17 +263,6 @@ public abstract class MailAppProvider extends ContentProvider
             oldLoader.stopLoading();
         }
         mCursorLoaderMap.put(accountsQueryUri, accountsCursorLoader);
-    }
-
-    public static void addAccount(Account account, Uri accountsQueryUri) {
-        final MailAppProvider provider = getInstance();
-        if (provider == null) {
-            throw new IllegalStateException("MailAppProvider not intialized");
-        }
-        provider.addAccountImpl(account, accountsQueryUri, true /* notify */);
-
-        // Cache the updated account list
-        provider.cacheAccountList();
     }
 
     private void addAccountImpl(Account account, Uri accountsQueryUri, boolean notify) {

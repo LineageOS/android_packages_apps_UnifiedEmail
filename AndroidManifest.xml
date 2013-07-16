@@ -123,6 +123,14 @@
         </activity>
 
         <provider
+                android:authorities="com.android.mail.accountcache"
+                android:label="@string/account_cache_provider"
+                android:multiprocess="false"
+                android:name=".providers.UnifiedAccountCacheProvider" >
+            <grant-uri-permission android:pathPattern=".*" />
+        </provider>
+
+        <provider
             android:authorities="com.android.mail.mockprovider"
             android:label="@string/mock_content_provider"
             android:multiprocess="false"
@@ -135,14 +143,6 @@
             android:label="@string/conversation_content_provider"
             android:multiprocess="false"
             android:name=".browse.UnifiedConversationProvider" >
-            <grant-uri-permission android:pathPattern=".*" />
-        </provider>
-
-        <provider
-            android:authorities="com.android.mail.accountcache"
-            android:label="@string/account_cache_provider"
-            android:multiprocess="false"
-            android:name=".providers.UnifiedAccountCacheProvider" >
             <grant-uri-permission android:pathPattern=".*" />
         </provider>
 
