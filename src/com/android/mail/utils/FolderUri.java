@@ -33,11 +33,10 @@ public class FolderUri {
      * Equivalent to {@link #fullUri}, but without any query parameters, and can safely be used in
      * comparisons to determine if two {@link Uri}s point to the same object.
      */
-    public final Uri comparisonUri;
+    private Uri mComparisonUri = null;
 
     public FolderUri(final Uri uri) {
         fullUri = uri;
-        comparisonUri = buildComparisonUri(uri);
     }
 
     private static Uri buildComparisonUri(final Uri fullUri) {
@@ -49,18 +48,26 @@ public class FolderUri {
         return builder.build();
     }
 
+    public Uri getComparisonUri() {
+        if (mComparisonUri == null) {
+            mComparisonUri = buildComparisonUri(fullUri);
+        }
+
+        return mComparisonUri;
+    }
+
     @Override
     public int hashCode() {
-        return comparisonUri.hashCode();
+        return getComparisonUri().hashCode();
     }
 
     @Override
     public boolean equals(final Object o) {
         if (o instanceof FolderUri) {
-            return comparisonUri.equals(((FolderUri) o).comparisonUri);
+            return getComparisonUri().equals(((FolderUri) o).getComparisonUri());
         }
 
-        return comparisonUri.equals(o);
+        return getComparisonUri().equals(o);
     }
 
     @Override
