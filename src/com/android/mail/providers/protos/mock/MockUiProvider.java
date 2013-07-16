@@ -21,27 +21,25 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import android.os.Parcel;
 import android.provider.BaseColumns;
 import android.text.Html;
 
-import com.android.mail.providers.Account;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderList;
-import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.ReplyFromAccount;
-import com.android.mail.providers.Settings;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AccountColumns.SettingsColumns;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.providers.UIProvider.ConversationCursorCommand;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderColumns;
 import com.android.mail.providers.UIProvider.MessageColumns;
-import com.android.mail.utils.MatrixCursorWithCachedColumns;
+import com.android.mail.utils.LogUtils;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -62,15 +60,10 @@ public final class MockUiProvider extends ContentProvider {
     public static final String AUTHORITY = "com.android.mail.mockprovider";
 
 
-    static final String BASE_URI_STRING = "content://" + AUTHORITY;
-
     private static final Uri MOCK_ACCOUNTS_URI = Uri.parse("content://" + AUTHORITY + "/accounts");
 
-
-    public static final int NUM_MOCK_ACCOUNTS = 2;
-
     // A map of query result for uris
-    // TODO(pwestbro) read this map from an external
+    // TODO(pwestbro) read this map from an external file
     private static Map<String, List<Map<String, Object>>> MOCK_QUERY_RESULTS = Maps.newHashMap();
 
 
@@ -85,7 +78,7 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(folderDetailsMap0));
         Map<String, Object> folderDetailsMap2 = createFolderDetailsMap(2, "two", 2, 2);
         // Account 0
-        accountDetailsMap0 = createAccountDetailsMap(0, true,
+        accountDetailsMap0 = createAccountDetailsMap(0,
                 (String)folderDetailsMap0.get(FolderColumns.URI));
 
         accountList.add(accountDetailsMap0);
@@ -93,7 +86,7 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(accountDetailsMap0));
 
         // Account 1
-        Map<String, Object> accountDetailsMap1 = createAccountDetailsMap(1, true,
+        Map<String, Object> accountDetailsMap1 = createAccountDetailsMap(1,
                 (String)folderDetailsMap2.get(FolderColumns.URI));
         accountList.add(accountDetailsMap1);
 
@@ -102,14 +95,14 @@ public final class MockUiProvider extends ContentProvider {
 
         // Account 2
 
-        Map<String, Object> accountDetailsMap2 = createAccountDetailsMap(2, true,
+        Map<String, Object> accountDetailsMap2 = createAccountDetailsMap(2,
                 (String)folderDetailsMap0.get(FolderColumns.URI));
         accountList.add(accountDetailsMap2);
         builder.put(((Uri) accountDetailsMap2.get(AccountColumns.URI)).toString(),
                 ImmutableList.of(accountDetailsMap2));
 
         // Account 3
-        Map<String, Object> accountDetailsMap3 = createAccountDetailsMap(3, true,
+        Map<String, Object> accountDetailsMap3 = createAccountDetailsMap(3,
                 (String)folderDetailsMap2.get(FolderColumns.URI));
         accountList.add(accountDetailsMap3);
         builder.put(((Uri) accountDetailsMap3.get(AccountColumns.URI)).toString(),
@@ -237,10 +230,11 @@ public final class MockUiProvider extends ContentProvider {
             }
 
             folders.add(folder);
-
         }
         final FolderList folderList = FolderList.copyOf(folders);
-        conversationMap.put(ConversationColumns.RAW_FOLDERS, folderList);
+        conversationMap.put(
+                MockRespondMatrixCursor.MOCK_RESPOND_PREFIX +
+                        ConversationCursorCommand.COMMAND_GET_RAW_FOLDERS, folderList);
         return conversationMap;
     }
 
@@ -319,12 +313,12 @@ public final class MockUiProvider extends ContentProvider {
     }
 
     // Temporarily made this public to allow the Gmail accounts to use the mock ui provider uris
-    public static Map<String, Object> createAccountDetailsMap(int accountId, boolean cacheMap,
-            String defaultInbox) {
+    public static Map<String, Object> createAccountDetailsMap(int accountId,String defaultInbox) {
         final String accountUri = getMockAccountUri(accountId);
         Map<String, Object> accountMap = Maps.newHashMap();
         accountMap.put(BaseColumns._ID, Long.valueOf(accountId));
         accountMap.put(AccountColumns.NAME, "account" + accountId + "@mockuiprovider.com");
+        accountMap.put(AccountColumns.TYPE, "com.android.mail.providers.protos.mock");
         accountMap.put(AccountColumns.PROVIDER_VERSION, Long.valueOf(1));
         accountMap.put(AccountColumns.URI, Uri.parse(accountUri));
         accountMap.put(AccountColumns.CAPABILITIES,
@@ -353,12 +347,15 @@ public final class MockUiProvider extends ContentProvider {
         }
         accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES, replyFroms.toString());
         accountMap.put(AccountColumns.FOLDER_LIST_URI, Uri.parse(accountUri + "/folders"));
+        accountMap.put(AccountColumns.FULL_FOLDER_LIST_URI, Uri.parse(accountUri + "/folders"));
         accountMap.put(AccountColumns.SEARCH_URI, Uri.parse(accountUri + "/search"));
         accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI,
                 Uri.parse(accountUri + "/expungeMessage"));
         accountMap.put(AccountColumns.UNDO_URI, Uri.parse(accountUri + "/undo"));
         accountMap.put(AccountColumns.SETTINGS_INTENT_URI, Uri.EMPTY);
         accountMap.put(AccountColumns.HELP_INTENT_URI, Uri.EMPTY);
+        accountMap.put(AccountColumns.SEND_FEEDBACK_INTENT_URI, Uri.EMPTY);
+        accountMap.put(AccountColumns.REAUTHENTICATION_INTENT_URI, Uri.EMPTY);
         accountMap.put(AccountColumns.SYNC_STATUS, 0);
         accountMap.put(AccountColumns.COMPOSE_URI, Uri.parse(accountUri + "/compose"));
         accountMap.put(AccountColumns.RECENT_FOLDER_LIST_URI,
@@ -366,18 +363,34 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.MIME_TYPE, "account/mock");
         accountMap.put(AccountColumns.COLOR, 0);
         accountMap.put(AccountColumns.RECENT_FOLDER_LIST_URI, Uri.EMPTY);
-        accountMap.put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
-                Uri.EMPTY);
-        accountMap.put(AccountColumns.MANUAL_SYNC_URI,
-                Uri.EMPTY);
-        accountMap.put(AccountColumns.VIEW_INTENT_PROXY_URI,
-                Uri.EMPTY);
+        accountMap.put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI, Uri.EMPTY);
+        accountMap.put(AccountColumns.MANUAL_SYNC_URI, Uri.EMPTY);
+        accountMap.put(AccountColumns.VIEW_INTENT_PROXY_URI, Uri.EMPTY);
+        accountMap.put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, Uri.EMPTY);
+        accountMap.put(AccountColumns.UPDATE_SETTINGS_URI, Uri.EMPTY);
+        accountMap.put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, 1);
 
-        // TODO: store the default inbox
+
+        // Add settings columns
+        accountMap.put(SettingsColumns.SIGNATURE, "");
+        accountMap.put(SettingsColumns.AUTO_ADVANCE, 1);
+        accountMap.put(SettingsColumns.MESSAGE_TEXT_SIZE, 1);
+        accountMap.put(SettingsColumns.SNAP_HEADERS, 1);
+        accountMap.put(SettingsColumns.REPLY_BEHAVIOR, 1);
+        accountMap.put(SettingsColumns.CONV_LIST_ICON, 1);
+        accountMap.put(SettingsColumns.CONFIRM_DELETE, 1);
+        accountMap.put(SettingsColumns.CONFIRM_ARCHIVE, 1);
+        accountMap.put(SettingsColumns.CONFIRM_SEND, 1);
         accountMap.put(SettingsColumns.DEFAULT_INBOX, defaultInbox);
-        if (cacheMap) {
-            addAccountInfoToAccountCache(accountMap);
-        }
+        accountMap.put(SettingsColumns.DEFAULT_INBOX_NAME, "Inbox");
+        accountMap.put(SettingsColumns.FORCE_REPLY_FROM_DEFAULT, 1);
+        accountMap.put(SettingsColumns.MAX_ATTACHMENT_SIZE, 25 * 1024 * 1024);
+        accountMap.put(SettingsColumns.SWIPE, 1);
+        accountMap.put(SettingsColumns.PRIORITY_ARROWS_ENABLED, 1);
+        accountMap.put(SettingsColumns.SETUP_INTENT_URI, Uri.EMPTY);
+        accountMap.put(SettingsColumns.CONVERSATION_VIEW_MODE, 1);
+        accountMap.put(SettingsColumns.VEILED_ADDRESS_PATTERN, null);
+        accountMap.put(SettingsColumns.MOVE_TO_INBOX, Uri.EMPTY);
         return accountMap;
     }
 
@@ -395,10 +408,7 @@ public final class MockUiProvider extends ContentProvider {
     public Cursor query(Uri url, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
 
-        // TODO (pwestbro): respect the projection that is specified by the caller
-
-        final List<Map<String, Object>> queryResults =
-                MOCK_QUERY_RESULTS.get(url.toString());
+        final List<Map<String, Object>> queryResults = MOCK_QUERY_RESULTS.get(url.toString());
 
         if (queryResults != null && queryResults.size() > 0) {
             // Get the projection.  If there are rows in the result set, pick the first item to
@@ -408,8 +418,8 @@ public final class MockUiProvider extends ContentProvider {
                 Set<String> keys = queryResults.get(0).keySet();
                 projection = keys.toArray(new String[keys.size()]);
             }
-            MatrixCursor matrixCursor =
-                    new MatrixCursorWithCachedColumns(projection, queryResults.size());
+            final MatrixCursor matrixCursor =
+                    new MockRespondMatrixCursor(projection, queryResults.size(), queryResults);
 
             for (Map<String, Object> queryResult : queryResults) {
                 MatrixCursor.RowBuilder rowBuilder = matrixCursor.newRow();
@@ -447,61 +457,7 @@ public final class MockUiProvider extends ContentProvider {
 
     @VisibleForTesting
     static Uri getAccountsUri() {
-        // TODO: this should probably return a different specific to the mock account list
-        return Uri.parse(BASE_URI_STRING + "/");
-    }
-
-    private static void addAccountInfoToAccountCache(Map<String, Object> accountInfo) {
-        final Parcel dest = Parcel.obtain();
-        dest.writeString((String) accountInfo.get(AccountColumns.NAME));
-        dest.writeString("mock");
-
-        final int providerVersion = 1;
-        dest.writeInt(providerVersion);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.URI), 0);
-        dest.writeInt((Integer) accountInfo.get(AccountColumns.CAPABILITIES));
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.FOLDER_LIST_URI), 0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.FULL_FOLDER_LIST_URI), 0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEARCH_URI), 0);
-        dest.writeString((String) accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES));
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI), 0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.UNDO_URI), 0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SETTINGS_INTENT_URI), 0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.HELP_INTENT_URI), 0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEND_FEEDBACK_INTENT_URI), 0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.REAUTHENTICATION_INTENT_URI), 0);
-        dest.writeInt((Integer) accountInfo.get(AccountColumns.SYNC_STATUS));
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.COMPOSE_URI), 0);
-        dest.writeString((String) accountInfo.get(AccountColumns.MIME_TYPE));
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.RECENT_FOLDER_LIST_URI), 0);
-        dest.writeInt((Integer) accountInfo.get(AccountColumns.COLOR));
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI),
-                0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.MANUAL_SYNC_URI),
-                0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.VIEW_INTENT_PROXY_URI),
-                0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.ACCOUNT_COOKIE_QUERY_URI),
-                0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.UPDATE_SETTINGS_URI),
-                0);
-        Parcel p = Parcel.obtain();
-        p.writeString("");
-        p.writeInt(1);
-        p.writeInt(1);
-        p.writeInt(1);
-        p.writeInt(1);
-        p.writeInt(1);
-        p.writeInt(1);
-        p.writeInt(1);
-        p.writeInt(1);
-        p.writeString((String)accountInfo.get(SettingsColumns.DEFAULT_INBOX));
-        p.writeInt(1);
-        p.setDataPosition(0);
-        dest.writeString(new Settings(p).serialize());
-        dest.setDataPosition(0);
-        final Account account = new Account(dest);
-        MailAppProvider.addAccount(account, MOCK_ACCOUNTS_URI);
+        return MOCK_ACCOUNTS_URI;
     }
 }
 
