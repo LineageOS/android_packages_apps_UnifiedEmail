@@ -116,7 +116,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
                 final Folder folder = new Folder(folders);
                 final boolean isSelected = initiallySelected != null
                         && initiallySelected.contains(
-                                folder.folderUri.comparisonUri.toString());
+                                folder.folderUri.getComparisonUri().toString());
                 if (meetsRequirements(folder) && !Objects.equal(folder, mExcludedFolder)) {
                     final FolderRow row = new FolderRow(folder, isSelected);
                     // Add the currently selected first.
