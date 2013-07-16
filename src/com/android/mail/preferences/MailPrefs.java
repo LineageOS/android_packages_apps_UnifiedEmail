@@ -79,6 +79,9 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String DISPLAY_IMAGES = "display_images";
         public static final String DISPLAY_IMAGES_PATTERNS = "display_sender_images_patterns_set";
 
+
+        public static final String SHOW_SENDER_IMAGES = "conversation-list-sender-image";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
@@ -86,6 +89,7 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(REMOVAL_ACTION)
                 .add(DISPLAY_IMAGES)
                 .add(DISPLAY_IMAGES_PATTERNS)
+                .add(SHOW_SENDER_IMAGES)
                 .build();
     }
 
@@ -350,5 +354,16 @@ public final class MailPrefs extends VersionedPrefs {
         editor.putStringSet(PreferenceKeys.DISPLAY_IMAGES, Collections.EMPTY_SET);
         editor.putStringSet(PreferenceKeys.DISPLAY_IMAGES_PATTERNS, Collections.EMPTY_SET);
         editor.apply();
+    }
+
+
+    public void setShowSenderImages(boolean enable) {
+        getEditor().putBoolean(PreferenceKeys.SHOW_SENDER_IMAGES, enable).apply();
+        notifyBackupPreferenceChanged();
+    }
+
+    public boolean getShowSenderImages() {
+        final SharedPreferences sharedPreferences = getSharedPreferences();
+        return sharedPreferences.getBoolean(PreferenceKeys.SHOW_SENDER_IMAGES, true);
     }
 }

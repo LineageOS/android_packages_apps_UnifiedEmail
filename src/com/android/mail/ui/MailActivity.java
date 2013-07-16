@@ -60,6 +60,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     private boolean mAccessibilityEnabled;
     private AccessibilityManager mAccessibilityManager;
 
+    protected ConversationListHelper mConversationListHelper;
+
     /**
      * The account name currently in use. Used to construct the NFC mailto: message. This needs
      * to be static since the {@link ComposeActivity} needs to statically change the account name
@@ -105,6 +107,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     public MailActivity() {
         super();
+        mConversationListHelper = new ConversationListHelper();
     }
 
     @Override
@@ -423,8 +426,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public ConversationListHelper getConversationListHelper() {
-        // Unsupported
-        return null;
+    public final ConversationListHelper getConversationListHelper() {
+        return mConversationListHelper;
     }
 }
