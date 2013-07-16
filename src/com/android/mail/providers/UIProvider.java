@@ -125,6 +125,13 @@ public class UIProvider {
     public static final String LABEL_QUERY_PARAMETER = "label";
     public static final String SEEN_QUERY_PARAMETER = "seen";
 
+    /**
+     * Query parameter that can be used to specify a parent for a the returned folder object from a
+     * query. When set, if a folder is returned that does not have a true parent, it will use this
+     * uri as its parent uri.
+     */
+    public static final String DEFAULT_PARENT_QUERY_PARAMETER = "defaultParent";
+
     public static final Map<String, Class<?>> ACCOUNTS_COLUMNS_NO_CAPABILITIES =
             new ImmutableMap.Builder<String, Class<?>>()
             .put(AccountColumns._ID, Integer.class)
