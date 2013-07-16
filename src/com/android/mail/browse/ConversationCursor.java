@@ -359,7 +359,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         private int mCachePos;
         private boolean mCachingEnabled = true;
         private final NewCursorUpdateObserver mCursorUpdateObserver;
-        private boolean mUpdateObserverRegistered;
+        private boolean mUpdateObserverRegistered = false;
 
         // Ideally these two objects could be combined into a Map from
         // conversationId -> position, but the cached values uses the conversation
@@ -377,8 +377,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             // any updates
             mCursorUpdateObserver =
                     new NewCursorUpdateObserver(new Handler(Looper.getMainLooper()));
-            result.registerContentObserver(mCursorUpdateObserver);
-            mUpdateObserverRegistered = true;
+            if (result != null) {
+                result.registerContentObserver(mCursorUpdateObserver);
+                mUpdateObserverRegistered = true;
+            }
 
             final long start = SystemClock.uptimeMillis();
             final Map<String, Integer> uriPositionMap;
