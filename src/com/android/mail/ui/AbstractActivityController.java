@@ -2122,8 +2122,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // If search list/conv mode: disable indicator
         // Indicator is enabled either in conversation list or folder list mode.
         return isDrawerEnabled() && !ViewMode.isSearchMode(viewMode)
-            && (viewMode == ViewMode.FOLDER_LIST
-                || (viewMode == ViewMode.CONVERSATION_LIST  && isTopLevel));
+            && (viewMode == ViewMode.CONVERSATION_LIST  && isTopLevel);
     }
 
     /**

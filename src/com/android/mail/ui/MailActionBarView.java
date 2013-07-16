@@ -337,11 +337,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 setEmptyMode();
                 break;
-            case ViewMode.FOLDER_LIST:
-                closeSearchField();
-                mActionBar.setDisplayHomeAsUpEnabled(true);
-                setFoldersMode();
-                break;
             case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
                 // We want the user to be able to switch accounts while waiting for an account
                 // to sync.
@@ -559,29 +554,12 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         setFolderAndAccount(false);
     }
 
-    /**
-     * Put the ActionBar in standard mode, and show the word "Folders" along with the account name
-     * (if user has multiple accounts)
-     */
-    private void setFoldersMode() {
-        setTitle(R.string.folders);
-        setSubtitle(mAccount.name);
-        setTitleModeFlags(ActionBar.DISPLAY_SHOW_TITLE);
-    }
-
     private void setSubtitle(CharSequence subtitle) {
         if (!TextUtils.equals(subtitle, mActionBar.getSubtitle())) {
             mActionBar.setSubtitle(subtitle);
         }
         if (mLegacySubTitle != null) {
             mLegacySubTitle.setText(subtitle);
-        }
-    }
-
-    private void setTitle(int res) {
-        mActionBar.setTitle(res);
-        if (mLegacyTitle != null) {
-            mLegacyTitle.setText(res);
         }
     }
 
