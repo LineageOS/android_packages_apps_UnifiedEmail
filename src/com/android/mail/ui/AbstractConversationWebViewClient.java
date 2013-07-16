@@ -67,11 +67,15 @@ public class AbstractConversationWebViewClient extends WebViewClient {
 
         boolean result = false;
         final Intent intent;
-        Uri uri = Uri.parse(url);
+        final Uri uri = Uri.parse(url);
         if (mAccount != null && !Utils.isEmpty(mAccount.viewIntentProxyUri)) {
             intent = generateProxyIntent(uri);
         } else {
             intent = new Intent(Intent.ACTION_VIEW, uri);
+
+            // If this is a mailto: uri, we want to set the account name in the intent so
+            // the ComposeActivity can default to the current account
+            Utils.addAccountToMailtoIntent(intent, mAccount);
             intent.putExtra(Browser.EXTRA_APPLICATION_ID, mActivity.getPackageName());
         }
 
