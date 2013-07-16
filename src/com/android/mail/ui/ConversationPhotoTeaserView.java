@@ -167,7 +167,7 @@ public class ConversationPhotoTeaserView extends FrameLayout
     }
 
     protected boolean shouldShowSenderImage() {
-        return false;
+        return mMailPrefs.getShowSenderImages();
     }
 
     @Override
