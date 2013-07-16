@@ -522,6 +522,7 @@ public class Conversation implements Parcelable {
             fl = response.getParcelable(key);
         } else {
             // legacy fallback
+            // TODO: delete this once Email supports the respond call
             fl = FolderList.fromBlob(
                     cursor.getBlob(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN));
         }
