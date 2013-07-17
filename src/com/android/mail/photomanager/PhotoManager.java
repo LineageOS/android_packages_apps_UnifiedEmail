@@ -468,19 +468,15 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
             }
 
             case MESSAGE_PHOTOS_LOADED: {
-                if (!mPaused) {
-                    processLoadedImages();
-                }
+                processLoadedImages();
                 if (DEBUG) dumpStats();
                 return true;
             }
 
             case MESSAGE_PHOTO_LOADING: {
-                if (!mPaused) {
-                    final int hashcode = msg.arg1;
-                    final Request request = mPendingRequests.get(hashcode);
-                    onImageLoadStarted(request);
-                }
+                final int hashcode = msg.arg1;
+                final Request request = mPendingRequests.get(hashcode);
+                onImageLoadStarted(request);
                 return true;
             }
         }
@@ -494,9 +490,9 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     private void processLoadedImages() {
         Utils.traceBeginSection("process loaded images");
         final List<Integer> toRemove = Lists.newArrayList();
-        for (Integer hash : mPendingRequests.keySet()) {
-            Request request = mPendingRequests.get(hash);
-            boolean loaded = loadCachedPhoto(request, true);
+        for (final Integer hash : mPendingRequests.keySet()) {
+            final Request request = mPendingRequests.get(hash);
+            final boolean loaded = loadCachedPhoto(request, true);
             // Request can go through multiple attempts if the LoaderThread fails to load any
             // images for it, or if the images it loads are evicted from the cache before we
             // could access them in the main thread.
@@ -504,11 +500,11 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
                 toRemove.add(hash);
             }
         }
-        for (Integer key : toRemove) {
+        for (final Integer key : toRemove) {
             mPendingRequests.remove(key);
         }
 
-        if (!mPendingRequests.isEmpty()) {
+        if (!mPaused && !mPendingRequests.isEmpty()) {
             LogUtils.d(TAG, "Finished loading batch. %d still have to be loaded.",
                     mPendingRequests.size());
             requestLoading();

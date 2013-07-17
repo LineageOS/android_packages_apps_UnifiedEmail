@@ -32,6 +32,7 @@
     <color name="date_text_color">@color/dark_gray_text_color</color>
     <color name="message_info_text_color">@color/gray_text_color</color>
     <color name="subject_text_color">#333333</color>
+    <color name="ap_background_color">#fff1f1f2</color>
     <color name="ap_overflow_badge_color">#eeeeeeee</color>
     <color name="ap_overflow_text_color">#ff4f4c4c</color>
     <!-- a 'checked' item is in the conversation selection set. also the 'pressed' color. -->
