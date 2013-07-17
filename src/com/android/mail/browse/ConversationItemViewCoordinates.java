@@ -572,8 +572,7 @@ public class ConversationItemViewCoordinates {
         int x = 0;
         while (view != null) {
             x += (int) view.getX();
-            ViewParent parent = view.getParent();
-            view = parent != null ? (View) parent : null;
+            view = (View) view.getParent();
         }
         return x;
     }
@@ -585,8 +584,7 @@ public class ConversationItemViewCoordinates {
         int y = 0;
         while (view != null) {
             y += (int) view.getY();
-            ViewParent parent = view.getParent();
-            view = parent != null ? (View) parent : null;
+            view = (View) view.getParent();
         }
         return y;
     }
