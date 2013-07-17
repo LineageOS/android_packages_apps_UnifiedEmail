@@ -328,7 +328,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(persistentId);
-        dest.writeParcelable(folderUri.fullUri, 0);
+        dest.writeParcelable(folderUri != null ? folderUri.fullUri : null, 0);
         dest.writeString(name);
         dest.writeInt(capabilities);
         // 1 for true, 0 for false.
