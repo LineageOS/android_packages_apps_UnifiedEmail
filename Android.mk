@@ -19,7 +19,8 @@ chips_dir := ../../../frameworks/ex/chips/res
 
 #Include res dir from photoviewer
 photo_dir := ../../../frameworks/opt/photoviewer/res
-res_dirs := $(chips_dir) $(photo_dir) res
+res_dirs := res $(chips_dir) $(photo_dir)
+
 
 ##################################################
 # Build APK
