@@ -334,7 +334,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             final int xEnd = coordinates.foldersXEnd;
             final int y = coordinates.foldersY;
             final int height = coordinates.foldersHeight;
-            final int ascent = coordinates.foldersAscent;
             int textBottomPadding = coordinates.foldersTextBottomPadding;
 
             sFoldersPaint.setTextSize(coordinates.foldersFontSize);
@@ -410,13 +409,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 i++;
             }
         }
-    }
-
-    /**
-     * Helpers function to align an element in the center of a space.
-     */
-    private static int getPadding(int space, int length) {
-        return (space - length) / 2;
     }
 
     public ConversationItemView(Context context, String account) {
@@ -1258,8 +1250,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
 
         // Second pass to layout each fragment.
-        int sendersY = mCoordinates.sendersY - mCoordinates.sendersAscent;
-
         sPaint.setTextSize(mCoordinates.sendersFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
 
@@ -1283,9 +1273,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 totalWidth += senderFragment.width;
             }
 
-            if (!ConversationItemViewCoordinates.displaySendersInline(mCoordinates.getMode())) {
-                sendersY += totalWidth <= mSendersWidth ? mCoordinates.sendersLineHeight / 2 : 0;
-            }
             if (mSendersWidth < 0) {
                 mSendersWidth = 0;
             }
@@ -2352,11 +2339,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         @Override
         public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
-            int width = mView.getWidth();
-            int height = mView.getHeight();
+            final int width = mView.getWidth();
+            final int height = mView.getHeight();
+
+            sPaint.setTextSize(mCoordinates.subjectFontSize);
             mDragDescX = mCoordinates.sendersX;
-            mDragDescY = getPadding(height, (int) mCoordinates.subjectFontSize)
-                    - mCoordinates.subjectAscent;
+            mDragDescY = (height - (int) mCoordinates.subjectFontSize) / 2 ;
             shadowSize.set(width, height);
             shadowTouchPoint.set(mTouchX, mTouchY);
         }
@@ -2366,7 +2354,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mBackground.setBounds(0, 0, mView.getWidth(), mView.getHeight());
             mBackground.draw(canvas);
             sPaint.setTextSize(mCoordinates.subjectFontSize);
-            canvas.drawText(mDragDesc, mDragDescX, mDragDescY, sPaint);
+            canvas.drawText(mDragDesc, mDragDescX, mDragDescY - sPaint.ascent(), sPaint);
         }
     }
 

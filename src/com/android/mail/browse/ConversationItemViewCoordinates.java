@@ -186,7 +186,6 @@ public class ConversationItemViewCoordinates {
     final int sendersLineCount;
     final int sendersLineHeight;
     final float sendersFontSize;
-    final int sendersAscent;
 
     // Subject.
     final int subjectX;
@@ -195,7 +194,6 @@ public class ConversationItemViewCoordinates {
     final int subjectHeight;
     final int subjectLineCount;
     final float subjectFontSize;
-    final int subjectAscent;
 
     // Folders.
     final int foldersX;
@@ -204,7 +202,6 @@ public class ConversationItemViewCoordinates {
     final int foldersHeight;
     final Typeface foldersTypeface;
     final float foldersFontSize;
-    final int foldersAscent;
     final int foldersTextBottomPadding;
 
     // Date.
@@ -212,7 +209,6 @@ public class ConversationItemViewCoordinates {
     final int dateY;
     final int datePaddingLeft;
     final float dateFontSize;
-    final int dateAscent;
     final int dateYBaseline;
 
     // Paperclip.
@@ -386,7 +382,6 @@ public class ConversationItemViewCoordinates {
         sendersLineCount = getLineCount(senders);
         sendersLineHeight = senders.getLineHeight();
         sendersFontSize = senders.getTextSize();
-        sendersAscent = (int) senders.getPaint().ascent();
 
         final TextView subject = (TextView) view.findViewById(R.id.subject);
         final int subjectTopAdjust = getLatinTopAdjustment(subject);
@@ -400,7 +395,6 @@ public class ConversationItemViewCoordinates {
         subjectHeight = subject.getHeight();
         subjectLineCount = getLineCount(subject);
         subjectFontSize = subject.getTextSize();
-        subjectAscent = (int) subject.getPaint().ascent();
 
         if (config.areFoldersVisible()) {
             // vertically align folders min left edge with subject
@@ -416,7 +410,6 @@ public class ConversationItemViewCoordinates {
             foldersTextBottomPadding = res
                     .getDimensionPixelSize(R.dimen.folders_text_bottom_padding);
             foldersFontSize = folders.getTextSize();
-            foldersAscent = (int) folders.getPaint().ascent();
         } else {
             foldersX = 0;
             foldersXEnd = 0;
@@ -425,7 +418,6 @@ public class ConversationItemViewCoordinates {
             foldersTypeface = null;
             foldersTextBottomPadding = 0;
             foldersFontSize = 0;
-            foldersAscent = 0;
         }
 
         final View colorBlock = view.findViewById(R.id.color_block);
@@ -458,7 +450,6 @@ public class ConversationItemViewCoordinates {
         datePaddingLeft = date.getPaddingLeft();
         dateFontSize = date.getTextSize();
         dateYBaseline = dateY + getLatinTopAdjustment(date) + date.getBaseline();
-        dateAscent = (int) date.getPaint().ascent();
 
         final View paperclip = view.findViewById(R.id.paperclip);
         paperclipY = getY(paperclip);
