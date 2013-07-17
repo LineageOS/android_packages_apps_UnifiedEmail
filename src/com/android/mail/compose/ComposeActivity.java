@@ -296,6 +296,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /**
      * Can be called from a non-UI thread.
      */
+    public static void composeToAddress(Context launcher, Account account, String toAddress) {
+        launch(launcher, account, null, COMPOSE, toAddress, null);
+    }
+
+    /**
+     * Can be called from a non-UI thread.
+     */
     public static Intent createReplyIntent(final Context launcher, final Account account,
             final Uri messageUri, final boolean isReplyAll) {
         return createActionIntent(launcher, account, messageUri, isReplyAll ? REPLY_ALL : REPLY);

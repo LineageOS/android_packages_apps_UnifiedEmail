@@ -41,7 +41,8 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
 
-public class EmlViewerActivity extends Activity implements FeedbackEnabledActivity {
+public class EmlViewerActivity extends Activity implements FeedbackEnabledActivity,
+        ConversationAccountController {
     public static final String EXTRA_ACCOUNT_URI = "extra-account-uri";
 
     private static final String LOG_TAG = LogTag.getLogTag();
@@ -151,6 +152,11 @@ public class EmlViewerActivity extends Activity implements FeedbackEnabledActivi
     @Override
     public Context getActivityContext() {
         return this;
+    }
+
+    @Override
+    public Account getAccount() {
+        return mAccount;
     }
 
     private class AccountLoadCallbacks
