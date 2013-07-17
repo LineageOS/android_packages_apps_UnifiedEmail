@@ -27,8 +27,10 @@ import android.os.Build;
 import android.provider.ContactsContract;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
+import android.text.style.URLSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -776,7 +778,21 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         rootView.findViewById(headerId).setVisibility(VISIBLE);
         final TextView detailsText = (TextView) rootView.findViewById(detailsId);
         detailsText.setText(TextUtils.join("\n", formattedEmails));
+        stripUnderlines(detailsText);
         detailsText.setVisibility(VISIBLE);
+    }
+
+    private void stripUnderlines(TextView textView) {
+        final Spannable spannable = (Spannable) textView.getText();
+        final URLSpan[] urls = textView.getUrls();
+
+        for (URLSpan span : urls) {
+            final int start = spannable.getSpanStart(span);
+            final int end = spannable.getSpanEnd(span);
+            spannable.removeSpan(span);
+            span = new EmailAddressSpan(getAccount(), span.getURL().substring(7));
+            spannable.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
     /**

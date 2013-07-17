@@ -191,7 +191,7 @@ public class EmlMessageViewFragment extends Fragment
 
     @Override
     public ConversationAccountController getConversationAccountController() {
-        return null;
+        return (EmlViewerActivity) getActivity();
     }
 
     @Override

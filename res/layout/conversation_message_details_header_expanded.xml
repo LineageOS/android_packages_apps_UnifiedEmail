@@ -47,7 +47,6 @@
         android:layout_marginBottom="4dp"
         android:layout_column="1"
         android:layout_row="0"
-        android:autoLink="email"
         android:visibility="gone"
         style="@style/MessageDetailsValueStyle" />
     <ImageView
@@ -80,7 +79,6 @@
         android:layout_marginBottom="4dp"
         android:layout_column="1"
         android:layout_row="1"
-        android:autoLink="email"
         android:visibility="gone"
         style="@style/MessageDetailsValueStyle" />
     <TextView
@@ -103,7 +101,6 @@
         android:layout_marginBottom="4dp"
         android:layout_column="1"
         android:layout_row="2"
-        android:autoLink="email"
         android:visibility="gone"
         style="@style/MessageDetailsValueStyle" />
     <TextView
@@ -126,7 +123,6 @@
         android:layout_marginBottom="4dp"
         android:layout_column="1"
         android:layout_row="3"
-        android:autoLink="email"
         android:visibility="gone"
         style="@style/MessageDetailsValueStyle" />
     <TextView
@@ -149,7 +145,6 @@
         android:layout_marginBottom="4dp"
         android:layout_column="1"
         android:layout_row="4"
-        android:autoLink="email"
         android:visibility="gone"
         style="@style/MessageDetailsValueStyle" />
 
