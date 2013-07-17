@@ -45,6 +45,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     private ComposeActivity mActivity;
     private Account mAccount;
 
+    private static final Account[] EMPTY_ACCOUNT_LIST = new Account[0];
+
     public ComposeActivityTest() {
         super(ComposeActivity.class);
     }
@@ -119,7 +121,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 mAccount.name, mAccount.name, customFrom, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
         mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null, null);
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -152,7 +154,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
         mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null, null);
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -190,7 +192,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 mAccount.name, mAccount.name, customFrom, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
         mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null, null);
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -517,7 +519,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
         mActivity.mFromSpinner.initialize(ComposeActivity.REPLY, currentAccount.account,
-                null, null);
+                EMPTY_ACCOUNT_LIST, null);
 
         mActivity.runOnUiThread(new Runnable() {
             @Override
@@ -557,7 +559,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
         mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null, null);
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -599,7 +601,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
         mActivity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, null, null);
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
