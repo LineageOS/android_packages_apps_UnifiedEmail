@@ -283,9 +283,11 @@
     </style>
 
     <style name="MessageDetailsValueStyle" parent="MessageHeaderSmallStyle">
-        <item name="android:textIsSelectable">true</item>
+        <item name="android:autoLink">email</item>
+        <item name="android:linksClickable">true</item>
         <item name="android:textColor">@color/conv_header_text_light</item>
         <item name="android:textColorLink">@color/conv_header_text_link_blue</item>
+        <item name="android:textIsSelectable">true</item>
     </style>
 
     <style name="MessageHeaderActionButtonStyle" parent="android:Widget.Holo.Button.Borderless">
