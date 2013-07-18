@@ -320,6 +320,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             final Uri messageUri, final int action) {
         final Intent intent = new Intent(launcher, ComposeActivity.class);
 
+        updateActionIntent(account, messageUri, action, intent);
+
+        return intent;
+    }
+
+    @VisibleForTesting
+    static Intent updateActionIntent(Account account, Uri messageUri, int action, Intent intent) {
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(EXTRA_ACTION, action);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
@@ -1572,6 +1579,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         initReplyRecipients(refMessage, action);
     }
 
+    // TODO: This should be private.  This method shouldn't be used by ComposeActivityTests, as
+    // it doesn't setup the state of the activity correctly
     @VisibleForTesting
     void initReplyRecipients(final Message refMessage, final int action) {
         String[] sentToAddresses = refMessage.getToAddresses();
@@ -1725,7 +1734,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * A recipient matches this account if it has the same address as the
      * currently selected account OR one of the custom from addresses associated
      * with the currently selected account.
-     * @param accountAddress currently selected account
      * @param recipientAddress address we are comparing with the currently selected account
      * @return
      */
