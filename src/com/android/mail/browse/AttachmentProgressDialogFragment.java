@@ -40,7 +40,7 @@ public class AttachmentProgressDialogFragment extends DialogFragment {
         final AttachmentProgressDialogFragment f = new AttachmentProgressDialogFragment();
 
         // Supply the attachment as an argument.
-        final Bundle args = new Bundle();
+        final Bundle args = new Bundle(1);
         args.putParcelable(ATTACHMENT_KEY, attachment);
         f.setArguments(args);
 
