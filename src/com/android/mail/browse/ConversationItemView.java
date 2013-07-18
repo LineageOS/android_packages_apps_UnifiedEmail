@@ -149,7 +149,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static String sOverflowCountFormat;
 
     // Static colors.
-    private static int sActivatedTextColor;
     private static int sSendersTextColorRead;
     private static int sSendersTextColorUnread;
     private static int sDateTextColor;
@@ -158,11 +157,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sOverflowTextColor;
     private static int sStarTouchSlop;
     private static int sSenderImageTouchSlop;
-    @Deprecated
-    private static int sStandardScaledDimen;
     private static int sShrinkAnimationDuration;
     private static int sSlideAnimationDuration;
-    private static int sAnimatingBackgroundColor;
     private static int sProgressAnimationDuration;
     private static int sFadeAnimationDuration;
     private static float sPlaceholderAnimationDurationRatio;
@@ -452,8 +448,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             PROGRESS_BAR = res.getDrawable(drawable.progress_holo);
 
             // Initialize colors.
-            sActivatedTextColor = res.getColor(R.color.senders_text_color_read);
-            sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(sActivatedTextColor));
+            sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(
+                    res.getColor(R.color.senders_text_color_read)));
             sSendersTextColorRead = res.getColor(R.color.senders_text_color_read);
             sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
             sSubjectTextUnreadSpan = new TextAppearanceSpan(mContext,
@@ -470,14 +466,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sOverflowTextColor = res.getColor(color.ap_overflow_text_color);
             sStarTouchSlop = res.getDimensionPixelSize(R.dimen.star_touch_slop);
             sSenderImageTouchSlop = res.getDimensionPixelSize(R.dimen.sender_image_touch_slop);
-            sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
             sSlideAnimationDuration = res.getInteger(R.integer.slide_animation_duration);
             // Initialize static color.
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
             sOverflowCountFormat = res.getString(string.ap_overflow_format);
-            sAnimatingBackgroundColor = res.getColor(R.color.animating_item_background_color);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
             sFoldersLeftPadding = res.getDimensionPixelOffset(R.dimen.folders_left_padding);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
