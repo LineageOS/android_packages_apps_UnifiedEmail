@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -204,6 +205,11 @@ public class SecureConversationViewController implements
     @Override
     public String getMessageTransforms(final Message msg) {
         return null;
+    }
+
+    @Override
+    public FragmentManager getFragmentManager() {
+        return mCallbacks.getFragment().getFragmentManager();
     }
 
     // End MessageHeaderViewCallbacks implementations
