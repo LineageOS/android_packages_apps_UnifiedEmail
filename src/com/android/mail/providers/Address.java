@@ -15,6 +15,12 @@
  */
 package com.android.mail.providers;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.TextUtils;
+import android.text.util.Rfc822Token;
+import android.text.util.Rfc822Tokenizer;
+
 import com.android.common.Rfc822Validator;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -23,10 +29,6 @@ import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.james.mime4j.codec.EncoderUtil;
 import org.apache.james.mime4j.decoder.DecoderUtil;
-
-import android.text.TextUtils;
-import android.text.util.Rfc822Token;
-import android.text.util.Rfc822Tokenizer;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -42,7 +44,7 @@ import java.util.regex.Pattern;
  * Name and comment part should be MIME/base64 encoded in header if necessary.
  *
  */
-public class Address {
+public class Address implements Parcelable {
     public static final String ADDRESS_DELIMETER = ",";
     /**
      *  Address part, in the form local_part@domain_part. No surrounding angle brackets.
@@ -80,6 +82,8 @@ public class Address {
         setName(name);
         setAddress(address);
     }
+
+
 
     /**
      * Returns a simplified string for this e-mail address.
@@ -511,5 +515,33 @@ public class Address {
         } else {
             return address + LIST_DELIMITER_PERSONAL + personal;
         }
+    }
+
+    public static final Creator<Address> CREATOR = new Creator<Address>() {
+        @Override
+        public Address createFromParcel(Parcel parcel) {
+            return new Address(parcel);
+        }
+
+        @Override
+        public Address[] newArray(int size) {
+            return new Address[size];
+        }
+    };
+
+    public Address(Parcel in) {
+        setName(in.readString());
+        setAddress(in.readString());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(mName);
+        out.writeString(mAddress);
     }
 }
