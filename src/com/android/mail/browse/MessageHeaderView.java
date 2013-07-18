@@ -16,7 +16,8 @@
 
 package com.android.mail.browse;
 
-import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.res.Resources;
@@ -104,6 +105,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     // This is a debug only feature
     public static final boolean ENABLE_REPORT_RENDERING_PROBLEM =
             MailPrefs.SHOW_EXPERIMENTAL_PREFS;
+
+    private static final String DETAILS_DIALOG_TAG = "details-dialog";
 
     private MessageHeaderViewCallbacks mCallbacks;
 
@@ -211,7 +214,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private int mExpandMode = DEFAULT_MODE;
 
-    private AlertDialog mDetailsPopup;
+    private DialogFragment mDetailsPopup;
 
     private VeiledAddressMatcher mVeiledMatcher;
 
@@ -236,6 +239,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         boolean supportsMessageTransforms();
 
         String getMessageTransforms(Message msg);
+
+        FragmentManager getFragmentManager();
     }
 
     public MessageHeaderView(Context context) {
@@ -500,11 +505,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return item == mMessageHeaderItem;
     }
 
-    private Address getAddress(String emailStr) {
+    public Address getAddress(String emailStr) {
         return getAddress(mAddressCache, emailStr);
     }
 
-    private static Address getAddress(Map<String, Address> cache, String emailStr) {
+    public static Address getAddress(Map<String, Address> cache, String emailStr) {
         Address addr = null;
         synchronized (cache) {
             if (cache != null) {
@@ -718,81 +723,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mlp.rightMargin = marginEnd;
         }
         childView.setLayoutParams(mlp);
-    }
-
-    /**
-     * Render an email list for the expanded message details view.
-     * @param headerId
-     * @param detailsId
-     * @param emails
-     * @param showViaDomain
-     * @param rootView
-     */
-    private void renderEmailList(int headerId, int detailsId, String[] emails,
-            boolean showViaDomain, View rootView) {
-        if (emails == null || emails.length == 0) {
-            return;
-        }
-        final String[] formattedEmails = new String[emails.length];
-        final Resources res = getResources();
-        for (int i = 0; i < emails.length; i++) {
-            final Address email = getAddress(emails[i]);
-            String name = email.getName();
-            final String address = email.getAddress();
-            // Check if the address here is a veiled address.  If it is, we need to display an
-            // alternate layout
-            final boolean isVeiledAddress = mVeiledMatcher != null &&
-                    mVeiledMatcher.isVeiledAddress(address);
-            final String addressShown;
-            if (isVeiledAddress) {
-                // Add the warning at the end of the name, and remove the address.  The alternate
-                // text cannot be put in the address part, because the address is made into a link,
-                // and the alternate human-readable text is not a link.
-                addressShown = "";
-                if (TextUtils.isEmpty(name)) {
-                    // Empty name and we will block out the address. Let's write something more
-                    // readable.
-                    name = res.getString(VeiledAddressMatcher.VEILED_ALTERNATE_TEXT_UNKNOWN_PERSON);
-                } else {
-                    name = name + res.getString(VeiledAddressMatcher.VEILED_ALTERNATE_TEXT);
-                }
-            } else {
-                addressShown = address;
-            }
-            if (name == null || name.length() == 0) {
-                formattedEmails[i] = addressShown;
-            } else {
-                // The one downside to having the showViaDomain here is that
-                // if the sender does not have a name, it will not show the via info
-                if (showViaDomain) {
-                    formattedEmails[i] = res.getString(
-                            R.string.address_display_format_with_via_domain,
-                            name, addressShown, mMessage.viaDomain);
-                } else {
-                    formattedEmails[i] = res.getString(R.string.address_display_format,
-                            name, addressShown);
-                }
-            }
-        }
-
-        rootView.findViewById(headerId).setVisibility(VISIBLE);
-        final TextView detailsText = (TextView) rootView.findViewById(detailsId);
-        detailsText.setText(TextUtils.join("\n", formattedEmails));
-        stripUnderlines(detailsText);
-        detailsText.setVisibility(VISIBLE);
-    }
-
-    private void stripUnderlines(TextView textView) {
-        final Spannable spannable = (Spannable) textView.getText();
-        final URLSpan[] urls = textView.getUrls();
-
-        for (URLSpan span : urls) {
-            final int start = spannable.getSpanStart(span);
-            final int end = spannable.getSpanEnd(span);
-            spannable.removeSpan(span);
-            span = new EmailAddressSpan(getAccount(), span.getURL().substring(7));
-            spannable.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
     }
 
     /**
@@ -1336,45 +1266,127 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private boolean ensureExpandedDetailsView() {
         boolean viewCreated = false;
         if (mExpandedDetailsView == null) {
-            View v = mInflater.inflate(R.layout.conversation_message_details_header_expanded, null,
-                    false);
+            View v = inflateExpandedDetails(mInflater);
             v.setOnClickListener(this);
 
             mExpandedDetailsView = (ViewGroup) v;
             viewCreated = true;
         }
         if (!mExpandedDetailsValid) {
-            renderEmailList(R.id.from_heading, R.id.from_details, mFrom, mMessage.viaDomain != null,
-                    mExpandedDetailsView);
-            renderEmailList(R.id.replyto_heading, R.id.replyto_details, mReplyTo, false,
-                    mExpandedDetailsView);
-            renderEmailList(R.id.to_heading, R.id.to_details, mTo, false, mExpandedDetailsView);
-            renderEmailList(R.id.cc_heading, R.id.cc_details, mCc, false, mExpandedDetailsView);
-            renderEmailList(R.id.bcc_heading, R.id.bcc_details, mBcc, false, mExpandedDetailsView);
+            renderExpandedDetails(getResources(), mExpandedDetailsView, mMessage.viaDomain,
+                    mAddressCache, getAccount(), mVeiledMatcher, mFrom, mReplyTo, mTo, mCc, mBcc);
 
             mExpandedDetailsValid = true;
         }
         return viewCreated;
     }
 
+    public static View inflateExpandedDetails(LayoutInflater inflater) {
+        return inflater.inflate(R.layout.conversation_message_details_header_expanded, null,
+                false);
+    }
+
+    public static void renderExpandedDetails(Resources res, View detailsView,
+            String viaDomain, Map<String, Address> addressCache, Account account,
+            VeiledAddressMatcher veiledMatcher, String[] from, String[] replyTo,
+            String[] to, String[] cc, String[] bcc) {
+        renderEmailList(res, R.id.from_heading, R.id.from_details, from, viaDomain,
+                detailsView, addressCache, account, veiledMatcher);
+        renderEmailList(res, R.id.replyto_heading, R.id.replyto_details, replyTo, viaDomain,
+                detailsView, addressCache, account, veiledMatcher);
+        renderEmailList(res, R.id.to_heading, R.id.to_details, to, viaDomain,
+                detailsView, addressCache, account, veiledMatcher);
+        renderEmailList(res, R.id.cc_heading, R.id.cc_details, cc, viaDomain,
+                detailsView, addressCache, account, veiledMatcher);
+        renderEmailList(res, R.id.bcc_heading, R.id.bcc_details, bcc, viaDomain,
+                detailsView, addressCache, account, veiledMatcher);
+    }
+
+    /**
+     * Render an email list for the expanded message details view.
+     */
+    private static void renderEmailList(Resources res, int headerId, int detailsId,
+            String[] emails, String viaDomain, View rootView,
+            Map<String, Address> addressCache, Account account,
+            VeiledAddressMatcher veiledMatcher) {
+        if (emails == null || emails.length == 0) {
+            return;
+        }
+        final String[] formattedEmails = new String[emails.length];
+        for (int i = 0; i < emails.length; i++) {
+            final Address email = getAddress(addressCache, emails[i]);
+            String name = email.getName();
+            final String address = email.getAddress();
+            // Check if the address here is a veiled address.  If it is, we need to display an
+            // alternate layout
+            final boolean isVeiledAddress = veiledMatcher != null &&
+                    veiledMatcher.isVeiledAddress(address);
+            final String addressShown;
+            if (isVeiledAddress) {
+                // Add the warning at the end of the name, and remove the address.  The alternate
+                // text cannot be put in the address part, because the address is made into a link,
+                // and the alternate human-readable text is not a link.
+                addressShown = "";
+                if (TextUtils.isEmpty(name)) {
+                    // Empty name and we will block out the address. Let's write something more
+                    // readable.
+                    name = res.getString(VeiledAddressMatcher.VEILED_ALTERNATE_TEXT_UNKNOWN_PERSON);
+                } else {
+                    name = name + res.getString(VeiledAddressMatcher.VEILED_ALTERNATE_TEXT);
+                }
+            } else {
+                addressShown = address;
+            }
+            if (name == null || name.length() == 0) {
+                formattedEmails[i] = addressShown;
+            } else {
+                // The one downside to having the showViaDomain here is that
+                // if the sender does not have a name, it will not show the via info
+                if (viaDomain != null) {
+                    formattedEmails[i] = res.getString(
+                            R.string.address_display_format_with_via_domain,
+                            name, addressShown, viaDomain);
+                } else {
+                    formattedEmails[i] = res.getString(R.string.address_display_format,
+                            name, addressShown);
+                }
+            }
+        }
+
+        rootView.findViewById(headerId).setVisibility(VISIBLE);
+        final TextView detailsText = (TextView) rootView.findViewById(detailsId);
+        detailsText.setText(TextUtils.join("\n", formattedEmails));
+        stripUnderlines(detailsText, account);
+        detailsText.setVisibility(VISIBLE);
+    }
+
+    private static void stripUnderlines(TextView textView, Account account) {
+        final Spannable spannable = (Spannable) textView.getText();
+        final URLSpan[] urls = textView.getUrls();
+
+        for (URLSpan span : urls) {
+            final int start = spannable.getSpanStart(span);
+            final int end = spannable.getSpanEnd(span);
+            spannable.removeSpan(span);
+            span = new EmailAddressSpan(account, span.getURL().substring(7));
+            spannable.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
     private void showDetailsPopup() {
-        ensureExpandedDetailsView();
+        final FragmentManager manager = mCallbacks.getFragmentManager();
+        mDetailsPopup = (DialogFragment) manager.findFragmentByTag(DETAILS_DIALOG_TAG);
         if (mDetailsPopup == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            mExpandedDetailsView.findViewById(R.id.details_expander)
-                .setVisibility(View.GONE);
-            builder.setView(mExpandedDetailsView)
-                .setCancelable(true)
-                .setTitle(getContext().getString(R.string.message_details_title));
-            mDetailsPopup = builder.show();
-        } else {
-            mDetailsPopup.show();
+            mDetailsPopup = MessageHeaderDetailsDialogFragment.newInstance(
+                    mAddressCache, getAccount(), mFrom, mReplyTo, mTo, mCc, mBcc);
+            mDetailsPopup.show(manager, DETAILS_DIALOG_TAG);
         }
     }
 
     private void hideDetailsPopup() {
         if (mDetailsPopup != null) {
-            mDetailsPopup.hide();
+            mDetailsPopup.dismiss();
+            mDetailsPopup = null;
         }
     }
 
