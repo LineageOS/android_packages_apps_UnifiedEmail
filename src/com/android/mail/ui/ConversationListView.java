@@ -416,7 +416,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                 attr.recycle();
             } else {
                 // Default color
-                setBackgroundColor(R.color.list_background_color);
+                setBackgroundColor(getResources().getColor(R.color.list_background_color));
             }
         }
 
