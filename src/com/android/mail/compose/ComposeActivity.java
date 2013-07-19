@@ -848,9 +848,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.setFrom(selectedReplyFromAccount != null ? selectedReplyFromAccount.address
                 : mAccount != null ? mAccount.name : null);
         message.draftType = getDraftType(mode);
-        message.setTo(formatSenders(mTo.getText().toString()));
-        message.setCc(formatSenders(mCc.getText().toString()));
-        message.setBcc(formatSenders(mBcc.getText().toString()));
         return message;
     }
 
@@ -934,10 +931,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     /**
-     * Given an account and which email address the message was sent to,
+     * Given an account and the message we're replying to,
      * return who the message should be sent from.
      * @param account Account in which the message arrived.
-     * @param sentTo Email address to which the message was sent.
+     * @param refMessage Message to analyze for account selection
      * @return the address from which to reply.
      */
     public ReplyFromAccount getReplyFromAccount(Account account, Message refMessage) {
@@ -950,8 +947,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // all the message recipients and find one that matches
             // a custom from or account.
             List<String> allRecipients = new ArrayList<String>();
-            allRecipients.addAll(Arrays.asList(refMessage.getToAddresses()));
-            allRecipients.addAll(Arrays.asList(refMessage.getCcAddresses()));
+            allRecipients.addAll(Arrays.asList(refMessage.getToAddressesUnescaped()));
+            allRecipients.addAll(Arrays.asList(refMessage.getCcAddressesUnescaped()));
             return getMatchingRecipient(account, allRecipients);
         }
     }
@@ -1189,10 +1186,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mDraftId = message.id;
         mSubject.setText(message.subject);
         mForward = message.draftType == UIProvider.DraftType.FORWARD;
-        final List<String> toAddresses = Arrays.asList(message.getToAddresses());
+        final List<String> toAddresses = Arrays.asList(message.getToAddressesUnescaped());
         addToAddresses(toAddresses);
-        addCcAddresses(Arrays.asList(message.getCcAddresses()), toAddresses);
-        addBccAddresses(Arrays.asList(message.getBccAddresses()));
+        addCcAddresses(Arrays.asList(message.getCcAddressesUnescaped()), toAddresses);
+        addBccAddresses(Arrays.asList(message.getBccAddressesUnescaped()));
         if (message.hasAttachments) {
             List<Attachment> attachments = message.getAttachments();
             for (Attachment a : attachments) {
@@ -1583,7 +1580,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // it doesn't setup the state of the activity correctly
     @VisibleForTesting
     void initReplyRecipients(final Message refMessage, final int action) {
-        String[] sentToAddresses = refMessage.getToAddresses();
+        String[] sentToAddresses = refMessage.getToAddressesUnescaped();
         final Collection<String> toAddresses;
         String replytoAddress = refMessage.getReplyTo();
         // If there is no reply to address, the reply to address is the sender.
@@ -1603,7 +1600,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             toAddresses = initToRecipients(refMessage.getFrom(), replytoAddress, sentToAddresses);
             addToAddresses(toAddresses);
             addRecipients(ccAddresses, sentToAddresses);
-            addRecipients(ccAddresses, refMessage.getCcAddresses());
+            addRecipients(ccAddresses, refMessage.getCcAddressesUnescaped());
             addCcAddresses(ccAddresses, toAddresses);
         }
     }

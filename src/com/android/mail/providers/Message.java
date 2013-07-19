@@ -482,11 +482,19 @@ public class Message implements Parcelable {
         return mFromAddresses;
     }
 
+    public String[] getFromAddressesUnescaped() {
+        return unescapeAddresses(getFromAddresses());
+    }
+
     public synchronized String[] getToAddresses() {
         if (mToAddresses == null) {
             mToAddresses = tokenizeAddresses(mTo);
         }
         return mToAddresses;
+    }
+
+    public String[] getToAddressesUnescaped() {
+        return unescapeAddresses(getToAddresses());
     }
 
     public synchronized String[] getCcAddresses() {
@@ -496,11 +504,19 @@ public class Message implements Parcelable {
         return mCcAddresses;
     }
 
+    public String[] getCcAddressesUnescaped() {
+        return unescapeAddresses(getCcAddresses());
+    }
+
     public synchronized String[] getBccAddresses() {
         if (mBccAddresses == null) {
             mBccAddresses = tokenizeAddresses(mBcc);
         }
         return mBccAddresses;
+    }
+
+    public String[] getBccAddressesUnescaped() {
+        return unescapeAddresses(getBccAddresses());
     }
 
     public synchronized String[] getReplyToAddresses() {
@@ -510,10 +526,24 @@ public class Message implements Parcelable {
         return mReplyToAddresses;
     }
 
+    public String[] getReplyToAddressesUnescaped() {
+        return unescapeAddresses(getReplyToAddresses());
+    }
+
+    private static String[] unescapeAddresses(String[] escaped) {
+        final String[] unescaped = new String[escaped.length];
+        for (int i = 0; i < escaped.length; i++) {
+            final String escapeMore = escaped[i].replace("<", "&lt;").replace(">", "&gt;");
+            unescaped[i] = Html.fromHtml(escapeMore).toString();
+        }
+        return unescaped;
+    }
+
     public static String[] tokenizeAddresses(String addresses) {
         if (TextUtils.isEmpty(addresses)) {
             return new String[0];
         }
+
         Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addresses);
         String[] strings = new String[tokens.length];
         for (int i = 0; i < tokens.length;i++) {
