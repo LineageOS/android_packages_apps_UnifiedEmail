@@ -85,7 +85,7 @@ import java.util.Set;
 /**
  * The conversation view UI component.
  */
-public final class ConversationViewFragment extends AbstractConversationViewFragment implements
+public class ConversationViewFragment extends AbstractConversationViewFragment implements
         SuperCollapsedBlock.OnClickListener, OnLayoutChangeListener,
         MessageHeaderView.MessageHeaderViewCallbacks {
 
@@ -118,9 +118,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
      */
     private final int LOAD_WAIT_UNTIL_VISIBLE = 2;
 
-    private ConversationContainer mConversationContainer;
+    protected ConversationContainer mConversationContainer;
 
-    private ConversationWebView mWebView;
+    protected ConversationWebView mWebView;
 
     private ScrollIndicatorsView mScrollIndicators;
 
@@ -128,11 +128,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private View mNewMessageBar;
 
-    private HtmlConversationTemplates mTemplates;
+    protected HtmlConversationTemplates mTemplates;
 
     private final MailJsBridge mJsBridge = new MailJsBridge();
 
-    private ConversationViewAdapter mAdapter;
+    protected ConversationViewAdapter mAdapter;
 
     private boolean mViewsCreated;
     // True if we attempted to render before the views were laid out
@@ -149,7 +149,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private int  mMaxAutoLoadMessages;
 
-    private int mSideMarginPx;
+    protected int mSideMarginPx;
 
     /**
      * If this conversation fragment is not visible, and it's inappropriate to load up front,
@@ -596,7 +596,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
      * conversation header), and return an HTML document with spacer divs inserted for all overlays.
      *
      */
-    private String renderMessageBodies(MessageCursor messageCursor,
+    protected String renderMessageBodies(MessageCursor messageCursor,
             boolean enableContentReadySignal) {
         int pos = -1;
 
@@ -781,7 +781,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         return mTemplates.emit();
     }
 
-    private int measureOverlayHeight(int position) {
+    protected int measureOverlayHeight(int position) {
         return measureOverlayHeight(mAdapter.getItem(position));
     }
 
@@ -938,7 +938,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         return positions;
     }
 
-    private Address getAddress(String rawFrom) {
+    protected Address getAddress(String rawFrom) {
         Address addr;
         synchronized (mAddressCache) {
             addr = mAddressCache.get(rawFrom);
@@ -967,7 +967,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mWebView.setContentSizeChangeListener(mWebViewSizeChangeListener);
     }
 
-    private static boolean isOverviewMode(Account acct) {
+    public static boolean isOverviewMode(Account acct) {
         return acct.settings.isOverviewMode();
     }
 
@@ -1484,5 +1484,4 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
 
     }
-
 }
