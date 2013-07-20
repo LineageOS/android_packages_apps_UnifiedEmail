@@ -962,4 +962,7 @@
     <!-- Shown to display the date of the message when the message was received yesterday. [CHAR LIMIT=50] -->
     <string name="date_message_received_yesterday">Yesterday, <xliff:g id="time">%1$s</xliff:g></string>
 
+    <!-- Shown in the message ad header and in the list item for a message ad. [CHAR LIMIT=15]-->
+    <string name="ads">Ads</string>
+
 </resources>

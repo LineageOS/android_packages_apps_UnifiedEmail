@@ -129,4 +129,6 @@
     <color name="collapsed_message_header_background_color">#eeeded</color>
     <!-- The color of the expanded message header -->
     <color name="expanded_message_header_background_color">@android:color/white</color>
+
+    <color name="ad_background_yellow">#fff8e5</color>
 </resources>
