@@ -34,7 +34,7 @@ import java.util.Set;
  * A small class to keep state for conversation view when restoring.
  *
  */
-class ConversationViewState implements Parcelable {
+public class ConversationViewState implements Parcelable {
 
     // N.B. don't serialize entire Messages because they contain body HTML/text
 
