@@ -202,7 +202,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_SELECTED_REPLY_FROM_ACCOUNT = "replyFromAccount";
     private static final String EXTRA_REQUEST_ID = "requestId";
     private static final String EXTRA_FOCUS_SELECTION_START = "focusSelectionStart";
-    private static final String EXTRA_FOCUS_SELECTION_END = null;
+    private static final String EXTRA_FOCUS_SELECTION_END = "focusSelectionEnd";
     private static final String EXTRA_MESSAGE = "extraMessage";
     private static final int REFERENCE_MESSAGE_LOADER = 0;
     private static final int LOADER_ACCOUNT_CURSOR = 1;
