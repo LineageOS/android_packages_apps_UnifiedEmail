@@ -20,6 +20,8 @@ package com.android.mail.browse;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Context;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
@@ -30,7 +32,8 @@ import com.android.mail.ui.AnimatedAdapter.ConversationListListener;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 
-public class SwipeableConversationItemView extends FrameLayout implements ToggleableItem {
+public class SwipeableConversationItemView extends FrameLayout
+        implements ToggleableItem, OnScrollListener {
 
     private final ConversationItemView mConversationItemView;
 
@@ -87,4 +90,18 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
             mConversationItemView.toggleSelectedState();
         }
     }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+            int totalItemCount) {
+        if (mConversationItemView != null) {
+            mConversationItemView.onScroll(view, firstVisibleItem, visibleItemCount,
+                    totalItemCount);
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+    }
+
 }

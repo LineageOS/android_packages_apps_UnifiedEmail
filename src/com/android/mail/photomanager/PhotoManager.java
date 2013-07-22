@@ -47,9 +47,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Asynchronously loads photos and maintains a cache of photos
  */
 public abstract class PhotoManager implements ComponentCallbacks2, Callback {
-    public static final int STATUS_NOT_LOADED = 0;
-    public static final int STATUS_LOADING = 1;
-    public static final int STATUS_LOADED = 2;
     /**
      * Get the default image provider that draws while the photo is being
      * loaded.
