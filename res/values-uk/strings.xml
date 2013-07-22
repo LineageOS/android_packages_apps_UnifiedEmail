@@ -428,4 +428,5 @@
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Сьогодні, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Учора, <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="ads" msgid="8547072743610267481">"Оголошення"</string>
 </resources>
