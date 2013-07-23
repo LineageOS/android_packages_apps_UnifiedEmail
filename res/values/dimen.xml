@@ -75,8 +75,8 @@
     <dimen name="spinner_frame_width">196dip</dimen>
     <dimen name="folder_list_heading_padding_side">16dp</dimen>
     <dimen name="folder_list_heading_padding_bottom">3dp</dimen>
-    <dimen name="folder_list_item_left_margin">7dp</dimen>
-    <dimen name="folder_list_item_right_margin">8dp</dimen>
+    <dimen name="folder_list_item_start_margin">7dp</dimen>
+    <dimen name="folder_list_item_end_margin">8dp</dimen>
     <!-- Let's try to keep this consistent with color_block_height above, unless there's a good reason not to. -->
     <dimen name="folder_swatch_height">6dip</dimen>
     <dimen name="folder_list_popup_width">200dip</dimen>

@@ -17,6 +17,7 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.text.BidiFormatter;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.View;
@@ -110,10 +111,13 @@ public class FolderItemView extends RelativeLayout {
                 && a.unreadCount == b.unreadCount));
     }
 
-    public void bind(final Folder folder, final DropHandler dropHandler) {
+    public void bind(final Folder folder, final DropHandler dropHandler,
+            final BidiFormatter bidiFormatter) {
         mFolder = folder;
         mDropHandler = dropHandler;
-        mFolderTextView.setText(folder.name);
+
+        mFolderTextView.setText(bidiFormatter.unicodeWrap(folder.name));
+
         mFolderParentIcon.setVisibility(mFolder.hasChildren ? View.VISIBLE : View.GONE);
         if (mFolder.isInbox() && mFolder.unseenCount > 0) {
             mUnreadCountTextView.setVisibility(View.GONE);
@@ -122,15 +126,6 @@ public class FolderItemView extends RelativeLayout {
             mUnseenCountTextView.setVisibility(View.GONE);
             setUnreadCount(Utils.getFolderUnreadDisplayCount(mFolder));
         }
-    }
-
-    public void bind(final Account account, final DropHandler dropHandler, final int count) {
-        mFolder = null;
-        mDropHandler = dropHandler;
-        mFolderTextView.setText(account.name);
-        mFolderParentIcon.setVisibility(View.GONE);
-        setUnseenCount(Color.BLACK, 0);
-        setUnreadCount(count);
     }
 
     /**
