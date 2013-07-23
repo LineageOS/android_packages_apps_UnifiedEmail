@@ -23,6 +23,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.ui.AccountItemView;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.FolderItemView;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -42,13 +43,11 @@ import android.widget.TextView;
  com.android.mail.providers.Account, int, boolean, BidiFormatter)},
  * {@link DrawerItem#ofWaitView(com.android.mail.ui.ControllableActivity, BidiFormatter)}, etc.
  *
- * Once created, the item can create a view using {@link #getView(int, android.view.View,
- android.view.ViewGroup)}.
+ * Once created, the item can create a view using
+ * {@link #getView(android.view.View, android.view.ViewGroup)}.
  */
 public class DrawerItem {
     private static final String LOG_TAG = LogTag.getLogTag();
-    // TODO(viki): Remove this: http://b/8478715
-    public final int mPosition;
     public final Folder mFolder;
     public final Account mAccount;
     public final int mResource;
@@ -127,11 +126,9 @@ public class DrawerItem {
      * @param resource either the string resource for a header, or the unread
      *            count for an account.
      * @param isCurrentAccount true if this item is the current account
-     * @param position the cursor position for a folder object, -1 otherwise.
      */
     private DrawerItem(int type, ControllableActivity activity, Folder folder, int folderType,
-            Account account, int resource, boolean isCurrentAccount, int position,
-            BidiFormatter bidiFormatter) {
+            Account account, int resource, boolean isCurrentAccount, BidiFormatter bidiFormatter) {
         mActivity = activity;
         mFolder = folder;
         mFolderType = folderType;
@@ -140,24 +137,23 @@ public class DrawerItem {
         mIsSelected = isCurrentAccount;
         mInflater = LayoutInflater.from(activity.getActivityContext());
         mType = type;
-        mPosition = position;
         mIsEnabled = calculateEnabled();
         mBidiFormatter = bidiFormatter;
     }
 
     /**
      * Create a folder item with the given type.
+     *
      * @param activity the underlying activity
      * @param folder a folder that this item represents
      * @param folderType one of {@link #FOLDER_INBOX}, {@link #FOLDER_RECENT} or
      * {@link #FOLDER_OTHER}
-     * @param cursorPosition the position of the folder in the underlying cursor.
      * @return a drawer item for the folder.
      */
     public static DrawerItem ofFolder(ControllableActivity activity, Folder folder,
-            int folderType, int cursorPosition, BidiFormatter bidiFormatter) {
+            int folderType, BidiFormatter bidiFormatter) {
         return new DrawerItem(VIEW_FOLDER, activity, folder,  folderType, null, -1, false,
-                cursorPosition, bidiFormatter);
+                bidiFormatter);
     }
 
     private String folderToString() {
@@ -182,7 +178,7 @@ public class DrawerItem {
     public static DrawerItem ofAccount(ControllableActivity activity, Account account,
             int unreadCount, boolean isCurrentAccount, BidiFormatter bidiFormatter) {
         return new DrawerItem(VIEW_ACCOUNT, activity, null, ACCOUNT, account, unreadCount,
-                isCurrentAccount, -1, bidiFormatter);
+                isCurrentAccount, bidiFormatter);
     }
 
     private String accountToString() {
@@ -203,7 +199,7 @@ public class DrawerItem {
      */
     public static DrawerItem ofHeader(ControllableActivity activity, int resource,
             BidiFormatter bidiFormatter) {
-        return new DrawerItem(VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false, -1,
+        return new DrawerItem(VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false,
                 bidiFormatter);
     }
 
@@ -225,7 +221,7 @@ public class DrawerItem {
     public static DrawerItem ofWaitView(ControllableActivity activity,
             BidiFormatter bidiFormatter) {
         return new DrawerItem(VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false,
-                -1, bidiFormatter);
+                bidiFormatter);
     }
 
     private static String waitToString() {
@@ -236,7 +232,7 @@ public class DrawerItem {
      * Returns a view for the given item. The method signature is identical to that required by a
      * {@link android.widget.ListAdapter#getView(int, android.view.View, android.view.ViewGroup)}.
      */
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(View convertView, ViewGroup parent) {
         final View result;
         switch (mType) {
             case VIEW_FOLDER:
@@ -300,6 +296,7 @@ public class DrawerItem {
     /**
      * Returns whether this view is highlighted or not.
      *
+     *
      * @param currentFolder The current folder, according to the
      *                      {@link com.android.mail.ui.FolderListFragment}
      * @param currentType The type of the current folder. We want to only highlight a folder once.
@@ -311,15 +308,15 @@ public class DrawerItem {
      * @return true if this DrawerItem results in a view that is highlighted (this DrawerItem is
      *              the current folder.
      */
-    public boolean isHighlighted(Folder currentFolder, int currentType){
+    public boolean isHighlighted(FolderUri currentFolder, int currentType) {
         switch (mType) {
             case VIEW_HEADER :
                 // Headers are never highlighted
                 return false;
             case VIEW_FOLDER:
                 // True if folder types and URIs are the same
-                if (currentFolder != null && mFolder != null) {
-                    return (mFolderType == currentType) && mFolder.equals(currentFolder);
+                if (currentFolder != null && mFolder != null && mFolder.folderUri != null) {
+                    return (mFolderType == currentType) && mFolder.folderUri.equals(currentFolder);
                 }
                 return false;
             case VIEW_ACCOUNT:
