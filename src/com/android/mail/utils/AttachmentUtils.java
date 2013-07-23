@@ -30,6 +30,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Attachment;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -190,6 +191,13 @@ public class AttachmentUtils {
                 // Get the input stream from the file descriptor
                 inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
             } else {
+                if (attachment.contentUri == null) {
+                    // The contentUri of the attachment is null.  This can happen when sending a
+                    // message that has been previously saved, and the attachments had been
+                    // uploaded.
+                    LogUtils.d(LOG_TAG, "contentUri is null in attachment: %s", attachment);
+                    throw new FileNotFoundException("Missing contentUri in attachment");
+                }
                 // Attempt to open the file
                 inputStream = context.getContentResolver().openInputStream(attachment.contentUri);
             }
