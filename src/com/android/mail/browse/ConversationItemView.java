@@ -35,7 +35,6 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.SystemClock;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
@@ -72,7 +71,6 @@ import com.android.mail.R.integer;
 import com.android.mail.R.string;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
-import com.android.mail.photo.MailPhotoViewActivity;
 import com.android.mail.photomanager.AttachmentPreviewsManager;
 import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreviewsDividedImageCanvas;
 import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreviewsManagerCallback;
@@ -1890,18 +1888,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
     }
 
-    public void viewAttachmentPreview(final int index) {
-        final String attachmentUri = mHeader.conversation.getAttachmentPreviewUris().get(index);
-        final Uri imageListUri = mHeader.conversation.attachmentPreviewsListUri;
-        LogUtils.d(LOG_TAG,
-                "ConversationItemView: tapped on attachment preview %d, "
-                        + "opening photoviewer for image list uri %s",
-                index, imageListUri);
-        MailPhotoViewActivity
-                .startMailPhotoViewActivity(mActivity.getActivityContext(), imageListUri,
-                        attachmentUri);
-    }
-
     private boolean isTouchInContactPhoto(float x, float y) {
         // Everything before the right edge of contact photo
         return mHeader.gadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
@@ -1915,32 +1901,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         return mStarEnabled
                 && x > mCoordinates.starX - sStarTouchSlop
                 && (!isAttachmentPreviewsEnabled() || y < mCoordinates.attachmentPreviewsY);
-    }
-
-    /**
-     * If the touch is in the attachment previews, return the index of the attachment under that
-     * point (for multiple previews). Return -1 if the touch is outside of the previews.
-     *
-     * @return The index corresponding to where the attachment appears on the screen. This index
-     * may not be the same as the attachment's actual index in the message.
-     */
-    private int getAttachmentPreviewsIndexForTouch(float x, float y) {
-        if (!isAttachmentPreviewsEnabled()) {
-            return -1;
-        }
-        if (y > mCoordinates.attachmentPreviewsY
-                && y < mCoordinates.attachmentPreviewsY + mCoordinates.attachmentPreviewsHeight
-                && x > mCoordinates.attachmentPreviewsX
-                && x < mCoordinates.attachmentPreviewsX + mCoordinates.attachmentPreviewsWidth) {
-            final int total = mHeader.conversation.getAttachmentPreviewUris().size();
-            if (mCoordinates.attachmentPreviewsWidth == 0 || total == 0) {
-                return -1;
-            }
-            final int eachWidth = mCoordinates.attachmentPreviewsWidth / total;
-            final int offset = (int) (x - mCoordinates.attachmentPreviewsX);
-            return offset / eachWidth;
-        }
-        return -1;
     }
 
     @Override
@@ -1966,8 +1926,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mLastTouchY = y;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTouchInContactPhoto(x, y) || isTouchInStar(x, y)
-                        || getAttachmentPreviewsIndexForTouch(x, y) > -1) {
+                if (isTouchInContactPhoto(x, y) || isTouchInStar(x, y)) {
                     mDownEvent = true;
                     handled = true;
                 }
@@ -1979,16 +1938,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
-                    int index;
                     if (isTouchInContactPhoto(x, y)) {
                         // Touch on the check mark
                         toggleSelectedState();
                     } else if (isTouchInStar(x, y)) {
                         // Touch on the star
                         toggleStar();
-                    } else if ((index = getAttachmentPreviewsIndexForTouch(x, y)) > -1) {
-                        // Touch on an attachment preview
-                        viewAttachmentPreview(index);
                     }
                     handled = true;
                 }
@@ -2019,8 +1974,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTouchInContactPhoto(x, y) || isTouchInStar(x, y)
-                        || getAttachmentPreviewsIndexForTouch(x, y) > -1) {
+                if (isTouchInContactPhoto(x, y) || isTouchInStar(x, y)) {
                     mDownEvent = true;
                     Utils.traceEndSection();
                     return true;
@@ -2028,7 +1982,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 break;
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
-                    int index;
                     if (isTouchInContactPhoto(x, y)) {
                         // Touch on the check mark
                         Utils.traceEndSection();
@@ -2040,12 +1993,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                         // Touch on the star
                         mDownEvent = false;
                         toggleStar();
-                        Utils.traceEndSection();
-                        return true;
-                    } else if ((index = getAttachmentPreviewsIndexForTouch(x, y)) > -1) {
-                        // Touch on an attachment preview
-                        mDownEvent = false;
-                        viewAttachmentPreview(index);
                         Utils.traceEndSection();
                         return true;
                     }
