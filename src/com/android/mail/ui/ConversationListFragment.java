@@ -56,10 +56,10 @@ import com.android.mail.providers.FolderObserver;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
+import com.android.mail.ui.AnimatedAdapter.ConversationListListener;
 import com.android.mail.ui.SwipeableListView.ListItemSwipedListener;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -147,6 +147,13 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationUpdater mUpdater;
     /** Hash of the Conversation Cursor we last obtained from the controller. */
     private int mConversationCursorHash;
+
+    /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
+    private static long sSelectionModeAnimationDuration = -1;
+    /** The time at which we last entered CAB mode. */
+    private long mSelectionModeEnteredTimestamp = -1;
+    /** The time at which we last exited CAB mode. */
+    private long mSelectionModeExitedTimestamp = -1;
 
     /**
      * If the current list is for a folder with children, this set of loader callbacks will
@@ -284,6 +291,12 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onActivityCreated(Bundle savedState) {
         super.onActivityCreated(savedState);
+
+        if (sSelectionModeAnimationDuration < 0) {
+            sSelectionModeAnimationDuration = getResources().getInteger(
+                    R.integer.conv_item_view_cab_anim_duration);
+        }
+
         // Strictly speaking, we get back an android.app.Activity from
         // getActivity. However, the
         // only activity creating a ConversationListContext is a MailActivity
@@ -336,7 +349,8 @@ public final class ConversationListFragment extends ListFragment implements
         }
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), conversationCursor,
-                        mActivity.getSelectedSet(), mActivity, mListView, specialItemViews, null);
+                mActivity.getSelectedSet(), mActivity, mConversationListListener, mListView,
+                specialItemViews, null);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mSelectedSet = mActivity.getSelectedSet();
@@ -568,7 +582,7 @@ public final class ConversationListFragment extends ListFragment implements
      * <pre>
      *              | Checkboxes | No Checkboxes
      *    ----------+------------+---------------
-     *    CAB mode  |    Peek    |     Select
+     *    CAB mode  |   Select   |     Select
      *    List mode |    Peek    |      Peek
      * </pre>
      *
@@ -582,12 +596,10 @@ public final class ConversationListFragment extends ListFragment implements
             final FolderSelector selector = mActivity.getFolderSelector();
             selector.onFolderSelected(((NestedFolderView) view).getFolder());
         } else if (view instanceof ToggleableItem) {
-            final boolean showSenderImage =
-                    (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
-            if (!showSenderImage && !mSelectedSet.isEmpty()) {
+            if (!mSelectedSet.isEmpty()) {
                 ((ToggleableItem) view).toggleSelectedState();
             } else {
-                viewConversation(position);
+                mConversationListListener.viewConversation(position);
             }
         } else {
             // Ignore anything that is not a conversation item. Could be a footer.
@@ -609,11 +621,15 @@ public final class ConversationListFragment extends ListFragment implements
         if (conversationCursor != null) {
             conversationCursor.handleNotificationActions();
         }
+
+        mSelectedSet.addObserver(mConversationSetObserver);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
+        mSelectedSet.removeObserver(mConversationSetObserver);
     }
 
     @Override
@@ -674,34 +690,49 @@ public final class ConversationListFragment extends ListFragment implements
         onConversationListStatusUpdated();
     }
 
-    /**
-     * View the message at the given position.
-     *
-     * @param position The position of the conversation in the list (as opposed to its position in
-     *        the cursor)
-     */
-    protected void viewConversation(final int position) {
-        LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
+    private final ConversationListListener mConversationListListener =
+            new ConversationListListener() {
+        @Override
+        public void viewConversation(final int position) {
+            LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
 
-        final ConversationCursor cursor =
-                (ConversationCursor) getAnimatedAdapter().getItem(position);
+            final ConversationCursor cursor =
+                    (ConversationCursor) getAnimatedAdapter().getItem(position);
 
-        if (cursor == null) {
-            LogUtils.e(LOG_TAG,
-                    "unable to open conv at cursor pos=%s cursor=%s getPositionOffset=%s",
-                    position, cursor, getAnimatedAdapter().getPositionOffset(position));
-            return;
+            if (cursor == null) {
+                LogUtils.e(LOG_TAG,
+                        "unable to open conv at cursor pos=%s cursor=%s getPositionOffset=%s",
+                        position, cursor, getAnimatedAdapter().getPositionOffset(position));
+                return;
+            }
+
+            final Conversation conv = cursor.getConversation();
+            /*
+             * The cursor position may be different than the position method parameter because of
+             * special views in the list.
+             */
+            conv.position = cursor.getPosition();
+            setSelected(conv.position, true);
+            mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
         }
 
-        final Conversation conv = cursor.getConversation();
-        /*
-         * The cursor position may be different than the position method parameter because of
-         * special views in the list.
-         */
-        conv.position = cursor.getPosition();
-        setSelected(conv.position, true);
-        mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
-    }
+        @Override
+        public boolean isInSelectionMode() {
+            return !mSelectedSet.isEmpty();
+        }
+
+        @Override
+        public boolean isEnteringSelectionMode() {
+            return System.currentTimeMillis() <
+                    (mSelectionModeEnteredTimestamp + sSelectionModeAnimationDuration);
+        }
+
+        @Override
+        public boolean isExitingSelectionMode() {
+            return System.currentTimeMillis() <
+                    (mSelectionModeExitedTimestamp + sSelectionModeAnimationDuration);
+        }
+    };
 
     /**
      * Sets the selected conversation to the position given here.
@@ -950,4 +981,25 @@ public final class ConversationListFragment extends ListFragment implements
     public void clear() {
         mListView.setAdapter(null);
     }
+
+    private final ConversationSetObserver mConversationSetObserver = new ConversationSetObserver() {
+        @Override
+        public void onSetPopulated(final ConversationSelectionSet set) {
+            mSelectionModeEnteredTimestamp = System.currentTimeMillis();
+
+            mListAdapter.getConversationSetObserver().onSetPopulated(set);
+        }
+
+        @Override
+        public void onSetEmpty() {
+            mSelectionModeExitedTimestamp = System.currentTimeMillis();
+
+            mListAdapter.getConversationSetObserver().onSetEmpty();
+        }
+
+        @Override
+        public void onSetChanged(final ConversationSelectionSet set) {
+            mListAdapter.getConversationSetObserver().onSetChanged(set);
+        }
+    };
 }

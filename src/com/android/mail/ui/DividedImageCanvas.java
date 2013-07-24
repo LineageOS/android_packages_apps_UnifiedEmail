@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
@@ -375,6 +376,15 @@ public class DividedImageCanvas implements ImageCanvas {
     public void draw(Canvas canvas) {
         if (mDividedBitmap != null && mBitmapValid) {
             canvas.drawBitmap(mDividedBitmap, 0, 0, null);
+        }
+    }
+
+    /**
+     * Draw the contents of the DividedImageCanvas to the supplied canvas.
+     */
+    public void draw(final Canvas canvas, final Matrix matrix) {
+        if (mDividedBitmap != null && mBitmapValid) {
+            canvas.drawBitmap(mDividedBitmap, matrix, null);
         }
     }
 

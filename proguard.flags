@@ -63,6 +63,8 @@
   *** setAnimatedProgressFraction(...);
   *** setAnimatedFadeFraction0(...);
   *** setAnimatedFadeFraction1(...);
+  *** setPhotoFlipFraction(...);
+  *** setPeekIconFlipFraction(...);
 }
 
 -keepclasseswithmembers class com.android.mail.ui.MailActivity {

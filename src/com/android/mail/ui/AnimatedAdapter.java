@@ -52,6 +52,7 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -85,6 +86,33 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private Runnable mCountDown;
     private final Handler mHandler;
     protected long mLastLeaveBehind = -1;
+
+    public interface ConversationListListener {
+        /**
+         * View the message at the given position.
+         *
+         * @param position The position of the conversation in the list (as opposed to its position
+         *        in the cursor)
+         */
+        void viewConversation(int position);
+
+        /**
+         * @return <code>true</code> if the list is in selection mode, <code>false</code> otherwise
+         */
+        boolean isInSelectionMode();
+
+        /**
+         * @return <code>true</code> if the list is just entering selection mode (so animations may
+         * be required), <code>false</code> otherwise
+         */
+        boolean isEnteringSelectionMode();
+
+        /**
+         * @return <code>true</code> if the list is just exiting selection mode (so animations may
+         * be required), <code>false</code> otherwise
+         */
+        boolean isExitingSelectionMode();
+    }
 
     private final AnimatorListener mAnimatorListener = new AnimatorListenerAdapter() {
 
@@ -166,6 +194,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     /** True if priority inbox markers are enabled, false otherwise. */
     private boolean mPriorityMarkersEnabled;
     private final ControllableActivity mActivity;
+    private final ConversationListListener mConversationListListener;
     private final AccountObserver mAccountListener = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
@@ -193,6 +222,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     /** List of all child folders for this folder. */
     private List<NestedFolderView> mFolderViews;
 
+    private final SparseArray<WeakReference<ConversationSetObserver>> mItemViewSetObservers =
+            new SparseArray<WeakReference<ConversationSetObserver>>();
+
     private void setAccount(Account newAccount) {
         mAccount = newAccount;
         mPriorityMarkersEnabled = mAccount.settings.priorityArrowsEnabled;
@@ -204,13 +236,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     public AnimatedAdapter(Context context, ConversationCursor cursor,
             ConversationSelectionSet batch, ControllableActivity activity,
-            SwipeableListView listView, final List<ConversationSpecialItemView> specialViews,
+            final ConversationListListener conversationListListener, SwipeableListView listView,
+            final List<ConversationSpecialItemView> specialViews,
             final ObjectCursor<Folder> childFolders) {
         super(context, -1, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
         setAccount(mAccountListener.initialize(activity.getAccountController()));
         mActivity = activity;
+        mConversationListListener = conversationListListener;
         mShowFooter = false;
         mListView = listView;
         mFolderViews = getNestedFolders(childFolders);
@@ -349,12 +383,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     }
 
     public View createConversationItemView(SwipeableConversationItemView view, Context context,
-            Conversation conv) {
+            Conversation conv, final int position) {
         if (view == null) {
             view = new SwipeableConversationItemView(context, mAccount.name);
         }
-        view.bind(conv, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
-                mSwipeEnabled, mPriorityMarkersEnabled, this);
+        view.bind(conv, mActivity, mConversationListListener, mBatchConversations, mFolder,
+                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this, position);
         return view;
     }
 
@@ -515,7 +549,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             ((SwipeableConversationItemView) convertView).reset();
         }
         final View v = createConversationItemView((SwipeableConversationItemView) convertView,
-                mContext, conv);
+                mContext, conv, position);
         Utils.traceEndSection();
         return v;
     }
@@ -730,8 +764,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         SwipeableConversationItemView view = (SwipeableConversationItemView) super.getView(
                 position, null, parent);
         view.reset();
-        view.bind(conversation, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
-                mSwipeEnabled, mPriorityMarkersEnabled, this);
+        view.bind(conversation, mActivity, mConversationListListener, mBatchConversations, mFolder,
+                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this, position);
         mAnimatingViews.put(conversation.id, view);
         return view;
     }
@@ -1052,5 +1086,86 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         for (final ConversationSpecialItemView specialView : mFleetingViews) {
             specialView.onCabModeEntered();
         }
+    }
+
+    private final ConversationSetObserver mConversationSetObserver = new ConversationSetObserver() {
+        @Override
+        public void onSetPopulated(final ConversationSelectionSet set) {
+            pruneEntries();
+
+            for (int i = 0; i < mItemViewSetObservers.size(); i++) {
+                final WeakReference<ConversationSetObserver> ref = mItemViewSetObservers.valueAt(i);
+                final ConversationSetObserver observer = ref.get();
+
+                if (observer == null) {
+                    LogUtils.wtf(LOG_TAG, "ConversationSetObserver null after pruneEntries()");
+                } else {
+                    observer.onSetPopulated(set);
+                }
+            }
+        }
+
+        @Override
+        public void onSetEmpty() {
+            pruneEntries();
+
+            for (int i = 0; i < mItemViewSetObservers.size(); i++) {
+                final WeakReference<ConversationSetObserver> ref = mItemViewSetObservers.valueAt(i);
+                final ConversationSetObserver observer = ref.get();
+
+                if (observer == null) {
+                    LogUtils.wtf(LOG_TAG, "ConversationSetObserver null after pruneEntries()");
+                } else {
+                    observer.onSetEmpty();
+                }
+            }
+        }
+
+        @Override
+        public void onSetChanged(final ConversationSelectionSet set) {
+            pruneEntries();
+
+            for (int i = 0; i < mItemViewSetObservers.size(); i++) {
+                final WeakReference<ConversationSetObserver> ref = mItemViewSetObservers.valueAt(i);
+                final ConversationSetObserver observer = ref.get();
+
+                if (observer == null) {
+                    LogUtils.wtf(LOG_TAG, "ConversationSetObserver null after pruneEntries()");
+                } else {
+                    observer.onSetChanged(set);
+                }
+            }
+        }
+
+        private void pruneEntries() {
+            final int[] deadKeys = new int[mItemViewSetObservers.size()];
+            int deadKeyIndex = 0;
+
+            for (int i = 0; i < mItemViewSetObservers.size(); i++) {
+                final WeakReference<ConversationSetObserver> ref = mItemViewSetObservers.valueAt(i);
+                final ConversationSetObserver observer = ref.get();
+
+                if (observer == null) {
+                    deadKeys[deadKeyIndex++] = mItemViewSetObservers.keyAt(i);
+                }
+            }
+
+            for (int i = deadKeyIndex - 1; i >= 0; i--) {
+                mItemViewSetObservers.delete(deadKeys[i]);
+            }
+        }
+    };
+
+    public ConversationSetObserver getConversationSetObserver() {
+        return mConversationSetObserver;
+    }
+
+    public void registerConversationSetObserver(final ConversationSetObserver observer) {
+        mItemViewSetObservers.put(observer.hashCode(),
+                new WeakReference<ConversationSetObserver>(observer));
+    }
+
+    public void unregisterConversationSetObserver(final ConversationSetObserver observer) {
+        mItemViewSetObservers.delete(observer.hashCode());
     }
 }

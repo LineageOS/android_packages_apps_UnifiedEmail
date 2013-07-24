@@ -28,7 +28,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -89,10 +91,12 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.ui.AnimatedAdapter;
+import com.android.mail.ui.AnimatedAdapter.ConversationListListener;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
+import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.ui.SwipeableItemView;
@@ -127,6 +131,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     // Static bitmaps.
     private static Bitmap STAR_OFF;
     private static Bitmap STAR_ON;
+    private static Bitmap PEEK;
+    private static Bitmap CHECK;
     private static Bitmap ATTACHMENT;
     private static Bitmap ONLY_TO_ME;
     private static Bitmap TO_ME_AND_OTHERS;
@@ -163,12 +169,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sProgressAnimationDelay;
     private static Interpolator sPulseAnimationInterpolator;
     private static int sOverflowCountMax;
+    private static int sCabAnimationDuration;
 
     // Static paints.
-    private static TextPaint sPaint = new TextPaint();
-    private static TextPaint sFoldersPaint = new TextPaint();
+    private static final TextPaint sPaint = new TextPaint();
+    private static final TextPaint sFoldersPaint = new TextPaint();
+    private static final Paint sCheckBackgroundPaint = new Paint();
 
-    private static Rect sRect = new Rect();
+    private static final Rect sRect = new Rect();
 
     // Backgrounds for different states.
     private final SparseArray<Drawable> mBackgrounds = new SparseArray<Drawable>();
@@ -208,15 +216,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
+    private int mAdapterPosition;
     private float mAnimatedHeightFraction = 1.0f;
     private final String mAccount;
     private ControllableActivity mActivity;
+    private ConversationListListener mConversationListListener;
     private final TextView mSubjectTextView;
     private final TextView mSendersTextView;
     private int mGadgetMode;
     private final DividedImageCanvas mContactImagesHolder;
     private static ContactPhotoManager sContactPhotoManager;
-
 
     private static int sFoldersLeftPadding;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
@@ -247,9 +256,24 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private final Runnable mSetShowProgressBarRunnable1;
     private static final boolean CONVLIST_ATTACHMENT_PREVIEWS_ENABLED = true;
 
+    private final Matrix mPhotoFlipMatrix = new Matrix();
+    private final Matrix mCheckMatrix = new Matrix();
+    private final Matrix mPeekIconFlipMatrix = new Matrix();
+
+    private final CabAnimator mPhotoFlipAnimator;
+    private final CabAnimator mPeekIconFlipAnimator;
+
+    /**
+     * The conversation id, if this conversation was selected the last time we were in a selection
+     * mode. This is reset after any animations complete upon exiting the selection mode.
+     */
+    private long mLastSelectedId = -1;
+
     static {
         sPaint.setAntiAlias(true);
         sFoldersPaint.setAntiAlias(true);
+
+        sCheckBackgroundPaint.setColor(Color.GRAY);
     }
 
     public static void setScrollStateChanged(final int scrollState) {
@@ -420,8 +444,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         if (STAR_OFF == null) {
             // Initialize static bitmaps.
-            STAR_OFF = BitmapFactory.decodeResource(res, R.drawable.ic_star_off);
-            STAR_ON = BitmapFactory.decodeResource(res, R.drawable.ic_star_on);
+            STAR_OFF = BitmapFactory.decodeResource(res, R.drawable.ic_btn_star_off);
+            STAR_ON = BitmapFactory.decodeResource(res, R.drawable.ic_btn_star_on);
+            PEEK = BitmapFactory.decodeResource(res, R.drawable.ic_peak_eye);
+            CHECK = BitmapFactory.decodeResource(res, R.drawable.ic_avatar_check);
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
             ONLY_TO_ME = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_double);
             TO_ME_AND_OTHERS = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_single);
@@ -483,7 +509,33 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sProgressAnimationDelay = res.getInteger(integer.ap_progress_animation_delay);
             sPulseAnimationInterpolator = new AccelerateDecelerateInterpolator();
             sOverflowCountMax = res.getInteger(integer.ap_overflow_max_count);
+            sCabAnimationDuration =
+                    res.getInteger(R.integer.conv_item_view_cab_anim_duration);
         }
+
+        mPhotoFlipAnimator = new CabAnimator("photoFlipFraction", 0, 2,
+                sCabAnimationDuration) {
+            @Override
+            public void invalidateArea() {
+                final int left = mCoordinates.contactImagesX;
+                final int right = left + mContactImagesHolder.getWidth();
+                final int top = mCoordinates.contactImagesY;
+                final int bottom = top + mContactImagesHolder.getHeight();
+                invalidate(left, top, right, bottom);
+            }
+        };
+
+        mPeekIconFlipAnimator = new CabAnimator("peekIconFlipFraction", 0, 2,
+                sCabAnimationDuration) {
+            @Override
+            public void invalidateArea() {
+                final int left = mCoordinates.starX;
+                final int right = left + mCoordinates.starWidth;
+                final int top = mCoordinates.starY;
+                final int bottom = top + mCoordinates.starHeight;
+                invalidate(left, top, right, bottom);
+            }
+        };
 
         mSendersTextView = new TextView(mContext);
         mSendersTextView.setIncludeFontPadding(false);
@@ -566,17 +618,22 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     public void bind(Conversation conversation, ControllableActivity activity,
+            final ConversationListListener conversationListListener,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
-            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
+            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter,
+            final int adapterPosition) {
         Utils.traceBeginSection("CIVC.bind");
-        bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity, set,
-                folder, checkboxOrSenderImage, swipeEnabled, priorityArrowEnabled, adapter);
+        bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity,
+                conversationListListener, set, folder, checkboxOrSenderImage, swipeEnabled,
+                priorityArrowEnabled, adapter, adapterPosition);
         Utils.traceEndSection();
     }
 
     private void bind(ConversationItemViewModel header, ControllableActivity activity,
+            final ConversationListListener conversationListListener,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
-            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
+            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter,
+            final int adapterPosition) {
         boolean attachmentPreviewsChanged = false;
         if (mHeader != null) {
             // If this was previously bound to a different conversation, remove any contact photo
@@ -621,11 +678,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mCoordinates = null;
         mHeader = header;
         mActivity = activity;
+        mConversationListListener = conversationListListener;
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
+
+        if (mAdapter != null) {
+            mAdapter.unregisterConversationSetObserver(mConversationSetObserver);
+        }
         mAdapter = adapter;
+        mAdapter.registerConversationSetObserver(mConversationSetObserver);
+
+        mAdapterPosition = adapterPosition;
         final int attachmentPreviewsSize = mHeader.conversation.getAttachmentPreviewUris().size();
         if (attachmentPreviewsChanged || mImageLoadStatuses.length != attachmentPreviewsSize) {
             mImageLoadStatuses = new int[attachmentPreviewsSize];
@@ -1483,7 +1548,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         // Contact photo
         if (mGadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO) {
             canvas.save();
-            drawContactImages(canvas);
+            drawContactImageArea(canvas);
             canvas.restore();
         }
 
@@ -1558,9 +1623,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             canvas.drawBitmap(mHeader.paperclip, mPaperclipX, mCoordinates.paperclipY, sPaint);
         }
 
-        if (mStarEnabled) {
-            // Star.
-            canvas.drawBitmap(getStarBitmap(), mCoordinates.starX, mCoordinates.starY, sPaint);
+        if (mConversationListListener.isInSelectionMode()) {
+            drawStarPeekIcon(canvas, mConversationListListener.isEnteringSelectionMode(),
+                    false /* reverse */, PEEK);
+        } else if (mStarEnabled) {
+            drawStarPeekIcon(canvas, mConversationListListener.isExitingSelectionMode(),
+                    true /* reverse */, getStarBitmap());
         }
 
         // Attachment previews
@@ -1626,9 +1694,146 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         Utils.traceEndSection();
     }
 
-    private void drawContactImages(Canvas canvas) {
+    private void drawStarPeekIcon(final Canvas canvas, final boolean animate, final boolean reverse,
+            final Bitmap staticIcon) {
+        if (animate) {
+            // Animate the peek icon
+            if (!mPeekIconFlipAnimator.isStarted()) {
+                mPeekIconFlipAnimator.startAnimation(reverse);
+            }
+
+            canvas.save();
+
+            final float value = mPeekIconFlipAnimator.getValue();
+            final float scale;
+            final Bitmap bitmap;
+
+            if (value > 1) {
+                // Flip in the peek icon
+                scale = value - 1f;
+                bitmap = PEEK;
+            } else {
+                // Flip out the star icon
+                scale = 1f - value;
+                bitmap = getStarBitmap();
+            }
+
+            final float yOffset = mCoordinates.starHeight * (1f - scale) / 2f;
+
+            mPeekIconFlipMatrix.reset();
+            mPeekIconFlipMatrix.postScale(1, scale);
+
+            canvas.translate(mCoordinates.starX, mCoordinates.starY + yOffset);
+
+            canvas.drawBitmap(bitmap, mPeekIconFlipMatrix, sPaint);
+
+            canvas.restore();
+        } else {
+            mPeekIconFlipAnimator.stopAnimation();
+
+            // Star/Peek icon
+            canvas.drawBitmap(staticIcon, mCoordinates.starX, mCoordinates.starY, sPaint);
+        }
+    }
+
+    /**
+     * Draws the contact images or check, in the correct animated state.
+     */
+    private void drawContactImageArea(final Canvas canvas) {
+        if (isSelected()) {
+            mLastSelectedId = mHeader.conversation.id;
+
+            // Since this is selected, we draw the checkbox if the animation is not running, or if
+            // it's running, and is past the half-way point
+            if (mPhotoFlipAnimator.getValue() > 1 || !mPhotoFlipAnimator.isStarted()) {
+                // Flash in the check
+                drawCheckbox(canvas);
+            } else {
+                // Flip out the contact photo
+                drawContactImages(canvas);
+            }
+        } else {
+            if ((mConversationListListener.isExitingSelectionMode()
+                    && mLastSelectedId == mHeader.conversation.id)
+                    || mPhotoFlipAnimator.isStarted()) {
+                // Animate back to the photo
+                if (!mPhotoFlipAnimator.isStarted()) {
+                    mPhotoFlipAnimator.startAnimation(true /* reverse */);
+                }
+
+                if (mPhotoFlipAnimator.getValue() > 1) {
+                    // Flash out the check
+                    drawCheckbox(canvas);
+                } else {
+                    // Flip in the contact photo
+                    drawContactImages(canvas);
+                }
+            } else {
+                mLastSelectedId = -1; // We don't care anymore
+                mPhotoFlipAnimator.stopAnimation(); // It's not running, but we want to reset state
+
+                // Contact photos
+                drawContactImages(canvas);
+            }
+        }
+    }
+
+    private void drawContactImages(final Canvas canvas) {
+        // mPhotoFlipFraction goes from 0 to 1
+        final float value = mPhotoFlipAnimator.getValue();
+
+        final float scale = 1f - value;
+        final float xOffset = mContactImagesHolder.getWidth() * value / 2;
+
+        mPhotoFlipMatrix.reset();
+        mPhotoFlipMatrix.postScale(scale, 1);
+
+        canvas.translate(mCoordinates.contactImagesX + xOffset, mCoordinates.contactImagesY);
+
+        mContactImagesHolder.draw(canvas, mPhotoFlipMatrix);
+    }
+
+    private void drawCheckbox(final Canvas canvas) {
+        // mPhotoFlipFraction goes from 1 to 2
+
+        // Draw the background
+        canvas.save();
         canvas.translate(mCoordinates.contactImagesX, mCoordinates.contactImagesY);
-        mContactImagesHolder.draw(canvas);
+        canvas.drawRect(0, 0, mCoordinates.contactImagesWidth, mCoordinates.contactImagesHeight,
+                sCheckBackgroundPaint);
+        canvas.restore();
+
+        final int x = mCoordinates.contactImagesX
+                + (mCoordinates.contactImagesWidth - CHECK.getWidth()) / 2;
+        final int y = mCoordinates.contactImagesY
+                + (mCoordinates.contactImagesHeight - CHECK.getHeight()) / 2;
+
+        final float value = mPhotoFlipAnimator.getValue();
+        final float scale;
+
+        if (!mPhotoFlipAnimator.isStarted()) {
+            // We're not animating
+            scale = 1;
+        } else if (value < 1.9) {
+            // 1.0 to 1.9 will scale 0 to 1
+            scale = (value - 1f) / 0.9f;
+        } else if (value < 1.95) {
+            // 1.9 to 1.95 will scale 1 to 19/18
+            scale = (value - 1f) / 0.9f;
+        } else {
+            // 1.95 to 2.0 will scale 19/18 to 1
+            scale = (0.95f - (value - 1.95f)) / 0.9f;
+        }
+
+        final float xOffset = CHECK.getWidth() * (1f - scale) / 2f;
+        final float yOffset = CHECK.getHeight() * (1f - scale) / 2f;
+
+        mCheckMatrix.reset();
+        mCheckMatrix.postScale(scale, scale);
+
+        canvas.translate(x + xOffset, y + yOffset);
+
+        canvas.drawBitmap(CHECK, mCheckMatrix, sPaint);
     }
 
     private void drawAttachmentPreviews(Canvas canvas) {
@@ -1864,6 +2069,11 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             if (mSelectedConversationSet.isEmpty()) {
                 listView.commitDestructiveActions(true);
             }
+
+            final boolean reverse = !mSelected;
+            mPhotoFlipAnimator.startAnimation(reverse);
+            mPhotoFlipAnimator.invalidateArea();
+
             // We update the background after the checked state has changed
             // now that we have a selected background asset. Setting the background
             // usually waits for a layout pass, but we don't need a full layout,
@@ -1886,6 +2096,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             cursor.updateBoolean(mHeader.conversation, ConversationColumns.STARRED,
                     mHeader.conversation.starred);
         }
+    }
+
+    /**
+     * Peek into the conversation.
+     */
+    private void peek() {
+        mConversationListListener.viewConversation(mAdapterPosition);
     }
 
     private boolean isTouchInContactPhoto(float x, float y) {
@@ -1942,8 +2159,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                         // Touch on the check mark
                         toggleSelectedState();
                     } else if (isTouchInStar(x, y)) {
-                        // Touch on the star
-                        toggleStar();
+                        // Touch on the star/peek
+                        if (mConversationListListener.isInSelectionMode()) {
+                            // Peek
+                            peek();
+                        } else {
+                            toggleStar();
+                        }
                     }
                     handled = true;
                 }
@@ -1990,9 +2212,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                         Utils.traceEndSection();
                         return true;
                     } else if (isTouchInStar(x, y)) {
-                        // Touch on the star
+                        // Touch on the star/peek
                         mDownEvent = false;
-                        toggleStar();
+                        if (mConversationListListener.isInSelectionMode()) {
+                            // Peek
+                            peek();
+                        } else {
+                            toggleStar();
+                        }
                         Utils.traceEndSection();
                         return true;
                     }
@@ -2303,4 +2530,111 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     public float getMinAllowScrollDistance() {
         return sScrollSlop;
     }
+
+    private abstract class CabAnimator {
+        private ObjectAnimator mAnimator = null;
+
+        private final String mPropertyName;
+
+        private float mValue;
+
+        private final float mStartValue;
+        private final float mEndValue;
+
+        private final long mDuration;
+
+        public CabAnimator(final String propertyName, final float startValue, final float endValue,
+                final long duration) {
+            mPropertyName = propertyName;
+
+            mStartValue = startValue;
+            mEndValue = endValue;
+
+            mDuration = duration;
+        }
+
+        private ObjectAnimator createAnimator() {
+            final ObjectAnimator animator = ObjectAnimator.ofFloat(ConversationItemView.this,
+                    mPropertyName, mStartValue, mEndValue);
+            animator.setDuration(mDuration);
+            animator.setInterpolator(new LinearInterpolator());
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(final Animator animation) {
+                    invalidateArea();
+                }
+            });
+            return animator;
+        }
+
+        public abstract void invalidateArea();
+
+        public void setValue(final float fraction) {
+            mValue = fraction;
+            invalidateArea();
+        }
+
+        public float getValue() {
+            return mValue;
+        }
+
+        /**
+         * @param reverse <code>true</code> to animate in reverse
+         */
+        public void startAnimation(final boolean reverse) {
+            if (mAnimator != null) {
+                mAnimator.cancel();
+            }
+
+            mAnimator = createAnimator();
+
+            if (reverse) {
+                mAnimator.reverse();
+            } else {
+                mAnimator.start();
+            }
+        }
+
+        public void stopAnimation() {
+            if (mAnimator != null) {
+                mAnimator.cancel();
+                mAnimator = null;
+            }
+
+            setValue(0);
+        }
+
+        public boolean isStarted() {
+            return mAnimator != null && mAnimator.isStarted();
+        }
+    }
+
+    public void setPhotoFlipFraction(final float fraction) {
+        mPhotoFlipAnimator.setValue(fraction);
+    }
+
+    public void setPeekIconFlipFraction(final float fraction) {
+        mPeekIconFlipAnimator.setValue(fraction);
+    }
+
+    private final ConversationSetObserver mConversationSetObserver = new ConversationSetObserver() {
+        @Override
+        public void onSetPopulated(final ConversationSelectionSet set) {
+            // Animate the peek icon in
+            // This will trigger a draw, which will start an animation
+            mPeekIconFlipAnimator.invalidateArea();
+        }
+
+        @Override
+        public void onSetEmpty() {
+            // Animate the peek icon out
+            // This will trigger a draw, which will start an animation
+            mPeekIconFlipAnimator.invalidateArea();
+        }
+
+        @Override
+        public void onSetChanged(final ConversationSelectionSet set) {
+            // Don't do anything
+        }
+    };
 }
