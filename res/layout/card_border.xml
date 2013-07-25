@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2013 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item app:state_draft="true" android:state_activated="true"
-          android:drawable="@drawable/header_convo_view_thread_bg_holo_repeat"/>
-    <item android:state_activated="true"
-          android:drawable="@color/expanded_message_header_background_color" />
-    <item android:drawable="@color/collapsed_message_header_background_color" />
-</selector>
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/message_header_border_height"
+      android:background="@color/conversation_view_border_color">
+</View>

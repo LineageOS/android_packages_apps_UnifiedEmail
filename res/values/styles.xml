@@ -250,17 +250,20 @@
     </style>
 
     <style name="MessageSenderNameStyle">
+        <item name="android:singleLine">true</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/conv_header_text_dark</item>
     </style>
 
     <style name="MessageHeaderSubtitleStyle">
+        <item name="android:singleLine">true</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/conv_header_text_dark</item>
     </style>
 
     <style name="MessageHeaderSnippetStyle">
+        <item name="android:lines">2</item>
+        <item name="android:lineSpacingExtra">1dp</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/conv_header_text_light</item>
     </style>
@@ -272,13 +275,16 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="MessageHeaderShowPicsStyle" parent="MessageHeaderSmallStyle">
+        <item name="android:textColor">@color/conv_header_text_light</item>
+    </style>
+
     <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderSmallStyle">
         <item name="android:minHeight">24dp</item>
     </style>
 
     <style name="MessageAttachmentsHeaderStyle" parent="MessageHeaderSmallStyle">
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
@@ -292,7 +298,7 @@
 
     <style name="MessageHeaderActionButtonStyle" parent="android:Widget.Holo.Button.Borderless">
         <item name="android:layout_width">@dimen/message_header_action_button_width</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">@dimen/message_header_action_button_height</item>
         <item name="android:scaleType">center</item>
     </style>
 

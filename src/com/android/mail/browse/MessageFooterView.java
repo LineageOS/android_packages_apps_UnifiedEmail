@@ -55,7 +55,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     private FragmentManager mFragmentManager;
     private AttachmentCursor mAttachmentsCursor;
     private TextView mTitleText;
-    private View mTitleBar;
     private AttachmentTileGrid mAttachmentGrid;
     private LinearLayout mAttachmentBarList;
 
@@ -80,7 +79,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         super.onFinishInflate();
 
         mTitleText = (TextView) findViewById(R.id.attachments_header_text);
-        mTitleBar = findViewById(R.id.attachments_header_bar);
         mAttachmentGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
         mAttachmentBarList = (LinearLayout) findViewById(R.id.attachment_bar_list);
     }
@@ -105,7 +103,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             mAttachmentGrid.removeAllViewsInLayout();
             mAttachmentBarList.removeAllViewsInLayout();
             mTitleText.setVisibility(View.GONE);
-            mTitleBar.setVisibility(View.GONE);
             mAttachmentGrid.setVisibility(View.GONE);
             mAttachmentBarList.setVisibility(View.GONE);
         }
@@ -175,7 +172,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mMessageHeaderItem.getMessage().attachmentsJson = Attachment.toJSONArray(attachments);
 
         mTitleText.setVisibility(View.VISIBLE);
-        mTitleBar.setVisibility(View.VISIBLE);
 
         renderTiledAttachments(tiledAttachments, loaderResult);
         renderBarAttachments(barAttachments, loaderResult);

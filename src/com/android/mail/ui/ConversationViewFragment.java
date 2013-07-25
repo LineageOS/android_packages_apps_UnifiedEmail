@@ -50,6 +50,7 @@ import com.android.mail.browse.ConversationContainer.OverlayPosition;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
+import com.android.mail.browse.ConversationViewAdapter.BorderItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
@@ -270,7 +271,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         // set up snap header (the adapter usually does this with the other ones)
         final MessageHeaderView snapHeader = mConversationContainer.getSnapHeader();
-        initHeaderView(snapHeader, dateBuilder);
+        initHeaderView(snapHeader);
 
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
 
@@ -308,8 +309,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         }
     }
 
-    private void initHeaderView(MessageHeaderView headerView, FormattedDateBuilder dateBuilder) {
-        headerView.initialize(dateBuilder, this, mAddressCache);
+    private void initHeaderView(MessageHeaderView headerView) {
+        headerView.initialize(this, mAddressCache);
         headerView.setCallbacks(this);
         headerView.setContactInfoSource(getContactInfoSource());
         headerView.setVeiledMatcher(mActivity.getAccountController().getVeiledAddressMatcher());
@@ -707,6 +708,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         final boolean applyTransforms = shouldApplyTransforms();
 
+        renderBorder();
+
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
                 mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount),
@@ -714,13 +717,22 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
+        renderBorder();
         final int blockPos = mAdapter.addSuperCollapsedBlock(start, end);
         final int blockPx = measureOverlayHeight(blockPos);
         mTemplates.appendSuperCollapsedHtml(start, mWebView.screenPxToWebPx(blockPx));
     }
 
+    private void renderBorder() {
+        final int blockPos = mAdapter.addBorder();
+        final int blockPx = measureOverlayHeight(blockPos);
+        mTemplates.appendBorder(mWebView.screenPxToWebPx(blockPx));
+    }
+
     private void renderMessage(ConversationMessage msg, boolean expanded,
             boolean safeForImages) {
+        renderBorder();
+
         final int headerPos = mAdapter.addMessageHeader(msg, expanded,
                 mViewState.getShouldShowImages(msg));
         final MessageHeaderItem headerItem = (MessageHeaderItem) mAdapter.getItem(headerPos);
@@ -747,17 +759,32 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         // In devices with non-integral density multiplier, screen pixels translate to non-integral
         // web pixels. Keep track of the error that occurs when we cast all heights to int
         float error = 0f;
+        boolean first = true;
         for (int i = blockToReplace.getStart(), end = blockToReplace.getEnd(); i <= end; i++) {
             cursor.moveToPosition(i);
             final ConversationMessage msg = cursor.getMessage();
+
+            final int borderPx;
+            if (first) {
+                borderPx = 0;
+                first = false;
+            } else {
+                final BorderItem border = mAdapter.newBorderItem();
+                borderPx = measureOverlayHeight(border);
+                replacements.add(border);
+                mTemplates.appendBorder(mWebView.screenPxToWebPx(borderPx));
+            }
+
             final MessageHeaderItem header = ConversationViewAdapter.newMessageHeaderItem(
-                    mAdapter, msg, false /* expanded */, mViewState.getShouldShowImages(msg));
+                    mAdapter, mAdapter.getDateBuilder(), msg, false /* expanded */,
+                    mViewState.getShouldShowImages(msg));
             final MessageFooterItem footer = mAdapter.newMessageFooterItem(header);
 
             final int headerPx = measureOverlayHeight(header);
             final int footerPx = measureOverlayHeight(footer);
             error += mWebView.screenPxToWebPxError(headerPx)
-                    + mWebView.screenPxToWebPxError(footerPx);
+                    + mWebView.screenPxToWebPxError(footerPx)
+                    + mWebView.screenPxToWebPxError(borderPx);
 
             // When the error becomes greater than 1 pixel, make the next header 1 pixel taller
             int correction = 0;

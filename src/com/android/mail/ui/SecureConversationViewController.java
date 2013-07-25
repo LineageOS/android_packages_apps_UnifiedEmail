@@ -104,7 +104,7 @@ public class SecureConversationViewController implements
         final Fragment fragment = mCallbacks.getFragment();
 
         mDateBuilder = new FormattedDateBuilder(fragment.getActivity());
-        mMessageHeaderView.initialize(mDateBuilder,
+        mMessageHeaderView.initialize(
                 mCallbacks.getConversationAccountController(), mCallbacks.getAddressCache());
         mMessageHeaderView.setExpandMode(MessageHeaderView.POPUP_MODE);
         mMessageHeaderView.setContactInfoSource(mCallbacks.getContactInfoSource());
@@ -146,7 +146,7 @@ public class SecureConversationViewController implements
         mWebView.loadDataWithBaseURL(mCallbacks.getBaseUri(), dataBuilder.toString(),
                 "text/html", "utf-8", null);
         final MessageHeaderItem item = ConversationViewAdapter.newMessageHeaderItem(
-                null, mMessage, true, mMessage.alwaysShowImages);
+                null, mDateBuilder, mMessage, true, mMessage.alwaysShowImages);
         mMessageHeaderView.bind(item, false);
         if (mMessage.hasAttachments) {
             mMessageFooterView.setVisibility(View.VISIBLE);

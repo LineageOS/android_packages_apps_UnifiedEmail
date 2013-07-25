@@ -15,40 +15,19 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/show_pictures"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/show_pictures_text"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground">
-    <ImageView
-        android:id="@+id/show_pictures_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:paddingStart="@dimen/message_details_header_padding_start"
-        android:paddingLeft="@dimen/message_details_header_padding_start"
-        android:src="@drawable/ic_show_images_holo_light"
-        android:contentDescription="@string/show_images" />
-    <TextView
-        android:id="@+id/show_pictures_text"
-        android:layout_toEndOf="@id/show_pictures_icon"
-        android:layout_toRightOf="@id/show_pictures_icon"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="14dp"
-        android:minHeight="@dimen/message_details_header_collapsed_height"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingEnd="@dimen/message_details_header_padding_end"
-        android:paddingRight="@dimen/message_details_header_padding_end"
-        android:gravity="center_vertical"
-        android:text="@string/show_images"
-        style="@style/MessageHeaderSmallStyle"/>
-    <View
-        android:id="@+id/show_pics_bottom_border"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/message_details_header_border_height"
-        android:layout_below="@id/show_pictures_text"
-        android:background="@color/conversation_border_color" />
-</RelativeLayout>
+    android:layout_gravity="center_vertical"
+    android:background="?android:attr/selectableItemBackground"
+    android:drawablePadding="10dp"
+    android:drawableStart="@drawable/ic_show_images_holo_light"
+    android:paddingTop="@dimen/message_details_header_vertical_padding"
+    android:paddingBottom="@dimen/message_details_header_vertical_padding"
+    android:paddingStart="@dimen/message_details_header_padding_start_collapsed"
+    android:paddingLeft="@dimen/message_details_header_padding_start_collapsed"
+    android:paddingEnd="14dp"
+    android:paddingRight="14dp"
+    android:text="@string/show_images"
+    style="@style/MessageHeaderShowPicsStyle"/>
