@@ -28,6 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:visibility="gone"
         android:src="@drawable/folder_parent_icon" />
@@ -35,6 +36,7 @@
     <ImageView
         android:id="@+id/color_block"
         style="@style/FolderItemIcon"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
@@ -43,7 +45,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_marginEnd="@dimen/folder_list_item_end_margin"
+        android:layout_marginRight="@dimen/folder_list_item_end_margin"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:duplicateParentState="true">
 
@@ -63,7 +67,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/folder_list_item_left_margin"
+        android:layout_marginStart="@dimen/folder_list_item_start_margin"
+        android:layout_marginLeft="@dimen/folder_list_item_start_margin"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:duplicateParentState="true"
         android:visibility="gone" />
@@ -73,11 +79,15 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/folder_icon"
         android:layout_toRightOf="@id/folder_icon"
+        android:layout_toStartOf="@id/message_counts"
         android:layout_toLeftOf="@id/message_counts"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_marginLeft="@dimen/folder_list_item_left_margin"
-        android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_marginStart="@dimen/folder_list_item_start_margin"
+        android:layout_marginLeft="@dimen/folder_list_item_start_margin"
+        android:layout_marginEnd="@dimen/folder_list_item_end_margin"
+        android:layout_marginRight="@dimen/folder_list_item_end_margin"
         android:duplicateParentState="true"
         android:includeFontPadding="false"
         android:maxLines="2"

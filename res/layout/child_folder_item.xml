@@ -42,7 +42,8 @@
     <TextView
         android:id="@+id/unread"
         style="@style/UnreadCount"
-        android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_marginEnd="@dimen/folder_list_item_end_margin"
+        android:layout_marginRight="@dimen/folder_list_item_end_margin"
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentRight="true"
         android:layout_toLeftOf="@id/folder_parent_icon"
@@ -51,7 +52,8 @@
     <TextView
         android:id="@+id/unseen"
         style="@style/UnseenCount"
-        android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_marginEnd="@dimen/folder_list_item_end_margin"
+        android:layout_marginRight="@dimen/folder_list_item_end_margin"
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentRight="true"
         android:layout_toLeftOf="@id/folder_parent_icon" />
@@ -62,7 +64,8 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/unread"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_marginLeft="@dimen/folder_list_item_left_margin"
+        android:layout_marginStart="@dimen/folder_list_item_start_margin"
+        android:layout_marginLeft="@dimen/folder_list_item_start_margin"
         android:layout_marginTop="@dimen/folder_swatch_height"
         android:layout_marginBottom="@dimen/folder_swatch_height">
 
