@@ -1582,10 +1582,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     void initReplyRecipients(final Message refMessage, final int action) {
         String[] sentToAddresses = refMessage.getToAddressesUnescaped();
         final Collection<String> toAddresses;
-        String replytoAddress = refMessage.getReplyTo();
+        final String[] replyToAddresses = refMessage.getReplyToAddressesUnescaped();
+        String replyToAddress = replyToAddresses.length > 0 ? replyToAddresses[0] : null;
+        final String[] fromAddresses = refMessage.getFromAddressesUnescaped();
+        final String fromAddress = fromAddresses.length > 0 ? fromAddresses[0] : null;
+
         // If there is no reply to address, the reply to address is the sender.
-        if (TextUtils.isEmpty(replytoAddress)) {
-            replytoAddress = refMessage.getFrom();
+        if (TextUtils.isEmpty(replyToAddress)) {
+            replyToAddress = fromAddress;
         }
 
         // If this is a reply, the Cc list is empty. If this is a reply-all, the
@@ -1593,11 +1597,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // message, excluding the current user's email address and any addresses
         // already on the To list.
         if (action == ComposeActivity.REPLY) {
-            toAddresses = initToRecipients(refMessage.getFrom(), replytoAddress, sentToAddresses);
+            toAddresses = initToRecipients(fromAddress, replyToAddress, sentToAddresses);
             addToAddresses(toAddresses);
         } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
-            toAddresses = initToRecipients(refMessage.getFrom(), replytoAddress, sentToAddresses);
+            toAddresses = initToRecipients(fromAddress, replyToAddress, sentToAddresses);
             addToAddresses(toAddresses);
             addRecipients(ccAddresses, sentToAddresses);
             addRecipients(ccAddresses, refMessage.getCcAddressesUnescaped());
