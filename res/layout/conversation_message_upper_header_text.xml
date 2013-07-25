@@ -16,8 +16,9 @@
      limitations under the License.
 -->
 
-<!-- title_container's marginRight is *reserved*, see
-     MessageHeaderView.mCollapsedTextMarginRight -->
+<!-- NOTE: Be careful when setting title_container's marginEnd.
+     The value is updated in code. See uses of
+     MessageHeaderView.mCollapsedTitleContainerMarginEnd -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/title_container"
     android:layout_width="0dip"
@@ -55,8 +56,7 @@
         android:layout_toLeftOf="@id/attachment"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        style="@style/MessageSenderNameStyle"
-        android:singleLine="true" />
+        style="@style/MessageSenderNameStyle" />
     <ImageView
         android:id="@+id/presence"
         android:layout_below="@id/sender_name"
@@ -68,7 +68,6 @@
         android:layout_below="@id/sender_name"
         android:layout_toEndOf="@id/presence"
         android:layout_toRightOf="@id/presence"
-        android:singleLine="true"
         style="@style/MessageHeaderSubtitleStyle" />
     <TextView
         android:id="@+id/send_date"
@@ -77,14 +76,11 @@
         android:layout_below="@id/sender_email"
         android:layout_toEndOf="@id/presence"
         android:layout_toRightOf="@id/presence"
-        android:singleLine="true"
         style="@style/MessageHeaderSubtitleStyle" />
     <TextView
         android:id="@+id/email_snippet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/sender_name"
-        android:lines="2"
-        android:lineSpacingExtra="1dp"
         style="@style/MessageHeaderSnippetStyle" />
 </RelativeLayout>

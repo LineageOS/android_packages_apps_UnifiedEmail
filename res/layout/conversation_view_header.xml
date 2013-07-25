@@ -20,13 +20,10 @@
     android:id="@+id/conversation_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="vertical"
     android:paddingTop="@dimen/conversation_header_vertical_padding"
-    android:paddingBottom="@dimen/conversation_header_vertical_padding"
-    android:layout_marginLeft="@dimen/conversation_view_margin_side"
-    android:layout_marginRight="@dimen/conversation_view_margin_side"
-    android:layout_marginStart="@dimen/conversation_view_margin_side"
-    android:layout_marginEnd="@dimen/conversation_view_margin_side" >
+    android:paddingBottom="@dimen/conversation_header_vertical_padding" >
 
     <TextView
         android:id="@+id/subject"

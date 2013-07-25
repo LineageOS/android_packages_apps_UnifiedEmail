@@ -40,7 +40,7 @@
         android:contentDescription="@string/reply_all" />
     <ImageView
         android:id="@+id/overflow"
-        android:layout_height="match_parent"
-        android:layout_width="@dimen/message_header_height"
+        android:layout_height="@dimen/message_header_action_button_height"
+        android:layout_width="@dimen/message_header_action_button_width"
         style="@android:style/Widget.Holo.Light.ActionButton.Overflow" />
 </merge>
