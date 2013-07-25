@@ -23,6 +23,7 @@ import android.app.LoaderManager;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.text.BidiFormatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,7 @@ public class FolderListFragment extends ListFragment implements
     private static final String LOG_TAG = LogTag.getLogTag();
     /** The parent activity */
     private ControllableActivity mActivity;
+    private BidiFormatter mBidiFormatter;
     /** The underlying list view */
     private ListView mListView;
     /** URI that points to the list of folders for the current account. */
@@ -241,6 +243,7 @@ public class FolderListFragment extends ListFragment implements
             return;
         }
         mActivity = (ControllableActivity) activity;
+        mBidiFormatter = BidiFormatter.getInstance();
         final FolderController controller = mActivity.getFolderController();
         // Listen to folder changes in the future
         mFolderObserver = new FolderObserver() {
@@ -741,8 +744,8 @@ public class FolderListFragment extends ListFragment implements
             final Uri currentAccountUri = getCurrentAccountUri();
             for (final Account account : allAccounts) {
                 final int unreadCount = mFolderWatcher.getUnreadCount(account);
-                itemList.add(DrawerItem.ofAccount(
-                        mActivity, account, unreadCount, currentAccountUri.equals(account.uri)));
+                itemList.add(DrawerItem.ofAccount(mActivity, account, unreadCount,
+                        currentAccountUri.equals(account.uri), mBidiFormatter));
             }
             if (mCurrentAccount == null) {
                 LogUtils.wtf(LOG_TAG, "recalculateListAccounts() with null current account.");
@@ -761,7 +764,7 @@ public class FolderListFragment extends ListFragment implements
             // when we're waiting for account initialization or initial sync.
             if (isCursorInvalid()) {
                 if(!mCurrentAccount.isAccountReady()) {
-                    itemList.add(DrawerItem.ofWaitView(mActivity));
+                    itemList.add(DrawerItem.ofWaitView(mActivity, mBidiFormatter));
                 }
                 return;
             }
@@ -772,7 +775,7 @@ public class FolderListFragment extends ListFragment implements
                     final Folder f = mCursor.getModel();
                     if (!isFolderTypeExcluded(f)) {
                         itemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_OTHER,
-                                mCursor.getPosition()));
+                                mCursor.getPosition(), mBidiFormatter));
                     }
                 } while (mCursor.moveToNext());
 
@@ -786,11 +789,11 @@ public class FolderListFragment extends ListFragment implements
                 final Folder f = mCursor.getModel();
                 if (!isFolderTypeExcluded(f)) {
                     if (f.isInbox()) {
-                        inboxFolders.add(DrawerItem.ofFolder(
-                                mActivity, f, DrawerItem.FOLDER_INBOX, mCursor.getPosition()));
+                        inboxFolders.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_INBOX,
+                                mCursor.getPosition(), mBidiFormatter));
                     } else {
-                        allFoldersList.add(DrawerItem.ofFolder(
-                                mActivity, f, DrawerItem.FOLDER_OTHER, mCursor.getPosition()));
+                        allFoldersList.add(DrawerItem.ofFolder(mActivity, f,
+                                DrawerItem.FOLDER_OTHER, mCursor.getPosition(), mBidiFormatter));
                     }
                 }
             } while (mCursor.moveToNext());
@@ -849,7 +852,8 @@ public class FolderListFragment extends ListFragment implements
                 int headerStringResource) {
             if (source.size() > 0) {
                 if(headerStringResource != NO_HEADER_RESOURCE) {
-                    destination.add(DrawerItem.ofHeader(mActivity, headerStringResource));
+                    destination.add(DrawerItem.ofHeader(mActivity, headerStringResource,
+                            mBidiFormatter));
                 }
                 destination.addAll(source);
             }
@@ -875,12 +879,13 @@ public class FolderListFragment extends ListFragment implements
             }
 
             if (recentFolderList.size() > 0) {
-                destination.add(DrawerItem.ofHeader(mActivity, R.string.recent_folders_heading));
+                destination.add(DrawerItem.ofHeader(mActivity, R.string.recent_folders_heading,
+                        mBidiFormatter));
                 // Recent folders are not queried for position.
                 final int position = -1;
                 for (Folder f : recentFolderList) {
                     destination.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_RECENT,
-                            position));
+                            position, mBidiFormatter));
                 }
             }
         }
@@ -981,7 +986,7 @@ public class FolderListFragment extends ListFragment implements
                 folderItemView = (FolderItemView) LayoutInflater.from(
                         mActivity.getActivityContext()).inflate(resId, null);
             }
-            folderItemView.bind(folder, mDropHandler);
+            folderItemView.bind(folder, mDropHandler, mBidiFormatter);
             if (folder.folderUri.equals(mSelectedFolderUri)) {
                 getListView().setItemChecked(position, true);
                 // If this is the current folder, also check to verify that the unread count
