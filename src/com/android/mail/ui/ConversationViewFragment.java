@@ -1001,12 +1001,12 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             // This method needs to, for example, get at the loader manager, which needs
             // the fragment to be added.
             if (!isAdded() || !mViewsCreated) {
-                LogUtils.i(LOG_TAG, "ignoring CVF.onPageFinished, url=%s fragment=%s", url,
+                LogUtils.d(LOG_TAG, "ignoring CVF.onPageFinished, url=%s fragment=%s", url,
                         ConversationViewFragment.this);
                 return;
             }
 
-            LogUtils.i(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s wv=%s t=%sms", url,
+            LogUtils.d(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s wv=%s t=%sms", url,
                     ConversationViewFragment.this, view,
                     (SystemClock.uptimeMillis() - mWebViewLoadStartMs));
 
