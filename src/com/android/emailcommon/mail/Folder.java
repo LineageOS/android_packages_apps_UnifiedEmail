@@ -120,6 +120,9 @@ public abstract class Folder {
     public abstract Message[] getMessages(int start, int end, MessageRetrievalListener listener)
             throws MessagingException;
 
+    public abstract Message[] getMessages(long startDate, long endDate, MessageRetrievalListener listener)
+            throws MessagingException;
+
     public abstract Message[] getMessages(SearchParams params,MessageRetrievalListener listener)
             throws MessagingException;
 
