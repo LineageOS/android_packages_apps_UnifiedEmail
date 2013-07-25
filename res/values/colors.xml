@@ -73,7 +73,7 @@
     <color name="conv_header_add_label_background">#eeeeee</color>
 
     <!-- Conversation message header colors -->
-    <color name="conversation_border_color">#c0c0c0</color>
+    <color name="conversation_view_border_color">#eeeeee</color>
     <color name="conv_header_text_light">#a6a8ab</color>
     <color name="conv_header_text_dark">@color/dark_gray_text_color</color>
     <color name="conv_header_text_link_blue">#35b4e3</color>
@@ -125,10 +125,8 @@
         progressbar_solid_holo.png -->
     <color name="swipe_to_refresh_text_color">#0099cc</color>
 
-    <!-- The color of the collapsed message header -->
-    <color name="collapsed_message_header_background_color">#eeeded</color>
-    <!-- The color of the expanded message header -->
-    <color name="expanded_message_header_background_color">@android:color/white</color>
+    <!-- The background color of the message header -->
+    <color name="message_header_background_color">@android:color/white</color>
 
     <color name="ad_background_yellow">#fff8e5</color>
 </resources>

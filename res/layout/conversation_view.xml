@@ -28,7 +28,28 @@
             android:id="@+id/webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/conversation_view_margin_side"
+            android:layout_marginEnd="@dimen/conversation_view_margin_side"
+            android:layout_marginLeft="@dimen/conversation_view_margin_side"
+            android:layout_marginRight="@dimen/conversation_view_margin_side"
             android:scrollbars="none" />
+
+        <FrameLayout
+                android:id="@+id/conversation_side_border_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <View
+                android:layout_width="@dimen/conversation_view_margin_side"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                android:background="@color/conversation_view_border_color" />
+
+            <View
+                android:layout_width="@dimen/conversation_view_margin_side"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:background="@color/conversation_view_border_color" />
+        </FrameLayout>
 
         <!-- scrolling overlay views go here -->
 
@@ -43,6 +64,10 @@
                 android:id="@+id/snap_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/conversation_view_margin_side"
+                android:layout_marginEnd="@dimen/conversation_view_margin_side"
+                android:layout_marginLeft="@dimen/conversation_view_margin_side"
+                android:layout_marginRight="@dimen/conversation_view_margin_side"
                 android:layout_gravity="top"
                 android:visibility="gone" />
 
@@ -50,6 +75,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:layout_marginStart="@dimen/conversation_view_margin_side"
+                android:layout_marginEnd="@dimen/conversation_view_margin_side"
                 android:layout_marginLeft="@dimen/conversation_view_margin_side"
                 android:layout_marginRight="@dimen/conversation_view_margin_side" />
 

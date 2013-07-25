@@ -87,6 +87,7 @@ public class HtmlConversationTemplates {
 
     private static boolean sLoadedTemplates;
     private static String sSuperCollapsed;
+    private static String sBorder;
     private static String sMessage;
     private static String sConversationUpper;
     private static String sConversationLower;
@@ -104,6 +105,7 @@ public class HtmlConversationTemplates {
         if (!sLoadedTemplates) {
             sLoadedTemplates = true;
             sSuperCollapsed = readTemplate(R.raw.template_super_collapsed);
+            sBorder = readTemplate(R.raw.template_border);
             sMessage = readTemplate(R.raw.template_message);
             sConversationUpper = readTemplate(R.raw.template_conversation_upper);
             sConversationLower = readTemplate(R.raw.template_conversation_lower);
@@ -116,6 +118,14 @@ public class HtmlConversationTemplates {
         }
 
         append(sSuperCollapsed, firstCollapsed, blockHeight);
+    }
+
+    /**
+     * Adds a spacer for the border that vertically separates cards.
+     * @param blockHeight height of the border
+     */
+    public void appendBorder(int blockHeight) {
+        append(sBorder, blockHeight);
     }
 
     @VisibleForTesting
