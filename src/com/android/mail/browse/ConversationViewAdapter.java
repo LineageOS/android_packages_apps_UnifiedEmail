@@ -80,7 +80,8 @@ public class ConversationViewAdapter extends BaseAdapter {
     public static final int VIEW_TYPE_MESSAGE_HEADER = 3;
     public static final int VIEW_TYPE_MESSAGE_FOOTER = 4;
     public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 5;
-    public static final int VIEW_TYPE_COUNT = 6;
+    public static final int VIEW_TYPE_BORDER = 6;
+    public static final int VIEW_TYPE_COUNT = 7;
 
     public class ConversationHeaderItem extends ConversationOverlayItem {
         public final Conversation mConversation;
@@ -193,13 +194,16 @@ public class ConversationViewAdapter extends BaseAdapter {
         private boolean mShowImages;
 
         // cached values to speed up re-rendering during view recycling
-        public CharSequence timestampShort;
-        public CharSequence timestampLong;
+        private CharSequence mTimestampShort;
+        private CharSequence mTimestampLong;
+        private long mTimestampMs;
+        private FormattedDateBuilder mDateBuilder;
         public CharSequence recipientSummaryText;
 
-        MessageHeaderItem(ConversationViewAdapter adapter, ConversationMessage message,
-                boolean expanded, boolean showImages) {
+        MessageHeaderItem(ConversationViewAdapter adapter, FormattedDateBuilder dateBuilder,
+                ConversationMessage message, boolean expanded, boolean showImages) {
             mAdapter = adapter;
+            mDateBuilder = dateBuilder;
             mMessage = message;
             mExpanded = expanded;
             mShowImages = showImages;
@@ -220,7 +224,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageHeaderView v = (MessageHeaderView) inflater.inflate(
                     R.layout.conversation_message_header, parent, false);
-            v.initialize(mAdapter.mDateBuilder, mAdapter.mAccountController,
+            v.initialize(mAdapter.mAccountController,
                     mAdapter.mAddressCache);
             v.setCallbacks(mAdapter.mMessageCallbacks);
             v.setContactInfoSource(mAdapter.mContactInfoSource);
@@ -283,6 +287,23 @@ public class ConversationViewAdapter extends BaseAdapter {
             mMessage = message;
         }
 
+        public CharSequence getTimestampShort() {
+            ensureTimestamps();
+            return mTimestampShort;
+        }
+
+        public CharSequence getTimestampLong() {
+            ensureTimestamps();
+            return mTimestampLong;
+        }
+
+        private void ensureTimestamps() {
+            if (mMessage.dateReceivedMs != mTimestampMs) {
+                mTimestampMs = mMessage.dateReceivedMs;
+                mTimestampShort = mDateBuilder.formatShortDate(mTimestampMs);
+                mTimestampLong = mDateBuilder.formatLongDateTime(mTimestampMs);
+            }
+        }
     }
 
     public class MessageFooterItem extends ConversationOverlayItem {
@@ -386,6 +407,35 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
     }
 
+
+    public class BorderItem extends ConversationOverlayItem {
+
+        @Override
+        public int getType() {
+            return VIEW_TYPE_BORDER;
+        }
+
+        @Override
+        public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
+            return inflater.inflate(R.layout.card_border, parent, false);
+        }
+
+        @Override
+        public void bindView(View v, boolean measureOnly) {
+            // DO NOTHING
+        }
+
+        @Override
+        public boolean isContiguous() {
+            return true;
+        }
+
+        @Override
+        public boolean canPushSnapHeader() {
+            return true;
+        }
+    }
+
     public ConversationViewAdapter(ControllableActivity controllableActivity,
             ConversationAccountController accountController,
             LoaderManager loaderManager,
@@ -454,6 +504,10 @@ public class ConversationViewAdapter extends BaseAdapter {
         return v;
     }
 
+    public FormattedDateBuilder getDateBuilder() {
+        return mDateBuilder;
+    }
+
     public int addItem(ConversationOverlayItem item) {
         final int pos = mItems.size();
         mItems.add(item);
@@ -478,7 +532,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     }
 
     public int addMessageHeader(ConversationMessage msg, boolean expanded, boolean showImages) {
-        return addItem(new MessageHeaderItem(this, msg, expanded, showImages));
+        return addItem(new MessageHeaderItem(this, mDateBuilder, msg, expanded, showImages));
     }
 
     public int addMessageFooter(MessageHeaderItem headerItem) {
@@ -486,8 +540,9 @@ public class ConversationViewAdapter extends BaseAdapter {
     }
 
     public static MessageHeaderItem newMessageHeaderItem(ConversationViewAdapter adapter,
-            ConversationMessage message, boolean expanded, boolean showImages) {
-        return new MessageHeaderItem(adapter, message, expanded, showImages);
+            FormattedDateBuilder dateBuilder, ConversationMessage message,
+            boolean expanded, boolean showImages) {
+        return new MessageHeaderItem(adapter, dateBuilder, message, expanded, showImages);
     }
 
     public MessageFooterItem newMessageFooterItem(MessageHeaderItem headerItem) {
@@ -496,6 +551,14 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public int addSuperCollapsedBlock(int start, int end) {
         return addItem(new SuperCollapsedBlockItem(start, end));
+    }
+
+    public int addBorder() {
+        return addItem(new BorderItem());
+    }
+
+    public BorderItem newBorderItem() {
+        return new BorderItem();
     }
 
     public void replaceSuperCollapsedBlock(SuperCollapsedBlockItem blockToRemove,
@@ -519,5 +582,4 @@ public class ConversationViewAdapter extends BaseAdapter {
             }
         }
     }
-
 }

@@ -35,7 +35,6 @@
         android:layout_marginRight="14dp"
         android:layout_toRightOf="@id/spam_warning_icon"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/message_details_header_collapsed_height"
         android:paddingRight="@dimen/message_details_header_padding_end"
         android:paddingTop="8dp" />
 
@@ -59,8 +58,8 @@
     <View
         android:id="@+id/spam_warning_bottom_border"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/message_details_header_border_height"
+        android:layout_height="@dimen/message_header_border_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/conversation_border_color" />
+        android:background="@color/conversation_view_border_color" />
 
 </com.android.mail.browse.SpamWarningView>

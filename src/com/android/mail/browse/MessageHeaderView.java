@@ -30,6 +30,8 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.LeadingMarginSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.util.AttributeSet;
@@ -49,7 +51,6 @@ import android.widget.Toast;
 
 import com.android.mail.ContactInfo;
 import com.android.mail.ContactInfoSource;
-import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.compose.ComposeActivity;
@@ -100,8 +101,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     public static final int DEFAULT_MODE = 0;
     public static final int POPUP_MODE = 1;
 
-    private static final int[] STATE_DRAFT = {R.attr.state_draft};
-
     // This is a debug only feature
     public static final boolean ENABLE_REPORT_RENDERING_PROBLEM =
             MailPrefs.SHOW_EXPERIMENTAL_PREFS;
@@ -122,7 +121,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private ViewGroup mCollapsedDetailsView;
     private ViewGroup mExpandedDetailsView;
     private SpamWarningView mSpamWarningView;
-    private ViewGroup mImagePromptView;
+    private TextView mImagePromptView;
     private MessageInviteView mInviteView;
     private ImageView mPresenceView;
     private View mForwardButton;
@@ -142,8 +141,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private String[] mCc;
     private String[] mBcc;
     private String[] mReplyTo;
-    private long mTimestampMs;
-    private FormattedDateBuilder mDateBuilder;
 
     private boolean mIsDraft = false;
 
@@ -168,8 +165,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private Map<String, Address> mAddressCache;
 
     private boolean mShowImagePrompt;
-
-    private CharSequence mTimestampShort;
 
     /**
      * Take the initial visibility of the star view to mean its collapsed
@@ -340,15 +335,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     public void setSnappy(boolean snappy) {
         mIsSnappy = snappy;
         hideMessageDetails();
-        if (snappy) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                setBackground(null);
-            } else {
-                setBackgroundDrawable(null);
-            }
-        } else {
-            setBackgroundColor(getResources().getColor(android.R.color.white));
-        }
     }
 
     @Override
@@ -372,10 +358,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
-    public void initialize(FormattedDateBuilder dateBuilder,
-            ConversationAccountController accountController,
+    public void initialize(ConversationAccountController accountController,
             Map<String, Address> addressCache) {
-        mDateBuilder = dateBuilder;
         mAccountController = accountController;
         mAddressCache = addressCache;
     }
@@ -412,13 +396,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mShowImagePrompt = mMessage.shouldShowImagePrompt();
         setExpanded(mMessageHeaderItem.isExpanded());
 
-        mTimestampMs = mMessage.dateReceivedMs;
-        mTimestampShort = mMessageHeaderItem.timestampShort;
-        if (mTimestampShort == null) {
-            mTimestampShort = mDateBuilder.formatShortDate(mTimestampMs);
-            mMessageHeaderItem.timestampShort = mTimestampShort;
-        }
-
         mFrom = mMessage.getFromAddresses();
         mTo = mMessage.getToAddresses();
         mCc = mMessage.getCcAddresses();
@@ -428,9 +405,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         /**
          * Turns draft mode on or off. Draft mode hides message operations other
          * than "edit", hides contact photo, hides presence, and changes the
-         * sender name to "Draft". Do not set mIsDraft directly.
+         * sender name to "Draft".
          */
-        setIsDraft(mMessage.draftType != UIProvider.DraftType.NOT_A_DRAFT);
+        mIsDraft = mMessage.draftType != UIProvider.DraftType.NOT_A_DRAFT;
         mIsSending = mMessage.isSending;
 
         // If this was a sent message AND:
@@ -471,12 +448,12 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         mSenderNameView.setText(getHeaderTitle());
         mSenderEmailView.setText(getHeaderSubtitle());
-        mDateView.setText(getFormattedTimestampLong());
+        mDateView.setText(mMessageHeaderItem.getTimestampLong());
         mSnippetView.setText(mSnippet);
         setAddressOnContextMenu();
 
         if (mUpperDateView != null) {
-            mUpperDateView.setText(mTimestampShort);
+            mUpperDateView.setText(mMessageHeaderItem.getTimestampShort());
         }
 
         if (measureOnly) {
@@ -579,14 +556,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return sub;
     }
 
-    private CharSequence getFormattedTimestampLong() {
-        if (mMessageHeaderItem.timestampLong == null) {
-            mMessageHeaderItem.timestampLong = mDateBuilder.formatLongDateTime(mTimestampMs);
-        }
-
-        return mMessageHeaderItem.timestampLong;
-    }
-
     /**
      * Return the name, if known, or just the address.
      */
@@ -651,14 +620,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             }
 
             setReplyOrReplyAllVisible();
-            setChildVisibility(normalVis, mPhotoView, mForwardButton,
-                    mSenderEmailView, mDateView, mOverflowButton);
+            setChildVisibility(normalVis, mPhotoView, mForwardButton, mOverflowButton);
             setChildVisibility(draftVis, mDraftIcon, mEditDraftButton);
+            setChildVisibility(VISIBLE, mSenderEmailView, mDateView);
             setChildVisibility(GONE, mAttachmentIcon, mUpperDateView, mSnippetView);
             setChildVisibility(mStarShown ? VISIBLE : GONE, mStarView);
 
             setChildMarginEnd(mTitleContainerView, 0);
-            mSenderNameView.setTypeface(Typeface.DEFAULT_BOLD);
 
         } else {
 
@@ -675,8 +643,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             setChildVisibility(mCollapsedStarVisible && mStarShown ? VISIBLE : GONE, mStarView);
 
             setChildMarginEnd(mTitleContainerView, mTitleContainerCollapsedMarginEnd);
-
-            mSenderNameView.setTypeface(Typeface.DEFAULT);
 
             if (mIsDraft) {
 
@@ -776,7 +742,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                     mContext.getString(headingStrRes));
             ssb.setSpan(new StyleSpan(Typeface.NORMAL), 0, ssb.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            ssb.append(' ');
 
             final int len = Math.min(maxToCopy, rawAddrs.length);
             boolean first = true;
@@ -962,7 +927,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             case R.id.upper_header:
                 toggleExpanded();
                 break;
-            case R.id.show_pictures:
+            case R.id.show_pictures_text:
                 handleShowImagePromptClick(v);
                 break;
             default:
@@ -997,7 +962,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (!mIsSnappy) {
             mSenderNameView.setText(getHeaderTitle());
             mSenderEmailView.setText(getHeaderSubtitle());
-            mDateView.setText(getFormattedTimestampLong());
+            mDateView.setText(mMessageHeaderItem.getTimestampLong());
             mSnippetView.setText(mSnippet);
         }
 
@@ -1118,22 +1083,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private void showImagePromptOnce() {
         if (mImagePromptView == null) {
-            ViewGroup v = (ViewGroup) mInflater.inflate(R.layout.conversation_message_show_pics,
-                    this, false);
-            addView(v);
-            v.setOnClickListener(this);
-
-            mImagePromptView = v;
+            mImagePromptView = (TextView) mInflater.inflate(
+                    R.layout.conversation_message_show_pics, this, false);
+            addView(mImagePromptView);
+            mImagePromptView.setOnClickListener(this);
         }
         mImagePromptView.setVisibility(VISIBLE);
-
-        ImageView descriptionViewIcon =
-                (ImageView) mImagePromptView.findViewById(R.id.show_pictures_icon);
-        descriptionViewIcon.setContentDescription(
-                getResources().getString(R.string.show_images));
-        TextView descriptionView =
-                (TextView) mImagePromptView.findViewById(R.id.show_pictures_text);
-        descriptionView.setText(R.string.show_images);
+        mImagePromptView.setText(R.string.show_images);
         mImagePromptView.setTag(SHOW_IMAGE_PROMPT_ONCE);
     }
 
@@ -1149,13 +1105,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             showImagePromptOnce();
         }
 
-        ImageView descriptionViewIcon =
-                (ImageView) mImagePromptView.findViewById(R.id.show_pictures_icon);
-        descriptionViewIcon.setContentDescription(
-                getResources().getString(R.string.always_show_images));
-        TextView descriptionView =
-                (TextView) mImagePromptView.findViewById(R.id.show_pictures_text);
-        descriptionView.setText(R.string.always_show_images);
+        mImagePromptView.setText(R.string.always_show_images);
         mImagePromptView.setTag(SHOW_IMAGE_PROMPT_ALWAYS);
 
         if (!initialShowing) {
@@ -1290,22 +1240,22 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             String viaDomain, Map<String, Address> addressCache, Account account,
             VeiledAddressMatcher veiledMatcher, String[] from, String[] replyTo,
             String[] to, String[] cc, String[] bcc) {
-        renderEmailList(res, R.id.from_heading, R.id.from_details, from, viaDomain,
+        renderEmailList(res, R.string.from_heading, R.id.from_details, from, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
-        renderEmailList(res, R.id.replyto_heading, R.id.replyto_details, replyTo, viaDomain,
+        renderEmailList(res, R.string.replyto_heading, R.id.replyto_details, replyTo, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
-        renderEmailList(res, R.id.to_heading, R.id.to_details, to, viaDomain,
+        renderEmailList(res, R.string.to_heading, R.id.to_details, to, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
-        renderEmailList(res, R.id.cc_heading, R.id.cc_details, cc, viaDomain,
+        renderEmailList(res, R.string.cc_heading, R.id.cc_details, cc, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
-        renderEmailList(res, R.id.bcc_heading, R.id.bcc_details, bcc, viaDomain,
+        renderEmailList(res, R.string.bcc_heading, R.id.bcc_details, bcc, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
     }
 
     /**
      * Render an email list for the expanded message details view.
      */
-    private static void renderEmailList(Resources res, int headerId, int detailsId,
+    private static void renderEmailList(Resources res, int headerStringId, int detailsId,
             String[] emails, String viaDomain, View rootView,
             Map<String, Address> addressCache, Account account,
             VeiledAddressMatcher veiledMatcher) {
@@ -1353,11 +1303,55 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             }
         }
 
-        rootView.findViewById(headerId).setVisibility(VISIBLE);
+        final String headerString = res.getString(headerStringId);
         final TextView detailsText = (TextView) rootView.findViewById(detailsId);
-        detailsText.setText(TextUtils.join("\n", formattedEmails));
+        detailsText.setText(joinFormattedEmails(detailsText, "\n", headerString, formattedEmails));
         stripUnderlines(detailsText, account);
+        addHeaderColor(res, detailsText, headerString.length());
         detailsText.setVisibility(VISIBLE);
+    }
+
+    /**
+     * Returns a string containing the tokens joined by delimiters.
+     * @param tokens an array objects to be joined. Strings will be formed from
+     *     the objects by calling object.toString().
+     */
+    private static CharSequence joinFormattedEmails(TextView textView,
+            CharSequence delimiter, String headerText, String[] tokens) {
+
+        // measure width of header for indenting
+        final int indentSize = (int) textView.getPaint().measureText(headerText);
+        final SpannableStringBuilder sb = new SpannableStringBuilder(headerText);
+        int start;
+        int end = 0;
+        boolean firstTime = true;
+        for (String token: tokens) {
+            if (!firstTime) {
+                sb.append(delimiter);
+            }
+            sb.append(token);
+            start = end;
+            end = sb.length();
+
+            // for first email, use hanging indent
+            if (firstTime) {
+                sb.setSpan(new LeadingMarginSpan.Standard(0, indentSize), start, end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                firstTime = false;
+            // for all other emails, use indent for all lines
+            } else {
+                sb.setSpan(new LeadingMarginSpan.Standard(indentSize), start, end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return sb;
+    }
+
+    private static void addHeaderColor(Resources res, TextView textView, int length) {
+        final Spannable spannable = (Spannable) textView.getText();
+        final int textColor = res.getColor(R.color.conv_header_text_dark);
+        spannable.setSpan(new ForegroundColorSpan(textColor), 0, length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private static void stripUnderlines(TextView textView, Account account) {
@@ -1503,19 +1497,5 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (!mPreMeasuring) {
             t.pause(MEASURE_TAG);
         }
-    }
-
-    @Override
-    protected int[] onCreateDrawableState(int extraSpace) {
-        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
-        if (mIsDraft) {
-            mergeDrawableStates(drawableState, STATE_DRAFT);
-        }
-        return drawableState;
-    }
-
-    private void setIsDraft(boolean isDraft) {
-        mIsDraft = isDraft;
-        refreshDrawableState();
     }
 }

@@ -18,24 +18,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/conversation_view_margin_side"
-    android:layout_marginRight="@dimen/conversation_view_margin_side"
-    android:layout_marginStart="@dimen/conversation_view_margin_side"
-    android:layout_marginEnd="@dimen/conversation_view_margin_side"
-    android:background="@drawable/message_header_bg"
-    android:duplicateParentState="true"
-    android:paddingLeft="@dimen/message_header_padding_start"
-    android:paddingRight="@dimen/message_header_padding_end"
-    android:paddingStart="@dimen/message_header_padding_start"
-    android:paddingEnd="@dimen/message_header_padding_end"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp" >
+    android:duplicateParentState="true" >
 
     <QuickContactBadge
         android:id="@+id/photo"
         android:layout_width="@dimen/message_header_contact_photo_width"
         android:layout_height="@dimen/message_header_contact_photo_height"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/message_header_padding_start"
+        android:layout_marginLeft="@dimen/message_header_padding_start"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/contact_info_string" />
     <!-- draft should match photo in dimensions -->
@@ -44,6 +37,10 @@
         android:layout_width="@dimen/message_header_contact_photo_width"
         android:layout_height="@dimen/message_header_contact_photo_height"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="@dimen/message_header_padding_start"
+        android:layout_marginLeft="@dimen/message_header_padding_start"
         android:visibility="gone"
         android:scaleType="center"
         android:src="@drawable/ic_draft" />

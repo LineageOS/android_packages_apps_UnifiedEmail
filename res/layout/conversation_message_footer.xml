@@ -29,18 +29,13 @@
         android:id="@+id/attachments_header_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="@string/attachments_header"
         android:visibility="gone"
         android:paddingStart="@dimen/message_details_header_padding_start"
         android:paddingLeft="@dimen/message_details_header_padding_start"
         style="@style/MessageAttachmentsHeaderStyle"/>
-    <View
-        android:id="@+id/attachments_header_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/message_details_header_border_height"
-        android:visibility="gone"
-        android:background="@color/conversation_border_color"
-        android:layout_marginBottom="8dp" />
+
     <com.android.mail.ui.AttachmentTileGrid
         android:id="@+id/attachment_tile_grid"
         android:layout_width="match_parent"
@@ -60,4 +55,5 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:orientation="vertical"/>
+
 </com.android.mail.browse.MessageFooterView>
