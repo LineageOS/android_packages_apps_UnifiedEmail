@@ -28,6 +28,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.android.mail.R;
+import com.android.mail.graphics.PageMarginDrawable;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -218,7 +219,8 @@ public class ConversationPagerController {
         a.recycle();
         final int padding = c.getResources().getDimensionPixelOffset(
                 R.dimen.conversation_page_gutter);
-        final Drawable gutterDrawable = new InsetDrawable(divider, padding, 0, padding, 0);
+        final Drawable gutterDrawable = new PageMarginDrawable(divider, padding, 0, padding, 0,
+                c.getResources().getColor(R.color.conversation_view_border_color));
         mPager.setPageMargin(gutterDrawable.getIntrinsicWidth() + 2 * padding);
         mPager.setPageMarginDrawable(gutterDrawable);
     }
