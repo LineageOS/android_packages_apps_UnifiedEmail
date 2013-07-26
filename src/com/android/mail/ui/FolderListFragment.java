@@ -645,10 +645,9 @@ public class FolderListFragment extends ListFragment implements
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             final DrawerItem item = (DrawerItem) getItem(position);
-            final View view = item.getView(position, convertView, parent);
+            final View view = item.getView(convertView, parent);
             final int type = item.mType;
-            final boolean isSelected =
-                    item.isHighlighted(mCurrentFolderForUnreadCheck, mSelectedFolderType);
+            final boolean isSelected = item.isHighlighted(mSelectedFolderUri, mSelectedFolderType);
             if (type == DrawerItem.VIEW_FOLDER) {
                 mListView.setItemChecked(position, isSelected);
             }
@@ -775,7 +774,7 @@ public class FolderListFragment extends ListFragment implements
                     final Folder f = mCursor.getModel();
                     if (!isFolderTypeExcluded(f)) {
                         itemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_OTHER,
-                                mCursor.getPosition(), mBidiFormatter));
+                                mBidiFormatter));
                     }
                 } while (mCursor.moveToNext());
 
@@ -790,10 +789,10 @@ public class FolderListFragment extends ListFragment implements
                 if (!isFolderTypeExcluded(f)) {
                     if (f.isInbox()) {
                         inboxFolders.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_INBOX,
-                                mCursor.getPosition(), mBidiFormatter));
+                                mBidiFormatter));
                     } else {
                         allFoldersList.add(DrawerItem.ofFolder(mActivity, f,
-                                DrawerItem.FOLDER_OTHER, mCursor.getPosition(), mBidiFormatter));
+                                DrawerItem.FOLDER_OTHER, mBidiFormatter));
                     }
                 }
             } while (mCursor.moveToNext());
@@ -801,8 +800,7 @@ public class FolderListFragment extends ListFragment implements
             // If we have the full folder list, verify that the current folder exists
             boolean currentFolderFound = false;
             if (mFullFolderListCursor != null) {
-                final String folderName = mCurrentFolderForUnreadCheck == null
-                        ? "null" : mCurrentFolderForUnreadCheck.name;
+                final String folderName = mSelectedFolderUri.toString();
                 LogUtils.d(LOG_TAG, "Checking if full folder list contains %s", folderName);
 
                 if (mFullFolderListCursor.moveToFirst()) {
@@ -810,7 +808,7 @@ public class FolderListFragment extends ListFragment implements
                     do {
                         final Folder f = mFullFolderListCursor.getModel();
                         if (!isFolderTypeExcluded(f)) {
-                            if (f.equals(mCurrentFolderForUnreadCheck)) {
+                            if (f.folderUri.equals(mSelectedFolderUri)) {
                                 LogUtils.d(LOG_TAG, "Found %s !", folderName);
                                 currentFolderFound = true;
                             }
@@ -818,11 +816,11 @@ public class FolderListFragment extends ListFragment implements
                     } while (mFullFolderListCursor.moveToNext());
                 }
 
-                if (!currentFolderFound && mCurrentFolderForUnreadCheck != null
+                if (!currentFolderFound && mSelectedFolderUri != FolderUri.EMPTY
                         && mCurrentAccount != null && mAccountController != null
                         && mAccountController.isDrawerPullEnabled()) {
                     LogUtils.d(LOG_TAG, "Current folder (%1$s) has disappeared for %2$s",
-                            mCurrentFolderForUnreadCheck.name, mCurrentAccount.name);
+                            folderName, mCurrentAccount.name);
                     changeAccount(mCurrentAccount);
                 }
             }
@@ -882,10 +880,9 @@ public class FolderListFragment extends ListFragment implements
                 destination.add(DrawerItem.ofHeader(mActivity, R.string.recent_folders_heading,
                         mBidiFormatter));
                 // Recent folders are not queried for position.
-                final int position = -1;
                 for (Folder f : recentFolderList) {
                     destination.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_RECENT,
-                            position, mBidiFormatter));
+                            mBidiFormatter));
                 }
             }
         }
@@ -1104,7 +1101,7 @@ public class FolderListFragment extends ListFragment implements
             // An updated cursor causes the entire list to refresh. No need to refresh the list.
             // But we do need to blank out the current folder, since the account might not be
             // synced.
-            mSelectedFolderUri = null;
+            mSelectedFolderUri = FolderUri.EMPTY;
             mCurrentFolderForUnreadCheck = null;
         } else if (account == null) {
             // This should never happen currently, but is a safeguard against a very incorrect
