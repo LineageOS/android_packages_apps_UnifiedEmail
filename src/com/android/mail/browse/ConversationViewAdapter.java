@@ -153,7 +153,7 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         @Override
         public boolean isContiguous() {
-            return false;
+            return true;
         }
 
     }
@@ -409,6 +409,11 @@ public class ConversationViewAdapter extends BaseAdapter {
 
 
     public class BorderItem extends ConversationOverlayItem {
+        private final boolean mContiguous;
+
+        public BorderItem(boolean contiguous) {
+            mContiguous = contiguous;
+        }
 
         @Override
         public int getType() {
@@ -427,7 +432,7 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         @Override
         public boolean isContiguous() {
-            return true;
+            return mContiguous;
         }
 
         @Override
@@ -553,12 +558,12 @@ public class ConversationViewAdapter extends BaseAdapter {
         return addItem(new SuperCollapsedBlockItem(start, end));
     }
 
-    public int addBorder() {
-        return addItem(new BorderItem());
+    public int addBorder(boolean contiguous) {
+        return addItem(new BorderItem(contiguous));
     }
 
-    public BorderItem newBorderItem() {
-        return new BorderItem();
+    public BorderItem newBorderItem(boolean contiguous) {
+        return new BorderItem(contiguous);
     }
 
     public void replaceSuperCollapsedBlock(SuperCollapsedBlockItem blockToRemove,

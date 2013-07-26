@@ -708,7 +708,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         final boolean applyTransforms = shouldApplyTransforms();
 
-        renderBorder();
+        renderBorder(true /* contiguous */);
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
@@ -717,21 +717,21 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
-        renderBorder();
+        renderBorder(true /* contiguous */);
         final int blockPos = mAdapter.addSuperCollapsedBlock(start, end);
         final int blockPx = measureOverlayHeight(blockPos);
         mTemplates.appendSuperCollapsedHtml(start, mWebView.screenPxToWebPx(blockPx));
     }
 
-    private void renderBorder() {
-        final int blockPos = mAdapter.addBorder();
+    protected void renderBorder(boolean contiguous) {
+        final int blockPos = mAdapter.addBorder(contiguous);
         final int blockPx = measureOverlayHeight(blockPos);
         mTemplates.appendBorder(mWebView.screenPxToWebPx(blockPx));
     }
 
     private void renderMessage(ConversationMessage msg, boolean expanded,
             boolean safeForImages) {
-        renderBorder();
+        renderBorder(true /* contiguous */);
 
         final int headerPos = mAdapter.addMessageHeader(msg, expanded,
                 mViewState.getShouldShowImages(msg));
@@ -769,7 +769,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 borderPx = 0;
                 first = false;
             } else {
-                final BorderItem border = mAdapter.newBorderItem();
+                final BorderItem border = mAdapter.newBorderItem(true /* contiguous */);
                 borderPx = measureOverlayHeight(border);
                 replacements.add(border);
                 mTemplates.appendBorder(mWebView.screenPxToWebPx(borderPx));
