@@ -64,6 +64,7 @@ public class AdHeaderView extends LinearLayout implements View.OnClickListener {
         switch(view.getId()) {
             case R.id.ad_info:
                 // TODO wire up clicking the ad info button
+//                Utils.showAdPreferenceManager(getContext());
                 break;
             default:
                 break;
