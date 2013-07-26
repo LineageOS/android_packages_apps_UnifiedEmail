@@ -229,6 +229,12 @@ public class ConversationItemView extends View
      */
     private long mLastSelectedId = -1;
 
+    /** The resource id of the color to use to override the background. */
+    private int mBackgroundOverrideResId = -1;
+    /** The bitmap to use, or <code>null</code> for the default */
+    private Bitmap mPhotoBitmap = null;
+    private Rect mPhotoRect = null;
+
     static {
         sPaint.setAntiAlias(true);
         sFoldersPaint.setAntiAlias(true);
@@ -501,14 +507,31 @@ public class ConversationItemView extends View
         Utils.traceBeginSection("CIVC.bind");
         bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity,
                 conversationListListener, set, folder, checkboxOrSenderImage, swipeEnabled,
-                priorityArrowEnabled, adapter);
+                priorityArrowEnabled, adapter, -1 /* backgroundOverrideResId */,
+                null /* photoBitmap */);
+        Utils.traceEndSection();
+    }
+
+    public void bindAd(final ConversationItemViewModel conversationItemViewModel,
+            final ControllableActivity activity,
+            final ConversationListListener conversationListListener, final Folder folder,
+            final AnimatedAdapter adapter, final int backgroundOverrideResId,
+            final Bitmap photoBitmap) {
+        Utils.traceBeginSection("CIVC.bindAd");
+        bind(conversationItemViewModel, activity, conversationListListener, null /* set */, folder,
+                ConversationListIcon.SENDER_IMAGE, true /* swipeEnabled */,
+                false /* priorityArrowEnabled */, adapter, backgroundOverrideResId, photoBitmap);
         Utils.traceEndSection();
     }
 
     private void bind(ConversationItemViewModel header, ControllableActivity activity,
             final ConversationListListener conversationListListener,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
-            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
+            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter,
+            final int backgroundOverrideResId, final Bitmap photoBitmap) {
+        mBackgroundOverrideResId = backgroundOverrideResId;
+        mPhotoBitmap = photoBitmap;
+
         if (mHeader != null) {
             // If this was previously bound to a different conversation, remove any contact photo
             // manager requests.
@@ -576,8 +599,12 @@ public class ConversationItemView extends View
         mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation,
                 mDisplayedFolder.folderUri, ignoreFolderType);
 
-        mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
-                mHeader.conversation.dateMs);
+        if (mHeader.dateOverrideText == null) {
+            mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
+                    mHeader.conversation.dateMs);
+        } else {
+            mHeader.dateText = mHeader.dateOverrideText;
+        }
 
         mConfig = new ConversationItemViewCoordinates.Config()
             .withGadget(mGadgetMode)
@@ -677,6 +704,11 @@ public class ConversationItemView extends View
 
         mCoordinates = ConversationItemViewCoordinates.forConfig(mContext, mConfig,
                 mAdapter.getCoordinatesCache());
+
+        if (mPhotoBitmap != null) {
+            mPhotoRect = new Rect(0, 0, mCoordinates.contactImagesWidth,
+                    mCoordinates.contactImagesHeight);
+        }
 
         final int h = (mAnimatedHeightFraction != 1.0f) ?
                 Math.round(mAnimatedHeightFraction * mCoordinates.height) : mCoordinates.height;
@@ -1367,8 +1399,10 @@ public class ConversationItemView extends View
         drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateYBaseline,
                 sPaint);
 
-        // Paper clip icon.
-        if (mHeader.paperclip != null) {
+        // Info / Paper clip icon.
+        if (mHeader.infoIcon != null) {
+            canvas.drawBitmap(mHeader.infoIcon, mPaperclipX, mCoordinates.paperclipY, sPaint);
+        } else if (mHeader.paperclip != null) {
             canvas.drawBitmap(mHeader.paperclip, mPaperclipX, mCoordinates.paperclipY, sPaint);
         }
 
@@ -1455,7 +1489,11 @@ public class ConversationItemView extends View
 
         canvas.translate(mCoordinates.contactImagesX + xOffset, mCoordinates.contactImagesY);
 
-        mContactImagesHolder.draw(canvas, mPhotoFlipMatrix);
+        if (mPhotoBitmap == null) {
+            mContactImagesHolder.draw(canvas, mPhotoFlipMatrix);
+        } else {
+            canvas.drawBitmap(mPhotoBitmap, null, mPhotoRect, sPaint);
+        }
     }
 
     private void drawCheckbox(final Canvas canvas) {
@@ -1545,7 +1583,9 @@ public class ConversationItemView extends View
      */
     private void updateBackground(boolean isUnread) {
         final int background;
-        if (isUnread) {
+        if (mBackgroundOverrideResId > 0) {
+            background = mBackgroundOverrideResId;
+        } else if (isUnread) {
             background = R.drawable.conversation_unread_selector;
         } else {
             background = R.drawable.conversation_read_selector;
@@ -1569,7 +1609,7 @@ public class ConversationItemView extends View
 
     @Override
     public void toggleSelectedState() {
-        if (mHeader != null && mHeader.conversation != null) {
+        if (mHeader != null && mHeader.conversation != null && mSelectedConversationSet != null) {
             mSelected = !mSelected;
             setSelected(mSelected);
             Conversation conv = mHeader.conversation;
@@ -1607,6 +1647,7 @@ public class ConversationItemView extends View
                 mCoordinates.starY + starBitmap.getHeight());
         ConversationCursor cursor = (ConversationCursor) mAdapter.getCursor();
         if (cursor != null) {
+            // TODO(skennedy) What about ads?
             cursor.updateBoolean(mHeader.conversation, ConversationColumns.STARRED,
                     mHeader.conversation.starred);
         }
@@ -1736,7 +1777,7 @@ public class ConversationItemView extends View
     public boolean performClick() {
         final boolean handled = super.performClick();
         final SwipeableListView list = getListView();
-        if (list != null && list.getAdapter() != null) {
+        if (!handled && list != null && list.getAdapter() != null) {
             final int pos = list.findConversation(this, mHeader.conversation);
             list.performItemClick(this, pos, mHeader.conversation.id);
         }
