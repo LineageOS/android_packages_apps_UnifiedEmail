@@ -2570,6 +2570,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         public abstract void invalidateArea();
 
         public void setValue(final float fraction) {
+            if (mValue == fraction) {
+                return;
+            }
             mValue = fraction;
             invalidateArea();
         }
