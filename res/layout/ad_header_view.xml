@@ -31,7 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|right"
         android:background="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
+        android:drawablePadding="4dp"
+        android:paddingTop="10dp"
         android:paddingStart="@dimen/conversation_header_side_padding"
         android:paddingEnd="@dimen/conversation_header_side_padding"
         android:paddingLeft="@dimen/conversation_header_side_padding"
@@ -39,8 +40,8 @@
         android:text="@string/ads"
         android:textAllCaps="true"
         android:textColor="@color/conv_header_text_dark"
-        android:drawableEnd="@drawable/ic_alert_grey"
-        android:drawableRight="@drawable/ic_alert_grey"
+        android:drawableEnd="@drawable/ic_ads_info"
+        android:drawableRight="@drawable/ic_ads_info"
         />
 
     <TextView
