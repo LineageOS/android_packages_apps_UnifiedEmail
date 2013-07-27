@@ -31,7 +31,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.LeadingMarginSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.util.AttributeSet;
@@ -1240,22 +1239,22 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             String viaDomain, Map<String, Address> addressCache, Account account,
             VeiledAddressMatcher veiledMatcher, String[] from, String[] replyTo,
             String[] to, String[] cc, String[] bcc) {
-        renderEmailList(res, R.string.from_heading, R.id.from_details, from, viaDomain,
+        renderEmailList(res, R.id.from_heading, R.id.from_details, from, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
-        renderEmailList(res, R.string.replyto_heading, R.id.replyto_details, replyTo, viaDomain,
+        renderEmailList(res, R.id.replyto_heading, R.id.replyto_details, replyTo, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
-        renderEmailList(res, R.string.to_heading, R.id.to_details, to, viaDomain,
+        renderEmailList(res, R.id.to_heading, R.id.to_details, to, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
-        renderEmailList(res, R.string.cc_heading, R.id.cc_details, cc, viaDomain,
+        renderEmailList(res, R.id.cc_heading, R.id.cc_details, cc, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
-        renderEmailList(res, R.string.bcc_heading, R.id.bcc_details, bcc, viaDomain,
+        renderEmailList(res, R.id.bcc_heading, R.id.bcc_details, bcc, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
     }
 
     /**
      * Render an email list for the expanded message details view.
      */
-    private static void renderEmailList(Resources res, int headerStringId, int detailsId,
+    private static void renderEmailList(Resources res, int headerId, int detailsId,
             String[] emails, String viaDomain, View rootView,
             Map<String, Address> addressCache, Account account,
             VeiledAddressMatcher veiledMatcher) {
@@ -1303,55 +1302,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             }
         }
 
-        final String headerString = res.getString(headerStringId);
+        rootView.findViewById(headerId).setVisibility(VISIBLE);
         final TextView detailsText = (TextView) rootView.findViewById(detailsId);
-        detailsText.setText(joinFormattedEmails(detailsText, "\n", headerString, formattedEmails));
+        detailsText.setText(TextUtils.join("\n", formattedEmails));
         stripUnderlines(detailsText, account);
-        addHeaderColor(res, detailsText, headerString.length());
         detailsText.setVisibility(VISIBLE);
-    }
-
-    /**
-     * Returns a string containing the tokens joined by delimiters.
-     * @param tokens an array objects to be joined. Strings will be formed from
-     *     the objects by calling object.toString().
-     */
-    private static CharSequence joinFormattedEmails(TextView textView,
-            CharSequence delimiter, String headerText, String[] tokens) {
-
-        // measure width of header for indenting
-        final int indentSize = (int) textView.getPaint().measureText(headerText);
-        final SpannableStringBuilder sb = new SpannableStringBuilder(headerText);
-        int start;
-        int end = 0;
-        boolean firstTime = true;
-        for (String token: tokens) {
-            if (!firstTime) {
-                sb.append(delimiter);
-            }
-            sb.append(token);
-            start = end;
-            end = sb.length();
-
-            // for first email, use hanging indent
-            if (firstTime) {
-                sb.setSpan(new LeadingMarginSpan.Standard(0, indentSize), start, end,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                firstTime = false;
-            // for all other emails, use indent for all lines
-            } else {
-                sb.setSpan(new LeadingMarginSpan.Standard(indentSize), start, end,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-        }
-        return sb;
-    }
-
-    private static void addHeaderColor(Resources res, TextView textView, int length) {
-        final Spannable spannable = (Spannable) textView.getText();
-        final int textColor = res.getColor(R.color.conv_header_text_dark);
-        spannable.setSpan(new ForegroundColorSpan(textColor), 0, length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private static void stripUnderlines(TextView textView, Account account) {
