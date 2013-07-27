@@ -3085,6 +3085,15 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
+     * Re-enable CAB mode only if we have an active selection
+     */
+    protected void maybeEnableCabMode() {
+        if (!mSelectedSet.isEmpty()) {
+            enableCabMode();
+        }
+    }
+
+    /**
      * Unselect conversations and exit CAB mode.
      */
     protected final void exitCabMode() {
@@ -4130,17 +4139,21 @@ public abstract class AbstractActivityController implements ActivityController,
                 if (mHideMenuItems && slideOffset < 0.15f && mOldSlideOffset > slideOffset) {
                     mHideMenuItems = false;
                     mActivity.invalidateOptionsMenu();
+                    maybeEnableCabMode();
                 } else if (!mHideMenuItems && slideOffset > 0.f && mOldSlideOffset < slideOffset) {
                     mHideMenuItems = true;
                     mActivity.invalidateOptionsMenu();
+                    disableCabMode();
                 }
             } else {
                 if (mHideMenuItems && Float.compare(slideOffset, 0.f) == 0) {
                     mHideMenuItems = false;
                     mActivity.invalidateOptionsMenu();
+                    maybeEnableCabMode();
                 } else if (!mHideMenuItems && slideOffset > 0.f) {
                     mHideMenuItems = true;
                     mActivity.invalidateOptionsMenu();
+                    disableCabMode();
                 }
             }
 
