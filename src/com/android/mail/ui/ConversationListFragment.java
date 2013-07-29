@@ -150,8 +150,6 @@ public final class ConversationListFragment extends ListFragment implements
 
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
-    /** The time at which we last entered CAB mode. */
-    private long mSelectionModeEnteredTimestamp = -1;
     /** The time at which we last exited CAB mode. */
     private long mSelectionModeExitedTimestamp = -1;
 
@@ -599,7 +597,7 @@ public final class ConversationListFragment extends ListFragment implements
             if (!mSelectedSet.isEmpty()) {
                 ((ToggleableItem) view).toggleSelectedState();
             } else {
-                mConversationListListener.viewConversation(position);
+                viewConversation(position);
             }
         } else {
             // Ignore anything that is not a conversation item. Could be a footer.
@@ -690,43 +688,37 @@ public final class ConversationListFragment extends ListFragment implements
         onConversationListStatusUpdated();
     }
 
+    /**
+     * View the message at the given position.
+     *
+     * @param position The position of the conversation in the list (as opposed to its position
+     *        in the cursor)
+     */
+    private void viewConversation(final int position) {
+        LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
+
+        final ConversationCursor cursor =
+                (ConversationCursor) getAnimatedAdapter().getItem(position);
+
+        if (cursor == null) {
+            LogUtils.e(LOG_TAG,
+                    "unable to open conv at cursor pos=%s cursor=%s getPositionOffset=%s",
+                    position, cursor, getAnimatedAdapter().getPositionOffset(position));
+            return;
+        }
+
+        final Conversation conv = cursor.getConversation();
+        /*
+         * The cursor position may be different than the position method parameter because of
+         * special views in the list.
+         */
+        conv.position = cursor.getPosition();
+        setSelected(conv.position, true);
+        mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
+    }
+
     private final ConversationListListener mConversationListListener =
             new ConversationListListener() {
-        @Override
-        public void viewConversation(final int position) {
-            LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
-
-            final ConversationCursor cursor =
-                    (ConversationCursor) getAnimatedAdapter().getItem(position);
-
-            if (cursor == null) {
-                LogUtils.e(LOG_TAG,
-                        "unable to open conv at cursor pos=%s cursor=%s getPositionOffset=%s",
-                        position, cursor, getAnimatedAdapter().getPositionOffset(position));
-                return;
-            }
-
-            final Conversation conv = cursor.getConversation();
-            /*
-             * The cursor position may be different than the position method parameter because of
-             * special views in the list.
-             */
-            conv.position = cursor.getPosition();
-            setSelected(conv.position, true);
-            mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
-        }
-
-        @Override
-        public boolean isInSelectionMode() {
-            return !mSelectedSet.isEmpty();
-        }
-
-        @Override
-        public boolean isEnteringSelectionMode() {
-            return System.currentTimeMillis() <
-                    (mSelectionModeEnteredTimestamp + sSelectionModeAnimationDuration);
-        }
-
         @Override
         public boolean isExitingSelectionMode() {
             return System.currentTimeMillis() <
@@ -985,21 +977,17 @@ public final class ConversationListFragment extends ListFragment implements
     private final ConversationSetObserver mConversationSetObserver = new ConversationSetObserver() {
         @Override
         public void onSetPopulated(final ConversationSelectionSet set) {
-            mSelectionModeEnteredTimestamp = System.currentTimeMillis();
-
-            mListAdapter.getConversationSetObserver().onSetPopulated(set);
+            // Do nothing
         }
 
         @Override
         public void onSetEmpty() {
             mSelectionModeExitedTimestamp = System.currentTimeMillis();
-
-            mListAdapter.getConversationSetObserver().onSetEmpty();
         }
 
         @Override
         public void onSetChanged(final ConversationSelectionSet set) {
-            mListAdapter.getConversationSetObserver().onSetChanged(set);
+            // Do nothing
         }
     };
 }

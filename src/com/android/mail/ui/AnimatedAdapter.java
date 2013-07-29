@@ -89,25 +89,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     public interface ConversationListListener {
         /**
-         * View the message at the given position.
-         *
-         * @param position The position of the conversation in the list (as opposed to its position
-         *        in the cursor)
-         */
-        void viewConversation(int position);
-
-        /**
-         * @return <code>true</code> if the list is in selection mode, <code>false</code> otherwise
-         */
-        boolean isInSelectionMode();
-
-        /**
-         * @return <code>true</code> if the list is just entering selection mode (so animations may
-         * be required), <code>false</code> otherwise
-         */
-        boolean isEnteringSelectionMode();
-
-        /**
          * @return <code>true</code> if the list is just exiting selection mode (so animations may
          * be required), <code>false</code> otherwise
          */
@@ -383,12 +364,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     }
 
     public View createConversationItemView(SwipeableConversationItemView view, Context context,
-            Conversation conv, final int position) {
+            Conversation conv) {
         if (view == null) {
             view = new SwipeableConversationItemView(context, mAccount.name);
         }
         view.bind(conv, mActivity, mConversationListListener, mBatchConversations, mFolder,
-                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this, position);
+                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this);
         return view;
     }
 
@@ -549,7 +530,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             ((SwipeableConversationItemView) convertView).reset();
         }
         final View v = createConversationItemView((SwipeableConversationItemView) convertView,
-                mContext, conv, position);
+                mContext, conv);
         Utils.traceEndSection();
         return v;
     }
@@ -765,7 +746,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 position, null, parent);
         view.reset();
         view.bind(conversation, mActivity, mConversationListListener, mBatchConversations, mFolder,
-                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this, position);
+                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this);
         mAnimatingViews.put(conversation.id, view);
         return view;
     }
@@ -1086,86 +1067,5 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         for (final ConversationSpecialItemView specialView : mFleetingViews) {
             specialView.onCabModeEntered();
         }
-    }
-
-    private final ConversationSetObserver mConversationSetObserver = new ConversationSetObserver() {
-        @Override
-        public void onSetPopulated(final ConversationSelectionSet set) {
-            pruneEntries();
-
-            for (int i = 0; i < mItemViewSetObservers.size(); i++) {
-                final WeakReference<ConversationSetObserver> ref = mItemViewSetObservers.valueAt(i);
-                final ConversationSetObserver observer = ref.get();
-
-                if (observer == null) {
-                    LogUtils.wtf(LOG_TAG, "ConversationSetObserver null after pruneEntries()");
-                } else {
-                    observer.onSetPopulated(set);
-                }
-            }
-        }
-
-        @Override
-        public void onSetEmpty() {
-            pruneEntries();
-
-            for (int i = 0; i < mItemViewSetObservers.size(); i++) {
-                final WeakReference<ConversationSetObserver> ref = mItemViewSetObservers.valueAt(i);
-                final ConversationSetObserver observer = ref.get();
-
-                if (observer == null) {
-                    LogUtils.wtf(LOG_TAG, "ConversationSetObserver null after pruneEntries()");
-                } else {
-                    observer.onSetEmpty();
-                }
-            }
-        }
-
-        @Override
-        public void onSetChanged(final ConversationSelectionSet set) {
-            pruneEntries();
-
-            for (int i = 0; i < mItemViewSetObservers.size(); i++) {
-                final WeakReference<ConversationSetObserver> ref = mItemViewSetObservers.valueAt(i);
-                final ConversationSetObserver observer = ref.get();
-
-                if (observer == null) {
-                    LogUtils.wtf(LOG_TAG, "ConversationSetObserver null after pruneEntries()");
-                } else {
-                    observer.onSetChanged(set);
-                }
-            }
-        }
-
-        private void pruneEntries() {
-            final int[] deadKeys = new int[mItemViewSetObservers.size()];
-            int deadKeyIndex = 0;
-
-            for (int i = 0; i < mItemViewSetObservers.size(); i++) {
-                final WeakReference<ConversationSetObserver> ref = mItemViewSetObservers.valueAt(i);
-                final ConversationSetObserver observer = ref.get();
-
-                if (observer == null) {
-                    deadKeys[deadKeyIndex++] = mItemViewSetObservers.keyAt(i);
-                }
-            }
-
-            for (int i = deadKeyIndex - 1; i >= 0; i--) {
-                mItemViewSetObservers.delete(deadKeys[i]);
-            }
-        }
-    };
-
-    public ConversationSetObserver getConversationSetObserver() {
-        return mConversationSetObserver;
-    }
-
-    public void registerConversationSetObserver(final ConversationSetObserver observer) {
-        mItemViewSetObservers.put(observer.hashCode(),
-                new WeakReference<ConversationSetObserver>(observer));
-    }
-
-    public void unregisterConversationSetObserver(final ConversationSetObserver observer) {
-        mItemViewSetObservers.delete(observer.hashCode());
     }
 }
