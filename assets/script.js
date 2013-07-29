@@ -704,8 +704,10 @@ function replaceMessageBodies(messageIds) {
 function appendMessageHtml() {
     var msg = document.createElement("div");
     msg.innerHTML = window.mail.getTempMessageBodies();
-    msg = msg.children[0];  // toss the outer div, it was just to render innerHTML into
-    document.body.appendChild(msg);
+    var body = msg.children[0];  // toss the outer div, it was just to render innerHTML into
+    var border = msg.children[1]; // get the border spacer as well
+    document.body.appendChild(body);
+    document.body.appendChild(border);
     processQuotedText(msg, true /* showElided */);
     hideUnsafeImages(msg.getElementsByClassName("mail-message-content"));
     measurePositions();
