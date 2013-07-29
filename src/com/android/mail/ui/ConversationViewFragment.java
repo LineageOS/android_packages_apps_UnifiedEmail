@@ -731,7 +731,14 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
     private void renderMessage(ConversationMessage msg, boolean expanded,
             boolean safeForImages) {
-        renderBorder(true /* contiguous */);
+        renderMessage(msg, expanded, safeForImages, true /* renderBorder */);
+    }
+
+    private void renderMessage(ConversationMessage msg, boolean expanded,
+            boolean safeForImages, boolean renderBorder) {
+        if (renderBorder) {
+            renderBorder(true /* contiguous */);
+        }
 
         final int headerPos = mAdapter.addMessageHeader(msg, expanded,
                 mViewState.getShouldShowImages(msg));
@@ -1394,7 +1401,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         // this method will add some items to mAdapter, but we deliberately want to avoid notifying
         // adapter listeners (i.e. ConversationContainer) until onWebContentGeometryChange is next
         // called, to prevent N+1 headers rendering with N message bodies.
-        renderMessage(msg, true /* expanded */, msg.alwaysShowImages);
+        renderMessage(msg, true /* expanded */, msg.alwaysShowImages, false /* renderBorder */);
+        renderBorder(true /* contiguous */);
         mTempBodiesHtml = mTemplates.emit();
 
         mViewState.setExpansionState(msg, ExpansionState.EXPANDED);
