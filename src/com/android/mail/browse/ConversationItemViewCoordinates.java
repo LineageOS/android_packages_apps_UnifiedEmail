@@ -173,7 +173,6 @@ public class ConversationItemViewCoordinates {
     final int starX;
     final int starY;
     final int starWidth;
-    final int starHeight;
 
     // Senders.
     final int sendersX;
@@ -357,7 +356,6 @@ public class ConversationItemViewCoordinates {
         starX = getX(star);
         starY = getY(star);
         starWidth = star.getWidth();
-        starHeight = star.getHeight();
 
         final TextView senders = (TextView) view.findViewById(R.id.senders);
         final int sendersTopAdjust = getLatinTopAdjustment(senders);
