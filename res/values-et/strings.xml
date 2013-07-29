@@ -255,11 +255,11 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> vanemat sõnumit"</item>
   </plurals>
-    <string name="from_heading" msgid="8950294114718418954">"Saatja:"</string>
-    <string name="replyto_heading" msgid="2081358811894701297">"Vasta:"</string>
-    <string name="to_heading" msgid="3219994961726691756">"Saaja:"</string>
-    <string name="cc_heading" msgid="8116221732072085180">"Koopia:"</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"Pimekoop.:"</string>
+    <string name="from_heading" msgid="2454519463223197231">"Saatja: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"Vasta: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"Saaja: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"Koopia: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"Pimekoopia: "</string>
     <string name="show_images" msgid="1875700481186331432">"Kuva pildid"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Näita alati selle saatja pilte"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Selle saatja pilte näidatakse automaatselt."</string>
