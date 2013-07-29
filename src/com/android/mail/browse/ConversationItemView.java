@@ -96,7 +96,6 @@ import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
-import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.ui.SwipeableItemView;
@@ -131,7 +130,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     // Static bitmaps.
     private static Bitmap STAR_OFF;
     private static Bitmap STAR_ON;
-    private static Bitmap PEEK;
     private static Bitmap CHECK;
     private static Bitmap ATTACHMENT;
     private static Bitmap ONLY_TO_ME;
@@ -216,7 +214,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
-    private int mAdapterPosition;
     private float mAnimatedHeightFraction = 1.0f;
     private final String mAccount;
     private ControllableActivity mActivity;
@@ -258,10 +255,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     private final Matrix mPhotoFlipMatrix = new Matrix();
     private final Matrix mCheckMatrix = new Matrix();
-    private final Matrix mPeekIconFlipMatrix = new Matrix();
 
     private final CabAnimator mPhotoFlipAnimator;
-    private final CabAnimator mPeekIconFlipAnimator;
 
     /**
      * The conversation id, if this conversation was selected the last time we were in a selection
@@ -446,7 +441,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             // Initialize static bitmaps.
             STAR_OFF = BitmapFactory.decodeResource(res, R.drawable.ic_btn_star_off);
             STAR_ON = BitmapFactory.decodeResource(res, R.drawable.ic_btn_star_on);
-            PEEK = BitmapFactory.decodeResource(res, R.drawable.ic_peak_eye);
             CHECK = BitmapFactory.decodeResource(res, R.drawable.ic_avatar_check);
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
             ONLY_TO_ME = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_double);
@@ -521,18 +515,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 final int right = left + mContactImagesHolder.getWidth();
                 final int top = mCoordinates.contactImagesY;
                 final int bottom = top + mContactImagesHolder.getHeight();
-                invalidate(left, top, right, bottom);
-            }
-        };
-
-        mPeekIconFlipAnimator = new CabAnimator("peekIconFlipFraction", 0, 2,
-                sCabAnimationDuration) {
-            @Override
-            public void invalidateArea() {
-                final int left = mCoordinates.starX;
-                final int right = left + mCoordinates.starWidth;
-                final int top = mCoordinates.starY;
-                final int bottom = top + mCoordinates.starHeight;
                 invalidate(left, top, right, bottom);
             }
         };
@@ -620,20 +602,18 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     public void bind(Conversation conversation, ControllableActivity activity,
             final ConversationListListener conversationListListener,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
-            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter,
-            final int adapterPosition) {
+            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
         Utils.traceBeginSection("CIVC.bind");
         bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity,
                 conversationListListener, set, folder, checkboxOrSenderImage, swipeEnabled,
-                priorityArrowEnabled, adapter, adapterPosition);
+                priorityArrowEnabled, adapter);
         Utils.traceEndSection();
     }
 
     private void bind(ConversationItemViewModel header, ControllableActivity activity,
             final ConversationListListener conversationListListener,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
-            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter,
-            final int adapterPosition) {
+            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
         boolean attachmentPreviewsChanged = false;
         if (mHeader != null) {
             // If this was previously bound to a different conversation, remove any contact photo
@@ -683,14 +663,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mDisplayedFolder = folder;
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
-
-        if (mAdapter != null) {
-            mAdapter.unregisterConversationSetObserver(mConversationSetObserver);
-        }
         mAdapter = adapter;
-        mAdapter.registerConversationSetObserver(mConversationSetObserver);
-
-        mAdapterPosition = adapterPosition;
         final int attachmentPreviewsSize = mHeader.conversation.getAttachmentPreviewUris().size();
         if (attachmentPreviewsChanged || mImageLoadStatuses.length != attachmentPreviewsSize) {
             mImageLoadStatuses = new int[attachmentPreviewsSize];
@@ -1623,12 +1596,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             canvas.drawBitmap(mHeader.paperclip, mPaperclipX, mCoordinates.paperclipY, sPaint);
         }
 
-        if (mConversationListListener.isInSelectionMode()) {
-            drawStarPeekIcon(canvas, mConversationListListener.isEnteringSelectionMode(),
-                    false /* reverse */, PEEK);
-        } else if (mStarEnabled) {
-            drawStarPeekIcon(canvas, mConversationListListener.isExitingSelectionMode(),
-                    true /* reverse */, getStarBitmap());
+        if (mStarEnabled) {
+            // Star.
+            canvas.drawBitmap(getStarBitmap(), mCoordinates.starX, mCoordinates.starY, sPaint);
         }
 
         // Attachment previews
@@ -1692,48 +1662,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             }
         }
         Utils.traceEndSection();
-    }
-
-    private void drawStarPeekIcon(final Canvas canvas, final boolean animate, final boolean reverse,
-            final Bitmap staticIcon) {
-        if (animate) {
-            // Animate the peek icon
-            if (!mPeekIconFlipAnimator.isStarted()) {
-                mPeekIconFlipAnimator.startAnimation(reverse);
-            }
-
-            canvas.save();
-
-            final float value = mPeekIconFlipAnimator.getValue();
-            final float scale;
-            final Bitmap bitmap;
-
-            if (value > 1) {
-                // Flip in the peek icon
-                scale = value - 1f;
-                bitmap = PEEK;
-            } else {
-                // Flip out the star icon
-                scale = 1f - value;
-                bitmap = getStarBitmap();
-            }
-
-            final float yOffset = mCoordinates.starHeight * (1f - scale) / 2f;
-
-            mPeekIconFlipMatrix.reset();
-            mPeekIconFlipMatrix.postScale(1, scale);
-
-            canvas.translate(mCoordinates.starX, mCoordinates.starY + yOffset);
-
-            canvas.drawBitmap(bitmap, mPeekIconFlipMatrix, sPaint);
-
-            canvas.restore();
-        } else {
-            mPeekIconFlipAnimator.stopAnimation();
-
-            // Star/Peek icon
-            canvas.drawBitmap(staticIcon, mCoordinates.starX, mCoordinates.starY, sPaint);
-        }
     }
 
     /**
@@ -2098,13 +2026,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         }
     }
 
-    /**
-     * Peek into the conversation.
-     */
-    private void peek() {
-        mConversationListListener.viewConversation(mAdapterPosition);
-    }
-
     private boolean isTouchInContactPhoto(float x, float y) {
         // Everything before the right edge of contact photo
         return mHeader.gadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
@@ -2159,13 +2080,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                         // Touch on the check mark
                         toggleSelectedState();
                     } else if (isTouchInStar(x, y)) {
-                        // Touch on the star/peek
-                        if (mConversationListListener.isInSelectionMode()) {
-                            // Peek
-                            peek();
-                        } else {
-                            toggleStar();
-                        }
+                        // Touch on the star
+                        toggleStar();
                     }
                     handled = true;
                 }
@@ -2212,14 +2128,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                         Utils.traceEndSection();
                         return true;
                     } else if (isTouchInStar(x, y)) {
-                        // Touch on the star/peek
-                        mDownEvent = false;
-                        if (mConversationListListener.isInSelectionMode()) {
-                            // Peek
-                            peek();
-                        } else {
-                            toggleStar();
-                        }
+                        // Touch on the star
+                        toggleStar();
                         Utils.traceEndSection();
                         return true;
                     }
@@ -2615,29 +2525,4 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     public void setPhotoFlipFraction(final float fraction) {
         mPhotoFlipAnimator.setValue(fraction);
     }
-
-    public void setPeekIconFlipFraction(final float fraction) {
-        mPeekIconFlipAnimator.setValue(fraction);
-    }
-
-    private final ConversationSetObserver mConversationSetObserver = new ConversationSetObserver() {
-        @Override
-        public void onSetPopulated(final ConversationSelectionSet set) {
-            // Animate the peek icon in
-            // This will trigger a draw, which will start an animation
-            mPeekIconFlipAnimator.invalidateArea();
-        }
-
-        @Override
-        public void onSetEmpty() {
-            // Animate the peek icon out
-            // This will trigger a draw, which will start an animation
-            mPeekIconFlipAnimator.invalidateArea();
-        }
-
-        @Override
-        public void onSetChanged(final ConversationSelectionSet set) {
-            // Don't do anything
-        }
-    };
 }
