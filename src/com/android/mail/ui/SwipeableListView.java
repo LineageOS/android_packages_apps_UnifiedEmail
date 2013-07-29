@@ -58,6 +58,19 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
      */
     private final static boolean SCROLL_PAUSE_ENABLE = true;
 
+    /**
+     * Set to true to enable parallax effect for attachment previews as the scroll position varies.
+     * This effect triggers invalidations on scroll (!) and requires more memory for attachment
+     * preview bitmaps.
+     */
+    public static final boolean ENABLE_ATTACHMENT_PARALLAX = true;
+
+    /**
+     * The amount of extra vertical space to decode in attachment previews so we have image data to
+     * pan within. 1.0 implies no parallax effect.
+     */
+    public static final float ATTACHMENT_PARALLAX_MULTIPLIER = 1.5f;
+
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;
     private Account mAccount;
@@ -366,8 +379,17 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+    public final void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
             int totalItemCount) {
+        if (ENABLE_ATTACHMENT_PARALLAX) {
+            for (int i = 0, len = getChildCount(); i < len; i++) {
+                final View child = getChildAt(i);
+                if (child instanceof OnScrollListener) {
+                    ((OnScrollListener) child).onScroll(view, firstVisibleItem, visibleItemCount,
+                            totalItemCount);
+                }
+            }
+        }
     }
 
     @Override

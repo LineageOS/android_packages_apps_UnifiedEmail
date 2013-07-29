@@ -230,26 +230,27 @@ public class ConversationItemViewCoordinates {
     final int contactImagesY;
 
     // Attachment previews
-    final int attachmentPreviewsX;
-    final int attachmentPreviewsY;
+    public final int attachmentPreviewsX;
+    public final int attachmentPreviewsY;
     final int attachmentPreviewsWidth;
     final int attachmentPreviewsHeight;
+    public final int attachmentPreviewsDecodeHeight;
 
     // Attachment previews overflow badge and count
-    final int overflowXEnd;
-    final int overflowYEnd;
-    final int overflowDiameter;
-    final float overflowFontSize;
-    final Typeface overflowTypeface;
+    public final int overflowXEnd;
+    public final int overflowYEnd;
+    public final int overflowDiameter;
+    public final float overflowFontSize;
+    public final Typeface overflowTypeface;
 
     // Attachment previews placeholder
     final int placeholderY;
-    final int placeholderWidth;
-    final int placeholderHeight;
+    public final int placeholderWidth;
+    public final int placeholderHeight;
     // Attachment previews progress bar
     final int progressBarY;
-    final int progressBarWidth;
-    final int progressBarHeight;
+    public final int progressBarWidth;
+    public final int progressBarHeight;
 
     /**
      * The smallest item width for which we use the "wide" layout.
@@ -297,6 +298,8 @@ public class ConversationItemViewCoordinates {
             params.height = getAttachmentPreviewsHeight(context, config.getAttachmentPreviewMode());
             attachmentPreviews.setLayoutParams(params);
         }
+        attachmentPreviewsDecodeHeight = getAttachmentPreviewsHeight(context,
+                ATTACHMENT_PREVIEW_UNREAD);
 
         final TextView folders = (TextView) view.findViewById(R.id.folders);
         folders.setVisibility(config.areFoldersVisible() ? View.VISIBLE : View.GONE);

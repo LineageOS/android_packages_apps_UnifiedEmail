@@ -37,7 +37,6 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.SystemClock;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -59,27 +58,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.R.color;
 import com.android.mail.R.drawable;
 import com.android.mail.R.integer;
 import com.android.mail.R.string;
+import com.android.mail.bitmap.AttachmentGridDrawable;
+import com.android.mail.bitmap.ImageAttachmentRequest;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
-import com.android.mail.photomanager.AttachmentPreviewsManager;
-import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreviewsDividedImageCanvas;
-import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreviewsManagerCallback;
 import com.android.mail.photomanager.ContactPhotoManager;
 import com.android.mail.photomanager.ContactPhotoManager.ContactIdentifier;
-import com.android.mail.photomanager.AttachmentPreviewsManager.AttachmentPreviewIdentifier;
-import com.android.mail.photomanager.PhotoManager;
 import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
@@ -97,7 +91,6 @@ import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
 import com.android.mail.ui.FolderDisplayer;
-import com.android.mail.ui.ImageCanvas;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.ViewMode;
@@ -112,8 +105,8 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem,
-        InvalidateCallback, AttachmentPreviewsManagerCallback {
+public class ConversationItemView extends View
+        implements SwipeableItemView, ToggleableItem, InvalidateCallback, OnScrollListener {
 
     // Timer.
     private static int sLayoutCount = 0;
@@ -143,7 +136,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static Bitmap STATE_CALENDAR_INVITE;
     private static Bitmap VISIBLE_CONVERSATION_CARET;
     private static Drawable RIGHT_EDGE_TABLET;
-    private static Bitmap PLACEHOLDER;
+    private static Drawable PLACEHOLDER;
     private static Drawable PROGRESS_BAR;
 
     private static String sSendersSplitToken;
@@ -154,18 +147,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sSendersTextColorRead;
     private static int sSendersTextColorUnread;
     private static int sDateTextColor;
-    private static int sAttachmentPreviewsBackgroundColor;
-    private static int sOverflowBadgeColor;
-    private static int sOverflowTextColor;
     private static int sStarTouchSlop;
     private static int sSenderImageTouchSlop;
     private static int sShrinkAnimationDuration;
     private static int sSlideAnimationDuration;
-    private static int sProgressAnimationDuration;
-    private static int sFadeAnimationDuration;
-    private static float sPlaceholderAnimationDurationRatio;
-    private static int sProgressAnimationDelay;
-    private static Interpolator sPulseAnimationInterpolator;
     private static int sOverflowCountMax;
     private static int sCabAnimationDuration;
 
@@ -173,8 +158,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static final TextPaint sPaint = new TextPaint();
     private static final TextPaint sFoldersPaint = new TextPaint();
     private static final Paint sCheckBackgroundPaint = new Paint();
-
-    private static final Rect sRect = new Rect();
 
     // Backgrounds for different states.
     private final SparseArray<Drawable> mBackgrounds = new SparseArray<Drawable>();
@@ -187,8 +170,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mDateX;
     private int mPaperclipX;
     private int mSendersWidth;
-    private int mOverflowX;
-    private int mOverflowY;
 
     /** Whether we are on a tablet device or not */
     private final boolean mTabletDevice;
@@ -232,25 +213,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static int sScrollSlop;
     private static CharacterStyle sActivatedTextSpan;
 
-    private final AttachmentPreviewsDividedImageCanvas mAttachmentPreviewsCanvas;
-    private static AttachmentPreviewsManager sAttachmentPreviewsManager;
-    /**
-     * Animates the mAnimatedProgressFraction field to make the progress bars spin. Cancelling
-     * this animator does not remove the progress bars.
-     */
-    private final ObjectAnimator mProgressAnimator;
-    private final ObjectAnimator mFadeAnimator0;
-    private final ObjectAnimator mFadeAnimator1;
-    private long mProgressAnimatorCancelledTime;
-    /** Range from 0.0f to 1.0f. */
-    private float mAnimatedProgressFraction;
-    private float mAnimatedFadeFraction0;
-    private float mAnimatedFadeFraction1;
-    private int[] mImageLoadStatuses = new int[0];
-    private boolean mShowProgressBar;
-    private final Runnable mCancelProgressAnimatorRunnable;
-    private final Runnable mSetShowProgressBarRunnable0;
-    private final Runnable mSetShowProgressBarRunnable1;
+    private final AttachmentGridDrawable mAttachmentsView;
+
     private static final boolean CONVLIST_ATTACHMENT_PREVIEWS_ENABLED = true;
 
     private final Matrix mPhotoFlipMatrix = new Matrix();
@@ -278,11 +242,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         final boolean scrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
         final boolean flinging = scrollState == OnScrollListener.SCROLL_STATE_FLING;
 
-        if (scrolling) {
-            sAttachmentPreviewsManager.pause();
-        } else {
-            sAttachmentPreviewsManager.resume();
-        }
+        // TODO: add support for yielding attachment bitmap allocation if/when needed
 
         if (flinging) {
             sContactPhotoManager.pause();
@@ -462,7 +422,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             VISIBLE_CONVERSATION_CARET = BitmapFactory.decodeResource(res,
                     R.drawable.ic_carrot_holo);
             RIGHT_EDGE_TABLET = res.getDrawable(R.drawable.list_edge_tablet);
-            PLACEHOLDER = BitmapFactory.decodeResource(res, drawable.ic_attachment_load);
+            PLACEHOLDER = res.getDrawable(drawable.ic_attachment_load);
             PROGRESS_BAR = res.getDrawable(drawable.progress_holo);
 
             // Initialize colors.
@@ -479,9 +439,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSnippetTextReadSpan =
                     new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_read));
             sDateTextColor = res.getColor(R.color.date_text_color);
-            sAttachmentPreviewsBackgroundColor = res.getColor(color.ap_background_color);
-            sOverflowBadgeColor = res.getColor(color.ap_overflow_badge_color);
-            sOverflowTextColor = res.getColor(color.ap_overflow_text_color);
             sStarTouchSlop = res.getDimensionPixelSize(R.dimen.star_touch_slop);
             sSenderImageTouchSlop = res.getDimensionPixelSize(R.dimen.sender_image_touch_slop);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
@@ -493,15 +450,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
             sFoldersLeftPadding = res.getDimensionPixelOffset(R.dimen.folders_left_padding);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
-            sAttachmentPreviewsManager = new AttachmentPreviewsManager(context);
-            sProgressAnimationDuration = res.getInteger(integer.ap_progress_animation_duration);
-            sFadeAnimationDuration = res.getInteger(integer.ap_fade_animation_duration);
-            final int placeholderAnimationDuration = res
-                    .getInteger(integer.ap_placeholder_animation_duration);
-            sPlaceholderAnimationDurationRatio = sProgressAnimationDuration
-                    / placeholderAnimationDuration;
-            sProgressAnimationDelay = res.getInteger(integer.ap_progress_animation_delay);
-            sPulseAnimationInterpolator = new AccelerateDecelerateInterpolator();
             sOverflowCountMax = res.getInteger(integer.ap_overflow_max_count);
             sCabAnimationDuration =
                     res.getInteger(R.integer.conv_item_view_cab_anim_duration);
@@ -538,64 +486,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                         mCoordinates.contactImagesY + mCoordinates.contactImagesHeight);
             }
         });
-        mAttachmentPreviewsCanvas = new AttachmentPreviewsDividedImageCanvas(context,
-                new InvalidateCallback() {
-                    @Override
-                    public void invalidate() {
-                        if (mCoordinates == null) {
-                            return;
-                        }
-                        ConversationItemView.this.invalidate(
-                                mCoordinates.attachmentPreviewsX, mCoordinates.attachmentPreviewsY,
-                                mCoordinates.attachmentPreviewsX
-                                        + mCoordinates.attachmentPreviewsWidth,
-                                mCoordinates.attachmentPreviewsY
-                                        + mCoordinates.attachmentPreviewsHeight);
-                    }
-                });
 
-        mProgressAnimator = createProgressAnimator();
-        mFadeAnimator0 = createFadeAnimator(0);
-        mFadeAnimator1 = createFadeAnimator(1);
-        mCancelProgressAnimatorRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (mProgressAnimator.isStarted() && areAllImagesLoaded()) {
-                    LogUtils.v(LOG_TAG, "progress animator: << stopped");
-                    mProgressAnimator.cancel();
-                }
-            }
-        };
-        mSetShowProgressBarRunnable0 = new Runnable() {
-            @Override
-            public void run() {
-                if (mImageLoadStatuses.length <= 0
-                        || mImageLoadStatuses[0] != PhotoManager.STATUS_LOADING) {
-                    return;
-                }
-                LogUtils.v(LOG_TAG, "progress bar 0: >>> set to true");
-                mShowProgressBar = true;
-                if (mFadeAnimator0.isStarted()) {
-                    mFadeAnimator0.cancel();
-                }
-                mFadeAnimator0.start();
-            }
-        };
-        mSetShowProgressBarRunnable1 = new Runnable() {
-            @Override
-            public void run() {
-                if (mImageLoadStatuses.length <= 1
-                        || mImageLoadStatuses[1] != PhotoManager.STATUS_LOADING) {
-                    return;
-                }
-                LogUtils.v(LOG_TAG, "progress bar 1: >>> set to true");
-                mShowProgressBar = true;
-                if (mFadeAnimator1.isStarted()) {
-                    mFadeAnimator1.cancel();
-                }
-                mFadeAnimator1.start();
-            }
-        };
+        mAttachmentsView = new AttachmentGridDrawable(res, PLACEHOLDER, PROGRESS_BAR);
+        mAttachmentsView.setCallback(this);
+
         Utils.traceEndSection();
     }
 
@@ -614,7 +508,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             final ConversationListListener conversationListListener,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
-        boolean attachmentPreviewsChanged = false;
         if (mHeader != null) {
             // If this was previously bound to a different conversation, remove any contact photo
             // manager requests.
@@ -638,21 +531,14 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                             != mHeader.conversation.attachmentPreviewsCount
                     || !header.conversation.getAttachmentPreviewUris()
                             .equals(mHeader.conversation.getAttachmentPreviewUris())) {
-                attachmentPreviewsChanged = true;
-                ArrayList<String> divisionIds = mAttachmentPreviewsCanvas.getDivisionIds();
-                if (divisionIds != null) {
-                    mAttachmentPreviewsCanvas.reset();
-                    for (int pos = 0; pos < divisionIds.size(); pos++) {
-                        String uri = divisionIds.get(pos);
-                        for (int rendition : AttachmentRendition.PREFERRED_RENDITIONS) {
-                            AttachmentPreviewIdentifier id = new AttachmentPreviewIdentifier(uri,
-                                    rendition, 0, 0);
-                            sAttachmentPreviewsManager
-                                    .removePhoto(AttachmentPreviewsManager.generateHash(
-                                            mAttachmentPreviewsCanvas, id.getKey()));
-                        }
-                    }
+
+                // unbind the attachments view (releasing bitmap references)
+                // (this also cancels all async tasks)
+                for (int i = 0, len = mAttachmentsView.getCount(); i < len; i++) {
+                    mAttachmentsView.getOrCreateDrawable(i).setImage(null);
                 }
+                // reset the grid, as the newly bound item may have a different attachment count
+                mAttachmentsView.setCount(0);
             }
         }
         mCoordinates = null;
@@ -664,10 +550,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
         mAdapter = adapter;
-        final int attachmentPreviewsSize = mHeader.conversation.getAttachmentPreviewUris().size();
-        if (attachmentPreviewsChanged || mImageLoadStatuses.length != attachmentPreviewsSize) {
-            mImageLoadStatuses = new int[attachmentPreviewsSize];
-        }
+        mAttachmentsView.setBitmapCache(mAdapter.getBitmapCache());
 
         if (checkboxOrSenderImage == ConversationListIcon.SENDER_IMAGE) {
             mGadgetMode = ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO;
@@ -729,11 +612,30 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             mConfig.showPersonalIndicator();
         }
 
-        int overflowCount = Math.min(getOverflowCount(), sOverflowCountMax);
-        mHeader.overflowText = String.format(sOverflowCountFormat, overflowCount);
+        final int overflowCount = Math.min(getOverflowCount(), sOverflowCountMax);
+        mHeader.overflowText = (overflowCount > 0) ?
+                String.format(sOverflowCountFormat, overflowCount) : null;
+
+        mAttachmentsView.setOverflowText(mHeader.overflowText);
 
         setContentDescription();
         requestLayout();
+    }
+
+    @Override
+    public void invalidateDrawable(Drawable who) {
+        boolean handled = false;
+        if (mCoordinates != null) {
+            if (mAttachmentsView.equals(who)) {
+                final Rect r = new Rect(who.getBounds());
+                r.offset(mCoordinates.attachmentPreviewsX, mCoordinates.attachmentPreviewsY);
+                ConversationItemView.this.invalidate(r.left, r.top, r.right, r.bottom);
+                handled = true;
+            }
+        }
+        if (!handled) {
+            super.invalidateDrawable(who);
+        }
     }
 
     /**
@@ -916,10 +818,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 && !mHeader.conversation.getAttachmentPreviewUris().isEmpty();
     }
 
-    private boolean getOverflowCountVisible() {
-        return isAttachmentPreviewsEnabled() && getOverflowCount() > 0;
-    }
-
     private int getOverflowCount() {
         return mHeader.conversation.attachmentPreviewsCount - mHeader.conversation
                 .getAttachmentPreviewUris().size();
@@ -969,9 +867,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private void loadAttachmentPreviews() {
-        if (!isAttachmentPreviewsEnabled()) {
-            return;
-        }
         if (mCoordinates.attachmentPreviewsWidth <= 0
                 || mCoordinates.attachmentPreviewsHeight <= 0) {
             LogUtils.w(LOG_TAG,
@@ -994,11 +889,22 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         final int displayCount = Math.min(attachmentUris.size(), DividedImageCanvas.MAX_DIVISIONS);
         Utils.traceEndSection();
 
-        final List<AttachmentPreviewIdentifier> ids = Lists.newArrayListWithCapacity(displayCount);
-        final List<Object> keys = Lists.newArrayListWithCapacity(displayCount);
-        // First pass: Create and set the rendition on each load request
+        mAttachmentsView.setCoordinates(mCoordinates);
+        mAttachmentsView.setCount(displayCount);
+        mAttachmentsView.setDecodeWidth(mCoordinates.attachmentPreviewsWidth);
+        final int decodeHeight;
+        // if parallax is enabled, increase the desired vertical size of attachment bitmaps
+        // so we have extra pixels to scroll within
+        if (SwipeableListView.ENABLE_ATTACHMENT_PARALLAX) {
+            decodeHeight = Math.round(mCoordinates.attachmentPreviewsDecodeHeight
+                    * SwipeableListView.ATTACHMENT_PARALLAX_MULTIPLIER);
+        } else {
+            decodeHeight = mCoordinates.attachmentPreviewsDecodeHeight;
+        }
+        mAttachmentsView.setDecodeHeight(decodeHeight);
+
         for (int i = 0; i < displayCount; i++) {
-            Utils.traceBeginSection("finding rendition of attachment preview");
+            Utils.traceBeginSection("setup single attachment preview");
             final String uri = attachmentUris.get(i);
 
             // Find the rendition to load based on availability.
@@ -1015,162 +921,19 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 }
             }
 
-            final AttachmentPreviewIdentifier photoIdentifier = new AttachmentPreviewIdentifier(uri,
-                    bestAvailableRendition, mHeader.conversation.id, i);
-            ids.add(photoIdentifier);
-            keys.add(photoIdentifier.getKey());
+            // TODO: support renditions
+            LogUtils.d(LOG_TAG, "creating/setting drawable region in CIV=%s canvas=%s", this,
+                    mAttachmentsView);
+            mAttachmentsView.getOrCreateDrawable(i)
+                .setImage(new ImageAttachmentRequest(getContext(), uri));
+
             Utils.traceEndSection();
         }
 
-        Utils.traceBeginSection("preparing divided image canvas");
-        // Prepare the canvas.
-        mAttachmentPreviewsCanvas.setDimensions(mCoordinates.attachmentPreviewsWidth,
+        mAttachmentsView.setBounds(0, 0, mCoordinates.attachmentPreviewsWidth,
                 mCoordinates.attachmentPreviewsHeight);
-        mAttachmentPreviewsCanvas.setDivisionIds(keys);
-        Utils.traceEndSection();
-
-        // Second pass: Find the dimensions to load and start the load request
-        final ImageCanvas.Dimensions canvasDimens = new ImageCanvas.Dimensions();
-        for (int i = 0; i < displayCount; i++) {
-            Utils.traceBeginSection("finding dimensions");
-            final PhotoIdentifier photoIdentifier = ids.get(i);
-            final Object key = keys.get(i);
-            mAttachmentPreviewsCanvas.getDesiredDimensions(key, canvasDimens);
-            Utils.traceEndSection();
-
-            Utils.traceBeginSection("start animator");
-            if (!mProgressAnimator.isStarted()) {
-                LogUtils.v(LOG_TAG, "progress animator: >> started");
-                // Reduce progress bar stutter caused by reset()/bind() being called multiple
-                // times.
-                final long time = SystemClock.uptimeMillis();
-                final long dt = time - mProgressAnimatorCancelledTime;
-                float passedFraction = 0;
-                if (mProgressAnimatorCancelledTime != 0 && dt > 0) {
-                    mProgressAnimatorCancelledTime = 0;
-                    passedFraction = (float) dt / sProgressAnimationDuration % 1.0f;
-                    LogUtils.v(LOG_TAG, "progress animator: correction for dt %d, fraction %f",
-                            dt, passedFraction);
-                }
-                removeCallbacks(mCancelProgressAnimatorRunnable);
-                mProgressAnimator.start();
-                // Wow.. this must be called after start().
-                mProgressAnimator.setCurrentPlayTime((long) (sProgressAnimationDuration * (
-                        (mAnimatedProgressFraction + passedFraction) % 1.0f)));
-            }
-            Utils.traceEndSection();
-
-            Utils.traceBeginSection("start load");
-            LogUtils.d(LOG_TAG, "loadAttachmentPreviews: start loading %s", photoIdentifier);
-            sAttachmentPreviewsManager
-                    .loadThumbnail(photoIdentifier, mAttachmentPreviewsCanvas, canvasDimens, this);
-            Utils.traceEndSection();
-        }
 
         Utils.traceEndSection();
-    }
-
-    @Override
-    public void onImageDrawn(final Object key, final boolean success) {
-        if (mHeader == null || mHeader.conversation == null) {
-            return;
-        }
-        Utils.traceBeginSection("on image drawn");
-        final String uri = AttachmentPreviewsManager.transformKeyToUri(key);
-        final int index = mHeader.conversation.getAttachmentPreviewUris().indexOf(uri);
-
-        LogUtils.v(LOG_TAG,
-                "loadAttachmentPreviews: <= onImageDrawn callback [%b] on index %d for %s", success,
-                index, key);
-        // We want to hide the spinning progress bar when we draw something.
-        onImageLoadStatusChanged(index,
-                success ? PhotoManager.STATUS_LOADED : PhotoManager.STATUS_NOT_LOADED);
-
-        if (mProgressAnimator.isStarted() && areAllImagesLoaded()) {
-            removeCallbacks(mCancelProgressAnimatorRunnable);
-            postDelayed(mCancelProgressAnimatorRunnable, sFadeAnimationDuration);
-        }
-        Utils.traceEndSection();
-    }
-
-    @Override
-    public void onImageLoadStarted(final Object key) {
-        if (mHeader == null || mHeader.conversation == null) {
-            return;
-        }
-        final String uri = AttachmentPreviewsManager.transformKeyToUri(key);
-        final int index = mHeader.conversation.getAttachmentPreviewUris().indexOf(uri);
-
-        LogUtils.v(LOG_TAG,
-                "loadAttachmentPreviews: <= onImageLoadStarted callback on index %d for %s", index,
-                key);
-        onImageLoadStatusChanged(index, PhotoManager.STATUS_LOADING);
-    }
-
-    private boolean areAllImagesLoaded() {
-        for (int i = 0; i < mImageLoadStatuses.length; i++) {
-            if (mImageLoadStatuses[i] != PhotoManager.STATUS_LOADED) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Update the #mImageLoadStatuses state array with special logic.
-     * @param index Which attachment preview's state to update.
-     * @param status What the new state is.
-     */
-    private void onImageLoadStatusChanged(final int index, final int status) {
-        if (index < 0 || index >= mImageLoadStatuses.length) {
-            return;
-        }
-        final int prevStatus = mImageLoadStatuses[index];
-        if (prevStatus == status) {
-            return;
-        }
-
-        boolean changed = false;
-        switch (status) {
-            case PhotoManager.STATUS_NOT_LOADED:
-                LogUtils.v(LOG_TAG, "progress bar: <<< set to false");
-                mShowProgressBar = false;
-                // Cannot transition directly from LOADING to NOT_LOADED.
-                if (prevStatus != PhotoManager.STATUS_LOADING) {
-                    mImageLoadStatuses[index] = status;
-                    changed = true;
-                }
-                break;
-            case PhotoManager.STATUS_LOADING:
-                // All other statuses must be set to not loading.
-                for (int i = 0; i < mImageLoadStatuses.length; i++) {
-                    if (i != index && mImageLoadStatuses[i] == PhotoManager.STATUS_LOADING) {
-                        mImageLoadStatuses[i] = PhotoManager.STATUS_NOT_LOADED;
-                    }
-                }
-                mImageLoadStatuses[index] = status;
-
-                // Progress bar should only be shown after a delay
-                LogUtils.v(LOG_TAG, "progress bar: <<< set to false");
-                mShowProgressBar = false;
-                LogUtils.v(LOG_TAG, "progress bar: === start delay");
-                final Runnable setShowProgressBarRunnable = index == 0
-                        ? mSetShowProgressBarRunnable0 : mSetShowProgressBarRunnable1;
-                removeCallbacks(setShowProgressBarRunnable);
-                postDelayed(setShowProgressBarRunnable, sProgressAnimationDelay);
-                changed = true;
-                break;
-            case PhotoManager.STATUS_LOADED:
-                mImageLoadStatuses[index] = status;
-                changed = true;
-                break;
-        }
-        if (changed) {
-            final ObjectAnimator fadeAnimator = index == 0 ? mFadeAnimator0 : mFadeAnimator1;
-            if (!fadeAnimator.isStarted()) {
-                fadeAnimator.start();
-            }
-        }
     }
 
     private static int makeExactSpecForSize(int size) {
@@ -1314,19 +1077,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         if (mSendersWidth < 0) {
             mSendersWidth = 0;
         }
-
-        String overflowText = mHeader.overflowText != null ? mHeader.overflowText : "";
-        sPaint.setTextSize(mCoordinates.overflowFontSize);
-        sPaint.setTypeface(mCoordinates.overflowTypeface);
-
-        sPaint.getTextBounds(overflowText, 0, overflowText.length(), sRect);
-
-        final int overflowWidth = (int) sPaint.measureText(overflowText);
-        final int overflowHeight = sRect.height();
-        mOverflowX = mCoordinates.overflowXEnd - mCoordinates.overflowDiameter / 2
-                - overflowWidth / 2;
-        mOverflowY = mCoordinates.overflowYEnd - mCoordinates.overflowDiameter / 2
-                + overflowHeight / 2;
 
         pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
     }
@@ -1515,6 +1265,25 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     @Override
+    public final void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+            int totalItemCount) {
+        if (SwipeableListView.ENABLE_ATTACHMENT_PARALLAX) {
+            final View listItemView = unwrap();
+            if (mHeader == null || mCoordinates == null || !isAttachmentPreviewsEnabled()) {
+                return;
+            }
+
+            invalidate(mCoordinates.attachmentPreviewsX, mCoordinates.attachmentPreviewsY,
+                    mCoordinates.attachmentPreviewsX + mCoordinates.attachmentPreviewsWidth,
+                    mCoordinates.attachmentPreviewsY + mCoordinates.attachmentPreviewsHeight);
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         Utils.traceBeginSection("CIVC.draw");
 
@@ -1606,45 +1375,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             canvas.save();
             drawAttachmentPreviews(canvas);
             canvas.restore();
-
-            // Overflow badge and count
-            if (getOverflowCountVisible() && areAllImagesLoaded()) {
-                final float radius = mCoordinates.overflowDiameter / 2;
-                sPaint.setColor(sOverflowBadgeColor);
-                canvas.drawCircle(mCoordinates.overflowXEnd - radius,
-                        mCoordinates.overflowYEnd - radius, radius, sPaint);
-
-                sPaint.setTextSize(mCoordinates.overflowFontSize);
-                sPaint.setTypeface(mCoordinates.overflowTypeface);
-                sPaint.setColor(sOverflowTextColor);
-                drawText(canvas, mHeader.overflowText, mOverflowX, mOverflowY, sPaint);
-            }
-
-            // Placeholders and progress bars
-
-            // Fade from 55 -> 255 -> 55. Each cycle lasts for #sProgressAnimationDuration secs.
-            final int maxAlpha = 255, minAlpha = 55;
-            final int range = maxAlpha - minAlpha;
-            // We want the placeholder to pulse at a different rate from the progressbar to
-            // spin.
-            final float placeholderAnimFraction = mAnimatedProgressFraction
-                    * sPlaceholderAnimationDurationRatio;
-            // During the time that placeholderAnimFraction takes to go from 0 to 1, we
-            // want to go all the way to #maxAlpha and back down to #minAlpha. So from 0 to 0.5,
-            // we increase #modifiedProgress from 0 to 1, while from 0.5 to 1 we decrease
-            // accordingly from 1 to 0. Math.
-            final float modifiedProgress = -2 * Math.abs(placeholderAnimFraction - 0.5f) + 1;
-            // Make it feel like a heart beat.
-            final float interpolatedProgress = sPulseAnimationInterpolator
-                    .getInterpolation(modifiedProgress);
-            // More math.
-            final int pulseAlpha = (int) (interpolatedProgress * range + minAlpha);
-
-            final int count = mImageLoadStatuses.length;
-            for (int i = 0; i < count; i++) {
-                drawPlaceholder(canvas, i, count, pulseAlpha);
-                drawProgressBar(canvas, i, count);
-            }
         }
 
         // right-side edge effect when in tablet conversation mode and the list is not collapsed
@@ -1766,7 +1496,18 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     private void drawAttachmentPreviews(Canvas canvas) {
         canvas.translate(mCoordinates.attachmentPreviewsX, mCoordinates.attachmentPreviewsY);
-        mAttachmentPreviewsCanvas.draw(canvas);
+        final float fraction;
+        if (SwipeableListView.ENABLE_ATTACHMENT_PARALLAX) {
+            final View listView = getListView();
+            final View listItemView = unwrap();
+            fraction = 1 - (float) listItemView.getBottom()
+                    / (listView.getHeight() + listItemView.getHeight());
+        } else {
+            // center the preview crop around the 1/3 point from the top
+            fraction = 0.33f;
+        }
+        mAttachmentsView.setParallaxFraction(fraction);
+        mAttachmentsView.draw(canvas);
     }
 
     private void drawSubject(Canvas canvas) {
@@ -1777,168 +1518,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private void drawSenders(Canvas canvas) {
         canvas.translate(mCoordinates.sendersX, mCoordinates.sendersY);
         mSendersTextView.draw(canvas);
-    }
-
-    /**
-     * Draws the specified placeholder on the canvas.
-     *
-     * @param canvas The canvas to draw on.
-     * @param index  If drawing multiple placeholders, this determines which one we are drawing.
-     * @param total  Whether we are drawing multiple placeholders.
-     * @param pulseAlpha The alpha to draw this at.
-     */
-    private void drawPlaceholder(final Canvas canvas, final int index, final int total,
-            final int pulseAlpha) {
-        final int placeholderX = getAttachmentPreviewXCenter(index, total)
-                - mCoordinates.placeholderWidth / 2;
-        if (placeholderX == -1) {
-            return;
-        }
-
-        // Set alpha for crossfading effect.
-        final ObjectAnimator fadeAnimator = index == 0 ? mFadeAnimator0 : mFadeAnimator1;
-        final float animatedFadeFraction = index == 0 ? mAnimatedFadeFraction0
-                : mAnimatedFadeFraction1;
-        final boolean notLoaded = mImageLoadStatuses[index] == PhotoManager.STATUS_NOT_LOADED;
-        final boolean loading = mImageLoadStatuses[index] == PhotoManager.STATUS_LOADING;
-        final boolean loaded = mImageLoadStatuses[index] == PhotoManager.STATUS_LOADED;
-        final float fadeAlphaFraction;
-        if (notLoaded) {
-            fadeAlphaFraction = 1.0f;
-        } else if (loading && !mShowProgressBar) {
-            fadeAlphaFraction = 1.0f;
-        } else if (fadeAnimator.isStarted() && (loading && mShowProgressBar
-                || loaded && !mShowProgressBar)) {
-            // Fade to progress bar or fade to image from placeholder
-            fadeAlphaFraction = 1.0f - animatedFadeFraction;
-        } else {
-            fadeAlphaFraction = 0.0f;
-        }
-
-        if (fadeAlphaFraction == 0.0f) {
-            return;
-        }
-        // Draw background
-        drawAttachmentPreviewBackground(canvas, index, total, (int) (255 * fadeAlphaFraction));
-
-        sPaint.setAlpha((int) (pulseAlpha * fadeAlphaFraction));
-        canvas.drawBitmap(PLACEHOLDER, placeholderX, mCoordinates.placeholderY, sPaint);
-    }
-
-    /**
-     * Draws the specified progress bar on the canvas.
-     * @param canvas The canvas to draw on.
-     * @param index If drawing multiple progress bars, this determines which one we are drawing.
-     * @param total Whether we are drawing multiple progress bars.
-     */
-    private void drawProgressBar(final Canvas canvas, final int index, final int total) {
-        final int progressBarX = getAttachmentPreviewXCenter(index, total)
-                - mCoordinates.progressBarWidth / 2;
-        if (progressBarX == -1) {
-            return;
-        }
-
-        // Set alpha for crossfading effect.
-        final ObjectAnimator fadeAnimator = index == 0 ? mFadeAnimator0 : mFadeAnimator1;
-        final float animatedFadeFraction = index == 0 ? mAnimatedFadeFraction0
-                : mAnimatedFadeFraction1;
-        final boolean loading = mImageLoadStatuses[index] == PhotoManager.STATUS_LOADING;
-        final boolean loaded = mImageLoadStatuses[index] == PhotoManager.STATUS_LOADED;
-        final int fadeAlpha;
-        if (loading && mShowProgressBar) {
-            fadeAlpha = (int) (255 * animatedFadeFraction);
-        } else if (fadeAnimator.isStarted() && (loaded && mShowProgressBar)) {
-            // Fade to image from progress bar
-            fadeAlpha = (int) (255 * (1.0f - animatedFadeFraction));
-        } else {
-            fadeAlpha = 0;
-        }
-
-        if (fadeAlpha == 0) {
-            return;
-        }
-
-        // Draw background
-        drawAttachmentPreviewBackground(canvas, index, total, fadeAlpha);
-
-        // Set the level from 0 to 10000 to animate the Drawable.
-        PROGRESS_BAR.setLevel((int) (mAnimatedProgressFraction * 10000));
-        // canvas.translate() for Bitmaps, setBounds() for Drawables.
-        PROGRESS_BAR.setBounds(progressBarX, mCoordinates.progressBarY,
-                progressBarX + mCoordinates.progressBarWidth,
-                mCoordinates.progressBarY + mCoordinates.progressBarHeight);
-        PROGRESS_BAR.setAlpha(fadeAlpha);
-        PROGRESS_BAR.draw(canvas);
-    }
-    /**
-     * Draws the specified attachment previews background on the canvas.
-     * @param canvas The canvas to draw on.
-     * @param index If drawing for multiple attachment previews, this determines for which one's
-     *              background we are drawing.
-     * @param total Whether we are drawing for multiple attachment previews.
-     * @param fadeAlpha The alpha to draw this at.
-     */
-    private void drawAttachmentPreviewBackground(final Canvas canvas, final int index,
-            final int total, final int fadeAlpha) {
-        if (total == 0) {
-            return;
-        }
-        final int sectionWidth = mCoordinates.attachmentPreviewsWidth / total;
-        final int sectionX = getAttachmentPreviewX(index, total);
-        sPaint.setColor(sAttachmentPreviewsBackgroundColor);
-        sPaint.setAlpha(fadeAlpha);
-        canvas.drawRect(sectionX, mCoordinates.attachmentPreviewsY, sectionX + sectionWidth,
-                mCoordinates.attachmentPreviewsY + mCoordinates.attachmentPreviewsHeight, sPaint);
-    }
-
-    private void invalidateAttachmentPreviews() {
-        final int total = mImageLoadStatuses.length;
-        for (int index = 0; index < total; index++) {
-            invalidateAttachmentPreview(index, total);
-        }
-    }
-
-    private void invalidatePlaceholdersAndProgressBars() {
-        final int total = mImageLoadStatuses.length;
-        for (int index = 0; index < total; index++) {
-            invalidatePlaceholderAndProgressBar(index, total);
-        }
-    }
-
-    private void invalidateAttachmentPreview(final int index, final int total) {
-        invalidate(getAttachmentPreviewX(index, total), mCoordinates.attachmentPreviewsY,
-                getAttachmentPreviewX(index + 1, total),
-                mCoordinates.attachmentPreviewsY + mCoordinates.attachmentPreviewsHeight);
-    }
-
-    private void invalidatePlaceholderAndProgressBar(final int index, final int total) {
-        final int width = Math.max(mCoordinates.placeholderWidth, mCoordinates.progressBarWidth);
-        final int height = Math.max(mCoordinates.placeholderHeight, mCoordinates.progressBarHeight);
-        final int x = getAttachmentPreviewXCenter(index, total) - width / 2;
-        final int xEnd = getAttachmentPreviewXCenter(index, total) + width / 2;
-        final int yCenter = mCoordinates.attachmentPreviewsY
-                + mCoordinates.attachmentPreviewsHeight / 2;
-        final int y = yCenter - height / 2;
-        final int yEnd = yCenter + height / 2;
-
-        invalidate(x, y, xEnd, yEnd);
-    }
-
-    private int getAttachmentPreviewX(final int index, final int total) {
-        if (mCoordinates == null || total == 0) {
-            return -1;
-        }
-        final int sectionWidth = mCoordinates.attachmentPreviewsWidth / total;
-        final int sectionOffset = index * sectionWidth;
-        return mCoordinates.attachmentPreviewsX + sectionOffset;
-    }
-
-    private int getAttachmentPreviewXCenter(final int index, final int total) {
-        if (total == 0) {
-            return -1;
-        }
-        final int sectionWidth = mCoordinates.attachmentPreviewsWidth / total;
-        return getAttachmentPreviewX(index, total) + sectionWidth / 2;
     }
 
     private Bitmap getStarBitmap() {
@@ -2157,9 +1736,20 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         return handled;
     }
 
+    private SwipeableConversationItemView unwrap() {
+        final ViewParent vp = getParent();
+        if (vp == null || !(vp instanceof SwipeableConversationItemView)) {
+            return null;
+        }
+        return (SwipeableConversationItemView) vp;
+    }
+
     private SwipeableListView getListView() {
-        SwipeableListView v = (SwipeableListView) ((SwipeableConversationItemView) getParent())
-                .getListView();
+        SwipeableListView v = null;
+        final SwipeableConversationItemView wrapper = unwrap();
+        if (wrapper != null) {
+            v = (SwipeableListView) wrapper.getListView();
+        }
         if (v == null) {
             v = mAdapter.getListView();
         }
@@ -2175,10 +1765,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         setAlpha(1f);
         setTranslationX(0f);
         mAnimatedHeightFraction = 1.0f;
-        if (mProgressAnimator.isStarted()) {
-            removeCallbacks(mCancelProgressAnimatorRunnable);
-            postDelayed(mCancelProgressAnimatorRunnable, sFadeAnimationDuration);
-        }
         Utils.traceEndSection();
     }
 
@@ -2187,17 +1773,16 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     public void setTranslationX(float translationX) {
         super.setTranslationX(translationX);
 
-        final ViewParent vp = getParent();
-        if (vp == null || !(vp instanceof SwipeableConversationItemView)) {
-            LogUtils.w(LOG_TAG,
-                    "CIV.setTranslationX unexpected ConversationItemView parent: %s x=%s",
-                    vp, translationX);
-        }
-
         // When a list item is being swiped or animated, ensure that the hosting view has a
         // background color set. We only enable the background during the X-translation effect to
         // reduce overdraw during normal list scrolling.
-        final SwipeableConversationItemView parent = (SwipeableConversationItemView) vp;
+        final SwipeableConversationItemView parent = unwrap();
+        if (parent == null) {
+            LogUtils.w(LOG_TAG,
+                    "CIV.setTranslationX unexpected ConversationItemView parent: %s x=%s",
+                    getParent(), translationX);
+        }
+
         if (translationX != 0f) {
             parent.setBackgroundResource(R.color.swiped_bg_color);
         } else {
@@ -2270,74 +1855,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     public void setAnimatedHeightFraction(float height) {
         mAnimatedHeightFraction = height;
         requestLayout();
-    }
-
-    private ObjectAnimator createProgressAnimator() {
-        final ObjectAnimator animator = ObjectAnimator
-                .ofFloat(this, "animatedProgressFraction", 0.0f, 1.0f).setDuration(
-                        sProgressAnimationDuration);
-        animator.setInterpolator(new LinearInterpolator());
-        animator.setRepeatCount(ObjectAnimator.INFINITE);
-        animator.setRepeatMode(ObjectAnimator.RESTART);
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(final Animator animation) {
-                invalidateAll();
-            }
-
-            @Override
-            public void onAnimationCancel(final Animator animation) {
-                invalidateAll();
-                mProgressAnimatorCancelledTime = SystemClock.uptimeMillis();
-            }
-
-            private void invalidateAll() {
-                invalidatePlaceholdersAndProgressBars();
-            }
-        });
-        return animator;
-    }
-
-    private ObjectAnimator createFadeAnimator(final int index) {
-        final ObjectAnimator animator = ObjectAnimator
-                .ofFloat(this, "animatedFadeFraction" + index, 0.0f, 1.0f).setDuration(
-                        sFadeAnimationDuration);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.setRepeatCount(0);
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(final Animator animation) {
-                invalidateAttachmentPreview(index, mImageLoadStatuses.length);
-            }
-
-            @Override
-            public void onAnimationCancel(final Animator animation) {
-                invalidateAttachmentPreview(index, mImageLoadStatuses.length);
-            }
-        });
-        return animator;
-    }
-
-    // Used by animator
-    public void setAnimatedProgressFraction(final float fraction) {
-        // ObjectAnimator.cancel() sets the field to 0.0f.
-        if (fraction == 0.0f) {
-            return;
-        }
-        mAnimatedProgressFraction = fraction;
-        invalidatePlaceholdersAndProgressBars();
-    }
-
-    // Used by animator
-    public void setAnimatedFadeFraction0(final float fraction) {
-        mAnimatedFadeFraction0 = fraction;
-        invalidateAttachmentPreview(0, mImageLoadStatuses.length);
-    }
-
-    // Used by animator
-    public void setAnimatedFadeFraction1(final float fraction) {
-        mAnimatedFadeFraction1 = fraction;
-        invalidateAttachmentPreview(1, mImageLoadStatuses.length);
     }
 
     @Override
