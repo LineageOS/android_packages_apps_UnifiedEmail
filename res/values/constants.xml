@@ -120,7 +120,7 @@
     <!-- Duration of fade in/out animation for attachment previews -->
     <integer name="ap_fade_animation_duration">500</integer>
     <!-- Duration of placeholder pulse animation for attachment previews -->
-    <integer name="ap_placeholder_animation_duration">2000</integer>
+    <integer name="ap_placeholder_animation_duration">1000</integer>
     <!-- Delay before showing progress bar animations for attachment previews that are loading -->
     <integer name="ap_progress_animation_delay">2000</integer>
     <!-- Max overflow count to show for attachment previews -->

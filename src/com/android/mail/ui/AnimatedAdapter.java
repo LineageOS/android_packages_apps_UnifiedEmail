@@ -33,6 +33,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 
+import com.android.bitmap.AltBitmapCache;
+import com.android.bitmap.BitmapCache;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
@@ -86,6 +88,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private Runnable mCountDown;
     private final Handler mHandler;
     protected long mLastLeaveBehind = -1;
+
+    private final BitmapCache mBitmapCache;
 
     public interface ConversationListListener {
         /**
@@ -215,6 +219,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private static final String LOG_TAG = LogTag.getLogTag();
     private static final int INCREASE_WAIT_COUNT = 2;
 
+    private static final int BITMAP_CACHE_TARGET_SIZE_BYTES = 0; // TODO: enable cache
+
     public AnimatedAdapter(Context context, ConversationCursor cursor,
             ConversationSelectionSet batch, ControllableActivity activity,
             final ConversationListListener conversationListListener, SwipeableListView listView,
@@ -229,6 +235,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mShowFooter = false;
         mListView = listView;
         mFolderViews = getNestedFolders(childFolders);
+
+        mBitmapCache = new AltBitmapCache(BITMAP_CACHE_TARGET_SIZE_BYTES);
 
         mHandler = new Handler();
         if (sDismissAllShortDelay == -1) {
@@ -1030,6 +1038,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         return oldCursor;
     }
 
+    public BitmapCache getBitmapCache() {
+        return mBitmapCache;
+    }
+
     /**
      * Gets the offset for the given position in the underlying cursor, based on any special views
      * that may be above it.
@@ -1068,4 +1080,5 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             specialView.onCabModeEntered();
         }
     }
+
 }
