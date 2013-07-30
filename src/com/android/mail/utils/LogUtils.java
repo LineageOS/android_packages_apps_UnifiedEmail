@@ -18,6 +18,7 @@ package com.android.mail.utils;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.List;
@@ -146,13 +147,20 @@ public class LogUtils {
             return "";
         }
 
-        if (isDebugLoggingEnabled(TAG)) {
-            return accountName;
-        }
-
-        return ACCOUNT_PREFIX + String.valueOf(accountName.hashCode());
+        return ACCOUNT_PREFIX + sanitizeName(TAG, accountName);
     }
 
+    public static String sanitizeName(final String tag, final String name) {
+        if (TextUtils.isEmpty(name)) {
+            return "";
+        }
+
+        if (isDebugLoggingEnabled(tag)) {
+            return name;
+        }
+
+        return String.valueOf(name.hashCode());
+    }
 
     /**
      * Checks to see whether or not a log for the specified tag is loggable at the specified level.
