@@ -22,6 +22,7 @@ import com.android.bitmap.DecodeTask.Request;
 import com.android.bitmap.ReusableBitmap;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewCoordinates;
+import com.android.mail.utils.LogUtils;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -38,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapView,
         Drawable.Callback, Runnable, Parallaxable {
 
-    private DecodeTask.Request mCurrKey;
+    private ImageAttachmentRequest mCurrKey;
     private ReusableBitmap mBitmap;
     private final BitmapCache mCache;
     private DecodeTask mTask;
@@ -63,9 +64,10 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     private static final int MAX_BITMAP_DENSITY = DisplayMetrics.DENSITY_HIGH;
 
     private static final int LOAD_STATE_UNINITIALIZED = 0;
-    private static final int LOAD_STATE_NOT_LOADED = 1;
+    private static final int LOAD_STATE_NOT_YET_LOADED = 1;
     private static final int LOAD_STATE_LOADING = 2;
     private static final int LOAD_STATE_LOADED = 3;
+    private static final int LOAD_STATE_FAILED = 4;
 
     private final ConversationItemViewCoordinates mCoordinates;
     private final float mDensity;
@@ -73,6 +75,8 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     private final Paint mPaint = new Paint();
     private final Rect mSrcRect = new Rect();
     private final Handler mHandler = new Handler();
+
+    public final String LOG_TAG = "AttachPreview";
 
     public AttachmentDrawable(Resources res, BitmapCache cache,
             ConversationItemViewCoordinates coordinates, Drawable placeholder, Drawable progress) {
@@ -106,11 +110,20 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         mDecodeHeight = height;
     }
 
-    public void setImage(DecodeTask.Request key) {
+    public void showStaticPlaceholder() {
+        setLoadState(LOAD_STATE_FAILED);
+    }
+
+    public void setImage(ImageAttachmentRequest key) {
         if (mCurrKey != null && mCurrKey.equals(key)) {
             return;
         }
-        if (mBitmap != null) {
+
+        // avoid visual state transitions when the existing request and the new one are just
+        // requests for different renditions of the same attachment
+        final boolean onlyRenditionChange = (mCurrKey != null && mCurrKey.matches(key));
+
+        if (mBitmap != null && !onlyRenditionChange) {
             mBitmap.releaseReference();
 //            System.out.println("view.bind() decremented ref to old bitmap: " + mBitmap);
             mBitmap = null;
@@ -123,6 +136,9 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         }
 
         mHandler.removeCallbacks(this);
+        // start from a clean slate on every bind
+        // this allows the initial transition to be specially instantaneous, so e.g. a cache hit
+        // doesn't unnecessarily trigger a fade-in
         setLoadState(LOAD_STATE_UNINITIALIZED);
 
         if (key == null) {
@@ -134,9 +150,13 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         if (cached != null) {
             cached.acquireReference();
             setBitmap(cached);
-            setLoadState(LOAD_STATE_LOADED);
+            LogUtils.d(LOG_TAG, "CACHE HIT key=%s", mCurrKey);
         } else {
-            decode();
+            decode(!onlyRenditionChange);
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+                LogUtils.d(LOG_TAG, "CACHE MISS key=%s\ncache=%s",
+                        mCurrKey, mCache.toDebugString());
+            }
         }
     }
 
@@ -211,7 +231,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
 
     @Override
     public void run() {
-        if (mLoadState == LOAD_STATE_NOT_LOADED) {
+        if (mLoadState == LOAD_STATE_NOT_YET_LOADED) {
             setLoadState(LOAD_STATE_LOADING);
         }
     }
@@ -234,11 +254,11 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
             mBitmap.releaseReference();
         }
         mBitmap = bmp;
-        setLoadState(LOAD_STATE_LOADED);
+        setLoadState((bmp != null) ? LOAD_STATE_LOADED : LOAD_STATE_FAILED);
         invalidateSelf();
     }
 
-    private void decode() {
+    private void decode(boolean executeStateChange) {
         final int w;
         final int h;
 
@@ -260,22 +280,31 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         if (mTask != null) {
             mTask.cancel();
         }
-        setLoadState(LOAD_STATE_NOT_LOADED);
+        if (executeStateChange) {
+            setLoadState(LOAD_STATE_NOT_YET_LOADED);
+        }
         mTask = new DecodeTask(mCurrKey, w, h, this, mCache);
         mTask.executeOnExecutor(EXECUTOR);
     }
 
     private void setLoadState(int loadState) {
+        LogUtils.v(LOG_TAG, "IN AD.setState. old=%s new=%s key=%s this=%s", mLoadState, loadState,
+                mCurrKey, this);
         if (mLoadState == loadState) {
+            LogUtils.v(LOG_TAG, "OUT no-op AD.setState");
             return;
         }
 
         switch (loadState) {
+            // This state differs from LOADED in that the subsequent state transition away from
+            // UNINITIALIZED will not have a fancy transition. This allows list item binds to
+            // cached data to take immediate effect without unnecessary whizzery.
             case LOAD_STATE_UNINITIALIZED:
                 mPlaceholder.reset();
                 mProgress.reset();
                 break;
-            case LOAD_STATE_NOT_LOADED:
+            case LOAD_STATE_NOT_YET_LOADED:
+                mPlaceholder.setPulseEnabled(true);
                 mPlaceholder.setVisible(true);
                 mProgress.setVisible(false);
                 break;
@@ -287,9 +316,16 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
                 mPlaceholder.setVisible(false);
                 mProgress.setVisible(false);
                 break;
+            case LOAD_STATE_FAILED:
+                mPlaceholder.setPulseEnabled(false);
+                mPlaceholder.setVisible(true);
+                mProgress.setVisible(false);
+                break;
         }
 
         mLoadState = loadState;
+        LogUtils.v(LOG_TAG, "OUT stateful AD.setState. new=%s placeholder=%s progress=%s",
+                loadState, mPlaceholder.isVisible(), mProgress.isVisible());
     }
 
     @Override
@@ -310,6 +346,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     private static class Placeholder extends TileDrawable {
 
         private final ValueAnimator mPulseAnimator;
+        private boolean mPulseEnabled = true;
 
         public Placeholder(Drawable placeholder, Resources res,
                 ConversationItemViewCoordinates coordinates, int fadeOutDurationMs,
@@ -328,20 +365,32 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
             });
         }
 
+        public void setPulseEnabled(boolean enabled) {
+            mPulseEnabled = enabled;
+            if (!mPulseEnabled) {
+                stopPulsing();
+            }
+        }
+
+        private void stopPulsing() {
+            if (mPulseAnimator != null) {
+                mPulseAnimator.cancel();
+                setInnerAlpha(255);
+            }
+        }
+
         @Override
         public boolean setVisible(boolean visible) {
             final boolean changed = super.setVisible(visible);
             if (changed) {
                 if (isVisible()) {
                     // start
-                    if (mPulseAnimator != null) {
+                    if (mPulseAnimator != null && mPulseEnabled) {
                         mPulseAnimator.start();
                     }
                 } else {
                     // stop
-                    if (mPulseAnimator != null) {
-                        mPulseAnimator.cancel();
-                    }
+                    stopPulsing();
                 }
             }
             return changed;
@@ -389,6 +438,10 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
                     }
                 } else {
                     // can't cancel the rotate yet-- wait for the fade-out animation to end
+                    // one exception: if alpha is already zero, there is no fade-out, so stop now
+                    if (getAlpha() == 0 && mRotateAnimator != null) {
+                        mRotateAnimator.cancel();
+                    }
                 }
             }
             return changed;

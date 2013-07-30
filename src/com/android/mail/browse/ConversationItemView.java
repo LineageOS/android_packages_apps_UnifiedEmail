@@ -68,6 +68,7 @@ import com.android.mail.R;
 import com.android.mail.R.drawable;
 import com.android.mail.R.integer;
 import com.android.mail.R.string;
+import com.android.mail.bitmap.AttachmentDrawable;
 import com.android.mail.bitmap.AttachmentGridDrawable;
 import com.android.mail.bitmap.ImageAttachmentRequest;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
@@ -886,7 +887,8 @@ public class ConversationItemView extends View
         // Get list of attachments and states from conversation
         final ArrayList<String> attachmentUris = mHeader.conversation.getAttachmentPreviewUris();
         final int previewStates = mHeader.conversation.attachmentPreviewStates;
-        final int displayCount = Math.min(attachmentUris.size(), DividedImageCanvas.MAX_DIVISIONS);
+        final int displayCount = Math.min(
+                attachmentUris.size(), AttachmentGridDrawable.MAX_VISIBLE_ATTACHMENT_COUNT);
         Utils.traceEndSection();
 
         mAttachmentsView.setCoordinates(mCoordinates);
@@ -921,11 +923,16 @@ public class ConversationItemView extends View
                 }
             }
 
-            // TODO: support renditions
-            LogUtils.d(LOG_TAG, "creating/setting drawable region in CIV=%s canvas=%s", this,
-                    mAttachmentsView);
-            mAttachmentsView.getOrCreateDrawable(i)
-                .setImage(new ImageAttachmentRequest(getContext(), uri));
+            LogUtils.d(LOG_TAG,
+                    "creating/setting drawable region in CIV=%s canvas=%s rend=%s uri=%s",
+                    this, mAttachmentsView, bestAvailableRendition, uri);
+            final AttachmentDrawable ad = mAttachmentsView.getOrCreateDrawable(i);
+            if (bestAvailableRendition != -1) {
+                ad.setImage(
+                        new ImageAttachmentRequest(getContext(), uri, bestAvailableRendition));
+            } else {
+                ad.showStaticPlaceholder();
+            }
 
             Utils.traceEndSection();
         }
