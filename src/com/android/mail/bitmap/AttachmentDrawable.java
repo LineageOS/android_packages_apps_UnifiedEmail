@@ -439,7 +439,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
                 } else {
                     // can't cancel the rotate yet-- wait for the fade-out animation to end
                     // one exception: if alpha is already zero, there is no fade-out, so stop now
-                    if (getAlpha() == 0 && mRotateAnimator != null) {
+                    if (getCurrentAlpha() == 0 && mRotateAnimator != null) {
                         mRotateAnimator.cancel();
                     }
                 }
