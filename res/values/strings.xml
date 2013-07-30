@@ -941,6 +941,8 @@
 
     <string name="conversation_photo_welcome_text">Touch a sender image to select that conversation.</string>
 
+    <string name="long_press_to_select_tip">Touch &amp; hold to select one conversation, then touch to select more.</string>
+
     <!-- Content description for the folder icon for nested folders. -->
     <string name="folder_icon_desc">Folder icon</string>
 
@@ -964,5 +966,8 @@
 
     <!-- Shown in the message ad header and in the list item for a message ad. [CHAR LIMIT=15]-->
     <string name="ads">Ads</string>
+
+    <!-- Content description for the "X" image icon for dismissing a tip. This is used for spoken description of the icon when touch explore is enabled. [CHAR LIMIT=50] -->
+    <string name="dismiss_tip_hover_text">Dismiss tip</string>
 
 </resources>
