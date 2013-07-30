@@ -429,4 +429,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public final ConversationListHelper getConversationListHelper() {
         return mConversationListHelper;
     }
+
+    @Override
+    public FragmentLauncher getFragmentLauncher() {
+        return mController;
+    }
 }

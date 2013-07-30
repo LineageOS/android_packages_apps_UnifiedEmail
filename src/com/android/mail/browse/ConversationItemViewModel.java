@@ -64,19 +64,22 @@ public class ConversationItemViewModel {
     private int mLayoutHashCode;
 
     // Unread
-    boolean unread;
+    public boolean unread;
 
     // Date
     CharSequence dateText;
+    public CharSequence dateOverrideText;
 
     // Personal level
     Bitmap personalLevelBitmap;
+
+    public Bitmap infoIcon;
 
     // Paperclip
     Bitmap paperclip;
 
     // Senders
-    String sendersText;
+    public String sendersText;
 
     // A list of all the fragments that cover sendersText
     final ArrayList<SenderFragment> senderFragments;

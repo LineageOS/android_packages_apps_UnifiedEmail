@@ -161,6 +161,8 @@ public abstract class AbstractActivityController implements ActivityController,
     public static final String TAG_CONVERSATION_LIST = "tag-conversation-list";
     /** Tag used when loading a folder list fragment. */
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
+    /** Tag used when loading a custom fragment. */
+    protected static final String TAG_CUSTOM_FRAGMENT = "tag-custom-fragment";
 
     /** Key to store an account in a bundle */
     private final String BUNDLE_ACCOUNT_KEY = "account";

@@ -340,7 +340,7 @@ public final class ConversationListFragment extends ListFragment implements
         final ConversationListHelper helper = mActivity.getConversationListHelper();
         final List<ConversationSpecialItemView> specialItemViews = helper != null ?
                 ImmutableList.copyOf(helper.makeConversationListSpecialViews(
-                        activity, mAccount, mActivity.getFolderSelector()))
+                        activity, mActivity, mAccount))
                 : null;
         if (specialItemViews != null) {
             // Attach to the LoaderManager
