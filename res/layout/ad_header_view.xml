@@ -48,7 +48,7 @@
         android:id="@+id/ad_subject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/conversation_header_vertical_item_padding"
+        android:paddingBottom="@dimen/conversation_header_vertical_padding"
         android:paddingStart="@dimen/conversation_header_side_padding"
         android:paddingEnd="@dimen/conversation_header_side_padding"
         android:paddingLeft="@dimen/conversation_header_side_padding"

@@ -93,7 +93,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
         mCondensedTextSize =
                 resources.getDimensionPixelSize(R.dimen.conversation_header_font_size_condensed);
         mCondensedTopPadding = resources.getDimensionPixelSize(
-                R.dimen.conversation_header_vertical_item_padding_condensed);
+                R.dimen.conversation_header_vertical_padding_condensed);
     }
 
     @Override
