@@ -70,3 +70,7 @@
 -keepclasseswithmembers class com.android.mail.ui.ConversationPhotoTeaserView {
   *** setAnimatedHeight(...);
 }
+
+-keepclasseswithmembers class com.android.mail.ui.ConversationLongPressTipView {
+  *** setAnimatedHeight(...);
+}

@@ -39,8 +39,14 @@ public class ConversationListHelper {
                         .inflate(R.layout.conversation_photo_teaser_view, null);
 
 
+        // Long press to select tip
+        final ConversationLongPressTipView conversationLongPressTipView =
+                (ConversationLongPressTipView) LayoutInflater.from(context)
+                        .inflate(R.layout.conversation_long_press_to_select_tip_view, null);
+
         final ArrayList<ConversationSpecialItemView> itemViews = Lists.newArrayList();
         itemViews.add(conversationPhotoTeaser);
+        itemViews.add(conversationLongPressTipView);
         return itemViews;
     }
 }
