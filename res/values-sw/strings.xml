@@ -255,11 +255,11 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> wa zamani"</item>
   </plurals>
-    <string name="from_heading" msgid="8950294114718418954">"Kutoka:"</string>
-    <string name="replyto_heading" msgid="2081358811894701297">"Jibu-kwa:"</string>
-    <string name="to_heading" msgid="3219994961726691756">"Kwa:"</string>
-    <string name="cc_heading" msgid="8116221732072085180">"Nakala kwa:"</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"Nakala fiche kwa:"</string>
+    <string name="from_heading" msgid="2454519463223197231">"Kutoka: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"Jibu-kwa: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"Kwa: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"Nakala kwa: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"Nakala fiche kwa: "</string>
     <string name="show_images" msgid="1875700481186331432">"Onyesha picha"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Daima onyesha picha kutoka kwa mtumaji huyu"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Picha kutoka kwa mtumaji huyu zitaonyeshwa kiotomatiki."</string>
@@ -280,7 +280,7 @@
     <string name="yes" msgid="7474216525286833848">"Ndiyo"</string>
     <string name="no" msgid="427548507197604096">"Hapana"</string>
     <string name="ok" msgid="8339355733816891026">"SAWA"</string>
-    <string name="done" msgid="3079981801778027540">"Imekamilika"</string>
+    <string name="done" msgid="3079981801778027540">"Nimemaliza"</string>
     <string name="cancel" msgid="8762981157252199115">"Ghairi"</string>
     <string name="clear" msgid="3184687982186479442">"Futa"</string>
     <string name="close" msgid="419945428844076406">"Funga"</string>

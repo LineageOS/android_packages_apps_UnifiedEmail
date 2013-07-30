@@ -255,11 +255,11 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"الرسائل القديمة: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="from_heading" msgid="8950294114718418954">"من:"</string>
-    <string name="replyto_heading" msgid="2081358811894701297">"جهة الرد:"</string>
-    <string name="to_heading" msgid="3219994961726691756">"إلى:"</string>
-    <string name="cc_heading" msgid="8116221732072085180">"نسخة إلى:"</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"نسخة مخفية الوجهة:"</string>
+    <string name="from_heading" msgid="2454519463223197231">"من: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"جهة الرد: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"إلى: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"نسخة إلى: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"نسخة مخفية الوجهة: "</string>
     <string name="show_images" msgid="1875700481186331432">"إظهار الصور"</string>
     <string name="always_show_images" msgid="5966408990164581801">"عرض صور من هذا المرسل دومًا"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"سيتم عرض الصور من هذا المرسل تلقائيًا."</string>
