@@ -101,7 +101,7 @@ public class NotificationUtils {
      * Clears all notifications in response to the user tapping "Clear" in the status bar.
      */
     public static void clearAllNotfications(Context context) {
-        LogUtils.v(LOG_TAG, "NotificationUtils: Clearing all notifications.");
+        LogUtils.v(LOG_TAG, "Clearing all notifications.");
         final NotificationMap notificationMap = getNotificationMap(context);
         notificationMap.clear();
         notificationMap.saveNotificationMap(context);
@@ -259,7 +259,7 @@ public class NotificationUtils {
      * Get all notifications for all accounts and cancel them.
      **/
     public static void cancelAllNotifications(Context context) {
-        LogUtils.d(LOG_TAG, "NotificationUtils: cancelAllNotifications - cancelling all");
+        LogUtils.d(LOG_TAG, "cancelAllNotifications - cancelling all");
         NotificationManager nm = (NotificationManager) context.getSystemService(
                 Context.NOTIFICATION_SERVICE);
         nm.cancelAll();
@@ -271,7 +271,7 @@ public class NotificationUtils {
      * This happens when locale changes.
      **/
     public static void cancelAndResendNotifications(Context context) {
-        LogUtils.d(LOG_TAG, "NotificationUtils: cancelAndResendNotifications");
+        LogUtils.d(LOG_TAG, "cancelAndResendNotifications");
         resendNotifications(context, true, null, null);
     }
 
@@ -292,10 +292,10 @@ public class NotificationUtils {
      */
     public static void resendNotifications(Context context, final boolean cancelExisting,
             final Uri accountUri, final FolderUri folderUri) {
-        LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications ");
+        LogUtils.d(LOG_TAG, "resendNotifications ");
 
         if (cancelExisting) {
-            LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - cancelling all");
+            LogUtils.d(LOG_TAG, "resendNotifications - cancelling all");
             NotificationManager nm =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.cancelAll();
@@ -312,13 +312,13 @@ public class NotificationUtils {
             // and same account as the undo notification that was previously displayed.
             if (accountUri != null && !Objects.equal(accountUri, notification.account.uri) &&
                     folderUri != null && !Objects.equal(folderUri, folder.folderUri)) {
-                LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - not resending %s / %s"
+                LogUtils.d(LOG_TAG, "resendNotifications - not resending %s / %s"
                         + " because it doesn't match %s / %s",
                         notification.account.uri, folder.folderUri, accountUri, folderUri);
                 continue;
             }
 
-            LogUtils.d(LOG_TAG, "NotificationUtils: resendNotifications - resending %s / %s",
+            LogUtils.d(LOG_TAG, "resendNotifications - resending %s / %s",
                     notification.account.uri, folder.folderUri);
 
             final NotificationAction undoableAction =
@@ -337,7 +337,7 @@ public class NotificationUtils {
      * Validate the notifications for the specified account.
      */
     public static void validateAccountNotifications(Context context, String account) {
-        LogUtils.d(LOG_TAG, "NotificationUtils: validateAccountNotifications - %s", account);
+        LogUtils.d(LOG_TAG, "validateAccountNotifications - %s", account);
 
         List<NotificationKey> notificationsToCancel = Lists.newArrayList();
         // Iterate through the notification map to see if there are any entries that correspond to
@@ -380,8 +380,7 @@ public class NotificationUtils {
             for (NotificationKey notification : notificationsToCancel) {
                 final Folder folder = notification.folder;
                 final int notificationId = getNotificationId(notification.account.name, folder);
-                LogUtils.d(LOG_TAG,
-                        "NotificationUtils: validateAccountNotifications - cancelling %s / %s",
+                LogUtils.d(LOG_TAG, "validateAccountNotifications - cancelling %s / %s",
                         notification.account.name, folder.persistentId);
                 nm.cancel(notificationId);
                 notificationMap.remove(notification);
@@ -398,9 +397,9 @@ public class NotificationUtils {
     public static void setNewEmailIndicator(Context context, final int unreadCount,
             final int unseenCount, final Account account, final Folder folder,
             final boolean getAttention) {
-        LogUtils.d(LOG_TAG, "NotificationUtils: setNewEmailIndicator unreadCount = %d, "
-            + "unseenCount = %d, account = %s, folder = %s, getAttention = %b", unreadCount,
-            unseenCount, account.name, folder.folderUri, getAttention);
+        LogUtils.d(LOG_TAG, "setNewEmailIndicator unreadCount = %d, unseenCount = %d, account = %s,"
+                + " folder = %s, getAttention = %b", unreadCount, unseenCount, account.name,
+                folder.folderUri, getAttention);
 
         boolean ignoreUnobtrusiveSetting = false;
 
@@ -410,9 +409,8 @@ public class NotificationUtils {
         final NotificationMap notificationMap = getNotificationMap(context);
         final NotificationKey key = new NotificationKey(account, folder);
         if (unreadCount == 0) {
-            LogUtils.d(LOG_TAG,
-                    "NotificationUtils: setNewEmailIndicator - cancelling %s / %s",
-                    account.name, folder.persistentId);
+            LogUtils.d(LOG_TAG, "setNewEmailIndicator - cancelling %s / %s", account.name,
+                    folder.persistentId);
             notificationMap.remove(key);
             ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
                     .cancel(notificationId);
@@ -428,7 +426,7 @@ public class NotificationUtils {
         notificationMap.saveNotificationMap(context);
 
         if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
-            LogUtils.v(LOG_TAG, "NotificationUtils: New email: %s mapSize: %d getAttention: %b",
+            LogUtils.v(LOG_TAG, "New email: %s mapSize: %d getAttention: %b",
                     createNotificationString(notificationMap), notificationMap.size(),
                     getAttention);
         }
@@ -451,7 +449,7 @@ public class NotificationUtils {
 
         final NotificationMap notificationMap = getNotificationMap(context);
         if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
-            LogUtils.v(LOG_TAG, "NotificationUtils: Validating Notification: %s mapSize: %d "
+            LogUtils.v(LOG_TAG, "Validating Notification: %s mapSize: %d "
                     + "folder: %s getAttention: %b", createNotificationString(notificationMap),
                     notificationMap.size(), folder.name, getAttention);
         }
@@ -484,8 +482,8 @@ public class NotificationUtils {
             // Make sure the unseen count matches the number of items in the cursor.  But, we don't
             // want to overwrite a 0 unseen count that was specified in the intent
             if (unseenCount != 0 && unseenCount != cursorUnseenCount) {
-                LogUtils.d(LOG_TAG, "NotificationUtils: "
-                        + "Unseen count doesn't match cursor count.  unseen: %d cursor count: %d",
+                LogUtils.d(LOG_TAG,
+                        "Unseen count doesn't match cursor count.  unseen: %d cursor count: %d",
                         unseenCount, cursorUnseenCount);
                 unseenCount = cursorUnseenCount;
             }
@@ -499,9 +497,8 @@ public class NotificationUtils {
             final int notificationId = getNotificationId(account.name, folder);
 
             if (unseenCount == 0) {
-                LogUtils.d(LOG_TAG,
-                        "NotificationUtils: validateNotifications - cancelling %s / %s",
-                        account.name, folder.persistentId);
+                LogUtils.d(LOG_TAG, "validateNotifications - cancelling %s / %s", account.name,
+                        folder.persistentId);
                 nm.cancel(notificationId);
                 return;
             }
@@ -577,8 +574,7 @@ public class NotificationUtils {
                     }
 
                     if (notificationIntent == null) {
-                        LogUtils.e(LOG_TAG, "NotificationUtils: "
-                                + "Null intent when building notification");
+                        LogUtils.e(LOG_TAG, "Null intent when building notification");
                         return;
                     }
 
@@ -601,7 +597,7 @@ public class NotificationUtils {
                 notification.setOnlyAlertOnce(true);
             }
 
-            LogUtils.d(LOG_TAG, "NotificationUtils: Account: %s vibrate: %s", account.name,
+            LogUtils.d(LOG_TAG, "Account: %s vibrate: %s", account.name,
                     Boolean.toString(folderPreferences.isNotificationVibrateEnabled()));
 
             int defaults = 0;
@@ -620,8 +616,7 @@ public class NotificationUtils {
 
                     notification.setSound(TextUtils.isEmpty(ringtoneUri) ? null
                             : Uri.parse(ringtoneUri));
-                    LogUtils.d(LOG_TAG, "NotificationUtils: "
-                            + "New email in %s vibrateWhen: %s, playing notification: %s",
+                    LogUtils.d(LOG_TAG, "New email in %s vibrateWhen: %s, playing notification: %s",
                             account.name, vibrate, ringtoneUri);
                 }
             }
@@ -651,7 +646,7 @@ public class NotificationUtils {
     private static Intent createViewConversationIntent(final Context context, final Account account,
             final Folder folder, final Cursor cursor) {
         if (folder == null || account == null) {
-            LogUtils.e(LOG_TAG, "NotificationUtils#createViewConversationIntent(): "
+            LogUtils.e(LOG_TAG, "createViewConversationIntent(): "
                     + "Null account or folder.  account: %s folder: %s", account, folder);
             return null;
         }
@@ -713,8 +708,8 @@ public class NotificationUtils {
             final Folder folder, final long when) {
         final Resources res = context.getResources();
 
-        LogUtils.w(LOG_TAG, "NotificationUtils: Showing notification with unreadCount of %d and "
-                + "unseenCount of %d", unreadCount, unseenCount);
+        LogUtils.w(LOG_TAG, "Showing notification with unreadCount of %d and unseenCount of %d",
+                unreadCount, unseenCount);
 
         String notificationTicker = null;
 
@@ -795,11 +790,12 @@ public class NotificationUtils {
                                         sendersLength, notificationAccount);
                             } else {
                                 if (from == null) {
-                                    LogUtils.e(LOG_TAG, "NotificationUtils: null from string in " +
+                                    LogUtils.e(LOG_TAG, "null from string in " +
                                             "configureLatestEventInfoFromConversation");
                                     from = "";
                                 }
-                                sendersBuilder = new SpannableStringBuilder(sBidiFormatter.unicodeWrap(from));
+                                sendersBuilder = new SpannableStringBuilder(
+                                        sBidiFormatter.unicodeWrap(from));
                             }
                             final CharSequence digestLine = getSingleMessageInboxLine(context,
                                     sendersBuilder.toString(),
@@ -912,7 +908,7 @@ public class NotificationUtils {
                         bigText.bigText(getSingleMessageBigText(context,
                                 conversation.subject, message));
                     } else {
-                        LogUtils.e(LOG_TAG, "NotificationUtils: Failed to load message");
+                        LogUtils.e(LOG_TAG, "Failed to load message");
                         message = null;
                     }
 
@@ -1005,7 +1001,7 @@ public class NotificationUtils {
         SpannableString prevSender = null;
         for (SpannableString sender : styledSenders) {
             if (sender == null) {
-                LogUtils.e(LOG_TAG, "NotificationUtils: null sender iterating over styledSenders");
+                LogUtils.e(LOG_TAG, "null sender iterating over styledSenders");
                 continue;
             }
             CharacterStyle[] spans = sender.getSpans(0, sender.length(), CharacterStyle.class);
@@ -1219,8 +1215,7 @@ public class NotificationUtils {
      */
     public static void clearFolderNotification(Context context, Account account, Folder folder,
             final boolean markSeen) {
-        LogUtils.v(LOG_TAG, "NotificationUtils: Clearing all notifications for %s/%s", account.name,
-                folder.name);
+        LogUtils.v(LOG_TAG, "Clearing all notifications for %s/%s", account.name, folder.name);
         final NotificationMap notificationMap = getNotificationMap(context);
         final NotificationKey key = new NotificationKey(account, folder);
         notificationMap.remove(key);
@@ -1239,7 +1234,7 @@ public class NotificationUtils {
      * Clears all notifications for the specified account.
      */
     public static void clearAccountNotifications(final Context context, final String account) {
-        LogUtils.v(LOG_TAG, "NotificationUtils: Clearing all notifications for %s", account);
+        LogUtils.v(LOG_TAG, "Clearing all notifications for %s", account);
         final NotificationMap notificationMap = getNotificationMap(context);
 
         // Find all NotificationKeys for this account
