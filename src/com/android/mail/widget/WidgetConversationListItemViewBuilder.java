@@ -35,7 +35,7 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.RemoteViews;
 
-public class WidgetConversationViewBuilder {
+public class WidgetConversationListItemViewBuilder {
     // Static font sizes
     private static int DATE_FONT_SIZE;
     private static int SUBJECT_FONT_SIZE;
@@ -112,7 +112,7 @@ public class WidgetConversationViewBuilder {
     /*
      * Get font sizes and bitmaps from Resources
      */
-    public WidgetConversationViewBuilder(Context context) {
+    public WidgetConversationListItemViewBuilder(Context context) {
         mContext = context;
         Resources res = context.getResources();
 
@@ -146,20 +146,20 @@ public class WidgetConversationViewBuilder {
     /*
      * Return the full View
      */
-    public RemoteViews getStyledView(CharSequence date, Conversation conversation,
+    public RemoteViews getStyledView(final CharSequence date, final Conversation conversation,
             final FolderUri folderUri, final int ignoreFolderType,
-            SpannableStringBuilder senders, String filteredSubject) {
+            final SpannableStringBuilder senders, final String filteredSubject) {
 
         final boolean isUnread = !conversation.read;
-        String snippet = conversation.getSnippet();
-        boolean hasAttachments = conversation.hasAttachments;
+        final String snippet = conversation.getSnippet();
+        final boolean hasAttachments = conversation.hasAttachments;
 
         // Add style to date
-        CharSequence styledDate = addStyle(date, DATE_FONT_SIZE, DATE_TEXT_COLOR);
+        final CharSequence styledDate = addStyle(date, DATE_FONT_SIZE, DATE_TEXT_COLOR);
 
         // Add style to subject
-        int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
-        SpannableStringBuilder subjectAndSnippet = new SpannableStringBuilder(
+        final int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
+        final SpannableStringBuilder subjectAndSnippet = new SpannableStringBuilder(
                 Conversation.getSubjectAndSnippetForDisplay(mContext, filteredSubject, snippet));
         if (isUnread) {
             subjectAndSnippet.setSpan(new StyleSpan(Typeface.BOLD), 0, filteredSubject.length(),
@@ -167,7 +167,7 @@ public class WidgetConversationViewBuilder {
         }
         subjectAndSnippet.setSpan(new ForegroundColorSpan(subjectColor), 0, subjectAndSnippet
                 .length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        CharSequence styledSubject = addStyle(subjectAndSnippet, SUBJECT_FONT_SIZE, 0);
+        final CharSequence styledSubject = addStyle(subjectAndSnippet, SUBJECT_FONT_SIZE, 0);
 
         // Paper clip for attachment
         Bitmap paperclipBitmap = null;
@@ -176,8 +176,8 @@ public class WidgetConversationViewBuilder {
         }
 
         // Inflate and fill out the remote view
-        RemoteViews remoteViews = new RemoteViews(
-                mContext.getPackageName(), R.layout.widget_conversation);
+        final RemoteViews remoteViews = new RemoteViews(
+                mContext.getPackageName(), R.layout.widget_conversation_list_item);
         remoteViews.setTextViewText(R.id.widget_senders, senders);
         remoteViews.setTextViewText(R.id.widget_date, styledDate);
         remoteViews.setTextViewText(R.id.widget_subject, styledSubject);

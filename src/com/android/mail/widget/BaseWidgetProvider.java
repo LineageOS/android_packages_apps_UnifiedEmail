@@ -312,9 +312,9 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
     protected void updateWidgetInternal(Context context, int appWidgetId, Account account,
             final int folderType, final Uri folderUri, final Uri folderConversationListUri,
             final String folderDisplayName) {
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
-        final boolean isAccountValid = isAccountValid(context, account);
+        final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
 
+        final boolean isAccountValid = isAccountValid(context, account);
         if (!isAccountValid || Utils.isEmpty(folderUri)) {
             // Widget has not been configured yet
             remoteViews.setViewVisibility(R.id.widget_folder, View.GONE);
