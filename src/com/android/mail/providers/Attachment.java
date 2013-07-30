@@ -437,6 +437,21 @@ public class Attachment implements Parcelable {
         return inferredContentType;
     }
 
+    public Uri getUriForRendition(int rendition) {
+        final Uri uri;
+        switch (rendition) {
+            case AttachmentRendition.BEST:
+                uri = contentUri;
+                break;
+            case AttachmentRendition.SIMPLE:
+                uri = thumbnailUri;
+                break;
+            default:
+                throw new IllegalArgumentException("invalid rendition: " + rendition);
+        }
+        return uri;
+    }
+
     public void setContentType(String contentType) {
         if (!TextUtils.equals(this.contentType, contentType)) {
             this.inferredContentType = null;
