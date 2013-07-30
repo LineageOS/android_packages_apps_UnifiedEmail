@@ -37,7 +37,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
 
     private static final boolean CROP_DURING_DECODE = true;
 
-    private static final boolean DEBUG = false;
+    public static final boolean DEBUG = false;
 
     /**
      * The decode task uses this class to get input to decode. You must implement at least one of
@@ -274,7 +274,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         return result;
     }
 
-    private int calculateSampleSize(int srcW, int srcH, int destW, int destH) {
+    private static int calculateSampleSize(int srcW, int srcH, int destW, int destH) {
         int result;
 
         final float sz = Math.min((float) srcW / destW, (float) srcH / destH);

@@ -90,6 +90,10 @@ public class TileDrawable extends Drawable implements Drawable.Callback {
         return 0;
     }
 
+    protected int getAlpha() {
+        return mPaint.getAlpha();
+    }
+
     public boolean setVisible(boolean visible) {
         return setVisible(visible, true /* dontcare */);
     }
