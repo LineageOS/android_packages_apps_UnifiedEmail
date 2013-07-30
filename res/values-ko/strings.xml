@@ -255,11 +255,11 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"이전 메일 <xliff:g id="COUNT">%1$d</xliff:g>개"</item>
   </plurals>
-    <string name="from_heading" msgid="8950294114718418954">"보낸사람:"</string>
-    <string name="replyto_heading" msgid="2081358811894701297">"답장:"</string>
-    <string name="to_heading" msgid="3219994961726691756">"받는사람:"</string>
-    <string name="cc_heading" msgid="8116221732072085180">"참조:"</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"숨은참조:"</string>
+    <string name="from_heading" msgid="2454519463223197231">"보낸사람: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"답장: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"받는사람: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"참조: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"숨은참조: "</string>
     <string name="show_images" msgid="1875700481186331432">"사진 표시"</string>
     <string name="always_show_images" msgid="5966408990164581801">"이 발신자가 보낸 사진을 항상 표시"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"이 발신자가 보낸 사진이 자동으로 표시됩니다."</string>
