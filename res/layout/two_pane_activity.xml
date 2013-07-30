@@ -31,6 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <fragment class="com.android.mail.ui.DrawerFragment"
+                android:id="@+id/drawer_pullout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
