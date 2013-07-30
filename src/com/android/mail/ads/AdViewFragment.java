@@ -94,14 +94,14 @@ public final class AdViewFragment extends ConversationViewFragment {
         mTemplates.startConversation(mWebView.screenPxToWebPx(mSideMarginPx),
                 mWebView.screenPxToWebPx(adHeaderPx));
 
-        renderBorder(false /* contiguous */);
+        renderBorder(false /* contiguous */, true /* firstBorder */);
 
         if (messageCursor.moveToFirst()) {
             final ConversationMessage msg = messageCursor.getMessage();
             renderMessage(msg);
         }
 
-        renderBorder(true /* contiguous */);
+        renderBorder(true /* contiguous */, false /* firstBorder */);
 
         mWebView.getSettings().setBlockNetworkImage(false);
 

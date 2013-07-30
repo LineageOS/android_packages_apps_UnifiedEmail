@@ -16,19 +16,25 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="account_dropdown_dropdownwidth">496dip</dimen>
-    <dimen name="conversation_view_margin_side">32dp</dimen>
-    <dimen name="conversation_header_side_padding">0dip</dimen>
-    <dimen name="conversation_header_vertical_padding">12dip</dimen>
-    <dimen name="conversation_page_side_margin">16dip</dimen>
+    <dimen name="conversation_view_margin_side">16dp</dimen>
+    <dimen name="conversation_view_margin_side_minus_gradient">15dp</dimen>
+    <dimen name="conversation_header_font_size">24sp</dimen>
+    <dimen name="conversation_header_vertical_padding">26dip</dimen>
+    <dimen name="conversation_header_vertical_padding_condensed">52dip</dimen>
+    <dimen name="conversation_header_side_padding">40dip</dimen>
     <dimen name="conversation_page_gutter">0dip</dimen>
-    <dimen name="conversation_side_padding">16dip</dimen>
-    <dimen name="message_header_inner_side_padding">32dp</dimen>
+    <dimen name="message_border_height">16dp</dimen>
+    <dimen name="message_header_padding_start">24dp</dimen>
+    <dimen name="message_header_inner_side_padding">16dp</dimen>
     <dimen name="message_header_contact_photo_width">64dp</dimen>
     <dimen name="message_header_contact_photo_height">64dp</dimen>
     <dimen name="message_header_action_button_width">56dp</dimen>
     <dimen name="message_header_action_button_height">56dp</dimen>
-    <dimen name="message_details_header_padding_start_collapsed">76dip</dimen>
+    <dimen name="message_details_header_padding_start_collapsed">104dip</dimen>
+    <dimen name="message_sender_name_text_size">20sp</dimen>
+    <dimen name="message_header_subtitle_text_size">16sp</dimen>
+    <dimen name="super_collapsed_height">39sp</dimen>
+    <dimen name="super_collapsed_text_size">16sp</dimen>
     <dimen name="attachment_tile_min_size">180dp</dimen>
     <dimen name="attachment_tile_max_size">254dp</dimen>
     <dimen name="wait_padding">32dp</dimen>

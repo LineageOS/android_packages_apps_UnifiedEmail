@@ -15,8 +15,24 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<View xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/message_header_border_height"
-      android:background="@color/conversation_view_border_color">
-</View>
+<com.android.mail.browse.BorderView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/conversation_view_border_color">
+    <View
+        android:id="@+id/card_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/conversation_view_margin_side"
+        android:layout_marginLeft="@dimen/conversation_view_margin_side"
+        android:layout_marginEnd="@dimen/conversation_view_margin_side"
+        android:layout_marginRight="@dimen/conversation_view_margin_side"
+        android:layout_gravity="top"
+        android:background="@drawable/card_bottom" />
+    <Space
+        android:id="@+id/border_space"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/message_border_height" />
+</com.android.mail.browse.BorderView>
