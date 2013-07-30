@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -46,6 +47,7 @@ import android.text.TextUtils.SimpleStringSplitter;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -129,6 +131,8 @@ public class Utils {
     public static final boolean ENABLE_CONV_LOAD_TIMER = false;
     public static final SimpleTimer sConvLoadTimer =
             new SimpleTimer(ENABLE_CONV_LOAD_TIMER).withSessionName("ConvLoadTimer");
+
+    private static final int[] STYLE_ATTR = new int[] {android.R.attr.background};
 
     public static boolean isRunningJellybeanOrLater() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
@@ -1354,4 +1358,22 @@ public class Utils {
         }
     }
 
+    /**
+     * Get the background color of Gmail's action bar.
+     */
+    public static int getActionBarBackgroundResource(final Context context) {
+        final TypedValue actionBarStyle = new TypedValue();
+        if (context.getTheme().resolveAttribute(android.R.attr.actionBarStyle, actionBarStyle, true)
+                && actionBarStyle.type == TypedValue.TYPE_REFERENCE) {
+            final TypedValue backgroundValue = new TypedValue();
+            final TypedArray attr = context.obtainStyledAttributes(actionBarStyle.resourceId,
+                    STYLE_ATTR);
+            attr.getValue(0, backgroundValue);
+            attr.recycle();
+            return backgroundValue.resourceId;
+        } else {
+            // Default color
+            return context.getResources().getColor(R.color.list_background_color);
+        }
+    }
 }

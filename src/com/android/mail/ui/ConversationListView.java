@@ -26,6 +26,7 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * Conversation list view contains a {@link SwipeableListView} and a sync status bar above it.
@@ -382,7 +383,6 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                 setVisibility(View.GONE);
             }
         };
-        private static final int[] STYLE_ATTR = new int[] {android.R.attr.background};
 
         public HintText(final Context context) {
             this(context, null);
@@ -404,20 +404,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
             setVisibility(View.GONE);
 
             // Set background color to be same as action bar color
-            TypedValue actionBarStyle = new TypedValue();
-            if (context.getTheme().resolveAttribute(
-                    android.R.attr.actionBarStyle, actionBarStyle, true) &&
-                    actionBarStyle.type == TypedValue.TYPE_REFERENCE) {
-                TypedValue backgroundValue = new TypedValue();
-                TypedArray attr = context.obtainStyledAttributes(actionBarStyle.resourceId,
-                        STYLE_ATTR);
-                attr.getValue(0, backgroundValue);
-                setBackgroundResource(backgroundValue.resourceId);
-                attr.recycle();
-            } else {
-                // Default color
-                setBackgroundColor(getResources().getColor(R.color.list_background_color));
-            }
+            final int actionBarRes = Utils.getActionBarBackgroundResource(context);
+            setBackgroundResource(actionBarRes);
         }
 
         private void displaySwipeToRefresh() {
