@@ -90,7 +90,7 @@ public class TileDrawable extends Drawable implements Drawable.Callback {
         return 0;
     }
 
-    protected int getAlpha() {
+    protected int getCurrentAlpha() {
         return mPaint.getAlpha();
     }
 
