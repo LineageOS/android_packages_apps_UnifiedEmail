@@ -1548,8 +1548,8 @@ public class ConversationItemView extends View
             fraction = 1 - (float) listItemView.getBottom()
                     / (listView.getHeight() + listItemView.getHeight());
         } else {
-            // center the preview crop around the 1/3 point from the top
-            fraction = 0.33f;
+            // Vertically center the preview crop, which has already been decoded at 1/3.
+            fraction = 0.5f;
         }
         mAttachmentsView.setParallaxFraction(fraction);
         mAttachmentsView.draw(canvas);
