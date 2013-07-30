@@ -693,7 +693,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 if (pos - collapsedStart == 1) {
                     // special-case for a single collapsed message: no need to super-collapse it
                     renderMessage(prevCollapsedMsg, false /* expanded */,
-                            prevSafeForImages);
+                            prevSafeForImages, true /* firstBorder */);
                 } else {
                     renderSuperCollapsedBlock(collapsedStart, pos - 1);
                 }
@@ -701,14 +701,15 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 collapsedStart = -1;
             }
 
-            renderMessage(msg, ExpansionState.isExpanded(expandedState), safeForImages);
+            renderMessage(msg, ExpansionState.isExpanded(expandedState), safeForImages,
+                    pos == 0 /* firstBorder */);
         }
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
         final boolean applyTransforms = shouldApplyTransforms();
 
-        renderBorder(true /* contiguous */);
+        renderBorder(true /* contiguous */, false /* firstBorder */);
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
@@ -717,27 +718,27 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
-        renderBorder(true /* contiguous */);
+        renderBorder(true /* contiguous */, true /* firstBorder */);
         final int blockPos = mAdapter.addSuperCollapsedBlock(start, end);
         final int blockPx = measureOverlayHeight(blockPos);
         mTemplates.appendSuperCollapsedHtml(start, mWebView.screenPxToWebPx(blockPx));
     }
 
-    protected void renderBorder(boolean contiguous) {
-        final int blockPos = mAdapter.addBorder(contiguous);
+    protected void renderBorder(boolean contiguous, boolean firstBorder) {
+        final int blockPos = mAdapter.addBorder(contiguous, firstBorder);
         final int blockPx = measureOverlayHeight(blockPos);
         mTemplates.appendBorder(mWebView.screenPxToWebPx(blockPx));
     }
 
     private void renderMessage(ConversationMessage msg, boolean expanded,
-            boolean safeForImages) {
-        renderMessage(msg, expanded, safeForImages, true /* renderBorder */);
+            boolean safeForImages, boolean firstBorder) {
+        renderMessage(msg, expanded, safeForImages, true /* renderBorder */, firstBorder);
     }
 
     private void renderMessage(ConversationMessage msg, boolean expanded,
-            boolean safeForImages, boolean renderBorder) {
+            boolean safeForImages, boolean renderBorder, boolean firstBorder) {
         if (renderBorder) {
-            renderBorder(true /* contiguous */);
+            renderBorder(true /* contiguous */, firstBorder);
         }
 
         final int headerPos = mAdapter.addMessageHeader(msg, expanded,
@@ -776,7 +777,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 borderPx = 0;
                 first = false;
             } else {
-                final BorderItem border = mAdapter.newBorderItem(true /* contiguous */);
+                final BorderItem border =
+                        mAdapter.newBorderItem(true /* contiguous */, false /* firstBorder */);
                 borderPx = measureOverlayHeight(border);
                 replacements.add(border);
                 mTemplates.appendBorder(mWebView.screenPxToWebPx(borderPx));
@@ -1402,7 +1404,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         // adapter listeners (i.e. ConversationContainer) until onWebContentGeometryChange is next
         // called, to prevent N+1 headers rendering with N message bodies.
         renderMessage(msg, true /* expanded */, msg.alwaysShowImages, false /* renderBorder */);
-        renderBorder(true /* contiguous */);
+        renderBorder(true /* contiguous */, false /* firstBorder */);
         mTempBodiesHtml = mTemplates.emit();
 
         mViewState.setExpansionState(msg, ExpansionState.EXPANDED);

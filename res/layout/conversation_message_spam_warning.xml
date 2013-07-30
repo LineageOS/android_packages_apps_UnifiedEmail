@@ -58,7 +58,7 @@
     <View
         android:id="@+id/spam_warning_bottom_border"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/message_header_border_height"
+        android:layout_height="@dimen/message_border_height"
         android:layout_alignParentBottom="true"
         android:background="@color/conversation_view_border_color" />
 

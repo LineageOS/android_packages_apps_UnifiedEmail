@@ -21,15 +21,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/conversation_header_vertical_padding"
-    android:paddingBottom="@dimen/conversation_header_vertical_padding" >
+    android:orientation="vertical" >
 
     <TextView
         android:id="@+id/subject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/conversation_header_vertical_item_padding"
+        android:paddingTop="@dimen/conversation_header_vertical_padding"
         android:paddingLeft="@dimen/conversation_header_side_padding"
         android:paddingRight="@dimen/conversation_header_side_padding"
         android:paddingStart="@dimen/conversation_header_side_padding"

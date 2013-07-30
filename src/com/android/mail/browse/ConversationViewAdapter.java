@@ -410,9 +410,11 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public class BorderItem extends ConversationOverlayItem {
         private final boolean mContiguous;
+        private final boolean mFirstBorder;
 
-        public BorderItem(boolean contiguous) {
+        public BorderItem(boolean contiguous, boolean firstBorder) {
             mContiguous = contiguous;
+            mFirstBorder = firstBorder;
         }
 
         @Override
@@ -427,7 +429,8 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         @Override
         public void bindView(View v, boolean measureOnly) {
-            // DO NOTHING
+            final BorderView border = (BorderView) v;
+            border.bind(this, measureOnly);
         }
 
         @Override
@@ -438,6 +441,10 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public boolean canPushSnapHeader() {
             return true;
+        }
+
+        public boolean isFirstBorder() {
+            return mFirstBorder;
         }
     }
 
@@ -558,12 +565,12 @@ public class ConversationViewAdapter extends BaseAdapter {
         return addItem(new SuperCollapsedBlockItem(start, end));
     }
 
-    public int addBorder(boolean contiguous) {
-        return addItem(new BorderItem(contiguous));
+    public int addBorder(boolean contiguous, boolean firstBorder) {
+        return addItem(new BorderItem(contiguous, firstBorder));
     }
 
-    public BorderItem newBorderItem(boolean contiguous) {
-        return new BorderItem(contiguous);
+    public BorderItem newBorderItem(boolean contiguous, boolean firstBorder) {
+        return new BorderItem(contiguous, firstBorder);
     }
 
     public void replaceSuperCollapsedBlock(SuperCollapsedBlockItem blockToRemove,
