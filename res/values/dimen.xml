@@ -86,7 +86,7 @@
     <dimen name="account_item_folder_color_width">36dip</dimen>
     <dimen name="account_radio_button_length">16dp</dimen>
     <dimen name="widget_senders_font_size">18sp</dimen>
-    <dimen name="widget_subject_font_size">14sp</dimen>
+    <dimen name="widget_subject_font_size">13sp</dimen>
     <dimen name="widget_date_font_size">12sp</dimen>
     <dimen name="widget_margin_top">0dip</dimen>
     <dimen name="widget_margin_left">0dip</dimen>

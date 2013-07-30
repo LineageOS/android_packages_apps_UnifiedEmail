@@ -209,7 +209,7 @@ public class WidgetService extends RemoteViewsService {
         private final Uri mFolderUri;
         private final Uri mFolderConversationListUri;
         private final String mFolderDisplayName;
-        private final WidgetConversationViewBuilder mWidgetConversationViewBuilder;
+        private final WidgetConversationListItemViewBuilder mWidgetConversationListItemViewBuilder;
         private CursorLoader mConversationCursorLoader;
         private Cursor mConversationCursor;
         private CursorLoader mFolderLoader;
@@ -253,7 +253,8 @@ public class WidgetService extends RemoteViewsService {
                 }
             }
 
-            mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(context);
+            mWidgetConversationListItemViewBuilder = new WidgetConversationListItemViewBuilder(
+                    context);
             mService = service;
         }
 
@@ -414,12 +415,12 @@ public class WidgetService extends RemoteViewsService {
                 }
 
                 // Load up our remote view.
-                RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(date,
+                RemoteViews remoteViews = mWidgetConversationListItemViewBuilder.getStyledView(date,
                         conversation, new FolderUri(mFolderUri), ignoreFolderType,
                         senderBuilder, filterTag(conversation.subject));
 
                 // On click intent.
-                remoteViews.setOnClickFillInIntent(R.id.widget_conversation,
+                remoteViews.setOnClickFillInIntent(R.id.widget_conversation_list_item,
                         Utils.createViewConversationIntent(mContext, conversation, mFolderUri,
                                 mAccount));
 
