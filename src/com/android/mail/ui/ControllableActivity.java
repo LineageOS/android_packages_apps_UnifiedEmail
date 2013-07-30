@@ -119,4 +119,9 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      * Gets a helper to provide addition features in the conversation list. This may be null.
      */
     ConversationListHelper getConversationListHelper();
+
+    /**
+     * Returns the {@link FragmentLauncher} object associated with this activity, if any.
+     */
+    FragmentLauncher getFragmentLauncher();
 }

@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 

@@ -31,8 +31,8 @@ public class ConversationListHelper {
     /**
      * Creates a list of newly created special views.
      */
-    public ArrayList<ConversationSpecialItemView> makeConversationListSpecialViews(Context context,
-            Account account, FolderSelector listener) {
+    public ArrayList<ConversationSpecialItemView> makeConversationListSpecialViews(
+            final Context context, final ControllableActivity activity, final Account account) {
         // Conversation photo teaser view
         final ConversationPhotoTeaserView conversationPhotoTeaser =
                 (ConversationPhotoTeaserView) LayoutInflater.from(context)
