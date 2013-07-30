@@ -256,8 +256,9 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         // final int tmph = brd.getHeight();
         // Trace.endSection();
 
-        BitmapUtils.calculateCroppedSrcRect(srcW, srcH, mDestW, mDestH, mOpts.inSampleSize,
-                outSrcRect);
+        // Center the decode on the top 1/3
+        BitmapUtils.calculateCroppedSrcRect(srcW, srcH, mDestW, mDestH, mDestH, mOpts.inSampleSize,
+                1f / 3, true /* absoluteFraction */, outSrcRect);
         // System.out.println("rect for uri=" + uri + " is: " + outSrcRect);
         final Bitmap result = brd.decodeRegion(outSrcRect, mOpts);
         brd.recycle();
