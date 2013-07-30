@@ -449,9 +449,12 @@ public class NotificationUtils {
 
         final NotificationMap notificationMap = getNotificationMap(context);
         if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
-            LogUtils.v(LOG_TAG, "Validating Notification: %s mapSize: %d "
+            LogUtils.i(LOG_TAG, "Validating Notification: %s mapSize: %d "
                     + "folder: %s getAttention: %b", createNotificationString(notificationMap),
                     notificationMap.size(), folder.name, getAttention);
+        } else {
+            LogUtils.i(LOG_TAG, "Validating Notification, mapSize: %d "
+                    + "getAttention: %b", notificationMap.size(), getAttention);
         }
         // The number of unread messages for this account and label.
         final Integer unread = notificationMap.getUnread(key);
@@ -474,6 +477,8 @@ public class NotificationUtils {
                     UIProvider.CONVERSATION_PROJECTION, null, null, null);
             if (cursor == null) {
                 // This folder doesn't exist.
+                LogUtils.i(LOG_TAG,
+                        "The cursor is null, so the specified folder probably does not exist");
                 clearFolderNotification(context, account, folder, false);
                 return;
             }
@@ -482,7 +487,7 @@ public class NotificationUtils {
             // Make sure the unseen count matches the number of items in the cursor.  But, we don't
             // want to overwrite a 0 unseen count that was specified in the intent
             if (unseenCount != 0 && unseenCount != cursorUnseenCount) {
-                LogUtils.d(LOG_TAG,
+                LogUtils.i(LOG_TAG,
                         "Unseen count doesn't match cursor count.  unseen: %d cursor count: %d",
                         unseenCount, cursorUnseenCount);
                 unseenCount = cursorUnseenCount;
@@ -497,8 +502,9 @@ public class NotificationUtils {
             final int notificationId = getNotificationId(account.name, folder);
 
             if (unseenCount == 0) {
-                LogUtils.d(LOG_TAG, "validateNotifications - cancelling %s / %s", account.name,
-                        folder.persistentId);
+                LogUtils.i(LOG_TAG, "validateNotifications - cancelling account %s / folder %s",
+                        LogUtils.sanitizeName(LOG_TAG, account.name),
+                        LogUtils.sanitizeName(LOG_TAG, folder.persistentId));
                 nm.cancel(notificationId);
                 return;
             }
@@ -555,6 +561,7 @@ public class NotificationUtils {
             }
 
             if (!folderPreferences.areNotificationsEnabled()) {
+                LogUtils.i(LOG_TAG, "Notifications are disabled for this folder; not notifying");
                 // Don't notify
                 return;
             }
@@ -597,7 +604,8 @@ public class NotificationUtils {
                 notification.setOnlyAlertOnce(true);
             }
 
-            LogUtils.d(LOG_TAG, "Account: %s vibrate: %s", account.name,
+            LogUtils.i(LOG_TAG, "Account: %s vibrate: %s",
+                    LogUtils.sanitizeName(LOG_TAG, account.name),
                     Boolean.toString(folderPreferences.isNotificationVibrateEnabled()));
 
             int defaults = 0;
@@ -616,11 +624,12 @@ public class NotificationUtils {
 
                     notification.setSound(TextUtils.isEmpty(ringtoneUri) ? null
                             : Uri.parse(ringtoneUri));
-                    LogUtils.d(LOG_TAG, "New email in %s vibrateWhen: %s, playing notification: %s",
-                            account.name, vibrate, ringtoneUri);
+                    LogUtils.i(LOG_TAG, "New email in %s vibrateWhen: %s, playing notification: %s",
+                            LogUtils.sanitizeName(LOG_TAG, account.name), vibrate, ringtoneUri);
                 }
             }
 
+            // TODO(skennedy) Why do we do any of the above if we're just going to bail here?
             if (eventInfoConfigured) {
                 defaults |= Notification.DEFAULT_LIGHTS;
                 notification.setDefaults(defaults);
@@ -632,6 +641,8 @@ public class NotificationUtils {
                 }
 
                 nm.notify(notificationId, notification.build());
+            } else {
+                LogUtils.i(LOG_TAG, "event info not configured - not notifying");
             }
         } finally {
             if (cursor != null) {
@@ -708,7 +719,7 @@ public class NotificationUtils {
             final Folder folder, final long when) {
         final Resources res = context.getResources();
 
-        LogUtils.w(LOG_TAG, "Showing notification with unreadCount of %d and unseenCount of %d",
+        LogUtils.i(LOG_TAG, "Showing notification with unreadCount of %d and unseenCount of %d",
                 unreadCount, unseenCount);
 
         String notificationTicker = null;
