@@ -21,11 +21,13 @@ import java.io.InputStream;
  */
 public class ImageAttachmentRequest implements DecodeTask.Request {
     private final Context mContext;
-    private final String lookupUri;
+    private final String mLookupUri;
+    private final int mRendition;
 
-    public ImageAttachmentRequest(Context context, String lookupUri) {
+    public ImageAttachmentRequest(Context context, String lookupUri, int rendition) {
         mContext = context;
-        this.lookupUri = lookupUri;
+        mLookupUri = lookupUri;
+        mRendition = rendition;
     }
 
     @Override
@@ -34,13 +36,14 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
             return false;
         }
         final ImageAttachmentRequest other = (ImageAttachmentRequest) o;
-        return TextUtils.equals(lookupUri, other.lookupUri);
+        return TextUtils.equals(mLookupUri, other.mLookupUri) && mRendition == other.mRendition;
     }
 
     @Override
     public int hashCode() {
         int hash = 17;
-        hash += 31 * hash + lookupUri.hashCode();
+        hash += 31 * hash + mLookupUri.hashCode();
+        hash += 31 * hash + mRendition;
         return hash;
     }
 
@@ -49,9 +52,20 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
         final StringBuilder sb = new StringBuilder("[");
         sb.append(super.toString());
         sb.append(" uri=");
-        sb.append(lookupUri);
+        sb.append(mLookupUri);
+        sb.append(" rendition=");
+        sb.append(mRendition);
         sb.append("]");
         return sb.toString();
+    }
+
+    /**
+     * Returns true iff the other request is for the same attachment, and differs only in which
+     * rendition is being requested.
+     *
+     */
+    public boolean matches(ImageAttachmentRequest other) {
+        return other != null && TextUtils.equals(mLookupUri, other.mLookupUri);
     }
 
     @Override
@@ -60,12 +74,11 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
         Cursor cursor = null;
         final ContentResolver cr = mContext.getContentResolver();
         try {
-            cursor = cr.query(Uri.parse(lookupUri), UIProvider.ATTACHMENT_PROJECTION, null, null,
+            cursor = cr.query(Uri.parse(mLookupUri), UIProvider.ATTACHMENT_PROJECTION, null, null,
                     null);
             if (cursor != null && cursor.moveToFirst()) {
                 final Attachment a = new Attachment(cursor);
-                // TODO: rendition support
-                result = cr.openAssetFileDescriptor(a.contentUri, "r");
+                result = cr.openAssetFileDescriptor(a.getUriForRendition(mRendition), "r");
             }
         } finally {
             if (cursor != null) {

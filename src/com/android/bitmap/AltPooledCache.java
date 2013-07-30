@@ -27,6 +27,8 @@ public class AltPooledCache<K, V extends RefCountable> implements PooledCache<K,
     private final LinkedBlockingQueue<V> mPool;
     private final int mTargetSize;
 
+    private final boolean DEBUG = DecodeTask.DEBUG;
+
     /**
      * @param targetSize not exactly a max size in practice
      */
@@ -84,9 +86,14 @@ public class AltPooledCache<K, V extends RefCountable> implements PooledCache<K,
             // only return a scavenged cache entry if the cache has enough
             // eligible (unreferenced) items
             if (unrefSize <= mTargetSize) {
+                if (DEBUG) System.err.println(
+                        "POOL SCAVENGE FAILED, cache not fully warm yet. szDelta="
+                        + (mTargetSize-unrefSize));
                 return null;
             } else {
                 mCache.remove(eldestUnref.getKey());
+                if (DEBUG) System.err.println("POOL SCAVENGE SUCCESS, oldKey="
+                        + eldestUnref.getKey());
                 return eldestUnref.getValue();
             }
         }
@@ -98,34 +105,38 @@ public class AltPooledCache<K, V extends RefCountable> implements PooledCache<K,
 
     @Override
     public String toDebugString() {
-        final StringBuilder sb = new StringBuilder("[");
-        sb.append(super.toString());
-        int size = 0;
-        synchronized (mCache) {
-            sb.append(" poolCount=");
-            sb.append(mPool.size());
-            sb.append(" cacheSize=");
-            sb.append(mCache.size());
-            sb.append("\n---------------------");
-            for (V val : mPool) {
-                size += sizeOf(val);
-                sb.append("\n\tpool item: ");
-                sb.append(val);
+        if (DEBUG) {
+            final StringBuilder sb = new StringBuilder("[");
+            sb.append(super.toString());
+            int size = 0;
+            synchronized (mCache) {
+                sb.append(" poolCount=");
+                sb.append(mPool.size());
+                sb.append(" cacheSize=");
+                sb.append(mCache.size());
+                sb.append("\n---------------------");
+                for (V val : mPool) {
+                    size += sizeOf(val);
+                    sb.append("\n\tpool item: ");
+                    sb.append(val);
+                }
+                sb.append("\n---------------------");
+                for (Map.Entry<K, V> item : mCache.entrySet()) {
+                    final V val = item.getValue();
+                    sb.append("\n\tcache key=");
+                    sb.append(item.getKey());
+                    sb.append(" val=");
+                    sb.append(val);
+                    size += sizeOf(val);
+                }
+                sb.append("\n---------------------");
+                sb.append("\nTOTAL SIZE=" + size);
             }
-            sb.append("\n---------------------");
-            for (Map.Entry<K, V> item : mCache.entrySet()) {
-                final V val = item.getValue();
-                sb.append("\n\tcache key=");
-                sb.append(item.getKey());
-                sb.append(" val=");
-                sb.append(val);
-                size += sizeOf(val);
-            }
-            sb.append("\n---------------------");
-            sb.append("\nTOTAL SIZE=" + size);
+            sb.append("]");
+            return sb.toString();
+        } else {
+            return null;
         }
-        sb.append("]");
-        return sb.toString();
     }
 
 }
