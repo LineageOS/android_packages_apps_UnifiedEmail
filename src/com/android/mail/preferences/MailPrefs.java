@@ -82,6 +82,9 @@ public final class MailPrefs extends VersionedPrefs {
 
         public static final String SHOW_SENDER_IMAGES = "conversation-list-sender-image";
 
+        public static final String
+                LONG_PRESS_TO_SELECT_TIP_SHOWN = "long-press-to-select-tip-shown";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
@@ -90,6 +93,7 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(DISPLAY_IMAGES)
                 .add(DISPLAY_IMAGES_PATTERNS)
                 .add(SHOW_SENDER_IMAGES)
+                .add(LONG_PRESS_TO_SELECT_TIP_SHOWN)
                 .build();
     }
 
@@ -248,7 +252,7 @@ public final class MailPrefs extends VersionedPrefs {
     }
 
     /**
-     * Returns whether the teaser has bee shown before
+     * Returns whether the teaser has been shown before
      */
     public boolean isConversationPhotoTeaserAlreadyShown() {
         return getSharedPreferences()
@@ -263,10 +267,18 @@ public final class MailPrefs extends VersionedPrefs {
     }
 
     /**
-     * Reset the flag so that next time, the teaser will be shown again
+     * Returns whether the tip has been shown before
      */
-    public void resetConversationPhotoTeaserAlreadyShown() {
-        getEditor().putBoolean(PreferenceKeys.CONVERSATION_PHOTO_TEASER_SHOWN, false).apply();
+    public boolean isLongPressToSelectTipAlreadyShown() {
+        // Using an int instead of boolean here in case we need to reshow the tip (don't have
+        // to use a new preference name).
+        return getSharedPreferences()
+                .getInt(PreferenceKeys.LONG_PRESS_TO_SELECT_TIP_SHOWN, 0) > 1;
+    }
+
+    public void setLongPressToSelectTipAlreadyShown() {
+        getEditor().putInt(PreferenceKeys.LONG_PRESS_TO_SELECT_TIP_SHOWN, 1).apply();
+        notifyBackupPreferenceChanged();
     }
 
     void setSenderWhitelist(Set<String> addresses) {
