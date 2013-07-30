@@ -255,11 +255,11 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"Starší zprávy: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="from_heading" msgid="8950294114718418954">"Odesílatel:"</string>
-    <string name="replyto_heading" msgid="2081358811894701297">"Odpovědět:"</string>
-    <string name="to_heading" msgid="3219994961726691756">"Komu:"</string>
-    <string name="cc_heading" msgid="8116221732072085180">"Kopie:"</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"Skrytá kopie:"</string>
+    <string name="from_heading" msgid="2454519463223197231">"Od: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"Odpovědět: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"Komu: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"Kopie: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"Skrytá: "</string>
     <string name="show_images" msgid="1875700481186331432">"Zobrazit obrázky"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Obr. od tohoto odesílatele vždy zobrazit"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Obrázky od tohoto odesílatele se zobrazí automaticky."</string>

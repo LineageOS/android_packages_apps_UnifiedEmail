@@ -255,11 +255,11 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> پیام قدیمی‌تر"</item>
   </plurals>
-    <string name="from_heading" msgid="8950294114718418954">"از:"</string>
-    <string name="replyto_heading" msgid="2081358811894701297">"پاسخ به:"</string>
-    <string name="to_heading" msgid="3219994961726691756">"گیرنده:"</string>
-    <string name="cc_heading" msgid="8116221732072085180">"Cc:"</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"Bcc:"</string>
+    <string name="from_heading" msgid="2454519463223197231">"از: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"پاسخ به: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"به: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"Cc: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"Bcc: "</string>
     <string name="show_images" msgid="1875700481186331432">"نمایش تصاویر"</string>
     <string name="always_show_images" msgid="5966408990164581801">"همیشه تصاویر از طرف این فرستنده نشان داده شود"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"تصاویر از طرف این فرستنده به طور خودکار نشان داده خواهد شد."</string>
