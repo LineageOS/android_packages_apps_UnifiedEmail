@@ -580,6 +580,8 @@ public class FolderListFragment extends ListFragment implements
         void notifyDataSetChanged();
         /** Returns default inbox for this account. */
         Folder getDefaultInbox(Account account);
+        /** Returns the index of the first selected item, or -1 if no selection */
+        int getSelectedPosition();
     }
 
     /**
@@ -729,7 +731,6 @@ public class FolderListFragment extends ListFragment implements
             mItemList = newFolderList;
             // Ask the list to invalidate its views.
             notifyDataSetChanged();
-
         }
 
         /**
@@ -940,6 +941,20 @@ public class FolderListFragment extends ListFragment implements
         public int getItemType(DrawerItem item) {
             return item.mType;
         }
+
+        @Override
+        public int getSelectedPosition() {
+            for (int i = 0; i < mItemList.size(); i++) {
+                final DrawerItem item = (DrawerItem) getItem(i);
+                final boolean isSelected =
+                        item.isHighlighted(mSelectedFolderUri, mSelectedFolderType);
+                if (isSelected) {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
     }
 
     private class HierarchicalFolderListAdapter extends ArrayAdapter<Folder>
@@ -1038,6 +1053,19 @@ public class FolderListFragment extends ListFragment implements
         public void notifyAllAccountsChanged() {
             // Do nothing. We don't care about changes to all accounts.
         }
+
+        @Override
+        public int getSelectedPosition() {
+            final int count = getCount();
+            for (int i = 0; i < count; i++) {
+                final Folder folder = getItem(i);
+                final boolean isSelected = folder.folderUri.equals(mSelectedFolderUri);
+                if (isSelected) {
+                    return i;
+                }
+            }
+            return -1;
+        }
     }
 
     public Folder getParentFolder() {
@@ -1076,6 +1104,13 @@ public class FolderListFragment extends ListFragment implements
         mSelectedFolderUri = folder.folderUri;
         if (mCursorAdapter != null && viewChanged) {
             mCursorAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void updateScroll() {
+        final int selectedPosition = mCursorAdapter.getSelectedPosition();
+        if (selectedPosition >= 0) {
+            mListView.smoothScrollToPosition(selectedPosition);
         }
     }
 

@@ -159,8 +159,6 @@ public abstract class AbstractActivityController implements ActivityController,
     protected static final String TAG_WAIT = "wait-fragment";
     /** Tag used when loading a conversation list fragment. */
     public static final String TAG_CONVERSATION_LIST = "tag-conversation-list";
-    /** Tag used when loading a folder list fragment. */
-    protected static final String TAG_FOLDER_LIST = "tag-folder-list";
     /** Tag used when loading a custom fragment. */
     protected static final String TAG_CUSTOM_FRAGMENT = "tag-custom-fragment";
 
@@ -558,7 +556,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * the controller and perform the task immediately on {@link Fragment#onActivityCreated(Bundle)}
      */
     protected FolderListFragment getFolderListFragment() {
-        final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_FOLDER_LIST);
+        final Fragment fragment = mFragmentManager.findFragmentById(R.id.drawer_pullout);
         if (isValidFragment(fragment)) {
             return (FolderListFragment) fragment;
         }
@@ -4146,6 +4144,10 @@ public abstract class AbstractActivityController implements ActivityController,
                     mHideMenuItems = true;
                     mActivity.invalidateOptionsMenu();
                     disableCabMode();
+                    final FolderListFragment folderListFragment = getFolderListFragment();
+                    if (folderListFragment != null) {
+                        folderListFragment.updateScroll();
+                    }
                 }
             } else {
                 if (mHideMenuItems && Float.compare(slideOffset, 0.f) == 0) {
@@ -4156,6 +4158,10 @@ public abstract class AbstractActivityController implements ActivityController,
                     mHideMenuItems = true;
                     mActivity.invalidateOptionsMenu();
                     disableCabMode();
+                    final FolderListFragment folderListFragment = getFolderListFragment();
+                    if (folderListFragment != null) {
+                        folderListFragment.updateScroll();
+                    }
                 }
             }
 
