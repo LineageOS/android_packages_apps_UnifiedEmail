@@ -334,6 +334,9 @@ public final class ConversationListFragment extends ListFragment implements
             manager.initLoader(ChildFolderLoads.LOADER_CHIDREN, args, mChildCallback);
         }
 
+        // TODO: These special views are always created, doesn't matter whether they will
+        // be shown or not, as we add more views this will get more expensive. Given these are
+        // tips that are only shown once to the user, we should consider creating these on demand.
         final ConversationListHelper helper = mActivity.getConversationListHelper();
         final List<ConversationSpecialItemView> specialItemViews = helper != null ?
                 ImmutableList.copyOf(helper.makeConversationListSpecialViews(
