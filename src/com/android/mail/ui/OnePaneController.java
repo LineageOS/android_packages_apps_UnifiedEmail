@@ -43,7 +43,6 @@ import com.android.mail.utils.Utils;
  * limited. This controller also does the layout, since the layout is simpler in the one pane case.
  */
 
-// Called OnePaneActivityController in Gmail.
 public final class OnePaneController extends AbstractActivityController {
     /** Key used to store {@link #mLastInboxConversationListTransactionId} */
     private static final String INBOX_CONVERSATION_LIST_TRANSACTION_KEY =
@@ -606,5 +605,11 @@ public final class OnePaneController extends AbstractActivityController {
     public int getFolderListViewChoiceMode() {
         // By default, we do not want to allow any item to be selected in the folder list
         return ListView.CHOICE_MODE_NONE;
+    }
+
+    @Override
+    public void launchFragment(final Fragment fragment) {
+        replaceFragmentWithBack(fragment, FragmentTransaction.TRANSIT_FRAGMENT_OPEN,
+                TAG_CUSTOM_FRAGMENT, R.id.content_pane);
     }
 }

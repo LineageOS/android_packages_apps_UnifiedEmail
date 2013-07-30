@@ -567,4 +567,9 @@ public final class TwoPaneController extends AbstractActivityController {
         // By default, we want to allow one item to be selected in the folder list
         return ListView.CHOICE_MODE_SINGLE;
     }
+
+    @Override
+    public void launchFragment(final Fragment fragment) {
+        // TODO(skennedy)
+    }
 }
