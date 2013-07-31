@@ -36,6 +36,7 @@ import com.android.emailcommon.mail.MessagingException;
 import com.android.emailcommon.mail.Part;
 import com.android.emailcommon.utility.ConversionUtilities;
 import com.android.mail.providers.UIProvider.MessageColumns;
+import com.android.mail.ui.HtmlMessage;
 import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -46,7 +47,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 
-public class Message implements Parcelable {
+public class Message implements Parcelable, HtmlMessage {
     /**
      * Regex pattern used to look for any inline images in message bodies, including Gmail-hosted
      * relative-URL images, Gmail emoticons, and any external inline images (although we usually
@@ -572,12 +573,12 @@ public class Message implements Parcelable {
      * @return true if a "Show Pictures" button should appear.
      */
     public boolean shouldShowImagePrompt() {
-        return !alwaysShowImages && embedsExternalResources();
+        return !alwaysShowImages && (embedsExternalResources ||
+                (!TextUtils.isEmpty(bodyHtml) && INLINE_IMAGE_PATTERN.matcher(bodyHtml).find()));
     }
 
-    private boolean embedsExternalResources() {
-        return embedsExternalResources ||
-                (!TextUtils.isEmpty(bodyHtml) && INLINE_IMAGE_PATTERN.matcher(bodyHtml).find());
+    public boolean embedsExternalResources() {
+        return embedsExternalResources;
     }
 
     /**
@@ -607,4 +608,7 @@ public class Message implements Parcelable {
         return body;
     }
 
+    public long getId() {
+        return id;
+    }
 }

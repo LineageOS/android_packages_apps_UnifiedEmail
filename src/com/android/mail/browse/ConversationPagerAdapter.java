@@ -109,7 +109,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             Folder folder, Conversation initialConversation) {
         super(fm, false /* enableSavedStates */);
         mResources = res;
-        mCommonFragmentArgs = AbstractConversationViewFragment.makeBasicArgs(account, folder);
+        mCommonFragmentArgs = AbstractConversationViewFragment.makeBasicArgs(account);
         mInitialConversation = initialConversation;
         mAccount = account;
         mFolder = folder;

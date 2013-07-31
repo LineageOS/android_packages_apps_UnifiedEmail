@@ -301,7 +301,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             }
         });
 
-        if (mConversation.conversationBaseUri != null &&
+        if (mConversation != null && mConversation.conversationBaseUri != null &&
                 !Utils.isEmpty(mAccount.accoutCookieQueryUri)) {
             // Set the cookie for this base url
             new SetCookieTask(getContext(), mConversation.conversationBaseUri,
@@ -510,8 +510,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             timerMark("CVF.showConversation");
         } else {
             final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
-                    || (mConversation.isRemote
-                            || mConversation.getNumMessages() > mMaxAutoLoadMessages);
+                    || (mConversation != null && (mConversation.isRemote
+                            || mConversation.getNumMessages() > mMaxAutoLoadMessages));
 
             // When not visible, we should not immediately load if either this conversation is
             // too heavyweight, or if the main/initial conversation is busy loading.
@@ -543,11 +543,19 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
     private void startConversationLoad() {
         mWebView.setVisibility(View.VISIBLE);
-        getLoaderManager().initLoader(MESSAGE_LOADER, Bundle.EMPTY, getMessageLoaderCallbacks());
+        loadContent();
         // TODO(mindyp): don't show loading status for a previously rendered
         // conversation. Ielieve this is better done by making sure don't show loading status
         // until XX ms have passed without loading completed.
         mProgressController.showLoadingStatus(isUserVisible());
+    }
+
+    /**
+     * Can be overridden in case a subclass needs to load something other than
+     * the messages of a conversation.
+     */
+    protected void loadContent() {
+        getLoaderManager().initLoader(MESSAGE_LOADER, Bundle.EMPTY, getMessageLoaderCallbacks());
     }
 
     private void revealConversation() {
@@ -1312,6 +1320,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             timerMark("message cursor load finished");
         }
 
+        renderContent(newCursor);
+    }
+
+    protected void renderContent(MessageCursor messageCursor) {
         // if layout hasn't happened, delay render
         // This is needed in addition to the showConversation() delay to speed
         // up rotation and restoration.
@@ -1319,7 +1331,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             mNeedRender = true;
             mConversationContainer.addOnLayoutChangeListener(this);
         } else {
-            renderConversation(newCursor);
+            renderConversation(messageCursor);
         }
     }
 

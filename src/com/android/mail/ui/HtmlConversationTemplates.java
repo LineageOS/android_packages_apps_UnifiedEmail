@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 
 import com.android.mail.R;
-import com.android.mail.providers.Message;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
@@ -133,7 +132,7 @@ public class HtmlConversationTemplates {
         return sAbsoluteImgUrlPattern.matcher(html).replaceAll(IMG_URL_REPLACEMENT);
     }
 
-    public void appendMessageHtml(Message message, boolean isExpanded,
+    public void appendMessageHtml(HtmlMessage message, boolean isExpanded,
             boolean safeForImages, int headerHeight, int footerHeight) {
 
         final String bodyDisplay = isExpanded ? "block" : "none";
@@ -156,7 +155,7 @@ public class HtmlConversationTemplates {
          * URLs) and any false negatives that the regex misses. This maintains overall security
          * level by not relying solely on the regex.
          */
-        if (!safeForImages && message.embedsExternalResources) {
+        if (!safeForImages && message.embedsExternalResources()) {
             body = replaceAbsoluteImgUrls(body);
         }
 
@@ -172,8 +171,8 @@ public class HtmlConversationTemplates {
         );
     }
 
-    public String getMessageDomId(Message msg) {
-        return MESSAGE_PREFIX + msg.id;
+    public String getMessageDomId(HtmlMessage msg) {
+        return MESSAGE_PREFIX + msg.getId();
     }
 
     public void startConversation(int sideMargin, int conversationHeaderHeight) {

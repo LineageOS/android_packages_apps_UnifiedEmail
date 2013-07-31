@@ -42,7 +42,6 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.CursorStatus;
@@ -60,9 +59,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         ConversationController, ConversationAccountController,
         ConversationViewHeaderCallbacks {
 
-    private static final String ARG_ACCOUNT = "account";
+    protected static final String ARG_ACCOUNT = "account";
     public static final String ARG_CONVERSATION = "conversation";
-    private static final String ARG_FOLDER = "folder";
     private static final String LOG_TAG = LogTag.getLogTag();
     protected static final int MESSAGE_LOADER = 0;
     protected static final int CONTACT_LOADER = 1;
@@ -71,7 +69,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private ContactLoaderCallbacks mContactLoaderCallbacks;
     private MenuItem mChangeFoldersMenuItem;
     protected Conversation mConversation;
-    protected Folder mFolder;
     protected String mBaseUri;
     protected Account mAccount;
 
@@ -137,10 +134,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private static final String BUNDLE_KEY_HAS_CONVERSATION_BEEN_REVERTED =
             AbstractConversationViewFragment.class.getName() + "conversationreverted";
 
-    public static Bundle makeBasicArgs(Account account, Folder folder) {
+    public static Bundle makeBasicArgs(Account account) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_ACCOUNT, account);
-        args.putParcelable(ARG_FOLDER, folder);
         return args;
     }
 
@@ -187,14 +183,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        final Bundle args = getArguments();
-        mAccount = args.getParcelable(ARG_ACCOUNT);
-        mConversation = args.getParcelable(ARG_CONVERSATION);
-        mFolder = args.getParcelable(ARG_FOLDER);
-
-        // Since the uri specified in the conversation base uri may not be unique, we specify a
-        // base uri that us guaranteed to be unique for this conversation.
-        mBaseUri = "x-thread://" + mAccount.name.hashCode() + "/" + mConversation.id;
+        parseArguments();
+        setBaseUri();
 
         LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
         // Not really, we just want to get a crack to store a reference to the change_folder item
@@ -213,6 +203,25 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             mHasConversationBeenTransformed = false;
             mHasConversationTransformBeenReverted = false;
         }
+    }
+
+    /**
+     * Can be overridden in case a subclass needs to get additional arguments.
+     */
+    protected void parseArguments() {
+        final Bundle args = getArguments();
+        mAccount = args.getParcelable(ARG_ACCOUNT);
+        mConversation = args.getParcelable(ARG_CONVERSATION);
+    }
+
+    /**
+     * Can be overridden in case a subclass needs a different uri format
+     * (such as one that does not rely on account and/or conversation.
+     */
+    protected void setBaseUri() {
+        // Since the uri specified in the conversation base uri may not be unique, we specify a
+        // base uri that us guaranteed to be unique for this conversation.
+        mBaseUri = "x-thread://" + mAccount.name.hashCode() + "/" + mConversation.id;
     }
 
     @Override
