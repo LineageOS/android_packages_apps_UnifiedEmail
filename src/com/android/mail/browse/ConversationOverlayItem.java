@@ -35,6 +35,8 @@ public abstract class ConversationOverlayItem {
 
     public static final String LOG_TAG = ConversationViewFragment.LAYOUT_TAG;
 
+    private int mPosition;
+
     /**
      * @see Adapter#getItemViewType(int)
      */
@@ -59,6 +61,13 @@ public abstract class ConversationOverlayItem {
      * apart.
      */
     public abstract boolean isContiguous();
+
+    /**
+     * Returns true if this overlay view is in its expanded state.
+     */
+    public boolean isExpanded() {
+        return true;
+    }
 
     public int getGravity() {
         return Gravity.BOTTOM;
@@ -137,4 +146,29 @@ public abstract class ConversationOverlayItem {
     public void onModelUpdated(View v) {
     }
 
+    public void setPosition(int position) {
+        mPosition = position;
+    }
+
+    public int getPosition() {
+        return mPosition;
+    }
+
+    /**
+     * This is a hack. Now that one view can update the
+     * state of another view, we need a mechanism when the
+     * view's associated item changes to update the state of the
+     * view. Typically, classes that override this class should not
+     * override this method. This method is used by
+     * {@link com.android.mail.browse.ConversationViewAdapter.BorderItem}
+     * to update the height of the border based on whether the neighboring messages
+     * are collapsed or expanded. The only other way would be to
+     * {@link com.android.mail.browse.ConversationViewAdapter#notifyDataSetChanged()}
+     * but that makes the entire screen flicker since the entire adapter performs
+     * a layout of the every item.
+     * @param view the view to be re-bound
+     */
+    public void rebindView(View view) {
+        // DO NOTHING
+    }
 }

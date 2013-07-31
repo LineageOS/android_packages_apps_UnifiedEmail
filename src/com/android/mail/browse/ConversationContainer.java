@@ -739,6 +739,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             } else {
                 traceLayout("move overlay %d", adapterIndex);
                 if (!item.isMeasurementValid()) {
+                    item.rebindView(overlayView);
                     measureOverlayView(overlayView);
                     item.markMeasurementValid();
                     traceLayout("and (re)measure overlay %d, old/new heights=%d/%d", adapterIndex,
