@@ -29,7 +29,6 @@ import android.widget.BaseAdapter;
 import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
-import com.android.mail.ads.AdHeaderView;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock.OnClickListener;
@@ -38,7 +37,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.utils.VeiledAddressMatcher;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -76,12 +74,11 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public static final int VIEW_TYPE_CONVERSATION_HEADER = 0;
     public static final int VIEW_TYPE_AD_HEADER = 1;
-    public static final int VIEW_TYPE_AD_FOOTER = 2;
-    public static final int VIEW_TYPE_MESSAGE_HEADER = 3;
-    public static final int VIEW_TYPE_MESSAGE_FOOTER = 4;
-    public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 5;
-    public static final int VIEW_TYPE_BORDER = 6;
-    public static final int VIEW_TYPE_COUNT = 7;
+    public static final int VIEW_TYPE_MESSAGE_HEADER = 2;
+    public static final int VIEW_TYPE_MESSAGE_FOOTER = 3;
+    public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 4;
+    public static final int VIEW_TYPE_BORDER = 5;
+    public static final int VIEW_TYPE_COUNT = 6;
 
     public class ConversationHeaderItem extends ConversationOverlayItem {
         public final Conversation mConversation;
@@ -114,65 +111,6 @@ public class ConversationViewAdapter extends BaseAdapter {
         public void bindView(View v, boolean measureOnly) {
             ConversationViewHeader header = (ConversationViewHeader) v;
             header.bind(this);
-        }
-
-        @Override
-        public boolean isContiguous() {
-            return true;
-        }
-
-    }
-
-    public class AdHeaderItem extends ConversationOverlayItem {
-        public final Conversation mConversation;
-
-        private AdHeaderItem(Conversation conv) {
-            mConversation = conv;
-        }
-
-        @Override
-        public int getType() {
-            return VIEW_TYPE_AD_HEADER;
-        }
-
-        @Override
-        public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
-            final AdHeaderView headerView = (AdHeaderView) inflater.inflate(
-                    R.layout.ad_header_view, parent, false);
-            headerView.bind(this);
-            headerView.setAdSubject(mConversation.subject);
-
-            return headerView;
-        }
-
-        @Override
-        public void bindView(View v, boolean measureOnly) {
-            final AdHeaderView header = (AdHeaderView) v;
-            header.bind(this);
-        }
-
-        @Override
-        public boolean isContiguous() {
-            return true;
-        }
-
-    }
-
-    public class AdFooterItem extends ConversationOverlayItem {
-
-        @Override
-        public int getType() {
-            return VIEW_TYPE_AD_FOOTER;
-        }
-
-        @Override
-        public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
-            return null;
-        }
-
-        @Override
-        public void bindView(View v, boolean measureOnly) {
-            // DO NOTHING
         }
 
         @Override
@@ -533,14 +471,6 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public int addConversationHeader(Conversation conv) {
         return addItem(new ConversationHeaderItem(conv));
-    }
-
-    public int addAdHeader(Conversation conversation) {
-        return addItem(new AdHeaderItem(conversation));
-    }
-
-    public int addAdFooter() {
-        return addItem(new AdFooterItem());
     }
 
     public int addMessageHeader(ConversationMessage msg, boolean expanded, boolean showImages) {
