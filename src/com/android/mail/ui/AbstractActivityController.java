@@ -1323,121 +1323,92 @@ public abstract class AbstractActivityController implements ActivityController,
         // The user is choosing a new action; commit whatever they had been
         // doing before. Don't animate if we are launching a new screen.
         commitDestructiveActions(!doesActionChangeConversationListVisibility(id));
-        switch (id) {
-            case R.id.archive: {
-                final boolean showDialog = (settings != null && settings.confirmArchive);
-                confirmAndDelete(id, target, showDialog, R.plurals.confirm_archive_conversation);
-                break;
-            }
-            case R.id.remove_folder:
-                delete(R.id.remove_folder, target,
-                        getDeferredRemoveFolder(target, mFolder, true, isBatch, true), isBatch);
-                break;
-            case R.id.delete: {
-                final boolean showDialog = (settings != null && settings.confirmDelete);
-                confirmAndDelete(id, target, showDialog, R.plurals.confirm_delete_conversation);
-                break;
-            }
-            case R.id.discard_drafts: {
-                final boolean showDialog = (settings != null && settings.confirmDelete);
-                confirmAndDelete(id, target, showDialog,
-                        R.plurals.confirm_discard_drafts_conversation);
-                break;
-            }
-            case R.id.mark_important:
+        if (id == R.id.archive) {
+            final boolean showDialog = (settings != null && settings.confirmArchive);
+            confirmAndDelete(id, target, showDialog, R.plurals.confirm_archive_conversation);
+        } else if (id == R.id.remove_folder) {
+            delete(R.id.remove_folder, target,
+                    getDeferredRemoveFolder(target, mFolder, true, isBatch, true), isBatch);
+        } else if (id == R.id.delete) {
+            final boolean showDialog = (settings != null && settings.confirmDelete);
+            confirmAndDelete(id, target, showDialog, R.plurals.confirm_delete_conversation);
+        } else if (id == R.id.discard_drafts) {
+            final boolean showDialog = (settings != null && settings.confirmDelete);
+            confirmAndDelete(id, target, showDialog,
+                    R.plurals.confirm_discard_drafts_conversation);
+        } else if (id == R.id.mark_important) {
+            updateConversation(Conversation.listOf(mCurrentConversation),
+                    ConversationColumns.PRIORITY, UIProvider.ConversationPriority.HIGH);
+        } else if (id == R.id.mark_not_important) {
+            if (mFolder != null && mFolder.isImportantOnly()) {
+                delete(R.id.mark_not_important, target,
+                        getDeferredAction(R.id.mark_not_important, target, isBatch), isBatch);
+            } else {
                 updateConversation(Conversation.listOf(mCurrentConversation),
-                        ConversationColumns.PRIORITY, UIProvider.ConversationPriority.HIGH);
-                break;
-            case R.id.mark_not_important:
-                if (mFolder != null && mFolder.isImportantOnly()) {
-                    delete(R.id.mark_not_important, target,
-                            getDeferredAction(R.id.mark_not_important, target, isBatch), isBatch);
-                } else {
-                    updateConversation(Conversation.listOf(mCurrentConversation),
-                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
+                        ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
+            }
+        } else if (id == R.id.mute) {
+            delete(R.id.mute, target, getDeferredAction(R.id.mute, target, isBatch), isBatch);
+        } else if (id == R.id.report_spam) {
+            delete(R.id.report_spam, target,
+                    getDeferredAction(R.id.report_spam, target, isBatch), isBatch);
+        } else if (id == R.id.mark_not_spam) {
+            // Currently, since spam messages are only shown in list with
+            // other spam messages,
+            // marking a message not as spam is a destructive action
+            delete(R.id.mark_not_spam, target,
+                    getDeferredAction(R.id.mark_not_spam, target, isBatch), isBatch);
+        } else if (id == R.id.report_phishing) {
+            delete(R.id.report_phishing, target,
+                    getDeferredAction(R.id.report_phishing, target, isBatch), isBatch);
+        } else if (id == android.R.id.home) {
+            onUpPressed();
+        } else if (id == R.id.compose) {
+            ComposeActivity.compose(mActivity.getActivityContext(), mAccount);
+        } else if (id == R.id.refresh) {
+            requestFolderRefresh();
+        } else if (id == R.id.settings) {
+            Utils.showSettings(mActivity.getActivityContext(), mAccount);
+        } else if (id == R.id.folder_options) {
+            Utils.showFolderSettings(mActivity.getActivityContext(), mAccount, mFolder);
+        } else if (id == R.id.help_info_menu_item) {
+            Utils.showHelp(mActivity.getActivityContext(), mAccount, getHelpContext());
+        } else if (id == R.id.feedback_menu_item) {
+            Utils.sendFeedback(mActivity, mAccount, false);
+        } else if (id == R.id.manage_folders_item) {
+            Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
+        } else if (id == R.id.move_to || id == R.id.change_folder) {
+            final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
+                    mActivity.getActivityContext(), mAccount, this,
+                    Conversation.listOf(mCurrentConversation), isBatch, mFolder,
+                    id == R.id.move_to);
+            if (dialog != null) {
+                dialog.show();
+            }
+        } else if (id == R.id.move_to_inbox) {
+            new AsyncTask<Void, Void, Folder>() {
+                @Override
+                protected Folder doInBackground(final Void... params) {
+                    // Get the "move to" inbox
+                    return Utils.getFolder(mContext, mAccount.settings.moveToInbox,
+                            true /* allowHidden */);
                 }
-                break;
-            case R.id.mute:
-                delete(R.id.mute, target, getDeferredAction(R.id.mute, target, isBatch), isBatch);
-                break;
-            case R.id.report_spam:
-                delete(R.id.report_spam, target,
-                        getDeferredAction(R.id.report_spam, target, isBatch), isBatch);
-                break;
-            case R.id.mark_not_spam:
-                // Currently, since spam messages are only shown in list with
-                // other spam messages,
-                // marking a message not as spam is a destructive action
-                delete(R.id.mark_not_spam, target,
-                        getDeferredAction(R.id.mark_not_spam, target, isBatch), isBatch);
-                break;
-            case R.id.report_phishing:
-                delete(R.id.report_phishing, target,
-                        getDeferredAction(R.id.report_phishing, target, isBatch), isBatch);
-                break;
-            case android.R.id.home:
-                onUpPressed();
-                break;
-            case R.id.compose:
-                ComposeActivity.compose(mActivity.getActivityContext(), mAccount);
-                break;
-            case R.id.refresh:
-                requestFolderRefresh();
-                break;
-            case R.id.settings:
-                Utils.showSettings(mActivity.getActivityContext(), mAccount);
-                break;
-            case R.id.folder_options:
-                Utils.showFolderSettings(mActivity.getActivityContext(), mAccount, mFolder);
-                break;
-            case R.id.help_info_menu_item:
-                Utils.showHelp(mActivity.getActivityContext(), mAccount, getHelpContext());
-                break;
-            case R.id.feedback_menu_item:
-                Utils.sendFeedback(mActivity, mAccount, false);
-                break;
-            case R.id.manage_folders_item:
-                Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
-                break;
-            case R.id.move_to:
-                /* fall through */
-            case R.id.change_folder:
-                final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
-                        mActivity.getActivityContext(), mAccount, this,
-                        Conversation.listOf(mCurrentConversation), isBatch, mFolder,
-                        id == R.id.move_to);
-                if (dialog != null) {
-                    dialog.show();
-                }
-                break;
-            case R.id.move_to_inbox:
-                new AsyncTask<Void, Void, Folder>() {
-                    @Override
-                    protected Folder doInBackground(final Void... params) {
-                        // Get the "move to" inbox
-                        return Utils.getFolder(mContext, mAccount.settings.moveToInbox,
-                                true /* allowHidden */);
-                    }
 
-                    @Override
-                    protected void onPostExecute(final Folder moveToInbox) {
-                        final List<FolderOperation> ops = Lists.newArrayListWithCapacity(1);
-                        // Add inbox
-                        ops.add(new FolderOperation(moveToInbox, true));
-                        assignFolder(ops, Conversation.listOf(mCurrentConversation), true,
-                                true /* showUndo */, false /* isMoveTo */);
-                    }
-                }.execute((Void[]) null);
-                break;
-            case R.id.empty_trash:
-                showEmptyDialog();
-                break;
-            case R.id.empty_spam:
-                showEmptyDialog();
-                break;
-            default:
-                handled = false;
-                break;
+                @Override
+                protected void onPostExecute(final Folder moveToInbox) {
+                    final List<FolderOperation> ops = Lists.newArrayListWithCapacity(1);
+                    // Add inbox
+                    ops.add(new FolderOperation(moveToInbox, true));
+                    assignFolder(ops, Conversation.listOf(mCurrentConversation), true,
+                            true /* showUndo */, false /* isMoveTo */);
+                }
+            }.execute((Void[]) null);
+        } else if (id == R.id.empty_trash) {
+            showEmptyDialog();
+        } else if (id == R.id.empty_spam) {
+            showEmptyDialog();
+        } else {
+            handled = false;
         }
         return handled;
     }
@@ -2745,69 +2716,59 @@ public abstract class AbstractActivityController implements ActivityController,
                 return;
             }
 
-            switch (mAction) {
-                case R.id.archive:
-                    LogUtils.d(LOG_TAG, "Archiving");
-                    mConversationListCursor.archive(mTarget);
-                    break;
-                case R.id.delete:
-                    LogUtils.d(LOG_TAG, "Deleting");
-                    mConversationListCursor.delete(mTarget);
-                    if (mFolder.supportsCapability(FolderCapabilities.DELETE_ACTION_FINAL)) {
-                        undoEnabled = false;
-                    }
-                    break;
-                case R.id.mute:
-                    LogUtils.d(LOG_TAG, "Muting");
-                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
-                        for (Conversation c : mTarget) {
-                            c.localDeleteOnUpdate = true;
-                        }
-                    }
-                    mConversationListCursor.mute(mTarget);
-                    break;
-                case R.id.report_spam:
-                    LogUtils.d(LOG_TAG, "Reporting spam");
-                    mConversationListCursor.reportSpam(mTarget);
-                    break;
-                case R.id.mark_not_spam:
-                    LogUtils.d(LOG_TAG, "Marking not spam");
-                    mConversationListCursor.reportNotSpam(mTarget);
-                    break;
-                case R.id.report_phishing:
-                    LogUtils.d(LOG_TAG, "Reporting phishing");
-                    mConversationListCursor.reportPhishing(mTarget);
-                    break;
-                case R.id.remove_star:
-                    LogUtils.d(LOG_TAG, "Removing star");
-                    // Star removal is destructive in the Starred folder.
-                    mConversationListCursor.updateBoolean(mTarget, ConversationColumns.STARRED,
-                            false);
-                    break;
-                case R.id.mark_not_important:
-                    LogUtils.d(LOG_TAG, "Marking not-important");
-                    // Marking not important is destructive in a mailbox
-                    // containing only important messages
-                    if (mFolder != null && mFolder.isImportantOnly()) {
-                        for (Conversation conv : mTarget) {
-                            conv.localDeleteOnUpdate = true;
-                        }
-                    }
-                    mConversationListCursor.updateInt(mTarget, ConversationColumns.PRIORITY,
-                            UIProvider.ConversationPriority.LOW);
-                    break;
-                case R.id.discard_drafts:
-                    LogUtils.d(LOG_TAG, "Discarding draft messages");
-                    // Discarding draft messages is destructive in a "draft" mailbox
-                    if (mFolder != null && mFolder.isDraft()) {
-                        for (Conversation conv : mTarget) {
-                            conv.localDeleteOnUpdate = true;
-                        }
-                    }
-                    mConversationListCursor.discardDrafts(mTarget);
-                    // We don't support undoing discarding drafts
+            if (mAction == R.id.archive) {
+                LogUtils.d(LOG_TAG, "Archiving");
+                mConversationListCursor.archive(mTarget);
+            } else if (mAction == R.id.delete) {
+                LogUtils.d(LOG_TAG, "Deleting");
+                mConversationListCursor.delete(mTarget);
+                if (mFolder.supportsCapability(FolderCapabilities.DELETE_ACTION_FINAL)) {
                     undoEnabled = false;
-                    break;
+                }
+            } else if (mAction == R.id.mute) {
+                LogUtils.d(LOG_TAG, "Muting");
+                if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
+                    for (Conversation c : mTarget) {
+                        c.localDeleteOnUpdate = true;
+                    }
+                }
+                mConversationListCursor.mute(mTarget);
+            } else if (mAction == R.id.report_spam) {
+                LogUtils.d(LOG_TAG, "Reporting spam");
+                mConversationListCursor.reportSpam(mTarget);
+            } else if (mAction == R.id.mark_not_spam) {
+                LogUtils.d(LOG_TAG, "Marking not spam");
+                mConversationListCursor.reportNotSpam(mTarget);
+            } else if (mAction == R.id.report_phishing) {
+                LogUtils.d(LOG_TAG, "Reporting phishing");
+                mConversationListCursor.reportPhishing(mTarget);
+            } else if (mAction == R.id.remove_star) {
+                LogUtils.d(LOG_TAG, "Removing star");
+                // Star removal is destructive in the Starred folder.
+                mConversationListCursor.updateBoolean(mTarget, ConversationColumns.STARRED,
+                        false);
+            } else if (mAction == R.id.mark_not_important) {
+                LogUtils.d(LOG_TAG, "Marking not-important");
+                // Marking not important is destructive in a mailbox
+                // containing only important messages
+                if (mFolder != null && mFolder.isImportantOnly()) {
+                    for (Conversation conv : mTarget) {
+                        conv.localDeleteOnUpdate = true;
+                    }
+                }
+                mConversationListCursor.updateInt(mTarget, ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.LOW);
+            } else if (mAction == R.id.discard_drafts) {
+                LogUtils.d(LOG_TAG, "Discarding draft messages");
+                // Discarding draft messages is destructive in a "draft" mailbox
+                if (mFolder != null && mFolder.isDraft()) {
+                    for (Conversation conv : mTarget) {
+                        conv.localDeleteOnUpdate = true;
+                    }
+                }
+                mConversationListCursor.discardDrafts(mTarget);
+                // We don't support undoing discarding drafts
+                undoEnabled = false;
             }
             if (undoEnabled) {
                 mHandler.postDelayed(new Runnable() {

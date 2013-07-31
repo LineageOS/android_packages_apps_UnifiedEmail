@@ -228,14 +228,13 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.first_button:
-                if (mMode == CONFIGURE) {
-                    doCancel();
-                } else {
-                    // TODO (mindyp): open manage folders screen.
-                }
-                break;
+        final int id = v.getId();
+        if (id == R.id.first_button) {
+            if (mMode == CONFIGURE) {
+                doCancel();
+            } else {
+                // TODO (mindyp): open manage folders screen.
+            }
         }
     }
 

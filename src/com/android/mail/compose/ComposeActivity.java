@@ -1788,19 +1788,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        switch (id) {
-            case R.id.add_cc_bcc:
-                // Verify that cc/ bcc aren't showing.
-                // Animate in cc/bcc.
-                showCcBccViews();
-                break;
-            case R.id.add_photo_attachment:
-                doAttach(MIME_TYPE_PHOTO);
-                break;
-            case R.id.add_video_attachment:
-                doAttach(MIME_TYPE_VIDEO);
-                break;
+        final int id = v.getId();
+        if (id == R.id.add_cc_bcc) {
+            // Verify that cc/ bcc aren't showing.
+            // Animate in cc/bcc.
+            showCcBccViews();
+        } else if (id == R.id.add_photo_attachment) {
+            doAttach(MIME_TYPE_PHOTO);
+        } else if (id == R.id.add_video_attachment) {
+            doAttach(MIME_TYPE_VIDEO);
         }
     }
 
@@ -1872,42 +1868,30 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        final int id = item.getItemId();
         boolean handled = true;
-        switch (id) {
-            case R.id.add_photo_attachment:
-                doAttach(MIME_TYPE_PHOTO);
-                break;
-            case R.id.add_video_attachment:
-                doAttach(MIME_TYPE_VIDEO);
-                break;
-            case R.id.add_cc_bcc:
-                showCcBccViews();
-                break;
-            case R.id.save:
-                doSave(true);
-                break;
-            case R.id.send:
-                doSend();
-                break;
-            case R.id.discard:
-                doDiscard();
-                break;
-            case R.id.settings:
-                Utils.showSettings(this, mAccount);
-                break;
-            case android.R.id.home:
-                onAppUpPressed();
-                break;
-            case R.id.help_info_menu_item:
-                Utils.showHelp(this, mAccount, getString(R.string.compose_help_context));
-                break;
-            case R.id.feedback_menu_item:
-                Utils.sendFeedback(this, mAccount, false);
-                break;
-            default:
-                handled = false;
-                break;
+        if (id == R.id.add_photo_attachment) {
+            doAttach(MIME_TYPE_PHOTO);
+        } else if (id == R.id.add_video_attachment) {
+            doAttach(MIME_TYPE_VIDEO);
+        } else if (id == R.id.add_cc_bcc) {
+            showCcBccViews();
+        } else if (id == R.id.save) {
+            doSave(true);
+        } else if (id == R.id.send) {
+            doSend();
+        } else if (id == R.id.discard) {
+            doDiscard();
+        } else if (id == R.id.settings) {
+            Utils.showSettings(this, mAccount);
+        } else if (id == android.R.id.home) {
+            onAppUpPressed();
+        } else if (id == R.id.help_info_menu_item) {
+            Utils.showHelp(this, mAccount, getString(R.string.compose_help_context));
+        } else if (id == R.id.feedback_menu_item) {
+            Utils.sendFeedback(this, mAccount, false);
+        } else {
+            handled = false;
         }
         return !handled ? super.onOptionsItemSelected(item) : handled;
     }

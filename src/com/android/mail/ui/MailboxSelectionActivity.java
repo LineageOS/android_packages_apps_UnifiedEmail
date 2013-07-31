@@ -291,11 +291,10 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.first_button:
-                setResult(RESULT_CANCELED);
-                finish();
-                break;
+        final int id = v.getId();
+        if (id == R.id.first_button) {
+            setResult(RESULT_CANCELED);
+            finish();
         }
     }
 

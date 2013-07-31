@@ -64,23 +64,20 @@ public class MessageInviteView extends LinearLayout implements View.OnClickListe
     public void onClick(View v) {
         Integer command = null;
 
-        switch(v.getId()) {
-            case R.id.invite_calendar_view:
-                if (!Utils.isEmpty(mMessage.eventIntentUri)) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(mMessage.eventIntentUri);
-                    mContext.startActivity(intent);
-                }
-                break;
-            case R.id.accept:
-                command = UIProvider.MessageOperations.RESPOND_ACCEPT;
-                break;
-            case R.id.tentative:
-                command = UIProvider.MessageOperations.RESPOND_TENTATIVE;
-                break;
-            case R.id.decline:
-                command = UIProvider.MessageOperations.RESPOND_DECLINE;
-                break;
+        final int id = v.getId();
+
+        if (id == R.id.invite_calendar_view) {
+            if (!Utils.isEmpty(mMessage.eventIntentUri)) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(mMessage.eventIntentUri);
+                mContext.startActivity(intent);
+            }
+        } else if (id == R.id.accept) {
+            command = UIProvider.MessageOperations.RESPOND_ACCEPT;
+        } else if (id == R.id.tentative) {
+            command = UIProvider.MessageOperations.RESPOND_TENTATIVE;
+        } else if (id == R.id.decline) {
+            command = UIProvider.MessageOperations.RESPOND_DECLINE;
         }
 
         if (command != null) {

@@ -463,25 +463,20 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
             // We only want to promote it if it's visible and has an icon
             if (menuItem.isVisible() && menuItem.getIcon() != null) {
-                switch (itemId) {
-                    case R.id.archive:
-                    case R.id.remove_folder:
-                        /*
-                         * If this is disabled, and we want to show both archive and delete, we will
-                         * hide archive (rather than showing it disabled), and take up one of our
-                         * spaces. If we only want to show archive, we'll hide it, but not take up
-                         * a space.
-                         */
-                        if (!menuItem.isEnabled() && showArchive) {
-                            menuItem.setVisible(false);
+                if (itemId == R.id.archive || itemId == R.id.remove_folder) {
+                    /*
+                     * If this is disabled, and we want to show both archive and delete, we will
+                     * hide archive (rather than showing it disabled), and take up one of our
+                     * spaces. If we only want to show archive, we'll hide it, but not take up
+                     * a space.
+                     */
+                    if (!menuItem.isEnabled() && showArchive) {
+                        menuItem.setVisible(false);
 
-                            if (showDelete) {
-                                actionItems++;
-                            }
-
-                            break;
+                        if (showDelete) {
+                            actionItems++;
                         }
-
+                    } else {
                         /*
                          * We show this if the following are all true:
                          * 1. The user wants to display archive, or delete is not visible
@@ -491,40 +486,35 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                             menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                             actionItems++;
                         }
-                        break;
-                    case R.id.delete:
-                    case R.id.discard_drafts:
-                        /*
-                         * We show this if the following are all true:
-                         * 1. The user wants to display delete, or archive is not visible
-                         * 2. We have room for it
-                         */
-                        if ((showDelete || !archiveVisibleEnabled) && actionItems < maxItems) {
-                            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-                            actionItems++;
-                        }
-                        break;
-                    case R.id.change_folder:
-                        final boolean showChangeFolder = account
-                                .supportsCapability(AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
-                        menuItem.setVisible(showChangeFolder);
-
-                        if (showChangeFolder && actionItems < maxItems) {
-                            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-                            actionItems++;
-                        }
-                        break;
-                    case R.id.search:
-                        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
-                                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                    }
+                } else if (itemId == R.id.delete || itemId == R.id.discard_drafts) {
+                    /*
+                     * We show this if the following are all true:
+                     * 1. The user wants to display delete, or archive is not visible
+                     * 2. We have room for it
+                     */
+                    if ((showDelete || !archiveVisibleEnabled) && actionItems < maxItems) {
+                        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                         actionItems++;
-                        break;
-                    default:
-                        if (actionItems < maxItems) {
-                            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-                            actionItems++;
-                        }
-                        break;
+                    }
+                } else if (itemId == R.id.change_folder) {
+                    final boolean showChangeFolder = account
+                            .supportsCapability(AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
+                    menuItem.setVisible(showChangeFolder);
+
+                    if (showChangeFolder && actionItems < maxItems) {
+                        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                        actionItems++;
+                    }
+                } else if (itemId == R.id.search) {
+                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
+                            | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                    actionItems++;
+                } else {
+                    if (actionItems < maxItems) {
+                        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                        actionItems++;
+                    }
                 }
             }
         }

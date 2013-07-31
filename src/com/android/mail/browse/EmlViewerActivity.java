@@ -129,21 +129,18 @@ public class EmlViewerActivity extends Activity implements FeedbackEnabledActivi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.settings:
-                Utils.showSettings(this, mAccount);
-                break;
-            case R.id.help_info_menu_item:
-                Utils.showHelp(this, mAccount, getString(R.string.main_help_context));
-                break;
-            case R.id.feedback_menu_item:
-                Utils.sendFeedback(this, mAccount, false);
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
+        final int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            finish();
+            return true;
+        } else if (itemId == R.id.settings) {
+            Utils.showSettings(this, mAccount);
+        } else if (itemId == R.id.help_info_menu_item) {
+            Utils.showHelp(this, mAccount, getString(R.string.main_help_context));
+        } else if (itemId == R.id.feedback_menu_item) {
+            Utils.sendFeedback(this, mAccount, false);
+        } else {
+            return super.onOptionsItemSelected(item);
         }
 
         return true;

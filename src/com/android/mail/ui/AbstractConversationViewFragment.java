@@ -318,15 +318,13 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
 
         boolean handled = false;
-        switch (item.getItemId()) {
-            case R.id.inside_conversation_unread:
-                markUnread();
-                handled = true;
-                break;
-            case R.id.show_original:
-                showUntransformedConversation();
-                handled = true;
-                break;
+        final int itemId = item.getItemId();
+        if (itemId == R.id.inside_conversation_unread) {
+            markUnread();
+            handled = true;
+        } else if (itemId == R.id.show_original) {
+            showUntransformedConversation();
+            handled = true;
         }
         return handled;
     }
