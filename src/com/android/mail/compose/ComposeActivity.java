@@ -2994,6 +2994,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                                     ((ComposeActivity)getActivity()).doDiscardWithoutConfirmation();
                                 }
                             })
+                    .setNegativeButton(R.string.cancel, null)
                     .create();
         }
     }
