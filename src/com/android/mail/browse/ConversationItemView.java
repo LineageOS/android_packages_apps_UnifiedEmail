@@ -168,6 +168,7 @@ public class ConversationItemView extends View
     /** The view mode at which we calculated mViewWidth previously. */
     private int mPreviousMode;
 
+    private int mInfoIconX;
     private int mDateX;
     private int mPaperclipX;
     private int mSendersWidth;
@@ -1060,8 +1061,22 @@ public class ConversationItemView extends View
 
         sPaint.setTextSize(mCoordinates.dateFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
-        mDateX = mCoordinates.dateXEnd - (int) sPaint.measureText(
-                mHeader.dateText != null ? mHeader.dateText.toString() : "");
+
+        if (mHeader.infoIcon != null) {
+            mInfoIconX = mCoordinates.infoIconXEnd - mHeader.infoIcon.getWidth();
+
+            // If we have an info icon, we start drawing the date text:
+            // At the end of the date TextView minus the width of the date text
+            mDateX = mCoordinates.dateXEnd - (int) sPaint.measureText(
+                    mHeader.dateText != null ? mHeader.dateText.toString() : "");
+        } else {
+            // If there is no info icon, we start drawing the date text:
+            // At the end of the info icon ImageView minus the width of the date text
+            // We use the info icon ImageView for positioning, since we want the date text to be
+            // at the right, since there is no info icon
+            mDateX = mCoordinates.infoIconXEnd - (int) sPaint.measureText(
+                    mHeader.dateText != null ? mHeader.dateText.toString() : "");
+        }
 
         mPaperclipX = mDateX - ATTACHMENT.getWidth() - mCoordinates.datePaddingLeft;
 
@@ -1392,6 +1407,11 @@ public class ConversationItemView extends View
                     mCoordinates.personalIndicatorY, null);
         }
 
+        // Info icon
+        if (mHeader.infoIcon != null) {
+            canvas.drawBitmap(mHeader.infoIcon, mInfoIconX, mCoordinates.infoIconY, sPaint);
+        }
+
         // Date.
         sPaint.setTextSize(mCoordinates.dateFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
@@ -1399,10 +1419,8 @@ public class ConversationItemView extends View
         drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateYBaseline,
                 sPaint);
 
-        // Info / Paper clip icon.
-        if (mHeader.infoIcon != null) {
-            canvas.drawBitmap(mHeader.infoIcon, mPaperclipX, mCoordinates.paperclipY, sPaint);
-        } else if (mHeader.paperclip != null) {
+        // Paper clip icon.
+        if (mHeader.paperclip != null) {
             canvas.drawBitmap(mHeader.paperclip, mPaperclipX, mCoordinates.paperclipY, sPaint);
         }
 
