@@ -635,6 +635,9 @@
     <!-- Name of the Folders activity [CHAR LIMIT=30] -->
     <string name="activity_folder_selection">Choose folder</string>
 
+    <!-- Name of the Folder shortcut widget. Should use "Email" to refer to the app. [CHAR LIMIT=30] -->
+    <string name="folder_shortcut_widget_label">Email folder</string>
+
     <!-- Manange folders mode, sync option: synchronize all conversations with this folder. [CHAR LIMIT=100] -->
     <string name="sync_all">Sync: All</string>
     <plurals name="sync_recent">
