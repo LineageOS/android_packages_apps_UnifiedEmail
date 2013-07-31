@@ -166,34 +166,26 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         return onClick(item.getItemId(), null);
     }
 
-    private boolean onClick(int res, View v) {
-        switch (res) {
-            case R.id.preview_attachment:
-                previewAttachment();
-                break;
-            case R.id.save_attachment:
-                if (mAttachment.canSave()) {
-                    mActionHandler.startDownloadingAttachment(AttachmentDestination.EXTERNAL);
-                    mSaveClicked = true;
-                }
-                break;
-            case R.id.download_again:
-                if (mAttachment.isPresentLocally()) {
-                    mActionHandler.startRedownloadingAttachment(mAttachment);
-                }
-                break;
-            case R.id.cancel_attachment:
-                mActionHandler.cancelAttachment();
-                mSaveClicked = false;
-                break;
-            case R.id.overflow: {
-                // If no overflow items are visible, just bail out.
-                // We shouldn't be able to get here anyhow since the overflow
-                // button should be hidden.
-                if (!shouldShowOverflow()) {
-                    break;
-                }
-
+    private boolean onClick(final int res, final View v) {
+        if (res == R.id.preview_attachment) {
+            previewAttachment();
+        } else if (res == R.id.save_attachment) {
+            if (mAttachment.canSave()) {
+                mActionHandler.startDownloadingAttachment(AttachmentDestination.EXTERNAL);
+                mSaveClicked = true;
+            }
+        } else if (res == R.id.download_again) {
+            if (mAttachment.isPresentLocally()) {
+                mActionHandler.startRedownloadingAttachment(mAttachment);
+            }
+        } else if (res == R.id.cancel_attachment) {
+            mActionHandler.cancelAttachment();
+            mSaveClicked = false;
+        } else if (res == R.id.overflow) {
+            // If no overflow items are visible, just bail out.
+            // We shouldn't be able to get here anyhow since the overflow
+            // button should be hidden.
+            if (shouldShowOverflow()) {
                 if (mPopup == null) {
                     mPopup = new PopupMenu(getContext(), v);
                     mPopup.getMenuInflater().inflate(R.menu.message_footer_overflow_menu,
@@ -207,49 +199,47 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 menu.findItem(R.id.download_again).setVisible(shouldShowDownloadAgain());
 
                 mPopup.show();
-                break;
             }
-            default:
-                // Handles clicking the attachment
-                // in any area that is not the overflow
-                // button or cancel button or one of the
-                // overflow items.
+        } else {
+            // Handles clicking the attachment
+            // in any area that is not the overflow
+            // button or cancel button or one of the
+            // overflow items.
 
-                // If the mimetype is blocked, show the info dialog
-                if (MimeType.isBlocked(mAttachment.getContentType())) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    int dialogMessage = R.string.attachment_type_blocked;
-                    builder.setTitle(R.string.more_info_attachment)
-                           .setMessage(dialogMessage)
-                           .show();
-                }
-                // If we can install, install.
-                else if (MimeType.isInstallable(mAttachment.getContentType())) {
-                    // Save to external because the package manager only handles
-                    // file:// uris not content:// uris. We do the same
-                    // workaround in
-                    // UiProvider#getUiAttachmentsCursorForUIAttachments()
-                    mActionHandler.showAttachment(AttachmentDestination.EXTERNAL);
-                }
-                // If we can view or play with an on-device app,
-                // view or play.
-                else if (MimeType.isViewable(
-                        getContext(), mAttachment.contentUri, mAttachment.getContentType())) {
-                    mActionHandler.showAttachment(AttachmentDestination.CACHE);
-                }
-                // If we can only preview the attachment, preview.
-                else if (mAttachment.canPreview()) {
-                    previewAttachment();
-                }
-                // Otherwise, if we cannot do anything, show the info dialog.
-                else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    int dialogMessage = R.string.no_application_found;
-                    builder.setTitle(R.string.more_info_attachment)
-                           .setMessage(dialogMessage)
-                           .show();
-                }
-                break;
+            // If the mimetype is blocked, show the info dialog
+            if (MimeType.isBlocked(mAttachment.getContentType())) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                int dialogMessage = R.string.attachment_type_blocked;
+                builder.setTitle(R.string.more_info_attachment)
+                       .setMessage(dialogMessage)
+                       .show();
+            }
+            // If we can install, install.
+            else if (MimeType.isInstallable(mAttachment.getContentType())) {
+                // Save to external because the package manager only handles
+                // file:// uris not content:// uris. We do the same
+                // workaround in
+                // UiProvider#getUiAttachmentsCursorForUIAttachments()
+                mActionHandler.showAttachment(AttachmentDestination.EXTERNAL);
+            }
+            // If we can view or play with an on-device app,
+            // view or play.
+            else if (MimeType.isViewable(
+                    getContext(), mAttachment.contentUri, mAttachment.getContentType())) {
+                mActionHandler.showAttachment(AttachmentDestination.CACHE);
+            }
+            // If we can only preview the attachment, preview.
+            else if (mAttachment.canPreview()) {
+                previewAttachment();
+            }
+            // Otherwise, if we cannot do anything, show the info dialog.
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                int dialogMessage = R.string.no_application_found;
+                builder.setTitle(R.string.more_info_attachment)
+                       .setMessage(dialogMessage)
+                       .show();
+            }
         }
 
         return true;

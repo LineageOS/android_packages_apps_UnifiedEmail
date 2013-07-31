@@ -81,13 +81,10 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
     public void onClick(View v) {
         final int id = v.getId();
         final Folder f = (Folder) v.getTag();
-        switch (id) {
-            case R.id.error_action_button:
-                mClickListener.onFooterViewErrorActionClick(f, mErrorStatus);
-                break;
-            case R.id.load_more:
-                mClickListener.onFooterViewLoadMoreClick(f);
-                break;
+        if (id == R.id.error_action_button) {
+            mClickListener.onFooterViewErrorActionClick(f, mErrorStatus);
+        } else if (id == R.id.load_more) {
+            mClickListener.onFooterViewLoadMoreClick(f);
         }
     }
 

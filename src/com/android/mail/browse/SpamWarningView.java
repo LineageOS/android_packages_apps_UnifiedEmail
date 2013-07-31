@@ -46,13 +46,11 @@ public class SpamWarningView extends RelativeLayout implements OnClickListener {
     public void onClick(View v) {
         final int id = v.getId();
 
-        switch (id) {
-            case R.id.spam_warning:
-                break;
-            case R.id.spam_warning_link:
-                // TODO - once we have final design,
-                // make clicking this text do what needs to be done
-                break;
+        if (id == R.id.spam_warning) {
+            // Do nothing (TODO?)
+        } else if (id == R.id.spam_warning_link) {
+            // TODO - once we have final design,
+            // make clicking this text do what needs to be done
         }
 
     }

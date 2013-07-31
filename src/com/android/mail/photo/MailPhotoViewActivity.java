@@ -184,25 +184,25 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; go back to conversation
-                finish();
-                return true;
-            case R.id.menu_save: // save the current photo
-                saveAttachment();
-                return true;
-            case R.id.menu_save_all: // save all of the photos
-                saveAllAttachments();
-                return true;
-            case R.id.menu_share: // share the current photo
-                shareAttachment();
-                return true;
-            case R.id.menu_share_all: // share all of the photos
-                shareAllAttachments();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        final int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            // app icon in action bar clicked; go back to conversation
+            finish();
+            return true;
+        } else if (itemId == R.id.menu_save) { // save the current photo
+            saveAttachment();
+            return true;
+        } else if (itemId == R.id.menu_save_all) { // save all of the photos
+            saveAllAttachments();
+            return true;
+        } else if (itemId == R.id.menu_share) { // share the current photo
+            shareAttachment();
+            return true;
+        } else if (itemId == R.id.menu_share_all) { // share all of the photos
+            shareAllAttachments();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

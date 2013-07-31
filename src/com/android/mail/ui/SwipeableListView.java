@@ -232,29 +232,25 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         Collection<Conversation> convList = Conversation.listOf(conv);
         ArrayList<Uri> folderUris;
         ArrayList<Boolean> adds;
-        switch (mSwipeAction) {
-            case R.id.remove_folder:
-                FolderOperation folderOp = new FolderOperation(mFolder, false);
-                HashMap<Uri, Folder> targetFolders = Folder
-                        .hashMapForFolders(conv.getRawFolders());
-                targetFolders.remove(folderOp.mFolder.folderUri.fullUri);
-                final FolderList folders = FolderList.copyOf(targetFolders.values());
-                conv.setRawFolders(folders);
-                final ContentValues values = new ContentValues();
-                folderUris = new ArrayList<Uri>();
-                folderUris.add(mFolder.folderUri.fullUri);
-                adds = new ArrayList<Boolean>();
-                adds.add(Boolean.FALSE);
-                ConversationCursor.addFolderUpdates(folderUris, adds, values);
-                ConversationCursor.addTargetFolders(targetFolders.values(), values);
-                cc.mostlyDestructiveUpdate(Conversation.listOf(conv), values);
-                break;
-            case R.id.archive:
-                cc.mostlyArchive(convList);
-                break;
-            case R.id.delete:
-                cc.mostlyDelete(convList);
-                break;
+        if (mSwipeAction == R.id.remove_folder) {
+            FolderOperation folderOp = new FolderOperation(mFolder, false);
+            HashMap<Uri, Folder> targetFolders = Folder
+                    .hashMapForFolders(conv.getRawFolders());
+            targetFolders.remove(folderOp.mFolder.folderUri.fullUri);
+            final FolderList folders = FolderList.copyOf(targetFolders.values());
+            conv.setRawFolders(folders);
+            final ContentValues values = new ContentValues();
+            folderUris = new ArrayList<Uri>();
+            folderUris.add(mFolder.folderUri.fullUri);
+            adds = new ArrayList<Boolean>();
+            adds.add(Boolean.FALSE);
+            ConversationCursor.addFolderUpdates(folderUris, adds, values);
+            ConversationCursor.addTargetFolders(targetFolders.values(), values);
+            cc.mostlyDestructiveUpdate(Conversation.listOf(conv), values);
+        } else if (mSwipeAction == R.id.archive) {
+            cc.mostlyArchive(convList);
+        } else if (mSwipeAction == R.id.delete) {
+            cc.mostlyDelete(convList);
         }
         if (mSwipedListener != null) {
             mSwipedListener.onListItemSwiped(convList);
