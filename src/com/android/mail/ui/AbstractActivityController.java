@@ -3040,7 +3040,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * Re-enable the CAB menu if required. The selection set is not changed.
      */
     protected void enableCabMode() {
-        if (mCabActionMenu != null) {
+        if (mCabActionMenu != null && !mDrawerContainer.isDrawerOpen(mDrawerPullout)) {
             mCabActionMenu.activate();
         }
     }
@@ -3050,7 +3050,9 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected void maybeEnableCabMode() {
         if (!mSelectedSet.isEmpty()) {
-            enableCabMode();
+            if (mCabActionMenu != null) {
+                mCabActionMenu.activate();
+            }
         }
     }
 
