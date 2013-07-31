@@ -1661,7 +1661,7 @@ public class ConversationItemView extends View
 
         // Allow touching a little right of the contact photo when we're already in selection mode
         final float extra;
-        if (mSelectedConversationSet.isEmpty()) {
+        if (mSelectedConversationSet == null || mSelectedConversationSet.isEmpty()) {
             extra = 0;
         } else {
             extra = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
