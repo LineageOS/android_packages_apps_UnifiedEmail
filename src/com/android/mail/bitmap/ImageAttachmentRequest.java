@@ -25,7 +25,8 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
     private final int mRendition;
     public final int mDestW;
 
-    public ImageAttachmentRequest(Context context, String lookupUri, int rendition, int destW) {
+    public ImageAttachmentRequest(final Context context, final String lookupUri,
+            final int rendition, final int destW) {
         mContext = context;
         mLookupUri = lookupUri;
         mRendition = rendition;
@@ -99,5 +100,4 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
     public InputStream createInputStream() {
         return null;
     }
-
 }
