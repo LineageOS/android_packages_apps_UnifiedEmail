@@ -117,17 +117,16 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.change_sync_settings:
-                Intent intent = new Intent(Settings.ACTION_SYNC_SETTINGS);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                break;
-            case R.id.manual_sync:
-                if (mAccount != null && mAccount.manualSyncUri != null) {
-                    getLoaderManager().initLoader(MANUAL_SYNC_LOADER, null, this);
-                }
-                break;
+        final int id = v.getId();
+
+        if (id == R.id.change_sync_settings) {
+            Intent intent = new Intent(Settings.ACTION_SYNC_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else if (id == R.id.manual_sync) {
+            if (mAccount != null && mAccount.manualSyncUri != null) {
+                getLoaderManager().initLoader(MANUAL_SYNC_LOADER, null, this);
+            }
         }
     }
 

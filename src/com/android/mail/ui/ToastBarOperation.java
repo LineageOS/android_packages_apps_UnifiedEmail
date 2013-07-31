@@ -120,42 +120,31 @@ public class ToastBarOperation implements Parcelable {
      * when the user taps the undo bar.
      */
     public String getDescription(Context context) {
-        int resId = -1;
-        switch (mAction) {
-            case R.id.delete:
-                resId = R.plurals.conversation_deleted;
-                break;
-            case R.id.remove_folder:
-                return context.getString(R.string.folder_removed, mFolder.name);
-            case R.id.change_folder:
-                resId = R.plurals.conversation_folder_changed;
-                break;
-            case R.id.move_folder:
-                return context.getString(R.string.conversation_folder_moved, mFolder.name);
-            case R.id.archive:
-                resId = R.plurals.conversation_archived;
-                break;
-            case R.id.report_spam:
-                resId = R.plurals.conversation_spammed;
-                break;
-            case R.id.mark_not_spam:
-                resId = R.plurals.conversation_not_spam;
-                break;
-            case R.id.mark_not_important:
-                resId = R.plurals.conversation_not_important;
-                break;
-            case R.id.mute:
-                resId = R.plurals.conversation_muted;
-                break;
-            case R.id.remove_star:
-                resId = R.plurals.conversation_unstarred;
-                break;
-            case R.id.report_phishing:
-                resId = R.plurals.conversation_phished;
-                break;
-            default:
-                resId = -1;
-                break;
+        final int resId;
+        if (mAction == R.id.delete) {
+            resId = R.plurals.conversation_deleted;
+        } else if (mAction == R.id.remove_folder) {
+            return context.getString(R.string.folder_removed, mFolder.name);
+        } else if (mAction == R.id.change_folder) {
+            resId = R.plurals.conversation_folder_changed;
+        } else if (mAction == R.id.move_folder) {
+            return context.getString(R.string.conversation_folder_moved, mFolder.name);
+        } else if (mAction == R.id.archive) {
+            resId = R.plurals.conversation_archived;
+        } else if (mAction == R.id.report_spam) {
+            resId = R.plurals.conversation_spammed;
+        } else if (mAction == R.id.mark_not_spam) {
+            resId = R.plurals.conversation_not_spam;
+        } else if (mAction == R.id.mark_not_important) {
+            resId = R.plurals.conversation_not_important;
+        } else if (mAction == R.id.mute) {
+            resId = R.plurals.conversation_muted;
+        } else if (mAction == R.id.remove_star) {
+            resId = R.plurals.conversation_unstarred;
+        } else if (mAction == R.id.report_phishing) {
+            resId = R.plurals.conversation_phished;
+        } else {
+            resId = -1;
         }
         final String desc = (resId == -1) ? "" :
                 String.format(context.getResources().getQuantityString(resId, mCount), mCount);
@@ -166,14 +155,13 @@ public class ToastBarOperation implements Parcelable {
         if (mAction == R.id.remove_folder) {
             return context.getString(R.string.folder_removed, folder.name);
         }
-        int resId = -1;
-        switch (mAction) {
-            case R.id.delete:
-                resId = R.string.deleted;
-                break;
-            case R.id.archive:
-                resId = R.string.archived;
-                break;
+        final int resId;
+        if (mAction ==  R.id.delete) {
+            resId = R.string.deleted;
+        } else if (mAction == R.id.archive) {
+            resId = R.string.archived;
+        } else {
+            resId = -1;
         }
         return (resId == -1) ? "" : context.getString(resId);
     }

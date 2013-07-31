@@ -161,17 +161,14 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.respond_inline_button: {
-                respondInline();
-                break;
-            }
-            case R.id.hide_quoted_text:
-                updateCheckedState(mShowHideCheckBox.isChecked());
-                break;
-            case R.id.hide_quoted_text_label:
-                updateCheckedState(!mShowHideCheckBox.isChecked());
-                break;
+        final int id = v.getId();
+
+        if (id == R.id.respond_inline_button) {
+            respondInline();
+        } else if (id == R.id.hide_quoted_text) {
+            updateCheckedState(mShowHideCheckBox.isChecked());
+        } else if (id == R.id.hide_quoted_text_label) {
+            updateCheckedState(!mShowHideCheckBox.isChecked());
         }
     }
 

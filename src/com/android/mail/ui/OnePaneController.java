@@ -274,23 +274,22 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public boolean doesActionChangeConversationListVisibility(int action) {
-        switch (action) {
-            case R.id.archive:
-            case R.id.remove_folder:
-            case R.id.delete:
-            case R.id.discard_drafts:
-            case R.id.mark_important:
-            case R.id.mark_not_important:
-            case R.id.mute:
-            case R.id.report_spam:
-            case R.id.mark_not_spam:
-            case R.id.report_phishing:
-            case R.id.refresh:
-            case R.id.change_folder:
-                return false;
-            default:
-                return true;
+    public boolean doesActionChangeConversationListVisibility(final int action) {
+        if (action == R.id.archive
+                || action == R.id.remove_folder
+                || action == R.id.delete
+                || action == R.id.discard_drafts
+                || action == R.id.mark_important
+                || action == R.id.mark_not_important
+                || action == R.id.mute
+                || action == R.id.report_spam
+                || action == R.id.mark_not_spam
+                || action == R.id.report_phishing
+                || action == R.id.refresh
+                || action == R.id.change_folder) {
+            return false;
+        } else {
+            return true;
         }
     }
 

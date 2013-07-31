@@ -84,26 +84,23 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        switch (id) {
-            case R.id.swipeable_content:
-                if (mAccount.undoUri != null && !mInert) {
-                    // NOTE: We might want undo to return the messages affected,
-                    // in which case the resulting cursor might be interesting...
-                    // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate
-                    // the set of commands to undo
-                    mAdapter.setSwipeUndo(true);
-                    mAdapter.clearLeaveBehind(getConversationId());
-                    ConversationCursor cursor = mAdapter.getConversationCursor();
-                    if (cursor != null) {
-                        cursor.undo(getContext(), mAccount.undoUri);
-                    }
+        final int id = v.getId();
+        if (id == R.id.swipeable_content) {
+            if (mAccount.undoUri != null && !mInert) {
+                // NOTE: We might want undo to return the messages affected,
+                // in which case the resulting cursor might be interesting...
+                // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate
+                // the set of commands to undo
+                mAdapter.setSwipeUndo(true);
+                mAdapter.clearLeaveBehind(getConversationId());
+                ConversationCursor cursor = mAdapter.getConversationCursor();
+                if (cursor != null) {
+                    cursor.undo(getContext(), mAccount.undoUri);
                 }
-                break;
-            case R.id.undo_descriptionview:
-                // Essentially, makes sure that tapping description view doesn't highlight
-                // either the undo button icon or text.
-                break;
+            }
+        } else if (id == R.id.undo_descriptionview) {
+            // Essentially, makes sure that tapping description view doesn't highlight
+            // either the undo button icon or text.
         }
     }
 

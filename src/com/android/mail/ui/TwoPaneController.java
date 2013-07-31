@@ -79,18 +79,17 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public boolean doesActionChangeConversationListVisibility(int action) {
-        switch (action) {
-            case R.id.settings:
-            case R.id.compose:
-            case R.id.help_info_menu_item:
-            case R.id.manage_folders_item:
-            case R.id.folder_options:
-            case R.id.feedback_menu_item:
-                return true;
-            default:
-                return false;
+    public boolean doesActionChangeConversationListVisibility(final int action) {
+        if (action == R.id.settings
+                || action == R.id.compose
+                || action == R.id.help_info_menu_item
+                || action == R.id.manage_folders_item
+                || action == R.id.folder_options
+                || action == R.id.feedback_menu_item) {
+            return true;
         }
+
+        return false;
     }
 
     @Override

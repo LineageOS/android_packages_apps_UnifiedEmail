@@ -320,32 +320,31 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
      * @param menuResId resource id of the menu
      * @return MenuType for the specified menu resource id
      */
-    protected MenuType getMenuTypeFromResId(int menuResId) {
-        switch(menuResId) {
-            case R.id.open_context_menu_id:
-                return MenuType.OPEN_MENU;
-            case R.id.copy_link_context_menu_id:
-                return MenuType.COPY_LINK_MENU;
-            case R.id.share_link_context_menu_id:
-                return MenuType.SHARE_LINK_MENU;
-            case R.id.dial_context_menu_id:
-                return MenuType.DIAL_MENU;
-            case R.id.sms_context_menu_id:
-                return MenuType.SMS_MENU;
-            case R.id.add_contact_context_menu_id:
-                return MenuType.ADD_CONTACT_MENU;
-            case R.id.copy_phone_context_menu_id:
-                return MenuType.COPY_PHONE_MENU;
-            case R.id.email_context_menu_id:
-                return MenuType.EMAIL_CONTACT_MENU;
-            case R.id.copy_mail_context_menu_id:
-                return MenuType.COPY_MAIL_MENU;
-            case R.id.map_context_menu_id:
-                return MenuType.MAP_MENU;
-            case R.id.copy_geo_context_menu_id:
-                return MenuType.COPY_GEO_MENU;
-            default:
-                throw new IllegalStateException("Unexpected resource id");
+    protected MenuType getMenuTypeFromResId(final int menuResId) {
+        if (menuResId == R.id.open_context_menu_id) {
+            return MenuType.OPEN_MENU;
+        } else if (menuResId == R.id.copy_link_context_menu_id) {
+            return MenuType.COPY_LINK_MENU;
+        } else if (menuResId == R.id.share_link_context_menu_id) {
+            return MenuType.SHARE_LINK_MENU;
+        } else if (menuResId == R.id.dial_context_menu_id) {
+            return MenuType.DIAL_MENU;
+        } else if (menuResId == R.id.sms_context_menu_id) {
+            return MenuType.SMS_MENU;
+        } else if (menuResId == R.id.add_contact_context_menu_id) {
+            return MenuType.ADD_CONTACT_MENU;
+        } else if (menuResId == R.id.copy_phone_context_menu_id) {
+            return MenuType.COPY_PHONE_MENU;
+        } else if (menuResId == R.id.email_context_menu_id) {
+            return MenuType.EMAIL_CONTACT_MENU;
+        } else if (menuResId == R.id.copy_mail_context_menu_id) {
+            return MenuType.COPY_MAIL_MENU;
+        } else if (menuResId == R.id.map_context_menu_id) {
+            return MenuType.MAP_MENU;
+        } else if (menuResId == R.id.copy_geo_context_menu_id) {
+            return MenuType.COPY_GEO_MENU;
+        } else {
+            throw new IllegalStateException("Unexpected resource id");
         }
     }
 

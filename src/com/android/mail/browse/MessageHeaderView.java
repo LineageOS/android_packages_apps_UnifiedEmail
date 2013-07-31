@@ -861,7 +861,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * Handles clicks on either views or menu items. View parameter can be null
      * for menu item clicks.
      */
-    public boolean onClick(View v, int id) {
+    public boolean onClick(final View v, final int id) {
         if (mMessage == null) {
             LogUtils.i(LOG_TAG, "ignoring message header tap on unbound view");
             return false;
@@ -869,70 +869,55 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         boolean handled = true;
 
-        switch (id) {
-            case R.id.reply:
-                ComposeActivity.reply(getContext(), getAccount(), mMessage);
-                break;
-            case R.id.reply_all:
-                ComposeActivity.replyAll(getContext(), getAccount(), mMessage);
-                break;
-            case R.id.forward:
-                ComposeActivity.forward(getContext(), getAccount(), mMessage);
-                break;
-            case R.id.report_rendering_problem:
-                String text = getContext().getString(R.string.report_rendering_problem_desc);
-                ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
-                    text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
-                break;
-            case R.id.report_rendering_improvement:
-                text = getContext().getString(R.string.report_rendering_improvement_desc);
-                ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
-                    text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
-                break;
-            case R.id.star: {
-                final boolean newValue = !v.isSelected();
-                v.setSelected(newValue);
-                mMessage.star(newValue);
-                break;
+        if (id == R.id.reply) {
+            ComposeActivity.reply(getContext(), getAccount(), mMessage);
+        } else if (id == R.id.reply_all) {
+            ComposeActivity.replyAll(getContext(), getAccount(), mMessage);
+        } else if (id == R.id.forward) {
+            ComposeActivity.forward(getContext(), getAccount(), mMessage);
+        } else if (id == R.id.report_rendering_problem) {
+            final String text = getContext().getString(R.string.report_rendering_problem_desc);
+            ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
+                text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
+        } else if (id == R.id.report_rendering_improvement) {
+            final String text = getContext().getString(R.string.report_rendering_improvement_desc);
+            ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
+                text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
+        } else if (id == R.id.star) {
+            final boolean newValue = !v.isSelected();
+            v.setSelected(newValue);
+            mMessage.star(newValue);
+        } else if (id == R.id.edit_draft) {
+            ComposeActivity.editDraft(getContext(), getAccount(), mMessage);
+        } else if (id == R.id.overflow) {
+            if (mPopup == null) {
+                mPopup = new PopupMenu(getContext(), v);
+                mPopup.getMenuInflater().inflate(R.menu.message_header_overflow_menu,
+                        mPopup.getMenu());
+                mPopup.setOnMenuItemClickListener(this);
             }
-            case R.id.edit_draft:
-                ComposeActivity.editDraft(getContext(), getAccount(), mMessage);
-                break;
-            case R.id.overflow: {
-                if (mPopup == null) {
-                    mPopup = new PopupMenu(getContext(), v);
-                    mPopup.getMenuInflater().inflate(R.menu.message_header_overflow_menu,
-                            mPopup.getMenu());
-                    mPopup.setOnMenuItemClickListener(this);
-                }
-                final boolean defaultReplyAll = getAccount().settings.replyBehavior
-                        == UIProvider.DefaultReplyBehavior.REPLY_ALL;
-                final Menu m = mPopup.getMenu();
-                m.findItem(R.id.reply).setVisible(defaultReplyAll);
-                m.findItem(R.id.reply_all).setVisible(!defaultReplyAll);
+            final boolean defaultReplyAll = getAccount().settings.replyBehavior
+                    == UIProvider.DefaultReplyBehavior.REPLY_ALL;
+            final Menu m = mPopup.getMenu();
+            m.findItem(R.id.reply).setVisible(defaultReplyAll);
+            m.findItem(R.id.reply_all).setVisible(!defaultReplyAll);
 
-                final boolean reportRendering = ENABLE_REPORT_RENDERING_PROBLEM
-                    && mCallbacks.supportsMessageTransforms();
-                m.findItem(R.id.report_rendering_improvement).setVisible(reportRendering);
-                m.findItem(R.id.report_rendering_problem).setVisible(reportRendering);
+            final boolean reportRendering = ENABLE_REPORT_RENDERING_PROBLEM
+                && mCallbacks.supportsMessageTransforms();
+            m.findItem(R.id.report_rendering_improvement).setVisible(reportRendering);
+            m.findItem(R.id.report_rendering_problem).setVisible(reportRendering);
 
-                mPopup.show();
-                break;
-            }
-            case R.id.details_collapsed_content:
-            case R.id.details_expanded_content:
-                toggleMessageDetails(v);
-                break;
-            case R.id.upper_header:
-                toggleExpanded();
-                break;
-            case R.id.show_pictures_text:
-                handleShowImagePromptClick(v);
-                break;
-            default:
-                LogUtils.i(LOG_TAG, "unrecognized header tap: %d", id);
-                handled = false;
-                break;
+            mPopup.show();
+        } else if (id == R.id.details_collapsed_content
+                || id == R.id.details_expanded_content) {
+            toggleMessageDetails(v);
+        } else if (id == R.id.upper_header) {
+            toggleExpanded();
+        } else if (id == R.id.show_pictures_text) {
+            handleShowImagePromptClick(v);
+        } else {
+            LogUtils.i(LOG_TAG, "unrecognized header tap: %d", id);
+            handled = false;
         }
         return handled;
     }

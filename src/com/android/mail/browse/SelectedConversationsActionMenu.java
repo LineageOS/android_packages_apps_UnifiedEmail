@@ -117,123 +117,104 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         boolean handled = true;
         // If the user taps a new menu item, commit any existing destructive actions.
         mListController.commitDestructiveActions(true);
-        switch (item.getItemId()) {
-            case R.id.delete:
-                LogUtils.i(LOG_TAG, "Delete selected from CAB menu");
-                performDestructiveAction(R.id.delete);
-                break;
-            case R.id.discard_drafts:
-                performDestructiveAction(R.id.discard_drafts);
-                break;
-            case R.id.archive:
-                LogUtils.i(LOG_TAG, "Archive selected from CAB menu");
-                performDestructiveAction(R.id.archive);
-                break;
-            case R.id.remove_folder:
-                destroy(R.id.remove_folder, mSelectionSet.values(),
-                        mUpdater.getDeferredRemoveFolder(mSelectionSet.values(), mFolder, true,
-                                true, true));
-                break;
-            case R.id.mute:
-                destroy(R.id.mute, mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
-                break;
-            case R.id.report_spam:
-                destroy(R.id.report_spam, mSelectionSet.values(),
-                        mUpdater.getBatchAction(R.id.report_spam));
-                break;
-            case R.id.mark_not_spam:
-                // Currently, since spam messages are only shown in list with other spam messages,
-                // marking a message not as spam is a destructive action
-                destroy (R.id.mark_not_spam,
-                        mSelectionSet.values(), mUpdater.getBatchAction(R.id.mark_not_spam)) ;
-                break;
-            case R.id.report_phishing:
-                destroy(R.id.report_phishing,
-                        mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_phishing));
-                break;
-            case R.id.read:
-                markConversationsRead(true);
-                break;
-            case R.id.unread:
-                markConversationsRead(false);
-                break;
-            case R.id.star:
-                starConversations(true);
-                break;
-            case R.id.remove_star:
-                if (mFolder.isType(UIProvider.FolderType.STARRED)) {
-                    LogUtils.d(LOG_TAG, "We are in a starred folder, removing the star");
-                    performDestructiveAction(R.id.remove_star);
-                } else {
-                    LogUtils.d(LOG_TAG, "Not in a starred folder.");
-                    starConversations(false);
-                }
-                break;
-            case R.id.move_to:
-                /* fall through */
-            case R.id.change_folder:
-                boolean cantMove = false;
-                Account acct = mAccount;
-                // Special handling for virtual folders
-                if (mFolder.supportsCapability(FolderCapabilities.IS_VIRTUAL)) {
-                    Uri accountUri = null;
-                    for (Conversation conv: mSelectionSet.values()) {
-                        if (accountUri == null) {
-                            accountUri = conv.accountUri;
-                        } else if (!accountUri.equals(conv.accountUri)) {
-                            // Tell the user why we can't do this
-                            Toast.makeText(mContext, R.string.cant_move_or_change_labels,
-                                    Toast.LENGTH_LONG).show();
-                            cantMove = true;
-                            break;
-                        }
-                    }
-                    if (!cantMove) {
-                        // Get the actual account here, so that we display its folders in the dialog
-                        acct = MailAppProvider.getAccountFromAccountUri(accountUri);
+        final int itemId = item.getItemId();
+        if (itemId == R.id.delete) {
+            LogUtils.i(LOG_TAG, "Delete selected from CAB menu");
+            performDestructiveAction(R.id.delete);
+        } else if (itemId == R.id.discard_drafts) {
+            performDestructiveAction(R.id.discard_drafts);
+        } else if (itemId == R.id.archive) {
+            LogUtils.i(LOG_TAG, "Archive selected from CAB menu");
+            performDestructiveAction(R.id.archive);
+        } else if (itemId == R.id.remove_folder) {
+            destroy(R.id.remove_folder, mSelectionSet.values(),
+                    mUpdater.getDeferredRemoveFolder(mSelectionSet.values(), mFolder, true,
+                            true, true));
+        } else if (itemId == R.id.mute) {
+            destroy(R.id.mute, mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
+        } else if (itemId == R.id.report_spam) {
+            destroy(R.id.report_spam, mSelectionSet.values(),
+                    mUpdater.getBatchAction(R.id.report_spam));
+        } else if (itemId == R.id.mark_not_spam) {
+            // Currently, since spam messages are only shown in list with other spam messages,
+            // marking a message not as spam is a destructive action
+            destroy (R.id.mark_not_spam,
+                    mSelectionSet.values(), mUpdater.getBatchAction(R.id.mark_not_spam)) ;
+        } else if (itemId == R.id.report_phishing) {
+            destroy(R.id.report_phishing,
+                    mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_phishing));
+        } else if (itemId == R.id.read) {
+            markConversationsRead(true);
+        } else if (itemId == R.id.unread) {
+            markConversationsRead(false);
+        } else if (itemId == R.id.star) {
+            starConversations(true);
+        } else if (itemId == R.id.remove_star) {
+            if (mFolder.isType(UIProvider.FolderType.STARRED)) {
+                LogUtils.d(LOG_TAG, "We are in a starred folder, removing the star");
+                performDestructiveAction(R.id.remove_star);
+            } else {
+                LogUtils.d(LOG_TAG, "Not in a starred folder.");
+                starConversations(false);
+            }
+        } else if (itemId == R.id.move_to || itemId == R.id.change_folder) {
+            boolean cantMove = false;
+            Account acct = mAccount;
+            // Special handling for virtual folders
+            if (mFolder.supportsCapability(FolderCapabilities.IS_VIRTUAL)) {
+                Uri accountUri = null;
+                for (Conversation conv: mSelectionSet.values()) {
+                    if (accountUri == null) {
+                        accountUri = conv.accountUri;
+                    } else if (!accountUri.equals(conv.accountUri)) {
+                        // Tell the user why we can't do this
+                        Toast.makeText(mContext, R.string.cant_move_or_change_labels,
+                                Toast.LENGTH_LONG).show();
+                        cantMove = true;
+                        return handled;
                     }
                 }
                 if (!cantMove) {
-                    final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
-                            mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder,
-                            item.getItemId() == R.id.move_to);
-                    if (dialog != null) {
-                        dialog.show();
-                    }
+                    // Get the actual account here, so that we display its folders in the dialog
+                    acct = MailAppProvider.getAccountFromAccountUri(accountUri);
                 }
-                break;
-            case R.id.move_to_inbox:
-                new AsyncTask<Void, Void, Folder>() {
-                    @Override
-                    protected Folder doInBackground(final Void... params) {
-                        // Get the "move to" inbox
-                        return Utils.getFolder(mContext, mAccount.settings.moveToInbox,
-                                true /* allowHidden */);
-                    }
+            }
+            if (!cantMove) {
+                final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
+                        mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder,
+                        item.getItemId() == R.id.move_to);
+                if (dialog != null) {
+                    dialog.show();
+                }
+            }
+        } else if (itemId == R.id.move_to_inbox) {
+            new AsyncTask<Void, Void, Folder>() {
+                @Override
+                protected Folder doInBackground(final Void... params) {
+                    // Get the "move to" inbox
+                    return Utils.getFolder(mContext, mAccount.settings.moveToInbox,
+                            true /* allowHidden */);
+                }
 
-                    @Override
-                    protected void onPostExecute(final Folder moveToInbox) {
-                        final List<FolderOperation> ops = Lists.newArrayListWithCapacity(1);
-                        // Add inbox
-                        ops.add(new FolderOperation(moveToInbox, true));
-                        mUpdater.assignFolder(ops, mSelectionSet.values(), true,
-                                true /* showUndo */, false /* isMoveTo */);
-                    }
-                }.execute((Void[]) null);
-                break;
-            case R.id.mark_important:
-                markConversationsImportant(true);
-                break;
-            case R.id.mark_not_important:
-                if (mFolder.supportsCapability(UIProvider.FolderCapabilities.ONLY_IMPORTANT)) {
-                    performDestructiveAction(R.id.mark_not_important);
-                } else {
-                    markConversationsImportant(false);
+                @Override
+                protected void onPostExecute(final Folder moveToInbox) {
+                    final List<FolderOperation> ops = Lists.newArrayListWithCapacity(1);
+                    // Add inbox
+                    ops.add(new FolderOperation(moveToInbox, true));
+                    mUpdater.assignFolder(ops, mSelectionSet.values(), true,
+                            true /* showUndo */, false /* isMoveTo */);
                 }
-                break;
-            default:
-                handled = false;
-                break;
+            }.execute((Void[]) null);
+        } else if (itemId == R.id.mark_important) {
+            markConversationsImportant(true);
+        } else if (itemId == R.id.mark_not_important) {
+            if (mFolder.supportsCapability(UIProvider.FolderCapabilities.ONLY_IMPORTANT)) {
+                performDestructiveAction(R.id.mark_not_important);
+            } else {
+                markConversationsImportant(false);
+            }
+        } else {
+            handled = false;
         }
         return handled;
     }
@@ -268,16 +249,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         if (showDialog) {
             mUpdater.makeDialogListener(action, true /* fromSelectedSet */);
             final int resId;
-            switch (action) {
-                case R.id.delete:
-                    resId = R.plurals.confirm_delete_conversation;
-                    break;
-                case R.id.discard_drafts:
-                    resId = R.plurals.confirm_discard_drafts_conversation;
-                    break;
-                default:
-                    resId = R.plurals.confirm_archive_conversation;
-                    break;
+            if (action == R.id.delete) {
+                resId = R.plurals.confirm_delete_conversation;
+            } else if (action == R.id.discard_drafts) {
+                resId = R.plurals.confirm_discard_drafts_conversation;
+            } else {
+                resId = R.plurals.confirm_archive_conversation;
             }
             final CharSequence message = Utils.formatPlural(mContext, resId, conversations.size());
             final ConfirmDialogFragment c = ConfirmDialogFragment.newInstance(message);
