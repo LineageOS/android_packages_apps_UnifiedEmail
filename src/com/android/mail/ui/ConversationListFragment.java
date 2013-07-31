@@ -583,7 +583,7 @@ public final class ConversationListFragment extends ListFragment implements
      * <pre>
      *              | Checkboxes | No Checkboxes
      *    ----------+------------+---------------
-     *    CAB mode  |   Select   |     Select
+     *    CAB mode  |    Peek    |     Select
      *    List mode |    Peek    |      Peek
      * </pre>
      *
@@ -597,7 +597,7 @@ public final class ConversationListFragment extends ListFragment implements
             final FolderSelector selector = mActivity.getFolderSelector();
             selector.onFolderSelected(((NestedFolderView) view).getFolder());
         } else if (view instanceof ToggleableItem) {
-            if (!mSelectedSet.isEmpty()) {
+            if (false && !mSelectedSet.isEmpty()) { // TODO(skennedy) This lets us peek
                 ((ToggleableItem) view).toggleSelectedState();
             } else {
                 viewConversation(position);

@@ -1655,9 +1655,21 @@ public class ConversationItemView extends View
 
     private boolean isTouchInContactPhoto(float x, float y) {
         // Everything before the right edge of contact photo
+
+        final int threshold = mCoordinates.contactImagesX + mCoordinates.contactImagesWidth
+                + sSenderImageTouchSlop;
+
+        // Allow touching a little right of the contact photo when we're already in selection mode
+        final float extra;
+        if (mSelectedConversationSet.isEmpty()) {
+            extra = 0;
+        } else {
+            extra = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
+                    getResources().getDisplayMetrics());
+        }
+
         return mHeader.gadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
-                && x < mCoordinates.contactImagesX + mCoordinates.contactImagesWidth
-                        + sSenderImageTouchSlop
+                && x < (threshold + extra)
                 && (!isAttachmentPreviewsEnabled() || y < mCoordinates.attachmentPreviewsY);
     }
 
