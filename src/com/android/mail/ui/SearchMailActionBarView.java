@@ -26,6 +26,7 @@ import android.widget.SearchView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.utils.Utils;
+import com.android.mail.R;
 
 /**
  * This class is used to show a custom actionbar for the search activity. This doesn't have any
@@ -48,6 +49,7 @@ public class SearchMailActionBarView extends MailActionBarView {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        Utils.setMenuItemVisibility(menu, R.id.manage_folders_item, false);
         switch (getMode()) {
             case ViewMode.SEARCH_RESULTS_LIST:
                 setSearchQueryTerm();
