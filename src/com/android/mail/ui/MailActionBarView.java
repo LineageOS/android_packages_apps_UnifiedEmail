@@ -246,24 +246,22 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     public int getOptionsMenuId() {
-        // Relies on the ordering of the view modes, since they are integer constants.
-        final int[] modeMenu = {
-                // 0: UNKNOWN
-                R.menu.conversation_list_menu,
-                // 1: CONVERSATION
-                R.menu.conversation_actions,
-                // 2: CONVERSATION_LIST
-                R.menu.conversation_list_menu,
-                // 3: FOLDER_LIST
-                R.menu.folder_list_menu,
-                // 4: SEARCH_RESULTS_LIST
-                R.menu.conversation_list_search_results_actions,
-                // 5: SEARCH_RESULTS_CONVERSATION
-                R.menu.conversation_actions,
-                // 6: WAITING_FOR_ACCOUNT_INITIALIZATION
-                R.menu.wait_mode_actions
-        };
-        return modeMenu[mMode];
+        switch (mMode) {
+            case ViewMode.UNKNOWN:
+                return R.menu.conversation_list_menu;
+            case ViewMode.CONVERSATION:
+                return R.menu.conversation_actions;
+            case ViewMode.CONVERSATION_LIST:
+                return R.menu.conversation_list_menu;
+            case ViewMode.SEARCH_RESULTS_LIST:
+                return R.menu.conversation_list_search_results_actions;
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                return R.menu.conversation_actions;
+            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
+                return R.menu.wait_mode_actions;
+        }
+        LogUtils.wtf(LOG_TAG, "Menu requested for unknown view mode");
+        return R.menu.conversation_list_menu;
     }
 
     public void initialize(ControllableActivity activity, ActivityController callback,
