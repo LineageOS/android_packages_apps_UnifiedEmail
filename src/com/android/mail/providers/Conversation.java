@@ -94,7 +94,6 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#ATTACHMENT_PREVIEWS_COUNT
      */
     public int attachmentPreviewsCount;
-    public Uri attachmentPreviewsListUri;
     /**
      * @see UIProvider.ConversationColumns#MESSAGE_LIST_URI
      */
@@ -242,7 +241,6 @@ public class Conversation implements Parcelable {
         dest.writeString(attachmentPreviewUri1);
         dest.writeInt(attachmentPreviewStates);
         dest.writeInt(attachmentPreviewsCount);
-        dest.writeParcelable(attachmentPreviewsListUri, 0);
     }
 
     private Conversation(Parcel in, ClassLoader loader) {
@@ -279,7 +277,6 @@ public class Conversation implements Parcelable {
         attachmentPreviewUri1 = in.readString();
         attachmentPreviewStates = in.readInt();
         attachmentPreviewsCount = in.readInt();
-        attachmentPreviewsListUri = in.readParcelable(null);
     }
 
     @Override
@@ -372,8 +369,6 @@ public class Conversation implements Parcelable {
                     UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN);
             attachmentPreviewsCount = cursor.getInt(
                     UIProvider.CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN);
-            attachmentPreviewsListUri = Utils.getValidUri(cursor
-                    .getString(UIProvider.CONVERSATION_ATTACHMENT_PREVIEWS_LIST_URI_COLUMN));
         }
     }
 
@@ -417,7 +412,6 @@ public class Conversation implements Parcelable {
         attachmentPreviewUri1 = other.attachmentPreviewUri1;
         attachmentPreviewStates = other.attachmentPreviewStates;
         attachmentPreviewsCount = other.attachmentPreviewsCount;
-        attachmentPreviewsListUri = other.attachmentPreviewsListUri;
     }
 
     public Conversation() {
@@ -430,7 +424,7 @@ public class Conversation implements Parcelable {
             boolean spam, boolean phishing, boolean muted, Uri accountUri,
             ConversationInfo conversationInfo, Uri conversationBase, boolean isRemote,
             String attachmentPreviewUri0, String attachmentPreviewUri1, int attachmentPreviewStates,
-            int attachmentPreviewsCount, Uri attachmentPreviewsListUri) {
+            int attachmentPreviewsCount) {
         final Conversation conversation = new Conversation();
 
         conversation.id = id;
@@ -464,7 +458,6 @@ public class Conversation implements Parcelable {
         conversation.attachmentPreviewUri1 = attachmentPreviewUri1;
         conversation.attachmentPreviewStates = attachmentPreviewStates;
         conversation.attachmentPreviewsCount = attachmentPreviewsCount;
-        conversation.attachmentPreviewsListUri = attachmentPreviewsListUri;
         return conversation;
     }
 

@@ -927,7 +927,6 @@ public class UIProvider {
         ConversationColumns.ATTACHMENT_PREVIEW_URI1,
         ConversationColumns.ATTACHMENT_PREVIEW_STATES,
         ConversationColumns.ATTACHMENT_PREVIEWS_COUNT,
-        ConversationColumns.ATTACHMENT_PREVIEWS_LIST_URI
     };
 
     /**
@@ -969,7 +968,6 @@ public class UIProvider {
     public static final int CONVERSATION_ATTACHMENT_PREVIEW_URI1_COLUMN = 27;
     public static final int CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN = 28;
     public static final int CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN = 29;
-    public static final int CONVERSATION_ATTACHMENT_PREVIEWS_LIST_URI_COLUMN = 30;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -1176,12 +1174,6 @@ public class UIProvider {
          * total count may be higher than the number of ATTACHMENT_PREVIEW_URI columns.
          */
         public static final String ATTACHMENT_PREVIEWS_COUNT = "attachmentPreviewsCount";
-
-        /**
-         * This String column contains the image list uri for the first unread message. We can
-         * pass this uri to the MailPhotoViewActivity to view all images.
-         */
-        public static final String ATTACHMENT_PREVIEWS_LIST_URI = "attachmentPreviewsListUri";
 
         private ConversationColumns() {
         }
