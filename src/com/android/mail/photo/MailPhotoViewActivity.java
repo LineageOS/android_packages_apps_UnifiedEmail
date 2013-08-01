@@ -234,7 +234,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     }
 
     @Override
-    public void onFragmentVisible(Fragment fragment) {
+    public void onFragmentVisible(PhotoViewFragment fragment) {
         super.onFragmentVisible(fragment);
         final Attachment attachment = getCurrentAttachment();
         if (attachment.state == AttachmentState.PAUSED) {
