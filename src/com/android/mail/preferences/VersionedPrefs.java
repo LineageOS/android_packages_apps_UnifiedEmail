@@ -70,7 +70,7 @@ public abstract class VersionedPrefs {
         setCurrentVersion(CURRENT_VERSION_NUMBER);
 
         if (!hasMigrationCompleted()) {
-            final boolean migrationComplete = new PreferenceMigrator()
+            final boolean migrationComplete = PreferenceMigratorHolder.createPreferenceMigrator()
                     .performMigration(context, oldVersion, CURRENT_VERSION_NUMBER);
 
             if (migrationComplete) {
