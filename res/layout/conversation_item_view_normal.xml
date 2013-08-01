@@ -96,11 +96,19 @@
                     android:includeFontPadding="false"
                     android:text="@string/long_string" />
 
+                <ImageView
+                    android:id="@+id/info_icon"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="4dp" />
+
                 <TextView
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_toLeftOf="@id/info_icon"
                     android:layout_marginTop="12dp"
                     android:paddingLeft="8dp"
                     android:textSize="12sp"
@@ -140,6 +148,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="-1dp"
+                    android:layout_marginRight="-9dp"
                     android:src="@drawable/ic_btn_star_off" />
 
                 <TextView

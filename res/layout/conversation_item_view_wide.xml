@@ -128,6 +128,13 @@
                     android:includeFontPadding="false"
                     android:text="@string/date" />
 
+                <ImageView
+                    android:id="@+id/info_icon"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginTop="-3dp"
+                    android:layout_marginLeft="4dp" />
+
                 <!-- align to bottom of subject text -->
                 <ImageView
                     android:id="@+id/star"
