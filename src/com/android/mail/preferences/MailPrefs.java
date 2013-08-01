@@ -281,11 +281,11 @@ public final class MailPrefs extends VersionedPrefs {
         notifyBackupPreferenceChanged();
     }
 
-    void setSenderWhitelist(Set<String> addresses) {
+    public void setSenderWhitelist(Set<String> addresses) {
         getEditor().putStringSet(PreferenceKeys.DISPLAY_IMAGES, addresses).apply();
         notifyBackupPreferenceChanged();
     }
-    void setSenderWhitelistPatterns(Set<String> patterns) {
+    public void setSenderWhitelistPatterns(Set<String> patterns) {
         getEditor().putStringSet(PreferenceKeys.DISPLAY_IMAGES_PATTERNS, patterns).apply();
         notifyBackupPreferenceChanged();
     }

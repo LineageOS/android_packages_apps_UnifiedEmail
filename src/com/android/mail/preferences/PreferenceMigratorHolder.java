@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Google Inc.
+ * Copyright (C) 2013 Google Inc.
  * Licensed to The Android Open Source Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,15 +16,21 @@
  */
 package com.android.mail.preferences;
 
-import android.content.Context;
-
 /**
- * Basic {@link BasePreferenceMigrator} implementation. Projects that extend UnifiedEmail need a
- * class with the same name and package that actually performs migration (if necessary).
+ * Holds a {@link PreferenceMigratorCreator} to be used for migrating preferences.
  */
-public class PreferenceMigrator extends BasePreferenceMigrator {
-    @Override
-    protected void migrate(final Context context, final int oldVersion, final int newVersion) {
-        // Nothing required here.
+public class PreferenceMigratorHolder {
+    public interface PreferenceMigratorCreator {
+        BasePreferenceMigrator createPreferenceMigrator();
+    }
+
+    private static PreferenceMigratorCreator sCreator;
+
+    public static void setPreferenceMigratorCreator(final PreferenceMigratorCreator creator) {
+        sCreator = creator;
+    }
+
+    public static BasePreferenceMigrator createPreferenceMigrator() {
+        return sCreator.createPreferenceMigrator();
     }
 }
