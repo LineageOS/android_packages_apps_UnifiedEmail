@@ -61,18 +61,19 @@ public abstract class BitmapUtils {
         final int srcCroppedW = Math.round(dstW * scale);
         final int srcCroppedH = Math.round(dstH * scale);
         final int srcCroppedSliceH = Math.round(dstSliceH * scale);
+        final int srcHalfSliceH = Math.min(srcCroppedSliceH, srcH) / 2;
 
         outRect.left = (srcW - srcCroppedW) / 2;
         outRect.right = outRect.left + srcCroppedW;
 
         final int centerV;
         if (absoluteFrac) {
-            final int minCenterV = srcCroppedH / 2;
-            final int maxCenterV = srcH - srcCroppedH / 2;
+            final int minCenterV = srcHalfSliceH;
+            final int maxCenterV = srcH - srcHalfSliceH;
             centerV = Math.max(minCenterV, Math.min(maxCenterV, Math.round(srcH * vertSliceFrac)));
         } else {
             centerV = Math
-                    .round(Math.abs(srcH - srcCroppedSliceH) * vertSliceFrac + srcCroppedH / 2);
+                    .round(Math.abs(srcH - srcCroppedSliceH) * vertSliceFrac + srcHalfSliceH);
         }
 
         outRect.top = centerV - srcCroppedH / 2;
