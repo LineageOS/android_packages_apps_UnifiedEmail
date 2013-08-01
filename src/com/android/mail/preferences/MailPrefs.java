@@ -273,7 +273,7 @@ public final class MailPrefs extends VersionedPrefs {
         // Using an int instead of boolean here in case we need to reshow the tip (don't have
         // to use a new preference name).
         return getSharedPreferences()
-                .getInt(PreferenceKeys.LONG_PRESS_TO_SELECT_TIP_SHOWN, 0) > 1;
+                .getInt(PreferenceKeys.LONG_PRESS_TO_SELECT_TIP_SHOWN, 0) > 0;
     }
 
     public void setLongPressToSelectTipAlreadyShown() {
