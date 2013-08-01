@@ -66,6 +66,13 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     public static final boolean ENABLE_ATTACHMENT_PARALLAX = true;
 
     /**
+     * Set to true to queue finished decodes in an aggregator so that we display decoded attachment
+     * previews in an ordered fashion. This artificially delays updating the UI with decoded images,
+     * since they may have to wait on another image to finish decoding first.
+     */
+    public static final boolean ENABLE_ATTACHMENT_DECODE_AGGREGATOR = true;
+
+    /**
      * The amount of extra vertical space to decode in attachment previews so we have image data to
      * pan within. 1.0 implies no parallax effect.
      */

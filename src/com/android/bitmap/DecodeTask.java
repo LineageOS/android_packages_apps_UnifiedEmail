@@ -68,6 +68,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
          */
         void onDecodeBegin(Request key);
         void onDecodeComplete(Request key, ReusableBitmap result);
+        void onDecodeCancel(Request key);
     }
 
     public DecodeTask(Request key, int w, int h, int bufferW, int bufferH, BitmapView view,
@@ -109,14 +110,15 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
             } else {
                 BitmapFactory.decodeStream(in, null, mOpts);
             }
+            Trace.endSection();
 
             if (isCancelled()) {
                 return null;
             }
-            Trace.endSection();
             final int srcW = mOpts.outWidth;
             final int srcH = mOpts.outHeight;
 
+            Trace.beginSection("create reusable bitmap");
             mOpts.inJustDecodeBounds = false;
             mOpts.inMutable = true;
             mOpts.inSampleSize = calculateSampleSize(srcW, srcH, mDestW, mDestH);
@@ -137,6 +139,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 }
                 mOpts.inBitmap = mInBitmap.bmp;
             }
+            Trace.endSection();
 
             if (isCancelled()) {
                 return null;
@@ -316,6 +319,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
 
     @Override
     protected void onCancelled(ReusableBitmap result) {
+        mView.onDecodeCancel(mKey);
         if (result == null) {
             return;
         }
