@@ -90,19 +90,22 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         // enqueue the 'onDecodeBegin' signal on the main thread
         publishProgress();
 
-        Trace.beginSection("decodeBounds");
         ReusableBitmap result = null;
         AssetFileDescriptor fd = null;
         InputStream in = null;
         try {
+            Trace.beginSection("create fd or stream");
             fd = mKey.createFd();
             if (fd == null) {
                 in = mKey.createInputStream();
                 if (in != null && !in.markSupported()) {
+                    Trace.endSection();
                     throw new IllegalArgumentException("input stream must support reset()");
                 }
             }
+            Trace.endSection();
 
+            Trace.beginSection("decodeBounds");
             mOpts.inJustDecodeBounds = true;
             if (fd != null) {
                 BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, mOpts);
@@ -117,18 +120,21 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
             final int srcW = mOpts.outWidth;
             final int srcH = mOpts.outHeight;
 
-            Trace.beginSection("create reusable bitmap");
             mOpts.inJustDecodeBounds = false;
             mOpts.inMutable = true;
             mOpts.inSampleSize = calculateSampleSize(srcW, srcH, mDestW, mDestH);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                Trace.beginSection("poll for reusable bitmap");
                 mInBitmap = mCache.poll();
+                Trace.endSection();
                 if (mInBitmap == null) {
                     if (DEBUG) System.err.println(
                             "decode thread wants a bitmap. cache dump:\n" + mCache.toDebugString());
+                    Trace.beginSection("create reusable bitmap");
                     mInBitmap = new ReusableBitmap(
                             Bitmap.createBitmap(mDestBufferW, mDestBufferH,
                                     Bitmap.Config.ARGB_8888));
+                    Trace.endSection();
                     if (DEBUG) System.err.println("*** allocated new bitmap in decode thread: "
                             + mInBitmap + " key=" + mKey);
                 } else {
@@ -138,7 +144,6 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 }
                 mOpts.inBitmap = mInBitmap.bmp;
             }
-            Trace.endSection();
 
             if (isCancelled()) {
                 return null;
