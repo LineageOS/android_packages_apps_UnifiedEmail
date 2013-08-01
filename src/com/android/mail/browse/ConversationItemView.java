@@ -70,7 +70,6 @@ import com.android.mail.R.integer;
 import com.android.mail.R.string;
 import com.android.mail.bitmap.AttachmentDrawable;
 import com.android.mail.bitmap.AttachmentGridDrawable;
-import com.android.mail.bitmap.ImageAttachmentRequest;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.ContactPhotoManager;
@@ -559,7 +558,7 @@ public class ConversationItemView extends View
                 // unbind the attachments view (releasing bitmap references)
                 // (this also cancels all async tasks)
                 for (int i = 0, len = mAttachmentsView.getCount(); i < len; i++) {
-                    mAttachmentsView.getOrCreateDrawable(i).setImage(null);
+                    mAttachmentsView.getOrCreateDrawable(i).unbind();
                 }
                 // reset the grid, as the newly bound item may have a different attachment count
                 mAttachmentsView.setCount(0);
@@ -925,7 +924,7 @@ public class ConversationItemView extends View
 
         mAttachmentsView.setCoordinates(mCoordinates);
         mAttachmentsView.setCount(displayCount);
-        mAttachmentsView.setDecodeWidth(mCoordinates.attachmentPreviewsWidth);
+
         final int decodeHeight;
         // if parallax is enabled, increase the desired vertical size of attachment bitmaps
         // so we have extra pixels to scroll within
@@ -935,7 +934,11 @@ public class ConversationItemView extends View
         } else {
             decodeHeight = mCoordinates.attachmentPreviewsDecodeHeight;
         }
-        mAttachmentsView.setDecodeHeight(decodeHeight);
+
+        // set the bounds before binding inner drawables so they can decode right away
+        // (they need the their bounds set to know whether to decode to 1x1 or 2x1 dimens)
+        mAttachmentsView.setBounds(0, 0, mCoordinates.attachmentPreviewsWidth,
+                mCoordinates.attachmentPreviewsHeight);
 
         for (int i = 0; i < displayCount; i++) {
             Utils.traceBeginSection("setup single attachment preview");
@@ -959,18 +962,15 @@ public class ConversationItemView extends View
                     "creating/setting drawable region in CIV=%s canvas=%s rend=%s uri=%s",
                     this, mAttachmentsView, bestAvailableRendition, uri);
             final AttachmentDrawable ad = mAttachmentsView.getOrCreateDrawable(i);
+            ad.setDecodeDimensions(mCoordinates.attachmentPreviewsWidth, decodeHeight);
             if (bestAvailableRendition != -1) {
-                ad.setImage(
-                        new ImageAttachmentRequest(getContext(), uri, bestAvailableRendition));
+                ad.bind(getContext(), uri, bestAvailableRendition);
             } else {
                 ad.showStaticPlaceholder();
             }
 
             Utils.traceEndSection();
         }
-
-        mAttachmentsView.setBounds(0, 0, mCoordinates.attachmentPreviewsWidth,
-                mCoordinates.attachmentPreviewsHeight);
 
         Utils.traceEndSection();
     }

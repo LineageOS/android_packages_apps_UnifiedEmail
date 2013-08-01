@@ -56,6 +56,9 @@ public abstract class CompositeDrawable<T extends Drawable> extends Drawable
             result = createDivisionDrawable();
             mDrawables.set(i, result);
             result.setCallback(this);
+            // Make sure drawables created after the bounds were already set have their bounds
+            // set initially (the other unaffected drawables basically de-bounce this).
+            onBoundsChange(getBounds());
         }
         return result;
     }
@@ -69,27 +72,35 @@ public abstract class CompositeDrawable<T extends Drawable> extends Drawable
         switch (mCount) {
             case 1:
                 // 1 bitmap: passthrough
-                mDrawables.get(0).setBounds(bounds);
+                applyBounds(0, 0, 0, w, h);
                 break;
             case 2:
                 // 2 bitmaps split vertically
-                mDrawables.get(0).setBounds(0, 0, mw, h);
-                mDrawables.get(1).setBounds(mw, 0, w, h);
+                applyBounds(0, 0, 0, mw, h);
+                applyBounds(1, mw, 0, w, h);
                 break;
             case 3:
                 // 1st is tall on the left, 2nd/3rd stacked vertically on the right
-                mDrawables.get(0).setBounds(0, 0, mw, h);
-                mDrawables.get(1).setBounds(mw, 0, w, mh);
-                mDrawables.get(2).setBounds(mw, mh, w, h);
+                applyBounds(0, 0, 0, mw, h);
+                applyBounds(1, mw, 0, w, mh);
+                applyBounds(2, mw, mh, w, h);
                 break;
             case 4:
                 // 4 bitmaps in a 2x2 grid
-                mDrawables.get(0).setBounds(0, 0, mw, mh);
-                mDrawables.get(1).setBounds(mw, 0, w, mh);
-                mDrawables.get(2).setBounds(0, mh, mw, h);
-                mDrawables.get(3).setBounds(mw, mh, w, h);
+                applyBounds(0, 0, 0, mw, mh);
+                applyBounds(1, mw, 0, w, mh);
+                applyBounds(2, 0, mh, mw, h);
+                applyBounds(3, mw, mh, w, h);
                 break;
         }
+    }
+
+    private void applyBounds(int index, int left, int top, int right, int bottom) {
+        final T d = mDrawables.get(index);
+        if (d == null) {
+            return;
+        }
+        d.setBounds(left, top, right, bottom);
     }
 
     @Override
