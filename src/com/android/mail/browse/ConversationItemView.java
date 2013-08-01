@@ -515,12 +515,12 @@ public class ConversationItemView extends View
     public void bindAd(final ConversationItemViewModel conversationItemViewModel,
             final ControllableActivity activity,
             final ConversationListListener conversationListListener, final Folder folder,
-            final AnimatedAdapter adapter, final int backgroundOverrideResId,
-            final Bitmap photoBitmap) {
+            final int checkboxOrSenderImage, final AnimatedAdapter adapter,
+            final int backgroundOverrideResId, final Bitmap photoBitmap) {
         Utils.traceBeginSection("CIVC.bindAd");
         bind(conversationItemViewModel, activity, conversationListListener, null /* set */, folder,
-                ConversationListIcon.SENDER_IMAGE, true /* swipeEnabled */,
-                false /* priorityArrowEnabled */, adapter, backgroundOverrideResId, photoBitmap);
+                checkboxOrSenderImage, true /* swipeEnabled */, false /* priorityArrowEnabled */,
+                adapter, backgroundOverrideResId, photoBitmap);
         Utils.traceEndSection();
     }
 
