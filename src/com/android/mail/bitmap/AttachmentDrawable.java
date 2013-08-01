@@ -20,9 +20,11 @@ import com.android.bitmap.BitmapCache;
 import com.android.bitmap.BitmapUtils;
 import com.android.bitmap.DecodeTask;
 import com.android.bitmap.DecodeTask.Request;
+import com.android.bitmap.ContiguousFIFOAggregator;
 import com.android.bitmap.ReusableBitmap;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewCoordinates;
+import com.android.mail.ui.SwipeableListView;
 import com.android.mail.utils.LogUtils;
 
 import java.util.concurrent.Executor;
@@ -43,6 +45,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     private ImageAttachmentRequest mCurrKey;
     private ReusableBitmap mBitmap;
     private final BitmapCache mCache;
+    private final ContiguousFIFOAggregator mDecodeAggregator;
     private DecodeTask mTask;
     private int mDecodeWidth;
     private int mDecodeHeight;
@@ -80,10 +83,12 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     public final String LOG_TAG = "AttachPreview";
 
     public AttachmentDrawable(Resources res, BitmapCache cache,
-            ConversationItemViewCoordinates coordinates, Drawable placeholder, Drawable progress) {
+            ContiguousFIFOAggregator decodeAggregator, ConversationItemViewCoordinates coordinates,
+            Drawable placeholder, Drawable progress) {
         mCoordinates = coordinates;
         mDensity = res.getDisplayMetrics().density;
         mCache = cache;
+        this.mDecodeAggregator = decodeAggregator;
         mPaint.setFilterBitmap(true);
 
         final int fadeOutDurationMs = res.getInteger(R.integer.ap_fade_animation_duration);
@@ -124,7 +129,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         setImage(new ImageAttachmentRequest(context, lookupUri, rendition, bounds.width()));
     }
 
-    private void setImage(ImageAttachmentRequest key) {
+    private void setImage(final ImageAttachmentRequest key) {
         if (mCurrKey != null && mCurrKey.equals(key)) {
             return;
         }
@@ -137,6 +142,9 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
             mBitmap.releaseReference();
 //            System.out.println("view.bind() decremented ref to old bitmap: " + mBitmap);
             mBitmap = null;
+        }
+        if (mCurrKey != null && SwipeableListView.ENABLE_ATTACHMENT_DECODE_AGGREGATOR) {
+            mDecodeAggregator.forget(mCurrKey);
         }
         mCurrKey = key;
 
@@ -232,13 +240,16 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     }
 
     @Override
-    public void onDecodeBegin(Request key) {
+    public void onDecodeBegin(final Request key) {
         if (!key.equals(mCurrKey)) {
             return;
         }
         // normally, we'd transition to the LOADING state now, but we want to delay that a bit
         // to minimize excess occurrences of the rotating spinner
         mHandler.postDelayed(this, mProgressDelayMs);
+        if (SwipeableListView.ENABLE_ATTACHMENT_DECODE_AGGREGATOR) {
+            mDecodeAggregator.expect(key);
+        }
     }
 
     @Override
@@ -249,7 +260,25 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     }
 
     @Override
-    public void onDecodeComplete(Request key, ReusableBitmap result) {
+    public void onDecodeComplete(final Request key, final ReusableBitmap result) {
+        if (SwipeableListView.ENABLE_ATTACHMENT_DECODE_AGGREGATOR) {
+            mDecodeAggregator.execute(key, new Runnable() {
+                @Override
+                public void run() {
+                    onDecodeCompleteImpl(key, result);
+                }
+
+                @Override
+                public String toString() {
+                    return "DONE";
+                }
+            });
+        } else {
+            onDecodeCompleteImpl(key, result);
+        }
+    }
+
+    private void onDecodeCompleteImpl(final Request key, final ReusableBitmap result) {
         if (key.equals(mCurrKey)) {
             setBitmap(result);
         } else {
@@ -258,6 +287,13 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
             if (result != null) {
                 result.releaseReference();
             }
+        }
+    }
+
+    @Override
+    public void onDecodeCancel(final Request key) {
+        if (SwipeableListView.ENABLE_ATTACHMENT_DECODE_AGGREGATOR) {
+            mDecodeAggregator.forget(key);
         }
     }
 
@@ -467,5 +503,4 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         }
 
     }
-
 }

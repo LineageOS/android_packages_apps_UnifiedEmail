@@ -574,6 +574,7 @@ public class ConversationItemView extends View
         mSwipeEnabled = swipeEnabled;
         mAdapter = adapter;
         mAttachmentsView.setBitmapCache(mAdapter.getBitmapCache());
+        mAttachmentsView.setDecodeAggregator(mAdapter.getDecodeAggregator());
 
         if (checkboxOrSenderImage == ConversationListIcon.SENDER_IMAGE) {
             mGadgetMode = ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO;
@@ -961,12 +962,12 @@ public class ConversationItemView extends View
             LogUtils.d(LOG_TAG,
                     "creating/setting drawable region in CIV=%s canvas=%s rend=%s uri=%s",
                     this, mAttachmentsView, bestAvailableRendition, uri);
-            final AttachmentDrawable ad = mAttachmentsView.getOrCreateDrawable(i);
-            ad.setDecodeDimensions(mCoordinates.attachmentPreviewsWidth, decodeHeight);
+            final AttachmentDrawable drawable = mAttachmentsView.getOrCreateDrawable(i);
+            drawable.setDecodeDimensions(mCoordinates.attachmentPreviewsWidth, decodeHeight);
             if (bestAvailableRendition != -1) {
-                ad.bind(getContext(), uri, bestAvailableRendition);
+                drawable.bind(getContext(), uri, bestAvailableRendition);
             } else {
-                ad.showStaticPlaceholder();
+                drawable.showStaticPlaceholder();
             }
 
             Utils.traceEndSection();
