@@ -23,11 +23,13 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
     private final Context mContext;
     private final String mLookupUri;
     private final int mRendition;
+    public final int mDestW;
 
-    public ImageAttachmentRequest(Context context, String lookupUri, int rendition) {
+    public ImageAttachmentRequest(Context context, String lookupUri, int rendition, int destW) {
         mContext = context;
         mLookupUri = lookupUri;
         mRendition = rendition;
+        mDestW = destW;
     }
 
     @Override
@@ -36,7 +38,8 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
             return false;
         }
         final ImageAttachmentRequest other = (ImageAttachmentRequest) o;
-        return TextUtils.equals(mLookupUri, other.mLookupUri) && mRendition == other.mRendition;
+        return TextUtils.equals(mLookupUri, other.mLookupUri) && mRendition == other.mRendition
+                && mDestW == other.mDestW;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
         int hash = 17;
         hash += 31 * hash + mLookupUri.hashCode();
         hash += 31 * hash + mRendition;
+        hash += 31 * hash + mDestW;
         return hash;
     }
 
@@ -55,6 +59,8 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
         sb.append(mLookupUri);
         sb.append(" rendition=");
         sb.append(mRendition);
+        sb.append(" w=");
+        sb.append(mDestW);
         sb.append("]");
         return sb.toString();
     }
@@ -65,7 +71,8 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
      *
      */
     public boolean matches(ImageAttachmentRequest other) {
-        return other != null && TextUtils.equals(mLookupUri, other.mLookupUri);
+        return other != null && TextUtils.equals(mLookupUri, other.mLookupUri)
+                && mDestW == other.mDestW;
     }
 
     @Override

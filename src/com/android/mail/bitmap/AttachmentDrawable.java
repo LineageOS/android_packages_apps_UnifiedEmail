@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -102,19 +103,28 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         return mCurrKey;
     }
 
-    public void setDecodeWidth(int width) {
-        mDecodeWidth = width;
-    }
-
-    public void setDecodeHeight(int height) {
-        mDecodeHeight = height;
+    public void setDecodeDimensions(int w, int h) {
+        mDecodeWidth = w;
+        mDecodeHeight = h;
     }
 
     public void showStaticPlaceholder() {
         setLoadState(LOAD_STATE_FAILED);
     }
 
-    public void setImage(ImageAttachmentRequest key) {
+    public void unbind() {
+        setImage(null);
+    }
+
+    public void bind(Context context, String lookupUri, int rendition) {
+        final Rect bounds = getBounds();
+        if (bounds.isEmpty()) {
+            throw new IllegalStateException("AttachmentDrawable must have bounds set before bind");
+        }
+        setImage(new ImageAttachmentRequest(context, lookupUri, rendition, bounds.width()));
+    }
+
+    private void setImage(ImageAttachmentRequest key) {
         if (mCurrKey != null && mCurrKey.equals(key)) {
             return;
         }
@@ -262,30 +272,37 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
 
     private void decode(boolean executeStateChange) {
         final int w;
-        final int h;
+        final int bufferW;
+        final int bufferH;
+
+        if (mCurrKey == null) {
+            return;
+        }
 
         if (LIMIT_BITMAP_DENSITY) {
             final float scale =
                     Math.min(1f, (float) MAX_BITMAP_DENSITY / DisplayMetrics.DENSITY_DEFAULT
                             / mDensity);
-            w = (int) (mDecodeWidth * scale);
-            h = (int) (mDecodeHeight * scale);
+            w = (int) (mCurrKey.mDestW * scale);
+            bufferW = (int) (mDecodeWidth * scale);
+            bufferH = (int) (mDecodeHeight * scale);
         } else {
-            w = mDecodeWidth;
-            h = mDecodeHeight;
+            w = mCurrKey.mDestW;
+            bufferW = mDecodeWidth;
+            bufferH = mDecodeHeight;
         }
 
-        if (w == 0 || h == 0 || mCurrKey == null) {
+        if (w == 0 || bufferH == 0) {
             return;
         }
-//        System.out.println("ITEM " + this + " w=" + w + " h=" + h);
+//        System.out.println("ITEM " + this + " w=" + w + " h=" + bufferH + " key=" + mCurrKey);
         if (mTask != null) {
             mTask.cancel();
         }
         if (executeStateChange) {
             setLoadState(LOAD_STATE_NOT_YET_LOADED);
         }
-        mTask = new DecodeTask(mCurrKey, w, h, this, mCache);
+        mTask = new DecodeTask(mCurrKey, w, bufferH, bufferW, bufferH, this, mCache);
         mTask.executeOnExecutor(EXECUTOR);
     }
 

@@ -21,8 +21,6 @@ public class AttachmentGridDrawable extends CompositeDrawable<AttachmentDrawable
     public static final int MAX_VISIBLE_ATTACHMENT_COUNT = 2;
 
     private BitmapCache mCache;
-    private int mDecodeWidth;
-    private int mDecodeHeight;
     private String mOverflowText;
     private ConversationItemViewCoordinates mCoordinates;
     private float mParallaxFraction = 0.5f;
@@ -50,21 +48,11 @@ public class AttachmentGridDrawable extends CompositeDrawable<AttachmentDrawable
     protected AttachmentDrawable createDivisionDrawable() {
         final AttachmentDrawable result = new AttachmentDrawable(mResources, mCache, mCoordinates,
                 mPlaceholder, mProgress);
-        result.setDecodeWidth(mDecodeWidth);
-        result.setDecodeHeight(mDecodeHeight);
         return result;
     }
 
     public void setBitmapCache(BitmapCache cache) {
         mCache = cache;
-    }
-
-    public void setDecodeWidth(int width) {
-        mDecodeWidth = width;
-    }
-
-    public void setDecodeHeight(int height) {
-        mDecodeHeight = height;
     }
 
     public void setOverflowText(String text) {
