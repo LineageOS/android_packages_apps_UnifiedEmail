@@ -35,6 +35,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.android.bitmap.AltBitmapCache;
 import com.android.bitmap.BitmapCache;
+import com.android.bitmap.ContiguousFIFOAggregator;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
@@ -90,6 +91,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     protected long mLastLeaveBehind = -1;
 
     private final BitmapCache mBitmapCache;
+    private final ContiguousFIFOAggregator mDecodeAggregator;
 
     public interface ConversationListListener {
         /**
@@ -237,6 +239,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mFolderViews = getNestedFolders(childFolders);
 
         mBitmapCache = new AltBitmapCache(BITMAP_CACHE_TARGET_SIZE_BYTES);
+        mDecodeAggregator = new ContiguousFIFOAggregator();
 
         mHandler = new Handler();
         if (sDismissAllShortDelay == -1) {
@@ -1040,6 +1043,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     public BitmapCache getBitmapCache() {
         return mBitmapCache;
+    }
+
+    public ContiguousFIFOAggregator getDecodeAggregator() {
+        return mDecodeAggregator;
     }
 
     /**
