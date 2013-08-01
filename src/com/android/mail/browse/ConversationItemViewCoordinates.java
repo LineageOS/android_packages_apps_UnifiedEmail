@@ -199,6 +199,10 @@ public class ConversationItemViewCoordinates {
     final float foldersFontSize;
     final int foldersTextBottomPadding;
 
+    // Info icon
+    final int infoIconXEnd;
+    final int infoIconY;
+
     // Date.
     final int dateXEnd;
     final int dateY;
@@ -429,6 +433,10 @@ public class ConversationItemViewCoordinates {
         } else {
             personalIndicatorX = personalIndicatorY = 0;
         }
+
+        final View infoIcon = view.findViewById(R.id.info_icon);
+        infoIconXEnd = getX(infoIcon) + infoIcon.getWidth();
+        infoIconY = getY(infoIcon);
 
         final TextView date = (TextView) view.findViewById(R.id.date);
         dateXEnd = getX(date) + date.getWidth();
