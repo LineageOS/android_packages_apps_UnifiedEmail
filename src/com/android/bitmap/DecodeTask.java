@@ -29,6 +29,8 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
     private final Request mKey;
     private final int mDestW;
     private final int mDestH;
+    private final int mDestBufferW;
+    private final int mDestBufferH;
     private final BitmapView mView;
     private final BitmapCache mCache;
     private final BitmapFactory.Options mOpts = new BitmapFactory.Options();
@@ -68,10 +70,13 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         void onDecodeComplete(Request key, ReusableBitmap result);
     }
 
-    public DecodeTask(Request key, int w, int h, BitmapView view, BitmapCache cache) {
+    public DecodeTask(Request key, int w, int h, int bufferW, int bufferH, BitmapView view,
+            BitmapCache cache) {
         mKey = key;
         mDestW = w;
         mDestH = h;
+        mDestBufferW = bufferW;
+        mDestBufferH = bufferH;
         mView = view;
         mCache = cache;
     }
@@ -121,7 +126,8 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                     if (DEBUG) System.err.println(
                             "decode thread wants a bitmap. cache dump:\n" + mCache.toDebugString());
                     mInBitmap = new ReusableBitmap(
-                            Bitmap.createBitmap(mDestW, mDestH, Bitmap.Config.ARGB_8888));
+                            Bitmap.createBitmap(mDestBufferW, mDestBufferH,
+                                    Bitmap.Config.ARGB_8888));
                     if (DEBUG) System.err.println("*** allocated new bitmap in decode thread: "
                             + mInBitmap + " key=" + mKey);
                 } else {
@@ -259,7 +265,9 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         // Center the decode on the top 1/3
         BitmapUtils.calculateCroppedSrcRect(srcW, srcH, mDestW, mDestH, mDestH, mOpts.inSampleSize,
                 1f / 3, true /* absoluteFraction */, outSrcRect);
-        // System.out.println("rect for uri=" + uri + " is: " + outSrcRect);
+        if (DEBUG) System.out.println("rect for this decode is: " + outSrcRect
+                + " srcW/H=" + srcW + "/" + srcH
+                + " dstW/H=" + mDestW + "/" + mDestH);
         final Bitmap result = brd.decodeRegion(outSrcRect, mOpts);
         brd.recycle();
         return result;
