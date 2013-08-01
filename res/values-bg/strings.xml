@@ -305,6 +305,8 @@
     <string name="loading_conversation" msgid="489160038366067983">"Зарежда се…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Изберете профил"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Изберете папка"</string>
+    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
+    <skip />
     <string name="sync_all" msgid="1057043212338233359">"Синхронизиране: Всички"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"Синхронизиране: Последният <xliff:g id="COUNT">%1$d</xliff:g> ден"</item>
@@ -325,14 +327,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Изчаква се синхронизиране"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Имейлът ви ще се покаже след малко."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Профилът не е синхронизиран"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Този профил не е настроен за автоматично синхронизиране."\n"Докоснете "<b>"Синхрон сега"</b>", за да синхронизирате еднократно пощата, или "<b>"Настройки за синхрон: Промяна"</b>", за да го настроите за автоматично синхронизиране."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Този профил не е настроен за автоматично синхронизиране.\nДокоснете "<b>"Синхрон сега"</b>", за да синхронизирате еднократно пощата, или "<b>"Настройки за синхрон: Промяна"</b>", за да го настроите за автоматично синхронизиране."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхрон сега"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Настройки за синхрон: Промяна"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Няма нови съобщения"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Изображ. не можа да се зареди"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Не може да се премести, защото са избрани няколко профила."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Без значение. Имам доверие на съобщението"</string>
     <string name="via_domain" msgid="380109230928079350">"чрез <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -356,7 +358,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Подробности за съобщението"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Автоматично преминаване"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Изберете екран, който да се показва след изтриване на съобщение"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Задаване на предпочитание за авт. напредък"\n"(след изтриване и др.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Задаване на предпочитание за авт. напредък\n(след изтриване и др.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"По-нова"</item>
     <item msgid="5562093094216840213">"По-стара"</item>
@@ -422,11 +424,14 @@
     <string name="drawer_open" msgid="6074646853178471940">"Отваряне на слоя за навигация"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Затваряне на чекмеджето за навигация"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Докоснете изображението на подателя, за да изберете съответната кореспонденция."</string>
+    <!-- no translation found for long_press_to_select_tip (9205666839837250150) -->
+    <skip />
     <string name="folder_icon_desc" msgid="1500547397347480618">"Икона на папката"</string>
     <string name="add_account" msgid="2162808366829269770">"Добавяне на профил"</string>
     <string name="attached_message" msgid="4267189489654642035">"Прикачено съобщение"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Днес, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Вчера, <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="ads" msgid="8547072743610267481">"Реклами"</string>
+    <!-- no translation found for dismiss_tip_hover_text (1930345936314578166) -->
+    <skip />
 </resources>

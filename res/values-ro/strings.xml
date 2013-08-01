@@ -257,7 +257,7 @@
   </plurals>
     <string name="from_heading" msgid="2454519463223197231">"De la: "</string>
     <string name="replyto_heading" msgid="8563992423173220512">"Răspundeți la: "</string>
-    <string name="to_heading" msgid="1142876841308812954">"Pentru: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"Către: "</string>
     <string name="cc_heading" msgid="52678613787360092">"Cc: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"Bcc: "</string>
     <string name="show_images" msgid="1875700481186331432">"Afişaţi fotografiile"</string>
@@ -305,6 +305,8 @@
     <string name="loading_conversation" msgid="489160038366067983">"Se încarcă…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Alegeţi un cont"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Alegeţi un dosar"</string>
+    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
+    <skip />
     <string name="sync_all" msgid="1057043212338233359">"Sincronizare: toate"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"Sincronizare: ultima zi (<xliff:g id="COUNT">%1$d</xliff:g>)"</item>
@@ -325,14 +327,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Se aşteaptă sincronizarea"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"E-mailul dvs. va apărea în curând."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Cont nesincronizat"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Acest cont nu este configurat să se sincronizeze în mod automat."\n"Atingeţi "<b>"Sincronizaţi acum"</b>", pentru a sincroniza mesajele de e-mail o dată sau "<b>"Modificaţi setările de sincronizare"</b>" ca să configuraţi acest cont pentru a sincroniza mesajele de e-mail în mod automat."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Acest cont nu este configurat să se sincronizeze în mod automat.\nAtingeţi "<b>"Sincronizaţi acum"</b>", pentru a sincroniza mesajele de e-mail o dată sau "<b>"Modificaţi setările de sincronizare"</b>" ca să configuraţi acest cont pentru a sincroniza mesajele de e-mail în mod automat."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincron.acum"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Modificaţi setări sincronizare"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Niciun mesaj nou"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Imaginea nu s-a putut încărca"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Nu se poate muta, deoarece selecţia conţine mai multe conturi."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignor, am încredere în mesaj"</string>
     <string name="via_domain" msgid="380109230928079350">"prin <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -356,7 +358,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Detalii mesaj"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Înaintare automată"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Alegeţi ce ecran se afişează după ştergerea unui mesaj"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Setaţi preferinţa pentru înaintare automată"\n"(după ce ştergeţi etc.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Setaţi preferinţa pentru înaintare automată\n(după ce ştergeţi etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mai noi"</item>
     <item msgid="5562093094216840213">"Mai vechi"</item>
@@ -422,11 +424,14 @@
     <string name="drawer_open" msgid="6074646853178471940">"Deschideți panoul de navigare"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Închideți panoul de navigare"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Atingeți imaginea unui expeditor pentru a selecta respectiva conversație."</string>
+    <!-- no translation found for long_press_to_select_tip (9205666839837250150) -->
+    <skip />
     <string name="folder_icon_desc" msgid="1500547397347480618">"Pictogramă dosar"</string>
     <string name="add_account" msgid="2162808366829269770">"Adăugați un cont"</string>
     <string name="attached_message" msgid="4267189489654642035">"Mesaj atașat"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Astăzi, la <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Ieri, la <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="ads" msgid="8547072743610267481">"Anunțuri"</string>
+    <!-- no translation found for dismiss_tip_hover_text (1930345936314578166) -->
+    <skip />
 </resources>

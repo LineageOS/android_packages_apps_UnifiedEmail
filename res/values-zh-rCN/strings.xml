@@ -255,16 +255,11 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g>封较早的邮件"</item>
   </plurals>
-    <!-- no translation found for from_heading (2454519463223197231) -->
-    <skip />
-    <!-- no translation found for replyto_heading (8563992423173220512) -->
-    <skip />
-    <!-- no translation found for to_heading (1142876841308812954) -->
-    <skip />
-    <!-- no translation found for cc_heading (52678613787360092) -->
-    <skip />
-    <!-- no translation found for bcc_heading (4698055226318660420) -->
-    <skip />
+    <string name="from_heading" msgid="2454519463223197231">"发件人： "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"回复地址： "</string>
+    <string name="to_heading" msgid="1142876841308812954">"收件人： "</string>
+    <string name="cc_heading" msgid="52678613787360092">"抄送： "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"密送： "</string>
     <string name="show_images" msgid="1875700481186331432">"显示图片"</string>
     <string name="always_show_images" msgid="5966408990164581801">"总是显示来自此发件人的图片"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"系统会自动显示来自此发件人的图片。"</string>
@@ -310,6 +305,8 @@
     <string name="loading_conversation" msgid="489160038366067983">"正在加载..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"选择帐户"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"选择文件夹"</string>
+    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
+    <skip />
     <string name="sync_all" msgid="1057043212338233359">"同步：全部"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"同步：过去 <xliff:g id="COUNT">%1$d</xliff:g> 天的会话"</item>
@@ -330,14 +327,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"正在等待同步"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"您的电子邮件很快就会显示。"</string>
     <string name="not_synced_title" msgid="794279749170198599">"帐户未同步"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"此帐户未设置为自动同步。您可以"\n"触摸"<b>"立即同步"</b>"同步邮件一次，或者触摸"<b>"更改同步设置"</b>"，将此帐户设置为自动同步邮件。"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"此帐户未设置为自动同步。您可以\n触摸"<b>"立即同步"</b>"同步邮件一次，或者触摸"<b>"更改同步设置"</b>"，将此帐户设置为自动同步邮件。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"更改同步设置"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"没有新邮件"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"无法加载图片"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"所选内容分属多个帐户，因此无法进行移动。"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"忽略，我信任此邮件"</string>
     <string name="via_domain" msgid="380109230928079350">"来自 <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -361,7 +358,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"邮件详情"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"自动跳转"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"选择删除邮件后所要显示的屏幕"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"自动跳转偏好设置"\n"（在您执行删除等操作后）"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"自动跳转偏好设置\n（在您执行删除等操作后）"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"后一个会话"</item>
     <item msgid="5562093094216840213">"前一个会话"</item>
@@ -427,11 +424,12 @@
     <string name="drawer_open" msgid="6074646853178471940">"打开抽屉式导航栏"</string>
     <string name="drawer_close" msgid="2764774620737876943">"关闭抽屉式导航栏"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"触摸发件人头像即可选择该会话。"</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"触摸并按住即可选择一个会话，然后再触摸即可选择其他会话。"</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"文件夹图标"</string>
     <string name="add_account" msgid="2162808366829269770">"添加帐户"</string>
     <string name="attached_message" msgid="4267189489654642035">"附加的邮件"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>，<xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"今天<xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"昨天<xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="ads" msgid="8547072743610267481">"广告"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"忽略提示"</string>
 </resources>
