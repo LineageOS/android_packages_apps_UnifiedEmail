@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.common.base;
+package com.google.android.mail.common.base;
 
 /**
  * An object that converts literal text into a format safe for inclusion in a particular context
