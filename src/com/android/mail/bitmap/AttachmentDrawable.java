@@ -403,6 +403,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
 
         private final ValueAnimator mPulseAnimator;
         private boolean mPulseEnabled = true;
+        private float mPulseAlphaFraction = 1f;
 
         public Placeholder(Drawable placeholder, Resources res,
                 ConversationItemViewCoordinates coordinates, int fadeOutDurationMs,
@@ -416,9 +417,21 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
             mPulseAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    setInnerAlpha((Integer) animation.getAnimatedValue());
+                    mPulseAlphaFraction = ((Integer) animation.getAnimatedValue()) / 255f;
+                    setInnerAlpha(getCurrentAlpha());
                 }
             });
+            mFadeOutAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    stopPulsing();
+                }
+            });
+        }
+
+        @Override
+        public void setInnerAlpha(final int alpha) {
+            super.setInnerAlpha((int) (alpha * mPulseAlphaFraction));
         }
 
         public void setPulseEnabled(boolean enabled) {
@@ -431,7 +444,8 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         private void stopPulsing() {
             if (mPulseAnimator != null) {
                 mPulseAnimator.cancel();
-                setInnerAlpha(255);
+                mPulseAlphaFraction = 1f;
+                setInnerAlpha(getCurrentAlpha());
             }
         }
 
@@ -445,8 +459,11 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
                         mPulseAnimator.start();
                     }
                 } else {
-                    // stop
-                    stopPulsing();
+                    // can't cancel the pulsing yet-- wait for the fade-out animation to end
+                    // one exception: if alpha is already zero, there is no fade-out, so stop now
+                    if (getCurrentAlpha() == 0) {
+                        stopPulsing();
+                    }
                 }
             }
             return changed;
