@@ -83,24 +83,11 @@ public abstract class Message implements Part, Body {
 
     public abstract void setReplyTo(Address[] from) throws MessagingException;
 
-    public abstract Body getBody() throws MessagingException;
-
-    public abstract String getContentType() throws MessagingException;
-
-    public abstract void addHeader(String name, String value) throws MessagingException;
-
-    public abstract void setHeader(String name, String value) throws MessagingException;
-
-    public abstract String[] getHeader(String name) throws MessagingException;
-
-    public abstract void removeHeader(String name) throws MessagingException;
-
     // Always use these instead of getHeader("Message-ID") or setHeader("Message-ID");
     public abstract void setMessageId(String messageId) throws MessagingException;
     public abstract String getMessageId() throws MessagingException;
 
-    public abstract void setBody(Body body) throws MessagingException;
-
+    @Override
     public boolean isMimeType(String mimeType) throws MessagingException {
         return getContentType().startsWith(mimeType);
     }

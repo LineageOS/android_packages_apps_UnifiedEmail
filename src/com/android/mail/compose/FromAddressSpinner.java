@@ -27,7 +27,6 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.utils.AccountUtils;
-import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

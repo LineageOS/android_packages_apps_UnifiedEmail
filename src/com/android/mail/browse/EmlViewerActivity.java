@@ -61,7 +61,8 @@ public class EmlViewerActivity extends Activity implements FeedbackEnabledActivi
 
     private final AccountLoadCallbacks mAccountLoadCallbacks = new AccountLoadCallbacks();
 
-    public void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eml_viewer_activity);
 

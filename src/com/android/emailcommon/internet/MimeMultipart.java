@@ -82,6 +82,7 @@ public class MimeMultipart extends Multipart {
         mContentType = String.format("multipart/%s; boundary=\"%s\"", subType, mBoundary);
     }
 
+    @Override
     public void writeTo(OutputStream out) throws IOException, MessagingException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out), 1024);
 
@@ -101,6 +102,7 @@ public class MimeMultipart extends Multipart {
         writer.flush();
     }
 
+    @Override
     public InputStream getInputStream() throws MessagingException {
         return null;
     }

@@ -57,6 +57,7 @@ public class BinaryTempFileBody implements Body {
         return new FileOutputStream(mFile);
     }
 
+    @Override
     public InputStream getInputStream() throws MessagingException {
         try {
             return new BinaryTempFileBodyInputStream(new FileInputStream(mFile));
@@ -66,6 +67,7 @@ public class BinaryTempFileBody implements Body {
         }
     }
 
+    @Override
     public void writeTo(OutputStream out) throws IOException, MessagingException {
         InputStream in = getInputStream();
         Base64OutputStream base64Out = new Base64OutputStream(

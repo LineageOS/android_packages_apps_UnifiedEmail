@@ -15,6 +15,7 @@ public class EmptyConversationListView extends TextView {
         super(context, attrs);
     }
 
+    @Override
     public boolean onTouchEvent(MotionEvent e) {
         // In order for users to perform swipe down in this text view to trigger
         // refresh, we always return true here so that ACTION_MOVE and ACTION_UP

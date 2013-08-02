@@ -34,6 +34,7 @@ public class TextBody implements Body {
         this.mBody = body;
     }
 
+    @Override
     public void writeTo(OutputStream out) throws IOException, MessagingException {
         byte[] bytes = mBody.getBytes("UTF-8");
         out.write(Base64.encode(bytes, Base64.CRLF));
@@ -50,6 +51,7 @@ public class TextBody implements Body {
     /**
      * Returns an InputStream that reads this body's text in UTF-8 format.
      */
+    @Override
     public InputStream getInputStream() throws MessagingException {
         try {
             byte[] b = mBody.getBytes("UTF-8");
