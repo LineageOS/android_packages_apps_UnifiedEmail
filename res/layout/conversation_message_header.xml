@@ -20,7 +20,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="visible"
-    android:background="@color/message_header_background_color"
     android:orientation="vertical"
     android:layout_marginStart="@dimen/conversation_view_margin_side"
     android:layout_marginEnd="@dimen/conversation_view_margin_side"
@@ -33,7 +32,7 @@
     <View
         android:id="@+id/snap_header_bottom_border"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/conversation_view_border_color"
+        android:layout_height="12dp"
+        android:background="@drawable/snap_header_gradient"
         android:visibility="gone" />
 </com.android.mail.browse.MessageHeaderView>

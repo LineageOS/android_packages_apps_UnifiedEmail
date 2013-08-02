@@ -187,6 +187,7 @@ public class ConversationViewAdapter extends BaseAdapter {
             return !isExpanded();
         }
 
+        @Override
         public boolean isExpanded() {
             return mExpanded;
         }
@@ -242,6 +243,10 @@ public class ConversationViewAdapter extends BaseAdapter {
                 mTimestampLong = mDateBuilder.formatLongDateTime(mTimestampMs);
             }
         }
+
+        public ConversationViewAdapter getAdapter() {
+            return mAdapter;
+        }
     }
 
     public class MessageFooterItem extends ConversationOverlayItem {
@@ -249,10 +254,10 @@ public class ConversationViewAdapter extends BaseAdapter {
          * A footer can only exist if there is a matching header. Requiring a header allows a
          * footer to stay in sync with the expanded state of the header.
          */
-        private final MessageHeaderItem headerItem;
+        private final MessageHeaderItem mHeaderitem;
 
         private MessageFooterItem(MessageHeaderItem item) {
-            headerItem = item;
+            mHeaderitem = item;
         }
 
         @Override
@@ -271,12 +276,17 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public void bindView(View v, boolean measureOnly) {
             final MessageFooterView attachmentsView = (MessageFooterView) v;
-            attachmentsView.bind(headerItem, mAccountController.getAccount().uri, measureOnly);
+            attachmentsView.bind(mHeaderitem, mAccountController.getAccount().uri, measureOnly);
         }
 
         @Override
         public boolean isContiguous() {
             return true;
+        }
+
+        @Override
+        public boolean isExpanded() {
+            return mHeaderitem.isExpanded();
         }
 
         @Override
@@ -290,7 +300,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public int getHeight() {
             // a footer may change height while its view does not exist because it is offscreen
             // (but the header is onscreen and thus collapsible)
-            if (!headerItem.isExpanded()) {
+            if (!mHeaderitem.isExpanded()) {
                 return 0;
             }
             return super.getHeight();
@@ -331,6 +341,11 @@ public class ConversationViewAdapter extends BaseAdapter {
             return true;
         }
 
+        @Override
+        public boolean isExpanded() {
+            return false;
+        }
+
         public int getStart() {
             return mStart;
         }
@@ -348,11 +363,16 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public class BorderItem extends ConversationOverlayItem {
         private final boolean mContiguous;
+        private boolean mExpanded;
         private final boolean mFirstBorder;
+        private boolean mLastBorder;
 
-        public BorderItem(boolean contiguous, boolean firstBorder) {
+        public BorderItem(boolean contiguous, boolean isExpanded,
+                boolean firstBorder, boolean lastBorder) {
             mContiguous = contiguous;
+            mExpanded = isExpanded;
             mFirstBorder = firstBorder;
+            mLastBorder = lastBorder;
         }
 
         @Override
@@ -377,12 +397,38 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
+        public boolean isExpanded() {
+            return mExpanded;
+        }
+
+        public void setExpanded(boolean isExpanded) {
+            mExpanded = isExpanded;
+        }
+
+        @Override
         public boolean canPushSnapHeader() {
-            return true;
+            return false;
         }
 
         public boolean isFirstBorder() {
             return mFirstBorder;
+        }
+
+        public boolean isLastBorder() {
+            return mLastBorder;
+        }
+
+        public void setIsLastBorder(boolean isLastBorder) {
+            mLastBorder = isLastBorder;
+        }
+
+        public ConversationViewAdapter getAdapter() {
+            return ConversationViewAdapter.this;
+        }
+
+        @Override
+        public void rebindView(View view) {
+            bindView(view, false);
         }
     }
 
@@ -460,6 +506,7 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public int addItem(ConversationOverlayItem item) {
         final int pos = mItems.size();
+        item.setPosition(pos);
         mItems.add(item);
         return pos;
     }
@@ -495,12 +542,14 @@ public class ConversationViewAdapter extends BaseAdapter {
         return addItem(new SuperCollapsedBlockItem(start, end));
     }
 
-    public int addBorder(boolean contiguous, boolean firstBorder) {
-        return addItem(new BorderItem(contiguous, firstBorder));
+    public int addBorder(
+            boolean contiguous, boolean expanded, boolean firstBorder, boolean lastBorder) {
+        return addItem(new BorderItem(contiguous, expanded, firstBorder, lastBorder));
     }
 
-    public BorderItem newBorderItem(boolean contiguous, boolean firstBorder) {
-        return new BorderItem(contiguous, firstBorder);
+    public BorderItem newBorderItem(boolean contiguous, boolean expanded) {
+        return new BorderItem(
+                contiguous, expanded, false /* firstBorder */, false /* lastBorder */);
     }
 
     public void replaceSuperCollapsedBlock(SuperCollapsedBlockItem blockToRemove,
@@ -512,6 +561,11 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         mItems.remove(pos);
         mItems.addAll(pos, replacements);
+
+        // update position for all items
+        for (int i = 0, size = mItems.size(); i < size; i++) {
+            mItems.get(i).setPosition(i);
+        }
     }
 
     public void updateItemsForMessage(ConversationMessage message,
