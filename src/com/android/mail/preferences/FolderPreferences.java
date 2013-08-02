@@ -15,7 +15,7 @@
  */
 package com.android.mail.preferences;
 
-import com.google.android.common.base.Strings;
+import com.google.android.mail.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
 import android.content.ContentUris;

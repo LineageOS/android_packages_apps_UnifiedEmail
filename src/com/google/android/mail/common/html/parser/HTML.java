@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.android.common.html.parser;
+package com.google.android.mail.common.html.parser;
 
-import com.google.android.common.base.Preconditions;
+import com.google.android.mail.common.base.Preconditions;
 
 import java.util.Set;
 
