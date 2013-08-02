@@ -222,6 +222,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private static final int INCREASE_WAIT_COUNT = 2;
 
     private static final int BITMAP_CACHE_TARGET_SIZE_BYTES = 0; // TODO: enable cache
+    /**
+     * This is the fractional portion of the total cache size above that's dedicated to non-pooled
+     * bitmaps. (This is basically the portion of cache dedicated to GIFs.)
+     */
+    private static final float BITMAP_CACHE_NON_POOLED_FRACTION = 0.1f;
 
     public AnimatedAdapter(Context context, ConversationCursor cursor,
             ConversationSelectionSet batch, ControllableActivity activity,
@@ -238,7 +243,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mListView = listView;
         mFolderViews = getNestedFolders(childFolders);
 
-        mBitmapCache = new AltBitmapCache(BITMAP_CACHE_TARGET_SIZE_BYTES);
+        mBitmapCache = new AltBitmapCache(BITMAP_CACHE_TARGET_SIZE_BYTES,
+                BITMAP_CACHE_NON_POOLED_FRACTION);
         mDecodeAggregator = new ContiguousFIFOAggregator();
 
         mHandler = new Handler();

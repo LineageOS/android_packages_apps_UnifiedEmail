@@ -16,6 +16,8 @@
 
 package com.android.bitmap;
 
+import android.support.v4.util.LruCache;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -37,41 +39,56 @@ import java.util.concurrent.LinkedBlockingQueue;
  * (total size of still-referenced entries)</code>
  *
  */
-public class AltPooledCache<K, V extends RefCountable> implements PooledCache<K, V> {
+public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> {
 
     private final LinkedHashMap<K, V> mCache;
     private final LinkedBlockingQueue<V> mPool;
     private final int mTargetSize;
+    private final LruCache<K, V> mNonPooledCache;
 
     private final boolean DEBUG = DecodeTask.DEBUG;
 
     /**
      * @param targetSize not exactly a max size in practice
+     * @param nonPooledFraction the fractional portion in the range [0.0,1.0] of targetSize to
+     * dedicate to non-poolable entries
      */
-    public AltPooledCache(int targetSize) {
+    public AltPooledCache(int targetSize, float nonPooledFraction) {
         mCache = new LinkedHashMap<K, V>(0, 0.75f, true);
         mPool = new LinkedBlockingQueue<V>();
-        mTargetSize = targetSize;
+        final int nonPooledSize = Math.round(targetSize * nonPooledFraction);
+        mNonPooledCache = new NonPooledCache(nonPooledSize);
+        mTargetSize = targetSize - nonPooledSize;
     }
 
     @Override
     public V get(K key) {
         synchronized (mCache) {
-            return mCache.get(key);
+            V result = mCache.get(key);
+            if (result == null) {
+                result = mNonPooledCache.get(key);
+            }
+            return result;
         }
     }
 
     @Override
     public V put(K key, V value) {
         synchronized (mCache) {
-            return mCache.put(key, value);
+            final V prev;
+            if (value.isEligibleForPooling()) {
+                prev = mCache.put(key, value);
+            } else {
+                prev = mNonPooledCache.put(key, value);
+            }
+            return prev;
         }
     }
 
     @Override
     public void offer(V value) {
-        if (value.getRefCount() != 0) {
-            throw new IllegalArgumentException("unexpected offer of a referenced object: " + value);
+        if (value.getRefCount() != 0 || !value.isEligibleForPooling()) {
+            throw new IllegalArgumentException("unexpected offer of an invalid object: " + value);
         }
         mPool.offer(value);
     }
@@ -88,7 +105,7 @@ public class AltPooledCache<K, V extends RefCountable> implements PooledCache<K,
             Map.Entry<K, V> eldestUnref = null;
             for (Map.Entry<K, V> entry : mCache.entrySet()) {
                 final V value = entry.getValue();
-                if (value.getRefCount() > 0) {
+                if (value.getRefCount() > 0 || !value.isEligibleForPooling()) {
                     continue;
                 }
                 if (eldestUnref == null) {
@@ -130,6 +147,8 @@ public class AltPooledCache<K, V extends RefCountable> implements PooledCache<K,
                 sb.append(mPool.size());
                 sb.append(" cacheSize=");
                 sb.append(mCache.size());
+                sb.append(" nonPooledCacheSize=");
+                sb.append(mNonPooledCache.size());
                 sb.append("\n---------------------");
                 for (V val : mPool) {
                     size += sizeOf(val);
@@ -146,6 +165,15 @@ public class AltPooledCache<K, V extends RefCountable> implements PooledCache<K,
                     size += sizeOf(val);
                 }
                 sb.append("\n---------------------");
+                for (Map.Entry<K, V> item : mNonPooledCache.snapshot().entrySet()) {
+                    final V val = item.getValue();
+                    sb.append("\n\tnon-pooled cache key=");
+                    sb.append(item.getKey());
+                    sb.append(" val=");
+                    sb.append(val);
+                    size += sizeOf(val);
+                }
+                sb.append("\n---------------------");
                 sb.append("\nTOTAL SIZE=" + size);
             }
             sb.append("]");
@@ -153,6 +181,19 @@ public class AltPooledCache<K, V extends RefCountable> implements PooledCache<K,
         } else {
             return null;
         }
+    }
+
+    private class NonPooledCache extends LruCache<K, V> {
+
+        public NonPooledCache(int maxSize) {
+            super(maxSize);
+        }
+
+        @Override
+        protected int sizeOf(K key, V value) {
+            return AltPooledCache.this.sizeOf(value);
+        }
+
     }
 
 }

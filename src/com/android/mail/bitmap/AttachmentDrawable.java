@@ -195,7 +195,8 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
                     .calculateCroppedSrcRect(mBitmap.getLogicalWidth(), mBitmap.getLogicalHeight(),
                             bounds.width(), bounds.height(),
                             mCoordinates.attachmentPreviewsDecodeHeight, Integer.MAX_VALUE,
-                            mParallaxFraction, false /* absoluteFraction */, mSrcRect);
+                            mParallaxFraction, false /* absoluteFraction */,
+                            SwipeableListView.ATTACHMENT_PARALLAX_MULTIPLIER, mSrcRect);
             canvas.drawBitmap(mBitmap.bmp, mSrcRect, bounds, mPaint);
         }
 
