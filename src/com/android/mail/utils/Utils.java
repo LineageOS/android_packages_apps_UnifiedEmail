@@ -16,10 +16,10 @@
 
 package com.android.mail.utils;
 
-import com.google.android.common.html.parser.HtmlDocument;
-import com.google.android.common.html.parser.HtmlParser;
-import com.google.android.common.html.parser.HtmlTree;
-import com.google.android.common.html.parser.HtmlTreeBuilder;
+import com.google.android.mail.common.html.parser.HtmlDocument;
+import com.google.android.mail.common.html.parser.HtmlParser;
+import com.google.android.mail.common.html.parser.HtmlTree;
+import com.google.android.mail.common.html.parser.HtmlTreeBuilder;
 import com.google.common.collect.Maps;
 
 import android.app.Fragment;

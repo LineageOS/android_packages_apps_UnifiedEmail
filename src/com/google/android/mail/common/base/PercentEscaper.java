@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.android.common.base;
+package com.google.android.mail.common.base;
 
-import static com.google.android.common.base.Preconditions.checkNotNull;
+import static com.google.android.mail.common.base.Preconditions.checkNotNull;
 
 /**
  * A {@code UnicodeEscaper} that escapes some set of Java characters using

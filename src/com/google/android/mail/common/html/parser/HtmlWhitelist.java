@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.common.html.parser;
+package com.google.android.mail.common.html.parser;
 
 /**
  * HtmlWhitelist is an interface that defines methods required by HtmlParser for

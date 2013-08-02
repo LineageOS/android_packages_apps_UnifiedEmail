@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.common.base;
+package com.google.android.mail.common.base;
 
 /**
  * Static utility methods pertaining especially to byte arrays. Note that I/O-related functionality
