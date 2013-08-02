@@ -77,8 +77,8 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
      * pan within. 1.0 implies no parallax effect.
      */
     public static float ATTACHMENT_PARALLAX_MULTIPLIER;
-    public static final float ATTACHMENT_PARALLAX_MULTIPLIER_NORMAL = 2.0f;
-    public static final float ATTACHMENT_PARALLAX_MULTIPLIER_ALTERNATIVE = 1.5f;
+    public static final float ATTACHMENT_PARALLAX_MULTIPLIER_NORMAL = 1.5f;
+    public static final float ATTACHMENT_PARALLAX_MULTIPLIER_ALTERNATIVE = 2.0f;
 
     public static boolean ATTACHMENT_PARALLAX_DIRECTION_ALTERNATIVE;
 
