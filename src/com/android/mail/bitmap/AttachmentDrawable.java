@@ -18,9 +18,9 @@ import android.view.animation.LinearInterpolator;
 
 import com.android.bitmap.BitmapCache;
 import com.android.bitmap.BitmapUtils;
+import com.android.bitmap.DecodeAggregator;
 import com.android.bitmap.DecodeTask;
 import com.android.bitmap.DecodeTask.Request;
-import com.android.bitmap.ContiguousFIFOAggregator;
 import com.android.bitmap.ReusableBitmap;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewCoordinates;
@@ -40,12 +40,12 @@ import java.util.concurrent.TimeUnit;
  * The actual bitmap decode work is handled by {@link DecodeTask}.
  */
 public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapView,
-        Drawable.Callback, Runnable, Parallaxable {
+        Drawable.Callback, Runnable, Parallaxable, DecodeAggregator.Callback {
 
     private ImageAttachmentRequest mCurrKey;
     private ReusableBitmap mBitmap;
     private final BitmapCache mCache;
-    private final ContiguousFIFOAggregator mDecodeAggregator;
+    private final DecodeAggregator mDecodeAggregator;
     private DecodeTask mTask;
     private int mDecodeWidth;
     private int mDecodeHeight;
@@ -83,7 +83,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     public final String LOG_TAG = "AttachPreview";
 
     public AttachmentDrawable(Resources res, BitmapCache cache,
-            ContiguousFIFOAggregator decodeAggregator, ConversationItemViewCoordinates coordinates,
+            DecodeAggregator decodeAggregator, ConversationItemViewCoordinates coordinates,
             Drawable placeholder, Drawable progress) {
         mCoordinates = coordinates;
         mDensity = res.getDisplayMetrics().density;
@@ -242,15 +242,21 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
 
     @Override
     public void onDecodeBegin(final Request key) {
+        if (SwipeableListView.ENABLE_ATTACHMENT_DECODE_AGGREGATOR) {
+            mDecodeAggregator.expect(key, this);
+        } else {
+            onBecomeFirstExpected(key);
+        }
+    }
+
+    @Override
+    public void onBecomeFirstExpected(final Request key) {
         if (!key.equals(mCurrKey)) {
             return;
         }
         // normally, we'd transition to the LOADING state now, but we want to delay that a bit
         // to minimize excess occurrences of the rotating spinner
         mHandler.postDelayed(this, mProgressDelayMs);
-        if (SwipeableListView.ENABLE_ATTACHMENT_DECODE_AGGREGATOR) {
-            mDecodeAggregator.expect(key);
-        }
     }
 
     @Override
