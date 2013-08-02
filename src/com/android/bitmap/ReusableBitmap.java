@@ -22,15 +22,26 @@ import android.graphics.Bitmap;
  * A simple bitmap wrapper. Currently supports reference counting and logical width/height
  * (which may differ from a bitmap's reported width/height due to bitmap reuse).
  */
-public class ReusableBitmap implements RefCountable {
+public class ReusableBitmap implements Poolable {
 
     public final Bitmap bmp;
     private int mWidth;
     private int mHeight;
     private int mRefCount = 0;
+    private final boolean mReusable;
 
     public ReusableBitmap(Bitmap bitmap) {
+        this(bitmap, true /* reusable */);
+    }
+
+    public ReusableBitmap(Bitmap bitmap, boolean reusable) {
         bmp = bitmap;
+        mReusable = reusable;
+    }
+
+    @Override
+    public boolean isEligibleForPooling() {
+        return mReusable;
     }
 
     public void setLogicalWidth(int w) {
@@ -77,6 +88,8 @@ public class ReusableBitmap implements RefCountable {
         sb.append(super.toString());
         sb.append(" refCount=");
         sb.append(mRefCount);
+        sb.append(" mReusable=");
+        sb.append(mReusable);
         sb.append(" bmp=");
         sb.append(bmp);
         sb.append(" logicalW/H=");

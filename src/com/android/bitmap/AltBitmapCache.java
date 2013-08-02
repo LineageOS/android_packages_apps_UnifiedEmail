@@ -19,8 +19,8 @@ package com.android.bitmap;
 public class AltBitmapCache extends AltPooledCache<DecodeTask.Request, ReusableBitmap>
         implements BitmapCache {
 
-    public AltBitmapCache(int targetSizeBytes) {
-        super(targetSizeBytes);
+    public AltBitmapCache(int targetSizeBytes, float nonPooledFraction) {
+        super(targetSizeBytes, nonPooledFraction);
     }
 
     @Override
