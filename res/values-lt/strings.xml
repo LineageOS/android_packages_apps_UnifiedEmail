@@ -305,6 +305,8 @@
     <string name="loading_conversation" msgid="489160038366067983">"Įkeliama..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Pasirinkti paskyrą"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Pasirinkti aplanką"</string>
+    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
+    <skip />
     <string name="sync_all" msgid="1057043212338233359">"Sinchronizuoti: viską"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"Sinchronizuoti: paskutin. <xliff:g id="COUNT">%1$d</xliff:g> d."</item>
@@ -325,14 +327,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Laukiama sinchronizavimo"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"El. paštas netrukus bus rodomas."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Paskyra nesinchronizuota"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Ši paskyra nenustatyta automatiškai sinchronizuoti."\n"Jei norite vieną kartą sinchronizuoti paštą, palieskite "<b>"Sinch. dabar"</b>" arba palieskite "<b>"Keisti sinchronizavimo nustat."</b>", kad nustatytumėte šią paskyrą automatiškai sinchronizuoti paštą."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Ši paskyra nenustatyta automatiškai sinchronizuoti.\nJei norite vieną kartą sinchronizuoti paštą, palieskite "<b>"Sinch. dabar"</b>" arba palieskite "<b>"Keisti sinchronizavimo nustat."</b>", kad nustatytumėte šią paskyrą automatiškai sinchronizuoti paštą."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sinch. dabar"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Keisti sinchronizavimo nustat."</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Nėra naujų pranešimų"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Nepavyko įkelti vaizdo"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Negalima perkelti, nes pasirinktos kelios paskyros."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Nepaisyti, pasitikiu pranešim."</string>
     <string name="via_domain" msgid="380109230928079350">"per <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -356,7 +358,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Išsami pranešimo informacija"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Automatiškai išplėsti"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Pasirinkite, kurį ekraną rodyti ištrynus pranešimą"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Nustatyti automatinio perėjimo nuostatą"\n"(ištrynus ir kt.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Nustatyti automatinio perėjimo nuostatą\n(ištrynus ir kt.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Naujesnis"</item>
     <item msgid="5562093094216840213">"Senesnis"</item>
@@ -422,11 +424,12 @@
     <string name="drawer_open" msgid="6074646853178471940">"Atidaryti naršymo juostą"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Uždaryti naršymo juostą"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Palieskite siuntėjo vaizdą, kad pasirinktumėte tą pokalbį."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Laikykite palietę, kad pasirinktumėte vieną pokalbį, tada paliesdami pasirinkite daugiau."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Aplanko piktograma"</string>
     <string name="add_account" msgid="2162808366829269770">"Pridėti paskyrą"</string>
     <string name="attached_message" msgid="4267189489654642035">"Pridėtas pranešimas"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Šiandien <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Vakar <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="ads" msgid="8547072743610267481">"Skelbimai"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Atsisakyti patarimo"</string>
 </resources>
