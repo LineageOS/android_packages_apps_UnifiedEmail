@@ -56,7 +56,10 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
     public AltPooledCache(int targetSize, float nonPooledFraction) {
         mCache = new LinkedHashMap<K, V>(0, 0.75f, true);
         mPool = new LinkedBlockingQueue<V>();
-        final int nonPooledSize = Math.round(targetSize * nonPooledFraction);
+        int nonPooledSize = Math.round(targetSize * nonPooledFraction);
+        if (nonPooledSize < 1) {
+            nonPooledSize = 1;
+        }
         mNonPooledCache = new NonPooledCache(nonPooledSize);
         mTargetSize = targetSize - nonPooledSize;
     }
