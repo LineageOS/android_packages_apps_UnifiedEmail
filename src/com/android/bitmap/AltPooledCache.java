@@ -56,11 +56,12 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
     public AltPooledCache(int targetSize, float nonPooledFraction) {
         mCache = new LinkedHashMap<K, V>(0, 0.75f, true);
         mPool = new LinkedBlockingQueue<V>();
-        int nonPooledSize = Math.round(targetSize * nonPooledFraction);
-        if (nonPooledSize < 1) {
-            nonPooledSize = 1;
+        final int nonPooledSize = Math.round(targetSize * nonPooledFraction);
+        if (nonPooledSize > 0) {
+            mNonPooledCache = new NonPooledCache(nonPooledSize);
+        } else {
+            mNonPooledCache = null;
         }
-        mNonPooledCache = new NonPooledCache(nonPooledSize);
         mTargetSize = targetSize - nonPooledSize;
     }
 
@@ -68,7 +69,7 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
     public V get(K key) {
         synchronized (mCache) {
             V result = mCache.get(key);
-            if (result == null) {
+            if (result == null && mNonPooledCache != null) {
                 result = mNonPooledCache.get(key);
             }
             return result;
@@ -81,8 +82,10 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
             final V prev;
             if (value.isEligibleForPooling()) {
                 prev = mCache.put(key, value);
-            } else {
+            } else if (mNonPooledCache != null) {
                 prev = mNonPooledCache.put(key, value);
+            } else {
+                prev = null;
             }
             return prev;
         }
@@ -150,8 +153,10 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
                 sb.append(mPool.size());
                 sb.append(" cacheSize=");
                 sb.append(mCache.size());
-                sb.append(" nonPooledCacheSize=");
-                sb.append(mNonPooledCache.size());
+                if (mNonPooledCache != null) {
+                    sb.append(" nonPooledCacheSize=");
+                    sb.append(mNonPooledCache.size());
+                }
                 sb.append("\n---------------------");
                 for (V val : mPool) {
                     size += sizeOf(val);
@@ -168,15 +173,17 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
                     size += sizeOf(val);
                 }
                 sb.append("\n---------------------");
-                for (Map.Entry<K, V> item : mNonPooledCache.snapshot().entrySet()) {
-                    final V val = item.getValue();
-                    sb.append("\n\tnon-pooled cache key=");
-                    sb.append(item.getKey());
-                    sb.append(" val=");
-                    sb.append(val);
-                    size += sizeOf(val);
+                if (mNonPooledCache != null) {
+                    for (Map.Entry<K, V> item : mNonPooledCache.snapshot().entrySet()) {
+                        final V val = item.getValue();
+                        sb.append("\n\tnon-pooled cache key=");
+                        sb.append(item.getKey());
+                        sb.append(" val=");
+                        sb.append(val);
+                        size += sizeOf(val);
+                    }
+                    sb.append("\n---------------------");
                 }
-                sb.append("\n---------------------");
                 sb.append("\nTOTAL SIZE=" + size);
             }
             sb.append("]");
