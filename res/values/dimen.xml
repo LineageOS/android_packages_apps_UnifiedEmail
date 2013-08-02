@@ -59,7 +59,6 @@
     <dimen name="message_details_header_vertical_padding">7dp</dimen>
     <dimen name="message_border_height">8dp</dimen>
     <dimen name="message_border_height_collapsed">1dp</dimen>
-    <dimen name="message_border_height_with_card">15dp</dimen>
     <dimen name="message_header_presence_top_margin">-4dp</dimen>
     <dimen name="message_header_action_button_width">48dp</dimen>
     <dimen name="message_header_action_button_height">48dp</dimen>
