@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.BorderItem;
+import com.android.mail.utils.LogUtils;
 
 /**
  * View displaying the border between messages.
@@ -34,9 +35,11 @@ import com.android.mail.browse.ConversationViewAdapter.BorderItem;
  */
 public class BorderView extends LinearLayout {
 
+    private static final String LOG_TAG = "BorderView";
+
     private static int sMessageBorderSpaceHeight = -1;
     private static int sMessageBorderHeightCollapsed = -1;
-    private static int sMessageBorderHeightWithCard = -1;
+    private static int sExpandedHeight = -1;
 
     private View mCardBottom;
     private View mBorderSpace;
@@ -65,8 +68,6 @@ public class BorderView extends LinearLayout {
                     res.getDimensionPixelSize(R.dimen.message_border_height);
             sMessageBorderHeightCollapsed = res.getDimensionPixelSize(
                     R.dimen.message_border_height_collapsed);
-            sMessageBorderHeightWithCard = res.getDimensionPixelSize(
-                    R.dimen.message_border_height_with_card);
         }
     }
 
@@ -81,6 +82,14 @@ public class BorderView extends LinearLayout {
 
     public void bind(BorderItem borderItem, boolean measureOnly) {
         final boolean isExpanded = borderItem.isExpanded();
+        if (sExpandedHeight == -1 && isExpanded &&
+                !borderItem.isFirstBorder() && !borderItem.isLastBorder() &&
+                borderItem.getHeight() > 0) {
+            sExpandedHeight = borderItem.getHeight();
+            LogUtils.d(LOG_TAG, "Full Border Height: %s", sExpandedHeight);
+        }
+
+
 
         // Selectively show/hide the card nine-patches if the border is expanded or collapsed.
         // Additionally this will occur if this is the first or last border.
@@ -98,7 +107,11 @@ public class BorderView extends LinearLayout {
      * This height should never change.
      */
     public static int getExpandedHeight() {
-        return sMessageBorderHeightWithCard;
+        if (sExpandedHeight == -1) {
+            LogUtils.wtf(LOG_TAG, "full height not initialized");
+        }
+
+        return sExpandedHeight;
     }
 
     /**

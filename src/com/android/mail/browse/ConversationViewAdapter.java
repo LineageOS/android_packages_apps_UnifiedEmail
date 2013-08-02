@@ -500,6 +500,10 @@ public class ConversationViewAdapter extends BaseAdapter {
         return v;
     }
 
+    public LayoutInflater getLayoutInflater() {
+        return mInflater;
+    }
+
     public FormattedDateBuilder getDateBuilder() {
         return mDateBuilder;
     }
