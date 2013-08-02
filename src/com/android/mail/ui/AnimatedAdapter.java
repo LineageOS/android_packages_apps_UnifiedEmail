@@ -31,6 +31,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.SimpleCursorAdapter;
 
 import com.android.bitmap.AltBitmapCache;
@@ -1094,4 +1095,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
     }
 
+    public void onScrollStateChanged(final int scrollState) {
+        final boolean scrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
+        mBitmapCache.setBlocking(scrolling);
+    }
 }
