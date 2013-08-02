@@ -43,6 +43,7 @@ public class ConversationViewState implements Parcelable {
     private byte[] mConversationInfo;
 
     public static final class ExpansionState {
+        public static int NONE = 0;
         public static int EXPANDED = 1;
         public static int COLLAPSED = 2;
         public static int SUPER_COLLAPSED = 3;
@@ -54,6 +55,14 @@ public class ConversationViewState implements Parcelable {
         }
         public static boolean isSuperCollapsed(int state) {
             return state == SUPER_COLLAPSED;
+        }
+
+        /**
+         * Returns true if the {@link ExpansionState} is
+         * {@link #COLLAPSED} or {@link #SUPER_COLLAPSED}.
+         */
+        public static boolean isCollapsed(int state) {
+            return state > EXPANDED;
         }
     }
 

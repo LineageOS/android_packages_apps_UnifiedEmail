@@ -178,7 +178,8 @@ public class SecureConversationViewController implements
     }
 
     @Override
-    public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight) {
+    public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight,
+            int topBorderHeight, int bottomBorderHeight) {
         // Do nothing.
     }
 

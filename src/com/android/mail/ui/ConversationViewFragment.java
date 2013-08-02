@@ -645,6 +645,9 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         ConversationMessage prevCollapsedMsg = null;
         boolean prevSafeForImages = false;
 
+        // Store the previous expanded state so that the border between
+        // the previous and current message can be properly initialized.
+        int previousExpandedState = ExpansionState.NONE;
         while (messageCursor.moveToPosition(++pos)) {
             final ConversationMessage msg = messageCursor.getMessage();
 
@@ -693,15 +696,18 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 // This line puts the from address in the address cache so that
                 // we get the sender image for it if it's in a super-collapsed block.
                 getAddress(msg.getFrom());
+                previousExpandedState = expandedState;
                 continue;
             }
 
             // resolve any deferred decisions on previous collapsed items
             if (collapsedStart >= 0) {
                 if (pos - collapsedStart == 1) {
-                    // special-case for a single collapsed message: no need to super-collapse it
-                    renderMessage(prevCollapsedMsg, false /* expanded */,
-                            prevSafeForImages, true /* firstBorder */);
+                    // Special-case for a single collapsed message: no need to super-collapse it.
+                    // Since it is super-collapsed, there is no previous message to be
+                    // collapsed and the border above it is the first border.
+                    renderMessage(prevCollapsedMsg, false /* previousCollapsed */,
+                            false /* expanded */, prevSafeForImages, true /* firstBorder */);
                 } else {
                     renderSuperCollapsedBlock(collapsedStart, pos - 1);
                 }
@@ -709,15 +715,19 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 collapsedStart = -1;
             }
 
-            renderMessage(msg, ExpansionState.isExpanded(expandedState), safeForImages,
+            renderMessage(msg, ExpansionState.isCollapsed(previousExpandedState),
+                    ExpansionState.isExpanded(expandedState), safeForImages,
                     pos == 0 /* firstBorder */);
+
+            previousExpandedState = expandedState;
         }
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
         final boolean applyTransforms = shouldApplyTransforms();
 
-        renderBorder(true /* contiguous */, false /* firstBorder */);
+        renderBorder(true /* contiguous */, true /* expanded */,
+                false /* firstBorder */, true /* lastBorder */);
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
@@ -726,27 +736,33 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
-        renderBorder(true /* contiguous */, true /* firstBorder */);
+        renderBorder(true /* contiguous */, true /* expanded */,
+                true /* firstBorder */, false /* lastBorder */);
         final int blockPos = mAdapter.addSuperCollapsedBlock(start, end);
         final int blockPx = measureOverlayHeight(blockPos);
         mTemplates.appendSuperCollapsedHtml(start, mWebView.screenPxToWebPx(blockPx));
     }
 
-    protected void renderBorder(boolean contiguous, boolean firstBorder) {
-        final int blockPos = mAdapter.addBorder(contiguous, firstBorder);
+    protected void renderBorder(
+            boolean contiguous, boolean expanded, boolean firstBorder, boolean lastBorder) {
+        final int blockPos = mAdapter.addBorder(contiguous, expanded, firstBorder, lastBorder);
         final int blockPx = measureOverlayHeight(blockPos);
         mTemplates.appendBorder(mWebView.screenPxToWebPx(blockPx));
     }
 
-    private void renderMessage(ConversationMessage msg, boolean expanded,
-            boolean safeForImages, boolean firstBorder) {
-        renderMessage(msg, expanded, safeForImages, true /* renderBorder */, firstBorder);
+    private void renderMessage(ConversationMessage msg, boolean previousCollapsed,
+            boolean expanded, boolean safeForImages, boolean firstBorder) {
+        renderMessage(msg, previousCollapsed, expanded, safeForImages,
+                true /* renderBorder */, firstBorder);
     }
 
-    private void renderMessage(ConversationMessage msg, boolean expanded,
-            boolean safeForImages, boolean renderBorder, boolean firstBorder) {
+    private void renderMessage(ConversationMessage msg, boolean previousCollapsed,
+            boolean expanded, boolean safeForImages, boolean renderBorder, boolean firstBorder) {
         if (renderBorder) {
-            renderBorder(true /* contiguous */, firstBorder);
+            // The border should be collapsed only if both the current
+            // and previous messages are collapsed.
+            renderBorder(true /* contiguous */, !previousCollapsed || expanded,
+                    firstBorder, false /* lastBorder */);
         }
 
         final int headerPos = mAdapter.addMessageHeader(msg, expanded,
@@ -785,8 +801,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 borderPx = 0;
                 first = false;
             } else {
-                final BorderItem border =
-                        mAdapter.newBorderItem(true /* contiguous */, false /* firstBorder */);
+                // When replacing the super-collapsed block,
+                // the border is always collapsed between messages.
+                final BorderItem border = mAdapter.newBorderItem(
+                        true /* contiguous */, false /* expanded */);
                 borderPx = measureOverlayHeight(border);
                 replacements.add(border);
                 mTemplates.appendBorder(mWebView.screenPxToWebPx(borderPx));
@@ -881,15 +899,19 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     @Override
-    public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeightPx) {
+    public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeightPx,
+            int topBorderHeight, int bottomBorderHeight) {
         mConversationContainer.invalidateSpacerGeometry();
 
         // show/hide the HTML message body and update the spacer height
         final int h = mWebView.screenPxToWebPx(newSpacerHeightPx);
+        final int topHeight = mWebView.screenPxToWebPx(topBorderHeight);
+        final int bottomHeight = mWebView.screenPxToWebPx(bottomBorderHeight);
         LogUtils.i(LAYOUT_TAG, "setting HTML spacer expanded=%s h=%dwebPx (%dscreenPx)",
                 item.isExpanded(), h, newSpacerHeightPx);
-        mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %s);",
-                mTemplates.getMessageDomId(item.getMessage()), item.isExpanded(), h));
+        mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %s, %s, %s);",
+                mTemplates.getMessageDomId(item.getMessage()), item.isExpanded(),
+                h, topHeight, bottomHeight));
 
         mViewState.setExpansionState(item.getMessage(),
                 item.isExpanded() ? ExpansionState.EXPANDED : ExpansionState.COLLAPSED);
@@ -1411,12 +1433,21 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private void processNewOutgoingMessage(ConversationMessage msg) {
+        // make the last border no longer be the border
+        ((BorderItem) mAdapter.getItem(mAdapter.getCount() - 1)).setIsLastBorder(false);
+
         mTemplates.reset();
         // this method will add some items to mAdapter, but we deliberately want to avoid notifying
         // adapter listeners (i.e. ConversationContainer) until onWebContentGeometryChange is next
         // called, to prevent N+1 headers rendering with N message bodies.
-        renderMessage(msg, true /* expanded */, msg.alwaysShowImages, false /* renderBorder */);
-        renderBorder(true /* contiguous */, false /* firstBorder */);
+
+        // We can just call previousCollapsed false here since the border
+        // above the message we're about to render should always show
+        // (which it also will since the message being render is expanded).
+        renderMessage(msg, false /* previousCollapsed */, true /* expanded */,
+                msg.alwaysShowImages, false /* renderBorder */, false /* firstBorder */);
+        renderBorder(true /* contiguous */, true /* expanded */,
+                false /* firstBorder */, true /* lastBorder */);
         mTempBodiesHtml = mTemplates.emit();
 
         mViewState.setExpansionState(msg, ExpansionState.EXPANDED);

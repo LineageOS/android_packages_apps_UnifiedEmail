@@ -17,18 +17,30 @@
 package com.android.mail.browse;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.BorderItem;
 
-import com.android.mail.R;
-
+/**
+ * View displaying the border between messages.
+ * Contains two nine-patches and a {@link android.widget.Space}.
+ * The nine patches are the bottom of the preceding message
+ * and the top of the following message.
+ */
 public class BorderView extends LinearLayout {
+
+    private static int sMessageBorderSpaceHeight = -1;
+    private static int sMessageBorderHeightCollapsed = -1;
+    private static int sMessageBorderHeightWithCard = -1;
 
     private View mCardBottom;
     private View mBorderSpace;
+    private View mCardTop;
 
     public BorderView(Context context) {
         this(context, null);
@@ -40,6 +52,22 @@ public class BorderView extends LinearLayout {
 
     public BorderView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        // In order to update the height appropriately based on
+        // whether the border is expanded or collapsed,
+        // we want to stash the height values for for the
+        // space in both its expanded and collapsed values.
+        // Additionally, we stash the total height of the view
+        // when both nine patches are visible.
+        if (sMessageBorderSpaceHeight == -1) {
+            final Resources res = context.getResources();
+            sMessageBorderSpaceHeight =
+                    res.getDimensionPixelSize(R.dimen.message_border_height);
+            sMessageBorderHeightCollapsed = res.getDimensionPixelSize(
+                    R.dimen.message_border_height_collapsed);
+            sMessageBorderHeightWithCard = res.getDimensionPixelSize(
+                    R.dimen.message_border_height_with_card);
+        }
     }
 
     @Override
@@ -48,9 +76,36 @@ public class BorderView extends LinearLayout {
 
         mCardBottom = findViewById(R.id.card_bottom);
         mBorderSpace = findViewById(R.id.border_space);
+        mCardTop = findViewById(R.id.card_top);
     }
 
     public void bind(BorderItem borderItem, boolean measureOnly) {
-        mCardBottom.setVisibility(borderItem.isFirstBorder() ? GONE : VISIBLE);
+        final boolean isExpanded = borderItem.isExpanded();
+
+        // Selectively show/hide the card nine-patches if the border is expanded or collapsed.
+        // Additionally this will occur if this is the first or last border.
+        mCardBottom.setVisibility(!isExpanded || borderItem.isFirstBorder() ? GONE : VISIBLE);
+        mCardTop.setVisibility(!isExpanded || borderItem.isLastBorder() ? GONE : VISIBLE);
+
+        // Adjust space height based on expanded state.
+        final ViewGroup.LayoutParams params = mBorderSpace.getLayoutParams();
+        params.height = isExpanded ? sMessageBorderSpaceHeight : sMessageBorderHeightCollapsed;
+        mBorderSpace.setLayoutParams(params);
+    }
+
+    /**
+     * Returns the full expanded height value of the border view.
+     * This height should never change.
+     */
+    public static int getExpandedHeight() {
+        return sMessageBorderHeightWithCard;
+    }
+
+    /**
+     * Returns the collapsed height value of the border view.
+     * This height should never change.
+     */
+    public static int getCollapsedHeight() {
+        return sMessageBorderHeightCollapsed;
     }
 }
