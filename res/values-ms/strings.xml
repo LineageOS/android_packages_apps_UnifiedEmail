@@ -255,16 +255,11 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> mesej lebih lama"</item>
   </plurals>
-    <!-- no translation found for from_heading (2454519463223197231) -->
-    <skip />
-    <!-- no translation found for replyto_heading (8563992423173220512) -->
-    <skip />
-    <!-- no translation found for to_heading (1142876841308812954) -->
-    <skip />
-    <!-- no translation found for cc_heading (52678613787360092) -->
-    <skip />
-    <!-- no translation found for bcc_heading (4698055226318660420) -->
-    <skip />
+    <string name="from_heading" msgid="2454519463223197231">"Daripada: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"Balas kepada: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"Kepada: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"Sk: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"Skt: "</string>
     <string name="show_images" msgid="1875700481186331432">"Tunjukkan gambar"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Sentiasa tunjukkan gambar daripada pengirim ini"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Gambar daripada pengirim ini akan ditunjukkan secara automatik."</string>
@@ -310,6 +305,8 @@
     <string name="loading_conversation" msgid="489160038366067983">"Memuatkan…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Pilih akaun"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Pilih folder"</string>
+    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
+    <skip />
     <string name="sync_all" msgid="1057043212338233359">"Segerak: Semua"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"Segerak: <xliff:g id="COUNT">%1$d</xliff:g> hari terakhir"</item>
@@ -330,14 +327,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Menunggu penyegerakan"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"E-mel anda akan muncul tidak lama lagi."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Akaun tidak tersegerak"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Akaun ini tidak ditetapkan untuk disegerakkan secara automatik."\n"Sentuh "<b>"Segerakkan Sekarang"</b>" untuk menyegerakkan e-mel sekali, atau "<b>"Tukar Tetapan Penyegerakan"</b>" untuk menyediakan akaun ini agar menyegerakkan e-mel secara automatik."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Akaun ini tidak ditetapkan untuk disegerakkan secara automatik.\nSentuh "<b>"Segerakkan Sekarang"</b>" untuk menyegerakkan e-mel sekali, atau "<b>"Tukar Tetapan Penyegerakan"</b>" untuk menyediakan akaun ini agar menyegerakkan e-mel secara automatik."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Segerakkan sekarang"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Tukar tetapan penyegerakan"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Tiada mesej baharu"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Tidak dapat memuatkan imej"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Tidak boleh dialihkan kerana pilihan mengandungi akaun berbilang."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Abaikan, saya mempercayai mesej ini"</string>
     <string name="via_domain" msgid="380109230928079350">"melalui <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -361,7 +358,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Butiran mesej"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Auto maju"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Pilih skrin mana mahu ditunjukkan selepas anda memadamkan mesej"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Tetapkan pilihan auto mara"\n"(selepas anda memadamkan, dsb.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Tetapkan pilihan auto mara\n(selepas anda memadamkan, dsb.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Lebih baharu"</item>
     <item msgid="5562093094216840213">"Lebih lama"</item>
@@ -427,11 +424,12 @@
     <string name="drawer_open" msgid="6074646853178471940">"Buka laci navigasi"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Tutup laci navigasi"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Sentuh imej penghantar untuk memilih perbualan itu."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Sentuh &amp; tahan untuk memilih satu perbualan, kemudian sentuh untuk memilih lagi."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ikon folder"</string>
     <string name="add_account" msgid="2162808366829269770">"Tambah akaun"</string>
     <string name="attached_message" msgid="4267189489654642035">"Mesej lampiran"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Hari ini, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Semalam, <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="ads" msgid="8547072743610267481">"Iklan"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Ketepikan petua"</string>
 </resources>
