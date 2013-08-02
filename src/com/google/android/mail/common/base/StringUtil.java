@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.android.common.base;
+package com.google.android.mail.common.base;
 
-import static com.google.android.common.base.Preconditions.checkArgument;
+import static com.google.android.mail.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Joiner.MapJoiner;

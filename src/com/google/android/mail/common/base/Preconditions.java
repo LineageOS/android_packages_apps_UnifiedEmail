@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.common.base;
+package com.google.android.mail.common.base;
 
 import java.util.NoSuchElementException;
 
