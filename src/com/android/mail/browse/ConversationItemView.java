@@ -235,6 +235,20 @@ public class ConversationItemView extends View
     private Bitmap mPhotoBitmap = null;
     private Rect mPhotoRect = null;
 
+    /**
+     * A listener for clicks on the various areas of a conversation item.
+     */
+    public interface ConversationItemAreaClickListener {
+        /** Called when the info icon is clicked. */
+        void onInfoIconClicked();
+
+        /** Called when the star is clicked. */
+        void onStarClicked();
+    }
+
+    /** If set, it will steal all clicks for which the interface has a click method. */
+    private ConversationItemAreaClickListener mConversationItemAreaClickListener = null;
+
     static {
         sPaint.setAntiAlias(true);
         sFoldersPaint.setAntiAlias(true);
@@ -503,31 +517,35 @@ public class ConversationItemView extends View
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
         Utils.traceBeginSection("CIVC.bind");
         bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity,
-                conversationListListener, set, folder, checkboxOrSenderImage, swipeEnabled,
-                priorityArrowEnabled, adapter, -1 /* backgroundOverrideResId */,
-                null /* photoBitmap */);
+                conversationListListener, null /* conversationItemAreaClickListener */, set, folder,
+                checkboxOrSenderImage, swipeEnabled, priorityArrowEnabled, adapter,
+                -1 /* backgroundOverrideResId */, null /* photoBitmap */);
         Utils.traceEndSection();
     }
 
     public void bindAd(final ConversationItemViewModel conversationItemViewModel,
             final ControllableActivity activity,
-            final ConversationListListener conversationListListener, final Folder folder,
-            final int checkboxOrSenderImage, final AnimatedAdapter adapter,
+            final ConversationListListener conversationListListener,
+            final ConversationItemAreaClickListener conversationItemAreaClickListener,
+            final Folder folder, final int checkboxOrSenderImage, final AnimatedAdapter adapter,
             final int backgroundOverrideResId, final Bitmap photoBitmap) {
         Utils.traceBeginSection("CIVC.bindAd");
-        bind(conversationItemViewModel, activity, conversationListListener, null /* set */, folder,
-                checkboxOrSenderImage, true /* swipeEnabled */, false /* priorityArrowEnabled */,
-                adapter, backgroundOverrideResId, photoBitmap);
+        bind(conversationItemViewModel, activity, conversationListListener,
+                conversationItemAreaClickListener, null /* set */, folder, checkboxOrSenderImage,
+                true /* swipeEnabled */, false /* priorityArrowEnabled */, adapter,
+                backgroundOverrideResId, photoBitmap);
         Utils.traceEndSection();
     }
 
     private void bind(ConversationItemViewModel header, ControllableActivity activity,
             final ConversationListListener conversationListListener,
+            final ConversationItemAreaClickListener conversationItemAreaClickListener,
             ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter,
             final int backgroundOverrideResId, final Bitmap photoBitmap) {
         mBackgroundOverrideResId = backgroundOverrideResId;
         mPhotoBitmap = photoBitmap;
+        mConversationItemAreaClickListener = conversationItemAreaClickListener;
 
         if (mHeader != null) {
             // If this was previously bound to a different conversation, remove any contact photo
@@ -1694,7 +1712,48 @@ public class ConversationItemView extends View
                 && (!isAttachmentPreviewsEnabled() || y < mCoordinates.attachmentPreviewsY);
     }
 
+    private boolean isTouchInInfoIcon(final float x, final float y) {
+        if (mHeader.infoIcon == null) {
+            // We have no info icon
+            return false;
+        }
+
+        // Regardless of device, we always want to be right of the date's left touch slop
+        if (x < mDateX - sStarTouchSlop) {
+            return false;
+        }
+
+        if (mStarEnabled) {
+            if (mIsExpansiveTablet) {
+                // Just check that we're left of the star's touch area
+                if (x >= mCoordinates.starX - sStarTouchSlop) {
+                    return false;
+                }
+            } else {
+                // We're on a phone or non-expansive tablet
+
+                // We allow touches all the way to the right edge, so no x check is necessary
+
+                // We need to be above the star's touch area, which ends at the top of the subject
+                // text
+                return y < mCoordinates.subjectY;
+            }
+        }
+
+        // With no star below the info icon, we allow touches anywhere from the top edge to the
+        // bottom edge, or to the top of the attachment previews, whichever is higher
+        return !isAttachmentPreviewsEnabled() || y < mCoordinates.attachmentPreviewsY;
+    }
+
     private boolean isTouchInStar(float x, float y) {
+        if (mHeader.infoIcon != null && !mIsExpansiveTablet) {
+            // We have an info icon, and it's above the star
+            // We allow touches everywhere below the top of the subject text
+            if (y < mCoordinates.subjectY) {
+                return false;
+            }
+        }
+
         // Everything after the star and include a touch slop.
         return mStarEnabled
                 && x > mCoordinates.starX - sStarTouchSlop
@@ -1724,7 +1783,7 @@ public class ConversationItemView extends View
         mLastTouchY = y;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTouchInContactPhoto(x, y) || isTouchInStar(x, y)) {
+                if (isTouchInContactPhoto(x, y) || isTouchInInfoIcon(x, y) || isTouchInStar(x, y)) {
                     mDownEvent = true;
                     handled = true;
                 }
@@ -1739,9 +1798,17 @@ public class ConversationItemView extends View
                     if (isTouchInContactPhoto(x, y)) {
                         // Touch on the check mark
                         toggleSelectedState();
+                    } else if (isTouchInInfoIcon(x, y)) {
+                        if (mConversationItemAreaClickListener != null) {
+                            mConversationItemAreaClickListener.onInfoIconClicked();
+                        }
                     } else if (isTouchInStar(x, y)) {
                         // Touch on the star
-                        toggleStar();
+                        if (mConversationItemAreaClickListener == null) {
+                            toggleStar();
+                        } else {
+                            mConversationItemAreaClickListener.onStarClicked();
+                        }
                     }
                     handled = true;
                 }
@@ -1772,7 +1839,7 @@ public class ConversationItemView extends View
         }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTouchInContactPhoto(x, y) || isTouchInStar(x, y)) {
+                if (isTouchInContactPhoto(x, y) || isTouchInInfoIcon(x, y) || isTouchInStar(x, y)) {
                     mDownEvent = true;
                     Utils.traceEndSection();
                     return true;
@@ -1787,9 +1854,22 @@ public class ConversationItemView extends View
                         toggleSelectedState();
                         Utils.traceEndSection();
                         return true;
+                    } else if (isTouchInInfoIcon(x, y)) {
+                        // Touch on the info icon
+                        mDownEvent = false;
+                        if (mConversationItemAreaClickListener != null) {
+                            mConversationItemAreaClickListener.onInfoIconClicked();
+                        }
+                        Utils.traceEndSection();
+                        return true;
                     } else if (isTouchInStar(x, y)) {
                         // Touch on the star
-                        toggleStar();
+                        mDownEvent = false;
+                        if (mConversationItemAreaClickListener == null) {
+                            toggleStar();
+                        } else {
+                            mConversationItemAreaClickListener.onStarClicked();
+                        }
                         Utils.traceEndSection();
                         return true;
                     }
