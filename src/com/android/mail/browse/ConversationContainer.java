@@ -184,6 +184,9 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private boolean mSnapEnabled;
 
+    private View mAdditionalBottomBorder;
+    private boolean mAdditionalBottomBorderAdded;
+
     /**
      * Child views of this container should implement this interface to be notified when they are
      * being detached.
@@ -453,6 +456,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             return;
         }
 
+        positionAdditionalBottomBorder();
+
         // recycle scrolled-off views and add newly visible views
 
         // we want consecutive spacers/overlays to stack towards the bottom
@@ -525,6 +530,48 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
 
         positionSnapHeader(mSnapIndex);
+    }
+
+    private void positionAdditionalBottomBorder() {
+        // TODO - figure out how to get the proper top of the border. On Nexus 4 we're off
+        // by 2 pixels. Adding 4 because that's fine since it'll just bleed into the bottom
+        // border.
+        final int lastBottom =
+                webPxToScreenPx(mOverlayPositions[mOverlayPositions.length-1].bottom) - 4;
+        final int containerHeight = getHeight();
+        final int speculativeHeight = containerHeight - lastBottom;
+        if (speculativeHeight > 0) {
+            if (mAdditionalBottomBorder == null) {
+                mAdditionalBottomBorder = mOverlayAdapter.getLayoutInflater().inflate(
+                        R.layout.fake_bottom_border, this, false);
+            }
+
+            setAdditionalBottomBorderHeight(speculativeHeight);
+
+            if (!mAdditionalBottomBorderAdded) {
+                addViewInLayoutWrapper(mAdditionalBottomBorder);
+                mAdditionalBottomBorderAdded = true;
+            }
+
+            measureOverlayView(mAdditionalBottomBorder);
+            layoutOverlay(mAdditionalBottomBorder, lastBottom, containerHeight);
+        } else {
+            if (mAdditionalBottomBorder != null && mAdditionalBottomBorderAdded) {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        removeViewInLayout(mAdditionalBottomBorder);
+                        mAdditionalBottomBorderAdded = false;
+                    }
+                });
+            }
+        }
+    }
+
+    private void setAdditionalBottomBorderHeight(int speculativeHeight) {
+        LayoutParams params = mAdditionalBottomBorder.getLayoutParams();
+        params.height = speculativeHeight;
+        mAdditionalBottomBorder.setLayoutParams(params);
     }
 
     private static OverlayPosition calculatePosition(final ConversationOverlayItem adapterItem,
@@ -788,18 +835,21 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         final View view = mOverlayAdapter.getView(adapterIndex, convertView, this);
         mOverlayViews.put(adapterIndex, new OverlayView(view, itemType));
 
-        final int index = BOTTOM_LAYER_VIEW_IDS.length;
-
         if (convertView == view) {
             LogUtils.d(TAG, "want to REUSE scrolled-in view: index=%d obj=%s", adapterIndex, view);
         } else {
             LogUtils.d(TAG, "want to CREATE scrolled-in view: index=%d obj=%s", adapterIndex, view);
         }
-        addViewInLayout(view, index, view.getLayoutParams(), true /* preventRequestLayout */);
 
-        mAttachedOverlaySinceLastDraw = true;
+        addViewInLayoutWrapper(view);
 
         return view;
+    }
+
+    private void addViewInLayoutWrapper(View view) {
+        final int index = BOTTOM_LAYER_VIEW_IDS.length;
+        addViewInLayout(view, index, view.getLayoutParams(), true /* preventRequestLayout */);
+        mAttachedOverlaySinceLastDraw = true;
     }
 
     private boolean isSnapEnabled() {
