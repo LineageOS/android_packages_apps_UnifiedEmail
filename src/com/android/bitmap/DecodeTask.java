@@ -19,10 +19,9 @@ import java.io.InputStream;
  * This class uses {@link BitmapRegionDecoder} when possible to minimize unnecessary decoding
  * and allow bitmap reuse on Jellybean 4.1 and later.
  * <p>
- * FIXME: add GIF support when {@link BitmapRegionDecoder} fails to decode it. Because BitmapFactory
- * is typically too picky to support bitmap reuse, we must also mark decoded result as not eligible
- * for pooling as it would be sized to be an exact fit for that GIF.
- *
+ *  GIFs are supported, but their decode does not reuse bitmaps at all. The resulting
+ *  {@link ReusableBitmap} will be marked as not reusable
+ *  ({@link ReusableBitmap#isEligibleForPooling()} will return false).
  */
 public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
 
@@ -166,6 +165,12 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
             if (!CROP_DURING_DECODE || (decodeResult == null && !isCancelled())) {
                 try {
                     Trace.beginSection("decode" + mOpts.inSampleSize);
+                    // disable inBitmap-- bitmap reuse doesn't work well below K
+                    if (mInBitmap != null) {
+                        mCache.offer(mInBitmap);
+                        mInBitmap = null;
+                        mOpts.inBitmap = null;
+                    }
                     decodeResult = decode(fd, in);
                 } catch (IllegalArgumentException e) {
                     System.err.println("decode failed: reason='" + e.getMessage() + "' ss="
@@ -195,7 +200,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                     }
                 } else {
                     // no mInBitmap means no pooling
-                    result = new ReusableBitmap(decodeResult);
+                    result = new ReusableBitmap(decodeResult, false /* reusable */);
                     result.setLogicalWidth(decodeResult.getWidth());
                     result.setLogicalHeight(decodeResult.getHeight());
                 }
@@ -233,9 +238,9 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 mCache.put(mKey, result);
                 if (DEBUG) System.out.println("placed result in cache: key=" + mKey + " bmp="
                         + result + " cancelled=" + isCancelled());
-            } else if (isCancelled() && mInBitmap != null) {
-                if (DEBUG) System.out.println("placing cancelled bitmap in pool: key=" + mKey
-                        + " bmp=" + mInBitmap);
+            } else if (mInBitmap != null) {
+                if (DEBUG) System.out.println("placing failed/cancelled bitmap in pool: key="
+                        + mKey + " bmp=" + mInBitmap);
                 mCache.offer(mInBitmap);
             }
         }
@@ -267,7 +272,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
 
         // Center the decode on the top 1/3
         BitmapUtils.calculateCroppedSrcRect(srcW, srcH, mDestW, mDestH, mDestH, mOpts.inSampleSize,
-                1f / 3, true /* absoluteFraction */, outSrcRect);
+                1f / 3, true /* absoluteFraction */, 1f, outSrcRect);
         if (DEBUG) System.out.println("rect for this decode is: " + outSrcRect
                 + " srcW/H=" + srcW + "/" + srcH
                 + " dstW/H=" + mDestW + "/" + mDestH);
