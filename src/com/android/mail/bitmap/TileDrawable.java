@@ -125,9 +125,6 @@ public class TileDrawable extends Drawable implements Drawable.Callback {
 
     /**
      * Changes the alpha on just the inner wrapped drawable.
-     *
-     * TODO: maybe use another property to control the inner alpha indepedently of this wrapper's
-     * alpha.
      */
     public void setInnerAlpha(int alpha) {
         mInner.setAlpha(alpha);
