@@ -60,26 +60,32 @@ public class MimeBodyPart extends BodyPart {
         return mHeader.getFirstHeader(name);
     }
 
+    @Override
     public void addHeader(String name, String value) throws MessagingException {
         mHeader.addHeader(name, value);
     }
 
+    @Override
     public void setHeader(String name, String value) throws MessagingException {
         mHeader.setHeader(name, value);
     }
 
+    @Override
     public String[] getHeader(String name) throws MessagingException {
         return mHeader.getHeader(name);
     }
 
+    @Override
     public void removeHeader(String name) throws MessagingException {
         mHeader.removeHeader(name);
     }
 
+    @Override
     public Body getBody() throws MessagingException {
         return mBody;
     }
 
+    @Override
     public void setBody(Body body) throws MessagingException {
         this.mBody = body;
         if (body instanceof com.android.emailcommon.mail.Multipart) {
@@ -99,6 +105,7 @@ public class MimeBodyPart extends BodyPart {
         }
     }
 
+    @Override
     public String getContentType() throws MessagingException {
         String contentType = getFirstHeader(MimeHeader.HEADER_CONTENT_TYPE);
         if (contentType == null) {
@@ -108,6 +115,7 @@ public class MimeBodyPart extends BodyPart {
         }
     }
 
+    @Override
     public String getDisposition() throws MessagingException {
         String contentDisposition = getFirstHeader(MimeHeader.HEADER_CONTENT_DISPOSITION);
         if (contentDisposition == null) {
@@ -117,6 +125,7 @@ public class MimeBodyPart extends BodyPart {
         }
     }
 
+    @Override
     public String getContentId() throws MessagingException {
         String contentId = getFirstHeader(MimeHeader.HEADER_CONTENT_ID);
         if (contentId == null) {
@@ -127,10 +136,12 @@ public class MimeBodyPart extends BodyPart {
         }
     }
 
+    @Override
     public String getMimeType() throws MessagingException {
         return MimeUtility.getHeaderParameter(getContentType(), null);
     }
 
+    @Override
     public boolean isMimeType(String mimeType) throws MessagingException {
         return getMimeType().equals(mimeType);
     }
@@ -139,18 +150,20 @@ public class MimeBodyPart extends BodyPart {
         this.mSize = size;
     }
 
+    @Override
     public int getSize() throws MessagingException {
         return mSize;
     }
 
     /**
      * Set extended header
-     * 
+     *
      * @param name Extended header name
      * @param value header value - flattened by removing CR-NL if any
      * remove header if value is null
      * @throws MessagingException
      */
+    @Override
     public void setExtendedHeader(String name, String value) throws MessagingException {
         if (value == null) {
             if (mExtendedHeader != null) {
@@ -159,18 +172,19 @@ public class MimeBodyPart extends BodyPart {
             return;
         }
         if (mExtendedHeader == null) {
-            mExtendedHeader = new MimeHeader(); 
+            mExtendedHeader = new MimeHeader();
         }
         mExtendedHeader.setHeader(name, END_OF_LINE.matcher(value).replaceAll(""));
     }
 
     /**
      * Get extended header
-     * 
+     *
      * @param name Extended header name
      * @return header value - null if header does not exist
-     * @throws MessagingException 
+     * @throws MessagingException
      */
+    @Override
     public String getExtendedHeader(String name) throws MessagingException {
         if (mExtendedHeader == null) {
             return null;
@@ -181,6 +195,7 @@ public class MimeBodyPart extends BodyPart {
     /**
      * Write the MimeMessage out in MIME format.
      */
+    @Override
     public void writeTo(OutputStream out) throws IOException, MessagingException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out), 1024);
         mHeader.writeTo(out);

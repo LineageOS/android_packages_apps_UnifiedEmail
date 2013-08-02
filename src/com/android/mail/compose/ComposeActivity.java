@@ -2480,6 +2480,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .setPositiveButton(R.string.send,
                             new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     ((ComposeActivity)getActivity()).finishSendConfirmDialog(save,
                                             showToast);

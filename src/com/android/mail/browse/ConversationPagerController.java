@@ -23,7 +23,6 @@ import android.content.res.TypedArray;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 

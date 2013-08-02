@@ -577,6 +577,7 @@ public class Message implements Parcelable, HtmlMessage {
                 (!TextUtils.isEmpty(bodyHtml) && INLINE_IMAGE_PATTERN.matcher(bodyHtml).find()));
     }
 
+    @Override
     public boolean embedsExternalResources() {
         return embedsExternalResources;
     }
@@ -598,6 +599,7 @@ public class Message implements Parcelable, HtmlMessage {
         handler.startUpdate(token, cookie, uri, values, null, null);
     }
 
+    @Override
     public String getBodyAsHtml() {
         String body = "";
         if (!TextUtils.isEmpty(bodyHtml)) {
@@ -608,6 +610,7 @@ public class Message implements Parcelable, HtmlMessage {
         return body;
     }
 
+    @Override
     public long getId() {
         return id;
     }

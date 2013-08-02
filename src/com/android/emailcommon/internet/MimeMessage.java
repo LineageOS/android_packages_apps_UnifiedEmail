@@ -197,6 +197,7 @@ public class MimeMessage extends Message {
         }
     }
 
+    @Override
     public String getDisposition() throws MessagingException {
         String contentDisposition = getFirstHeader(MimeHeader.HEADER_CONTENT_DISPOSITION);
         if (contentDisposition == null) {
@@ -206,6 +207,7 @@ public class MimeMessage extends Message {
         }
     }
 
+    @Override
     public String getContentId() throws MessagingException {
         String contentId = getFirstHeader(MimeHeader.HEADER_CONTENT_ID);
         if (contentId == null) {
@@ -220,10 +222,12 @@ public class MimeMessage extends Message {
         return mComplete;
     }
 
+    @Override
     public String getMimeType() throws MessagingException {
         return MimeUtility.getHeaderParameter(getContentType(), null);
     }
 
+    @Override
     public int getSize() throws MessagingException {
         return mSize;
     }
@@ -434,6 +438,7 @@ public class MimeMessage extends Message {
      * remove header if value is null
      * @throws MessagingException
      */
+    @Override
     public void setExtendedHeader(String name, String value) throws MessagingException {
         if (value == null) {
             if (mExtendedHeader != null) {
@@ -454,6 +459,7 @@ public class MimeMessage extends Message {
      * @return header value - null if header does not exist
      * @throws MessagingException
      */
+    @Override
     public String getExtendedHeader(String name) throws MessagingException {
         if (mExtendedHeader == null) {
             return null;
@@ -500,6 +506,7 @@ public class MimeMessage extends Message {
      *
      * @param out Output steam to write message header and body.
      */
+    @Override
     public void writeTo(OutputStream out) throws IOException, MessagingException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out), 1024);
         // Force creation of local message-id
@@ -514,6 +521,7 @@ public class MimeMessage extends Message {
         }
     }
 
+    @Override
     public InputStream getInputStream() throws MessagingException {
         return null;
     }
@@ -531,6 +539,7 @@ public class MimeMessage extends Message {
             }
         }
 
+        @Override
         public void startMessage() {
             if (stack.isEmpty()) {
                 stack.push(MimeMessage.this);
@@ -546,15 +555,18 @@ public class MimeMessage extends Message {
             }
         }
 
+        @Override
         public void endMessage() {
             expect(MimeMessage.class);
             stack.pop();
         }
 
+        @Override
         public void startHeader() {
             expect(Part.class);
         }
 
+        @Override
         public void field(String fieldData) {
             expect(Part.class);
             try {
@@ -565,10 +577,12 @@ public class MimeMessage extends Message {
             }
         }
 
+        @Override
         public void endHeader() {
             expect(Part.class);
         }
 
+        @Override
         public void startMultipart(BodyDescriptor bd) {
             expect(Part.class);
 
@@ -582,6 +596,7 @@ public class MimeMessage extends Message {
             }
         }
 
+        @Override
         public void body(BodyDescriptor bd, InputStream in) throws IOException {
             expect(Part.class);
             Body body = MimeUtility.decodeBody(in, bd.getTransferEncoding());
@@ -592,10 +607,12 @@ public class MimeMessage extends Message {
             }
         }
 
+        @Override
         public void endMultipart() {
             stack.pop();
         }
 
+        @Override
         public void startBodyPart() {
             expect(MimeMultipart.class);
 
@@ -608,11 +625,13 @@ public class MimeMessage extends Message {
             }
         }
 
+        @Override
         public void endBodyPart() {
             expect(BodyPart.class);
             stack.pop();
         }
 
+        @Override
         public void epilogue(InputStream is) throws IOException {
             expect(MimeMultipart.class);
             StringBuffer sb = new StringBuffer();
@@ -623,6 +642,7 @@ public class MimeMessage extends Message {
             // ((Multipart) stack.peek()).setEpilogue(sb.toString());
         }
 
+        @Override
         public void preamble(InputStream is) throws IOException {
             expect(MimeMultipart.class);
             StringBuffer sb = new StringBuffer();
@@ -637,6 +657,7 @@ public class MimeMessage extends Message {
             }
         }
 
+        @Override
         public void raw(InputStream is) throws IOException {
             throw new UnsupportedOperationException("Not supported");
         }
