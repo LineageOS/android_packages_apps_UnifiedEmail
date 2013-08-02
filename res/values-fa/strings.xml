@@ -305,6 +305,8 @@
     <string name="loading_conversation" msgid="489160038366067983">"در حال بارگیری..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"انتخاب حساب"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"انتخاب پوشه"</string>
+    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
+    <skip />
     <string name="sync_all" msgid="1057043212338233359">"همگام‌سازی: همه"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"همگام‌سازی: <xliff:g id="COUNT">%1$d</xliff:g> روز گذشته"</item>
@@ -325,14 +327,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"در انتظار همگام‌سازی"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"ایمیل شما به زودی نمایش داده می‌شود."</string>
     <string name="not_synced_title" msgid="794279749170198599">"حساب همگام نشد"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"این حساب برای همگام‌سازی به طور خودکار تنظیم نشده است."\n"برای یک بار همگام‌سازی نامه، "<b>"اکنون همگام‌سازی شود"</b>" را لمس کنید، یا برای تنظیم این حساب برای همگام‌سازی نامه به طور خودکار، "<b>"تنظیمات همگام‌سازی را تغییر دهید"</b>"."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"این حساب برای همگام‌سازی به طور خودکار تنظیم نشده است.\nبرای یک بار همگام‌سازی نامه، "<b>"اکنون همگام‌سازی شود"</b>" را لمس کنید، یا برای تنظیم این حساب برای همگام‌سازی نامه به طور خودکار، "<b>"تنظیمات همگام‌سازی را تغییر دهید"</b>"."</string>
     <string name="manual_sync" msgid="6743983544685622800">"اکنون همگام‌سازی شود"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"تغییر تنظیمات همگام‌سازی"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"پیام جدیدی وجود ندارد"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"تصویر بارگیری نمی‌شود"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"امکان جابجایی وجود ندارد زیرا انتخاب شما شامل چندین حساب است."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"نادیده بگیر، پیام مطمئن است"</string>
     <string name="via_domain" msgid="380109230928079350">"از طریق <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -356,7 +358,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"جزئیات پیام"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"پیشرفت خودکار"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"انتخاب کنید بعد از حذف یک پیام، چه صفحه‌ای نشان داده شود"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"تنظیم اولویت پیشروی خودکار"\n"(بعد از اینکه موردی را حذف کردید)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"تنظیم اولویت پیشروی خودکار\n(بعد از اینکه موردی را حذف کردید)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"جدیدتر"</item>
     <item msgid="5562093094216840213">"قدیمی‌تر"</item>
@@ -422,11 +424,12 @@
     <string name="drawer_open" msgid="6074646853178471940">"باز کردن کشوی پیمایش"</string>
     <string name="drawer_close" msgid="2764774620737876943">"بستن کشوی پیمایش"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"برای انتخاب مکالمه، تصویر فرستنده را لمس کنید."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"برای انتخاب یک مکالمه لمس کرده، نگه دارید، سپس برای انتخاب موارد بیشتر لمس کنید."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"نماد پوشه"</string>
     <string name="add_account" msgid="2162808366829269770">"افزودن حساب"</string>
     <string name="attached_message" msgid="4267189489654642035">"پیام پیوست شده"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>،‏ <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"امروز، <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"دیروز، <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="ads" msgid="8547072743610267481">"آگهی‌ها"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"رد کردن نکته راهنما"</string>
 </resources>
