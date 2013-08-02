@@ -1564,8 +1564,13 @@ public class ConversationItemView extends View
         if (SwipeableListView.ENABLE_ATTACHMENT_PARALLAX) {
             final View listView = getListView();
             final View listItemView = unwrap();
-            fraction = 1 - (float) listItemView.getBottom()
-                    / (listView.getHeight() + listItemView.getHeight());
+            if (SwipeableListView.ATTACHMENT_PARALLAX_DIRECTION_ALTERNATIVE) {
+                fraction = 1 - (float) listItemView.getBottom()
+                        / (listView.getHeight() + listItemView.getHeight());
+            } else {
+                fraction = (float) listItemView.getBottom()
+                        / (listView.getHeight() + listItemView.getHeight());
+            }
         } else {
             // Vertically center the preview crop, which has already been decoded at 1/3.
             fraction = 0.5f;
