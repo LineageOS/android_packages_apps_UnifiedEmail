@@ -246,10 +246,7 @@ public class ConversationItemView extends View
         if (sContactPhotoManager == null) {
             return;
         }
-        final boolean scrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
         final boolean flinging = scrollState == OnScrollListener.SCROLL_STATE_FLING;
-
-        // TODO: add support for yielding attachment bitmap allocation if/when needed
 
         if (flinging) {
             sContactPhotoManager.pause();

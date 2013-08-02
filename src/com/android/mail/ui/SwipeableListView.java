@@ -419,6 +419,10 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         }
 
         if (SCROLL_PAUSE_ENABLE) {
+            AnimatedAdapter adapter = getAnimatedAdapter();
+            if (adapter != null) {
+                adapter.onScrollStateChanged(scrollState);
+            }
             ConversationItemView.setScrollStateChanged(scrollState);
         }
     }

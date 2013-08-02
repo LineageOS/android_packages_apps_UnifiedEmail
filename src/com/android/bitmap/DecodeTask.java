@@ -127,6 +127,11 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 Trace.beginSection("poll for reusable bitmap");
                 mInBitmap = mCache.poll();
                 Trace.endSection();
+
+                if (isCancelled()) {
+                    return null;
+                }
+
                 if (mInBitmap == null) {
                     if (DEBUG) System.err.println(
                             "decode thread wants a bitmap. cache dump:\n" + mCache.toDebugString());
