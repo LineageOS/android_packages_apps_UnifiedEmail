@@ -44,6 +44,7 @@ public class SyncErrorDialogFragment extends DialogFragment {
                 .setMessage(R.string.sync_error_message)
                 .setPositiveButton(R.string.ok,
                     new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int whichButton) {
                             dialog.dismiss();
                         }
@@ -51,6 +52,7 @@ public class SyncErrorDialogFragment extends DialogFragment {
                 )
                 .setNegativeButton(R.string.storage,
                     new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int whichButton) {
                             Intent intent = new Intent(
                                     Settings.ACTION_INTERNAL_STORAGE_SETTINGS);

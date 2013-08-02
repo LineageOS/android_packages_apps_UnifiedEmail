@@ -30,8 +30,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import com.android.ex.photo.Intents;
-import com.android.ex.photo.Intents.PhotoViewIntentBuilder;
 import com.android.ex.photo.util.ImageUtils;
 import com.android.mail.R;
 import com.android.mail.photo.MailPhotoViewActivity;

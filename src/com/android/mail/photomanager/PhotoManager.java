@@ -409,7 +409,7 @@ public abstract class PhotoManager implements ComponentCallbacks2, Callback {
     /**
      * Takes care of retrieving the Bitmap from both the decoded and holder caches.
      */
-    private Bitmap getCachedPhoto(BitmapIdentifier bitmapKey) {
+    private static Bitmap getCachedPhoto(BitmapIdentifier bitmapKey) {
         Utils.traceBeginSection("Get cached photo");
         final Bitmap cached = sBitmapCache.get(bitmapKey);
         Utils.traceEndSection();

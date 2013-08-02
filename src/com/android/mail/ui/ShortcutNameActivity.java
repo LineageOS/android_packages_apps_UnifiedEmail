@@ -73,6 +73,7 @@ public class ShortcutNameActivity extends Activity implements OnClickListener,
         }
     }
 
+    @Override
     public void onClick(View v) {
         final int id = v.getId();
         if (R.id.done == id) {
@@ -82,6 +83,7 @@ public class ShortcutNameActivity extends Activity implements OnClickListener,
         }
     }
 
+    @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             doCreateShortcut();

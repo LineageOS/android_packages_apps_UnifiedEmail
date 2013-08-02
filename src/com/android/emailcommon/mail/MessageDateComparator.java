@@ -19,6 +19,7 @@ package com.android.emailcommon.mail;
 import java.util.Comparator;
 
 public class MessageDateComparator implements Comparator<Message> {
+    @Override
     public int compare(Message o1, Message o2) {
         try {
             if (o1.getSentDate() == null) {
