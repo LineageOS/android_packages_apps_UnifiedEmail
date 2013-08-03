@@ -8,7 +8,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 import com.android.bitmap.BitmapCache;
-import com.android.bitmap.ContiguousFIFOAggregator;
+import com.android.bitmap.DecodeAggregator;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewCoordinates;
 
@@ -22,7 +22,7 @@ public class AttachmentGridDrawable extends CompositeDrawable<AttachmentDrawable
     public static final int MAX_VISIBLE_ATTACHMENT_COUNT = 2;
 
     private BitmapCache mCache;
-    private ContiguousFIFOAggregator mDecodeAggregator;
+    private DecodeAggregator mDecodeAggregator;
     private String mOverflowText;
     private ConversationItemViewCoordinates mCoordinates;
     private float mParallaxFraction = 0.5f;
@@ -57,7 +57,7 @@ public class AttachmentGridDrawable extends CompositeDrawable<AttachmentDrawable
         mCache = cache;
     }
 
-    public void setDecodeAggregator(final ContiguousFIFOAggregator decodeAggregator) {
+    public void setDecodeAggregator(final DecodeAggregator decodeAggregator) {
         this.mDecodeAggregator = decodeAggregator;
     }
 
