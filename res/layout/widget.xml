@@ -54,21 +54,36 @@
                 android:freezesText="true"
                 android:includeFontPadding="false" />
             <TextView
-                android:id="@+id/widget_account"
+                android:id="@+id/widget_account_noflip"
                 style="@style/WidgetSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:freezesText="true"
-                android:includeFontPadding="false" />
+                android:includeFontPadding="false"/>
+            <ViewFlipper
+                android:id="@+id/widget_account_unread_flipper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoStart="true"
+                android:flipInterval="@integer/widget_account_unread_flip_ms"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/widget_account"
+                    style="@style/WidgetSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:freezesText="true"
+                    android:includeFontPadding="false"/>
+                <!-- Note: We can't set "freezesText" on the widget_unread_count view, as the
+                     launcher can restore stale data over updated data. -->
+                <TextView
+                    android:id="@+id/widget_unread_count"
+                    style="@style/WidgetSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false" />
+            </ViewFlipper>
         </LinearLayout>
-        <!-- Note: We can't set "freezesText" on the widget_unread_count view, as the launcher can
-             restore stale data over updated data. -->
-        <TextView
-            android:id="@+id/widget_unread_count"
-            style="@style/UnreadCount"
-            android:layout_marginRight="12dip"
-            android:textColor="#777777"
-            android:visibility="gone" />
         <ImageButton
             android:id="@+id/widget_compose"
             android:layout_width="wrap_content"
