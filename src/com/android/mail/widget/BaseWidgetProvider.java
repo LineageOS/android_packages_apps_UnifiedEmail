@@ -32,6 +32,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.mail.R;
+import com.android.mail.R.id;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
@@ -318,8 +319,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         if (!isAccountValid || Utils.isEmpty(folderUri)) {
             // Widget has not been configured yet
             remoteViews.setViewVisibility(R.id.widget_folder, View.GONE);
-            remoteViews.setViewVisibility(R.id.widget_account, View.GONE);
-            remoteViews.setViewVisibility(R.id.widget_unread_count, View.GONE);
+            remoteViews.setViewVisibility(R.id.widget_account_noflip, View.GONE);
+            remoteViews.setViewVisibility(R.id.widget_account_unread_flipper, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_compose, View.GONE);
             remoteViews.setViewVisibility(R.id.conversation_list, View.GONE);
             remoteViews.setViewVisibility(R.id.empty_conversation_list, View.GONE);
