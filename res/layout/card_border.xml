@@ -29,7 +29,6 @@
         android:layout_marginLeft="@dimen/conversation_view_margin_side_minus_gradient"
         android:layout_marginEnd="@dimen/conversation_view_margin_side_minus_gradient"
         android:layout_marginRight="@dimen/conversation_view_margin_side_minus_gradient"
-        android:layout_gravity="top"
         android:background="@drawable/card_bottom" />
     <Space
         android:id="@+id/border_space"
@@ -43,6 +42,5 @@
         android:layout_marginLeft="@dimen/conversation_view_margin_side_minus_gradient"
         android:layout_marginEnd="@dimen/conversation_view_margin_side_minus_gradient"
         android:layout_marginRight="@dimen/conversation_view_margin_side_minus_gradient"
-        android:layout_gravity="bottom"
         android:background="@drawable/card_top" />
 </com.android.mail.browse.BorderView>
