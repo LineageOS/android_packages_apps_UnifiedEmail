@@ -102,6 +102,14 @@ public class BorderView extends LinearLayout {
         mBorderSpace.setLayoutParams(params);
     }
 
+    public void disableCardBottomBorder() {
+        mCardBottom.setVisibility(GONE);
+    }
+
+    public void disableCardTopBorder() {
+        mCardTop.setVisibility(GONE);
+    }
+
     /**
      * Returns the full expanded height value of the border view.
      * This height should never change.
