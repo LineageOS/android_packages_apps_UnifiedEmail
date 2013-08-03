@@ -28,6 +28,7 @@ import android.webkit.WebSettings;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
+import com.android.mail.browse.BorderView;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationViewAdapter;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
@@ -75,6 +76,18 @@ public class SecureConversationViewController implements
         mConversationHeaderView = (ConversationViewHeader) rootView.findViewById(R.id.conv_header);
         mMessageHeaderView = (MessageHeaderView) rootView.findViewById(R.id.message_header);
         mMessageFooterView = (MessageFooterView) rootView.findViewById(R.id.message_footer);
+
+        // Add color backgrounds to the header and footer.
+        // Otherwise the backgrounds are grey. They can't
+        // be set in xml because that would add more overdraw
+        // in ConversationViewFragment.
+        final int color = rootView.getResources().getColor(
+                R.color.message_header_background_color);
+        mMessageHeaderView.setBackgroundColor(color);
+        mMessageFooterView.setBackgroundColor(color);
+
+        ((BorderView) rootView.findViewById(R.id.top_border)).disableCardBottomBorder();
+        ((BorderView) rootView.findViewById(R.id.bottom_border)).disableCardTopBorder();
 
         mProgressController = new ConversationViewProgressController(
                 mCallbacks.getFragment(), mCallbacks.getHandler());
