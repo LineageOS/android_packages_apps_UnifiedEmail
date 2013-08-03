@@ -250,6 +250,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     // Need this stub here
+    @Override
     public boolean supportsMessageTransforms() {
         return false;
     }

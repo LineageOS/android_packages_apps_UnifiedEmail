@@ -32,7 +32,6 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.mail.R;
-import com.android.mail.R.id;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
