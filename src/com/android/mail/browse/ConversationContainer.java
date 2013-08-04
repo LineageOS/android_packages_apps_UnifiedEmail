@@ -184,8 +184,23 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private boolean mSnapEnabled;
 
+    /**
+     * A View that fills the remaining vertical space when the overlays do not take
+     * up the entire container. Otherwise, a card-like bottom white space appears.
+     */
     private View mAdditionalBottomBorder;
+
+    /**
+     * A flag denoting whether the fake bottom border has been added to the container.
+     */
     private boolean mAdditionalBottomBorderAdded;
+
+    /**
+     * An int containing the potential top value for the additional bottom border.
+     * If this value is less than the height of the scroll container, the additional
+     * bottom border will be drawn.
+     */
+    private int mAdditionalBottomBorderOverlayTop;
 
     /**
      * Child views of this container should implement this interface to be notified when they are
@@ -343,6 +358,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         // also unbind the snap header view, so this "reset" causes the snap header to re-create
         // its view, just like all other headers
         mSnapHeader.unbind();
+
+        // also clear out the additional bottom border
+        removeViewInLayout(mAdditionalBottomBorder);
+        mAdditionalBottomBorderAdded = false;
+
         mSnapEnabled = isSnapEnabled();
         positionOverlays(0, mOffsetY);
     }
@@ -456,8 +476,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             return;
         }
 
-        positionAdditionalBottomBorder();
-
         // recycle scrolled-off views and add newly visible views
 
         // we want consecutive spacers/overlays to stack towards the bottom
@@ -470,6 +488,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
                 mOverlayAdapter.getCount());
 
         mSnapIndex = -1;
+        mAdditionalBottomBorderOverlayTop = 0;
 
         int adapterLoopIndex = mOverlayAdapter.getCount() - 1;
         int spacerIndex = mOverlayPositions.length - 1;
@@ -530,14 +549,15 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
 
         positionSnapHeader(mSnapIndex);
+        positionAdditionalBottomBorder();
     }
 
+    /**
+     * Adds an additional bottom border to the overlay views in case
+     * the overlays do not fill the entire screen.
+     */
     private void positionAdditionalBottomBorder() {
-        // TODO - figure out how to get the proper top of the border. On Nexus 4 we're off
-        // by 2 pixels. Adding 4 because that's fine since it'll just bleed into the bottom
-        // border.
-        final int lastBottom =
-                webPxToScreenPx(mOverlayPositions[mOverlayPositions.length-1].bottom) - 4;
+        final int lastBottom = mAdditionalBottomBorderOverlayTop;
         final int containerHeight = getHeight();
         final int speculativeHeight = containerHeight - lastBottom;
         if (speculativeHeight > 0) {
@@ -557,13 +577,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             layoutOverlay(mAdditionalBottomBorder, lastBottom, containerHeight);
         } else {
             if (mAdditionalBottomBorder != null && mAdditionalBottomBorderAdded) {
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        removeViewInLayout(mAdditionalBottomBorder);
-                        mAdditionalBottomBorderAdded = false;
-                    }
-                });
+                removeViewInLayout(mAdditionalBottomBorder);
+                mAdditionalBottomBorderAdded = false;
             }
         }
     }
@@ -795,7 +810,10 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             }
             traceLayout("laying out overlay %d with h=%d", adapterIndex,
                     overlayView.getMeasuredHeight());
-            layoutOverlay(overlayView, overlayTopY, overlayTopY + overlayView.getMeasuredHeight());
+            final int childBottom = overlayTopY + overlayView.getMeasuredHeight();
+            layoutOverlay(overlayView, overlayTopY, childBottom);
+            mAdditionalBottomBorderOverlayTop = (childBottom > mAdditionalBottomBorderOverlayTop) ?
+                    childBottom : mAdditionalBottomBorderOverlayTop;
         } else {
             // hide overlay
             if (overlay != null) {
@@ -804,6 +822,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             } else {
                 traceLayout("ignore non-visible overlay %d", adapterIndex);
             }
+            mAdditionalBottomBorderOverlayTop = (overlayBottomY > mAdditionalBottomBorderOverlayTop)
+                    ? overlayBottomY : mAdditionalBottomBorderOverlayTop;
         }
 
         if (overlayTopY <= mOffsetY && item.canPushSnapHeader()) {
