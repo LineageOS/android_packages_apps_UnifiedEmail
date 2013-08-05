@@ -18,8 +18,6 @@ package com.android.mail.ui;
 
 import android.graphics.Bitmap;
 
-import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
-
 /**
  * A canvas to draw loaded photos.
  */

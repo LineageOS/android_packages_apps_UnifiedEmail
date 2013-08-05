@@ -382,7 +382,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.compose);
         mInnerSavedState = (savedInstanceState != null) ?
@@ -715,7 +715,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
-    public final void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected final void onRestoreInstanceState(Bundle savedInstanceState) {
         final boolean hasAccounts = mAccounts != null && mAccounts.length > 0;
         if (hasAccounts) {
             clearChangeListeners();
@@ -740,7 +740,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
-    public final void onSaveInstanceState(Bundle state) {
+    protected final void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
         final Bundle inner = new Bundle();
         saveState(inner);
