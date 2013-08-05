@@ -243,9 +243,16 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private void performDestructiveAction(final int action) {
         final Collection<Conversation> conversations = mSelectionSet.values();
         final Settings settings = mAccount.settings;
-        final boolean showDialog =
-                (settings != null && (action == R.id.delete || action == R.id.discard_drafts) ?
-                        settings.confirmDelete : settings.confirmArchive);
+        final boolean showDialog;
+        // no confirmation dialog by default unless user preference or common sense dictates one
+        if (action == R.id.discard_drafts) {
+            // drafts are lost forever, so always confirm
+            showDialog = true;
+        } else if (settings != null && (action == R.id.archive || action == R.id.delete)) {
+            showDialog = (action == R.id.delete) ? settings.confirmDelete : settings.confirmArchive;
+        } else {
+            showDialog = false;
+        }
         if (showDialog) {
             mUpdater.makeDialogListener(action, true /* fromSelectedSet */);
             final int resId;
