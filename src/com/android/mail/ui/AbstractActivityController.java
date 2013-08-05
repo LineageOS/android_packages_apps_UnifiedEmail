@@ -1455,7 +1455,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * only be called when used with a toggle item. Other cases should be handled
      * explicitly with just closeDrawers() or openDrawer(View drawerView);
      */
-    protected void toggleFolderListState() {
+    protected void toggleDrawerState() {
         if (!isDrawerEnabled()) {
             return;
         }
