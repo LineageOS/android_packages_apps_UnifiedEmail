@@ -33,7 +33,6 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.ConversationCursorLoader;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
