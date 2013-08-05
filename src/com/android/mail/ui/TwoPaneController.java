@@ -354,8 +354,16 @@ public final class TwoPaneController extends AbstractActivityController {
             }
         } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
-        } else if (mode == ViewMode.CONVERSATION_LIST) {
-            popView(true);
+        } else if (mode == ViewMode.CONVERSATION_LIST
+                || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
+            final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
+
+            if (isTopLevel) {
+                // Show the drawer
+                toggleDrawerState();
+            } else {
+                popView(true);
+            }
         }
         return true;
     }
