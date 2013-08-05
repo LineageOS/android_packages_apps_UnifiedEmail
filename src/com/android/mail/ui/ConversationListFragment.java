@@ -56,6 +56,7 @@ import com.android.mail.providers.FolderObserver;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
@@ -597,7 +598,9 @@ public final class ConversationListFragment extends ListFragment implements
             final FolderSelector selector = mActivity.getFolderSelector();
             selector.onFolderSelected(((NestedFolderView) view).getFolder());
         } else if (view instanceof ToggleableItem) {
-            if (false && !mSelectedSet.isEmpty()) { // TODO(skennedy) This lets us peek
+            final boolean showSenderImage =
+                    (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
+            if (!showSenderImage && !mSelectedSet.isEmpty()) {
                 ((ToggleableItem) view).toggleSelectedState();
             } else {
                 viewConversation(position);
