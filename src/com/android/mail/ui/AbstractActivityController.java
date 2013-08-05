@@ -1333,8 +1333,8 @@ public abstract class AbstractActivityController implements ActivityController,
             final boolean showDialog = (settings != null && settings.confirmDelete);
             confirmAndDelete(id, target, showDialog, R.plurals.confirm_delete_conversation);
         } else if (id == R.id.discard_drafts) {
-            final boolean showDialog = (settings != null && settings.confirmDelete);
-            confirmAndDelete(id, target, showDialog,
+            // drafts are lost forever, so always confirm
+            confirmAndDelete(id, target, true /* showDialog */,
                     R.plurals.confirm_discard_drafts_conversation);
         } else if (id == R.id.mark_important) {
             updateConversation(Conversation.listOf(mCurrentConversation),
