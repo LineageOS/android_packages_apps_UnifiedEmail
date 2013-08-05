@@ -426,25 +426,19 @@ public final class OnePaneController extends AbstractActivityController {
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
             // Not needed, the activity is going away anyway.
-            return true;
-        }
-        if (mode == ViewMode.CONVERSATION_LIST
+        } else if (mode == ViewMode.CONVERSATION_LIST
                 || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
             final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
 
             if (isTopLevel) {
                 // Show the drawer.
-                toggleFolderListState();
+                toggleDrawerState();
             } else {
                 navigateUp();
             }
-
-            return true;
-        }
-        if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+        } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             // Same as go back.
             handleBackPress();
-            return true;
         }
         return true;
     }
