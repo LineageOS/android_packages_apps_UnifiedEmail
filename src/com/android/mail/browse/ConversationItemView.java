@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -2131,6 +2132,8 @@ public class ConversationItemView extends View
 
         private final long mDuration;
 
+        private boolean mReversing = false;
+
         public CabAnimator(final String propertyName, final float startValue, final float endValue,
                 final long duration) {
             mPropertyName = propertyName;
@@ -2152,8 +2155,36 @@ public class ConversationItemView extends View
                     invalidateArea();
                 }
             });
+            animator.addListener(mAnimatorListener);
             return animator;
         }
+
+        private final AnimatorListener mAnimatorListener = new AnimatorListener() {
+            @Override
+            public void onAnimationStart(final Animator animation) {
+                // Do nothing
+            }
+
+            @Override
+            public void onAnimationEnd(final Animator animation) {
+                if (mReversing) {
+                    mReversing = false;
+                    // We no longer want to track whether we were last selected,
+                    // since we no longer are selected
+                    mLastSelectedId = -1;
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(final Animator animation) {
+                // Do nothing
+            }
+
+            @Override
+            public void onAnimationRepeat(final Animator animation) {
+                // Do nothing
+            }
+        };
 
         public abstract void invalidateArea();
 
@@ -2178,6 +2209,7 @@ public class ConversationItemView extends View
             }
 
             mAnimator = createAnimator();
+            mReversing = reverse;
 
             if (reverse) {
                 mAnimator.reverse();
@@ -2191,6 +2223,8 @@ public class ConversationItemView extends View
                 mAnimator.cancel();
                 mAnimator = null;
             }
+
+            mReversing = false;
 
             setValue(0);
         }
