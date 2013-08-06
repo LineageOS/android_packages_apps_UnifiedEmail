@@ -396,19 +396,16 @@ public class SendersView {
             getSenderResources(context, resourceCachingRequired);
             // Clear any existing sender fragments; we must re-make all of them.
             header.senderFragments.clear();
-            String[] senders = TextUtils.split(sendersString, Address.ADDRESS_DELIMETER);
-            String[] namesOnly = new String[senders.length];
-            Rfc822Token[] senderTokens;
+            // TODO: unify this with ConversationItemView.calculateTextsAndBitmaps's tokenization
+            final Rfc822Token[] senders = Rfc822Tokenizer.tokenize(sendersString);
+            final String[] namesOnly = new String[senders.length];
             String display;
             for (int i = 0; i < senders.length; i++) {
-                senderTokens = Rfc822Tokenizer.tokenize(senders[i]);
-                if (senderTokens != null && senderTokens.length > 0) {
-                    display = Address.decodeAddressName(senderTokens[0].getName());
-                    if (TextUtils.isEmpty(display)) {
-                        display = senderTokens[0].getAddress();
-                    }
-                    namesOnly[i] = display;
+                display = Address.decodeAddressName(senders[i].getName());
+                if (TextUtils.isEmpty(display)) {
+                    display = senders[i].getAddress();
                 }
+                namesOnly[i] = display;
             }
             generateSenderFragments(header, namesOnly, readStyleSpan);
         } finally {
