@@ -305,8 +305,7 @@
     <string name="loading_conversation" msgid="489160038366067983">"로드 중…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"계정 선택"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"폴더 선택"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"이메일 폴더"</string>
     <string name="sync_all" msgid="1057043212338233359">"동기화: 전체"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"동기화: 지난 <xliff:g id="COUNT">%1$d</xliff:g>일"</item>
