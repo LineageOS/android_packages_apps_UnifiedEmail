@@ -33,6 +33,7 @@ import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentRendition;
 import com.android.mail.providers.UIProvider.AttachmentState;
+import com.android.mail.providers.UIProvider.AttachmentType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
@@ -94,7 +95,9 @@ public class Attachment implements Parcelable {
     private String inferredContentType;
 
     /**
-     * @see AttachmentColumns#STATE. Use {@link #setState(int)}
+     * Use {@link #setState(int)}
+     *
+     * @see AttachmentColumns#STATE
      */
     public int state;
 
@@ -140,6 +143,13 @@ public class Attachment implements Parcelable {
     public Uri previewIntentUri;
 
     /**
+     * The visibility type of this attachment.
+     *
+     * @see AttachmentColumns#TYPE
+     */
+    public int type;
+
+    /**
      * Might be null. JSON string.
      *
      * @see AttachmentColumns#PROVIDER_DATA
@@ -169,6 +179,7 @@ public class Attachment implements Parcelable {
         previewIntentUri = in.readParcelable(null);
         providerData = in.readString();
         supportsDownloadAgain = in.readInt() == 1;
+        type = in.readInt();
     }
 
     public Attachment(Cursor cursor) {
@@ -192,6 +203,7 @@ public class Attachment implements Parcelable {
         providerData = cursor.getString(cursor.getColumnIndex(AttachmentColumns.PROVIDER_DATA));
         supportsDownloadAgain = cursor.getInt(
                 cursor.getColumnIndex(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN)) == 1;
+        type = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.TYPE));
     }
 
     public Attachment(JSONObject srcJson) {
@@ -207,6 +219,7 @@ public class Attachment implements Parcelable {
         previewIntentUri = parseOptionalUri(srcJson, AttachmentColumns.PREVIEW_INTENT_URI);
         providerData = srcJson.optString(AttachmentColumns.PROVIDER_DATA);
         supportsDownloadAgain = srcJson.optBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, true);
+        type = srcJson.optInt(AttachmentColumns.TYPE);
     }
 
     /**
@@ -232,6 +245,7 @@ public class Attachment implements Parcelable {
             providerData = null;
             supportsDownloadAgain = false;
             destination = AttachmentDestination.CACHE;
+            type = AttachmentType.STANDARD;
 
             // insert attachment into content provider so that we can open the file
             final ContentResolver resolver = context.getContentResolver();
@@ -275,6 +289,7 @@ public class Attachment implements Parcelable {
                 parseOptionalUri(values.getAsString(AttachmentColumns.PREVIEW_INTENT_URI));
         providerData = values.getAsString(AttachmentColumns.PROVIDER_DATA);
         supportsDownloadAgain = values.getAsBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN);
+        type = values.getAsInteger(AttachmentColumns.TYPE);
     }
 
     /**
@@ -297,6 +312,7 @@ public class Attachment implements Parcelable {
                 previewIntentUri == null ? null : previewIntentUri.toString());
         values.put(AttachmentColumns.PROVIDER_DATA, providerData);
         values.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
+        values.put(AttachmentColumns.TYPE, type);
 
         return values;
     }
@@ -315,6 +331,7 @@ public class Attachment implements Parcelable {
         dest.writeParcelable(previewIntentUri, flags);
         dest.writeString(providerData);
         dest.writeInt(supportsDownloadAgain ? 1 : 0);
+        dest.writeInt(type);
     }
 
     public JSONObject toJSON() throws JSONException {
@@ -332,6 +349,7 @@ public class Attachment implements Parcelable {
         result.put(AttachmentColumns.PREVIEW_INTENT_URI, stringify(previewIntentUri));
         result.put(AttachmentColumns.PROVIDER_DATA, providerData);
         result.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
+        result.put(AttachmentColumns.TYPE, type);
 
         return result;
     }
@@ -483,31 +501,83 @@ public class Attachment implements Parcelable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == this) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-
-        if (o == null || o.getClass() != this.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        Attachment other = (Attachment) o;
-        return TextUtils.equals(other.name, this.name) && other.size == this.size
-                && Objects.equal(other.uri, this.uri)
-                && TextUtils.equals(other.contentType, this.contentType)
-                && other.state == this.state && other.destination == this.destination
-                && other.downloadedSize == this.downloadedSize
-                && Objects.equal(other.contentUri, this.contentUri)
-                && Objects.equal(other.thumbnailUri, this.thumbnailUri)
-                && Objects.equal(other.previewIntentUri, this.previewIntentUri)
-                && TextUtils.equals(other.providerData, this.providerData);
+        final Attachment that = (Attachment) o;
+
+        if (destination != that.destination) {
+            return false;
+        }
+        if (downloadedSize != that.downloadedSize) {
+            return false;
+        }
+        if (size != that.size) {
+            return false;
+        }
+        if (state != that.state) {
+            return false;
+        }
+        if (supportsDownloadAgain != that.supportsDownloadAgain) {
+            return false;
+        }
+        if (type != that.type) {
+            return false;
+        }
+        if (contentType != null ? !contentType.equals(that.contentType)
+                : that.contentType != null) {
+            return false;
+        }
+        if (contentUri != null ? !contentUri.equals(that.contentUri) : that.contentUri != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (partId != null ? !partId.equals(that.partId) : that.partId != null) {
+            return false;
+        }
+        if (previewIntentUri != null ? !previewIntentUri.equals(that.previewIntentUri)
+                : that.previewIntentUri != null) {
+            return false;
+        }
+        if (providerData != null ? !providerData.equals(that.providerData)
+                : that.providerData != null) {
+            return false;
+        }
+        if (thumbnailUri != null ? !thumbnailUri.equals(that.thumbnailUri)
+                : that.thumbnailUri != null) {
+            return false;
+        }
+        if (uri != null ? !uri.equals(that.uri) : that.uri != null) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, size, uri, contentType, state, destination, downloadedSize,
-                contentUri, thumbnailUri, previewIntentUri, providerData);
+        int result = partId != null ? partId.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + size;
+        result = 31 * result + (uri != null ? uri.hashCode() : 0);
+        result = 31 * result + (contentType != null ? contentType.hashCode() : 0);
+        result = 31 * result + state;
+        result = 31 * result + destination;
+        result = 31 * result + downloadedSize;
+        result = 31 * result + (contentUri != null ? contentUri.hashCode() : 0);
+        result = 31 * result + (thumbnailUri != null ? thumbnailUri.hashCode() : 0);
+        result = 31 * result + (previewIntentUri != null ? previewIntentUri.hashCode() : 0);
+        result = 31 * result + type;
+        result = 31 * result + (providerData != null ? providerData.hashCode() : 0);
+        result = 31 * result + (supportsDownloadAgain ? 1 : 0);
+        return result;
     }
 
     public static String toJSONArray(Collection<? extends Attachment> attachments) {
@@ -549,13 +619,15 @@ public class Attachment implements Parcelable {
         return TextUtils.join(UIProvider.ATTACHMENT_INFO_DELIMITER, Lists.newArrayList(
                 partId == null ? "" : partId,
                 name == null ? ""
-                : name.replaceAll("[" + UIProvider.ATTACHMENT_INFO_DELIMITER
-                        + UIProvider.ATTACHMENT_INFO_SEPARATOR + "]", ""),
+                        : name.replaceAll("[" + UIProvider.ATTACHMENT_INFO_DELIMITER
+                                + UIProvider.ATTACHMENT_INFO_SEPARATOR + "]", ""),
                 getContentType(),
                 String.valueOf(size),
                 getContentType(),
                 contentUri != null ? SERVER_ATTACHMENT : LOCAL_FILE,
-                contentUri));
+                contentUri != null ? contentUri.toString() : "",
+                "" /* cachedFileUri */,
+                String.valueOf(type)));
     }
 
     /**
