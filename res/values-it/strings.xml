@@ -305,8 +305,7 @@
     <string name="loading_conversation" msgid="489160038366067983">"Caricamento…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Scegli account"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Scegli cartella"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Cartella Email"</string>
     <string name="sync_all" msgid="1057043212338233359">"Sincronizza: tutto"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"Sincronizza: ultimo giorno (<xliff:g id="COUNT">%1$d</xliff:g>)"</item>
@@ -431,5 +430,5 @@
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Oggi alle <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Ieri alle <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Chiudi suggerimento"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Ignora suggerimento"</string>
 </resources>

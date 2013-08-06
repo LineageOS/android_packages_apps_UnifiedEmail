@@ -305,8 +305,7 @@
     <string name="loading_conversation" msgid="489160038366067983">"Завантаження…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Вибрати обліковий запис"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Вибрати папку"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Папка \"Електронна пошта\""</string>
     <string name="sync_all" msgid="1057043212338233359">"Синхронізувати: усе"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"Синхронізувати: за останній <xliff:g id="COUNT">%1$d</xliff:g> день"</item>
@@ -424,7 +423,7 @@
     <string name="drawer_open" msgid="6074646853178471940">"Висунути навігаційну панель"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Сховати навігаційну панель"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Торкніться зображення відправника, щоб вибрати бесіду."</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Торкніться й утримуйте, щоб вибрати одну бесіду, знову торкніться, щоб вибрати ще."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Торкніться й утримуйте, щоб вибрати одну бесіду, а потім ще раз, щоб вибрати інші."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Значок папки"</string>
     <string name="add_account" msgid="2162808366829269770">"Додати обліковий запис"</string>
     <string name="attached_message" msgid="4267189489654642035">"Вкладене повідомлення"</string>
