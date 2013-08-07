@@ -1290,6 +1290,9 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public final boolean onCreateOptionsMenu(Menu menu) {
+        if (mViewMode.isAdMode()) {
+            return false;
+        }
         final MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(mActionBarView.getOptionsMenuId(), menu);
         mActionBarView.onCreateOptionsMenu(menu);
@@ -1311,10 +1314,6 @@ public abstract class AbstractActivityController implements ActivityController,
          */
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
-        }
-
-        if (mActivity.getViewMode().isAdMode()) {
-            return onAdOptionsItemSelected(item);
         }
 
         final int id = item.getItemId();
@@ -1415,31 +1414,6 @@ public abstract class AbstractActivityController implements ActivityController,
             handled = false;
         }
         return handled;
-    }
-
-    private boolean onAdOptionsItemSelected(MenuItem item) {
-        final int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onUpPressed();
-        } else if (id == R.id.star) {
-
-        } else if (id == R.id.remove_star) {
-
-        } else if (id == R.id.forward) {
-
-        } else if (id == R.id.delete) {
-
-        } else if (id == R.id.settings) {
-            Utils.showSettings(mActivity.getActivityContext(), mAccount);
-        } else if (id == R.id.help_info_menu_item) {
-            Utils.showHelp(mActivity.getActivityContext(), mAccount, getHelpContext());
-        } else if (id == R.id.feedback_menu_item) {
-            Utils.sendFeedback(mActivity, mAccount, false);
-        } else {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -2095,10 +2069,6 @@ public abstract class AbstractActivityController implements ActivityController,
             setCurrentConversation(null);
         }
 
-        if (!ViewMode.isAdMode(newMode)) {
-            setCurrentStarrable(null);
-        }
-
         // If the viewmode is not set, preserve existing icon.
         if (newMode != ViewMode.UNKNOWN) {
             resetActionBarIcon();
@@ -2491,11 +2461,6 @@ public abstract class AbstractActivityController implements ActivityController,
             mActionBarView.setCurrentConversation(mCurrentConversation);
             mActivity.invalidateOptionsMenu();
         }
-    }
-
-    @Override
-    public void setCurrentStarrable(Starrable starrable) {
-        mActionBarView.setCurrentStarrable(starrable);
     }
 
     /**
