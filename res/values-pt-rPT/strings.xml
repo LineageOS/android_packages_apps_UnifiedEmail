@@ -305,8 +305,7 @@
     <string name="loading_conversation" msgid="489160038366067983">"A carregar…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Selecionar conta"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Escolher pasta"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Pasta Email"</string>
     <string name="sync_all" msgid="1057043212338233359">"Sincronizar: Tudo"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"Sincronizar: últimas 24 horas (<xliff:g id="COUNT">%1$d</xliff:g> dia)"</item>
@@ -424,7 +423,7 @@
     <string name="drawer_open" msgid="6074646853178471940">"Abrir separador de navegação"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Fechar separador de navegação"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Toque numa imagem de remetente para selecionar essa conversa."</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Toque e mantenha para selecionar uma conversa, em seguida toque para selecionar mais."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Toque e mantenha para selecionar uma conversa; em seguida toque para selecionar mais."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ícone de pasta"</string>
     <string name="add_account" msgid="2162808366829269770">"Adicionar conta"</string>
     <string name="attached_message" msgid="4267189489654642035">"Mensagem anexada"</string>

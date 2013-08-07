@@ -305,8 +305,7 @@
     <string name="loading_conversation" msgid="489160038366067983">"Yükleniyor..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Hesap seç"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Klasör seç"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"E-posta klasörü"</string>
     <string name="sync_all" msgid="1057043212338233359">"Senkronizasyon: Tümü"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"Senkronizasyon: Son <xliff:g id="COUNT">%1$d</xliff:g> gün"</item>
@@ -424,14 +423,12 @@
     <string name="drawer_open" msgid="6074646853178471940">"Gezinme menüsünü aç"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Gezinme menüsünü kapat"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"İlgili ileti dizisini seçmek için gönderenin resmine dokunun."</string>
-    <!-- no translation found for long_press_to_select_tip (9205666839837250150) -->
-    <skip />
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Bir ileti dizisini seçmek için uzun dokunun ve sonra başka ileti dizilerini seçmek için tekrar dokunun."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Klasör simgesi"</string>
     <string name="add_account" msgid="2162808366829269770">"Hesap ekle"</string>
     <string name="attached_message" msgid="4267189489654642035">"Ekli ileti"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Bugün, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Dün, <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <!-- no translation found for dismiss_tip_hover_text (1930345936314578166) -->
-    <skip />
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"İpucunu kapat"</string>
 </resources>
