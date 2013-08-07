@@ -43,6 +43,7 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.content.ObjectCursor;
+import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -387,7 +388,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             view = new SwipeableConversationItemView(context, mAccount.name);
         }
         view.bind(conv, mActivity, mConversationListListener, mBatchConversations, mFolder,
-                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this);
+                getCheckboxSetting(), getAttachmentPreviewsSetting(),
+                getParallaxSpeedAlternativeSetting(), getParallaxDirectionAlternativeSetting(),
+                mSwipeEnabled, mPriorityMarkersEnabled, this);
         return view;
     }
 
@@ -764,7 +767,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 position, null, parent);
         view.reset();
         view.bind(conversation, mActivity, mConversationListListener, mBatchConversations, mFolder,
-                getCheckboxSetting(), mSwipeEnabled, mPriorityMarkersEnabled, this);
+                getCheckboxSetting(), getAttachmentPreviewsSetting(),
+                getParallaxSpeedAlternativeSetting(), getParallaxDirectionAlternativeSetting(),
+                mSwipeEnabled, mPriorityMarkersEnabled, this);
         mAnimatingViews.put(conversation.id, view);
         return view;
     }
@@ -774,6 +779,17 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             ConversationListIcon.DEFAULT;
     }
 
+    private boolean getAttachmentPreviewsSetting() {
+        return mAccount == null || mAccount.settings.convListAttachmentPreviews;
+    }
+
+    private boolean getParallaxSpeedAlternativeSetting() {
+        return MailPrefs.get(mContext).getParallaxSpeedAlternative();
+    }
+
+    private boolean getParallaxDirectionAlternativeSetting() {
+        return MailPrefs.get(mContext).getParallaxDirectionAlternative();
+    }
 
     @Override
     public Object getItem(int position) {
