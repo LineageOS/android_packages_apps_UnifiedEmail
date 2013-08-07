@@ -51,6 +51,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     private int mDecodeHeight;
     private int mLoadState = LOAD_STATE_UNINITIALIZED;
     private float mParallaxFraction = 0.5f;
+    private float mParallaxSpeedMultiplier;
 
     // each attachment gets its own placeholder and progress indicator, to be shown, hidden,
     // and animated based on Drawable#setVisible() changes, which are in turn driven by
@@ -82,9 +83,10 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
 
     public final String LOG_TAG = "AttachPreview";
 
-    public AttachmentDrawable(Resources res, BitmapCache cache,
-            DecodeAggregator decodeAggregator, ConversationItemViewCoordinates coordinates,
-            Drawable placeholder, Drawable progress) {
+    public AttachmentDrawable(final Resources res, final BitmapCache cache,
+            final DecodeAggregator decodeAggregator,
+            final ConversationItemViewCoordinates coordinates, final Drawable placeholder,
+            final Drawable progress) {
         mCoordinates = coordinates;
         mDensity = res.getDisplayMetrics().density;
         mCache = cache;
@@ -111,6 +113,10 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     public void setDecodeDimensions(int w, int h) {
         mDecodeWidth = w;
         mDecodeHeight = h;
+    }
+
+    public void setParallaxSpeedMultiplier(final float parallaxSpeedMultiplier) {
+        mParallaxSpeedMultiplier = parallaxSpeedMultiplier;
     }
 
     public void showStaticPlaceholder() {
@@ -196,7 +202,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
                             bounds.width(), bounds.height(),
                             mCoordinates.attachmentPreviewsDecodeHeight, Integer.MAX_VALUE,
                             mParallaxFraction, false /* absoluteFraction */,
-                            SwipeableListView.ATTACHMENT_PARALLAX_MULTIPLIER, mSrcRect);
+                            mParallaxSpeedMultiplier, mSrcRect);
             canvas.drawBitmap(mBitmap.bmp, mSrcRect, bounds, mPaint);
         }
 

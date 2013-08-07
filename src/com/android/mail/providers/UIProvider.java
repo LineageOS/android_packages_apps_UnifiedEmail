@@ -31,6 +31,7 @@ import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
 import com.android.common.contacts.DataUsageStatUpdater;
+import com.android.mail.providers.UIProvider.AccountColumns.SettingsColumns;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
@@ -164,6 +165,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.SNAP_HEADERS, Integer.class)
             .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, Integer.class)
             .put(AccountColumns.SettingsColumns.CONV_LIST_ICON, Integer.class)
+            .put(AccountColumns.SettingsColumns.CONV_LIST_ATTACHMENT_PREVIEWS, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_DELETE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)
@@ -504,6 +506,14 @@ public class UIProvider {
              * {@link UIProvider.ConversationListIcon}.
              */
             public static final String CONV_LIST_ICON = "conversation_list_icon";
+
+            /**
+             * Integer column containing the user's preference for whether to show attachment
+             * previews or not in the conversation list view. A non zero value indicates that
+             * attachment previews should be displayed.
+             */
+            public static final String CONV_LIST_ATTACHMENT_PREVIEWS
+                    = "conversation_list_attachment_previews";
 
             /**
              * Integer column containing the user's specified confirm delete preference value.
