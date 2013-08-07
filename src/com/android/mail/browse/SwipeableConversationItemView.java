@@ -78,17 +78,21 @@ public class SwipeableConversationItemView extends FrameLayout
     }
 
     @Override
-    public void toggleSelectedStateOrBeginDrag() {
+    public boolean toggleSelectedStateOrBeginDrag() {
         if (mConversationItemView != null) {
-            mConversationItemView.toggleSelectedStateOrBeginDrag();
+            return mConversationItemView.toggleSelectedStateOrBeginDrag();
         }
+
+        return false;
     }
 
     @Override
-    public void toggleSelectedState() {
+    public boolean toggleSelectedState() {
         if (mConversationItemView != null) {
-            mConversationItemView.toggleSelectedState();
+            return mConversationItemView.toggleSelectedState();
         }
+
+        return false;
     }
 
     @Override
