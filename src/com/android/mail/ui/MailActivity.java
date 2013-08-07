@@ -36,7 +36,6 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Folder;
-import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
 
@@ -287,16 +286,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         sb.append(mController);
         sb.append("}");
         return sb.toString();
-    }
-
-    @Override
-    public void setViewModeListener(ModeChangeListener listener) {
-        mViewMode.addListener(listener);
-    }
-
-    @Override
-    public void unsetViewModeListener(ModeChangeListener listener) {
-        mViewMode.removeListener(listener);
     }
 
     @Override

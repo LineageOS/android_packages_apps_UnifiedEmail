@@ -286,7 +286,7 @@ public final class OnePaneController extends AbstractActivityController {
                 || action == R.id.mark_not_spam
                 || action == R.id.report_phishing
                 || action == R.id.refresh
-                || action == R.id.change_folder) {
+                || action == R.id.change_folders) {
             return false;
         } else {
             return true;
@@ -348,7 +348,7 @@ public final class OnePaneController extends AbstractActivityController {
             mActivity.finish();
         } else if (mViewMode.isListMode() && !inInbox(mAccount, mConvListContext)) {
             transitionToInbox();
-        } else if (mViewMode.isConversationMode()) {
+        } else if (mViewMode.isConversationMode() || mViewMode.isAdMode()) {
             transitionBackToConversationListMode(false /* inLoaderCallbacks */);
         } else {
             mActivity.finish();
@@ -436,7 +436,8 @@ public final class OnePaneController extends AbstractActivityController {
             } else {
                 navigateUp();
             }
-        } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+        } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION
+                || mode == ViewMode.AD) {
             // Same as go back.
             handleBackPress();
         }

@@ -17,8 +17,6 @@
 
 package com.android.mail.ui;
 
-import com.google.common.collect.ImmutableList;
-
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -67,6 +65,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
 import java.util.List;
@@ -529,7 +528,7 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter.destroy();
         mListView.setAdapter(null);
 
-        mActivity.unsetViewModeListener(this);
+        mActivity.getViewMode().removeListener(this);
         if (mFolderObserver != null) {
             mFolderObserver.unregisterAndDestroy();
             mFolderObserver = null;

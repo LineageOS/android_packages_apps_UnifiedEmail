@@ -296,7 +296,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        mChangeFoldersMenuItem = menu.findItem(R.id.change_folder);
+        mChangeFoldersMenuItem = menu.findItem(R.id.change_folders);
     }
 
     @Override

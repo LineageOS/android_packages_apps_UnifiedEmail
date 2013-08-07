@@ -157,7 +157,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 LogUtils.d(LOG_TAG, "Not in a starred folder.");
                 starConversations(false);
             }
-        } else if (itemId == R.id.move_to || itemId == R.id.change_folder) {
+        } else if (itemId == R.id.move_to || itemId == R.id.change_folders) {
             boolean cantMove = false;
             Account acct = mAccount;
             // Special handling for virtual folders
