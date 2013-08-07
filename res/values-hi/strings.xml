@@ -305,8 +305,7 @@
     <string name="loading_conversation" msgid="489160038366067983">"लोड हो रहा है…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"खाता चुनें"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"फ़ोल्डर चुनें"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"ईमेल फ़ोल्डर"</string>
     <string name="sync_all" msgid="1057043212338233359">"समन्वयित करें: सभी"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"समन्वयित करें: अंतिम <xliff:g id="COUNT">%1$d</xliff:g> दिन"</item>

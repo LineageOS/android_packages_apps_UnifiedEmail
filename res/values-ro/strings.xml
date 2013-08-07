@@ -305,8 +305,7 @@
     <string name="loading_conversation" msgid="489160038366067983">"Se încarcă…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Alegeţi un cont"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Alegeţi un dosar"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Dosar de e-mail"</string>
     <string name="sync_all" msgid="1057043212338233359">"Sincronizare: toate"</string>
   <plurals name="sync_recent">
     <item quantity="one" msgid="137489911893192702">"Sincronizare: ultima zi (<xliff:g id="COUNT">%1$d</xliff:g>)"</item>
@@ -424,14 +423,12 @@
     <string name="drawer_open" msgid="6074646853178471940">"Deschideți panoul de navigare"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Închideți panoul de navigare"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Atingeți imaginea unui expeditor pentru a selecta respectiva conversație."</string>
-    <!-- no translation found for long_press_to_select_tip (9205666839837250150) -->
-    <skip />
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Atingeți lung pentru a selecta o conversație, apoi atingeți pentru a selecta mai multe."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Pictogramă dosar"</string>
     <string name="add_account" msgid="2162808366829269770">"Adăugați un cont"</string>
     <string name="attached_message" msgid="4267189489654642035">"Mesaj atașat"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Astăzi, la <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Ieri, la <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <!-- no translation found for dismiss_tip_hover_text (1930345936314578166) -->
-    <skip />
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Ignorați sugestia"</string>
 </resources>
