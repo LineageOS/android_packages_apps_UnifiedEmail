@@ -34,7 +34,6 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SwipeableConversationItemView;
-import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -76,11 +75,8 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
      * The amount of extra vertical space to decode in attachment previews so we have image data to
      * pan within. 1.0 implies no parallax effect.
      */
-    public static float ATTACHMENT_PARALLAX_MULTIPLIER;
     public static final float ATTACHMENT_PARALLAX_MULTIPLIER_NORMAL = 1.5f;
     public static final float ATTACHMENT_PARALLAX_MULTIPLIER_ALTERNATIVE = 2.0f;
-
-    public static boolean ATTACHMENT_PARALLAX_DIRECTION_ALTERNATIVE;
 
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;
@@ -108,11 +104,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         float pagingTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
         mSwipeHelper = new SwipeHelper(context, SwipeHelper.X, this, densityScale,
                 pagingTouchSlop);
-        ATTACHMENT_PARALLAX_MULTIPLIER = MailPrefs.get(context).getParallaxSpeedAlternative()
-                ? SwipeableListView.ATTACHMENT_PARALLAX_MULTIPLIER_ALTERNATIVE
-                : SwipeableListView.ATTACHMENT_PARALLAX_MULTIPLIER_NORMAL;
-        ATTACHMENT_PARALLAX_DIRECTION_ALTERNATIVE = MailPrefs.get(context)
-                .getParallaxDirectionAlternative();
     }
 
     @Override

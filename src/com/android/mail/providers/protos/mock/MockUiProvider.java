@@ -369,6 +369,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(SettingsColumns.SNAP_HEADERS, 1);
         accountMap.put(SettingsColumns.REPLY_BEHAVIOR, 1);
         accountMap.put(SettingsColumns.CONV_LIST_ICON, 1);
+        accountMap.put(SettingsColumns.CONV_LIST_ATTACHMENT_PREVIEWS, 1);
         accountMap.put(SettingsColumns.CONFIRM_DELETE, 1);
         accountMap.put(SettingsColumns.CONFIRM_ARCHIVE, 1);
         accountMap.put(SettingsColumns.CONFIRM_SEND, 1);

@@ -67,6 +67,7 @@ public class Settings implements Parcelable {
     public final int snapHeaders;
     public final int replyBehavior;
     public final int convListIcon;
+    public final boolean  convListAttachmentPreviews;
     public final boolean confirmDelete;
     public final boolean confirmArchive;
     public final boolean confirmSend;
@@ -108,6 +109,7 @@ public class Settings implements Parcelable {
         snapHeaders = SnapHeaderValue.ALWAYS;
         replyBehavior = DefaultReplyBehavior.REPLY;
         convListIcon = ConversationListIcon.SENDER_IMAGE;
+        convListAttachmentPreviews = true;
         confirmDelete = false;
         confirmArchive = false;
         confirmSend = false;
@@ -130,6 +132,7 @@ public class Settings implements Parcelable {
         snapHeaders = inParcel.readInt();
         replyBehavior = inParcel.readInt();
         convListIcon = inParcel.readInt();
+        convListAttachmentPreviews = inParcel.readInt() != 0;
         confirmDelete = inParcel.readInt() != 0;
         confirmArchive = inParcel.readInt() != 0;
         confirmSend = inParcel.readInt() != 0;
@@ -152,6 +155,8 @@ public class Settings implements Parcelable {
         snapHeaders = cursor.getInt(cursor.getColumnIndex(SettingsColumns.SNAP_HEADERS));
         replyBehavior = cursor.getInt(cursor.getColumnIndex(SettingsColumns.REPLY_BEHAVIOR));
         convListIcon = cursor.getInt(cursor.getColumnIndex(SettingsColumns.CONV_LIST_ICON));
+        convListAttachmentPreviews = cursor
+                .getInt(cursor.getColumnIndex(SettingsColumns.CONV_LIST_ATTACHMENT_PREVIEWS)) != 0;
         confirmDelete = cursor.getInt(cursor.getColumnIndex(SettingsColumns.CONFIRM_DELETE)) != 0;
         confirmArchive = cursor.getInt(cursor.getColumnIndex(SettingsColumns.CONFIRM_ARCHIVE)) != 0;
         confirmSend = cursor.getInt(cursor.getColumnIndex(SettingsColumns.CONFIRM_SEND)) != 0;
@@ -183,6 +188,8 @@ public class Settings implements Parcelable {
         snapHeaders = json.optInt(SettingsColumns.SNAP_HEADERS, sDefault.snapHeaders);
         replyBehavior = json.optInt(SettingsColumns.REPLY_BEHAVIOR, sDefault.replyBehavior);
         convListIcon = json.optInt(SettingsColumns.CONV_LIST_ICON, sDefault.convListIcon);
+        convListAttachmentPreviews = json.optBoolean(SettingsColumns.CONV_LIST_ATTACHMENT_PREVIEWS,
+                sDefault.convListAttachmentPreviews);
         confirmDelete = json.optBoolean(SettingsColumns.CONFIRM_DELETE, sDefault.confirmDelete);
         confirmArchive = json.optBoolean(SettingsColumns.CONFIRM_ARCHIVE, sDefault.confirmArchive);
         confirmSend = json.optBoolean(SettingsColumns.CONFIRM_SEND, sDefault.confirmSend);
@@ -229,6 +236,7 @@ public class Settings implements Parcelable {
             json.put(SettingsColumns.SNAP_HEADERS, snapHeaders);
             json.put(SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
             json.put(SettingsColumns.CONV_LIST_ICON, convListIcon);
+            json.put(SettingsColumns.CONV_LIST_ATTACHMENT_PREVIEWS, convListAttachmentPreviews);
             json.put(SettingsColumns.CONFIRM_DELETE, confirmDelete);
             json.put(SettingsColumns.CONFIRM_ARCHIVE, confirmArchive);
             json.put(SettingsColumns.CONFIRM_SEND, confirmSend);
@@ -256,7 +264,7 @@ public class Settings implements Parcelable {
      * using {@link #serialize()}. This returns null if the serialized instance was invalid or does
      * not represent a valid account object.
      *
-     * @param serializedAccount
+     * @param serializedSettings
      * @return
      */
     public static Settings newInstance(String serializedSettings) {
@@ -299,6 +307,7 @@ public class Settings implements Parcelable {
         dest.writeInt(snapHeaders);
         dest.writeInt(replyBehavior);
         dest.writeInt(convListIcon);
+        dest.writeInt(convListAttachmentPreviews ? 1 : 0);
         dest.writeInt(confirmDelete ? 1 : 0);
         dest.writeInt(confirmArchive? 1 : 0);
         dest.writeInt(confirmSend? 1 : 0);
@@ -348,9 +357,9 @@ public class Settings implements Parcelable {
     }
 
     /**
-     * @return true if {@link UIProvider.ConversationViewMode.OVERVIEW} mode is set. In the event
+     * @return true if {@link UIProvider.ConversationViewMode#OVERVIEW} mode is set. In the event
      * that the setting is not yet set, fall back to
-     * {@link UIProvider.ConversationViewMode.DEFAULT}.
+     * {@link UIProvider.ConversationViewMode#DEFAULT}.
      */
     public boolean isOverviewMode() {
         final int val = (conversationViewMode != UIProvider.ConversationViewMode.UNDEFINED) ?
@@ -404,6 +413,7 @@ public class Settings implements Parcelable {
                 && snapHeaders == that.snapHeaders
                 && replyBehavior == that.replyBehavior
                 && convListIcon == that.convListIcon
+                && convListAttachmentPreviews == that.convListAttachmentPreviews
                 && confirmDelete == that.confirmDelete
                 && confirmArchive == that.confirmArchive
                 && confirmSend == that.confirmSend
@@ -431,11 +441,11 @@ public class Settings implements Parcelable {
      * Returns the hash code for this object.
      */
     private final int calculateHashCode() {
-        return super.hashCode()
-                ^ Objects.hashCode(signature, mAutoAdvance, mTransientAutoAdvance, messageTextSize,
-                        snapHeaders, replyBehavior, convListIcon, confirmDelete, confirmArchive,
-                        confirmSend, defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
-                        priorityArrowsEnabled, setupIntentUri, conversationViewMode,
-                        veiledAddressPattern, moveToInbox);
+        return super.hashCode() ^ Objects
+                .hashCode(signature, mAutoAdvance, mTransientAutoAdvance, messageTextSize,
+                        snapHeaders, replyBehavior, convListIcon, convListAttachmentPreviews,
+                        confirmDelete, confirmArchive, confirmSend, defaultInbox,
+                        forceReplyFromDefault, maxAttachmentSize, swipe, priorityArrowsEnabled,
+                        setupIntentUri, conversationViewMode, veiledAddressPattern, moveToInbox);
     }
 }
