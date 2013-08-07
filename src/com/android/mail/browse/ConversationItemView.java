@@ -1638,17 +1638,17 @@ public class ConversationItemView extends View
      * drag, if drag is enabled.
      */
     @Override
-    public void toggleSelectedStateOrBeginDrag() {
+    public boolean toggleSelectedStateOrBeginDrag() {
         ViewMode mode = mActivity.getViewMode();
         if (mIsExpansiveTablet && mode.isListMode()) {
-            beginDragMode();
+            return beginDragMode();
         } else {
-            toggleSelectedState();
+            return toggleSelectedState();
         }
     }
 
     @Override
-    public void toggleSelectedState() {
+    public boolean toggleSelectedState() {
         if (mHeader != null && mHeader.conversation != null && mSelectedConversationSet != null) {
             mSelected = !mSelected;
             setSelected(mSelected);
@@ -1673,7 +1673,11 @@ public class ConversationItemView extends View
             // usually waits for a layout pass, but we don't need a full layout,
             // just an update to the background.
             requestLayout();
+
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -2027,9 +2031,9 @@ public class ConversationItemView extends View
     /**
      * Begin drag mode. Keep the conversation selected (NOT toggle selection) and start drag.
      */
-    private void beginDragMode() {
-        if (mLastTouchX < 0 || mLastTouchY < 0) {
-            return;
+    private boolean beginDragMode() {
+        if (mLastTouchX < 0 || mLastTouchY < 0 ||  mSelectedConversationSet == null) {
+            return false;
         }
         // If this is already checked, don't bother unchecking it!
         if (!mSelected) {
@@ -2053,11 +2057,13 @@ public class ConversationItemView extends View
         if (isDimensionNegative) {
             LogUtils.e(LOG_TAG, "ConversationItemView: dimension is negative: "
                         + "width=%d, height=%d", width, height);
-            return;
+            return false;
         }
         mActivity.startDragMode();
         // Start drag mode
         startDrag(data, new ShadowBuilder(this, count, mLastTouchX, mLastTouchY), null, 0);
+
+        return true;
     }
 
     /**

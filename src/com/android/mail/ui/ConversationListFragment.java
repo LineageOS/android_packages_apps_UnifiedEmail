@@ -571,8 +571,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (!(view instanceof ConversationItemView)) {
             return false;
         }
-        ((ConversationItemView) view).toggleSelectedStateOrBeginDrag();
-        return true;
+        return ((ConversationItemView) view).toggleSelectedStateOrBeginDrag();
     }
 
     /**
