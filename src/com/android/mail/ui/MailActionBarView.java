@@ -106,6 +106,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     private FolderObserver mFolderObserver;
 
+    private Starrable mCurrentStarrable;
+
     /** A handler that changes the subtitle when it receives a message. */
     private final class SubtitleHandler extends Handler {
         /** Message sent to display the account email address in the subtitle. */
@@ -259,6 +261,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 return R.menu.conversation_actions;
             case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
                 return R.menu.wait_mode_actions;
+            case ViewMode.AD:
+                return R.menu.ad_actions;
         }
         LogUtils.wtf(LOG_TAG, "Menu requested for unknown view mode");
         return R.menu.conversation_list_menu;
@@ -331,6 +335,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 setEmptyMode();
                 break;
             case ViewMode.CONVERSATION:
+            case ViewMode.AD:
                 closeSearchField();
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 setEmptyMode();
@@ -419,6 +424,11 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 Utils.setMenuItemVisibility(menu, R.id.compose, false);
                 Utils.setMenuItemVisibility(menu, R.id.search, false);
                 break;
+            case ViewMode.AD:
+                final boolean isStarred = mCurrentStarrable.isStarred();
+                Utils.setMenuItemVisibility(menu, R.id.star, !isStarred);
+                Utils.setMenuItemVisibility(menu, R.id.remove_star, isStarred);
+                break;
         }
 
         return false;
@@ -495,7 +505,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                         actionItems++;
                     }
-                } else if (itemId == R.id.change_folder) {
+                } else if (itemId == R.id.change_folders) {
                     final boolean showChangeFolder = account
                             .supportsCapability(AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
                     menuItem.setVisible(showChangeFolder);
@@ -781,6 +791,10 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     public void setCurrentConversation(Conversation conversation) {
         mCurrentConversation = conversation;
+    }
+
+    public void setCurrentStarrable(Starrable starrable) {
+        mCurrentStarrable = starrable;
     }
 
     //We need to do this here instead of in the fragment
