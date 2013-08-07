@@ -19,7 +19,6 @@ package com.android.mail.ui;
 
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Folder;
-import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
  * A controllable activity is an Activity that has a Controller attached. This activity must be
@@ -34,18 +33,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      * @return ViewMode.
      */
     ViewMode getViewMode();
-
-    /**
-     * Sets the listener for receiving ViewMode changes.
-     * @param listener
-     */
-    void setViewModeListener(ModeChangeListener listener);
-
-    /**
-     * Removes the given listener from receiving ViewMode changes.
-     * @param listener
-     */
-    void unsetViewModeListener(ModeChangeListener listener);
 
     /**
      * Returns the object that handles {@link ConversationListCallbacks} that is associated with

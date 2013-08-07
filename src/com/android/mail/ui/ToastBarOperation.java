@@ -125,7 +125,7 @@ public class ToastBarOperation implements Parcelable {
             resId = R.plurals.conversation_deleted;
         } else if (mAction == R.id.remove_folder) {
             return context.getString(R.string.folder_removed, mFolder.name);
-        } else if (mAction == R.id.change_folder) {
+        } else if (mAction == R.id.change_folders) {
             resId = R.plurals.conversation_folder_changed;
         } else if (mAction == R.id.move_folder) {
             return context.getString(R.string.conversation_folder_moved, mFolder.name);
