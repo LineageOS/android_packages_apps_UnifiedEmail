@@ -175,7 +175,7 @@ public class ContiguousFIFOAggregator<T> {
         Entry<T, Value> first;
         int count = 0;
         while (iter.hasNext()) {
-            Utils.traceBeginSection("pool maybeExecuteNow");
+            Utils.traceBeginSection("pool maybeExecuteNow loop");
             first = iter.next();
             if (count > 0) {
                 // When count == 0, the key is already first.
@@ -183,6 +183,7 @@ public class ContiguousFIFOAggregator<T> {
             }
 
             if (first.getValue().task == null) {
+                Utils.traceEndSection();
                 break;
             }
 

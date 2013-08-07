@@ -94,16 +94,26 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         AssetFileDescriptor fd = null;
         InputStream in = null;
         try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                Trace.beginSection("poll for reusable bitmap");
+                mInBitmap = mCache.poll();
+                Trace.endSection();
+
+                if (isCancelled()) {
+                    return null;
+                }
+            }
+
             Trace.beginSection("create fd or stream");
             fd = mKey.createFd();
             if (fd == null) {
                 in = mKey.createInputStream();
-                if (in != null && !in.markSupported()) {
-                    Trace.endSection();
-                    throw new IllegalArgumentException("input stream must support reset()");
-                }
             }
             Trace.endSection();
+
+            if (isCancelled()) {
+                return null;
+            }
 
             Trace.beginSection("decodeBounds");
             mOpts.inJustDecodeBounds = true;
@@ -117,6 +127,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
             if (isCancelled()) {
                 return null;
             }
+
             final int srcW = mOpts.outWidth;
             final int srcH = mOpts.outHeight;
 
@@ -124,14 +135,6 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
             mOpts.inMutable = true;
             mOpts.inSampleSize = calculateSampleSize(srcW, srcH, mDestW, mDestH);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                Trace.beginSection("poll for reusable bitmap");
-                mInBitmap = mCache.poll();
-                Trace.endSection();
-
-                if (isCancelled()) {
-                    return null;
-                }
-
                 if (mInBitmap == null) {
                     if (DEBUG) System.err.println(
                             "decode thread wants a bitmap. cache dump:\n" + mCache.toDebugString());
@@ -140,6 +143,11 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                             Bitmap.createBitmap(mDestBufferW, mDestBufferH,
                                     Bitmap.Config.ARGB_8888));
                     Trace.endSection();
+
+                    if (isCancelled()) {
+                        return null;
+                    }
+
                     if (DEBUG) System.err.println("*** allocated new bitmap in decode thread: "
                             + mInBitmap + " key=" + mKey);
                 } else {
@@ -150,15 +158,16 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 mOpts.inBitmap = mInBitmap.bmp;
             }
 
+            Bitmap decodeResult = null;
+
+            if (in != null) {
+                in = mKey.createInputStream();
+            }
+
             if (isCancelled()) {
                 return null;
             }
 
-            Bitmap decodeResult = null;
-
-            if (in != null) {
-                in.reset();
-            }
             final Rect srcRect = new Rect();
             if (CROP_DURING_DECODE) {
                 try {
@@ -169,6 +178,10 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                     e.printStackTrace();
                 } finally {
                     Trace.endSection();
+                }
+
+                if (isCancelled()) {
+                    return null;
                 }
             }
 
@@ -194,9 +207,13 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 } finally {
                     Trace.endSection();
                 }
+
+                if (isCancelled()) {
+                    return null;
+                }
             }
 
-            if (!isCancelled() && decodeResult != null) {
+            if (decodeResult != null) {
                 if (mInBitmap != null) {
                     result = mInBitmap;
                     // srcRect is non-empty when using the cropping BitmapRegionDecoder codepath
