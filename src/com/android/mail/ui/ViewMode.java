@@ -17,10 +17,11 @@
 
 package com.android.mail.ui;
 
+import android.os.Bundle;
+
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
-import android.os.Bundle;
 import java.util.ArrayList;
 
 /**
@@ -61,6 +62,10 @@ public class ViewMode {
      * Mode when showing the "waiting for sync" message.
      */
     public static final int WAITING_FOR_ACCOUNT_INITIALIZATION = 5;
+    /**
+     * Mode when showing ads.
+     */
+    public static final int AD = 6;
     /**
      * Uncertain mode. The mode has not been initialized.
      */
@@ -149,6 +154,13 @@ public class ViewMode {
     }
 
     /**
+     * Requests a transition of the mode to show an ad.
+     */
+    public void enterAdMode() {
+        setModeInternal(AD);
+    }
+
+    /**
      * @return The current mode.
      */
     public int getMode() {
@@ -184,6 +196,14 @@ public class ViewMode {
 
     public static boolean isWaitingForSync(final int mode) {
         return mode == WAITING_FOR_ACCOUNT_INITIALIZATION;
+    }
+
+    public boolean isAdMode() {
+        return isAdMode(mMode);
+    }
+
+    public static boolean isAdMode(final int mode) {
+        return mode == AD;
     }
 
     /**

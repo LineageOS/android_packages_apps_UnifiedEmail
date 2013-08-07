@@ -47,6 +47,7 @@ public interface ConversationListCallbacks {
 
     Conversation getCurrentConversation();
     void setCurrentConversation(Conversation c);
+    void setCurrentStarrable(Starrable starrable);
 
     /**
      * Returns whether the initial conversation has begun but not finished loading. If this returns

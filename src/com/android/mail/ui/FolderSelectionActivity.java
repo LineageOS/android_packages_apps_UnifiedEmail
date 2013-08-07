@@ -37,7 +37,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
-import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Observable;
@@ -325,14 +324,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     @Override
     public ViewMode getViewMode() {
         return null;
-    }
-
-    @Override
-    public void setViewModeListener(ModeChangeListener listener) {
-    }
-
-    @Override
-    public void unsetViewModeListener(ModeChangeListener listener) {
     }
 
     @Override

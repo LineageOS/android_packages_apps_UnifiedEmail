@@ -1313,6 +1313,10 @@ public abstract class AbstractActivityController implements ActivityController,
             return true;
         }
 
+        if (mActivity.getViewMode().isAdMode()) {
+            return onAdOptionsItemSelected(item);
+        }
+
         final int id = item.getItemId();
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;
@@ -1377,7 +1381,7 @@ public abstract class AbstractActivityController implements ActivityController,
             Utils.sendFeedback(mActivity, mAccount, false);
         } else if (id == R.id.manage_folders_item) {
             Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
-        } else if (id == R.id.move_to || id == R.id.change_folder) {
+        } else if (id == R.id.move_to || id == R.id.change_folders) {
             final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
                     mActivity.getActivityContext(), mAccount, this,
                     Conversation.listOf(mCurrentConversation), isBatch, mFolder,
@@ -1411,6 +1415,31 @@ public abstract class AbstractActivityController implements ActivityController,
             handled = false;
         }
         return handled;
+    }
+
+    private boolean onAdOptionsItemSelected(MenuItem item) {
+        final int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onUpPressed();
+        } else if (id == R.id.star) {
+
+        } else if (id == R.id.remove_star) {
+
+        } else if (id == R.id.forward) {
+
+        } else if (id == R.id.delete) {
+
+        } else if (id == R.id.settings) {
+            Utils.showSettings(mActivity.getActivityContext(), mAccount);
+        } else if (id == R.id.help_info_menu_item) {
+            Utils.showHelp(mActivity.getActivityContext(), mAccount, getHelpContext());
+        } else if (id == R.id.feedback_menu_item) {
+            Utils.sendFeedback(mActivity, mAccount, false);
+        } else {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -2065,6 +2094,11 @@ public abstract class AbstractActivityController implements ActivityController,
         if (!ViewMode.isConversationMode(newMode)) {
             setCurrentConversation(null);
         }
+
+        if (!ViewMode.isAdMode(newMode)) {
+            setCurrentStarrable(null);
+        }
+
         // If the viewmode is not set, preserve existing icon.
         if (newMode != ViewMode.UNKNOWN) {
             resetActionBarIcon();
@@ -2457,6 +2491,11 @@ public abstract class AbstractActivityController implements ActivityController,
             mActionBarView.setCurrentConversation(mCurrentConversation);
             mActivity.invalidateOptionsMenu();
         }
+    }
+
+    @Override
+    public void setCurrentStarrable(Starrable starrable) {
+        mActionBarView.setCurrentStarrable(starrable);
     }
 
     /**
@@ -3182,7 +3221,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // dragged/ dropped conversations.
         if (convListFragment != null) {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
-            convListFragment.requestDelete(R.id.change_folder, conversations,
+            convListFragment.requestDelete(R.id.change_folders, conversations,
                     new DroppedInStarredAction(conversations, mFolder, folder));
         }
     }
@@ -3204,7 +3243,7 @@ public abstract class AbstractActivityController implements ActivityController,
         @Override
         public void performAction() {
             ToastBarOperation undoOp = new ToastBarOperation(mConversations.size(),
-                    R.id.change_folder, ToastBarOperation.UNDO, true /* batch */, mInitialFolder);
+                    R.id.change_folders, ToastBarOperation.UNDO, true /* batch */, mInitialFolder);
             onUndoAvailable(undoOp);
             ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
             ContentValues values = new ContentValues();
@@ -3770,7 +3809,7 @@ public abstract class AbstractActivityController implements ActivityController,
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
             boolean showUndo, final boolean isMoveTo, final Folder actionFolder) {
         return new FolderDestruction(target, folders, isDestructive, isBatch, showUndo,
-                isMoveTo ? R.id.move_folder : R.id.change_folder, actionFolder);
+                isMoveTo ? R.id.move_folder : R.id.change_folders, actionFolder);
     }
 
     @Override
