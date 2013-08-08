@@ -6,6 +6,8 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
+import com.android.bitmap.Trace;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,12 +55,14 @@ public abstract class CompositeDrawable<T extends Drawable> extends Drawable
 
         T result = mDrawables.get(i);
         if (result == null) {
+            Trace.beginSection("create division drawable");
             result = createDivisionDrawable();
             mDrawables.set(i, result);
             result.setCallback(this);
             // Make sure drawables created after the bounds were already set have their bounds
             // set initially (the other unaffected drawables basically de-bounce this).
             onBoundsChange(getBounds());
+            Trace.endSection();
         }
         return result;
     }
