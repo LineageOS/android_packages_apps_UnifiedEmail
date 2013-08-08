@@ -106,8 +106,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     private FolderObserver mFolderObserver;
 
-    private Starrable mCurrentStarrable;
-
     /** A handler that changes the subtitle when it receives a message. */
     private final class SubtitleHandler extends Handler {
         /** Message sent to display the account email address in the subtitle. */
@@ -261,8 +259,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 return R.menu.conversation_actions;
             case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
                 return R.menu.wait_mode_actions;
-            case ViewMode.AD:
-                return R.menu.ad_actions;
         }
         LogUtils.wtf(LOG_TAG, "Menu requested for unknown view mode");
         return R.menu.conversation_list_menu;
@@ -423,11 +419,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 // Hide compose and search
                 Utils.setMenuItemVisibility(menu, R.id.compose, false);
                 Utils.setMenuItemVisibility(menu, R.id.search, false);
-                break;
-            case ViewMode.AD:
-                final boolean isStarred = mCurrentStarrable.isStarred();
-                Utils.setMenuItemVisibility(menu, R.id.star, !isStarred);
-                Utils.setMenuItemVisibility(menu, R.id.remove_star, isStarred);
                 break;
         }
 
@@ -791,10 +782,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     public void setCurrentConversation(Conversation conversation) {
         mCurrentConversation = conversation;
-    }
-
-    public void setCurrentStarrable(Starrable starrable) {
-        mCurrentStarrable = starrable;
     }
 
     //We need to do this here instead of in the fragment

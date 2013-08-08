@@ -9,5 +9,4 @@ public interface UpOrBackController {
 
     void addUpOrBackHandler(UpOrBackHandler handler);
     void removeUpOrBackHandler(UpOrBackHandler handler);
-
 }
