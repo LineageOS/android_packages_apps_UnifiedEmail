@@ -520,6 +520,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             if(isPositionFadeLeaveBehind(conv)) {
                 LeaveBehindItem fade  = getFadeLeaveBehindItem(position, conv);
                 fade.startShrinkAnimation(mAnimatorListener);
+                Utils.traceEndSection();
                 return fade;
             }
         }
@@ -540,6 +541,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                         fadeIn.startFadeInTextAnimation(sDismissAllShortDelay /* delay start */);
                     }
                 }
+                Utils.traceEndSection();
                 return fadeIn;
             }
         }
