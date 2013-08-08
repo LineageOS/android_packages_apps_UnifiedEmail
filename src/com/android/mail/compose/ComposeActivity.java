@@ -68,6 +68,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.common.Rfc822Validator;
+import com.android.common.contacts.DataUsageStatUpdater;
 import com.android.ex.chips.RecipientEditTextView;
 import com.android.mail.MailIntentService;
 import com.android.mail.R;
@@ -1992,14 +1993,28 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             sendOrSaveMessage(messageIdToSave, sendOrSaveMessage, selectedAccount);
 
             if (!sendOrSaveMessage.mSave) {
-                UIProvider.incrementRecipientsTimesContacted(mContext,
+                incrementRecipientsTimesContacted(mContext,
                         (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.TO));
-                UIProvider.incrementRecipientsTimesContacted(mContext,
+                incrementRecipientsTimesContacted(mContext,
                         (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.CC));
-                UIProvider.incrementRecipientsTimesContacted(mContext,
+                incrementRecipientsTimesContacted(mContext,
                         (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.BCC));
             }
             mSendOrSaveCallback.sendOrSaveFinished(SendOrSaveTask.this, true);
+        }
+
+        private static void incrementRecipientsTimesContacted(final Context context,
+                final String addressString) {
+            if (TextUtils.isEmpty(addressString)) {
+                return;
+            }
+            final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addressString);
+            final ArrayList<String> recipients = new ArrayList<String>(tokens.length);
+            for (int i = 0; i < tokens.length;i++) {
+                recipients.add(tokens[i].getAddress());
+            }
+            final DataUsageStatUpdater statsUpdater = new DataUsageStatUpdater(context);
+            statsUpdater.updateWithAddress(recipients);
         }
 
         /**

@@ -2020,24 +2020,6 @@ public class UIProvider {
         }
     }
 
-    public static String getAttachmentTypeSetting() {
-        // TODO: query the account to see what kinds of attachments it supports?
-        return "com.google.android.gm.allowAddAnyAttachment";
-    }
-
-    public static void incrementRecipientsTimesContacted(Context context, String addressString) {
-        DataUsageStatUpdater statsUpdater = new DataUsageStatUpdater(context);
-        ArrayList<String> recipients = new ArrayList<String>();
-        if (TextUtils.isEmpty(addressString)) {
-            return;
-        }
-        Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addressString);
-        for (int i = 0; i < tokens.length;i++) {
-            recipients.add(tokens[i].getAddress());
-        }
-        statsUpdater.updateWithAddress(recipients);
-    }
-
     public static final String[] UNDO_PROJECTION = {
         ConversationColumns.MESSAGE_LIST_URI
     };
