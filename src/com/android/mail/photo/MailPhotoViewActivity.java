@@ -58,6 +58,11 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     private MenuItem mSaveAllItem;
     private MenuItem mShareItem;
     private MenuItem mShareAllItem;
+    /**
+     * Only for attachments that are currently downloading. Attachments that failed show the
+     * retry button.
+     */
+    private MenuItem mDownloadAgainItem;
     private AttachmentActionHandler mActionHandler;
     private Menu mMenu;
 
@@ -121,6 +126,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         mSaveAllItem = mMenu.findItem(R.id.menu_save_all);
         mShareItem = mMenu.findItem(R.id.menu_share);
         mShareAllItem = mMenu.findItem(R.id.menu_share_all);
+        mDownloadAgainItem = mMenu.findItem(R.id.menu_download_again);
 
         return true;
     }
@@ -145,6 +151,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             mSaveItem.setEnabled(!attachment.isDownloading()
                     && attachment.canSave() && !attachment.isSavedToExternal());
             mShareItem.setEnabled(attachment.canShare());
+            mDownloadAgainItem.setEnabled(attachment.canSave() && attachment.isDownloading());
         } else {
             if (mMenu != null) {
                 mMenu.setGroupEnabled(R.id.photo_view_menu_group, false);
@@ -200,6 +207,9 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             return true;
         } else if (itemId == R.id.menu_share_all) { // share all of the photos
             shareAllAttachments();
+            return true;
+        } else if (itemId == R.id.menu_download_again) { // redownload the current photo
+            redownloadAttachment();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -277,7 +287,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             retryButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    downloadAttachment();
+                    redownloadAttachment();
                     emptyText.setVisibility(View.GONE);
                     retryButton.setVisibility(View.GONE);
                 }
@@ -294,13 +304,17 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     }
 
     /**
-     * Downloads the attachment.
+     * Redownloads the attachment.
      */
-    private void downloadAttachment() {
+    private void redownloadAttachment() {
         final Attachment attachment = getCurrentAttachment();
         if (attachment != null && attachment.canSave()) {
+            // REDOWNLOADING command is only for attachments that are finished or failed.
+            // For an attachment that is downloading (or paused in the DownloadManager), we need to
+            // cancel it first.
             mActionHandler.setAttachment(attachment);
-            mActionHandler.startDownloadingAttachment(AttachmentDestination.CACHE);
+            mActionHandler.cancelAttachment();
+            mActionHandler.startDownloadingAttachment(attachment.destination);
         }
     }
 
