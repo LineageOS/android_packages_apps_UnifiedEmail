@@ -193,7 +193,139 @@ public class Folder implements Parcelable, Comparable<Folder> {
     /** An immutable, empty conversation list */
     public static final Collection<Folder> EMPTY = Collections.emptyList();
 
-    // TODO: we desperately need a Builder here
+    public static final class Builder {
+        private int mId;
+        private String mPersistentId;
+        private Uri mUri;
+        private String mName;
+        private int mCapabilities;
+        private boolean mHasChildren;
+        private int mSyncWindow;
+        private Uri mConversationListUri;
+        private Uri mChildFoldersListUri;
+        private int mUnseenCount;
+        private int mUnreadCount;
+        private int mTotalCount;
+        private Uri mRefreshUri;
+        private int mSyncStatus;
+        private int mLastSyncResult;
+        private int mType;
+        private int mIconResId;
+        private int mNotificationIconResId;
+        private String mBgColor;
+        private String mFgColor;
+        private Uri mLoadMoreUri;
+        private String mHierarchicalDesc;
+        private Uri mParent;
+        private long mLastMessageTimestamp;
+
+        public Folder build() {
+            return new Folder(mId, mPersistentId, mUri, mName, mCapabilities,
+                    mHasChildren, mSyncWindow, mConversationListUri, mChildFoldersListUri,
+                    mUnseenCount, mUnreadCount, mTotalCount, mRefreshUri, mSyncStatus,
+                    mLastSyncResult, mType, mIconResId, mNotificationIconResId, mBgColor,
+                    mFgColor, mLoadMoreUri, mHierarchicalDesc, mParent,
+                    mLastMessageTimestamp);
+        }
+
+        public Builder setId(final int id) {
+            mId = id;
+            return this;
+        }
+        public Builder setPersistentId(final String persistentId) {
+            mPersistentId = persistentId;
+            return this;
+        }
+        public Builder setUri(final Uri uri) {
+            mUri = uri;
+            return this;
+        }
+        public Builder setName(final String name) {
+            mName = name;
+            return this;
+        }
+        public Builder setCapabilities(final int capabilities) {
+            mCapabilities = capabilities;
+            return this;
+        }
+        public Builder setHasChildren(final boolean hasChildren) {
+            mHasChildren = hasChildren;
+            return this;
+        }
+        public Builder setSyncWindow(final int syncWindow) {
+            mSyncWindow = syncWindow;
+            return this;
+        }
+        public Builder setConversationListUri(final Uri conversationListUri) {
+            mConversationListUri = conversationListUri;
+            return this;
+        }
+        public Builder setChildFoldersListUri(final Uri childFoldersListUri) {
+            mChildFoldersListUri = childFoldersListUri;
+            return this;
+        }
+        public Builder setUnseenCount(final int unseenCount) {
+            mUnseenCount = unseenCount;
+            return this;
+        }
+        public Builder setUnreadCount(final int unreadCount) {
+            mUnreadCount = unreadCount;
+            return this;
+        }
+        public Builder setTotalCount(final int totalCount) {
+            mTotalCount = totalCount;
+            return this;
+        }
+        public Builder setRefreshUri(final Uri refreshUri) {
+            mRefreshUri = refreshUri;
+            return this;
+        }
+        public Builder setSyncStatus(final int syncStatus) {
+            mSyncStatus = syncStatus;
+            return this;
+        }
+        public Builder setLastSyncResult(final int lastSyncResult) {
+            mLastSyncResult = lastSyncResult;
+            return this;
+        }
+        public Builder setType(final int type) {
+            mType = type;
+            return this;
+        }
+        public Builder setIconResId(final int iconResId) {
+            mIconResId = iconResId;
+            return this;
+        }
+        public Builder setNotificationIconResId(final int notificationIconResId) {
+            mNotificationIconResId = notificationIconResId;
+            return this;
+        }
+        public Builder setBgColor(final String bgColor) {
+            mBgColor = bgColor;
+            return this;
+        }
+        public Builder setFgColor(final String fgColor) {
+            mFgColor = fgColor;
+            return this;
+        }
+        public Builder setLoadMoreUri(final Uri loadMoreUri) {
+            mLoadMoreUri = loadMoreUri;
+            return this;
+        }
+        public Builder setHierarchicalDesc(final String hierarchicalDesc) {
+            mHierarchicalDesc = hierarchicalDesc;
+            return this;
+        }
+        public Builder setParent(final Uri parent) {
+            mParent = parent;
+            return this;
+        }
+        public Builder setLastMessageTimestamp(final long lastMessageTimestamp) {
+            mLastMessageTimestamp = lastMessageTimestamp;
+            return this;
+        }
+    }
+
     public Folder(int id, String persistentId, Uri uri, String name, int capabilities,
             boolean hasChildren, int syncWindow, Uri conversationListUri, Uri childFoldersListUri,
             int unseenCount, int unreadCount, int totalCount, Uri refreshUri, int syncStatus,
@@ -361,7 +493,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public static ObjectCursorLoader<Folder> forSearchResults(Account account, String query,
             Context context) {
         if (account.searchUri != null) {
-            final Builder searchBuilder = account.searchUri.buildUpon();
+            final Uri.Builder searchBuilder = account.searchUri.buildUpon();
             searchBuilder.appendQueryParameter(UIProvider.SearchQueryParameters.QUERY, query);
             final Uri searchUri = searchBuilder.build();
             return new ObjectCursorLoader<Folder>(context, searchUri, UIProvider.FOLDERS_PROJECTION,
