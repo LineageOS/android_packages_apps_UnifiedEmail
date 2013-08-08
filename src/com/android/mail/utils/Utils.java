@@ -147,7 +147,7 @@ public class Utils {
         WebSettings webSettings = webView.getSettings();
         webSettings.setSavePassword(false);
         webSettings.setSaveFormData(false);
-        webSettings.setJavaScriptEnabled(true);
+        webSettings.setJavaScriptEnabled(false);
         webSettings.setSupportZoom(false);
     }
 
