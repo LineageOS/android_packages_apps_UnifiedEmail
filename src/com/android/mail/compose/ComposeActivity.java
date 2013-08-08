@@ -34,6 +34,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -122,11 +123,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         LoaderManager.LoaderCallbacks<Cursor>, TextView.OnEditorActionListener,
         FeedbackEnabledActivity {
     // Identifiers for which type of composition this is
-    protected static final int COMPOSE = -1;
-    protected static final int REPLY = 0;
-    protected static final int REPLY_ALL = 1;
-    protected static final int FORWARD = 2;
-    protected static final int EDIT_DRAFT = 3;
+    public static final int COMPOSE = -1;
+    public static final int REPLY = 0;
+    public static final int REPLY_ALL = 1;
+    public static final int FORWARD = 2;
+    public static final int EDIT_DRAFT = 3;
 
     // Integer extra holding one of the above compose action
     protected static final String EXTRA_ACTION = "action";
@@ -144,6 +145,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private static final String EXTRA_BODY = "body";
 
+    /**
+     * Expected to be html formatted text.
+     */
+    private static final String EXTRA_QUOTED_TEXT = "quotedText";
+
     protected static final String EXTRA_FROM_ACCOUNT_STRING = "fromAccountString";
 
     private static final String EXTRA_ATTACHMENT_PREVIEWS = "attachmentPreviews";
@@ -154,7 +160,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_BCC = "bcc";
 
     // List of all the fields
-    static final String[] ALL_EXTRAS = { EXTRA_SUBJECT, EXTRA_BODY, EXTRA_TO, EXTRA_CC, EXTRA_BCC };
+    static final String[] ALL_EXTRAS = { EXTRA_SUBJECT, EXTRA_BODY, EXTRA_TO, EXTRA_CC, EXTRA_BCC,
+            EXTRA_QUOTED_TEXT };
 
     private static SendOrSaveCallback sTestSendOrSaveCallback = null;
     // Map containing information about requests to create new messages, and the id of the
@@ -283,21 +290,29 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Can be called from a non-UI thread.
      */
     public static void editDraft(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, EDIT_DRAFT, null, null);
+        launch(launcher, account, message, EDIT_DRAFT, null, null, null, null);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void compose(Context launcher, Account account) {
-        launch(launcher, account, null, COMPOSE, null, null);
+        launch(launcher, account, null, COMPOSE, null, null, null, null);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void composeToAddress(Context launcher, Account account, String toAddress) {
-        launch(launcher, account, null, COMPOSE, toAddress, null);
+        launch(launcher, account, null, COMPOSE, toAddress, null, null, null);
+    }
+
+    /**
+     * Can be called from a non-UI thread.
+     */
+    public static void composeWithQuotedText(Context launcher, Account account,
+            String quotedText, String subject) {
+        launch(launcher, account, null, COMPOSE, null, null, quotedText, subject);
     }
 
     /**
@@ -339,30 +354,31 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Can be called from a non-UI thread.
      */
     public static void reply(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, REPLY, null, null);
+        launch(launcher, account, message, REPLY, null, null, null, null);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void replyAll(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, REPLY_ALL, null, null);
+        launch(launcher, account, message, REPLY_ALL, null, null, null, null);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void forward(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, FORWARD, null, null);
+        launch(launcher, account, message, FORWARD, null, null, null, null);
     }
 
     public static void reportRenderingFeedback(Context launcher, Account account, Message message,
             String body) {
-        launch(launcher, account, message, FORWARD, "android-gmail-readability@google.com", body);
+        launch(launcher, account, message, FORWARD,
+                "android-gmail-readability@google.com", body, null, null);
     }
 
     private static void launch(Context launcher, Account account, Message message, int action,
-            String toAddress, String body) {
+            String toAddress, String body, String quotedText, String subject) {
         Intent intent = new Intent(launcher, ComposeActivity.class);
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(EXTRA_ACTION, action);
@@ -377,6 +393,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         if (body != null) {
             intent.putExtra(EXTRA_BODY, body);
+        }
+        if (quotedText != null) {
+            intent.putExtra(EXTRA_QUOTED_TEXT, quotedText);
+        }
+        if (subject != null) {
+            intent.putExtra(EXTRA_SUBJECT, subject);
         }
         launcher.startActivity(intent);
     }
@@ -397,6 +419,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Message message;
         ArrayList<AttachmentPreview> previews;
         mShowQuotedText = false;
+        CharSequence quotedText = null;
         int action;
         // Check for any of the possibly supplied accounts.;
         Account account = null;
@@ -407,6 +430,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
             previews = savedState.getParcelableArrayList(EXTRA_ATTACHMENT_PREVIEWS);
             mRefMessage = (Message) savedState.getParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE);
+            quotedText = savedState.getCharSequence(EXTRA_QUOTED_TEXT);
         } else {
             account = obtainAccount(intent);
             action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
@@ -459,6 +483,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             initQuotedTextFromRefMessage(mRefMessage, action);
             showCcBcc(savedState);
             mShowQuotedText = message.appendRefMessageContent;
+            // if we should be showing quoted text but mRefMessage is null
+            // and we have some quotedText, display that
+            if (mShowQuotedText && quotedText != null && mRefMessage == null) {
+                initQuotedText(quotedText, false /* shouldQuoteText */);
+            }
         } else if (action == EDIT_DRAFT) {
             initFromDraftMessage(message);
             boolean showBcc = !TextUtils.isEmpty(message.getBcc());
@@ -588,9 +617,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void finishSetup(int action, Intent intent, Bundle savedInstanceState) {
         setFocus(action);
-        if (action == COMPOSE) {
-            mQuotedTextView.setVisibility(View.GONE);
-        }
         // Don't bother with the intent if we have procured a message from the
         // intent already.
         if (!hadSavedInstanceStateMessage(savedInstanceState)) {
@@ -796,6 +822,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         if (mRefMessage != null) {
             state.putParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE, mRefMessage);
+        } else if (message.appendRefMessageContent) {
+            // If we have no ref message but should be appending
+            // ref message content, we have orphaned quoted text. Save it.
+            state.putCharSequence(EXTRA_QUOTED_TEXT, mQuotedTextView.getQuotedTextIfIncluded());
         }
         state.putBoolean(EXTRA_SHOW_CC, mCcBccView.isCcVisible());
         state.putBoolean(EXTRA_SHOW_BCC, mCcBccView.isBccVisible());
@@ -1291,6 +1321,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     mSubject.setText(value);
                 } else if (EXTRA_BODY.equals(extra)) {
                     setBody(value, true /* with signature */);
+                } else if (EXTRA_QUOTED_TEXT.equals(extra)) {
+                    initQuotedText(value, true /* shouldQuoteText */);
                 }
             }
         }
@@ -1301,8 +1333,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (text != null) {
                 setBody(text, true /* with signature */);
             }
+
+            // TODO - support EXTRA_HTML_TEXT
         }
     }
+
 
     @VisibleForTesting
     protected String decodeEmailInUri(String s) throws UnsupportedEncodingException {
@@ -1500,6 +1535,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
+    private void initQuotedText(CharSequence quotedText, boolean shouldQuoteText) {
+        mQuotedTextView.setQuotedTextFromHtml(quotedText, shouldQuoteText);
+        mShowQuotedText = true;
+    }
 
     private void initQuotedTextFromRefMessage(Message refMessage, int action) {
         if (mRefMessage != null && (action == REPLY || action == REPLY_ALL || action == FORWARD)) {
@@ -1743,16 +1782,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                         mAccount.getReplyFroms());
     }
 
-    private void setSubject(Message refMessage, int action) {
-        String subject = refMessage.subject;
+    /**
+     * Returns a formatted subject string with the appropriate prefix for the action type.
+     * E.g., "FWD: " is prepended if action is {@link ComposeActivity#FORWARD}.
+     */
+    public static String buildFormattedSubject(Resources res, String subject, int action) {
         String prefix;
         String correctedSubject = null;
         if (action == ComposeActivity.COMPOSE) {
             prefix = "";
         } else if (action == ComposeActivity.FORWARD) {
-            prefix = getString(R.string.forward_subject_label);
+            prefix = res.getString(R.string.forward_subject_label);
         } else {
-            prefix = getString(R.string.reply_subject_label);
+            prefix = res.getString(R.string.reply_subject_label);
         }
 
         // Don't duplicate the prefix
@@ -1760,10 +1802,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 && subject.toLowerCase().startsWith(prefix.toLowerCase())) {
             correctedSubject = subject;
         } else {
-            correctedSubject = String
-                    .format(getString(R.string.formatted_subject), prefix, subject);
+            correctedSubject = String.format(
+                    res.getString(R.string.formatted_subject), prefix, subject);
         }
-        mSubject.setText(correctedSubject);
+
+        return correctedSubject;
+    }
+
+    private void setSubject(Message refMessage, int action) {
+        mSubject.setText(buildFormattedSubject(getResources(), refMessage.subject, action));
     }
 
     private void initRecipients() {
@@ -2070,7 +2117,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         /**
-         * Use the {@link ContentResolver#call()} method to send or save the message.
+         * Use the {@link ContentResolver#call} method to send or save the message.
          *
          * If this was successful, this method will return an non-null Bundle instance
          */
