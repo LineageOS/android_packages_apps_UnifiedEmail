@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewModel;
@@ -647,6 +648,7 @@ public final class ConversationListFragment extends ListFragment implements
     public void onStart() {
         super.onStart();
         mHandler.postDelayed(mUpdateTimestampsRunnable, TIMESTAMP_UPDATE_INTERVAL);
+        Analytics.getInstance().sendView(getClass().getName());
     }
 
     @Override
