@@ -204,6 +204,9 @@ public class ConversationItemView extends View
     private final TextView mSubjectTextView;
     private final TextView mSendersTextView;
     private int mGadgetMode;
+    private boolean mAttachmentPreviewsEnabled;
+    private boolean mParallaxSpeedAlternative;
+    private boolean mParallaxDirectionAlternative;
     private final DividedImageCanvas mContactImagesHolder;
     private static ContactPhotoManager sContactPhotoManager;
 
@@ -216,8 +219,6 @@ public class ConversationItemView extends View
     private static CharacterStyle sActivatedTextSpan;
 
     private final AttachmentGridDrawable mAttachmentsView;
-
-    private static final boolean CONVLIST_ATTACHMENT_PREVIEWS_ENABLED = true;
 
     private final Matrix mPhotoFlipMatrix = new Matrix();
     private final Matrix mCheckMatrix = new Matrix();
@@ -512,15 +513,20 @@ public class ConversationItemView extends View
         Utils.traceEndSection();
     }
 
-    public void bind(Conversation conversation, ControllableActivity activity,
+    public void bind(final Conversation conversation, final ControllableActivity activity,
             final ConversationListListener conversationListListener,
-            ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
-            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
+            final ConversationSelectionSet set, final Folder folder,
+            final int checkboxOrSenderImage, final boolean showAttachmentPreviews,
+            final boolean parallaxSpeedAlternative, final boolean parallaxDirectionAlternative,
+            final boolean swipeEnabled, final boolean priorityArrowEnabled,
+            final AnimatedAdapter adapter) {
         Utils.traceBeginSection("CIVC.bind");
         bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity,
                 conversationListListener, null /* conversationItemAreaClickListener */, set, folder,
-                checkboxOrSenderImage, swipeEnabled, priorityArrowEnabled, adapter,
-                -1 /* backgroundOverrideResId */, null /* photoBitmap */);
+                checkboxOrSenderImage, showAttachmentPreviews, parallaxSpeedAlternative,
+                parallaxDirectionAlternative, swipeEnabled, priorityArrowEnabled, adapter,
+                -1 /* backgroundOverrideResId */,
+                null /* photoBitmap */);
         Utils.traceEndSection();
     }
 
@@ -533,16 +539,19 @@ public class ConversationItemView extends View
         Utils.traceBeginSection("CIVC.bindAd");
         bind(conversationItemViewModel, activity, conversationListListener,
                 conversationItemAreaClickListener, null /* set */, folder, checkboxOrSenderImage,
+                false /* attachment previews */, false /* parallax */, false /* parallax */,
                 true /* swipeEnabled */, false /* priorityArrowEnabled */, adapter,
                 backgroundOverrideResId, photoBitmap);
         Utils.traceEndSection();
     }
 
-    private void bind(ConversationItemViewModel header, ControllableActivity activity,
+    private void bind(final ConversationItemViewModel header, final ControllableActivity activity,
             final ConversationListListener conversationListListener,
             final ConversationItemAreaClickListener conversationItemAreaClickListener,
-            ConversationSelectionSet set, Folder folder, int checkboxOrSenderImage,
-            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter,
+            final ConversationSelectionSet set, final Folder folder,
+            final int checkboxOrSenderImage, final boolean showAttachmentPreviews,
+            final boolean parallaxSpeedAlternative, final boolean parallaxDirectionAlternative,
+            boolean swipeEnabled, final boolean priorityArrowEnabled, final AnimatedAdapter adapter,
             final int backgroundOverrideResId, final Bitmap photoBitmap) {
         mBackgroundOverrideResId = backgroundOverrideResId;
         mPhotoBitmap = photoBitmap;
@@ -598,6 +607,10 @@ public class ConversationItemView extends View
         } else {
             mGadgetMode = ConversationItemViewCoordinates.GADGET_NONE;
         }
+
+        mAttachmentPreviewsEnabled = showAttachmentPreviews;
+        mParallaxSpeedAlternative = parallaxSpeedAlternative;
+        mParallaxDirectionAlternative = parallaxDirectionAlternative;
 
         // Initialize folder displayer.
         if (mHeader.folderDisplayer == null) {
@@ -864,8 +877,8 @@ public class ConversationItemView extends View
     }
 
     private boolean isAttachmentPreviewsEnabled() {
-        return CONVLIST_ATTACHMENT_PREVIEWS_ENABLED
-                && !mHeader.conversation.getAttachmentPreviewUris().isEmpty();
+        return mAttachmentPreviewsEnabled && !mHeader.conversation.getAttachmentPreviewUris()
+                .isEmpty();
     }
 
     private int getOverflowCount() {
@@ -881,6 +894,12 @@ public class ConversationItemView extends View
         } else {
             return ConversationItemViewCoordinates.ATTACHMENT_PREVIEW_NONE;
         }
+    }
+
+    private float getParallaxSpeedMultiplier() {
+        return mParallaxSpeedAlternative
+                ? SwipeableListView.ATTACHMENT_PARALLAX_MULTIPLIER_ALTERNATIVE
+                : SwipeableListView.ATTACHMENT_PARALLAX_MULTIPLIER_NORMAL;
     }
 
     // FIXME(ath): maybe move this to bind(). the only dependency on layout is on tile W/H, which
@@ -948,7 +967,7 @@ public class ConversationItemView extends View
         // so we have extra pixels to scroll within
         if (SwipeableListView.ENABLE_ATTACHMENT_PARALLAX) {
             decodeHeight = Math.round(mCoordinates.attachmentPreviewsDecodeHeight
-                    * SwipeableListView.ATTACHMENT_PARALLAX_MULTIPLIER);
+                    * getParallaxSpeedMultiplier());
         } else {
             decodeHeight = mCoordinates.attachmentPreviewsDecodeHeight;
         }
@@ -981,6 +1000,7 @@ public class ConversationItemView extends View
                     this, mAttachmentsView, bestAvailableRendition, uri);
             final AttachmentDrawable drawable = mAttachmentsView.getOrCreateDrawable(i);
             drawable.setDecodeDimensions(mCoordinates.attachmentPreviewsWidth, decodeHeight);
+            drawable.setParallaxSpeedMultiplier(getParallaxSpeedMultiplier());
             if (bestAvailableRendition != -1) {
                 drawable.bind(getContext(), uri, bestAvailableRendition);
             } else {
@@ -1580,7 +1600,7 @@ public class ConversationItemView extends View
         if (SwipeableListView.ENABLE_ATTACHMENT_PARALLAX) {
             final View listView = getListView();
             final View listItemView = unwrap();
-            if (SwipeableListView.ATTACHMENT_PARALLAX_DIRECTION_ALTERNATIVE) {
+            if (mParallaxDirectionAlternative) {
                 fraction = 1 - (float) listItemView.getBottom()
                         / (listView.getHeight() + listItemView.getHeight());
             } else {

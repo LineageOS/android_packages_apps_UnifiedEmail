@@ -28,6 +28,7 @@ import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
+import com.android.mail.providers.UIProvider.AccountColumns.SettingsColumns;
 import com.android.mail.providers.UIProvider.SyncStatus;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -739,6 +740,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         map.put(AccountColumns.SettingsColumns.SNAP_HEADERS, settings.snapHeaders);
         map.put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, settings.replyBehavior);
         map.put(AccountColumns.SettingsColumns.CONV_LIST_ICON, settings.convListIcon);
+        map.put(AccountColumns.SettingsColumns.CONV_LIST_ATTACHMENT_PREVIEWS,
+                settings.convListAttachmentPreviews ? 1 : 0);
         map.put(AccountColumns.SettingsColumns.CONFIRM_DELETE, settings.confirmDelete ? 1 : 0);
         map.put(
                 AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, settings.confirmArchive ? 1 : 0);
