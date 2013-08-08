@@ -1542,7 +1542,10 @@ public class ConversationItemView extends View
         mPhotoFlipMatrix.reset();
         mPhotoFlipMatrix.postScale(scale, 1);
 
-        canvas.translate(mCoordinates.contactImagesX + xOffset, mCoordinates.contactImagesY);
+        final float x = mCoordinates.contactImagesX + xOffset;
+        final float y = mCoordinates.contactImagesY;
+
+        canvas.translate(x, y);
 
         if (mPhotoBitmap == null) {
             mContactImagesHolder.draw(canvas, mPhotoFlipMatrix);
@@ -2262,5 +2265,9 @@ public class ConversationItemView extends View
 
     public void setPhotoFlipFraction(final float fraction) {
         mPhotoFlipAnimator.setValue(fraction);
+    }
+
+    public String getAccount() {
+        return mAccount;
     }
 }
