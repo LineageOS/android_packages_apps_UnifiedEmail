@@ -41,6 +41,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewCoordinates;
+import com.android.mail.browse.ConversationItemViewCoordinates.CoordinatesCache;
 import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.preferences.MailPrefs;
@@ -198,8 +199,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
      */
     private final SparseArray<ConversationSpecialItemView> mSpecialViews;
 
-    private final SparseArray<ConversationItemViewCoordinates> mCoordinatesCache =
-            new SparseArray<ConversationItemViewCoordinates>();
+    private final CoordinatesCache mCoordinatesCache = new CoordinatesCache();
 
     /**
      * Temporary views insert at specific positions relative to conversations. These can be
@@ -651,7 +651,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
     }
 
-    public SparseArray<ConversationItemViewCoordinates> getCoordinatesCache() {
+    public CoordinatesCache getCoordinatesCache() {
         return mCoordinatesCache;
     }
 

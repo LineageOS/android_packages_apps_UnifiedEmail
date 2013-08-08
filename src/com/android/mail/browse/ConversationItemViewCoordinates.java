@@ -161,6 +161,28 @@ public class ConversationItemViewCoordinates {
 
     }
 
+    public static class CoordinatesCache {
+        private final SparseArray<ConversationItemViewCoordinates> mCoordinatesCache
+                = new SparseArray<ConversationItemViewCoordinates>();
+        private final SparseArray<View> mViewsCache = new SparseArray<View>();
+
+        public ConversationItemViewCoordinates getCoordinates(final int key) {
+            return mCoordinatesCache.get(key);
+        }
+
+        public View getView(final int layoutId) {
+            return mViewsCache.get(layoutId);
+        }
+
+        public void put(final int key, final ConversationItemViewCoordinates coords) {
+            mCoordinatesCache.put(key, coords);
+        }
+
+        public void put(final int layoutId, final View view) {
+            mViewsCache.put(layoutId, view);
+        }
+    }
+
     /**
      * One of either NORMAL_MODE or WIDE_MODE.
      */
@@ -268,7 +290,8 @@ public class ConversationItemViewCoordinates {
     private final int mFolderCellWidth;
     private final int mFolderMinimumWidth;
 
-    private ConversationItemViewCoordinates(Context context, Config config) {
+    private ConversationItemViewCoordinates(final Context context, final Config config,
+            final CoordinatesCache cache) {
         Utils.traceBeginSection("CIV coordinates constructor");
         final Resources res = context.getResources();
         mFolderCellWidth = res.getDimensionPixelSize(R.dimen.folder_cell_width);
@@ -289,17 +312,23 @@ public class ConversationItemViewCoordinates {
                 layoutId = R.layout.conversation_item_view_normal;
             }
         }
-        final ViewGroup view = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
+
+        ViewGroup view = (ViewGroup) cache.getView(layoutId);
+        if (view == null) {
+            view = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
+            cache.put(layoutId, view);
+        }
 
         // Show/hide optional views before measure/layout call
 
-        View attachmentPreviews = null;
+        final View attachmentPreviews = view.findViewById(R.id.attachment_previews);;
         if (config.getAttachmentPreviewMode() != ATTACHMENT_PREVIEW_NONE) {
-            attachmentPreviews = view.findViewById(R.id.attachment_previews);
-            LayoutParams params = attachmentPreviews.getLayoutParams();
+            final LayoutParams params = attachmentPreviews.getLayoutParams();
             attachmentPreviews.setVisibility(View.VISIBLE);
             params.height = getAttachmentPreviewsHeight(context, config.getAttachmentPreviewMode());
             attachmentPreviews.setLayoutParams(params);
+        } else {
+            attachmentPreviews.setVisibility(View.GONE);
         }
         attachmentPreviewsDecodeHeight = getAttachmentPreviewsHeight(context,
                 ATTACHMENT_PREVIEW_UNREAD);
@@ -308,7 +337,7 @@ public class ConversationItemViewCoordinates {
         folders.setVisibility(config.areFoldersVisible() ? View.VISIBLE : View.GONE);
 
         // Add margin between attachment previews and folders
-        View attachmentPreviewsBottomMargin = view
+        final View attachmentPreviewsBottomMargin = view
                 .findViewById(R.id.attachment_previews_bottom_margin);
         attachmentPreviewsBottomMargin.setVisibility(
                 attachmentPreviews != null && config.areFoldersVisible() ? View.VISIBLE
@@ -630,15 +659,15 @@ public class ConversationItemViewCoordinates {
      * Returns coordinates for elements inside a conversation header view given
      * the view width.
      */
-    public static ConversationItemViewCoordinates forConfig(Context context, Config config,
-            SparseArray<ConversationItemViewCoordinates> cache) {
+    public static ConversationItemViewCoordinates forConfig(final Context context,
+            final Config config, final CoordinatesCache cache) {
         final int cacheKey = config.getCacheKey();
-        ConversationItemViewCoordinates coordinates = cache.get(cacheKey);
+        ConversationItemViewCoordinates coordinates = cache.getCoordinates(cacheKey);
         if (coordinates != null) {
             return coordinates;
         }
 
-        coordinates = new ConversationItemViewCoordinates(context, config);
+        coordinates = new ConversationItemViewCoordinates(context, config, cache);
         cache.put(cacheKey, coordinates);
         return coordinates;
     }

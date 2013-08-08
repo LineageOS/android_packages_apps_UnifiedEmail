@@ -70,6 +70,7 @@ public class AltBitmapCache extends AltPooledCache<DecodeTask.Request, ReusableB
                 if (DEBUG) {
                     LogUtils.d(TAG, "AltBitmapCache: %s waiting", Thread.currentThread().getName());
                 }
+                Trace.beginSection("sleep");
                 try {
                     // block
                     mLock.wait();
@@ -79,6 +80,7 @@ public class AltBitmapCache extends AltPooledCache<DecodeTask.Request, ReusableB
                     }
                 } catch (InterruptedException e) {
                 }
+                Trace.endSection();
             }
         }
         return bitmap;
