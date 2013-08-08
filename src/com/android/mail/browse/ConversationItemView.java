@@ -1359,7 +1359,6 @@ public class ConversationItemView extends View
     public final void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
             int totalItemCount) {
         if (SwipeableListView.ENABLE_ATTACHMENT_PARALLAX) {
-            final View listItemView = unwrap();
             if (mHeader == null || mCoordinates == null || !isAttachmentPreviewsEnabled()) {
                 return;
             }
@@ -1925,19 +1924,19 @@ public class ConversationItemView extends View
         return handled;
     }
 
-    private SwipeableConversationItemView unwrap() {
+    private View unwrap() {
         final ViewParent vp = getParent();
-        if (vp == null || !(vp instanceof SwipeableConversationItemView)) {
+        if (vp == null || !(vp instanceof View)) {
             return null;
         }
-        return (SwipeableConversationItemView) vp;
+        return (View) vp;
     }
 
     private SwipeableListView getListView() {
         SwipeableListView v = null;
-        final SwipeableConversationItemView wrapper = unwrap();
-        if (wrapper != null) {
-            v = (SwipeableListView) wrapper.getListView();
+        final View wrapper = unwrap();
+        if (wrapper != null && wrapper instanceof SwipeableConversationItemView) {
+            v = (SwipeableListView) ((SwipeableConversationItemView) wrapper).getListView();
         }
         if (v == null) {
             v = mAdapter.getListView();
@@ -1965,17 +1964,18 @@ public class ConversationItemView extends View
         // When a list item is being swiped or animated, ensure that the hosting view has a
         // background color set. We only enable the background during the X-translation effect to
         // reduce overdraw during normal list scrolling.
-        final SwipeableConversationItemView parent = unwrap();
+        final View parent = (View) getParent();
         if (parent == null) {
-            LogUtils.w(LOG_TAG,
-                    "CIV.setTranslationX unexpected ConversationItemView parent: %s x=%s",
-                    getParent(), translationX);
+            LogUtils.w(LOG_TAG, "CIV.setTranslationX null ConversationItemView parent x=%s",
+                    translationX);
         }
 
-        if (translationX != 0f) {
-            parent.setBackgroundResource(R.color.swiped_bg_color);
-        } else {
-            parent.setBackgroundDrawable(null);
+        if (parent instanceof SwipeableConversationItemView) {
+            if (translationX != 0f) {
+                parent.setBackgroundResource(R.color.swiped_bg_color);
+            } else {
+                parent.setBackgroundDrawable(null);
+            }
         }
     }
 

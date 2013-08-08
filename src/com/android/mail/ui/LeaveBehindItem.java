@@ -61,8 +61,8 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
     private static float sScrollSlop;
-    private static float OPAQUE = 1.0f;
-    private static float INVISIBLE = 0.0f;
+    private static final float OPAQUE = 1.0f;
+    private static final float TRANSPARENT = 0.0f;
 
     public LeaveBehindItem(Context context) {
         this(context, null);
@@ -74,6 +74,10 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
 
     public LeaveBehindItem(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        loadStatics(context);
+    }
+
+    private static void loadStatics(final Context context) {
         if (sShrinkAnimationDuration == -1) {
             Resources res = context.getResources();
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
@@ -116,7 +120,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         // Listen on swipeable content so that we can show both the undo icon
         // and button text as selected since they set duplicateParentState to true
         mSwipeableContent.setOnClickListener(this);
-        mSwipeableContent.setAlpha(INVISIBLE);
+        mSwipeableContent.setAlpha(TRANSPARENT);
         mText = ((TextView) findViewById(R.id.undo_descriptionview));
         mText.setText(Utils.convertHtmlToPlainText(mUndoOp
                 .getSingularDescription(getContext(), folder)));
@@ -180,7 +184,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
      * Set the alpha value for the text displayed by this item.
      */
     public void setTextAlpha(float alpha) {
-        if (mSwipeableContent.getAlpha() > INVISIBLE) {
+        if (mSwipeableContent.getAlpha() > TRANSPARENT) {
             mSwipeableContent.setAlpha(alpha);
         }
     }
@@ -193,17 +197,30 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
         // If this thing isn't already fully visible AND its not already animating...
         if (!mFadingInText && mSwipeableContent.getAlpha() != OPAQUE) {
             mFadingInText = true;
-            final float start = INVISIBLE;
-            final float end = OPAQUE;
-            mFadeIn = ObjectAnimator.ofFloat(mSwipeableContent, "alpha", start, end);
-            mSwipeableContent.setAlpha(INVISIBLE);
-            if (delay != 0) {
-                mFadeIn.setStartDelay(delay);
-            }
-            mFadeIn.setInterpolator(new DecelerateInterpolator(OPAQUE));
-            mFadeIn.setDuration(sFadeInAnimationDuration / 2);
-            mFadeIn.start();
+            mFadeIn = startFadeInTextAnimation(mSwipeableContent, delay);
         }
+    }
+
+    /**
+     * Creates and starts the animator for the fade-in text
+     * @param delay The delay, in milliseconds, before starting the animation
+     * @return The {@link ObjectAnimator}
+     */
+    public static ObjectAnimator startFadeInTextAnimation(final View view, final int delay) {
+        loadStatics(view.getContext());
+
+        final float start = TRANSPARENT;
+        final float end = OPAQUE;
+        final ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", start, end);
+        view.setAlpha(TRANSPARENT);
+        if (delay != 0) {
+            fadeIn.setStartDelay(delay);
+        }
+        fadeIn.setInterpolator(new DecelerateInterpolator(OPAQUE));
+        fadeIn.setDuration(sFadeInAnimationDuration / 2);
+        fadeIn.start();
+
+        return fadeIn;
     }
 
     /**
