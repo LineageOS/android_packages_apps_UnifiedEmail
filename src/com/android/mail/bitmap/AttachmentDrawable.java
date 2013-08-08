@@ -22,6 +22,7 @@ import com.android.bitmap.DecodeAggregator;
 import com.android.bitmap.DecodeTask;
 import com.android.bitmap.DecodeTask.Request;
 import com.android.bitmap.ReusableBitmap;
+import com.android.bitmap.Trace;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.ui.SwipeableListView;
@@ -140,6 +141,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
             return;
         }
 
+        Trace.beginSection("set image");
         // avoid visual state transitions when the existing request and the new one are just
         // requests for different renditions of the same attachment
         final boolean onlyRenditionChange = (mCurrKey != null && mCurrKey.matches(key));
@@ -166,6 +168,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         setLoadState(LOAD_STATE_UNINITIALIZED);
 
         if (key == null) {
+            Trace.endSection();
             return;
         }
 
@@ -182,6 +185,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
                         mCurrKey, mCache.toDebugString());
             }
         }
+        Trace.endSection();
     }
 
     @Override
@@ -328,6 +332,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
             return;
         }
 
+        Trace.beginSection("decode");
         if (LIMIT_BITMAP_DENSITY) {
             final float scale =
                     Math.min(1f, (float) MAX_BITMAP_DENSITY / DisplayMetrics.DENSITY_DEFAULT
@@ -342,6 +347,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         }
 
         if (w == 0 || bufferH == 0) {
+            Trace.endSection();
             return;
         }
 //        System.out.println("ITEM " + this + " w=" + w + " h=" + bufferH + " key=" + mCurrKey);
@@ -353,6 +359,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         }
         mTask = new DecodeTask(mCurrKey, w, bufferH, bufferW, bufferH, this, mCache);
         mTask.executeOnExecutor(EXECUTOR);
+        Trace.endSection();
     }
 
     private void setLoadState(int loadState) {
@@ -363,6 +370,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
             return;
         }
 
+        Trace.beginSection("set load state");
         switch (loadState) {
             // This state differs from LOADED in that the subsequent state transition away from
             // UNINITIALIZED will not have a fancy transition. This allows list item binds to
@@ -390,6 +398,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
                 mProgress.setVisible(false);
                 break;
         }
+        Trace.endSection();
 
         mLoadState = loadState;
         LogUtils.v(LOG_TAG, "OUT stateful AD.setState. new=%s placeholder=%s progress=%s",
