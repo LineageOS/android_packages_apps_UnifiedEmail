@@ -70,6 +70,11 @@ public class NestedFolderView extends LinearLayout implements ConversationSpecia
         // so supposing we should check for that here.
     }
 
+    @Override
+    public void onGetView() {
+        // Do nothing
+    }
+
     /**
      * Sets the folder associated with this view. This method is meant to be called infrequently,
      * since we assume that a new view will be created when the unread count changes.

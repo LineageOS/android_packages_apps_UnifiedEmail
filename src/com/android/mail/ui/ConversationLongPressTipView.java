@@ -76,6 +76,11 @@ public class ConversationLongPressTipView extends FrameLayout
     }
 
     @Override
+    public void onGetView() {
+        // Do nothing
+    }
+
+    @Override
     public boolean getShouldDisplayInList() {
         mShow = checkWhetherToShow();
         return mShow;
