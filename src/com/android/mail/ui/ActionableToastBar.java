@@ -72,7 +72,7 @@ public class ActionableToastBar extends LinearLayout {
             @Override
             public void run() {
                 if(!mHidden) {
-                    hide(true);
+                    hide(true, false /* actionClicked */);
                 }
             }
         };
@@ -109,19 +109,24 @@ public class ActionableToastBar extends LinearLayout {
     /**
      * Displays the toast bar and makes it visible. Allows the setting of
      * parameters to customize the display.
-     * @param listener performs some action when the action button is clicked
+     * @param listener Performs some action when the action button is clicked.
+     *                 If the {@link ToastBarOperation} overrides
+     *                 {@link ToastBarOperation#shouldTakeOnActionClickedPrecedence()}
+     *                 to return <code>true</code>, the
+     *                 {@link ToastBarOperation#onActionClicked(android.content.Context)}
+     *                 will override this listener and be called instead.
      * @param descriptionIconResourceId resource ID for the description icon or
-     * 0 if no icon should be shown
+     *                                  0 if no icon should be shown
      * @param descriptionText a description text to show in the toast bar
      * @param showActionIcon if true, the action button icon should be shown
      * @param actionTextResource resource ID for the text to show in the action button
      * @param replaceVisibleToast if true, this toast should replace any currently visible toast.
-     * Otherwise, skip showing this toast.
+     *                            Otherwise, skip showing this toast.
      * @param op the operation that corresponds to the specific toast being shown
      */
     public void show(final ActionClickedListener listener, int descriptionIconResourceId,
             CharSequence descriptionText, boolean showActionIcon, int actionTextResource,
-            boolean replaceVisibleToast, ToastBarOperation op) {
+            boolean replaceVisibleToast, final ToastBarOperation op) {
 
         if (!mHidden && !replaceVisibleToast) {
             return;
@@ -134,8 +139,12 @@ public class ActionableToastBar extends LinearLayout {
         mActionButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View widget) {
-                listener.onActionClicked();
-                hide(true);
+                if (op.shouldTakeOnActionClickedPrecedence()) {
+                    op.onActionClicked(getContext());
+                } else {
+                    listener.onActionClicked(getContext());
+                }
+                hide(true /* animate */, true /* actionClicked */);
             }
         });
 
@@ -165,7 +174,11 @@ public class ActionableToastBar extends LinearLayout {
     /**
      * Hides the view and resets the state.
      */
-    public void hide(boolean animate) {
+    public void hide(boolean animate, boolean actionClicked) {
+        if (!actionClicked && mOperation != null) {
+            mOperation.onToastBarTimeout(getContext());
+        }
+
         mHidden = true;
         mFadeOutHandler.removeCallbacks(mRunnable);
         if (getVisibility() == View.VISIBLE) {
@@ -255,6 +268,6 @@ public class ActionableToastBar extends LinearLayout {
      * should implement this interface.
      */
     public interface ActionClickedListener {
-        public void onActionClicked();
+        public void onActionClicked(Context context);
     }
 }

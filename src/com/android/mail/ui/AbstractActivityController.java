@@ -1279,7 +1279,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // home was pressed, just dismiss any existing toast bar when restarting
         // the app.
         if (mToastBar != null) {
-            mToastBar.hide(false);
+            mToastBar.hide(false, false /* actionClicked */);
         }
     }
 
@@ -3801,7 +3801,7 @@ public abstract class AbstractActivityController implements ActivityController,
             final AnimatedAdapter listAdapter) {
         return new ActionClickedListener() {
             @Override
-            public void onActionClicked() {
+            public void onActionClicked(Context context) {
                 if (mAccount.undoUri != null) {
                     // NOTE: We might want undo to return the messages affected, in which case
                     // the resulting cursor might be interesting...
@@ -3878,7 +3878,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private ActionClickedListener getRetryClickedListener(final Folder folder) {
         return new ActionClickedListener() {
             @Override
-            public void onActionClicked() {
+            public void onActionClicked(Context context) {
                 final Uri uri = folder.refreshUri;
 
                 if (uri != null) {
@@ -3891,7 +3891,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private ActionClickedListener getSignInClickedListener() {
         return new ActionClickedListener() {
             @Override
-            public void onActionClicked() {
+            public void onActionClicked(Context context) {
                 promptUserForAuthentication(mAccount);
             }
         };
@@ -3900,7 +3900,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private ActionClickedListener getStorageErrorClickedListener() {
         return new ActionClickedListener() {
             @Override
-            public void onActionClicked() {
+            public void onActionClicked(Context context) {
                 showStorageErrorDialog();
             }
         };
@@ -3918,7 +3918,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private ActionClickedListener getInternalErrorClickedListener() {
         return new ActionClickedListener() {
             @Override
-            public void onActionClicked() {
+            public void onActionClicked(Context context) {
                 Utils.sendFeedback(mActivity, mAccount, true /* reportingProblem */);
             }
         };
