@@ -106,6 +106,12 @@ public class ConversationPhotoTeaserView extends FrameLayout
 
     @Override
     public void onUpdate(String account, Folder folder, ConversationCursor cursor) {
+        // Do nothing
+    }
+
+    @Override
+    public void onGetView() {
+        // Do nothing
     }
 
     @Override
