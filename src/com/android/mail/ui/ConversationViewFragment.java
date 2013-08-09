@@ -135,7 +135,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
     protected ConversationViewAdapter mAdapter;
 
-    private boolean mViewsCreated;
+    protected boolean mViewsCreated;
     // True if we attempted to render before the views were laid out
     // We will render immediately once layout is done
     private boolean mNeedRender;
@@ -320,11 +320,15 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        mWebViewClient = new ConversationWebViewClient(mAccount);
+        mWebViewClient = createConversationWebViewClient();
 
         if (savedState != null) {
             mWebViewYPercent = savedState.getFloat(BUNDLE_KEY_WEBVIEW_Y_PERCENT);
         }
+    }
+
+    protected ConversationWebViewClient createConversationWebViewClient() {
+        return new ConversationWebViewClient(mAccount);
     }
 
     @Override
@@ -1056,7 +1060,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mWebView.setOnScaleGestureListener(listener);
     }
 
-    private class ConversationWebViewClient extends AbstractConversationWebViewClient {
+    public class ConversationWebViewClient extends AbstractConversationWebViewClient {
         public ConversationWebViewClient(Account account) {
             super(account);
         }
