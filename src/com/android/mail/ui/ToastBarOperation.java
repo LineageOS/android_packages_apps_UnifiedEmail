@@ -26,7 +26,8 @@ import com.android.mail.providers.Folder;
 /**
  * A simple holder class that stores the information to undo the application of a folder.
  */
-public class ToastBarOperation implements Parcelable {
+public class ToastBarOperation implements Parcelable,
+        ActionableToastBar.ActionClickedListener {
     public static final int UNDO = 0;
     public static final int ERROR = 1;
     private final int mAction;
@@ -169,5 +170,25 @@ public class ToastBarOperation implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    /**
+     * Returns true if this object should take precedence
+     * when the {@link ActionableToastBar}'s action button is clicked.
+     * If <code>true</code>, the listener passed in {@link ActionableToastBar#show}
+     * will not be used. The default implementation returns false. Derived
+     * classes should override if this behavior is desired.
+     */
+    public boolean shouldTakeOnActionClickedPrecedence() {
+        return false;
+    }
+
+    @Override
+    public void onActionClicked(Context context) {
+        // DO NOTHING
+    }
+
+    public void onToastBarTimeout(Context context) {
+        // DO NOTHING
     }
 }
