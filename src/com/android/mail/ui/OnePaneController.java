@@ -353,7 +353,7 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mActivity.finish();
         }
-        mToastBar.hide(false);
+        mToastBar.hide(false, false /* actionClicked */);
         return true;
     }
 
@@ -511,9 +511,8 @@ public final class OnePaneController extends AbstractActivityController {
                 case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 case ViewMode.CONVERSATION:
                     mToastBar.setConversationMode(true);
-                    mToastBar.show(
-                            getUndoClickedListener(
-                                    convList != null ? convList.getAnimatedAdapter() : null),
+                    mToastBar.show(getUndoClickedListener(
+                            convList != null ? convList.getAnimatedAdapter() : null),
                             0,
                             Utils.convertHtmlToPlainText
                                 (op.getDescription(mActivity.getActivityContext())),
@@ -545,7 +544,7 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     protected void hideOrRepositionToastBar(boolean animated) {
-        mToastBar.hide(animated);
+        mToastBar.hide(animated, false /* actionClicked */);
     }
 
     @Override

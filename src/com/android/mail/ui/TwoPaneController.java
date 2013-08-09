@@ -371,7 +371,7 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean handleBackPress() {
         // Clear any visible undo bars.
-        mToastBar.hide(false);
+        mToastBar.hide(false, false /* actionClicked */);
         popView(false);
         return true;
     }
@@ -462,9 +462,10 @@ public final class TwoPaneController extends AbstractActivityController {
         switch (mode) {
             case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+            case ViewMode.CONVERSATION:
                 if (convList != null) {
-                    mToastBar.show(
-                            getUndoClickedListener(convList.getAnimatedAdapter()),
+                    mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()),
                             0,
                             Utils.convertHtmlToPlainText
                                 (op.getDescription(mActivity.getActivityContext())),
@@ -473,18 +474,6 @@ public final class TwoPaneController extends AbstractActivityController {
                             true,  /* replaceVisibleToast */
                             op);
                 }
-                break;
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-            case ViewMode.CONVERSATION:
-                if (convList != null) {
-                    mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()), 0,
-                            Utils.convertHtmlToPlainText
-                                (op.getDescription(mActivity.getActivityContext())),
-                            true, /* showActionIcon */
-                            R.string.undo, true, /* replaceVisibleToast */
-                            op);
-                }
-                break;
         }
     }
 
@@ -541,7 +530,7 @@ public final class TwoPaneController extends AbstractActivityController {
             public void run() {
                 if (/* the touch did not open a conversation */oldViewMode == mViewMode.getMode() ||
                 /* animation has ended */!mToastBar.isAnimating()) {
-                    mToastBar.hide(animated);
+                    mToastBar.hide(animated, false /* actionClicked */);
                 } else {
                     // the touch opened a conversation, reposition undo bar
                     repositionToastBar(mToastBar.getOperation());
