@@ -40,7 +40,6 @@ import com.android.bitmap.DecodeAggregator;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
-import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.browse.ConversationItemViewCoordinates.CoordinatesCache;
 import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.content.ObjectCursor;
