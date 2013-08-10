@@ -814,6 +814,8 @@ public class ConversationItemView extends View
         mHeader.sendersDisplayText = new SpannableStringBuilder();
         mHeader.styledSendersString = null;
 
+        mHeader.hasDraftMessage = mHeader.conversation.numDrafts() > 0;
+
         // Parse senders fragments.
         if (mHeader.conversation.conversationInfo != null) {
             // This is Gmail
@@ -829,6 +831,12 @@ public class ConversationItemView extends View
                     mHeader.messageInfoString.toString(), maxChars, mHeader.styledSenders,
                     mHeader.displayableSenderNames, mHeader.displayableSenderEmails, mAccount,
                     true);
+
+            if (mHeader.displayableSenderEmails.isEmpty() && mHeader.hasDraftMessage) {
+                mHeader.displayableSenderEmails.add(mAccount);
+                mHeader.displayableSenderNames.add(mAccount);
+            }
+
             // If we have displayable senders, load their thumbnails
             loadSenderImages();
         } else {
