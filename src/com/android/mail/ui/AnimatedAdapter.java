@@ -491,9 +491,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
 
         // Check if this is a special view
-        final View specialView = (View) mSpecialViews.get(position);
+        final ConversationSpecialItemView specialView = mSpecialViews.get(position);
         if (specialView != null) {
-            return specialView;
+            specialView.onGetView();
+            return (View) specialView;
         }
 
         Utils.traceBeginSection("AA.getView");
