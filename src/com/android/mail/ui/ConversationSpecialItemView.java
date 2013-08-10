@@ -17,6 +17,7 @@
 package com.android.mail.ui;
 
 import android.app.LoaderManager;
+import android.widget.Adapter;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Folder;
@@ -32,6 +33,12 @@ public interface ConversationSpecialItemView {
      * @param cursor The {@link ConversationCursor}. May be <code>null</code>
      */
     void onUpdate(String account, Folder folder, ConversationCursor cursor);
+
+    /**
+     * Called before returning this view from
+     * {@link Adapter#getView(int, android.view.View, android.view.ViewGroup)}
+     */
+    void onGetView();
 
     /**
      * Returns whether this view is to be displayed in the list or not. A view can be added freely
