@@ -122,7 +122,6 @@ public class AttachmentActionHandler {
     }
 
     public void startRedownloadingAttachment(Attachment attachment) {
-        showDownloadingDialog();
         final ContentValues params = new ContentValues(2);
         params.put(AttachmentColumns.STATE, AttachmentState.REDOWNLOADING);
         params.put(AttachmentColumns.DESTINATION, attachment.destination);
@@ -134,7 +133,7 @@ public class AttachmentActionHandler {
      * Displays a loading dialog to be used for downloading attachments.
      * Must be called on the UI thread.
      */
-    private void showDownloadingDialog() {
+    public void showDownloadingDialog() {
         final FragmentTransaction ft = mFragmentManager.beginTransaction();
         final Fragment prev = mFragmentManager.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
         if (prev != null) {

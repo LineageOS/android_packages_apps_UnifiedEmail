@@ -176,6 +176,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             }
         } else if (res == R.id.download_again) {
             if (mAttachment.isPresentLocally()) {
+                mActionHandler.showDownloadingDialog();
                 mActionHandler.startRedownloadingAttachment(mAttachment);
             }
         } else if (res == R.id.cancel_attachment) {
