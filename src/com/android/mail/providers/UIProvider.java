@@ -1350,15 +1350,16 @@ public class UIProvider {
 
     /**
      * Methods that can be "called" using the account uri, through
-     * {@link android.content.ContentResolver#call()}  Note, the arg parmateter of call should be
-     * the account uri.
+     * {@link android.content.ContentResolver#call(Uri,String,String,Bundle)}
+     * Note, the arg parmateter of call should be the account uri.
      */
     public static final class AccountCallMethods {
         /**
          * Save message method.  The Bundle for the call to
-         * {@link android.content.ContentResolver#call()} should have the columns specified in
-         * {@link MessageColumns}, and if this is a save for an existing message, an entry for the
-         * {@link MessageColumns#URI} should reference the existing message
+         * {@link android.content.ContentResolver#call(Uri,String,String,Bundle)} should have the
+         * columns specified in {@link MessageColumns}, and if this is a save for an existing
+         * message, an entry for the {@link MessageColumns#URI} should reference the existing
+         * message
          *
          * The Bundle returned will contain the message uri in the returned bundled with the
          * {@link MessageColumns#URI} key.
@@ -1367,9 +1368,10 @@ public class UIProvider {
 
         /**
          * Send message method.  The Bundle for the call to
-         * {@link android.content.ContentResolver#call()} should have the columns specified in
-         * {@link MessageColumns}, and if this is a send of an existing message, an entry for the
-         * {@link MessageColumns#URI} should reference the existing message
+         * {@link android.content.ContentResolver#call(Uri,String,String,Bundle)} should have the
+         * columns specified in {@link MessageColumns}, and if this is a send of an existing
+         * message, an entry for the {@link MessageColumns#URI} should reference the existing
+         * message
          *
          * The Bundle returned will contain the message uri in the returned bundled with the
          * {@link MessageColumns#URI} key.
@@ -1378,8 +1380,8 @@ public class UIProvider {
 
         /**
          * Change account method.  The Bundle for the call to
-         * {@link android.content.ContentResolver#call()} should have the columns specified in
-         * {@link SetCurrentAccountColumns}
+         * {@link android.content.ContentResolver#call(Uri,String,String,Bundle)} should have the
+         * columns specified in {@link SetCurrentAccountColumns}
          *
          * The Bundle returned will be empty.
          */
