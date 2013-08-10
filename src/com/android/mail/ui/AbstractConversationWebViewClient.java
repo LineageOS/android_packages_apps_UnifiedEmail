@@ -59,6 +59,10 @@ public class AbstractConversationWebViewClient extends WebViewClient {
         mActivity = activity;
     }
 
+    public Activity getActivity() {
+        return mActivity;
+    }
+
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         if (mActivity == null) {
