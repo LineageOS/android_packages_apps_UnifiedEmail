@@ -339,9 +339,9 @@ public class ConversationItemViewCoordinates {
         // Add margin between attachment previews and folders
         final View attachmentPreviewsBottomMargin = view
                 .findViewById(R.id.attachment_previews_bottom_margin);
-        attachmentPreviewsBottomMargin.setVisibility(
-                attachmentPreviews != null && config.areFoldersVisible() ? View.VISIBLE
-                        : View.GONE);
+        final boolean marginVisible = config.getAttachmentPreviewMode() != ATTACHMENT_PREVIEW_NONE
+                && config.areFoldersVisible();
+        attachmentPreviewsBottomMargin.setVisibility(marginVisible ? View.VISIBLE : View.GONE);
 
         View contactImagesView = view.findViewById(R.id.contact_image);
 
