@@ -16,13 +16,15 @@
 
 package com.android.bitmap;
 
+import android.util.SparseArray;
+
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
+import java.util.ArrayDeque;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
+import java.util.Queue;
 
 /**
  * An implementation of a task aggregator that executes tasks in the order that they are expected
@@ -36,31 +38,29 @@ import java.util.Map.Entry;
  * <p/>
  * A characteristic scenario is as follows:
  * <ol>
- * <li>{@link #expect(Object, Callback)} keys <b>A</b>, <b>B</b>, <b>C</b>,
- * and <b>Z</b>, in that order. Key <b>A</b> is now the first expected key.</li>
- * <li>{@link #execute(Object, Runnable)} task <b>2</b> for key <b>B</b>. The first expected key
- * is <b>A</b>, which has no task associated with it, so we store task <b>2</b>.
- * </li>
- * <li>{@link #execute(Object, Runnable)} task <b>4</b> for key <b>Z</b>. We store task <b>4</b>.
- * </li>
- * <li>{@link #execute(Object, Runnable)} task <b>1</b> for key <b>A</b>. We run task <b>1</b>
- * because its key <b>A</b> is the first expected, then we remove key <b>A</b> from the list of
- * keys that we expect.</li>
+ * <li>Expect keys <b>A</b>, <b>B</b>, <b>C</b>, and <b>Z</b>, in that order. Key <b>A</b> is now
+ * the first expected key.</li>
+ * <li>Execute task <b>2</b> for key <b>B</b>. The first expected key is <b>A</b>,
+ * which has no task associated with it, so we store task <b>2</b>. </li>
+ * <li>Execute task <b>4</b> for key <b>Z</b>. We store task <b>4</b>. </li>
+ * <li>Execute task <b>1</b> for key <b>A</b>. We run task <b>1</b> because its key <b>A</b> is
+ * the first expected, then we remove key <b>A</b> from the list of keys that we expect.</li>
  * <li>This causes key <b>B</b> to be the first expected key, and we see that we have previously
  * stored task <b>2</b> for that key. We run task <b>2</b> and remove key <b>B</b>. </li>
- * <li>Key <b>C</b> is now the first expected key, but it has no task, so nothing happens. Task
- * <b>4</b>, which was previously stored, cannot run until its corresponding key <b>Z</b> becomes
- * the first expected key. This can happen if a task comes in for key <b>C</b> or if {@link
- * #forget(Object)} is called on key <b>C</b>.</li>
+ * <li>Key <b>C</b> is now the first expected key, but it has no task,
+ * so nothing happens. Task <b>4</b>, which was previously stored,
+ * cannot run until its corresponding key <b>Z</b> becomes the first expected key. This can
+ * happen if a task comes in for key <b>C</b> or if forget is called on key <b>C</b>.</li>
  * </ol>
  * <p/>
  * ContiguousFIFOAggregator is not thread safe.
  */
 public class ContiguousFIFOAggregator<T> {
-
-    private final LinkedHashMap<T, Value> mTasks;
+    private final Queue<T> mExpected;
+    private final SparseArray<Value> mTasks;
 
     private static final String TAG = LogTag.getLogTag();
+    private static final boolean DEBUG = false;
 
     /**
      * Create a new ContiguousFIFOAggregator.
@@ -75,14 +75,15 @@ public class ContiguousFIFOAggregator<T> {
      * the maximum number of UI elements that you expect to show on the screen at any time.
      */
     public ContiguousFIFOAggregator() {
-        mTasks = new LinkedHashMap<T, Value>();
+        mExpected = new ArrayDeque<T>();
+        mTasks = new SparseArray<Value>();
     }
 
     /**
      * Declare a key to be expected in the future. The order in which you expect keys is very
      * important. Keys that are declared first are guaranteed to have their tasks run first. You
-     * must call either {@link #forget(Object)} or {@link #execute(Object,
-     * Runnable)} with this key in the future, or you will leak the key.
+     * must call either {@link #forget(Object)} or {@link #execute(Object, Runnable)}
+     * with this key in the future, or you will leak the key.
      *
      * @param key      the key to expect a task for. Use the same key when setting the task later
      *                 with {@link #execute (Object, Runnable)}.
@@ -94,9 +95,11 @@ public class ContiguousFIFOAggregator<T> {
         }
 
         Utils.traceBeginSection("pool expect");
-        final boolean isFirst = mTasks.isEmpty();
-        mTasks.put(key, new Value(callback, null));
-        LogUtils.d(TAG, "ContiguousFIFOAggregator >> tasks: %s", mTasks);
+        final boolean isFirst = mExpected.isEmpty();
+        mExpected.offer(key);
+        final int hash = key.hashCode();
+        mTasks.put(hash, new Value(callback, null));
+        if (DEBUG) LogUtils.d(TAG, "ContiguousFIFOAggregator >> tasks: %s", prettyPrint());
 
         if (isFirst) {
             onFirstExpectedChanged(key);
@@ -117,21 +120,23 @@ public class ContiguousFIFOAggregator<T> {
             throw new IllegalArgumentException("Do not use null keys.");
         }
 
-        if (!mTasks.containsKey(key)) {
+        final int hash = key.hashCode();
+        if (mTasks.get(hash) == null) {
             return;
         }
 
         Utils.traceBeginSection("pool forget");
-        final Iterator<Entry<T, Value>> iter = mTasks.entrySet().iterator();
-        final Entry<T, Value> first = iter.next();
-        if (key.equals(first.getKey()) && iter.hasNext()) {
-            // We are removing the first key. The second key is now first.
-            final Entry<T, Value> second = iter.next();
-            onFirstExpectedChanged(second.getKey());
+        final boolean removedFirst = key.equals(mExpected.peek());
+        mExpected.remove(key);
+        mTasks.delete(key.hashCode());
+        if (DEBUG) LogUtils.d(TAG, "ContiguousFIFOAggregator  < tasks: %s", prettyPrint());
+
+        final T second;
+        if (removedFirst && (second = mExpected.peek()) != null) {
+            // We removed the first key. The second key is now first.
+            onFirstExpectedChanged(second);
         }
 
-        mTasks.remove(key);
-        LogUtils.d(TAG, "ContiguousFIFOAggregator  < tasks: %s", mTasks);
         maybeExecuteNow();
         Utils.traceEndSection();
     }
@@ -150,16 +155,17 @@ public class ContiguousFIFOAggregator<T> {
      */
     public void execute(final T key, final Runnable task) {
         Utils.traceBeginSection("pool execute");
-        if (!mTasks.containsKey(key) || task == null) {
+        final int hash = key.hashCode();
+        final Value value = mTasks.get(hash);
+        if (value == null || task == null) {
             if (task != null) {
                 task.run();
             }
             Utils.traceEndSection();
             return;
         }
-        final Value value = mTasks.get(key);
         value.task = task;
-        LogUtils.d(TAG, "ContiguousFIFOAggregator ++ tasks: %s", mTasks);
+        if (DEBUG) LogUtils.d(TAG, "ContiguousFIFOAggregator ++ tasks: %s", prettyPrint());
         maybeExecuteNow();
         Utils.traceEndSection();
     }
@@ -171,25 +177,27 @@ public class ContiguousFIFOAggregator<T> {
      * stopping when it finds that the first expected key has not yet been assigned a task.
      */
     private void maybeExecuteNow() {
-        final Iterator<Entry<T, Value>> iter = mTasks.entrySet().iterator();
-        Entry<T, Value> first;
+        T first;
         int count = 0;
-        while (iter.hasNext()) {
+        while (!mExpected.isEmpty()) {
             Utils.traceBeginSection("pool maybeExecuteNow loop");
-            first = iter.next();
+            first = mExpected.peek();
             if (count > 0) {
                 // When count == 0, the key is already first.
-                onFirstExpectedChanged(first.getKey());
+                onFirstExpectedChanged(first);
             }
 
-            if (first.getValue().task == null) {
+            final int hash = first.hashCode();
+            final Value value = mTasks.get(hash);
+            if (value.task == null) {
                 Utils.traceEndSection();
                 break;
             }
 
-            iter.remove();
-            LogUtils.d(TAG, "ContiguousFIFOAggregator  - tasks: %s", mTasks);
-            first.getValue().task.run();
+            mExpected.poll();
+            mTasks.delete(hash);
+            if (DEBUG) LogUtils.d(TAG, "ContiguousFIFOAggregator  - tasks: %s", prettyPrint());
+            value.task.run();
             count++;
             Utils.traceEndSection();
         }
@@ -200,10 +208,42 @@ public class ContiguousFIFOAggregator<T> {
      * @param key The key that has become the new first expected key.
      */
     private void onFirstExpectedChanged(final T key) {
-        final Callback<T> callback = mTasks.get(key).callback;
+        final int hash = key.hashCode();
+        final Callback<T> callback = mTasks.get(hash).callback;
         if (callback != null) {
+            if (DEBUG) LogUtils.d(TAG, "ContiguousFIFOAggregator    first: %d", hash);
             callback.onBecomeFirstExpected(key);
         }
+    }
+
+    /**
+     * Get a pretty string representing the internal data.
+     * @return  a String for the internal data.
+     */
+    private String prettyPrint() {
+        if (mExpected.isEmpty()) {
+            return "{}";
+        }
+
+        StringBuilder buffer = new StringBuilder(mExpected.size() * 28);
+        buffer.append('{');
+        Iterator<T> it = mExpected.iterator();
+        while (it.hasNext()) {
+            final T key = it.next();
+            final int hash = key.hashCode();
+            buffer.append(hash);
+            buffer.append('=');
+            final Value value = mTasks.get(hash);
+            buffer.append(value);
+            if (it.hasNext()) {
+                buffer.append(", ");
+            }
+        }
+        buffer.append('}');
+        if (mExpected.size() != mTasks.size()) {
+            buffer.append(" error");
+        }
+        return buffer.toString();
     }
 
     /**
