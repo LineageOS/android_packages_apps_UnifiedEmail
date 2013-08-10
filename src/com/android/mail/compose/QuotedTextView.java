@@ -248,7 +248,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     public void setQuotedText(int action, Message refMessage, boolean allow) {
         setVisibility(View.VISIBLE);
         String htmlText = getHtmlText(refMessage);
-        StringBuffer quotedText = new StringBuffer();
+        StringBuilder quotedText = new StringBuilder();
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
         Date date = new Date(refMessage.dateReceivedMs);
         Resources resources = getContext().getResources();
@@ -299,6 +299,26 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         allowRespondInline(true);
     }
 
+    public void setQuotedTextFromHtml(CharSequence htmlText, boolean shouldQuoteText) {
+        setVisibility(VISIBLE);
+        if (shouldQuoteText) {
+            final StringBuilder quotedText = new StringBuilder();
+            final Resources resources = getContext().getResources();
+            quotedText.append(sQuoteBegin);
+            quotedText.append(
+                    String.format(resources.getString(R.string.forward_attribution_no_headers)));
+            quotedText.append(HEADER_SEPARATOR);
+            quotedText.append(BLOCKQUOTE_BEGIN);
+            quotedText.append(htmlText);
+            quotedText.append(BLOCKQUOTE_END);
+            quotedText.append(QUOTE_END);
+            setQuotedText(quotedText);
+        } else {
+            setQuotedText(htmlText);
+        }
+        findViewById(R.id.divider_bar).setVisibility(GONE);
+        findViewById(R.id.quoted_text_button_bar).setVisibility(GONE);
+    }
     /**
      * Set quoted text. Some use cases may not want to display the check box (i.e. forwarding) so
      * allow control of that.

@@ -2108,7 +2108,8 @@ public abstract class AbstractActivityController implements ActivityController,
     private static boolean getShouldAllowDrawerPull(final int viewMode) {
         // if search list/conv mode, disable drawer pull
         // allow drawer pull everywhere except conversation mode where the list is hidden
-        return !ViewMode.isSearchMode(viewMode) && !(ViewMode.isConversationMode(viewMode));
+        return !ViewMode.isSearchMode(viewMode) && !ViewMode.isConversationMode(viewMode) &&
+                !ViewMode.isAdMode(viewMode);
 
         // TODO(ath): get this to work to allow drawer pull in 2-pane conv mode.
     /* && !isConversationListVisible() */

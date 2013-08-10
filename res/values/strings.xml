@@ -76,6 +76,8 @@
     <string name="reply_attribution">On <xliff:g id="date">%s</xliff:g>, <xliff:g id="person">%s</xliff:g> wrote:</string>
     <!-- Compose screen, displayed at the top of a message being forwarded. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000] -->
     <string name="forward_attribution">---------- Forwarded message ----------&lt;br&gt;From: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Subject: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;To: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
+    <!-- Compose screen, displayed at the top of a message being forwarded. [CHAR LIMIT=100]-->
+    <string name="forward_attribution_no_headers">---------- Forwarded message ----------</string>
     <!-- Compose screen, displayed at the top of a message being forwarded if there are any email addresses in the CC list. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000]-->
     <string name="cc_attribution">Cc: <xliff:g id="cc">%1$s</xliff:g>&lt;br&gt;</string>
     <!-- Dialog text: select the type of an attachment while composing [CHAR LIMIT=100]-->
