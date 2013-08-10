@@ -34,6 +34,10 @@
             android:id="@+id/menu_share_all"
             android:showAsAction="never"
             android:title="@string/menu_photo_share_all"/>
+        <item
+            android:id="@+id/menu_download_again"
+            android:showAsAction="never"
+            android:title="@string/download_again"/>
     </group>
 
 </menu>
