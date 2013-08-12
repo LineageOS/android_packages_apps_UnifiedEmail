@@ -241,7 +241,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private ComposeModeAdapter mComposeModeAdapter;
     private int mComposeMode = -1;
     private boolean mForward;
-    private String mRecipient;
     private QuotedTextView mQuotedTextView;
     private EditText mBodyView;
     private View mFromStatic;
@@ -2771,15 +2770,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
         };
 
-        // Get the selected account if the from spinner has been setup.
-        ReplyFromAccount selectedAccount = mReplyFromAccount;
-        String fromAddress = selectedAccount.name;
-        if (selectedAccount == null || fromAddress == null) {
-            // We don't have either the selected account or from address,
-            // use mAccount.
-            selectedAccount = mReplyFromAccount;
-            fromAddress = mAccount.name;
-        }
+        setAccount(mReplyFromAccount.account);
 
         if (mSendSaveTaskHandler == null) {
             HandlerThread handlerThread = new HandlerThread("Send Message Task Thread");
@@ -2792,11 +2783,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mRequestId = sendOrSaveInternal(this, mReplyFromAccount, msg, mRefMessage, body,
                 mQuotedTextView.getQuotedTextIfIncluded(), callback,
                 mSendSaveTaskHandler, save, mComposeMode, mDraftAccount);
-
-        if (mRecipient != null && mRecipient.equals(mAccount.name)) {
-            mRecipient = selectedAccount.name;
-        }
-        setAccount(selectedAccount.account);
 
         // Don't display the toast if the user is just changing the orientation,
         // but we still need to save the draft to the cursor because this is how we restore
