@@ -16,48 +16,53 @@
 
 package com.android.mail.ui;
 
-import com.android.mail.R;
-import com.android.mail.browse.ConversationCursor;
-import com.android.mail.preferences.MailPrefs;
-import com.android.mail.providers.Folder;
-
 import android.animation.ObjectAnimator;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+
+import com.android.mail.R;
+import com.android.mail.browse.ConversationCursor;
+import com.android.mail.preferences.AccountPreferences;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
+import com.android.mail.utils.Utils;
 
 /**
- * A tip to educate users about long press to enter CAB mode.  Appears on top of conversation list.
+ * A tip displayed on top of conversation view to indicate that Gmail sync is
+ * currently disabled on this account.
  */
-// TODO: this class was shamelessly copied from ConversationPhotoTeaserView.  Look into
-// extracting a common base class.
-public class ConversationLongPressTipView extends FrameLayout
+public class ConversationSyncDisabledTipView extends FrameLayout
         implements ConversationSpecialItemView, SwipeableItemView {
 
     private static int sScrollSlop = 0;
     private static int sShrinkAnimationDuration;
 
-    private final MailPrefs mMailPrefs;
+    private Account mAccount = null;
+    private AccountPreferences mAccountPreferences;
     private AnimatedAdapter mAdapter;
 
     private View mSwipeableContent;
+    private TextView mText;
 
-    private boolean mShow;
     private int mAnimatedHeight = -1;
+    private boolean mAcceptUserTaps = false;
 
-    public ConversationLongPressTipView(final Context context) {
+    public ConversationSyncDisabledTipView(final Context context) {
         this(context, null);
     }
 
-    public ConversationLongPressTipView(final Context context, final AttributeSet attrs) {
+    public ConversationSyncDisabledTipView(final Context context, final AttributeSet attrs) {
         this(context, attrs, -1);
     }
 
-    public ConversationLongPressTipView(
+    public ConversationSyncDisabledTipView(
             final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
@@ -68,13 +73,26 @@ public class ConversationLongPressTipView extends FrameLayout
             sShrinkAnimationDuration = resources.getInteger(
                     R.integer.shrink_animation_duration);
         }
+    }
 
-        mMailPrefs = MailPrefs.get(context);
+    public void bindAccount(Account account) {
+        mAccount = account;
+        mAccountPreferences = AccountPreferences.get(getContext(), account.name);
     }
 
     @Override
     protected void onFinishInflate() {
         mSwipeableContent = findViewById(R.id.swipeable_content);
+
+        mText = (TextView) findViewById(R.id.text);
+        mText.setText(R.string.account_sync_off);
+        mText.setClickable(true);
+        mText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.showSettings(getContext(), mAccount);
+            }
+        });
 
         findViewById(R.id.dismiss_button).setOnClickListener(new OnClickListener() {
             @Override
@@ -86,26 +104,28 @@ public class ConversationLongPressTipView extends FrameLayout
 
     @Override
     public void onUpdate(String account, Folder folder, ConversationCursor cursor) {
-        // It's possible user has enabled/disabled sender images in settings, which affects
-        // whether we want to show this tip or not.
-        mShow = checkWhetherToShow();
-    }
-
-    @Override
-    public void onGetView() {
-        // Do nothing
+        // do nothing
     }
 
     @Override
     public boolean getShouldDisplayInList() {
-        mShow = checkWhetherToShow();
-        return mShow;
-    }
-
-    private boolean checkWhetherToShow() {
-        // show if 1) sender images are disabled 2) there are items
-        return !shouldShowSenderImage() && !mAdapter.isEmpty()
-                && !mMailPrefs.isLongPressToSelectTipAlreadyShown();
+        if (mAccount == null || mAccount.syncAuthority == null) {
+            return false;
+        }
+        boolean globalSyncAutomatically = ContentResolver.getMasterSyncAutomatically();
+        // Not sure why directly passing mAccount to ContentResolver doesn't just work.
+        android.accounts.Account account = new android.accounts.Account(
+                mAccount.name, mAccount.type);
+        if (globalSyncAutomatically &&
+                ContentResolver.getSyncAutomatically(account, mAccount.syncAuthority)) {
+            // Sync is on, clear the number of times users has dismissed this
+            // warning so that next time sync is off, warning gets displayed again.
+            mAccountPreferences.resetNumOfDismissesForAccountSyncOff();
+            return false;
+        } else {
+            // Sync is off
+            return (mAccountPreferences.getNumOfDismissesForAccountSyncOff() == 0);
+        }
     }
 
     @Override
@@ -138,28 +158,15 @@ public class ConversationLongPressTipView extends FrameLayout
         dismiss();
     }
 
-
     @Override
     public boolean acceptsUserTaps() {
-        // No, we don't allow user taps.
-        return false;
+        return mAcceptUserTaps;
     }
 
     @Override
     public void dismiss() {
-        setDismissed();
+        mAccountPreferences.incNumOfDismissesForAccountSyncOff();
         startDestroyAnimation();
-    }
-
-    private void setDismissed() {
-        if (mShow) {
-            mMailPrefs.setLongPressToSelectTipAlreadyShown();
-            mShow = false;
-        }
-    }
-
-    protected boolean shouldShowSenderImage() {
-        return mMailPrefs.getShowSenderImages();
     }
 
     @Override
@@ -191,7 +198,7 @@ public class ConversationLongPressTipView extends FrameLayout
     /**
      * This method is used by the animator.  It is explicitly kept in proguard.flags to prevent it
      * from being removed, inlined, or obfuscated.
-     * Edit ./packages/apps/UnifiedEmail/proguard.flags
+     * Edit ./vendor/unbundled/packages/apps/UnifiedGmail/proguard.flags
      * In the future, we want to use @Keep
      */
     public void setAnimatedHeight(final int height) {
@@ -207,5 +214,4 @@ public class ConversationLongPressTipView extends FrameLayout
             setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
         }
     }
-
 }
