@@ -85,6 +85,9 @@ public class ContiguousFIFOAggregator<T> {
      * must call either {@link #forget(Object)} or {@link #execute(Object, Runnable)}
      * with this key in the future, or you will leak the key.
      *
+     * If you call expect with a previously expected key, the key will be placed at the back of
+     * the expected queue and its callback will be replaced with this one.
+     *
      * @param key      the key to expect a task for. Use the same key when setting the task later
      *                 with {@link #execute (Object, Runnable)}.
      * @param callback the callback to notify when the key becomes the first expected key, or null.
@@ -95,9 +98,13 @@ public class ContiguousFIFOAggregator<T> {
         }
 
         Utils.traceBeginSection("pool expect");
+        final int hash = key.hashCode();
+        if (contains(key)) {
+            mExpected.remove(key);
+            mTasks.remove(hash);
+        }
         final boolean isFirst = mExpected.isEmpty();
         mExpected.offer(key);
-        final int hash = key.hashCode();
         mTasks.put(hash, new Value(callback, null));
         if (DEBUG) LogUtils.d(TAG, "ContiguousFIFOAggregator >> tasks: %s", prettyPrint());
 
@@ -120,8 +127,7 @@ public class ContiguousFIFOAggregator<T> {
             throw new IllegalArgumentException("Do not use null keys.");
         }
 
-        final int hash = key.hashCode();
-        if (mTasks.get(hash) == null) {
+        if (!contains(key)) {
             return;
         }
 
@@ -209,11 +215,20 @@ public class ContiguousFIFOAggregator<T> {
      */
     private void onFirstExpectedChanged(final T key) {
         final int hash = key.hashCode();
-        final Callback<T> callback = mTasks.get(hash).callback;
-        if (callback != null) {
-            if (DEBUG) LogUtils.d(TAG, "ContiguousFIFOAggregator    first: %d", hash);
-            callback.onBecomeFirstExpected(key);
+        final Value value = mTasks.get(hash);
+        if (value == null) {
+            return;
         }
+        final Callback<T> callback = value.callback;
+        if (callback == null) {
+            return;
+        }
+        if (DEBUG) LogUtils.d(TAG, "ContiguousFIFOAggregator    first: %d", hash);
+        callback.onBecomeFirstExpected(key);
+    }
+
+    private boolean contains(final T key) {
+        return mTasks.get(key.hashCode()) != null;
     }
 
     /**
