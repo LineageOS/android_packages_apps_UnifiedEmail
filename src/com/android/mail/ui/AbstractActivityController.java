@@ -62,6 +62,8 @@ import android.widget.Toast;
 import com.android.mail.ConversationListContext;
 import com.android.mail.MailLogService;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
+import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
@@ -676,6 +678,8 @@ public abstract class AbstractActivityController implements ActivityController,
         if (accountChanged) {
             commitDestructiveActions(false);
         }
+        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_TYPE,
+                AnalyticsUtils.getAccountTypeForAccount(accountName));
         // Change the account here
         setAccount(account);
         // And carry out associated actions.
@@ -1265,6 +1269,10 @@ public abstract class AbstractActivityController implements ActivityController,
         mSafeToModifyFragments = true;
 
         NotificationActionUtils.registerUndoNotificationObserver(mUndoNotificationObserver);
+
+        if (mViewMode.getMode() != ViewMode.UNKNOWN) {
+            Analytics.getInstance().sendView("MainActivity" + mViewMode.toString());
+        }
     }
 
     @Override
@@ -1308,6 +1316,11 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_ACTION,
+                Analytics.EVENT_ACTION_MENU_ITEM,
+                AnalyticsUtils.getMenuItemString(item.getItemId()), 0);
+
         /*
          * The action bar home/up action should open or close the drawer.
          * mDrawerToggle will take care of this.
@@ -3538,7 +3551,8 @@ public abstract class AbstractActivityController implements ActivityController,
                         // Nothing useful to do if we have no valid data.
                         break;
                     }
-                    if (data.getCount() == 0) {
+                    final long count = data.getCount();
+                    if (count == 0) {
                         // If an empty cursor is returned, the MailAppProvider is indicating that
                         // no accounts have been specified.  We want to navigate to the
                         // "add account" activity that will handle the intent returned by the
@@ -3564,6 +3578,8 @@ public abstract class AbstractActivityController implements ActivityController,
                         if (!mHaveAccountList || accountListUpdated) {
                             mHaveAccountList = updateAccounts(data);
                         }
+                        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_COUNT,
+                                Long.toString(count));
                     }
                     break;
                 case LOADER_ACCOUNT_UPDATE_CURSOR:
