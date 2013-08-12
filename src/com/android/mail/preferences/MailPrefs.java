@@ -24,6 +24,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.widget.BaseWidgetProvider;
+
 import com.google.common.collect.ImmutableSet;
 
 import java.util.Collections;

@@ -67,10 +67,6 @@
   *** doNothingClickHandler(...);
 }
 
--keepclasseswithmembers class com.android.mail.ui.ConversationPhotoTeaserView {
-  *** setAnimatedHeight(...);
-}
-
--keepclasseswithmembers class com.android.mail.ui.ConversationLongPressTipView {
+-keepclasseswithmembers class * extends com.android.mail.ui.ConversationSpecialItemView {
   *** setAnimatedHeight(...);
 }
