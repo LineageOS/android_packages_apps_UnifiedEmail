@@ -16,8 +16,11 @@
 package com.android.mail.preferences;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 
 import android.content.Context;
+
+import java.util.Map;
 
 /**
  * Preferences relevant to one specific account.
@@ -25,6 +28,8 @@ import android.content.Context;
 public class AccountPreferences extends VersionedPrefs {
 
     private static final String PREFS_NAME_PREFIX = "Account";
+
+    private static Map<String, AccountPreferences> mInstances = Maps.newHashMap();
 
     public static final class PreferenceKeys {
         /**
@@ -37,6 +42,11 @@ public class AccountPreferences extends VersionedPrefs {
 
         /** Boolean value indicating whether notifications are enabled */
         public static final String NOTIFICATIONS_ENABLED = "notifications-enabled";
+
+        /**
+         * Number of time user has dismissed / seen the toast for account sync is off message.
+         */
+        public static final String ACCOUNT_SYNC_OFF_DISMISSES = "num-of-dismisses-account-sync-off";
 
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>().add(NOTIFICATIONS_ENABLED).build();
@@ -51,6 +61,15 @@ public class AccountPreferences extends VersionedPrefs {
 
     private static String buildSharedPrefsName(final String account) {
         return PREFS_NAME_PREFIX + '-' + account;
+    }
+
+    public static synchronized AccountPreferences get(Context context, String account) {
+        AccountPreferences pref = mInstances.get(account);
+        if (pref == null) {
+            pref = new AccountPreferences(context, account);
+            mInstances.put(account, pref);
+        }
+        return pref;
     }
 
     @Override
@@ -89,6 +108,26 @@ public class AccountPreferences extends VersionedPrefs {
 
     public void setNotificationsEnabled(final boolean enabled) {
         getEditor().putBoolean(PreferenceKeys.NOTIFICATIONS_ENABLED, enabled).apply();
+        notifyBackupPreferenceChanged();
+    }
+
+    public int getNumOfDismissesForAccountSyncOff() {
+        return getSharedPreferences().getInt(PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, 0);
+    }
+
+    public void resetNumOfDismissesForAccountSyncOff() {
+        final int value = getSharedPreferences().getInt(
+                PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, 0);
+        if (value != 0) {
+            getEditor().putInt(PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, 0).apply();
+            notifyBackupPreferenceChanged();
+        }
+    }
+
+    public void incNumOfDismissesForAccountSyncOff() {
+        final int value = getSharedPreferences().getInt(
+                PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, 0);
+        getEditor().putInt(PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, value + 1).apply();
         notifyBackupPreferenceChanged();
     }
 }
