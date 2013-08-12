@@ -44,9 +44,16 @@ public class ConversationListHelper {
                 (ConversationLongPressTipView) LayoutInflater.from(context)
                         .inflate(R.layout.conversation_long_press_to_select_tip_view, null);
 
+        // Sync is off warning tip
+        final ConversationSyncDisabledTipView conversationSyncDisabledTipView =
+                (ConversationSyncDisabledTipView) LayoutInflater.from(context)
+                        .inflate(R.layout.conversation_sync_disabled_tip_view, null);
+        conversationSyncDisabledTipView.bindAccount(account);
+
         final ArrayList<ConversationSpecialItemView> itemViews = Lists.newArrayList();
         itemViews.add(conversationPhotoTeaser);
         itemViews.add(conversationLongPressTipView);
+        itemViews.add(conversationSyncDisabledTipView);
         return itemViews;
     }
 }
