@@ -37,6 +37,7 @@
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"Στις <xliff:g id="DATE">%s</xliff:g>, ο χρήστης <xliff:g id="PERSON">%s</xliff:g> έγραψε:"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Προωθημένο μήνυμα ----------&lt;br&gt;Από: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Ημερομηνία: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Θέμα: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Προς: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- Προωθημένο μήνυμα ----------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Κοιν.: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Επιλογή τύπου συνημμένου"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"Δεν είναι δυνατή η επισύναψη του αρχείου που υπερβαίνει το όριο <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
@@ -410,6 +411,8 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Στη λίστα συνομιλιών"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Εικόνα αποστολέα"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Εμφάνιση δίπλα στο όνομα στη λίστα συνομιλιών"</string>
+    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Προεπισκοπήσεις συνημμένων αρχείων"</string>
+    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Εμφάνιση προεπισκοπήσεων συνημμένων αρχείων για τα πρόσφατα μηνύματα της λίστας συνομιλιών"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Σύρετε προς τα κάτω για ανανέωση"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Γίνεται έλεγχος για αλληλογραφία"</string>
     <string name="empty_trash" msgid="652435297593538512">"Άδειασμα κάδου απορριμάτων"</string>
@@ -431,4 +434,10 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"Σήμερα, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Χθες, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Παράβλεψη συμβουλής"</string>
+    <!-- no translation found for auto_sync_off (8182034791210468574) -->
+    <skip />
+    <!-- no translation found for account_sync_off (7127453647436993865) -->
+    <skip />
+    <!-- no translation found for airplane_mode_on (2206488373387145840) -->
+    <skip />
 </resources>
