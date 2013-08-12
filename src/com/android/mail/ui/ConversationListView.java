@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -280,6 +281,9 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     private void triggerSync() {
         ensureProgressBars();
         mSyncTriggerBar.setVisibility(View.GONE);
+
+        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_ACTION,
+                Analytics.EVENT_ACTION_MENU_ITEM, "swipe_refresh", 0);
 
         // This will call back to showSyncStatusBar():
         mActivity.getFolderController().requestFolderRefresh();

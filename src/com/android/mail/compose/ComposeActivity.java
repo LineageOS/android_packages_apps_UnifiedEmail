@@ -73,6 +73,7 @@ import com.android.common.contacts.DataUsageStatUpdater;
 import com.android.ex.chips.RecipientEditTextView;
 import com.android.mail.MailIntentService;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.compose.AttachmentsView.AttachmentAddedOrDeletedListener;
 import com.android.mail.compose.AttachmentsView.AttachmentFailureException;
@@ -700,6 +701,20 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Move cursor to the end.
             mBodyView.setSelection(length);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Analytics.getInstance().activityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Analytics.getInstance().activityStop(this);
     }
 
     @Override
