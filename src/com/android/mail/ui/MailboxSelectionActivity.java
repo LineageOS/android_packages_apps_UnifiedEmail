@@ -16,6 +16,7 @@
 package com.android.mail.ui;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
@@ -132,6 +133,15 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
     @Override
     public void onStart() {
         super.onStart();
+
+        Analytics.getInstance().activityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Analytics.getInstance().activityStop(this);
     }
 
     @Override
