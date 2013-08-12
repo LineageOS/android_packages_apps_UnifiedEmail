@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -176,6 +177,14 @@ public class Account extends android.accounts.Account implements Parcelable {
      * Whether message transforms (HTML DOM manipulation) feature is enabled.
      */
     public final int enableMessageTransforms;
+
+    /**
+     * Sync authority used by the mail app.  This can be used in
+     * {@link ContentResolver#getSyncAutomatically} calls to check for whether sync is enabled
+     * for this account and mail app.
+     */
+    public final String syncAuthority;
+
     /**
      * Transient cache of parsed {@link #accountFromAddresses}, plus an entry for the main account
      * address.
@@ -220,6 +229,7 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
             json.put(UIProvider.AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
             json.put(UIProvider.AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
+            json.put(UIProvider.AccountColumns.SYNC_AUTHORITY, syncAuthority);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -308,6 +318,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         updateSettingsUri = Utils.getValidUri(
                 json.optString(UIProvider.AccountColumns.UPDATE_SETTINGS_URI));
         enableMessageTransforms = json.optInt(AccountColumns.ENABLE_MESSAGE_TRANSFORMS);
+        syncAuthority = json.optString(AccountColumns.SYNC_AUTHORITY);
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -345,6 +356,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         accoutCookieQueryUri = in.readParcelable(null);
         updateSettingsUri = in.readParcelable(null);
         enableMessageTransforms = in.readInt();
+        syncAuthority = in.readString();
         final String serializedSettings = in.readString();
         final Settings parcelSettings = Settings.newInstance(serializedSettings);
         if (parcelSettings != null) {
@@ -409,6 +421,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 cursor.getColumnIndex(UIProvider.AccountColumns.UPDATE_SETTINGS_URI)));
         enableMessageTransforms = cursor.getInt(
                 cursor.getColumnIndex(AccountColumns.ENABLE_MESSAGE_TRANSFORMS));
+        syncAuthority = cursor.getString(
+                cursor.getColumnIndex(AccountColumns.SYNC_AUTHORITY));
         settings = new Settings(cursor);
     }
 
@@ -483,6 +497,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(accoutCookieQueryUri, 0);
         dest.writeParcelable(updateSettingsUri, 0);
         dest.writeInt(enableMessageTransforms);
+        dest.writeString(syncAuthority);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
         }
@@ -534,6 +549,18 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(Integer.toHexString(color));
         sb.append(",defaultRecentFoldersUri=");
         sb.append(defaultRecentFolderListUri);
+        sb.append(",manualSyncUri=");
+        sb.append(manualSyncUri);
+        sb.append(",viewIntentProxyUri");
+        sb.append(viewIntentProxyUri);
+        sb.append(",accountCookieQueryUri");
+        sb.append(accoutCookieQueryUri);
+        sb.append(",updateSettingsUri");
+        sb.append(updateSettingsUri);
+        sb.append(",enableMessageTransforms");
+        sb.append(enableMessageTransforms);
+        sb.append(",syncAuthority");
+        sb.append(syncAuthority);
         sb.append(",settings=");
         sb.append(settings.serialize());
 
@@ -574,6 +601,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(accoutCookieQueryUri, other.accoutCookieQueryUri) &&
                 Objects.equal(updateSettingsUri, other.updateSettingsUri) &&
                 Objects.equal(enableMessageTransforms, other.enableMessageTransforms) &&
+                Objects.equal(syncAuthority, other.syncAuthority) &&
                 Objects.equal(settings, other.settings);
     }
 
@@ -603,7 +631,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                         undoUri, settingsIntentUri, helpIntentUri, sendFeedbackIntentUri,
                         reauthenticationIntentUri, syncStatus, composeIntentUri, mimeType,
                         recentFolderListUri, color, defaultRecentFolderListUri, viewIntentProxyUri,
-                        accoutCookieQueryUri, updateSettingsUri, enableMessageTransforms);
+                        accoutCookieQueryUri, updateSettingsUri, enableMessageTransforms,
+                        syncAuthority);
     }
 
     /**
@@ -678,26 +707,6 @@ public class Account extends android.accounts.Account implements Parcelable {
     };
 
     /**
-     * Find the position of the given needle in the given array of accounts.
-     * @param haystack the array of accounts to search
-     * @param needle the URI of account to find
-     * @return a position between 0 and haystack.length-1 if an account is found, -1 if not found.
-     */
-    public static int findPosition(Account[] haystack, Uri needle) {
-        if (haystack != null && haystack.length > 0 && needle != null) {
-            // Need to go through the list of current accounts, and fix the
-            // position.
-            for (int i = 0, size = haystack.length; i < size; ++i) {
-                if (haystack[i].uri.equals(needle)) {
-                    LogUtils.d(LOG_TAG, "findPositionOfAccount: Found needle at position %d", i);
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
-    /**
      * Creates a {@link Map} where the column name is the key and the value is the value, which can
      * be used for populating a {@link MatrixCursor}.
      */
@@ -734,6 +743,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         map.put(UIProvider.AccountColumns.COLOR, color);
         map.put(UIProvider.AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
         map.put(UIProvider.AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
+        map.put(UIProvider.AccountColumns.SYNC_AUTHORITY, syncAuthority);
         map.put(AccountColumns.SettingsColumns.SIGNATURE, settings.signature);
         map.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, settings.getAutoAdvanceSetting());
         map.put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, settings.messageTextSize);

@@ -180,6 +180,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN, String.class)
             .put(AccountColumns.UPDATE_SETTINGS_URI, String.class)
             .put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, Integer.class)
+            .put(AccountColumns.SYNC_AUTHORITY, String.class)
             .put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, String.class)
             .build();
 
@@ -468,6 +469,10 @@ public class UIProvider {
          * Whether message transforms (HTML DOM manipulation) should be enabled.
          */
         public static final String ENABLE_MESSAGE_TRANSFORMS = "enableMessageTransforms";
+        /**
+         * Sync authority to use.
+         */
+        public static final String SYNC_AUTHORITY = "syncAuthority";
 
         public static final class SettingsColumns {
             /**
