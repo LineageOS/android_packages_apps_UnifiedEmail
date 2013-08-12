@@ -81,6 +81,11 @@ public class ConversationSyncDisabledTipView extends FrameLayout
     }
 
     @Override
+    public void onGetView() {
+        // Do nothing
+    }
+
+    @Override
     protected void onFinishInflate() {
         mSwipeableContent = findViewById(R.id.swipeable_content);
 
