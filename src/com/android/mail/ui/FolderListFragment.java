@@ -35,6 +35,7 @@ import android.widget.ListView;
 
 import com.android.mail.R;
 import com.android.mail.adapter.DrawerItem;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
@@ -438,6 +439,8 @@ public class FolderListFragment extends ListFragment implements
         mSelectedFolderType = DrawerItem.FOLDER_INBOX;
         mNextAccount = account;
         mAccountController.closeDrawer(true, mNextAccount, getDefaultInbox(mNextAccount));
+        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_ACTION, "switch_account",
+                "drawer", 0);
     }
 
     /**

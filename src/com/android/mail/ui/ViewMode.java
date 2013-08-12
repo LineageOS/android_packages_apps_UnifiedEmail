@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.os.Bundle;
 
+import com.android.mail.analytics.Analytics;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
@@ -82,13 +83,28 @@ public class ViewMode {
 
     public static final String LOG_TAG = "ViewMode";
 
+    // friendly names (not user-facing) for each view mode, indexed by ordinal value.
+    private static final String[] MODE_NAMES = {
+        "Unknown",
+        "Conversation",
+        "Conversation list",
+        "Search results list",
+        "Search results conversation",
+        "Waiting for sync",
+        "Ad"
+    };
+
     public ViewMode() {
         // Do nothing
     }
 
     @Override
     public String toString() {
-        return "[mode=" + mMode + "]";
+        return "[mode=" + MODE_NAMES[mMode] + "]";
+    }
+
+    public String getModeString() {
+        return MODE_NAMES[mMode];
     }
 
     /**
@@ -265,6 +281,7 @@ public class ViewMode {
 
         mMode = mode;
         dispatchModeChange();
+        Analytics.getInstance().sendView("ViewMode" + toString());
         return true;
     }
 }
