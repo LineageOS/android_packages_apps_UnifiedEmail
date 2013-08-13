@@ -21,10 +21,14 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.preferences.AccountPreferences;
+import com.android.mail.preferences.MailPrefs;
+import com.android.mail.ui.ConversationSyncDisabledTipView.ReasonSyncOff;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -44,6 +48,11 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     private static final int SWIPE_TEXT_APPEAR_DURATION_IN_MILLIS = 200;
     private static final int SYNC_STATUS_BAR_FADE_DURATION_IN_MILLIS = 150;
     private static final int SYNC_TRIGGER_SHRINK_DURATION_IN_MILLIS = 250;
+
+    // Max number of times we display the same sync turned off warning message in a toast.
+    // After we reach this max, and device/account still has sync off, we assume user has
+    // intentionally disabled sync and no longer warn.
+    private static final int MAX_NUM_OF_SYNC_TOASTS = 5;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -80,6 +89,9 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
     private ConversationListContext mConvListContext;
 
+    private final MailPrefs mMailPrefs;
+    private AccountPreferences mAccountPreferences;
+
     // Instantiated through view inflation
     @SuppressWarnings("unused")
     public ConversationListView(Context context) {
@@ -103,6 +115,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                 mSyncTriggerBar.setVisibility(GONE);
             }
         };
+
+        mMailPrefs = MailPrefs.get(context);
     }
 
     @Override
@@ -128,6 +142,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
     protected void setConversationContext(ConversationListContext convListContext) {
         mConvListContext = convListContext;
+        mAccountPreferences = AccountPreferences.get(getContext(), convListContext.account.name);
     }
 
     @Override
@@ -303,6 +318,42 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
             mSyncTriggerBar.setVisibility(GONE);
             mSyncProgressBar.setVisibility(VISIBLE);
             mSyncProgressBar.setAlpha(1f);
+
+            showToastIfSyncIsOff();
+        }
+    }
+
+    // If sync is turned off on this device or account, remind the user with a toast.
+    private void showToastIfSyncIsOff() {
+        final int reasonSyncOff = ConversationSyncDisabledTipView.calculateReasonSyncOff(
+                getContext(), mMailPrefs, mConvListContext.account, mAccountPreferences);
+        switch (reasonSyncOff) {
+            case ReasonSyncOff.AUTO_SYNC_OFF:
+                // TODO: make this an actionable toast, tapping on it goes to Settings
+                int num = mMailPrefs.getNumOfDismissesForAutoSyncOff();
+                if (num > 0 && num <= MAX_NUM_OF_SYNC_TOASTS) {
+                    Toast.makeText(getContext(), R.string.auto_sync_off, Toast.LENGTH_SHORT)
+                            .show();
+                    mMailPrefs.incNumOfDismissesForAutoSyncOff();
+                }
+                break;
+            case ReasonSyncOff.ACCOUNT_SYNC_OFF:
+                // TODO: make this an actionable toast, tapping on it goes to Settings
+                num = mAccountPreferences.getNumOfDismissesForAccountSyncOff();
+                if (num > 0 && num <= MAX_NUM_OF_SYNC_TOASTS) {
+                    Toast.makeText(getContext(), R.string.account_sync_off, Toast.LENGTH_SHORT)
+                            .show();
+                    mAccountPreferences.incNumOfDismissesForAccountSyncOff();
+                }
+                break;
+            case ReasonSyncOff.AIRPLANE_MODE_ON:
+                num = mMailPrefs.getNumOfDismissesForAirplaneModeOn();
+                if (num > 0 && num <= MAX_NUM_OF_SYNC_TOASTS) {
+                    Toast.makeText(getContext(), R.string.airplane_mode_on, Toast.LENGTH_SHORT)
+                            .show();
+                    mMailPrefs.incNumOfDismissesForAirplaneModeOn();
+                }
+                break;
         }
     }
 
