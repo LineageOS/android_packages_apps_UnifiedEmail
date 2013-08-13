@@ -191,7 +191,7 @@ public abstract class MailAppProvider extends ContentProvider
         for (AccountCacheEntry accountEntry : accountList) {
             final Account account = accountEntry.mAccount;
             final MatrixCursor.RowBuilder builder = cursor.newRow();
-            final Map<String, Object> accountValues = account.getMatrixCursorValueMap();
+            final Map<String, Object> accountValues = account.getValueMap();
 
             for (final String columnName : resultProjection) {
                 if (accountValues.containsKey(columnName)) {
