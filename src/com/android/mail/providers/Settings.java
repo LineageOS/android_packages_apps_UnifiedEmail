@@ -37,6 +37,9 @@ import com.google.common.base.Objects;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Model to hold Settings for an account.
  */
@@ -218,7 +221,7 @@ public class Settings implements Parcelable {
         return json.toString();
     }
 
-    private static final Object getNonNull(Object candidate, Object fallback){
+    private static Object getNonNull(Object candidate, Object fallback){
         if (candidate == null)
             return fallback;
         return candidate;
@@ -260,23 +263,42 @@ public class Settings implements Parcelable {
     }
 
     /**
-     * Create a new instance of an Settings object using a serialized instance created previously
-     * using {@link #serialize()}. This returns null if the serialized instance was invalid or does
-     * not represent a valid account object.
-     *
-     * @param serializedSettings
-     * @return
+     * Creates a {@link Map} where the column name is the key and the value is the value.
+     * @param map map to insert values into or null
+     * @return the resulting map
      */
-    public static Settings newInstance(String serializedSettings) {
-        JSONObject json = null;
-        try {
-            json = new JSONObject(serializedSettings);
-            return new Settings(json);
-        } catch (JSONException e) {
-            LogUtils.e(LOG_TAG, e, "Could not create an settings from this input: \"%s\"",
-                    serializedSettings);
-            return null;
+    public Map<String, Object> getValueMap(Map<String, Object> map) {
+        if (map == null) {
+            map = new HashMap<String, Object>();
         }
+
+        map.put(UIProvider.AccountColumns.SettingsColumns.SIGNATURE, signature);
+        map.put(UIProvider.AccountColumns.SettingsColumns.AUTO_ADVANCE, getAutoAdvanceSetting());
+        map.put(UIProvider.AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, messageTextSize);
+        map.put(UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS, snapHeaders);
+        map.put(UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
+        map.put(UIProvider.AccountColumns.SettingsColumns.CONV_LIST_ICON, convListIcon);
+        map.put(UIProvider.AccountColumns.SettingsColumns.CONV_LIST_ATTACHMENT_PREVIEWS,
+                convListAttachmentPreviews ? 1 : 0);
+        map.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE, confirmDelete ? 1 : 0);
+        map.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, confirmArchive ? 1 : 0);
+        map.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_SEND, confirmSend ? 1 : 0);
+        map.put(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX, defaultInbox);
+        map.put(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, defaultInboxName);
+        map.put(UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
+                forceReplyFromDefault ? 1 : 0);
+        map.put(UIProvider.AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE, maxAttachmentSize);
+        map.put(UIProvider.AccountColumns.SettingsColumns.SWIPE, swipe);
+        map.put(UIProvider.AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
+                priorityArrowsEnabled ? 1 : 0);
+        map.put(UIProvider.AccountColumns.SettingsColumns.SETUP_INTENT_URI, setupIntentUri);
+        map.put(UIProvider.AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
+                conversationViewMode);
+        map.put(UIProvider.AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN,
+                veiledAddressPattern);
+        map.put(UIProvider.AccountColumns.SettingsColumns.MOVE_TO_INBOX, moveToInbox);
+
+        return map;
     }
 
     /**
@@ -284,8 +306,8 @@ public class Settings implements Parcelable {
      * using {@link #toJSON()}. This returns null if the serialized instance was invalid or does
      * not represent a valid account object.
      *
-     * @param json
-     * @return
+     * @param json Serialized object
+     * @return New settings object or null
      */
     public static Settings newInstance(JSONObject json) {
         if (json == null) {
@@ -311,16 +333,16 @@ public class Settings implements Parcelable {
         dest.writeInt(confirmDelete ? 1 : 0);
         dest.writeInt(confirmArchive? 1 : 0);
         dest.writeInt(confirmSend? 1 : 0);
-        dest.writeString(((Uri) getNonNull(defaultInbox, sDefault.defaultInbox)).toString());
+        dest.writeString(getNonNull(defaultInbox, sDefault.defaultInbox).toString());
         dest.writeString((String) getNonNull(defaultInboxName, sDefault.defaultInboxName));
         dest.writeInt(forceReplyFromDefault ? 1 : 0);
         dest.writeInt(maxAttachmentSize);
         dest.writeInt(swipe);
         dest.writeInt(priorityArrowsEnabled ? 1 : 0);
-        dest.writeString(((Uri) getNonNull(setupIntentUri, sDefault.setupIntentUri)).toString());
+        dest.writeString(getNonNull(setupIntentUri, sDefault.setupIntentUri).toString());
         dest.writeInt(conversationViewMode);
         dest.writeString(veiledAddressPattern);
-        dest.writeString(((Uri) getNonNull(moveToInbox, sDefault.moveToInbox)).toString());
+        dest.writeString(getNonNull(moveToInbox, sDefault.moveToInbox).toString());
     }
 
     /**
@@ -343,7 +365,7 @@ public class Settings implements Parcelable {
      */
     public int getAutoAdvanceSetting() {
         if (mTransientAutoAdvance != null) {
-            return mTransientAutoAdvance.intValue();
+            return mTransientAutoAdvance;
         }
 
         return mAutoAdvance;
@@ -353,7 +375,7 @@ public class Settings implements Parcelable {
      * Sets the transient autoadvance setting, which will override the initial autoadvance setting.
      */
     public void setAutoAdvanceSetting(final int autoAdvance) {
-        mTransientAutoAdvance = Integer.valueOf(autoAdvance);
+        mTransientAutoAdvance = autoAdvance;
     }
 
     /**
@@ -406,9 +428,12 @@ public class Settings implements Parcelable {
             return false;
         }
         final Settings that = (Settings) aThat;
+        final boolean autoAdvanceEquals = mTransientAutoAdvance != null
+                ? mTransientAutoAdvance.equals(that.mTransientAutoAdvance)
+                : that.mTransientAutoAdvance == null;
         return (TextUtils.equals(signature, that.signature)
                 && mAutoAdvance == that.mAutoAdvance
-                && mTransientAutoAdvance == that.mTransientAutoAdvance
+                && autoAdvanceEquals
                 && messageTextSize == that.messageTextSize
                 && snapHeaders == that.snapHeaders
                 && replyBehavior == that.replyBehavior
@@ -432,20 +457,14 @@ public class Settings implements Parcelable {
     @Override
     public int hashCode() {
         if (mHashCode == 0) {
-            mHashCode = calculateHashCode();
+            mHashCode = super.hashCode()
+                    ^ Objects.hashCode(signature, mAutoAdvance, mTransientAutoAdvance,
+                    messageTextSize, snapHeaders, replyBehavior, convListIcon,
+                    convListAttachmentPreviews, confirmDelete, confirmArchive, confirmSend,
+                    defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
+                    priorityArrowsEnabled, setupIntentUri, conversationViewMode,
+                    veiledAddressPattern, moveToInbox);
         }
         return mHashCode;
-    }
-
-    /**
-     * Returns the hash code for this object.
-     */
-    private final int calculateHashCode() {
-        return super.hashCode() ^ Objects
-                .hashCode(signature, mAutoAdvance, mTransientAutoAdvance, messageTextSize,
-                        snapHeaders, replyBehavior, convListIcon, convListAttachmentPreviews,
-                        confirmDelete, confirmArchive, confirmSend, defaultInbox,
-                        forceReplyFromDefault, maxAttachmentSize, swipe, priorityArrowsEnabled,
-                        setupIntentUri, conversationViewMode, veiledAddressPattern, moveToInbox);
     }
 }
