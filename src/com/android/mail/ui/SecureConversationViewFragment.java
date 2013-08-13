@@ -58,6 +58,15 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
 
         @Override
         public void onPageFinished(WebView view, String url) {
+            // Ignore unsafe calls made after a fragment is detached from an activity.
+            // This method needs to, for example, get at the loader manager, which needs
+            // the fragment to be added.
+            if (!isAdded()) {
+                LogUtils.d(LOG_TAG, "ignoring SCVF.onPageFinished, url=%s fragment=%s", url,
+                        SecureConversationViewFragment.this);
+                return;
+            }
+
             if (isUserVisible()) {
                 onConversationSeen();
             }
