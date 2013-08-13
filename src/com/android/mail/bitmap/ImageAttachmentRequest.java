@@ -97,7 +97,7 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
     }
 
     @Override
-    public InputStream createInputStream() {
+    public InputStream createInputStream() throws IOException {
         return null;
     }
 }
