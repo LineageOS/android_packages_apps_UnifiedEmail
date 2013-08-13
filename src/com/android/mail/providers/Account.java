@@ -29,7 +29,6 @@ import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
-import com.android.mail.providers.UIProvider.AccountColumns.SettingsColumns;
 import com.android.mail.providers.UIProvider.SyncStatus;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -244,14 +243,14 @@ public class Account extends android.accounts.Account implements Parcelable {
      * using {@link #serialize()}. This returns null if the serialized instance was invalid or does
      * not represent a valid account object.
      *
-     * @param serializedAccount
-     * @return
+     * @param serializedAccount JSON encoded account object
+     * @return Account object
      */
     public static Account newinstance(String serializedAccount) {
         // The heavy lifting is done by Account(name, type, serializedAccount). This method
         // is a wrapper to check for errors and exceptions and return back a null in cases
         // something breaks.
-        JSONObject json = null;
+        JSONObject json;
         try {
             json = new JSONObject(serializedAccount);
             final String name = (String) json.get(UIProvider.AccountColumns.NAME);
@@ -357,13 +356,12 @@ public class Account extends android.accounts.Account implements Parcelable {
         updateSettingsUri = in.readParcelable(null);
         enableMessageTransforms = in.readInt();
         syncAuthority = in.readString();
-        final String serializedSettings = in.readString();
-        final Settings parcelSettings = Settings.newInstance(serializedSettings);
-        if (parcelSettings != null) {
-            settings = parcelSettings;
-        } else {
+        final int hasSettings = in.readInt();
+        if (hasSettings == 0) {
             LogUtils.e(LOG_TAG, new Throwable(), "Unexpected null settings in Account(Parcel)");
             settings = Settings.EMPTY_SETTINGS;
+        } else {
+            settings = in.readParcelable(null);
         }
     }
 
@@ -500,8 +498,11 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeString(syncAuthority);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
+            dest.writeInt(0);
+        } else {
+            dest.writeInt(1);
+            dest.writeParcelable(settings, 0);
         }
-        dest.writeString(settings != null ? settings.serialize() : "");
     }
 
     @Override
@@ -551,8 +552,8 @@ public class Account extends android.accounts.Account implements Parcelable {
     /**
      * Returns true if the two accounts differ in sync or server-side settings.
      * This is <b>not</b> a replacement for {@link #equals(Object)}.
-     * @param other
-     * @return
+     * @param other Account object to compare
+     * @return true if the two accounts differ in sync or server-side settings
      */
     public final boolean settingsDiffer(Account other) {
         // If the other object doesn't exist, they differ significantly.
@@ -653,7 +654,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      * Creates a {@link Map} where the column name is the key and the value is the value, which can
      * be used for populating a {@link MatrixCursor}.
      */
-    public Map<String, Object> getMatrixCursorValueMap() {
+    public Map<String, Object> getValueMap() {
         // ImmutableMap.Builder does not allow null values
         final Map<String, Object> map = new HashMap<String, Object>();
 
@@ -672,8 +673,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         map.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
         map.put(UIProvider.AccountColumns.HELP_INTENT_URI, helpIntentUri);
         map.put(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI, sendFeedbackIntentUri);
-        map.put(
-                UIProvider.AccountColumns.REAUTHENTICATION_INTENT_URI, reauthenticationIntentUri);
+        map.put(UIProvider.AccountColumns.REAUTHENTICATION_INTENT_URI, reauthenticationIntentUri);
         map.put(UIProvider.AccountColumns.SYNC_STATUS, syncStatus);
         map.put(UIProvider.AccountColumns.COMPOSE_URI, composeIntentUri);
         map.put(UIProvider.AccountColumns.MIME_TYPE, mimeType);
@@ -687,32 +687,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         map.put(UIProvider.AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
         map.put(UIProvider.AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
         map.put(UIProvider.AccountColumns.SYNC_AUTHORITY, syncAuthority);
-        map.put(AccountColumns.SettingsColumns.SIGNATURE, settings.signature);
-        map.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, settings.getAutoAdvanceSetting());
-        map.put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, settings.messageTextSize);
-        map.put(AccountColumns.SettingsColumns.SNAP_HEADERS, settings.snapHeaders);
-        map.put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, settings.replyBehavior);
-        map.put(AccountColumns.SettingsColumns.CONV_LIST_ICON, settings.convListIcon);
-        map.put(AccountColumns.SettingsColumns.CONV_LIST_ATTACHMENT_PREVIEWS,
-                settings.convListAttachmentPreviews ? 1 : 0);
-        map.put(AccountColumns.SettingsColumns.CONFIRM_DELETE, settings.confirmDelete ? 1 : 0);
-        map.put(
-                AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, settings.confirmArchive ? 1 : 0);
-        map.put(AccountColumns.SettingsColumns.CONFIRM_SEND, settings.confirmSend ? 1 : 0);
-        map.put(AccountColumns.SettingsColumns.DEFAULT_INBOX, settings.defaultInbox);
-        map.put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, settings.defaultInboxName);
-        map.put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
-                settings.forceReplyFromDefault ? 1 : 0);
-        map.put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE, settings.maxAttachmentSize);
-        map.put(AccountColumns.SettingsColumns.SWIPE, settings.swipe);
-        map.put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
-                settings.priorityArrowsEnabled ? 1 : 0);
-        map.put(AccountColumns.SettingsColumns.SETUP_INTENT_URI, settings.setupIntentUri);
-        map.put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
-                settings.conversationViewMode);
-        map.put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN,
-                settings.veiledAddressPattern);
-        map.put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, settings.moveToInbox);
+        settings.getValueMap(map);
 
         return map;
     }
