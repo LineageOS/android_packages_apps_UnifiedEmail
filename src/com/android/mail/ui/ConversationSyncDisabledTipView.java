@@ -20,7 +20,9 @@ import android.animation.ObjectAnimator;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -30,8 +32,11 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.preferences.AccountPreferences;
+import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 /**
@@ -41,18 +46,37 @@ import com.android.mail.utils.Utils;
 public class ConversationSyncDisabledTipView extends FrameLayout
         implements ConversationSpecialItemView, SwipeableItemView {
 
+    private static final String LOG_TAG = LogTag.getLogTag();
+
     private static int sScrollSlop = 0;
     private static int sShrinkAnimationDuration;
 
     private Account mAccount = null;
+    private final MailPrefs mMailPrefs;
     private AccountPreferences mAccountPreferences;
     private AnimatedAdapter mAdapter;
 
     private View mSwipeableContent;
-    private TextView mText;
+    private TextView mText1;
+    private TextView mText2;
+    private final OnClickListener mAutoSyncOffTextClickedListener;
+    private final OnClickListener mAccountSyncOffTextClickedListener;
 
     private int mAnimatedHeight = -1;
     private boolean mAcceptUserTaps = false;
+
+    private int mReasonSyncOff = ReasonSyncOff.NONE;
+
+    public interface ReasonSyncOff {
+        // Background sync is enabled for current account, do not display this tip
+        public static final int NONE = 0;
+        // Global auto-sync (affects all apps and all accounts) is turned off
+        public static final int AUTO_SYNC_OFF = 1;
+        // Global auto-sync is on, but Gmail app level sync is disabled for this particular account
+        public static final int ACCOUNT_SYNC_OFF = 2;
+        // Auto-sync is enabled at both device and account level, but device is in airplane mode
+        public static final int AIRPLANE_MODE_ON = 3;
+    }
 
     public ConversationSyncDisabledTipView(final Context context) {
         this(context, null);
@@ -73,6 +97,23 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             sShrinkAnimationDuration = resources.getInteger(
                     R.integer.shrink_animation_duration);
         }
+
+        mMailPrefs = MailPrefs.get(context);
+
+        mAutoSyncOffTextClickedListener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGlobalAutoSyncSettingDialog();
+            }
+        };
+
+        mAccountSyncOffTextClickedListener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Link to account level settings instead of top level settings.
+                Utils.showSettings(getContext(), mAccount);
+            }
+        };
     }
 
     public void bindAccount(Account account) {
@@ -89,15 +130,8 @@ public class ConversationSyncDisabledTipView extends FrameLayout
     protected void onFinishInflate() {
         mSwipeableContent = findViewById(R.id.swipeable_content);
 
-        mText = (TextView) findViewById(R.id.text);
-        mText.setText(R.string.account_sync_off);
-        mText.setClickable(true);
-        mText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.showSettings(getContext(), mAccount);
-            }
-        });
+        mText1 = (TextView) findViewById(R.id.text_line1);
+        mText2 = (TextView) findViewById(R.id.text_line2);
 
         findViewById(R.id.dismiss_button).setOnClickListener(new OnClickListener() {
             @Override
@@ -117,19 +151,89 @@ public class ConversationSyncDisabledTipView extends FrameLayout
         if (mAccount == null || mAccount.syncAuthority == null) {
             return false;
         }
-        boolean globalSyncAutomatically = ContentResolver.getMasterSyncAutomatically();
-        // Not sure why directly passing mAccount to ContentResolver doesn't just work.
-        android.accounts.Account account = new android.accounts.Account(
-                mAccount.name, mAccount.type);
-        if (globalSyncAutomatically &&
-                ContentResolver.getSyncAutomatically(account, mAccount.syncAuthority)) {
-            // Sync is on, clear the number of times users has dismissed this
-            // warning so that next time sync is off, warning gets displayed again.
-            mAccountPreferences.resetNumOfDismissesForAccountSyncOff();
-            return false;
+
+        // TODO: do not show this message for folders/labels that are not set to sync.
+        // We need a solution that works for both Gmail and Email.
+
+        setReasonSyncOff(calculateReasonSyncOff(
+                getContext(), mMailPrefs, mAccount, mAccountPreferences));
+
+        if (mReasonSyncOff != ReasonSyncOff.NONE) {
+            LogUtils.i(LOG_TAG, "Sync is off with reason %d", mReasonSyncOff);
+        }
+
+        switch (mReasonSyncOff) {
+            case ReasonSyncOff.AUTO_SYNC_OFF:
+                return (mMailPrefs.getNumOfDismissesForAutoSyncOff() == 0);
+            case ReasonSyncOff.ACCOUNT_SYNC_OFF:
+                return (mAccountPreferences.getNumOfDismissesForAccountSyncOff() == 0);
+            case ReasonSyncOff.AIRPLANE_MODE_ON:
+                return (mMailPrefs.getNumOfDismissesForAirplaneModeOn() == 0);
+            default:
+                return false;
+        }
+    }
+
+    public static int calculateReasonSyncOff(Context context, MailPrefs mailPrefs,
+            Account account, AccountPreferences accountPreferences) {
+        if (!ContentResolver.getMasterSyncAutomatically()) {
+            // Global sync is turned off
+            accountPreferences.resetNumOfDismissesForAccountSyncOff();
+            mailPrefs.resetNumOfDismissesForAirplaneModeOn();
+            return ReasonSyncOff.AUTO_SYNC_OFF;
         } else {
-            // Sync is off
-            return (mAccountPreferences.getNumOfDismissesForAccountSyncOff() == 0);
+            // Global sync is on, clear the number of times users has dismissed this
+            // warning so that next time global sync is off, warning gets displayed again.
+            mailPrefs.resetNumOfDismissesForAutoSyncOff();
+
+            // Now check for whether account level sync is on/off.
+            // Not sure why directly passing mAccount to ContentResolver doesn't just work.
+            android.accounts.Account acct = new android.accounts.Account(
+                    account.name, account.type);
+            if (!ContentResolver.getSyncAutomatically(acct, account.syncAuthority)) {
+                // Account level sync is off
+                mailPrefs.resetNumOfDismissesForAirplaneModeOn();
+                return ReasonSyncOff.ACCOUNT_SYNC_OFF;
+            } else {
+                // Account sync is on, clear the number of times users has dismissed this
+                // warning so that next time sync is off, warning gets displayed again.
+                accountPreferences.resetNumOfDismissesForAccountSyncOff();
+
+                // Now check for whether airplane mode is on
+                if (Utils.isAirplaneModeOn(context)) {
+                    return ReasonSyncOff.AIRPLANE_MODE_ON;
+                } else {
+                    mailPrefs.resetNumOfDismissesForAirplaneModeOn();
+                    return ReasonSyncOff.NONE;
+                }
+            }
+        }
+    }
+
+    private void setReasonSyncOff(int reason) {
+        if (mReasonSyncOff != reason) {
+            mReasonSyncOff = reason;
+            switch (mReasonSyncOff) {
+                case ReasonSyncOff.AUTO_SYNC_OFF:
+                    mText1.setText(R.string.auto_sync_off);
+                    mText2.setClickable(true);
+                    mText2.setVisibility(View.VISIBLE);
+                    mText2.setOnClickListener(mAutoSyncOffTextClickedListener);
+                    break;
+                case ReasonSyncOff.ACCOUNT_SYNC_OFF:
+                    mText1.setText(R.string.account_sync_off);
+                    mText2.setClickable(true);
+                    mText2.setVisibility(View.VISIBLE);
+                    mText2.setOnClickListener(mAccountSyncOffTextClickedListener);
+                    break;
+                case ReasonSyncOff.AIRPLANE_MODE_ON:
+                    mText1.setText(R.string.airplane_mode_on);
+                    mText2.setClickable(false);
+                    mText2.setVisibility(View.GONE);
+                    break;
+                default:
+                    // Doesn't matter what mText is since this view is not displayed
+            }
         }
     }
 
@@ -170,7 +274,17 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
     @Override
     public void dismiss() {
-        mAccountPreferences.incNumOfDismissesForAccountSyncOff();
+        switch (mReasonSyncOff) {
+            case ReasonSyncOff.AUTO_SYNC_OFF:
+                mMailPrefs.incNumOfDismissesForAutoSyncOff();
+                break;
+            case ReasonSyncOff.ACCOUNT_SYNC_OFF:
+                mAccountPreferences.incNumOfDismissesForAccountSyncOff();
+                break;
+            case ReasonSyncOff.AIRPLANE_MODE_ON:
+                mMailPrefs.incNumOfDismissesForAirplaneModeOn();
+                break;
+        }
         startDestroyAnimation();
     }
 
@@ -218,5 +332,12 @@ public class ConversationSyncDisabledTipView extends FrameLayout
         } else {
             setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
         }
+    }
+
+    private void openGlobalAutoSyncSettingDialog() {
+        final Intent intent = new Intent(Settings.ACTION_SYNC_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Settings.EXTRA_AUTHORITIES, new String[] {mAccount.syncAuthority});
+        getContext().startActivity(intent);
     }
 }

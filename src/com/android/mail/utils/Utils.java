@@ -38,6 +38,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
+import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -1375,5 +1376,10 @@ public class Utils {
             // Default color
             return context.getResources().getColor(R.color.list_background_color);
         }
+    }
+
+    public static boolean isAirplaneModeOn(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.AIRPLANE_MODE_ON, 0) != 0;
     }
 }

@@ -94,6 +94,9 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String EXPERIMENT_AP_PARALLAX_DIRECTION_ALTERNATIVE
                 = "ap-parallax-direction";
 
+        public static final String GLOBAL_SYNC_OFF_DISMISSES = "num-of-dismisses-auto-sync-off";
+        public static final String AIRPLANE_MODE_ON_DISMISSES = "num-of-dismisses-airplane-mode-on";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
@@ -425,5 +428,41 @@ public final class MailPrefs extends VersionedPrefs {
         final SharedPreferences sharedPreferences = getSharedPreferences();
         return sharedPreferences
                 .getBoolean(PreferenceKeys.EXPERIMENT_AP_PARALLAX_DIRECTION_ALTERNATIVE, false);
+    }
+
+    public int getNumOfDismissesForAutoSyncOff() {
+        return getSharedPreferences().getInt(PreferenceKeys.GLOBAL_SYNC_OFF_DISMISSES, 0);
+    }
+
+    public void resetNumOfDismissesForAutoSyncOff() {
+        final int value = getSharedPreferences().getInt(
+                PreferenceKeys.GLOBAL_SYNC_OFF_DISMISSES, 0);
+        if (value != 0) {
+            getEditor().putInt(PreferenceKeys.GLOBAL_SYNC_OFF_DISMISSES, 0).apply();
+        }
+    }
+
+    public void incNumOfDismissesForAutoSyncOff() {
+        final int value = getSharedPreferences().getInt(
+                PreferenceKeys.GLOBAL_SYNC_OFF_DISMISSES, 0);
+        getEditor().putInt(PreferenceKeys.GLOBAL_SYNC_OFF_DISMISSES, value + 1).apply();
+    }
+
+    public int getNumOfDismissesForAirplaneModeOn() {
+        return getSharedPreferences().getInt(PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, 0);
+    }
+
+    public void resetNumOfDismissesForAirplaneModeOn() {
+        final int value = getSharedPreferences().getInt(
+                PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, 0);
+        if (value != 0) {
+            getEditor().putInt(PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, 0).apply();
+        }
+    }
+
+    public void incNumOfDismissesForAirplaneModeOn() {
+        final int value = getSharedPreferences().getInt(
+                PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, 0);
+        getEditor().putInt(PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, value + 1).apply();
     }
 }
