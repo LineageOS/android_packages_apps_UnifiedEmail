@@ -980,15 +980,18 @@
     <!-- Tip for letting user know that their device auto-sync setting
         is turned off, in case they are wondering why they are not
         receiving any new mail. [CHAR LIMIT=250] -->
-    <string name="auto_sync_off">Auto-sync is off.\nTurn on in Data usage settings.</string>
+    <string name="auto_sync_off">Auto-sync is off.</string>
 
     <!-- Tip for letting user know that their account level sync setting
         is turned off, in case they are wondering why they are not
         receiving any new mail. [CHAR LIMIT=250] -->
-    <string name="account_sync_off">Account sync is off.\nTurn on in Account settings.</string>
+    <string name="account_sync_off">Account sync is off.</string>
 
     <!-- Tip for letting user know that airplane mode is enabled on
         their device, in case they are wondering why they are not
         receiving any new mail. [CHAR LIMIT=250] -->
     <string name="airplane_mode_on">Airplane mode is on</string>
+
+    <!-- Tap to turn on sync in settings.  [CHAR LIMIT=250] -->
+    <string name="tap_to_enable_sync" translatable="false">Tap to turn sync on.</string>
 </resources>
