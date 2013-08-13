@@ -38,6 +38,8 @@ import com.android.mail.ui.AbstractConversationWebViewClient;
 import com.android.mail.ui.ContactLoaderCallbacks;
 import com.android.mail.ui.SecureConversationViewController;
 import com.android.mail.ui.SecureConversationViewControllerCallbacks;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 
@@ -61,6 +63,8 @@ public class EmlMessageViewFragment extends Fragment
     private static final int MESSAGE_LOADER = 0;
     private static final int CONTACT_LOADER = 1;
     private static final int FILENAME_LOADER = 2;
+
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private final Handler mHandler = new Handler();
 
@@ -90,6 +94,14 @@ public class EmlMessageViewFragment extends Fragment
 
         @Override
         public void onPageFinished(WebView view, String url) {
+            // Ignore unsafe calls made after a fragment is detached from an activity.
+            // This method needs to, for example, get at the loader manager, which needs
+            // the fragment to be added.
+            if (!isAdded()) {
+                LogUtils.d(LOG_TAG, "ignoring EMLVF.onPageFinished, url=%s fragment=%s", url,
+                        EmlMessageViewFragment.this);
+                return;
+            }
             mViewController.dismissLoadingStatus();
 
             final Set<String> emailAddresses = Sets.newHashSet();
