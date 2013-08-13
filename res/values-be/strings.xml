@@ -37,6 +37,8 @@
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"<xliff:g id="DATE">%s</xliff:g> карыстальнік <xliff:g id="PERSON">%s</xliff:g> напісаў:"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Перанакіроўванае паведамленне ----------&lt;br&gt;Ад: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Дата: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Тэма: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Каму: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <!-- no translation found for forward_attribution_no_headers (3239825787227110752) -->
+    <skip />
     <string name="cc_attribution" msgid="374493748526504562">"Копія: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Выбраць тып далучэння"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"Немагчыма далучыць файл, большы за памер: <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
@@ -418,6 +420,10 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"У спісе гутарак"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Выява адпраўнiка"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Паказваць побач з імем у спісе размоў"</string>
+    <!-- no translation found for preference_attachment_previews_title (778099230423462593) -->
+    <skip />
+    <!-- no translation found for preference_attachment_previews_description (2468573302785576222) -->
+    <skip />
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Правядзіце ўніз, каб абнавіць"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Праверка пошты"</string>
     <string name="empty_trash" msgid="652435297593538512">"Ачысціць кошык"</string>
@@ -444,5 +450,11 @@
     <!-- no translation found for date_message_received_yesterday (2240669381396206434) -->
     <skip />
     <!-- no translation found for dismiss_tip_hover_text (1930345936314578166) -->
+    <skip />
+    <!-- no translation found for auto_sync_off (8182034791210468574) -->
+    <skip />
+    <!-- no translation found for account_sync_off (7127453647436993865) -->
+    <skip />
+    <!-- no translation found for airplane_mode_on (2206488373387145840) -->
     <skip />
 </resources>

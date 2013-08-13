@@ -49,6 +49,8 @@
     <skip />
     <!-- no translation found for forward_attribution (1498936339458535158) -->
     <skip />
+    <!-- no translation found for forward_attribution_no_headers (3239825787227110752) -->
+    <skip />
     <!-- no translation found for cc_attribution (374493748526504562) -->
     <skip />
     <!-- no translation found for select_attachment_type (4711524151968942082) -->
@@ -630,6 +632,10 @@
     <skip />
     <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
     <skip />
+    <!-- no translation found for preference_attachment_previews_title (778099230423462593) -->
+    <skip />
+    <!-- no translation found for preference_attachment_previews_description (2468573302785576222) -->
+    <skip />
     <!-- no translation found for swipe_down_to_refresh (6401908905820786227) -->
     <skip />
     <!-- no translation found for checking_for_mail (2301797903350897130) -->
@@ -665,5 +671,11 @@
     <!-- no translation found for date_message_received_yesterday (2240669381396206434) -->
     <skip />
     <!-- no translation found for dismiss_tip_hover_text (1930345936314578166) -->
+    <skip />
+    <!-- no translation found for auto_sync_off (8182034791210468574) -->
+    <skip />
+    <!-- no translation found for account_sync_off (7127453647436993865) -->
+    <skip />
+    <!-- no translation found for airplane_mode_on (2206488373387145840) -->
     <skip />
 </resources>
