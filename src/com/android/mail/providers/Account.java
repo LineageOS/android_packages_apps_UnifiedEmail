@@ -506,65 +506,8 @@ public class Account extends android.accounts.Account implements Parcelable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-
-        sb.append("name=");
-        sb.append(name);
-        sb.append(",type=");
-        sb.append(type);
-        sb.append(",accountFromAddressUri=");
-        sb.append(accountFromAddresses);
-        sb.append(",capabilities=");
-        sb.append(capabilities);
-        sb.append(",providerVersion=");
-        sb.append(providerVersion);
-        sb.append(",folderListUri=");
-        sb.append(folderListUri);
-        sb.append(",fullFolderListUri=");
-        sb.append(fullFolderListUri);
-        sb.append(",searchUri=");
-        sb.append(searchUri);
-        sb.append(",saveDraftUri=");
-        sb.append(",expungeMessageUri=");
-        sb.append(expungeMessageUri);
-        sb.append(",undoUri=");
-        sb.append(undoUri);
-        sb.append(",settingsIntentUri=");
-        sb.append(settingsIntentUri);
-        sb.append(",helpIntentUri=");
-        sb.append(helpIntentUri);
-        sb.append(",sendFeedbackIntentUri=");
-        sb.append(sendFeedbackIntentUri);
-        sb.append(",reauthenticationIntentUri=");
-        sb.append(reauthenticationIntentUri);
-        sb.append(",syncStatus=");
-        sb.append(syncStatus);
-        sb.append(",composeIntentUri=");
-        sb.append(composeIntentUri);
-        sb.append(",mimeType=");
-        sb.append(mimeType);
-        sb.append(",recentFoldersUri=");
-        sb.append(recentFolderListUri);
-        sb.append(",color=");
-        sb.append(Integer.toHexString(color));
-        sb.append(",defaultRecentFoldersUri=");
-        sb.append(defaultRecentFolderListUri);
-        sb.append(",manualSyncUri=");
-        sb.append(manualSyncUri);
-        sb.append(",viewIntentProxyUri");
-        sb.append(viewIntentProxyUri);
-        sb.append(",accountCookieQueryUri");
-        sb.append(accoutCookieQueryUri);
-        sb.append(",updateSettingsUri");
-        sb.append(updateSettingsUri);
-        sb.append(",enableMessageTransforms");
-        sb.append(enableMessageTransforms);
-        sb.append(",syncAuthority");
-        sb.append(syncAuthority);
-        sb.append(",settings=");
-        sb.append(settings.serialize());
-
-        return sb.toString();
+        // JSON is readable enough.
+        return serialize();
     }
 
     @Override
