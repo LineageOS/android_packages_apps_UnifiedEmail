@@ -439,8 +439,7 @@ public class FolderListFragment extends ListFragment implements
         mSelectedFolderType = DrawerItem.FOLDER_INBOX;
         mNextAccount = account;
         mAccountController.closeDrawer(true, mNextAccount, getDefaultInbox(mNextAccount));
-        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_ACTION, "switch_account",
-                "drawer", 0);
+        Analytics.getInstance().sendEvent("switch_account", "drawer_account_switch", null, 0);
     }
 
     /**
@@ -451,6 +450,8 @@ public class FolderListFragment extends ListFragment implements
         final Object item = getListAdapter().getItem(position);
         LogUtils.d(LOG_TAG, "viewFolderOrChangeAccount(%d): %s", position, item);
         final Folder folder;
+        int folderType = DrawerItem.UNSET;
+
         if (item instanceof DrawerItem) {
             final DrawerItem drawerItem = (DrawerItem) item;
             // Could be a folder or account.
@@ -475,7 +476,7 @@ public class FolderListFragment extends ListFragment implements
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
                 folder = drawerItem.mFolder;
-                mSelectedFolderType = drawerItem.mFolderType;
+                mSelectedFolderType = folderType = drawerItem.mFolderType;
                 LogUtils.d(LOG_TAG, "FLF.viewFolderOrChangeAccount folder=%s, type=%d",
                         folder, mSelectedFolderType);
             } else {
@@ -498,6 +499,11 @@ public class FolderListFragment extends ListFragment implements
             if (!folder.folderUri.equals(mSelectedFolderUri)) {
                 mNextFolder = folder;
                 mAccountController.closeDrawer(true, nextAccount, folder);
+
+                final String label = (folderType == DrawerItem.FOLDER_RECENT) ? "recent" : "normal";
+                Analytics.getInstance().sendEvent("switch_folder", folder.getTypeDescription(),
+                        label, 0);
+
             } else {
                 // Clicked on same folder, just close drawer
                 mAccountController.closeDrawer(false, nextAccount, folder);
