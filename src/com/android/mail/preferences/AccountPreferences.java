@@ -120,7 +120,6 @@ public class AccountPreferences extends VersionedPrefs {
                 PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, 0);
         if (value != 0) {
             getEditor().putInt(PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, 0).apply();
-            notifyBackupPreferenceChanged();
         }
     }
 
@@ -128,6 +127,5 @@ public class AccountPreferences extends VersionedPrefs {
         final int value = getSharedPreferences().getInt(
                 PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, 0);
         getEditor().putInt(PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, value + 1).apply();
-        notifyBackupPreferenceChanged();
     }
 }
