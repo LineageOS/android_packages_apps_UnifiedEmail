@@ -329,7 +329,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         }
     }
 
-    public Account(Parcel in) {
+    public Account(Parcel in, ClassLoader loader) {
         super(in);
         providerVersion = in.readInt();
         uri = in.readParcelable(null);
@@ -361,7 +361,7 @@ public class Account extends android.accounts.Account implements Parcelable {
             LogUtils.e(LOG_TAG, new Throwable(), "Unexpected null settings in Account(Parcel)");
             settings = Settings.EMPTY_SETTINGS;
         } else {
-            settings = in.readParcelable(null);
+            settings = in.readParcelable(loader);
         }
     }
 
@@ -638,10 +638,15 @@ public class Account extends android.accounts.Account implements Parcelable {
     }
 
     @SuppressWarnings("hiding")
-    public static final Creator<Account> CREATOR = new Creator<Account>() {
+    public static final ClassLoaderCreator<Account> CREATOR = new ClassLoaderCreator<Account>() {
         @Override
-         public Account createFromParcel(Parcel source) {
-            return new Account(source);
+        public Account createFromParcel(Parcel source, ClassLoader loader) {
+            return new Account(source, loader);
+        }
+
+        @Override
+        public Account createFromParcel(Parcel source) {
+            return new Account(source, null);
         }
 
         @Override
