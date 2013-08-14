@@ -184,6 +184,8 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public final String syncAuthority;
 
+    public final Uri quickResponseUri;
+
     /**
      * Transient cache of parsed {@link #accountFromAddresses}, plus an entry for the main account
      * address.
@@ -198,37 +200,34 @@ public class Account extends android.accounts.Account implements Parcelable {
     public synchronized String serialize() {
         JSONObject json = new JSONObject();
         try {
-            json.put(UIProvider.AccountColumns.NAME, name);
-            json.put(UIProvider.AccountColumns.TYPE, type);
-            json.put(UIProvider.AccountColumns.PROVIDER_VERSION, providerVersion);
-            json.put(UIProvider.AccountColumns.URI, uri);
-            json.put(UIProvider.AccountColumns.CAPABILITIES, capabilities);
-            json.put(UIProvider.AccountColumns.FOLDER_LIST_URI, folderListUri);
-            json.put(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
-            json.put(UIProvider.AccountColumns.SEARCH_URI, searchUri);
-            json.put(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
-            json.put(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
-            json.put(UIProvider.AccountColumns.UNDO_URI, undoUri);
-            json.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
-            json.put(UIProvider.AccountColumns.HELP_INTENT_URI, helpIntentUri);
-            json.put(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI, sendFeedbackIntentUri);
-            json.put(UIProvider.AccountColumns.REAUTHENTICATION_INTENT_URI,
-                    reauthenticationIntentUri);
-            json.put(UIProvider.AccountColumns.SYNC_STATUS, syncStatus);
-            json.put(UIProvider.AccountColumns.COMPOSE_URI, composeIntentUri);
-            json.put(UIProvider.AccountColumns.MIME_TYPE, mimeType);
-            json.put(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI, recentFolderListUri);
-            json.put(UIProvider.AccountColumns.COLOR, color);
-            json.put(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
-                    defaultRecentFolderListUri);
-            json.put(UIProvider.AccountColumns.MANUAL_SYNC_URI,
-                    manualSyncUri);
-            json.put(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI,
-                    viewIntentProxyUri);
-            json.put(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
-            json.put(UIProvider.AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
-            json.put(UIProvider.AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
-            json.put(UIProvider.AccountColumns.SYNC_AUTHORITY, syncAuthority);
+            json.put(AccountColumns.NAME, name);
+            json.put(AccountColumns.TYPE, type);
+            json.put(AccountColumns.PROVIDER_VERSION, providerVersion);
+            json.put(AccountColumns.URI, uri);
+            json.put(AccountColumns.CAPABILITIES, capabilities);
+            json.put(AccountColumns.FOLDER_LIST_URI, folderListUri);
+            json.put(AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
+            json.put(AccountColumns.SEARCH_URI, searchUri);
+            json.put(AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
+            json.put(AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
+            json.put(AccountColumns.UNDO_URI, undoUri);
+            json.put(AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
+            json.put(AccountColumns.HELP_INTENT_URI, helpIntentUri);
+            json.put(AccountColumns.SEND_FEEDBACK_INTENT_URI, sendFeedbackIntentUri);
+            json.put(AccountColumns.REAUTHENTICATION_INTENT_URI, reauthenticationIntentUri);
+            json.put(AccountColumns.SYNC_STATUS, syncStatus);
+            json.put(AccountColumns.COMPOSE_URI, composeIntentUri);
+            json.put(AccountColumns.MIME_TYPE, mimeType);
+            json.put(AccountColumns.RECENT_FOLDER_LIST_URI, recentFolderListUri);
+            json.put(AccountColumns.COLOR, color);
+            json.put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI, defaultRecentFolderListUri);
+            json.put(AccountColumns.MANUAL_SYNC_URI, manualSyncUri);
+            json.put(AccountColumns.VIEW_INTENT_PROXY_URI, viewIntentProxyUri);
+            json.put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
+            json.put(AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
+            json.put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
+            json.put(AccountColumns.SYNC_AUTHORITY, syncAuthority);
+            json.put(AccountColumns.QUICK_RESPONSE_URI, quickResponseUri);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -318,6 +317,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 json.optString(UIProvider.AccountColumns.UPDATE_SETTINGS_URI));
         enableMessageTransforms = json.optInt(AccountColumns.ENABLE_MESSAGE_TRANSFORMS);
         syncAuthority = json.optString(AccountColumns.SYNC_AUTHORITY);
+        quickResponseUri = Utils.getValidUri(json.optString(AccountColumns.QUICK_RESPONSE_URI));
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -356,6 +356,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         updateSettingsUri = in.readParcelable(null);
         enableMessageTransforms = in.readInt();
         syncAuthority = in.readString();
+        quickResponseUri = in.readParcelable(null);
         final int hasSettings = in.readInt();
         if (hasSettings == 0) {
             LogUtils.e(LOG_TAG, new Throwable(), "Unexpected null settings in Account(Parcel)");
@@ -421,6 +422,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 cursor.getColumnIndex(AccountColumns.ENABLE_MESSAGE_TRANSFORMS));
         syncAuthority = cursor.getString(
                 cursor.getColumnIndex(AccountColumns.SYNC_AUTHORITY));
+        quickResponseUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(AccountColumns.QUICK_RESPONSE_URI)));
         settings = new Settings(cursor);
     }
 
@@ -496,6 +499,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(updateSettingsUri, 0);
         dest.writeInt(enableMessageTransforms);
         dest.writeString(syncAuthority);
+        dest.writeParcelable(quickResponseUri, 0);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
             dest.writeInt(0);
@@ -546,6 +550,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(updateSettingsUri, other.updateSettingsUri) &&
                 Objects.equal(enableMessageTransforms, other.enableMessageTransforms) &&
                 Objects.equal(syncAuthority, other.syncAuthority) &&
+                Objects.equal(quickResponseUri, other.quickResponseUri) &&
                 Objects.equal(settings, other.settings);
     }
 
@@ -576,7 +581,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                         reauthenticationIntentUri, syncStatus, composeIntentUri, mimeType,
                         recentFolderListUri, color, defaultRecentFolderListUri, viewIntentProxyUri,
                         accoutCookieQueryUri, updateSettingsUri, enableMessageTransforms,
-                        syncAuthority);
+                        syncAuthority, quickResponseUri);
     }
 
     /**
@@ -663,35 +668,35 @@ public class Account extends android.accounts.Account implements Parcelable {
         // ImmutableMap.Builder does not allow null values
         final Map<String, Object> map = new HashMap<String, Object>();
 
-        map.put(UIProvider.AccountColumns._ID, 0);
-        map.put(UIProvider.AccountColumns.NAME, name);
-        map.put(UIProvider.AccountColumns.TYPE, type);
-        map.put(UIProvider.AccountColumns.PROVIDER_VERSION, providerVersion);
-        map.put(UIProvider.AccountColumns.URI, uri);
-        map.put(UIProvider.AccountColumns.CAPABILITIES, capabilities);
-        map.put(UIProvider.AccountColumns.FOLDER_LIST_URI, folderListUri);
-        map.put(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
-        map.put(UIProvider.AccountColumns.SEARCH_URI, searchUri);
-        map.put(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
-        map.put(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
-        map.put(UIProvider.AccountColumns.UNDO_URI, undoUri);
-        map.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
-        map.put(UIProvider.AccountColumns.HELP_INTENT_URI, helpIntentUri);
-        map.put(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI, sendFeedbackIntentUri);
-        map.put(UIProvider.AccountColumns.REAUTHENTICATION_INTENT_URI, reauthenticationIntentUri);
-        map.put(UIProvider.AccountColumns.SYNC_STATUS, syncStatus);
-        map.put(UIProvider.AccountColumns.COMPOSE_URI, composeIntentUri);
-        map.put(UIProvider.AccountColumns.MIME_TYPE, mimeType);
-        map.put(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI, recentFolderListUri);
-        map.put(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
-                defaultRecentFolderListUri);
-        map.put(UIProvider.AccountColumns.MANUAL_SYNC_URI, manualSyncUri);
-        map.put(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI, viewIntentProxyUri);
-        map.put(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
-        map.put(UIProvider.AccountColumns.COLOR, color);
-        map.put(UIProvider.AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
-        map.put(UIProvider.AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
-        map.put(UIProvider.AccountColumns.SYNC_AUTHORITY, syncAuthority);
+        map.put(AccountColumns._ID, 0);
+        map.put(AccountColumns.NAME, name);
+        map.put(AccountColumns.TYPE, type);
+        map.put(AccountColumns.PROVIDER_VERSION, providerVersion);
+        map.put(AccountColumns.URI, uri);
+        map.put(AccountColumns.CAPABILITIES, capabilities);
+        map.put(AccountColumns.FOLDER_LIST_URI, folderListUri);
+        map.put(AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
+        map.put(AccountColumns.SEARCH_URI, searchUri);
+        map.put(AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
+        map.put(AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
+        map.put(AccountColumns.UNDO_URI, undoUri);
+        map.put(AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
+        map.put(AccountColumns.HELP_INTENT_URI, helpIntentUri);
+        map.put(AccountColumns.SEND_FEEDBACK_INTENT_URI, sendFeedbackIntentUri);
+        map.put(AccountColumns.REAUTHENTICATION_INTENT_URI, reauthenticationIntentUri);
+        map.put(AccountColumns.SYNC_STATUS, syncStatus);
+        map.put(AccountColumns.COMPOSE_URI, composeIntentUri);
+        map.put(AccountColumns.MIME_TYPE, mimeType);
+        map.put(AccountColumns.RECENT_FOLDER_LIST_URI, recentFolderListUri);
+        map.put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI, defaultRecentFolderListUri);
+        map.put(AccountColumns.MANUAL_SYNC_URI, manualSyncUri);
+        map.put(AccountColumns.VIEW_INTENT_PROXY_URI, viewIntentProxyUri);
+        map.put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
+        map.put(AccountColumns.COLOR, color);
+        map.put(AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
+        map.put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
+        map.put(AccountColumns.SYNC_AUTHORITY, syncAuthority);
+        map.put(AccountColumns.QUICK_RESPONSE_URI, quickResponseUri);
         settings.getValueMap(map);
 
         return map;
