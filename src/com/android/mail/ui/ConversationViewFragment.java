@@ -210,9 +210,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
-    public ConversationViewFragment() {
-        super();
-    }
+    public ConversationViewFragment() {}
 
     /**
      * Creates a new instance of {@link ConversationViewFragment}, initialized

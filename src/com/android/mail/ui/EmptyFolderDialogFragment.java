@@ -53,6 +53,9 @@ public class EmptyFolderDialogFragment extends DialogFragment {
     private int mNumConversations;
     private int mFolderType;
 
+    // Public no-args constructor needed for fragment re-instantiation
+    public EmptyFolderDialogFragment() {}
+
     /**
      * Creates a new instance of {@link EmptyFolderDialogFragment}.
      * @param numConversations The number of conversations to display in the dialog.

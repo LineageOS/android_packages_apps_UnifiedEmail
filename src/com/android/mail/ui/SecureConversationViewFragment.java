@@ -105,9 +105,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
      * Constructor needs to be public to handle orientation changes and activity
      * lifecycle events.
      */
-    public SecureConversationViewFragment() {
-        super();
-    }
+    public SecureConversationViewFragment() {}
 
     @Override
     public void onCreate(Bundle savedState) {
