@@ -31,6 +31,9 @@ public class ClearPictureApprovalsDialogFragment extends DialogFragment implemen
 
     public static final String FRAGMENT_TAG = "ClearPictureApprovalsDialogFragment";
 
+    // Public no-args constructor needed for fragment re-instantiation
+    public ClearPictureApprovalsDialogFragment() {}
+
     /**
      * Creates a new instance of {@link ClearPictureApprovalsDialogFragment}.
      * @return The newly created {@link ClearPictureApprovalsDialogFragment}.
