@@ -47,10 +47,8 @@ public class AttachmentProgressDialogFragment extends DialogFragment {
         return f;
     }
 
-    public AttachmentProgressDialogFragment() {
-        super();
-    }
-
+    // Public no-args constructor needed for fragment re-instantiation
+    public AttachmentProgressDialogFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

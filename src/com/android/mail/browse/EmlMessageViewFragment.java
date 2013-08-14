@@ -135,9 +135,7 @@ public class EmlMessageViewFragment extends Fragment
      * Constructor needs to be public to handle orientation changes and activity
      * lifecycle events.
      */
-    public EmlMessageViewFragment() {
-        super();
-    }
+    public EmlMessageViewFragment() {}
 
     @Override
     public void onCreate(Bundle savedState) {

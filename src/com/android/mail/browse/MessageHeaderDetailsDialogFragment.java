@@ -46,6 +46,9 @@ public class MessageHeaderDetailsDialogFragment extends DialogFragment {
     private static final String ARG_CC = "cc";
     private static final String ARG_BCC = "bcc";
 
+    // Public no-args constructor needed for fragment re-instantiation
+    public MessageHeaderDetailsDialogFragment() {}
+
     /**
      * Creates a new {@link MessageHeaderDetailsDialogFragment}.
      * @param addressCache a mapping of RFC822 addresses as strings to {@link Address}.
