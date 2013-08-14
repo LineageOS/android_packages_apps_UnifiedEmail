@@ -64,10 +64,7 @@ public class ConfirmDialogFragment extends DialogFragment {
     /**
      * Needs a public empty constructor for instantiation on orientation changes.
      */
-    public ConfirmDialogFragment() {
-        // Do nothing
-        super();
-    }
+    public ConfirmDialogFragment() {}
 
     /**
      * Create a new {@link ConfirmDialogFragment}.

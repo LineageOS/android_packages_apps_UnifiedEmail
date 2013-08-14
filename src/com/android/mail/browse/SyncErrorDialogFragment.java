@@ -32,6 +32,9 @@ import com.android.mail.R;
  * to show information when there is a {@link UIProvider.LastSyncResult.STORAGE_ERROR}.
  */
 public class SyncErrorDialogFragment extends DialogFragment {
+    // Public no-args constructor needed for fragment re-instantiation
+    public SyncErrorDialogFragment() {}
+
     public static SyncErrorDialogFragment newInstance() {
         SyncErrorDialogFragment frag = new SyncErrorDialogFragment();
         return frag;

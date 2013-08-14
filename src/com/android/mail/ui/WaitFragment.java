@@ -49,6 +49,9 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
 
     private boolean mDefault;
 
+    // Public no-args constructor needed for fragment re-instantiation
+    public WaitFragment() {}
+
     public static WaitFragment newInstance(Account account) {
         return newInstance(account, false);
     }
