@@ -342,10 +342,13 @@ public class Attachment implements Parcelable {
             final JSONObject jsonObject = toJSON();
             // Add some additional fields that are helpful when debugging issues
             jsonObject.put("partId", partId);
-            try {
-                // pretty print the provider data
-                jsonObject.put(AttachmentColumns.PROVIDER_DATA, new JSONObject(providerData));
-            } catch (JSONException e) {
+            if (providerData != null) {
+                try {
+                    // pretty print the provider data
+                    jsonObject.put(AttachmentColumns.PROVIDER_DATA, new JSONObject(providerData));
+                } catch (JSONException e) {
+                    LogUtils.e(LOG_TAG, e, "JSONException when adding provider data");
+                }
             }
             return jsonObject.toString(4);
         } catch (JSONException e) {
