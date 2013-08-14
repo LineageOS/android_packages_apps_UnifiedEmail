@@ -2314,6 +2314,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     public static class RecipientErrorDialogFragment extends DialogFragment {
+        // Public no-args constructor needed for fragment re-instantiation
+        public RecipientErrorDialogFragment() {}
+
         public static RecipientErrorDialogFragment newInstance(final String message) {
             final RecipientErrorDialogFragment frag = new RecipientErrorDialogFragment();
             final Bundle args = new Bundle(1);
@@ -2533,6 +2536,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     public static class SendConfirmDialogFragment extends DialogFragment {
+        // Public no-args constructor needed for fragment re-instantiation
+        public SendConfirmDialogFragment() {}
+
         public static SendConfirmDialogFragment newInstance(final int messageId,
                 final boolean save, final boolean showToast) {
             final SendConfirmDialogFragment frag = new SendConfirmDialogFragment();
@@ -3031,6 +3037,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     public static class DiscardConfirmDialogFragment extends DialogFragment {
+        // Public no-args constructor needed for fragment re-instantiation
+        public DiscardConfirmDialogFragment() {}
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())

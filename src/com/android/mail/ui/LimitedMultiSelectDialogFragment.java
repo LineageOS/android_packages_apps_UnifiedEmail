@@ -59,6 +59,8 @@ public abstract class LimitedMultiSelectDialogFragment extends DialogFragment {
 
     private WeakReference<LimitedMultiSelectDialogListener> mListener = null;
 
+    // Public no-args constructor needed for fragment re-instantiation
+    public LimitedMultiSelectDialogFragment() {}
     /**
      * Populates the arguments on a {@link LimitedMultiSelectDialogFragment}.
      */
