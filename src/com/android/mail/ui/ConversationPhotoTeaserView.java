@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Folder;
@@ -167,6 +168,7 @@ public class ConversationPhotoTeaserView extends FrameLayout
         if (mShown) {
             mMailPrefs.setConversationPhotoTeaserAlreadyShown();
             mShown = false;
+            Analytics.getInstance().sendEvent("list_swipe", "photo_teaser", null, 0);
         }
     }
 

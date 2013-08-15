@@ -38,6 +38,7 @@ import com.android.bitmap.AltBitmapCache;
 import com.android.bitmap.BitmapCache;
 import com.android.bitmap.DecodeAggregator;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewCoordinates.CoordinatesCache;
@@ -217,6 +218,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mAccount = newAccount;
         mPriorityMarkersEnabled = mAccount.settings.priorityArrowsEnabled;
         mSwipeEnabled = mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO);
+
+        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_SENDER_IMAGES_ENABLED, Boolean
+                .toString(newAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE));
+        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ATTACHMENT_PREVIEWS_ENABLED,
+                Boolean.toString(newAccount.settings.convListAttachmentPreviews));
     }
 
     private static final String LOG_TAG = LogTag.getLogTag();
