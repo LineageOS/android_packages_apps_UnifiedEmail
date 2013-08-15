@@ -242,8 +242,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         ArrayList<Uri> folderUris;
         ArrayList<Boolean> adds;
 
-        Analytics.getInstance().sendEvent("list_swipe",
-                AnalyticsUtils.getMenuItemString(mSwipeAction), null, 0);
+        Analytics.getInstance().sendMenuItemEvent("list_swipe", mSwipeAction, null, 0);
 
         if (mSwipeAction == R.id.remove_folder) {
             FolderOperation folderOp = new FolderOperation(mFolder, false);

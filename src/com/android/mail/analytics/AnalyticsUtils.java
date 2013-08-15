@@ -33,6 +33,8 @@ public class AnalyticsUtils {
         {"@yahoo.com", "yahoo"},
     };
 
+    // individual apps should chain this method call with their own lookup tables if they have
+    // app-specific menu items
     public static String getMenuItemString(int id) {
         final String s;
         if (id == R.id.archive) {
@@ -85,16 +87,8 @@ public class AnalyticsUtils {
             s = "inside_conversation_unread";
         } else if (id == R.id.show_original) {
             s = "show_original";
-        } else if (id == R.id.delete_ad) {
-            s = "delete_ad";
-        } else if (id == R.id.forward_ad) {
-            s = "forward_ad";
-        } else if (id == R.id.star_ad) {
-            s = "star_ad";
-        } else if (id == R.id.remove_star_ad) {
-            s = "remove_star_ad";
         } else {
-            s = "0x" + Integer.toHexString(id);
+            s = null;
         }
         return s;
     }

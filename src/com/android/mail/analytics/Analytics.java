@@ -76,6 +76,9 @@ public final class Analytics {
         public void sendEvent(String category, String action, String label, long value) {}
 
         @Override
+        public void sendMenuItemEvent(String category, int itemResId, String label, long value) {}
+
+        @Override
         public void sendView(String view) {}
 
         @Override
