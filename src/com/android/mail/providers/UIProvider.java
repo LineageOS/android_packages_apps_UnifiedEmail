@@ -19,7 +19,6 @@ package com.android.mail.providers;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,14 +26,9 @@ import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
-import android.text.util.Rfc822Token;
-import android.text.util.Rfc822Tokenizer;
 
-import com.android.common.contacts.DataUsageStatUpdater;
-import com.android.mail.providers.UIProvider.AccountColumns.SettingsColumns;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -1792,7 +1786,8 @@ public class UIProvider {
         AttachmentColumns.THUMBNAIL_URI,
         AttachmentColumns.PREVIEW_INTENT_URI,
         AttachmentColumns.PROVIDER_DATA,
-        AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN
+        AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN,
+        AttachmentColumns.TYPE
     };
     public static final int ATTACHMENT_NAME_COLUMN = 0;
     public static final int ATTACHMENT_SIZE_COLUMN = 1;
@@ -1805,6 +1800,7 @@ public class UIProvider {
     public static final int ATTACHMENT_THUMBNAIL_URI_COLUMN = 8;
     public static final int ATTACHMENT_PREVIEW_INTENT_COLUMN = 9;
     public static final int ATTACHMENT_SUPPORTS_DOWNLOAD_AGAIN_COLUMN = 10;
+    public static final int ATTACHMENT_TYPE_COLUMN = 11;
 
     /** Separates attachment info parts in strings in the database. */
     public static final String ATTACHMENT_INFO_SEPARATOR = "\n"; // use to join
@@ -1970,9 +1966,15 @@ public class UIProvider {
         public static final String PROVIDER_DATA = "providerData";
 
         /**
-         * This column tells whether this attachment supports the ability to be downloaded again.
+         * This column represents whether this attachment supports the ability to be downloaded
+         * again.
          */
         public static final String SUPPORTS_DOWNLOAD_AGAIN = "supportsDownloadAgain";
+        /**
+         * This column represents the visibility type of this attachment. One of the
+         * {@link AttachmentType} constants.
+         */
+        public static final String TYPE = "type";
 
         private AttachmentColumns() {}
     }
@@ -2025,6 +2027,15 @@ public class UIProvider {
 
             throw new IllegalArgumentException(String.format("Unknown rendition %d", rendition));
         }
+    }
+
+    /**
+     * Indicates the visibility type of an attachment.
+     */
+    public static final class AttachmentType {
+        public static final int STANDARD = 0;
+        public static final int INLINE_CURRENT_MESSAGE = 1;
+        public static final int INLINE_QUOTED_MESSAGE = 2;
     }
 
     public static final String[] UNDO_PROJECTION = {
