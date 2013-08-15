@@ -30,6 +30,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.MailPrefs;
@@ -274,17 +275,25 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
     @Override
     public void dismiss() {
+        final String reason;
         switch (mReasonSyncOff) {
             case ReasonSyncOff.AUTO_SYNC_OFF:
                 mMailPrefs.incNumOfDismissesForAutoSyncOff();
+                reason = "auto_sync_off";
                 break;
             case ReasonSyncOff.ACCOUNT_SYNC_OFF:
                 mAccountPreferences.incNumOfDismissesForAccountSyncOff();
+                reason = "account_sync_off";
                 break;
             case ReasonSyncOff.AIRPLANE_MODE_ON:
                 mMailPrefs.incNumOfDismissesForAirplaneModeOn();
+                reason = "airplane_mode_on";
+                break;
+            default:
+                reason = null;
                 break;
         }
+        Analytics.getInstance().sendEvent("list_swipe", "sync_disabled_tip", reason, 0);
         startDestroyAnimation();
     }
 

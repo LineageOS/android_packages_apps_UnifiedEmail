@@ -717,6 +717,41 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
+     * @return a non-user facing English string describing this folder's type
+     */
+    public String getTypeDescription() {
+        final String desc;
+        if (isType(FolderType.INBOX_SECTION)) {
+            desc = "inbox_section";
+        } else if (isInbox()) {
+            desc = "inbox";
+        } else if (isDraft()) {
+            desc = "draft";
+        } else if (isImportantOnly()) {
+            desc = "important";
+        } else if (isType(FolderType.OUTBOX)) {
+            desc = "outbox";
+        } else if (isType(FolderType.SENT)) {
+            desc = "sent";
+        } else if (isType(FolderType.SPAM)) {
+            desc = "spam";
+        } else if (isType(FolderType.STARRED)) {
+            desc = "starred";
+        } else if (isTrash()) {
+            desc = "trash";
+        } else if (isType(FolderType.UNREAD)) {
+            desc = "unread";
+        } else if (isViewAll()) {
+            desc = "all_mail";
+        } else if (isProviderFolder()) {
+            desc = "(other)";
+        } else {
+            desc = "user_folder";
+        }
+        return desc;
+    }
+
+    /**
      * True if the previous sync was successful, false otherwise.
      * @return
      */
