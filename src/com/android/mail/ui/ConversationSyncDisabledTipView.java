@@ -23,6 +23,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.provider.Settings;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.TextAppearanceSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -53,6 +56,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
     private static int sShrinkAnimationDuration;
 
     private Account mAccount = null;
+    private Folder mFolder = null;
     private final MailPrefs mMailPrefs;
     private AccountPreferences mAccountPreferences;
     private AnimatedAdapter mAdapter;
@@ -60,11 +64,12 @@ public class ConversationSyncDisabledTipView extends FrameLayout
     private View mSwipeableContent;
     private TextView mText1;
     private TextView mText2;
+    private View mTextArea;
+    private SpannableString mEnableSyncInAccountSettingsText;
     private final OnClickListener mAutoSyncOffTextClickedListener;
     private final OnClickListener mAccountSyncOffTextClickedListener;
 
     private int mAnimatedHeight = -1;
-    private boolean mAcceptUserTaps = false;
 
     private int mReasonSyncOff = ReasonSyncOff.NONE;
 
@@ -111,10 +116,22 @@ public class ConversationSyncDisabledTipView extends FrameLayout
         mAccountSyncOffTextClickedListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Link to account level settings instead of top level settings.
-                Utils.showSettings(getContext(), mAccount);
+                Utils.showAccountSettings(getContext(), mAccount);
             }
         };
+
+        // Create the "Turn on in Account settings." text where "Account settings" appear as
+        // a blue link.
+        final String subString = resources.getString(R.string.account_settings_param);
+        final String entireString = resources.getString(
+                R.string.enable_sync_in_account_settings, subString);
+        mEnableSyncInAccountSettingsText = new SpannableString(entireString);
+        final int index = entireString.indexOf(subString);
+        mEnableSyncInAccountSettingsText.setSpan(
+                new TextAppearanceSpan(context, R.style.LinksInTipTextAppearance),
+                index,
+                index + subString.length(),
+                0);
     }
 
     public void bindAccount(Account account) {
@@ -133,6 +150,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
         mText1 = (TextView) findViewById(R.id.text_line1);
         mText2 = (TextView) findViewById(R.id.text_line2);
+        mTextArea = findViewById(R.id.text_area);
 
         findViewById(R.id.dismiss_button).setOnClickListener(new OnClickListener() {
             @Override
@@ -144,7 +162,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
     @Override
     public void onUpdate(String account, Folder folder, ConversationCursor cursor) {
-        // do nothing
+        mFolder = folder;
     }
 
     @Override
@@ -153,8 +171,10 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             return false;
         }
 
-        // TODO: do not show this message for folders/labels that are not set to sync.
-        // We need a solution that works for both Gmail and Email.
+        // Do not show this message for folders/labels that are not set to sync.
+        if (mFolder == null || mFolder.syncWindow <= 0) {
+            return false;
+        }
 
         setReasonSyncOff(calculateReasonSyncOff(
                 getContext(), mMailPrefs, mAccount, mAccountPreferences));
@@ -181,6 +201,8 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             // Global sync is turned off
             accountPreferences.resetNumOfDismissesForAccountSyncOff();
             mailPrefs.resetNumOfDismissesForAirplaneModeOn();
+            // Logging to track down bug where this tip is being showing when it shouldn't be.
+            LogUtils.i(LOG_TAG, "getMasterSyncAutomatically() return false");
             return ReasonSyncOff.AUTO_SYNC_OFF;
         } else {
             // Global sync is on, clear the number of times users has dismissed this
@@ -194,6 +216,9 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             if (!ContentResolver.getSyncAutomatically(acct, account.syncAuthority)) {
                 // Account level sync is off
                 mailPrefs.resetNumOfDismissesForAirplaneModeOn();
+                // Logging to track down bug where this tip is showing when it shouldn't be.
+                LogUtils.i(LOG_TAG, "getSyncAutomatically() return false for %s %s %s",
+                        account.name, account.type, account.syncAuthority);
                 return ReasonSyncOff.ACCOUNT_SYNC_OFF;
             } else {
                 // Account sync is on, clear the number of times users has dismissed this
@@ -217,20 +242,22 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             switch (mReasonSyncOff) {
                 case ReasonSyncOff.AUTO_SYNC_OFF:
                     mText1.setText(R.string.auto_sync_off);
-                    mText2.setClickable(true);
+                    mText2.setText(R.string.tap_to_enable_sync);
                     mText2.setVisibility(View.VISIBLE);
-                    mText2.setOnClickListener(mAutoSyncOffTextClickedListener);
+                    mTextArea.setClickable(true);
+                    mTextArea.setOnClickListener(mAutoSyncOffTextClickedListener);
                     break;
                 case ReasonSyncOff.ACCOUNT_SYNC_OFF:
                     mText1.setText(R.string.account_sync_off);
-                    mText2.setClickable(true);
+                    mText2.setText(mEnableSyncInAccountSettingsText);
                     mText2.setVisibility(View.VISIBLE);
-                    mText2.setOnClickListener(mAccountSyncOffTextClickedListener);
+                    mTextArea.setClickable(true);
+                    mTextArea.setOnClickListener(mAccountSyncOffTextClickedListener);
                     break;
                 case ReasonSyncOff.AIRPLANE_MODE_ON:
                     mText1.setText(R.string.airplane_mode_on);
-                    mText2.setClickable(false);
                     mText2.setVisibility(View.GONE);
+                    mTextArea.setClickable(false);
                     break;
                 default:
                     // Doesn't matter what mText is since this view is not displayed
@@ -270,7 +297,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
     @Override
     public boolean acceptsUserTaps() {
-        return mAcceptUserTaps;
+        return true;
     }
 
     @Override
