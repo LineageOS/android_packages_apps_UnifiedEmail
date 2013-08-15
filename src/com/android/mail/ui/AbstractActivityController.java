@@ -1327,8 +1327,8 @@ public abstract class AbstractActivityController implements ActivityController,
             return true;
         }
 
-        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
-                AnalyticsUtils.getMenuItemString(item.getItemId()), "action_bar", 0);
+        Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
+                item.getItemId(), "action_bar", 0);
 
         final int id = item.getItemId();
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
