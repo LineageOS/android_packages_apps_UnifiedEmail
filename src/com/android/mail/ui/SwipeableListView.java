@@ -31,6 +31,8 @@ import android.view.ViewConfiguration;
 import android.widget.ListView;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
+import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SwipeableConversationItemView;
@@ -239,6 +241,10 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         Collection<Conversation> convList = Conversation.listOf(conv);
         ArrayList<Uri> folderUris;
         ArrayList<Boolean> adds;
+
+        Analytics.getInstance().sendEvent("list_swipe",
+                AnalyticsUtils.getMenuItemString(mSwipeAction), null, 0);
+
         if (mSwipeAction == R.id.remove_folder) {
             FolderOperation folderOp = new FolderOperation(mFolder, false);
             HashMap<Uri, Folder> targetFolders = Folder

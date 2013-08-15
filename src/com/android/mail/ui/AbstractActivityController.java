@@ -1317,17 +1317,18 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_ACTION,
-                Analytics.EVENT_ACTION_MENU_ITEM,
-                AnalyticsUtils.getMenuItemString(item.getItemId()), 0);
-
         /*
          * The action bar home/up action should open or close the drawer.
          * mDrawerToggle will take care of this.
          */
         if (mDrawerToggle.onOptionsItemSelected(item)) {
+            Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, "drawer_toggle",
+                    null, 0);
             return true;
         }
+
+        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
+                AnalyticsUtils.getMenuItemString(item.getItemId()), "action_bar", 0);
 
         final int id = item.getItemId();
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);

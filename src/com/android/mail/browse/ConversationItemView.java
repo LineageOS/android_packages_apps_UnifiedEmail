@@ -69,6 +69,7 @@ import com.android.mail.R;
 import com.android.mail.R.drawable;
 import com.android.mail.R.integer;
 import com.android.mail.R.string;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.bitmap.AttachmentDrawable;
 import com.android.mail.bitmap.AttachmentGridDrawable;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
@@ -1673,12 +1674,16 @@ public class ConversationItemView extends View
         if (mIsExpansiveTablet && mode.isListMode()) {
             return beginDragMode();
         } else {
-            return toggleSelectedState();
+            return toggleSelectedState("long_press");
         }
     }
 
     @Override
     public boolean toggleSelectedState() {
+        return toggleSelectedState(null);
+    }
+
+    private boolean toggleSelectedState(String sourceOpt) {
         if (mHeader != null && mHeader.conversation != null && mSelectedConversationSet != null) {
             mSelected = !mSelected;
             setSelected(mSelected);
@@ -1687,9 +1692,13 @@ public class ConversationItemView extends View
             SwipeableListView listView = getListView();
             conv.position = mSelected && listView != null ? listView.getPositionForView(this)
                     : Conversation.NO_POSITION;
-            if (mSelectedConversationSet != null) {
-                mSelectedConversationSet.toggle(conv);
+
+            if (mSelectedConversationSet.isEmpty()) {
+                final String source = (sourceOpt != null) ? sourceOpt : "checkbox";
+                Analytics.getInstance().sendEvent("enter_cab_mode", source, null, 0);
             }
+
+            mSelectedConversationSet.toggle(conv);
             if (mSelectedConversationSet.isEmpty()) {
                 listView.commitDestructiveActions(true);
             }
