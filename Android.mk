@@ -18,9 +18,8 @@ LOCAL_PATH:= $(call my-dir)
 chips_dir := ../../../frameworks/ex/chips/res
 
 #Include res dir from photoviewer
-photo_dir := ../../../frameworks/opt/photoviewer/res
-appcompat_res_dir := ../../../frameworks/support/v7/appcompat/res
-res_dirs := res $(chips_dir) $(photo_dir) $(appcompat_res_dir)
+photo_dir := ../../../frameworks/opt/photoviewer/res ../../../frameworks/opt/photoviewer/activity/res
+res_dirs := res $(chips_dir) $(photo_dir)
 
 
 ##################################################
@@ -43,7 +42,7 @@ LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs)) \
         $(call all-logtags-files-under, $(src_dirs))
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 LOCAL_AAPT_FLAGS := --auto-add-overlay
-LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo:android.support.v7.appcompat
+LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
