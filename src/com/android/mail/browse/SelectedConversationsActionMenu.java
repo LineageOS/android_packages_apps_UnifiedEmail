@@ -121,8 +121,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mListController.commitDestructiveActions(true);
         final int itemId = item.getItemId();
 
-        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
-                AnalyticsUtils.getMenuItemString(itemId), "cab_mode", 0);
+        Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, itemId,
+                "cab_mode", 0);
 
         if (itemId == R.id.delete) {
             LogUtils.i(LOG_TAG, "Delete selected from CAB menu");
