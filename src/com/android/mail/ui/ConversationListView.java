@@ -297,8 +297,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         ensureProgressBars();
         mSyncTriggerBar.setVisibility(View.GONE);
 
-        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_ACTION,
-                Analytics.EVENT_ACTION_MENU_ITEM, "swipe_refresh", 0);
+        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, "swipe_refresh", null,
+                0);
 
         // This will call back to showSyncStatusBar():
         mActivity.getFolderController().requestFolderRefresh();

@@ -30,13 +30,19 @@ import android.app.Activity;
  */
 public final class Analytics {
 
-    public static String EVENT_CATEGORY_ACTION = "ui_action";
+    public static final String EVENT_CATEGORY_MENU_ITEM = "menu_item";
 
-    public static String EVENT_ACTION_MENU_ITEM = "menu_item";
+    public static final int CD_INDEX_ACCOUNT_TYPE = 1;
 
-    public static int CD_INDEX_ACCOUNT_TYPE = 1;
+    public static final int CD_INDEX_ACCOUNT_COUNT = 2;
 
-    public static int CD_INDEX_ACCOUNT_COUNT = 2;
+    public static final int CD_INDEX_SENDER_IMAGES_ENABLED = 3;
+
+    public static final int CD_INDEX_ATTACHMENT_PREVIEWS_ENABLED = 4;
+
+    public static final int CD_INDEX_INBOX_TYPE = 5;
+
+    public static final int CD_INDEX_INBOX_SECTIONS_ENABLED = 6;
 
     private static Tracker sInstance;
 

@@ -27,6 +27,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
+import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -118,6 +120,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // If the user taps a new menu item, commit any existing destructive actions.
         mListController.commitDestructiveActions(true);
         final int itemId = item.getItemId();
+
+        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
+                AnalyticsUtils.getMenuItemString(itemId), "cab_mode", 0);
+
         if (itemId == R.id.delete) {
             LogUtils.i(LOG_TAG, "Delete selected from CAB menu");
             performDestructiveAction(R.id.delete);

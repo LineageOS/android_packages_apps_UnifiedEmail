@@ -29,6 +29,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Account;
@@ -137,6 +138,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener, Swi
     @Override
     public void dismiss() {
         if (mAdapter != null) {
+            Analytics.getInstance().sendEvent("list_swipe", "leave_behind", null, 0);
             mAdapter.fadeOutSpecificLeaveBehindItem(mData.id);
             mAdapter.notifyDataSetChanged();
         }

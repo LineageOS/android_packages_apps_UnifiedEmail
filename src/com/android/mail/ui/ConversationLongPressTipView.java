@@ -17,6 +17,7 @@
 package com.android.mail.ui;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Folder;
@@ -155,6 +156,7 @@ public class ConversationLongPressTipView extends FrameLayout
         if (mShow) {
             mMailPrefs.setLongPressToSelectTipAlreadyShown();
             mShow = false;
+            Analytics.getInstance().sendEvent("list_swipe", "long_press_tip", null, 0);
         }
     }
 

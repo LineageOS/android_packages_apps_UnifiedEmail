@@ -85,6 +85,14 @@ public class AnalyticsUtils {
             s = "inside_conversation_unread";
         } else if (id == R.id.show_original) {
             s = "show_original";
+        } else if (id == R.id.delete_ad) {
+            s = "delete_ad";
+        } else if (id == R.id.forward_ad) {
+            s = "forward_ad";
+        } else if (id == R.id.star_ad) {
+            s = "star_ad";
+        } else if (id == R.id.remove_star_ad) {
+            s = "remove_star_ad";
         } else {
             s = "0x" + Integer.toHexString(id);
         }

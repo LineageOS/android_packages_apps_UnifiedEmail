@@ -599,9 +599,14 @@ public final class ConversationListFragment extends ListFragment implements
         } else if (view instanceof ToggleableItem) {
             final boolean showSenderImage =
                     (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
-            if (!showSenderImage && !mSelectedSet.isEmpty()) {
+            final boolean inCabMode = !mSelectedSet.isEmpty();
+            if (!showSenderImage && inCabMode) {
                 ((ToggleableItem) view).toggleSelectedState();
             } else {
+                if (inCabMode) {
+                    // this is a peek.
+                    Analytics.getInstance().sendEvent("peek", null, null, mSelectedSet.size());
+                }
                 viewConversation(position);
             }
         } else {
