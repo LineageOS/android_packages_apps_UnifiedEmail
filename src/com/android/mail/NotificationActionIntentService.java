@@ -94,6 +94,8 @@ public class NotificationActionIntentService extends IntentService {
 
         final ContentResolver contentResolver = getContentResolver();
 
+        LogUtils.i(LOG_TAG, "Handling %s", action);
+
         if (ACTION_UNDO.equals(action)) {
             NotificationActionUtils.cancelUndoTimeout(context, notificationAction);
             NotificationActionUtils.cancelUndoNotification(context, notificationAction);
