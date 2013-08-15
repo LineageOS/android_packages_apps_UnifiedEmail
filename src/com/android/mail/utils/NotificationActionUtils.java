@@ -52,6 +52,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class NotificationActionUtils {
+    private static final String LOG_TAG = "NotifActionUtils";
+
     private static long sUndoTimeoutMillis = -1;
 
     /**
@@ -514,6 +516,9 @@ public class NotificationActionUtils {
 
     public static Notification createUndoNotification(final Context context,
             final NotificationAction notificationAction, final int notificationId) {
+        LogUtils.i(LOG_TAG, "createUndoNotification for %s",
+                notificationAction.getNotificationActionType());
+
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setSmallIcon(R.drawable.stat_notify_email);
@@ -555,6 +560,9 @@ public class NotificationActionUtils {
      */
     public static void registerUndoTimeout(
             final Context context, final NotificationAction notificationAction) {
+        LogUtils.i(LOG_TAG, "registerUndoTimeout for %s",
+                notificationAction.getNotificationActionType());
+
         if (sUndoTimeoutMillis == -1) {
             sUndoTimeoutMillis =
                     context.getResources().getInteger(R.integer.undo_notification_timeout);
@@ -578,6 +586,9 @@ public class NotificationActionUtils {
      */
     public static void cancelUndoTimeout(
             final Context context, final NotificationAction notificationAction) {
+        LogUtils.i(LOG_TAG, "cancelUndoTimeout for %s",
+                notificationAction.getNotificationActionType());
+
         final AlarmManager alarmManager =
                 (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -610,6 +621,9 @@ public class NotificationActionUtils {
      */
     public static void processDestructiveAction(
             final Context context, final NotificationAction notificationAction) {
+        LogUtils.i(LOG_TAG, "processDestructiveAction: %s",
+                notificationAction.getNotificationActionType());
+
         final NotificationActionType destructAction =
                 notificationAction.getNotificationActionType();
         final Conversation conversation = notificationAction.getConversation();
@@ -655,6 +669,9 @@ public class NotificationActionUtils {
      */
     public static void createUndoNotification(final Context context,
             final NotificationAction notificationAction) {
+        LogUtils.i(LOG_TAG, "createUndoNotification for %s",
+                notificationAction.getNotificationActionType());
+
         final int notificationId = NotificationUtils.getNotificationId(
                 notificationAction.getAccount().name, notificationAction.getFolder());
 
@@ -674,6 +691,9 @@ public class NotificationActionUtils {
      */
     public static void cancelUndoNotification(final Context context,
             final NotificationAction notificationAction) {
+        LogUtils.i(LOG_TAG, "cancelUndoNotification for %s",
+                notificationAction.getNotificationActionType());
+
         final Account account = notificationAction.getAccount();
         final Folder folder = notificationAction.getFolder();
         final Conversation conversation = notificationAction.getConversation();
@@ -693,6 +713,9 @@ public class NotificationActionUtils {
      */
     public static void processUndoNotification(final Context context,
             final NotificationAction notificationAction) {
+        LogUtils.i(LOG_TAG, "processUndoNotification, %s",
+                notificationAction.getNotificationActionType());
+
         final Account account = notificationAction.getAccount();
         final Folder folder = notificationAction.getFolder();
         final int notificationId = NotificationUtils.getNotificationId(
@@ -726,6 +749,10 @@ public class NotificationActionUtils {
      */
     public static void resendNotifications(final Context context, final Account account,
             final Folder folder) {
+        LogUtils.i(LOG_TAG, "resendNotifications account: %s, folder: %s",
+                LogUtils.sanitizeName(LOG_TAG, account.name),
+                LogUtils.sanitizeName(LOG_TAG, folder.name));
+
         final Intent intent = new Intent(MailIntentService.ACTION_RESEND_NOTIFICATIONS);
         intent.setPackage(context.getPackageName()); // Make sure we only deliver this to ourself
         intent.putExtra(Utils.EXTRA_ACCOUNT_URI, account.uri);
