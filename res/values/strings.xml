@@ -982,6 +982,9 @@
         receiving any new mail. [CHAR LIMIT=250] -->
     <string name="auto_sync_off">Auto-sync is off.</string>
 
+    <!-- Tap to turn on device auto-sync setting.  [CHAR LIMIT=250] -->
+    <string name="tap_to_enable_sync">Tap to turn auto-sync on.</string>
+
     <!-- Tip for letting user know that their account level sync setting
         is turned off, in case they are wondering why they are not
         receiving any new mail. [CHAR LIMIT=250] -->
@@ -992,6 +995,13 @@
         receiving any new mail. [CHAR LIMIT=250] -->
     <string name="airplane_mode_on">Airplane mode is on</string>
 
-    <!-- Tap to turn on sync in settings.  [CHAR LIMIT=250] -->
-    <string name="tap_to_enable_sync" translatable="false">Tap to turn sync on.</string>
+    <!-- Hint text for user to enable sync in Gmail's account settings.
+         The whole string should read "Turn on in Account settings.", but because we need
+         "Account settings" to appear as blue link text, it's a parameter here.
+         [CHAR LIMIT=250] -->
+    <string name="enable_sync_in_account_settings">Turn on in <xliff:g id="account_settings">%1$s</xliff:g>.</string>
+
+    <!-- This is used as a parameter to another string and combined reads
+         "Turn on in Account settings." [CHAR LIMIT=250] -->
+    <string name="account_settings_param">Account settings</string>
 </resources>
