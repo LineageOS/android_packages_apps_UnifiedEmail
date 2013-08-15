@@ -852,7 +852,7 @@ public class Utils {
     }
 
     /**
-     * Show the settings screen for the supplied account.
+     * Show the top level settings screen for the supplied account.
      */
     public static void showSettings(Context context, Account account) {
         if (account == null) {
@@ -860,6 +860,22 @@ public class Utils {
             return;
         }
         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
+        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        context.startActivity(settingsIntent);
+    }
+
+    /**
+     * Show the account level settings screen for the supplied account.
+     */
+    public static void showAccountSettings(Context context, Account account) {
+        if (account == null) {
+            LogUtils.e(LOG_TAG, "Invalid attempt to show setting screen with null account");
+            return;
+        }
+        final Intent settingsIntent = new Intent(Intent.ACTION_EDIT,
+                appendVersionQueryParameter(context, account.settingsIntentUri));
+
+        settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         context.startActivity(settingsIntent);
     }

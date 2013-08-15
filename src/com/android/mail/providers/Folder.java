@@ -55,9 +55,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
     @Deprecated
     private static final Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
 
-    /**
-     *
-     */
     private static final String FOLDER_UNINITIALIZED = "Uninitialized!";
 
     // TODO: remove this once we figure out which folder is returning a "null" string as the

@@ -491,4 +491,8 @@
     <style name="SendingTextAppearance" parent="@style/DraftTextAppearance">
     </style>
 
+    <style name="LinksInTipTextAppearance">
+        <item name="android:textColor">?android:attr/textColorLink</item>
+    </style>
+
 </resources>
