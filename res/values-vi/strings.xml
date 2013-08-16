@@ -434,9 +434,9 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"Hôm nay, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Hôm qua, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Bỏ qua mẹo"</string>
-    <!-- no translation found for auto_sync_off (8182034791210468574) -->
+    <!-- no translation found for auto_sync_off (7185342309138211107) -->
     <skip />
-    <!-- no translation found for account_sync_off (7127453647436993865) -->
+    <!-- no translation found for account_sync_off (5699548271856775808) -->
     <skip />
     <!-- no translation found for airplane_mode_on (2206488373387145840) -->
     <skip />
