@@ -292,6 +292,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private String mSignature;
     private Account[] mAccounts;
     private boolean mRespondedInline;
+    private boolean mPerformedSendOrDiscard = false;
 
     /**
      * Can be called from a non-UI thread.
@@ -748,6 +749,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Don't save unnecessary drafts if we are only changing the orientation.
         if (!isChangingConfigurations()) {
             saveIfNeeded();
+
+            if (isFinishing() && !mPerformedSendOrDiscard) {
+                // log saving upon backing out of activity. (we avoid logging every sendOrSave()
+                // because that method can be invoked many times in a single compose session.)
+                logSendOrSave(true /* save */);
+            }
         }
     }
 
@@ -1950,6 +1957,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
+
+        Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, id, null, 0);
+
         boolean handled = true;
         if (id == R.id.add_photo_attachment) {
             doAttach(MIME_TYPE_PHOTO);
@@ -2010,6 +2020,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void doSend() {
         sendOrSaveWithSanityChecks(false, true, false, false);
+        logSendOrSave(false /* save */);
+        mPerformedSendOrDiscard = true;
     }
 
     private void doSave(boolean showToast) {
@@ -2872,6 +2884,39 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
+    private void logSendOrSave(boolean save) {
+        final String category = (save) ? "message_save" : "message_send";
+        final int attachmentCount = getAttachments().size();
+        final String msgType;
+        switch (mComposeMode) {
+            case COMPOSE:
+                msgType = "new_message";
+                break;
+            case REPLY:
+                msgType = "reply";
+                break;
+            case REPLY_ALL:
+                msgType = "reply_all";
+                break;
+            case FORWARD:
+                msgType = "forward";
+                break;
+            default:
+                msgType = "unknown";
+                break;
+        }
+        final String label;
+        final long value;
+        if (mComposeMode == COMPOSE) {
+            label = Integer.toString(attachmentCount);
+            value = attachmentCount;
+        } else {
+            label = null;
+            value = 0;
+        }
+        Analytics.getInstance().sendEvent(category, msgType, label, value);
+    }
+
     @Override
     public boolean onNavigationItemSelected(int position, long itemId) {
         int initialComposeMode = mComposeMode;
@@ -3111,6 +3156,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         // This prevents the draft from being saved in onPause().
         discardChanges();
+        mPerformedSendOrDiscard = true;
         finish();
     }
 
