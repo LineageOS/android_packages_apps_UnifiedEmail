@@ -161,6 +161,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_CC = "cc";
     private static final String EXTRA_BCC = "bcc";
 
+    /**
+     * An optional extra containing a {@link ContentValues} of values to be added to
+     * {@link SendOrSaveMessage#mValues}.
+     */
+    public static final String EXTRA_VALUES = "extra-values";
+
     // List of all the fields
     static final String[] ALL_EXTRAS = { EXTRA_SUBJECT, EXTRA_BODY, EXTRA_TO, EXTRA_CC, EXTRA_BCC,
             EXTRA_QUOTED_TEXT };
@@ -274,7 +280,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Uri mRefMessageUri;
     private boolean mShowQuotedText = false;
     private Bundle mInnerSavedState;
-
+    private ContentValues mExtraValues = null;
 
     // Array of the outstanding send or save tasks.  Access is synchronized
     // with the object itself
@@ -291,29 +297,31 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Can be called from a non-UI thread.
      */
     public static void editDraft(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, EDIT_DRAFT, null, null, null, null);
+        launch(launcher, account, message, EDIT_DRAFT, null, null, null, null,
+                null /* extraValues */);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void compose(Context launcher, Account account) {
-        launch(launcher, account, null, COMPOSE, null, null, null, null);
+        launch(launcher, account, null, COMPOSE, null, null, null, null, null /* extraValues */);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void composeToAddress(Context launcher, Account account, String toAddress) {
-        launch(launcher, account, null, COMPOSE, toAddress, null, null, null);
+        launch(launcher, account, null, COMPOSE, toAddress, null, null, null,
+                null /* extraValues */);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void composeWithQuotedText(Context launcher, Account account,
-            String quotedText, String subject) {
-        launch(launcher, account, null, COMPOSE, null, null, quotedText, subject);
+            String quotedText, String subject, final ContentValues extraValues) {
+        launch(launcher, account, null, COMPOSE, null, null, quotedText, subject, extraValues);
     }
 
     /**
@@ -355,31 +363,33 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Can be called from a non-UI thread.
      */
     public static void reply(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, REPLY, null, null, null, null);
+        launch(launcher, account, message, REPLY, null, null, null, null, null /* extraValues */);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void replyAll(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, REPLY_ALL, null, null, null, null);
+        launch(launcher, account, message, REPLY_ALL, null, null, null, null,
+                null /* extraValues */);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
     public static void forward(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, FORWARD, null, null, null, null);
+        launch(launcher, account, message, FORWARD, null, null, null, null, null /* extraValues */);
     }
 
     public static void reportRenderingFeedback(Context launcher, Account account, Message message,
             String body) {
         launch(launcher, account, message, FORWARD,
-                "android-gmail-readability@google.com", body, null, null);
+                "android-gmail-readability@google.com", body, null, null, null /* extraValues */);
     }
 
     private static void launch(Context launcher, Account account, Message message, int action,
-            String toAddress, String body, String quotedText, String subject) {
+            String toAddress, String body, String quotedText, String subject,
+            final ContentValues extraValues) {
         Intent intent = new Intent(launcher, ComposeActivity.class);
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(EXTRA_ACTION, action);
@@ -400,6 +410,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         if (subject != null) {
             intent.putExtra(EXTRA_SUBJECT, subject);
+        }
+        if (extraValues != null) {
+            LogUtils.d(LOG_TAG, "Launching with extraValues: %s", extraValues.toString());
+            intent.putExtra(EXTRA_VALUES, extraValues);
         }
         launcher.startActivity(intent);
     }
@@ -1321,6 +1335,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         String extraString = intent.getStringExtra(Intent.EXTRA_SUBJECT);
         if (extraString != null) {
             mSubject.setText(extraString);
+        }
+
+        mExtraValues = intent.getParcelableExtra(EXTRA_VALUES);
+        if (mExtraValues != null) {
+            LogUtils.d(LOG_TAG, "Launched with extra values: %s", mExtraValues.toString());
         }
 
         for (String extra : ALL_EXTRAS) {
@@ -2607,7 +2626,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     static int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
             Message message, final Message refMessage, Spanned body, final CharSequence quotedText,
             SendOrSaveCallback callback, Handler handler, boolean save, int composeMode,
-            ReplyFromAccount draftAccount) {
+            ReplyFromAccount draftAccount, final ContentValues extraValues) {
         final ContentValues values = new ContentValues();
 
         final String refMessageId = refMessage != null ? refMessage.uri.toString() : "";
@@ -2659,6 +2678,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         MessageModification.putAttachments(values, message.getAttachments());
         if (!TextUtils.isEmpty(refMessageId)) {
             MessageModification.putRefMessageId(values, refMessageId);
+        }
+        if (extraValues != null) {
+            values.putAll(extraValues);
         }
         SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(context, replyFromAccount,
                 values, refMessageId, message.getAttachments(), save);
@@ -2803,7 +2825,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Message msg = createMessage(mReplyFromAccount, getMode());
         mRequestId = sendOrSaveInternal(this, mReplyFromAccount, msg, mRefMessage, body,
                 mQuotedTextView.getQuotedTextIfIncluded(), callback,
-                mSendSaveTaskHandler, save, mComposeMode, mDraftAccount);
+                mSendSaveTaskHandler, save, mComposeMode, mDraftAccount, mExtraValues);
 
         // Don't display the toast if the user is just changing the orientation,
         // but we still need to save the draft to the cursor because this is how we restore
