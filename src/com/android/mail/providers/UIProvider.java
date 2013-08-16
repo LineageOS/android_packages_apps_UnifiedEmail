@@ -175,6 +175,7 @@ public class UIProvider {
             .put(AccountColumns.UPDATE_SETTINGS_URI, String.class)
             .put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, Integer.class)
             .put(AccountColumns.SYNC_AUTHORITY, String.class)
+            .put(AccountColumns.QUICK_RESPONSE_URI, String.class)
             .put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, String.class)
             .build();
 
@@ -467,6 +468,10 @@ public class UIProvider {
          * Sync authority to use.
          */
         public static final String SYNC_AUTHORITY = "syncAuthority";
+        /**
+         * URI for querying this account's quick responses
+         */
+        public static final String QUICK_RESPONSE_URI = "quickResponseUri";
 
         public static final class SettingsColumns {
             /**
@@ -581,6 +586,23 @@ public class UIProvider {
              */
             public static final String MOVE_TO_INBOX = "move_to_inbox";
         }
+    }
+
+    public static final String[] QUICK_RESPONSE_PROJECTION = {
+        BaseColumns._ID,
+        QuickResponseColumns.TEXT,
+        QuickResponseColumns.URI
+    };
+
+    public static final class QuickResponseColumns {
+        /**
+         * Text of the Quick Response
+         */
+        public static final String TEXT = "quickResponse";
+        /**
+         * URI to access this row directly
+         */
+        public static final String URI = "uri";
     }
 
     public static final String[] ACCOUNT_COOKIE_PROJECTION = {

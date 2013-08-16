@@ -240,7 +240,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private CcBccView mCcBccView;
     private AttachmentsView mAttachmentsView;
     private Account mAccount;
-    private ReplyFromAccount mReplyFromAccount;
+    protected ReplyFromAccount mReplyFromAccount;
     private Settings mCachedSettings;
     private Rfc822Validator mValidator;
     private TextView mSubject;
@@ -249,7 +249,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private int mComposeMode = -1;
     private boolean mForward;
     private QuotedTextView mQuotedTextView;
-    private EditText mBodyView;
+    protected EditText mBodyView;
     private View mFromStatic;
     private TextView mFromStaticText;
     private View mFromSpinnerWrapper;
