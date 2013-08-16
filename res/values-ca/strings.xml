@@ -412,7 +412,7 @@
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Imatge del remitent"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Mostra al costat del nom a la llista de converses"</string>
     <string name="preference_attachment_previews_title" msgid="778099230423462593">"Visualitzacions prèvies de fitxer adjunt"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Mostra les visualitzacions prèvies del fitxer adjunt dels missatges recents a la llista de converses"</string>
+    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Mostra les visualitzacions prèvies de fitxer adjunt dels missatges recents a la llista de converses"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Fes lliscar el dit cap avall per actualitzar."</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"S\'està comprovant si hi ha correu."</string>
     <string name="empty_trash" msgid="652435297593538512">"Buida la paperera"</string>
@@ -434,9 +434,9 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"Avui a les <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Ahir a les <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Omet el consell"</string>
-    <!-- no translation found for auto_sync_off (8182034791210468574) -->
+    <!-- no translation found for auto_sync_off (7185342309138211107) -->
     <skip />
-    <!-- no translation found for account_sync_off (7127453647436993865) -->
+    <!-- no translation found for account_sync_off (5699548271856775808) -->
     <skip />
     <!-- no translation found for airplane_mode_on (2206488373387145840) -->
     <skip />
