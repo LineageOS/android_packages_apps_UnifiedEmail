@@ -101,8 +101,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     public static final int POPUP_MODE = 1;
 
     // This is a debug only feature
-    public static final boolean ENABLE_REPORT_RENDERING_PROBLEM =
-            MailPrefs.SHOW_EXPERIMENTAL_PREFS;
+    public static final boolean ENABLE_REPORT_RENDERING_PROBLEM = false;
 
     private static final String DETAILS_DIALOG_TAG = "details-dialog";
 
