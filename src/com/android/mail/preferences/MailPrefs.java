@@ -26,6 +26,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.widget.BaseWidgetProvider;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import java.util.Collections;
 import java.util.List;
@@ -346,8 +347,10 @@ public final class MailPrefs extends VersionedPrefs {
                     final Set<String> currentPatterns = getSenderWhitelistPatterns();
                     final String patternRegex = pattern.pattern();
                     if (!currentPatterns.contains(patternRegex)) {
-                        currentPatterns.add(patternRegex);
-                        setSenderWhitelistPatterns(currentPatterns);
+                        // Copy strings to a modifiable set
+                        final Set<String> updatedPatterns = Sets.newHashSet(currentPatterns);
+                        updatedPatterns.add(patternRegex);
+                        setSenderWhitelistPatterns(updatedPatterns);
                     }
                     return;
                 }
@@ -359,8 +362,9 @@ public final class MailPrefs extends VersionedPrefs {
             // duplicate entries, but using a Set as intermediate representation guarantees this
             // for us anyway. Also, using maps to represent sets forces you to pick values for
             // them, and that's weird.
-            whitelist.add(sender);
-            setSenderWhitelist(whitelist);
+            final Set<String> updatedList = Sets.newHashSet(whitelist);
+            updatedList.add(sender);
+            setSenderWhitelist(updatedList);
         }
     }
 
