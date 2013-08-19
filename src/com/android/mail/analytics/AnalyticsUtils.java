@@ -51,6 +51,8 @@ public class AnalyticsUtils {
             s = "mark not important";
         } else if (id == R.id.mute) {
             s = "mute";
+        } else if (id == R.id.report_phishing) {
+            s = "report_phishing";
         } else if (id == R.id.report_spam) {
             s = "report_spam";
         } else if (id == R.id.mark_not_spam) {
@@ -99,6 +101,8 @@ public class AnalyticsUtils {
             s = "send_message";
         } else if (id == R.id.discard) {
             s = "compose_discard_draft";
+        } else if (id == R.id.search) {
+            s = "search";
         } else {
             s = null;
         }

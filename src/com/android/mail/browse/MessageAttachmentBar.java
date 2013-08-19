@@ -40,6 +40,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
@@ -173,15 +174,27 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             if (mAttachment.canSave()) {
                 mActionHandler.startDownloadingAttachment(AttachmentDestination.EXTERNAL);
                 mSaveClicked = true;
+
+                Analytics.getInstance().sendEvent(
+                        "save_attachment", Utils.normalizeMimeType(mAttachment.getContentType()),
+                        "attachment_bar", mAttachment.size);
             }
         } else if (res == R.id.download_again) {
             if (mAttachment.isPresentLocally()) {
                 mActionHandler.showDownloadingDialog();
                 mActionHandler.startRedownloadingAttachment(mAttachment);
+
+                Analytics.getInstance().sendEvent("redownload_attachment",
+                        Utils.normalizeMimeType(mAttachment.getContentType()), "attachment_bar",
+                        mAttachment.size);
             }
         } else if (res == R.id.cancel_attachment) {
             mActionHandler.cancelAttachment();
             mSaveClicked = false;
+
+            Analytics.getInstance().sendEvent(
+                    "cancel_attachment", Utils.normalizeMimeType(mAttachment.getContentType()),
+                    "attachment_bar", mAttachment.size);
         } else if (res == R.id.overflow) {
             // If no overflow items are visible, just bail out.
             // We shouldn't be able to get here anyhow since the overflow
@@ -207,6 +220,9 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             // button or cancel button or one of the
             // overflow items.
 
+            final String mime = Utils.normalizeMimeType(mAttachment.getContentType());
+            final String action;
+
             // If the mimetype is blocked, show the info dialog
             if (MimeType.isBlocked(mAttachment.getContentType())) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -214,6 +230,9 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 builder.setTitle(R.string.more_info_attachment)
                        .setMessage(dialogMessage)
                        .show();
+
+                action = "attachment_bar_blocked";
+
             }
             // If we can install, install.
             else if (MimeType.isInstallable(mAttachment.getContentType())) {
@@ -222,16 +241,22 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 // workaround in
                 // UiProvider#getUiAttachmentsCursorForUIAttachments()
                 mActionHandler.showAttachment(AttachmentDestination.EXTERNAL);
+
+                action = "attachment_bar_install";
             }
             // If we can view or play with an on-device app,
             // view or play.
             else if (MimeType.isViewable(
                     getContext(), mAttachment.contentUri, mAttachment.getContentType())) {
                 mActionHandler.showAttachment(AttachmentDestination.CACHE);
+
+                action = "attachment_bar";
             }
             // If we can only preview the attachment, preview.
             else if (mAttachment.canPreview()) {
                 previewAttachment();
+
+                action = null;
             }
             // Otherwise, if we cannot do anything, show the info dialog.
             else {
@@ -240,6 +265,13 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 builder.setTitle(R.string.more_info_attachment)
                        .setMessage(dialogMessage)
                        .show();
+
+                action = "attachment_bar_no_viewer";
+            }
+
+            if (action != null) {
+                Analytics.getInstance()
+                        .sendEvent("view_attachment", mime, action, mAttachment.size);
             }
         }
 
@@ -305,6 +337,10 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             final Intent previewIntent =
                     new Intent(Intent.ACTION_VIEW, mAttachment.previewIntentUri);
             getContext().startActivity(previewIntent);
+
+            Analytics.getInstance().sendEvent(
+                    "preview_attachment", Utils.normalizeMimeType(mAttachment.getContentType()),
+                    null, mAttachment.size);
         }
     }
 
