@@ -226,7 +226,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
                 accountPreferences.resetNumOfDismissesForAccountSyncOff();
 
                 // Now check for whether airplane mode is on
-                if (Utils.isAirplaneModeOn(context)) {
+                if (Utils.isAirplaneModeOnAndDeviceOffline(context)) {
                     return ReasonSyncOff.AIRPLANE_MODE_ON;
                 } else {
                     mailPrefs.resetNumOfDismissesForAirplaneModeOn();
