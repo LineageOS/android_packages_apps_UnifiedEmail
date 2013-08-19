@@ -167,7 +167,8 @@ public final class TwoPaneController extends AbstractActivityController {
     public void onViewModeChanged(int newMode) {
         if (mMiscellaneousViewTransactionId >= 0) {
             final FragmentManager fragmentManager = mActivity.getFragmentManager();
-            fragmentManager.popBackStackImmediate(mMiscellaneousViewTransactionId, 0 /* flags */);
+            fragmentManager.popBackStackImmediate(mMiscellaneousViewTransactionId,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
             mMiscellaneousViewTransactionId = -1;
         }
 
