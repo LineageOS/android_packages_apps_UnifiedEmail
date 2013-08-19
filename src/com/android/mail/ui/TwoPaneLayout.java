@@ -91,9 +91,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     private DrawerLayout mDrawerLayout;
 
+    private View mMiscellaneousView;
     private View mConversationView;
     private View mFoldersView;
     private View mListView;
+
+    public static final int MISCELLANEOUS_VIEW_ID = R.id.miscellaneous_pane;
 
     private final Runnable mTransitionCompleteRunnable = new Runnable() {
         @Override
@@ -158,6 +161,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView = findViewById(R.id.conversation_list_pane);
         mListCopyView = (ConversationListCopy) findViewById(R.id.conversation_list_copy);
         mConversationView = findViewById(R.id.conversation_pane);
+        mMiscellaneousView = findViewById(MISCELLANEOUS_VIEW_ID);
 
         // all panes start GONE in initial UNKNOWN mode to avoid drawing misplaced panes
         mCurrentMode = ViewMode.UNKNOWN;
@@ -165,6 +169,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView.setVisibility(GONE);
         mListCopyView.setVisibility(GONE);
         mConversationView.setVisibility(GONE);
+        mMiscellaneousView.setVisibility(GONE);
     }
 
     @VisibleForTesting
@@ -217,12 +222,14 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             LogUtils.i(LOG_TAG, "setting up new TPL, w=%d fw=%d cv=%d", parentWidth,
                     foldersWidth, convWidth);
 
+            setPaneWidth(mMiscellaneousView, convWidth);
             setPaneWidth(mConversationView, convWidth);
         }
 
         final int currListWidth = getPaneWidth(mListView);
         int listWidth = currListWidth;
         switch (mCurrentMode) {
+            case ViewMode.AD:
             case ViewMode.CONVERSATION:
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 if (!mListCollapsible) {
@@ -263,6 +270,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         int convX = 0, listX = 0, foldersX = 0;
 
         switch (mCurrentMode) {
+            case ViewMode.AD:
             case ViewMode.CONVERSATION:
             case ViewMode.SEARCH_RESULTS_CONVERSATION: {
                 final int foldersW = getPaneWidth(mFoldersView);
@@ -330,6 +338,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         // a view intent.
         if (mPositionedMode == ViewMode.UNKNOWN) {
             mConversationView.setX(convX);
+            mMiscellaneousView.setX(convX);
             mListView.setX(listX);
             if (!isDrawerView(mFoldersView)) {
                 mFoldersView.setX(foldersX);
@@ -354,7 +363,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
         useHardwareLayer(true);
 
-        mConversationView.animate().x(convX);
+        if (ViewMode.isAdMode(mCurrentMode)) {
+            mMiscellaneousView.animate().x(convX);
+        } else {
+            mConversationView.animate().x(convX);
+        }
+
         if (!isDrawerView(mFoldersView)) {
             mFoldersView.animate().x(foldersX);
         }
@@ -365,7 +379,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             .x(listX)
             .alpha(1.0f)
             .setListener(mPaneAnimationListener);
-        configureAnimations(mConversationView, mFoldersView, mListView, mListCopyView);
+        configureAnimations(mConversationView, mFoldersView, mListView, mListCopyView,
+                mMiscellaneousView);
     }
 
     private void configureAnimations(View... views) {
@@ -387,6 +402,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView.setLayerType(layerType, null);
         mListCopyView.setLayerType(layerType, null);
         mConversationView.setLayerType(layerType, null);
+        mMiscellaneousView.setLayerType(layerType, null);
         if (useHardware) {
             // these buildLayer calls are safe because layout is the only way we get here
             // (i.e. these views must already be attached)
@@ -396,6 +412,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             mListView.buildLayer();
             mListCopyView.buildLayer();
             mConversationView.buildLayer();
+            mMiscellaneousView.buildLayer();
         }
     }
 
@@ -431,6 +448,11 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 dispatchConversationListVisibilityChange(true);
 
                 break;
+            case ViewMode.AD:
+                dispatchConversationVisibilityChanged(false);
+                dispatchConversationListVisibilityChange(false);
+
+                break;
             default:
                 break;
         }
@@ -452,6 +474,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
             case ViewMode.SEARCH_RESULTS_LIST:
                 return totalWidth - computeFolderListWidth(totalWidth);
+            case ViewMode.AD:
             case ViewMode.CONVERSATION:
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 return (int) (totalWidth * mConversationListWeight);
@@ -505,10 +528,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         return isDrawerView(pane) ? 0 : pane.getLayoutParams().width;
     }
 
-    public View getConversationView() {
-        return mConversationView;
-    }
-
     private boolean isDrawerView(View child) {
         return child != null && child.getParent() == mDrawerLayout;
     }
@@ -527,7 +546,14 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             mFoldersView.setVisibility(VISIBLE);
             mListView.setVisibility(VISIBLE);
             mListCopyView.setVisibility(VISIBLE);
+        }
+
+        if (ViewMode.isAdMode(newMode)) {
+            mMiscellaneousView.setVisibility(VISIBLE);
+            mConversationView.setVisibility(GONE);
+        } else {
             mConversationView.setVisibility(VISIBLE);
+            mMiscellaneousView.setVisibility(GONE);
         }
 
         // set up the drawer as appropriate for the configuration
@@ -585,6 +611,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 s = "conv-list";
             } else if (pane == mConversationView) {
                 s = "conv-view";
+            } else if (pane == mMiscellaneousView) {
+                s = "misc-view";
             } else {
                 s = "???:" + pane;
             }
