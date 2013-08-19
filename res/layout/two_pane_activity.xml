@@ -65,6 +65,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent" />
 
+        <FrameLayout
+            android:id="@+id/miscellaneous_pane"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
         <com.android.mail.ui.ActionableToastBar
             android:id="@+id/toast_bar"
             style="@style/ToastBarStyle" />
