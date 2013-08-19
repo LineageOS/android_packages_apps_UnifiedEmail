@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
@@ -164,6 +165,12 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void onViewModeChanged(int newMode) {
+        if (mMiscellaneousViewTransactionId >= 0) {
+            final FragmentManager fragmentManager = mActivity.getFragmentManager();
+            fragmentManager.popBackStackImmediate(mMiscellaneousViewTransactionId, 0 /* flags */);
+            mMiscellaneousViewTransactionId = -1;
+        }
+
         super.onViewModeChanged(newMode);
         if (newMode != ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
             // Clear the wait fragment
@@ -174,7 +181,8 @@ public final class TwoPaneController extends AbstractActivityController {
         // untouched.
         // When the conversation list is made visible again, try to enable the CAB
         // mode if any conversations are selected.
-        if (newMode == ViewMode.CONVERSATION || newMode == ViewMode.CONVERSATION_LIST){
+        if (newMode == ViewMode.CONVERSATION || newMode == ViewMode.CONVERSATION_LIST
+                || ViewMode.isAdMode(newMode)) {
             enableOrDisableCab();
         }
     }
@@ -342,7 +350,7 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean handleUpPress() {
         int mode = mViewMode.getMode();
-        if (mode == ViewMode.CONVERSATION) {
+        if (mode == ViewMode.CONVERSATION || mViewMode.isAdMode()) {
             handleBackPress();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             if (mLayout.isConversationListCollapsed()
@@ -388,7 +396,7 @@ public final class TwoPaneController extends AbstractActivityController {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
-        } else if (mode == ViewMode.CONVERSATION) {
+        } else if (mode == ViewMode.CONVERSATION || mViewMode.isAdMode()) {
             // Go to conversation list.
             mViewMode.enterConversationListMode();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
@@ -558,8 +566,17 @@ public final class TwoPaneController extends AbstractActivityController {
         return ListView.CHOICE_MODE_SINGLE;
     }
 
+    private int mMiscellaneousViewTransactionId = -1;
+
     @Override
     public void launchFragment(final Fragment fragment) {
-        // TODO(skennedy)
+        final int containerViewId = TwoPaneLayout.MISCELLANEOUS_VIEW_ID;
+
+        final FragmentManager fragmentManager = mActivity.getFragmentManager();
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(containerViewId, fragment, TAG_CUSTOM_FRAGMENT);
+        mMiscellaneousViewTransactionId = fragmentTransaction.commitAllowingStateLoss();
+        fragmentManager.executePendingTransactions();
     }
 }
