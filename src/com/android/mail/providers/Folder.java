@@ -719,9 +719,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public String getTypeDescription() {
         final String desc;
         if (isType(FolderType.INBOX_SECTION)) {
-            desc = "inbox_section";
+            desc = "inbox_section:" + persistentId;
         } else if (isInbox()) {
-            desc = "inbox";
+            desc = "inbox:" + persistentId;
         } else if (isDraft()) {
             desc = "draft";
         } else if (isImportantOnly()) {
@@ -741,7 +741,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         } else if (isViewAll()) {
             desc = "all_mail";
         } else if (isProviderFolder()) {
-            desc = "(other)";
+            desc = "other:" + persistentId;
         } else {
             desc = "user_folder";
         }
