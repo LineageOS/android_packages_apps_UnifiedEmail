@@ -750,7 +750,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (!isChangingConfigurations()) {
             saveIfNeeded();
 
-            if (isFinishing() && !mPerformedSendOrDiscard) {
+            if (isFinishing() && !mPerformedSendOrDiscard && !isBlank()) {
                 // log saving upon backing out of activity. (we avoid logging every sendOrSave()
                 // because that method can be invoked many times in a single compose session.)
                 logSendOrSave(true /* save */);
@@ -1530,7 +1530,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     final Uri uri = Uri.parse(uriString);
                     long size = 0;
                     try {
-                        size =  mAttachmentsView.addAttachment(mAccount, uri);
+                        final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
+                        size = mAttachmentsView.addAttachment(mAccount, a);
+
+                        Analytics.getInstance().sendEvent("send_intent_attachment",
+                                Utils.normalizeMimeType(a.getContentType()), null, size);
+
                     } catch (AttachmentFailureException e) {
                         LogUtils.e(LOG_TAG, e, "Error adding attachment");
                         showAttachmentTooBigToast(e.getErrorRes());
@@ -1545,7 +1550,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     ArrayList<Attachment> attachments = new ArrayList<Attachment>();
                     for (Parcelable uri : uris) {
                         try {
-                            attachments.add(mAttachmentsView.generateLocalAttachment((Uri) uri));
+                            final Attachment a = mAttachmentsView.generateLocalAttachment(
+                                    (Uri) uri);
+                            attachments.add(a);
+
+                            Analytics.getInstance().sendEvent("send_intent_attachment",
+                                    Utils.normalizeMimeType(a.getContentType()), null, a.size);
+
                         } catch (AttachmentFailureException e) {
                             LogUtils.e(LOG_TAG, e, "Error adding attachment");
                             String maxSize = AttachmentUtils.convertToHumanReadableSize(
@@ -1560,7 +1571,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     final Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
                     long size = 0;
                     try {
-                        size = mAttachmentsView.addAttachment(mAccount, uri);
+                        final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
+                        size = mAttachmentsView.addAttachment(mAccount, a);
+
+                        Analytics.getInstance().sendEvent("send_intent_attachment",
+                                Utils.normalizeMimeType(a.getContentType()), null, size);
+
                     } catch (AttachmentFailureException e) {
                         LogUtils.e(LOG_TAG, e, "Error adding attachment");
                         showAttachmentTooBigToast(e.getErrorRes());
@@ -1572,6 +1588,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (totalSize > 0) {
                 mAttachmentsChanged = true;
                 updateSaveUi();
+
+                Analytics.getInstance().sendEvent("send_intent_with_attachments",
+                        Integer.toString(getAttachments().size()), null, totalSize);
             }
         }
     }

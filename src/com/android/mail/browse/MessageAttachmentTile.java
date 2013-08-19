@@ -32,6 +32,7 @@ import android.view.ViewParent;
 
 import com.android.ex.photo.util.ImageUtils;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.photo.MailPhotoViewActivity;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
@@ -151,7 +152,12 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
 
     @Override
     public void viewAttachment() {
-        if (ImageUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.getContentType()))) {
+        final String mime = Utils.normalizeMimeType(mAttachment.getContentType());
+
+        Analytics.getInstance()
+                .sendEvent("view_attachment", mime, "attachment_tile", mAttachment.size);
+
+        if (ImageUtils.isImageMimeType(mime)) {
             MailPhotoViewActivity
                     .startMailPhotoViewActivity(getContext(), mAttachmentsListUri, mPhotoIndex);
             return;
@@ -161,7 +167,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         Utils.setIntentDataAndTypeAndNormalize(
-                intent, mAttachment.contentUri, mAttachment.getContentType());
+                intent, mAttachment.contentUri, mime);
         try {
             getContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {
