@@ -447,6 +447,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             previews = savedState.getParcelableArrayList(EXTRA_ATTACHMENT_PREVIEWS);
             mRefMessage = (Message) savedState.getParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE);
             quotedText = savedState.getCharSequence(EXTRA_QUOTED_TEXT);
+
+            mExtraValues = savedState.getParcelable(EXTRA_VALUES);
         } else {
             account = obtainAccount(intent);
             action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
@@ -869,6 +871,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         state.putBoolean(EXTRA_SAVE_ENABLED, mSave != null && mSave.isEnabled());
         state.putParcelableArrayList(
                 EXTRA_ATTACHMENT_PREVIEWS, mAttachmentsView.getAttachmentPreviews());
+
+        state.putParcelable(EXTRA_VALUES, mExtraValues);
     }
 
     private int getMode() {
