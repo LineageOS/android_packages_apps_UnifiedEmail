@@ -434,10 +434,10 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"今日、<xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"昨日、<xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"ヒントを表示しない"</string>
-    <!-- no translation found for auto_sync_off (7185342309138211107) -->
-    <skip />
-    <!-- no translation found for account_sync_off (5699548271856775808) -->
-    <skip />
-    <!-- no translation found for airplane_mode_on (2206488373387145840) -->
-    <skip />
+    <string name="auto_sync_off" msgid="7185342309138211107">"自動同期はOFFです。"</string>
+    <string name="tap_to_enable_sync" msgid="8332275909378339123">"自動同期をONにするにはタップします。"</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"アカウントの同期はOFFです。"</string>
+    <string name="airplane_mode_on" msgid="2206488373387145840">"機内モードはONです"</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>でONにできます。"</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"アカウント設定"</string>
 </resources>
