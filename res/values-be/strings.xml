@@ -453,8 +453,14 @@
     <skip />
     <!-- no translation found for auto_sync_off (7185342309138211107) -->
     <skip />
+    <!-- no translation found for tap_to_enable_sync (8332275909378339123) -->
+    <skip />
     <!-- no translation found for account_sync_off (5699548271856775808) -->
     <skip />
     <!-- no translation found for airplane_mode_on (2206488373387145840) -->
+    <skip />
+    <!-- no translation found for enable_sync_in_account_settings (7707227409018294927) -->
+    <skip />
+    <!-- no translation found for account_settings_param (5277032997773498476) -->
     <skip />
 </resources>
