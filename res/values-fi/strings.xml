@@ -434,10 +434,10 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"Tänään klo <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Eilen klo <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Hylkää vinkki"</string>
-    <!-- no translation found for auto_sync_off (7185342309138211107) -->
-    <skip />
-    <!-- no translation found for account_sync_off (5699548271856775808) -->
-    <skip />
-    <!-- no translation found for airplane_mode_on (2206488373387145840) -->
-    <skip />
+    <string name="auto_sync_off" msgid="7185342309138211107">"Automaattinen synkronointi ei ole käytössä."</string>
+    <string name="tap_to_enable_sync" msgid="8332275909378339123">"Ota automaattinen synkronointi käyttöön napauttamalla."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Tilin synkronointi ei ole käytössä."</string>
+    <string name="airplane_mode_on" msgid="2206488373387145840">"Lentokonetila on käytössä"</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Ota käyttöön täällä: <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"Tilin asetukset"</string>
 </resources>
