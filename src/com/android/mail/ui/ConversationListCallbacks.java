@@ -38,10 +38,14 @@ public interface ConversationListCallbacks {
     void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks);
 
     /**
-     * Called whenever CAB mode has been entered via
-     * long press or selecting a sender image.
+     * Called whenever CAB mode has been entered via long press or selecting a sender image.
      */
     void onCabModeEntered();
+
+    /**
+     * Called whenever CAB mode has been exited.
+     */
+    void onCabModeExited();
 
     ConversationCursor getConversationListCursor();
 

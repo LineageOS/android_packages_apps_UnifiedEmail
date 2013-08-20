@@ -72,6 +72,11 @@ public interface ConversationSpecialItemView {
      */
     void onCabModeEntered();
 
+    /**
+     * Called whenever Cab Mode has been exited.
+     */
+    void onCabModeExited();
+
     /** Returns whether this special view is enabled (= accepts user taps). */
     boolean acceptsUserTaps();
 }
