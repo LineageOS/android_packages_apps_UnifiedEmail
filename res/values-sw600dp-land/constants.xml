@@ -15,9 +15,6 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Whether to show conversation subject in conversation view -->
-    <bool name="show_conversation_subject">false</bool>
-
     <!-- Whether the list is collapsible in conversation view mode -->
     <bool name="list_collapsible">false</bool>
     <!-- Whether to show single or 2 pane search results -->

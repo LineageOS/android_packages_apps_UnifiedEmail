@@ -65,9 +65,6 @@
     <!-- Whether to show the archive item as disabled rather than hiding it entirely -->
     <bool name="show_disabled_archive_menu_item">false</bool>
 
-    <!-- Whether to show conversation subject in conversation view -->
-    <bool name="show_conversation_subject">true</bool>
-
     <!-- Amount of memory in bytes allocated for image cache -->
     <integer name="config_image_cache_max_bytes">1500000</integer>
 
@@ -105,9 +102,6 @@
 
     <!-- True if addresses can be veiled, to show a friendly text message instead. -->
     <bool name="veiled_address_enabled">false</bool>
-
-    <!-- Whether to show the priority indicator inline with the senders in conversation list view -->
-    <bool name="inline_personal_level">true</bool>
 
     <integer name="swipe_senders_length">25</integer>
 
