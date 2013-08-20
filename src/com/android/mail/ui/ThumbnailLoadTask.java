@@ -33,7 +33,6 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -164,27 +163,11 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             return 0;
         }
 
-        ByteArrayOutputStream out = null;
         InputStream in = null;
         try {
             final ContentResolver resolver = mHolder.getResolver();
             in = resolver.openInputStream(thumbnailUri);
-            out = new ByteArrayOutputStream();
-            final byte[] buffer = new byte[4096];
-            int n = in.read(buffer);
-            while (n >= 0) {
-                out.write(buffer, 0, n);
-                n = in.read(buffer);
-            }
-            in.close();
-            in = null;
-
-            if (isCancelled()) {
-                return 0;
-            }
-
-            final byte[] bitmapBytes = out.toByteArray();
-            return Exif.getOrientation(bitmapBytes);
+            return Exif.getOrientation(in, -1);
         } catch (Throwable t) {
             LogUtils.e(LOG_TAG, t, "Unable to get orientation of thumbnail %s", thumbnailUri);
         } finally {
@@ -193,13 +176,6 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
                     in.close();
                 } catch (IOException e) {
                     LogUtils.e(LOG_TAG, e, "error attemtping to close input stream");
-                }
-            }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    LogUtils.e(LOG_TAG, e, "error attemtping to close output stream");
                 }
             }
         }

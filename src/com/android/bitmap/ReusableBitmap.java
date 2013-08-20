@@ -27,14 +27,16 @@ public class ReusableBitmap implements Poolable {
     public final Bitmap bmp;
     private int mWidth;
     private int mHeight;
+    private int mOrientation;
+
     private int mRefCount = 0;
     private final boolean mReusable;
 
-    public ReusableBitmap(Bitmap bitmap) {
+    public ReusableBitmap(final Bitmap bitmap) {
         this(bitmap, true /* reusable */);
     }
 
-    public ReusableBitmap(Bitmap bitmap, boolean reusable) {
+    public ReusableBitmap(final Bitmap bitmap, final boolean reusable) {
         bmp = bitmap;
         mReusable = reusable;
     }
@@ -58,6 +60,14 @@ public class ReusableBitmap implements Poolable {
 
     public int getLogicalHeight() {
         return mHeight;
+    }
+
+    public int getOrientation() {
+        return mOrientation;
+    }
+
+    public void setOrientation(final int orientation) {
+        mOrientation = orientation;
     }
 
     public int getByteCount() {
