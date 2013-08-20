@@ -364,10 +364,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // that are possible.
         LogUtils.d(LOG_TAG, "ActionBarView.onPrepareOptionsMenu().");
 
-        if (mController.shouldHideMenuItems()) {
-            setMenuItemsToHiddenForOpenDrawer(menu);
-            return false;
-        }
         if (mHelpItem != null) {
             mHelpItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
@@ -375,6 +371,21 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (mSendFeedbackItem != null) {
             mSendFeedbackItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.SEND_FEEDBACK));
+        }
+        if (mController.shouldHideMenuItems()) {
+            // Shortcut: hide all remaining menu items if the drawer is shown
+            final int size = menu.size();
+
+            for (int i = 0; i < size; i++) {
+                final MenuItem item = menu.getItem(i);
+                final int id = item.getItemId();
+                if (id != R.id.settings
+                        && id != R.id.feedback_menu_item
+                        && id != R.id.help_info_menu_item) {
+                    item.setVisible(false);
+                }
+            }
+            return false;
         }
         if (mFolderSettingsItem != null) {
             mFolderSettingsItem.setVisible(mFolder != null
@@ -516,22 +527,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Hides menu items while the drawer is open.
-     */
-    private static void setMenuItemsToHiddenForOpenDrawer(Menu menu) {
-        final int size = menu.size();
-
-        for (int i = 0; i < size; i++) {
-            final MenuItem item = menu.getItem(i);
-
-            final int id = item.getItemId();
-            item.setVisible(id == R.id.settings ||
-                    id == R.id.feedback_menu_item ||
-                    id == R.id.help_info_menu_item);
         }
     }
 
