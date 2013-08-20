@@ -27,6 +27,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.RectUtils;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -194,7 +195,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         final Rect bounds = getBounds();
         if (bounds.isEmpty()) {
             return;
@@ -207,7 +208,24 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
                             mCoordinates.attachmentPreviewsDecodeHeight, Integer.MAX_VALUE,
                             mParallaxFraction, false /* absoluteFraction */,
                             mParallaxSpeedMultiplier, mSrcRect);
-            canvas.drawBitmap(mBitmap.bmp, mSrcRect, bounds, mPaint);
+
+            final int orientation = mBitmap.getOrientation();
+            // calculateCroppedSrcRect() gave us the source rectangle "as if" the orientation has
+            // been corrected. We need to decode the uncorrected source rectangle. Calculate true
+            // coordinates.
+            RectUtils.rotateRectForOrientation(orientation,
+                    new Rect(0, 0, mBitmap.getLogicalWidth(), mBitmap.getLogicalHeight()),
+                    mSrcRect);
+
+            // We may need to rotate the canvas, so we also have to rotate the bounds.
+            final Rect rotatedBounds = new Rect(bounds);
+            RectUtils.rotateRect(orientation, bounds.centerX(), bounds.centerY(), rotatedBounds);
+
+            // Rotate the canvas.
+            canvas.save();
+            canvas.rotate(orientation, bounds.centerX(), bounds.centerY());
+            canvas.drawBitmap(mBitmap.bmp, mSrcRect, rotatedBounds, mPaint);
+            canvas.restore();
         }
 
         // Draw the two possible overlay layers in reverse-priority order.
