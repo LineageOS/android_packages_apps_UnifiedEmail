@@ -174,9 +174,8 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         }
 
         // find cached entry here and skip decode if found.
-        final ReusableBitmap cached = mCache.get(key);
+        final ReusableBitmap cached = mCache.get(key, true /* incrementRefCount */);
         if (cached != null) {
-            cached.acquireReference();
             setBitmap(cached);
             LogUtils.d(LOG_TAG, "CACHE HIT key=%s", mCurrKey);
         } else {
