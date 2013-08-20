@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.provider.Settings;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.style.TextAppearanceSpan;
 import android.util.AttributeSet;
 import android.view.View;
@@ -293,6 +292,11 @@ public class ConversationSyncDisabledTipView extends FrameLayout
     @Override
     public void onCabModeEntered() {
         dismiss();
+    }
+
+    @Override
+    public void onCabModeExited() {
+        // Do nothing
     }
 
     @Override

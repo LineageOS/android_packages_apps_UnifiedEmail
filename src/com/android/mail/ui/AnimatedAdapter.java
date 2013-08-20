@@ -1119,6 +1119,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
     }
 
+    public void onCabModeExited() {
+        for (final ConversationSpecialItemView specialView : mFleetingViews) {
+            specialView.onCabModeExited();
+        }
+    }
+
     public void onScrollStateChanged(final int scrollState) {
         final boolean scrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
         mBitmapCache.setBlocking(scrolling);
