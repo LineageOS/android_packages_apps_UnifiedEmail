@@ -753,6 +753,21 @@ public final class ConversationListFragment extends ListFragment implements
         final int position =
                 cursorPosition + getAnimatedAdapter().getPositionOffset(cursorPosition);
 
+        setRawSelected(position, different);
+    }
+
+    /**
+     * Sets the selected conversation to the position given here.
+     * @param position The position of the item in the list
+     * @param different if the currently selected conversation is different from the one provided
+     * here.  This is a difference in conversations, not a difference in positions. For example, a
+     * conversation at position 2 can move to position 4 as a result of new mail.
+     */
+    public void setRawSelected(final int position, final boolean different) {
+        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE) {
+            return;
+        }
+
         if (different) {
             mListView.smoothScrollToPosition(position);
         }
