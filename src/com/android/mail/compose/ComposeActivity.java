@@ -2908,6 +2908,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void logSendOrSave(boolean save) {
+        if (!Analytics.isLoggable() || mAttachmentsView == null) {
+            return;
+        }
+
         final String category = (save) ? "message_save" : "message_send";
         final int attachmentCount = getAttachments().size();
         final String msgType;
