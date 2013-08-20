@@ -18,6 +18,7 @@
 package com.android.mail.analytics;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 
 /**
  * Mail wrapper for analytics libraries. Libraries should implement {@link Tracker}, and app
@@ -62,6 +63,10 @@ public final class Analytics {
         synchronized (Analytics.class) {
             sInstance = t;
         }
+    }
+
+    public static boolean isLoggable() {
+        return !ActivityManager.isUserAMonkey() && !ActivityManager.isRunningInTestHarness();
     }
 
     private static final class StubTracker implements Tracker {
