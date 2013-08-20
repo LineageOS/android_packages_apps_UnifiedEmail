@@ -22,19 +22,15 @@
     <dimen name="list_normal_mode_min_width_is_spacious">600dp</dimen>
     <dimen name="account_dropdown_item_height">48dip</dimen>
     <dimen name="senders_font_size">18sp</dimen>
-    <dimen name="subject_font_size">14sp</dimen>
     <dimen name="folders_text_bottom_padding">4dip</dimen>
     <dimen name="attachment_tile_min_size">120dp</dimen>
     <dimen name="attachment_tile_max_size">164dp</dimen>
-    <dimen name="date_font_size">12sp</dimen>
-    <dimen name="account_dropdown_dropdownwidth">274dip</dimen>
     <dimen name="compose_scrollview_width">700dp</dimen>
     <dimen name="color_block_width">32dip</dimen>
     <dimen name="color_block_height">6dip</dimen>
     <!-- The star is pretty small and does not have padding anymore, so the slop needs to be bigger-->
     <dimen name="star_touch_slop">16dip</dimen>
     <dimen name="sender_image_touch_slop">8dip</dimen>
-    <dimen name="move_slop">4dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">32dip</dimen>
     <dimen name="folders_left_padding">8dip</dimen>
@@ -42,7 +38,6 @@
     <dimen name="conversation_message_content_margin_side">16dp</dimen>
     <dimen name="conversation_view_margin_side">8dp</dimen>
     <dimen name="conversation_view_margin_side_minus_gradient">7dp</dimen>
-    <dimen name="conversation_view_margin_side_gradient">1dp</dimen>
     <dimen name="conversation_header_font_size">18sp</dimen>
     <dimen name="conversation_header_font_size_condensed">14sp</dimen>
     <dimen name="conversation_header_vertical_padding">16dip</dimen>
@@ -89,8 +84,6 @@
     <dimen name="account_item_minimum_height">48dip</dimen>
     <dimen name="account_item_swatch_height">8dip</dimen>
     <dimen name="account_item_folder_color_width">36dip</dimen>
-    <dimen name="account_radio_button_length">16dp</dimen>
-    <dimen name="widget_senders_font_size">18sp</dimen>
     <dimen name="widget_subject_font_size">13sp</dimen>
     <dimen name="widget_date_font_size">12sp</dimen>
     <dimen name="widget_margin_top">0dip</dimen>
@@ -98,20 +91,11 @@
     <dimen name="widget_margin_right">0dip</dimen>
     <dimen name="widget_margin_bottom">0dip</dimen>
     <dimen name="search_view_width">400dip</dimen>
-    <dimen name="titlebar_height">48dip</dimen>
-    <dimen name="titlebar_icon_size">40dip</dimen>
-    <dimen name="micro_kind_max_dimension">64dip</dimen>
-    <dimen name="mini_kind_max_dimension">340dip</dimen>
-    <dimen name="photo_crop_width">280dp</dimen>
-    <dimen name="photo_crop_stroke_width">1dp</dimen>
-    <dimen name="photo_overlay_right_padding">4dp</dimen>
-    <dimen name="photo_overlay_bottom_padding">6dp</dimen>
     <dimen name="toast_bar_bottom_margin">4dip</dimen>
     <dimen name="toast_bar_bottom_margin_in_conversation">24dip</dimen>
     <dimen name="wait_padding">16dp</dimen>
     <integer name="chips_max_lines">2</integer>
     <dimen name="tile_letter_font_size">33dp</dimen>
-    <dimen name="tile_letter_font_size_med">16dp</dimen>
     <dimen name="tile_letter_font_size_small">16dp</dimen>
     <dimen name="tile_divider_width">1dp</dimen>
     <dimen name="sync_status_bar_height">40dip</dimen>
