@@ -151,6 +151,10 @@ public class ConversationPhotoTeaserView extends FrameLayout
         dismiss();
     }
 
+    @Override
+    public void onCabModeExited() {
+        // Do nothing
+    }
 
     @Override
     public boolean acceptsUserTaps() {
