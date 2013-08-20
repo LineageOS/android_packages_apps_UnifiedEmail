@@ -8,6 +8,9 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 
 
+import com.android.ex.photo.util.Exif;
+import com.android.mail.utils.RectUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -94,7 +97,10 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         AssetFileDescriptor fd = null;
         InputStream in = null;
         try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            final boolean isJellyBeanOrAbove = android.os.Build.VERSION.SDK_INT
+                    >= android.os.Build.VERSION_CODES.JELLY_BEAN;
+            // This blocks during fling when the pool is empty. We block early to avoid jank.
+            if (isJellyBeanOrAbove) {
                 Trace.beginSection("poll for reusable bitmap");
                 mInBitmap = mCache.poll();
                 Trace.endSection();
@@ -104,15 +110,63 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 }
             }
 
-            Trace.beginSection("create fd or stream");
+            Trace.beginSection("create fd and stream");
             fd = mKey.createFd();
+            Trace.endSection();
             if (fd == null) {
-                in = mKey.createInputStream();
+                in = reset(in);
+                if (in == null) {
+                    return null;
+                }
+            }
+
+            Trace.beginSection("get bytesize");
+            final long byteSize;
+            if (fd != null) {
+                byteSize = fd.getLength();
+            } else {
+                byteSize = -1;
             }
             Trace.endSection();
 
+            Trace.beginSection("get orientation");
+            if (fd != null) {
+                // Creating an input stream from the file descriptor makes it useless afterwards.
+                Trace.beginSection("create fd and stream");
+                final AssetFileDescriptor orientationFd = mKey.createFd();
+                in = orientationFd.createInputStream();
+                Trace.endSection();
+            }
+            final int orientation = Exif.getOrientation(in, byteSize);
+            if (fd != null) {
+                try {
+                    // Close the temporary file descriptor.
+                    in.close();
+                } catch (IOException ex) {
+                }
+            }
+            final boolean isNotRotatedOr180 = orientation == 0 || orientation == 180;
+            Trace.endSection();
+
+            if (orientation != 0) {
+                // disable inBitmap-- bitmap reuse doesn't work with different decode regions due
+                // to orientation
+                if (mInBitmap != null) {
+                    mCache.offer(mInBitmap);
+                    mInBitmap = null;
+                    mOpts.inBitmap = null;
+                }
+            }
+
             if (isCancelled()) {
                 return null;
+            }
+
+            if (fd == null) {
+                in = reset(in);
+                if (in == null) {
+                    return null;
+                }
             }
 
             Trace.beginSection("decodeBounds");
@@ -128,20 +182,25 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 return null;
             }
 
-            final int srcW = mOpts.outWidth;
-            final int srcH = mOpts.outHeight;
-
+            // We want to calculate the sample size "as if" the orientation has been corrected.
+            final int srcW, srcH; // Orientation corrected.
+            if (isNotRotatedOr180) {
+                srcW = mOpts.outWidth;
+                srcH = mOpts.outHeight;
+            } else {
+                srcW = mOpts.outHeight;
+                srcH = mOpts.outWidth;
+            }
+            mOpts.inSampleSize = calculateSampleSize(srcW, srcH, mDestW, mDestH);
             mOpts.inJustDecodeBounds = false;
             mOpts.inMutable = true;
-            mOpts.inSampleSize = calculateSampleSize(srcW, srcH, mDestW, mDestH);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            if (isJellyBeanOrAbove && orientation == 0) {
                 if (mInBitmap == null) {
                     if (DEBUG) System.err.println(
                             "decode thread wants a bitmap. cache dump:\n" + mCache.toDebugString());
                     Trace.beginSection("create reusable bitmap");
-                    mInBitmap = new ReusableBitmap(
-                            Bitmap.createBitmap(mDestBufferW, mDestBufferH,
-                                    Bitmap.Config.ARGB_8888));
+                    mInBitmap = new ReusableBitmap(Bitmap.createBitmap(mDestBufferW, mDestBufferH,
+                            Bitmap.Config.ARGB_8888));
                     Trace.endSection();
 
                     if (isCancelled()) {
@@ -158,21 +217,23 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 mOpts.inBitmap = mInBitmap.bmp;
             }
 
-            Bitmap decodeResult = null;
-
-            if (in != null) {
-                in = mKey.createInputStream();
-            }
-
             if (isCancelled()) {
                 return null;
             }
 
-            final Rect srcRect = new Rect();
+            if (fd == null) {
+                in = reset(in);
+                if (in == null) {
+                    return null;
+                }
+            }
+
+            Bitmap decodeResult = null;
+            final Rect srcRect = new Rect(); // Not orientation corrected. True coordinates.
             if (CROP_DURING_DECODE) {
                 try {
                     Trace.beginSection("decodeCropped" + mOpts.inSampleSize);
-                    decodeResult = decodeCropped(fd, in, srcRect);
+                    decodeResult = decodeCropped(fd, in, orientation, srcRect);
                 } catch (IOException e) {
                     // fall through to below and try again with the non-cropping decoder
                     e.printStackTrace();
@@ -213,36 +274,33 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 }
             }
 
-            if (decodeResult != null) {
-                if (mInBitmap != null) {
-                    result = mInBitmap;
-                    // srcRect is non-empty when using the cropping BitmapRegionDecoder codepath
-                    if (!srcRect.isEmpty()) {
-                        result.setLogicalWidth((srcRect.right - srcRect.left) / mOpts.inSampleSize);
-                        result.setLogicalHeight(
-                                (srcRect.bottom - srcRect.top) / mOpts.inSampleSize);
-                    } else {
-                        result.setLogicalWidth(mOpts.outWidth);
-                        result.setLogicalHeight(mOpts.outHeight);
-                    }
+            if (decodeResult == null) {
+                return null;
+            }
+
+            if (mInBitmap != null) {
+                result = mInBitmap;
+                // srcRect is non-empty when using the cropping BitmapRegionDecoder codepath
+                if (!srcRect.isEmpty()) {
+                    result.setLogicalWidth((srcRect.right - srcRect.left) / mOpts.inSampleSize);
+                    result.setLogicalHeight(
+                            (srcRect.bottom - srcRect.top) / mOpts.inSampleSize);
                 } else {
-                    // no mInBitmap means no pooling
-                    result = new ReusableBitmap(decodeResult, false /* reusable */);
+                    result.setLogicalWidth(mOpts.outWidth);
+                    result.setLogicalHeight(mOpts.outHeight);
+                }
+            } else {
+                // no mInBitmap means no pooling
+                result = new ReusableBitmap(decodeResult, false /* reusable */);
+                if (isNotRotatedOr180) {
                     result.setLogicalWidth(decodeResult.getWidth());
                     result.setLogicalHeight(decodeResult.getHeight());
+                } else {
+                    result.setLogicalWidth(decodeResult.getHeight());
+                    result.setLogicalHeight(decodeResult.getWidth());
                 }
-                // System.out.println("*** async task decoded fd=" + mUri +
-                // " to" +
-                // " sz=" + (decodeResult.getByteCount() >> 10) + "KB dstW/H=" +
-                // result.getLogicalWidth() +
-                // "/" + result.getLogicalHeight() + " srcW/H=" + srcW + "/" +
-                // srcH + " ss=" +
-                // mOpts.inSampleSize + " mutable=" + decodeResult.isMutable() +
-                // " matchesInBitmap=" + (mOpts.inBitmap == decodeResult));
-            } else {
-                // System.out.println("*** async task cancelled decode of fd=" +
-                // mUri);
             }
+            result.setOrientation(orientation);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -250,14 +308,12 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 try {
                     fd.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
             if (result != null) {
@@ -274,38 +330,70 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         return result;
     }
 
-    private Bitmap decodeCropped(AssetFileDescriptor fd, InputStream in, Rect outSrcRect)
-            throws IOException {
+    private Bitmap decodeCropped(final AssetFileDescriptor fd, final InputStream in,
+            final int orientation, final Rect outSrcRect) throws IOException {
         final BitmapRegionDecoder brd;
         if (fd != null) {
-            brd = BitmapRegionDecoder.newInstance(fd.getFileDescriptor(),
-                    true /* shareable */);
+            brd = BitmapRegionDecoder.newInstance(fd.getFileDescriptor(), true /* shareable */);
         } else {
-            brd = BitmapRegionDecoder.newInstance(in,
-                    true /* shareable */);
+            brd = BitmapRegionDecoder.newInstance(in, true /* shareable */);
         }
         if (isCancelled()) {
             brd.recycle();
             return null;
         }
 
-        final int srcW = mOpts.outWidth;
-        final int srcH = mOpts.outHeight;
+        // We want to call calculateCroppedSrcRect() on the source rectangle "as if" the
+        // orientation has been corrected.
+        final int srcW, srcH; //Orientation corrected.
+        final boolean isNotRotatedOr180 = orientation == 0 || orientation == 180;
+        if (isNotRotatedOr180) {
+            srcW = mOpts.outWidth;
+            srcH = mOpts.outHeight;
+        } else {
+            srcW = mOpts.outHeight;
+            srcH = mOpts.outWidth;
+        }
 
-        // Trace.beginSection("DecodeRegionGetDimens");
-        // final int tmpw = brd.getWidth();
-        // final int tmph = brd.getHeight();
-        // Trace.endSection();
-
-        // Center the decode on the top 1/3
+        // Coordinates are orientation corrected.
+        // Center the decode on the top 1/3.
         BitmapUtils.calculateCroppedSrcRect(srcW, srcH, mDestW, mDestH, mDestH, mOpts.inSampleSize,
                 1f / 3, true /* absoluteFraction */, 1f, outSrcRect);
         if (DEBUG) System.out.println("rect for this decode is: " + outSrcRect
                 + " srcW/H=" + srcW + "/" + srcH
                 + " dstW/H=" + mDestW + "/" + mDestH);
+
+        // calculateCroppedSrcRect() gave us the source rectangle "as if" the orientation has
+        // been corrected. We need to decode the uncorrected source rectangle. Calculate true
+        // coordinates.
+        RectUtils.rotateRectForOrientation(orientation, new Rect(0, 0, srcW, srcH), outSrcRect);
+
         final Bitmap result = brd.decodeRegion(outSrcRect, mOpts);
         brd.recycle();
         return result;
+    }
+
+    /**
+     * Return an input stream that can be read from the beginning using the most efficient way,
+     * given an input stream that may or may not support reset(), or given null.
+     *
+     * The returned input stream may or may not be the same stream.
+     */
+    private InputStream reset(InputStream in) throws IOException {
+        Trace.beginSection("create stream");
+        if (in == null) {
+            in = mKey.createInputStream();
+        } else if (in.markSupported()) {
+            in.reset();
+        } else {
+            try {
+                in.close();
+            } catch (IOException ex) {
+            }
+            in = mKey.createInputStream();
+        }
+        Trace.endSection();
+        return in;
     }
 
     private Bitmap decode(AssetFileDescriptor fd, InputStream in) {
