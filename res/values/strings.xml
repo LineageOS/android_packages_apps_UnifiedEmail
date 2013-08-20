@@ -217,7 +217,7 @@
     <!--  Button for including inline responses. [CHAR LIMIT=25] -->
     <string name="respond_inline">Respond inline</string>
     <!-- Format string for email addresses -->
-    <string name="formatted_email_address" translate="false">&lt;<xliff:g id="email">%1$s</xliff:g>&gt;</string>
+    <string name="formatted_email_address" translatable="false">&lt;<xliff:g id="email">%1$s</xliff:g>&gt;</string>
 
     <!-- Attachments -->
     <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5]-->
@@ -729,9 +729,9 @@
     <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
     <string name="storage">Storage</string>
 
-    <string translate="false" name="hierarchical_folder_parent_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
-    <string translate="false" name="hierarchical_folder_parent_top_ellip"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215\u2026\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
-    <string translate="false" name="hierarchical_folder_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215</string>
+    <string translatable="false" name="hierarchical_folder_parent_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
+    <string translatable="false" name="hierarchical_folder_parent_top_ellip"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215\u2026\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
+    <string translatable="false" name="hierarchical_folder_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215</string>
 
     <!-- Token used as a divider between senders -->
     <string name="senders_split_token">,\u00A0</string>
