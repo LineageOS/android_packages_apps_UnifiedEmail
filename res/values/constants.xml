@@ -18,7 +18,6 @@
 <resources>
     <!-- Boolean value indicating whether the tablet UI should be used. -->
     <integer name="use_tablet_ui">0</integer>
-    <integer name="conversation_list_header_mode">1</integer>
     <integer name="conversation_header_mode">1</integer>
     <integer name="conversation_list_search_header_mode">1</integer>
 
@@ -81,9 +80,6 @@
 
     <!-- Wait at least this long to dismiss the spinner when loading a conversation -->
     <integer name="conversationview_min_show_loading">250</integer>
-
-    <!-- Animation duration for showing the title bar again for SecureConversationViewFragment -->
-    <integer name="title_bar_show_animation_duration">300</integer>
 
     <integer name="webview_initial_delay">1000</integer>
 
