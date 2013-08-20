@@ -57,30 +57,28 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         style="@style/MessageSenderNameStyle" />
-    <ImageView
-        android:id="@+id/presence"
-        android:layout_below="@id/sender_name"
-        style="@style/MessageHeaderPresenceStyle" />
     <TextView
         android:id="@+id/sender_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/sender_name"
-        android:layout_toEndOf="@id/presence"
-        android:layout_toRightOf="@id/presence"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         style="@style/MessageHeaderSubtitleStyle" />
     <TextView
         android:id="@+id/send_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/sender_email"
-        android:layout_toEndOf="@id/presence"
-        android:layout_toRightOf="@id/presence"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         style="@style/MessageHeaderSubtitleStyle" />
     <TextView
         android:id="@+id/email_snippet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/sender_name"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         style="@style/MessageHeaderSnippetStyle" />
 </RelativeLayout>

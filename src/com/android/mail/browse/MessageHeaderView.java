@@ -25,7 +25,6 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.provider.ContactsContract;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -55,7 +54,6 @@ import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.LetterTileProvider;
-import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
@@ -121,7 +119,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private SpamWarningView mSpamWarningView;
     private TextView mImagePromptView;
     private MessageInviteView mInviteView;
-    private ImageView mPresenceView;
     private View mForwardButton;
     private View mOverflowButton;
     private View mDraftIcon;
@@ -280,7 +277,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mReplyAllButton = findViewById(R.id.reply_all);
         mForwardButton = findViewById(R.id.forward);
         mStarView = (ImageView) findViewById(R.id.star);
-        mPresenceView = (ImageView) findViewById(R.id.presence);
         mTitleContainerView = (ViewGroup) findViewById(R.id.title_container);
         mOverflowButton = findViewById(R.id.overflow);
         mDraftIcon = findViewById(R.id.draft);
@@ -794,9 +790,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     private void updateContactInfo() {
-
-        mPresenceView.setImageDrawable(null);
-        mPresenceView.setVisibility(GONE);
         if (mContactInfoSource == null || mSender == null) {
             mPhotoView.setImageToDefault();
             mPhotoView.setContentDescription(getResources().getString(
@@ -817,13 +810,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mPhotoView.assignContactUri(info.contactUri);
             if (info.photo != null) {
                 mPhotoView.setImageBitmap(info.photo);
-                contentDesc = String.format(contentDesc, mSender.getName());
                 photoSet = true;
-            }
-            if (!mIsDraft && info.status != null) {
-                mPresenceView.setImageResource(ContactsContract.StatusUpdates
-                        .getPresenceIconResourceId(info.status));
-                mPresenceView.setVisibility(VISIBLE);
             }
         } else {
             mPhotoView.assignContactFromEmail(email, true /* lazyLookup */);
