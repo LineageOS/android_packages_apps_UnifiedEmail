@@ -24,13 +24,4 @@
         <item>27</item>
         <item>27</item>
     </integer-array>
-    <!-- When no recent folders exist, pre-populate with these as defaults. Do not translate. -->
-    <string-array translatable="false" name="default_recent_folders">
-        <!-- Starred -->
-        <item>^t</item>
-        <!-- Sent -->
-        <item>^f</item>
-        <!-- Drafts -->
-        <item>^r</item>
-    </string-array>
 </resources>
