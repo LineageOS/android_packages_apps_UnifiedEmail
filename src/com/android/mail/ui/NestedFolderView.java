@@ -138,6 +138,11 @@ public class NestedFolderView extends LinearLayout implements ConversationSpecia
     }
 
     @Override
+    public void onCabModeExited() {
+        // Do nothing
+    }
+
+    @Override
     public boolean acceptsUserTaps() {
         return true;
     }
