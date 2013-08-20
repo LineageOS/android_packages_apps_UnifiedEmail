@@ -267,8 +267,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
     @Override
     public int getPosition() {
         // We want this teaser to go before the first real conversation
-        // If another teaser wants position 0, we will want position 1
-        return mAdapter.getPositionOffset(0);
+        return 0;
     }
 
     @Override
@@ -291,7 +290,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
     @Override
     public void onCabModeEntered() {
-        dismiss();
     }
 
     @Override

@@ -48,6 +48,11 @@ public class AccountPreferences extends VersionedPrefs {
          */
         public static final String ACCOUNT_SYNC_OFF_DISMISSES = "num-of-dismisses-account-sync-off";
 
+        /**
+         * The count reported last time the "X unseen in Outbox" tip was displayed.
+         */
+        public static final String LAST_SEEN_OUTBOX_COUNT = "last-seen-outbox-count";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>().add(NOTIFICATIONS_ENABLED).build();
     }
@@ -127,5 +132,13 @@ public class AccountPreferences extends VersionedPrefs {
         final int value = getSharedPreferences().getInt(
                 PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, 0);
         getEditor().putInt(PreferenceKeys.ACCOUNT_SYNC_OFF_DISMISSES, value + 1).apply();
+    }
+
+    public int getLastSeenOutboxCount() {
+        return getSharedPreferences().getInt(PreferenceKeys.LAST_SEEN_OUTBOX_COUNT, 0);
+    }
+
+    public void setLastSeenOutboxCount(final int count) {
+        getEditor().putInt(PreferenceKeys.LAST_SEEN_OUTBOX_COUNT, count).apply();
     }
 }
