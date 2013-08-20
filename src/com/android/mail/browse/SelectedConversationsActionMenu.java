@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
-import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -540,6 +539,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * the selection conversation set, and internally updates state as necessary.
      */
     public void deactivate() {
+        mListController.onCabModeExited();
+
         if (mActionMode != null) {
             mActivated = false;
             mActionMode.finish();
