@@ -33,27 +33,31 @@ public class ConversationListHelper {
      */
     public ArrayList<ConversationSpecialItemView> makeConversationListSpecialViews(
             final Context context, final ControllableActivity activity, final Account account) {
+        final ConversationSyncDisabledTipView conversationSyncDisabledTipView =
+                (ConversationSyncDisabledTipView) LayoutInflater.from(context)
+                        .inflate(R.layout.conversation_sync_disabled_tip_view, null);
+        conversationSyncDisabledTipView.bindAccount(account);
+
+        final ConversationsInOutboxTipView conversationsInOutboxTipView =
+                (ConversationsInOutboxTipView) LayoutInflater.from(context)
+                        .inflate(R.layout.conversation_outbox_tip_view, null);
+        conversationsInOutboxTipView.bind(account, activity.getFolderSelector());
+
         // Conversation photo teaser view
         final ConversationPhotoTeaserView conversationPhotoTeaser =
                 (ConversationPhotoTeaserView) LayoutInflater.from(context)
                         .inflate(R.layout.conversation_photo_teaser_view, null);
-
 
         // Long press to select tip
         final ConversationLongPressTipView conversationLongPressTipView =
                 (ConversationLongPressTipView) LayoutInflater.from(context)
                         .inflate(R.layout.conversation_long_press_to_select_tip_view, null);
 
-        // Sync is off warning tip
-        final ConversationSyncDisabledTipView conversationSyncDisabledTipView =
-                (ConversationSyncDisabledTipView) LayoutInflater.from(context)
-                        .inflate(R.layout.conversation_sync_disabled_tip_view, null);
-        conversationSyncDisabledTipView.bindAccount(account);
-
         final ArrayList<ConversationSpecialItemView> itemViews = Lists.newArrayList();
+        itemViews.add(conversationSyncDisabledTipView);
+        itemViews.add(conversationsInOutboxTipView);
         itemViews.add(conversationPhotoTeaser);
         itemViews.add(conversationLongPressTipView);
-        itemViews.add(conversationSyncDisabledTipView);
         return itemViews;
     }
 }
