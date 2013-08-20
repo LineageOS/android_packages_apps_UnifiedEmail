@@ -1046,6 +1046,16 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
     }
 
+    /**
+     * Gets the position of the specified {@link ConversationSpecialItemView}, as determined by
+     * the adapter.
+     *
+     * @return The position in the list, or a negative value if it could not be found
+     */
+    public int getSpecialViewPosition(final ConversationSpecialItemView view) {
+        return mSpecialViews.indexOfValue(view);
+    }
+
     @Override
     public void notifyDataSetChanged() {
         updateSpecialViews();
