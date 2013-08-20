@@ -570,7 +570,7 @@ public final class TwoPaneController extends AbstractActivityController {
     private int mMiscellaneousViewTransactionId = -1;
 
     @Override
-    public void launchFragment(final Fragment fragment) {
+    public void launchFragment(final Fragment fragment, final int selectPosition) {
         final int containerViewId = TwoPaneLayout.MISCELLANEOUS_VIEW_ID;
 
         final FragmentManager fragmentManager = mActivity.getFragmentManager();
@@ -579,5 +579,9 @@ public final class TwoPaneController extends AbstractActivityController {
         fragmentTransaction.replace(containerViewId, fragment, TAG_CUSTOM_FRAGMENT);
         mMiscellaneousViewTransactionId = fragmentTransaction.commitAllowingStateLoss();
         fragmentManager.executePendingTransactions();
+
+        if (selectPosition >= 0) {
+            getConversationListFragment().setRawSelected(selectPosition, true);
+        }
     }
 }
