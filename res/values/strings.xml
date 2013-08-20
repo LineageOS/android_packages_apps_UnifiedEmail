@@ -27,8 +27,6 @@
     <string name="mock_content_provider" translatable="false">Mock Content Provider</string>
     <string name="conversation_content_provider" translatable="false">Conversation Content Provider</string>
     <string name="account_cache_provider" translatable="false">Account Cache Provider</string>
-    <string name="dummy_gmail_provider" translatable="false">Dummy Gmail Provider</string>
-    <string name="test_application" translatable="false">Test Application</string>
 
     <string name="app_name" translatable="false">Unified Email</string>
 
@@ -478,13 +476,6 @@
     <!-- Toast shown when the user taps the search hard key when viewing an account that does not support search [CHAR LIMIT=100] -->
     <string name="search_unsupported">Search is not supported on this account.</string>
 
-    <string name="searchMode" translate="false">Search Mode</string>
-    <string name="searchConversationMode" translate="false">Search Conversation Mode</string>
-    <string name="setBackButton" translate="false">Set Back Button</string>
-    <string name="removeBackButton" translate="false">Remove Back Button</string>
-    <string name="normalMode" translate="false">Set Normal Mode</string>
-    <string name="searchResultMode" translate="false">Search Result Mode</string>
-    <string name="folderMode" translate="false">Set Folder Mode</string>
     <!-- Search Results: Text for header that is shown above search results, while waiting for search results from the server [CHAR LIMIT=30] -->
     <string name="search_results_searching_header">Searching\u2026</string>
 
@@ -752,7 +743,6 @@
     <string translatable="false" name="elided_padding_token">\u00A0</string>
     <!-- Token used to space out message count, draft text, and senders -->
     <string translatable="false" name="message_count_spacer">\u00A0\u00A0</string>
-    <string translatable="false" name="ellipsis">\u2026</string>
 
     <string translatable="false" name="quote_begin">&lt;div class=\"quote\"&gt;</string>
 
