@@ -16,6 +16,8 @@
  */
 package org.apache.commons.io;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -77,6 +79,7 @@ import org.apache.commons.io.output.NullOutputStream;
  * @author Sandy McArthur
  * @version $Id: FileUtils.java 610810 2008-01-10 15:04:49Z niallp $
  */
+@VisibleForTesting
 public class FileUtils {
 
     /**
@@ -741,6 +744,7 @@ public class FileUtils {
      * @throws IOException if an IO error occurs during copying
      * @since Commons IO 1.1
      */
+    @VisibleForTesting
     public static void copyDirectory(File srcDir, File destDir) throws IOException {
         copyDirectory(srcDir, destDir, true);
     }
