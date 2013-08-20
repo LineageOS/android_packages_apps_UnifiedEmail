@@ -25,6 +25,8 @@ import android.app.Fragment;
 public interface FragmentLauncher {
     /**
      * Launches the specified {@link Fragment}
+     *
+     * @param selectPosition The position of the list item to select, or -1
      */
-    void launchFragment(Fragment fragment);
+    void launchFragment(Fragment fragment, int selectPosition);
 }

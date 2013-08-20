@@ -601,7 +601,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void launchFragment(final Fragment fragment) {
+    public void launchFragment(final Fragment fragment, final int selectPosition) {
         replaceFragmentWithBack(fragment, FragmentTransaction.TRANSIT_FRAGMENT_OPEN,
                 TAG_CUSTOM_FRAGMENT, R.id.content_pane);
     }
