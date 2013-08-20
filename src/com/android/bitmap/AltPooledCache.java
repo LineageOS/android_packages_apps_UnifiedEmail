@@ -66,11 +66,14 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
     }
 
     @Override
-    public V get(K key) {
+    public V get(K key, boolean incrementRefCount) {
         synchronized (mCache) {
             V result = mCache.get(key);
             if (result == null && mNonPooledCache != null) {
                 result = mNonPooledCache.get(key);
+            }
+            if (incrementRefCount && result != null) {
+                result.acquireReference();
             }
             return result;
         }
