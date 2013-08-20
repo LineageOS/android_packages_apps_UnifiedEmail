@@ -283,10 +283,6 @@
     <string name="attach_image">Picture</string>
     <!-- Attachment Type Selector Adapter. This string is an option in the "Attach" dialog [CHAR LIMIT=20] -->
     <string name="attach_video">Video</string>
-    <plurals name="number_of_attachments">
-        <item quantity="one">%d attachment</item>
-        <item quantity="other">%d attachments</item>
-    </plurals>
 
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
