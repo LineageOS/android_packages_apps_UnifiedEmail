@@ -592,12 +592,8 @@ function measurePositions() {
     }
     // add an extra one to mark the top/bottom of the last message footer spacer
     overlayTops[i] = "" + prevBodyBottom;
-    var body = document.body,
-        html = document.documentElement;
-    // get the true height of the value - the max of 4 possibilities
-    var height = Math.max(body.scrollHeight, body.offsetHeight,
-            html.scrollHeight, html.offsetHeight);
-    overlayBottoms[i] = "" + height;
+    overlayBottoms[i] = "" + document.documentElement.scrollHeight;
+
     window.mail.onWebContentGeometryChange(overlayTops, overlayBottoms);
 }
 
