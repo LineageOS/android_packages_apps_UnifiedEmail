@@ -22,7 +22,9 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Folder;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.animation.Animator.AnimatorListener;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.res.Resources;
@@ -190,6 +192,28 @@ public class ConversationLongPressTipView extends FrameLayout
                 ObjectAnimator.ofInt(this, "animatedHeight", start, end);
         heightAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
         heightAnimator.setDuration(sShrinkAnimationDuration);
+        heightAnimator.addListener(new AnimatorListener() {
+            @Override
+            public void onAnimationStart(final Animator animation) {
+                // Do nothing
+            }
+
+            @Override
+            public void onAnimationRepeat(final Animator animation) {
+                // Do nothing
+            }
+
+            @Override
+            public void onAnimationEnd(final Animator animation) {
+                // We should no longer exist, so notify the adapter
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onAnimationCancel(final Animator animation) {
+                // Do nothing
+            }
+        });
         heightAnimator.start();
     }
 
