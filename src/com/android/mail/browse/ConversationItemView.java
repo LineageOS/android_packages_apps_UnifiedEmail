@@ -590,6 +590,11 @@ public class ConversationItemView extends View
                 // reset the grid, as the newly bound item may have a different attachment count
                 mAttachmentsView.setCount(0);
             }
+
+            if (header.conversation.id != mHeader.conversation.id) {
+                // Stop the photo flip animation
+                mPhotoFlipAnimator.stopAnimation();
+            }
         }
         mCoordinates = null;
         mHeader = header;
