@@ -23,7 +23,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,8 +38,6 @@ public class ActionableToastBar extends LinearLayout {
     private Animator mHideAnimation;
     private final Runnable mRunnable;
     private final Handler mFadeOutHandler;
-    private final int mBottomMarginSizeInConversation;
-    private final int mBottomMarginSize;
 
     /** How long toast will last in ms */
     private static final long TOAST_LIFETIME = 15*1000L;
@@ -76,10 +73,6 @@ public class ActionableToastBar extends LinearLayout {
                 }
             }
         };
-        mBottomMarginSize = context.getResources()
-                .getDimensionPixelSize(R.dimen.toast_bar_bottom_margin);
-        mBottomMarginSizeInConversation = context.getResources().getDimensionPixelSize(
-                R.dimen.toast_bar_bottom_margin_in_conversation);
         LayoutInflater.from(context).inflate(R.layout.actionable_toast_row, this, true);
     }
 
@@ -92,18 +85,6 @@ public class ActionableToastBar extends LinearLayout {
         mActionButton = findViewById(R.id.action_button);
         mActionIcon = findViewById(R.id.action_icon);
         mActionText = (TextView) findViewById(R.id.action_text);
-    }
-
-    /**
-     * Tells the view that it will be appearing in the conversation pane
-     * and should adjust its layout parameters accordingly.
-     * @param isInConversationMode true if the view will be shown in the conversation view
-     */
-    public void setConversationMode(boolean isInConversationMode) {
-        final FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) getLayoutParams();
-        params.bottomMargin = isInConversationMode ? mBottomMarginSizeInConversation
-                : mBottomMarginSize;
-        setLayoutParams(params);
     }
 
     /**

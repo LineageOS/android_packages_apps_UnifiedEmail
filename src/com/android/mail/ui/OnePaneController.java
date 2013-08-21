@@ -510,7 +510,6 @@ public final class OnePaneController extends AbstractActivityController {
             switch (mode) {
                 case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 case ViewMode.CONVERSATION:
-                    mToastBar.setConversationMode(true);
                     mToastBar.show(getUndoClickedListener(
                             convList != null ? convList.getAnimatedAdapter() : null),
                             0,
@@ -524,7 +523,6 @@ public final class OnePaneController extends AbstractActivityController {
                 case ViewMode.SEARCH_RESULTS_LIST:
                 case ViewMode.CONVERSATION_LIST:
                     if (convList != null) {
-                        mToastBar.setConversationMode(false);
                         mToastBar.show(
                                 getUndoClickedListener(convList.getAnimatedAdapter()),
                                 0,
