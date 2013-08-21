@@ -3850,7 +3850,6 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param replaceVisibleToast if true, this should replace any currently visible toast.
      */
     protected final void showErrorToast(final Folder folder, boolean replaceVisibleToast) {
-        mToastBar.setConversationMode(false);
 
         final ActionClickedListener listener;
         final int actionTextResourceId;
