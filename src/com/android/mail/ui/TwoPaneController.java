@@ -508,7 +508,6 @@ public final class TwoPaneController extends AbstractActivityController {
                         - params.rightMargin;
                 params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                 mToastBar.setLayoutParams(params);
-                mToastBar.setConversationMode(false);
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
@@ -518,14 +517,12 @@ public final class TwoPaneController extends AbstractActivityController {
                     params.width = mLayout.computeConversationListWidth() - params.leftMargin
                             - params.rightMargin;
                     mToastBar.setLayoutParams(params);
-                    mToastBar.setConversationMode(false);
                 } else {
                     // Show undo bar in the conversation.
                     params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                     params.width = mLayout.computeConversationWidth() - params.leftMargin
                             - params.rightMargin;
                     mToastBar.setLayoutParams(params);
-                    mToastBar.setConversationMode(true);
                 }
                 break;
         }
