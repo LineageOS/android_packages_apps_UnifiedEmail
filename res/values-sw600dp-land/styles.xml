@@ -16,13 +16,6 @@
      limitations under the License.
 -->
 <resources>
-    <style name="unreadCountActionBarTablet" parent="@style/UnreadCountActionBar">
-        <item name="android:layout_marginLeft">26dp</item>
-        <item name="android:layout_width">wrap_content</item>
-    </style>
-    <style name="AccountSwitchSpinnerItem" parent="@style/PlainSpinnerDropdown">
-        <item name="android:layout_width">312dp</item>
-    </style>
     <style name="ComposeArea">
         <item name="android:layout_width">@dimen/compose_scrollview_width</item>
     </style>

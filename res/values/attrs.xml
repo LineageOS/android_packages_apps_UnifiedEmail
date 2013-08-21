@@ -25,7 +25,6 @@
     <add-resource name="RecipientComposeHeading" type="style" />
     <add-resource name="ComposeFieldLayout" type="style" />
     <add-resource name="RecipientComposeFieldLayout" type="style" />
-    <add-resource name="ComposeBodyStyle" type="style" />
     <add-resource name="ComposeSubjectStyle" type="style" />
     <declare-styleable name="FolderItemViewDrawableState">
         <attr name="state_drag_mode" format="boolean" />
