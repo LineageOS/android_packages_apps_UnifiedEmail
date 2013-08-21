@@ -1212,6 +1212,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mDrawIdler.setRootView(mActivity.getWindow().getDecorView());
 
         final Intent intent = mActivity.getIntent();
+
         // Immediately handle a clean launch with intent, and any state restoration
         // that does not rely on restored fragments or loader data
         // any state restoration that relies on those can be done later in
@@ -2265,6 +2266,14 @@ public abstract class AbstractActivityController implements ActivityController,
                 return;
             }
             final boolean isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
+
+            if (intent.getBooleanExtra(Utils.EXTRA_FROM_NOTIFICATION, false)) {
+                Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_TYPE,
+                        AnalyticsUtils.getAccountTypeForAccount(mAccount.name));
+                Analytics.getInstance().sendEvent("notification_click",
+                        isConversationMode ? "conversation" : "conversation_list", null, 0);
+            }
+
             if (isConversationMode && mViewMode.getMode() == ViewMode.UNKNOWN) {
                 mViewMode.enterConversationMode();
             } else {
