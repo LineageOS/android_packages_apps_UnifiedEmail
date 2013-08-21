@@ -20,7 +20,6 @@
     <dimen name="drawer_width">300dp</dimen>
     <dimen name="list_min_width_is_wide">720dp</dimen>
     <dimen name="list_normal_mode_min_width_is_spacious">600dp</dimen>
-    <dimen name="account_dropdown_item_height">48dip</dimen>
     <dimen name="senders_font_size">18sp</dimen>
     <dimen name="folders_text_bottom_padding">4dip</dimen>
     <dimen name="attachment_tile_min_size">120dp</dimen>
@@ -96,7 +95,6 @@
     <dimen name="tile_letter_font_size">33dp</dimen>
     <dimen name="tile_letter_font_size_small">16dp</dimen>
     <dimen name="tile_divider_width">1dp</dimen>
-    <dimen name="sync_status_bar_height">40dip</dimen>
 
     <dimen name="attachment_preview_height_tall">124dip</dimen>
     <dimen name="attachment_preview_height_tall_wide">168dip</dimen>
