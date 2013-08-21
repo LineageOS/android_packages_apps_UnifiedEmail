@@ -53,11 +53,15 @@ public class ConversationListHelper {
                 (ConversationLongPressTipView) LayoutInflater.from(context)
                         .inflate(R.layout.conversation_long_press_to_select_tip_view, null);
 
+        // Order matters.  If a and b are added in order itemViews.add(a), itemViews.add(b),
+        // they will appear in conversation list as:
+        // b
+        // a
         final ArrayList<ConversationSpecialItemView> itemViews = Lists.newArrayList();
-        itemViews.add(conversationSyncDisabledTipView);
-        itemViews.add(conversationsInOutboxTipView);
         itemViews.add(conversationPhotoTeaser);
         itemViews.add(conversationLongPressTipView);
+        itemViews.add(conversationSyncDisabledTipView);
+        itemViews.add(conversationsInOutboxTipView);
         return itemViews;
     }
 }
