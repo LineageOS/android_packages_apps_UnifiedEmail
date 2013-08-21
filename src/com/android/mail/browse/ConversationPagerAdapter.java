@@ -27,7 +27,6 @@ import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
 
-import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -239,29 +238,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         LogUtils.d(LOG_TAG, "IN PagerAdapter.setPrimaryItem, pos=%d, frag=%s", position,
                 object);
         super.setPrimaryItem(container, position, object);
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        final String title;
-        final int currentPosition = mPager.getCurrentItem();
-        final Cursor cursor = getCursor();
-        if (isPagingDisabled(cursor)) {
-            title = null;
-        } else if (position == currentPosition) {
-            int total = getCount();
-            if (mController != null) {
-                final Folder f = mController.getFolder();
-                if (f != null && f.totalCount > total) {
-                    total = f.totalCount;
-                }
-            }
-            title = mResources.getString(R.string.conversation_count, position + 1, total);
-        } else {
-            title = mResources.getString(position < currentPosition ?
-                    R.string.conversation_newer : R.string.conversation_older);
-        }
-        return title;
     }
 
     @Override
