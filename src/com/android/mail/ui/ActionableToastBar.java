@@ -156,10 +156,6 @@ public class ActionableToastBar extends LinearLayout {
      * Hides the view and resets the state.
      */
     public void hide(boolean animate, boolean actionClicked) {
-        if (!actionClicked && mOperation != null) {
-            mOperation.onToastBarTimeout(getContext());
-        }
-
         mHidden = true;
         mFadeOutHandler.removeCallbacks(mRunnable);
         if (getVisibility() == View.VISIBLE) {
@@ -171,6 +167,10 @@ public class ActionableToastBar extends LinearLayout {
             } else {
                 setAlpha(0);
                 setVisibility(View.GONE);
+            }
+
+            if (!actionClicked && mOperation != null) {
+                mOperation.onToastBarTimeout(getContext());
             }
         }
     }
