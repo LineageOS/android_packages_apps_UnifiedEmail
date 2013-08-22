@@ -1345,7 +1345,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         Conversation result = c;
         // apply any cached values
         // but skip over any cached values that aren't part of the cursor projection
-        final ContentValues values = (c != null) ? mCacheMap.get(c.uri.toString()) : null;
+        final ContentValues values = (c != null)
+                ? mCacheMap.get(uriStringFromCachingUri(c.uri)) : null;
         if (values != null) {
             final ContentValues queryableValues = new ContentValues();
             for (String key : values.keySet()) {
