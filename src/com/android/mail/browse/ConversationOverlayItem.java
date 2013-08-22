@@ -159,10 +159,19 @@ public abstract class ConversationOverlayItem {
      * state of another view, we need a mechanism when the
      * view's associated item changes to update the state of the
      * view. Typically, classes that override this class should not
-     * override this method. This method is used by
+     * override this method.<br><br>
+     *
+     * This method is used by
      * {@link com.android.mail.browse.ConversationViewAdapter.BorderItem}
      * to update the height of the border based on whether the neighboring messages
-     * are collapsed or expanded. The only other way would be to
+     * are collapsed or expanded.<br><br>
+     *
+     * It is also used by {@link com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem}
+     * in the case where the snap header is tapped to collapse the message but the
+     * message header is still on screen. Since the message header is still on screen,
+     * it does not get bound but will get a rebind.<br><br>
+     *
+     * The only other way to handle this case would be to call
      * {@link com.android.mail.browse.ConversationViewAdapter#notifyDataSetChanged()}
      * but that makes the entire screen flicker since the entire adapter performs
      * a layout of the every item.
