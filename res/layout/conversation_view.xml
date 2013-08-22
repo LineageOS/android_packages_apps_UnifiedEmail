@@ -56,14 +56,20 @@
                 android:layout_gravity="top"
                 android:visibility="gone" />
 
-            <include layout="@layout/new_message_notification_bar"
+            <Button xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/new_message_notification_bar"
+                style="@style/NewMessageButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginStart="@dimen/conversation_view_margin_side"
                 android:layout_marginEnd="@dimen/conversation_view_margin_side"
                 android:layout_marginLeft="@dimen/conversation_view_margin_side"
-                android:layout_marginRight="@dimen/conversation_view_margin_side" />
+                android:layout_marginRight="@dimen/conversation_view_margin_side"
+                android:animateLayoutChanges="true"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:visibility="gone" />
 
         </FrameLayout>
 

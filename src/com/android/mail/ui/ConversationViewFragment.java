@@ -41,7 +41,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
@@ -127,7 +127,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
     private ConversationViewProgressController mProgressController;
 
-    private View mNewMessageBar;
+    private Button mNewMessageBar;
 
     protected HtmlConversationTemplates mTemplates;
 
@@ -338,7 +338,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 .findViewById(R.id.conversation_container);
         mConversationContainer.setAccountController(this);
 
-        mNewMessageBar = mConversationContainer.findViewById(R.id.new_message_notification_bar);
+        mNewMessageBar = (Button) mConversationContainer.findViewById(R.id.new_message_notification_bar);
         mNewMessageBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -982,9 +982,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private void showNewMessageNotification(NewMessagesInfo info) {
-        final TextView descriptionView = (TextView) mNewMessageBar.findViewById(
-                R.id.new_message_description);
-        descriptionView.setText(info.getNotificationText());
+        mNewMessageBar.setText(info.getNotificationText());
         mNewMessageBar.setVisibility(View.VISIBLE);
     }
 
