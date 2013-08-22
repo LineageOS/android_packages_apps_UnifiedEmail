@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Гарчиг"</string>
     <string name="body_hint" msgid="4279864165439577668">"Имэйл бичих"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Файл хавсаргах"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Зураг хавсаргах"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Видео хавсаргах"</string>
@@ -67,8 +66,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Фишинг мэдээлэх"</string>
     <string name="delete" msgid="844871204175957681">"Устгах"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Нооргыг цуцлах"</string>
-    <string name="next" msgid="4674401197968248302">"Хуучин"</string>
-    <string name="previous" msgid="309943944831349924">"Шинэ"</string>
     <string name="refresh" msgid="490989798005710951">"Дахин шинэчлэх"</string>
     <string name="reply" msgid="2032052598496088561">"Хариулах"</string>
     <string name="reply_all" msgid="7257248094625487557">"Бүгдэд хариу илгээх"</string>
@@ -80,19 +77,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Ирсэн имэйл рүү шилжүүлэх"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Фолдерын тохиргоо"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Авто-хэмжээ тохируулахыг буцаах"</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Энэ зурвасыг дэлгэцэнд багтаахын тулд андагч хувилбараас өөрчилсөн)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Фолдер"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Илүү"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Өөр акаунтууд"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Синк &amp; мэдэгдэх"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Фолдерын тохиргоо"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Акаунтын тохиргоо"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Тохиргоо"</string>
     <string name="menu_search" msgid="5297197523031943248">"Хайх"</string>
-    <string name="more" msgid="1238344647379009858">"Илүү"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="TOTAL">%2$s</xliff:g>-с <xliff:g id="COUNT">%1$s</xliff:g> нь"</string>
-    <string name="newer" msgid="1007166236908596854">"Шинэ"</string>
-    <string name="older" msgid="6651690916337202936">"Хуучин"</string>
     <string name="mark_important" msgid="6904096897104265870">"Чухал болгож тэмдэглэх"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Чухал бус болгох"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Cc/Bcc нэмэх"</string>
@@ -102,7 +89,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Иш татсан текстийг оруулах"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Текст ишлэх"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Шугаманд хариулах"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> КБ"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> МБ"</string>
@@ -132,12 +118,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Хуваалцах"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Бүгдийг хуваалцах"</string>
     <string name="saving" msgid="925514721138014677">"Хадгалж байна..."</string>
-    <string name="attach_image" msgid="3713654042212409705">"Зураг"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Видео"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d хавсралт"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d хавсралт"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Дараахаар дамжуулан хуваалцах"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Хөтөч дотор нээх"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Хуулах"</string>
@@ -155,10 +135,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Харилцааг зөөх"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> харилцааг зөөх"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 уншаагүй имэйл"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> уншаагүй имэйл"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> <xliff:g id="SUBJECT">%2$s</xliff:g> тухай, <xliff:g id="SNIPPET">%3$s</xliff:g> <xliff:g id="DATE">%4$s</xliff:g>-д, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> <xliff:g id="SUBJECT">%2$s</xliff:g> тухай, <xliff:g id="SNIPPET">%3$s</xliff:g> <xliff:g id="TIME">%4$s</xliff:g>-д, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -234,13 +210,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> руу зөөсөн"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Илэрцүүд"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Энэ акаунтад хайлт дэмжигддэггүй."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Хайх Горим"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Харилцаанаас Хайх Горим"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Буцах Товчийг тохируулах"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Буцах Товчийг арилгах"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Энгийн Горимыг тохируулах"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Хайлтын Илэрц Горим"</string>
-    <string name="folderMode" msgid="553052020619895714">"Фолдерын горимыг тохируулах"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Хайж байна..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"Сүүлийн"</string>
     <string name="add_label" msgid="1638508840481944248">"Шошго нэмэх"</string>
@@ -285,8 +254,6 @@
     <string name="done" msgid="3079981801778027540">"Дууссан"</string>
     <string name="cancel" msgid="8762981157252199115">"Цуцлах"</string>
     <string name="clear" msgid="3184687982186479442">"Цэвэрлэх"</string>
-    <string name="close" msgid="419945428844076406">"Хаах"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"Энэ акаунтад фолдер тохируулаагүй байна."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Амжилттай"</item>
     <item msgid="7109065688039971961">"Холбогдоогүй."</item>
@@ -319,9 +286,7 @@
     <string name="search_hint" msgid="3625734263059221350">"Имэйл хайх"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Фолдер"</string>
     <string name="network_error" msgid="2125579009654728299">"Холбогдоогүй"</string>
-    <string name="loading" msgid="2600808404156989255">"Харилцааг ачаалж байна..."</string>
     <string name="retry" msgid="4515885444824418022">"Дахин оролдох"</string>
     <string name="load_more" msgid="420892447103014683">"Нэмж харуулах"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Нэрийн фолдерын товчилбор"</string>
@@ -331,7 +296,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Энэ акаунтыг автоматаар синк хийхээр тохируулаагүй.\nИмэйлийг нэг удаа синк хийхийн тулд "<b>"Одоо синк хийх"</b>" гэсэнд хүрэх буюу энэ акаунтыг автоматаар синк хийхээр тохируулахын тулд "<b>"Синкийн Тохиргоог Өөрчлөх"</b>" гэсэнд хүрнэ үү."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Одоо синк хийх"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Синкийн тохиргоог өөрчлөх"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Шинэ зурвас алга байна"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Зургийг ачаалж чадсангүй"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Сонголтонд олон тооны акаунт багтсан учир зөөх боломжгүй."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -349,9 +313,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Синк хийж чадсангүй."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Таны төхөөрөмж синк хийхэд хангалттай зайгүй байна."</string>
     <string name="storage" msgid="3262760336059073446">"Сан"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Бүх фолдерууд"</string>
@@ -448,5 +409,7 @@
     <!-- no translation found for enable_sync_in_account_settings (7707227409018294927) -->
     <skip />
     <!-- no translation found for account_settings_param (5277032997773498476) -->
+    <skip />
+    <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
     <skip />
 </resources>
