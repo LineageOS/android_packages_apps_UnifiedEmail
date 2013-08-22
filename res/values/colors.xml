@@ -65,9 +65,6 @@
     <color name="conv_header_text_dark">@color/dark_gray_text_color</color>
     <color name="conv_header_text_link_blue">#35b4e3</color>
 
-
-    <color name="position_bar_background">@color/gray_text_color</color>
-
     <!-- Folder colors -->
     <color name="folder_disabled_drop_target_text_color">#999999</color>
 
