@@ -372,6 +372,21 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         render(measureOnly);
     }
 
+    /**
+     * Rebinds the view to its data. This will only update the view
+     * if the {@link MessageHeaderItem} sent as a parameter is the
+     * same as the view's current {@link MessageHeaderItem} and the
+     * view's expanded state differs from the item's expanded state.
+     */
+    public void rebind(MessageHeaderItem headerItem) {
+        if (mMessageHeaderItem == null || mMessageHeaderItem != headerItem ||
+                isActivated() == isExpanded()) {
+            return;
+        }
+
+        render(false /* measureOnly */);
+    }
+
     public void refresh() {
         render(false);
     }
