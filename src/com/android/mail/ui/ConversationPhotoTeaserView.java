@@ -19,6 +19,7 @@ import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.Utils;
 
 /**
  * A teaser to introduce people to the contact photo check boxes
@@ -37,6 +38,12 @@ public class ConversationPhotoTeaserView extends FrameLayout
     private int mAnimatedHeight = -1;
     private boolean mNeedLayout;
     private int mTextTop;
+
+    private View mTeaserRightEdge;
+    /** Whether we are on a tablet device or not */
+    private final boolean mTabletDevice;
+    /** When in conversation mode, true if the list is hidden */
+    private final boolean mListCollapsible;
 
     public ConversationPhotoTeaserView(final Context context) {
         this(context, null);
@@ -63,6 +70,9 @@ public class ConversationPhotoTeaserView extends FrameLayout
         mMailPrefs = MailPrefs.get(context);
 
         mNeedLayout = true;
+
+        mTabletDevice = Utils.useTabletUI(resources);
+        mListCollapsible = resources.getBoolean(R.bool.list_collapsible);
     }
 
     @Override
@@ -75,6 +85,8 @@ public class ConversationPhotoTeaserView extends FrameLayout
                 dismiss();
             }
         });
+
+        mTeaserRightEdge = findViewById(R.id.teaser_right_edge);
     }
 
     @Override
@@ -113,8 +125,12 @@ public class ConversationPhotoTeaserView extends FrameLayout
     }
 
     @Override
-    public void onGetView() {
-        // Do nothing
+    public void onGetView(final int viewMode) {
+        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible, viewMode)) {
+            mTeaserRightEdge.setVisibility(VISIBLE);
+        } else {
+            mTeaserRightEdge.setVisibility(GONE);
+        }
     }
 
     @Override

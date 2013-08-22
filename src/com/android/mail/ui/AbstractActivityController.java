@@ -2098,6 +2098,12 @@ public abstract class AbstractActivityController implements ActivityController,
                     ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             closeDrawerIfOpen();
         }
+
+        // Teasers and other items may need to change
+        final ConversationListFragment conversationListFragment = getConversationListFragment();
+        if (conversationListFragment != null) {
+            conversationListFragment.requestListRefresh();
+        }
     }
 
     /**

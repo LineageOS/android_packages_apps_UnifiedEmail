@@ -21,6 +21,7 @@ import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.Utils;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -52,6 +53,12 @@ public class ConversationLongPressTipView extends FrameLayout
     private boolean mShow;
     private int mAnimatedHeight = -1;
 
+    private View mTeaserRightEdge;
+    /** Whether we are on a tablet device or not */
+    private final boolean mTabletDevice;
+    /** When in conversation mode, true if the list is hidden */
+    private final boolean mListCollapsible;
+
     public ConversationLongPressTipView(final Context context) {
         this(context, null);
     }
@@ -73,6 +80,9 @@ public class ConversationLongPressTipView extends FrameLayout
         }
 
         mMailPrefs = MailPrefs.get(context);
+
+        mTabletDevice = Utils.useTabletUI(resources);
+        mListCollapsible = resources.getBoolean(R.bool.list_collapsible);
     }
 
     @Override
@@ -85,6 +95,8 @@ public class ConversationLongPressTipView extends FrameLayout
                 dismiss();
             }
         });
+
+        mTeaserRightEdge = findViewById(R.id.teaser_right_edge);
     }
 
     @Override
@@ -95,8 +107,12 @@ public class ConversationLongPressTipView extends FrameLayout
     }
 
     @Override
-    public void onGetView() {
-        // Do nothing
+    public void onGetView(final int viewMode) {
+        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible, viewMode)) {
+            mTeaserRightEdge.setVisibility(VISIBLE);
+        } else {
+            mTeaserRightEdge.setVisibility(GONE);
+        }
     }
 
     @Override
