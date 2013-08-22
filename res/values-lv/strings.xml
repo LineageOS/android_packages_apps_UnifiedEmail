@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"D. kopija"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Temats"</string>
     <string name="body_hint" msgid="4279864165439577668">"Rakstiet e-pasta ziņojumu"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Pievienot failu"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Pievienot attēlu"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Pievienot videoklipu"</string>
@@ -66,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Ziņot par pikšķerēšanu"</string>
     <string name="delete" msgid="844871204175957681">"Dzēst"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Atmest melnrakstus"</string>
-    <string name="next" msgid="4674401197968248302">"Vecāki"</string>
-    <string name="previous" msgid="309943944831349924">"Jaunāka"</string>
     <string name="refresh" msgid="490989798005710951">"Atsvaidzināt"</string>
     <string name="reply" msgid="2032052598496088561">"Atbildēt"</string>
     <string name="reply_all" msgid="7257248094625487557">"Atbildēt visiem"</string>
@@ -79,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Pārvietot uz iesūtni"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mapju iestatījumi"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Atj. aut. liel. noteikš."</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Šī ziņojuma sākotnējā versija tika pārveidota, lai tas ietilptu šajā ekrānā.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Mapes"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Vairāk"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Citi konti"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sinhronizācija un paziņojumi"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Mapes iestatījumi"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Konta iestatījumi"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Iestatījumi"</string>
     <string name="menu_search" msgid="5297197523031943248">"Meklēt"</string>
-    <string name="more" msgid="1238344647379009858">"Vairāk"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g>. no <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Jaunāki"</string>
-    <string name="older" msgid="6651690916337202936">"Vecāki"</string>
     <string name="mark_important" msgid="6904096897104265870">"Atzīmēt kā svarīgu"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Atzīmēt kā nesvarīgu"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Pievienot kopiju/diskrēto kopiju"</string>
@@ -101,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Iekļaut citēto tekstu"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Citēts teksts"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Atbildēt iekļāvumā"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -131,12 +117,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Kopīgot"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Kopīg.visu"</string>
     <string name="saving" msgid="925514721138014677">"Notiek saglabāšana…"</string>
-    <string name="attach_image" msgid="3713654042212409705">"Attēls"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Videoklips"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d pielikums"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d pielikums(-i)"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Kopīgošanas veids"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Atvērt pārlūkprogrammā"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopēt"</string>
@@ -154,10 +134,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Pārvietot sarunu"</item>
     <item quantity="other" msgid="1685896770174368261">"Pārvietot <xliff:g id="ID_1">%1$d</xliff:g> sarunu(-as)"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 nelasīts ziņojums"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> nelasīti ziņojumi"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> par šādu tematu: <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> (<xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>)"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> par šādu tematu: <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> (plkst. <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>)"</string>
@@ -233,13 +209,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Pārvietota uz: <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Rezultāti"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Šajā kontā netiek atbalstīta meklēšana."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Meklēšanas režīms"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Meklēt sarunu režīmu"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Iestatīt pogu Atpakaļ"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Noņemt pogu Atpakaļ"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Iestatīt parasto režīmu"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Meklēšanas rezultātu režīms"</string>
-    <string name="folderMode" msgid="553052020619895714">"Režīma Mapes iestatīšana"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Notiek meklēšana..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"Pēdējās"</string>
     <string name="add_label" msgid="1638508840481944248">"Pievienojiet iezīmi."</string>
@@ -284,8 +253,6 @@
     <string name="done" msgid="3079981801778027540">"Gatavs"</string>
     <string name="cancel" msgid="8762981157252199115">"Atcelt"</string>
     <string name="clear" msgid="3184687982186479442">"Notīrīt"</string>
-    <string name="close" msgid="419945428844076406">"Aizvērt"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"Šajā kontā nav izveidota neviena mape."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Izpildīta veiksmīgi"</item>
     <item msgid="7109065688039971961">"Nav savienojuma."</item>
@@ -318,9 +285,7 @@
     <string name="search_hint" msgid="3625734263059221350">"Meklēt vēstulēs"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Mapes"</string>
     <string name="network_error" msgid="2125579009654728299">"Nav savienojuma"</string>
-    <string name="loading" msgid="2600808404156989255">"Notiek sarunu ielāde"</string>
     <string name="retry" msgid="4515885444824418022">"Mēģināt vēlreiz"</string>
     <string name="load_more" msgid="420892447103014683">"Ielādēt vēl"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Nosaukuma piešķiršana mapes saīsnei"</string>
@@ -330,7 +295,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Šajā kontā nav iestatīta automātiskā sinhronizācija.\nPieskarieties vienumam "<b>"Sinhronizēt tūlīt"</b>", lai vienreiz sinhronizētu pastu, vai vienumam "<b>"Mainīt sinhronizācijas iestatījumus"</b>", lai šajā kontā iestatītu automātisku pasta sinhronizāciju."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sinhr. tūlīt"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Mainīt sinhronizācijas iestat."</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Nav jaunu ziņojumu."</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Nevarēja ielādēt attēlu."</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Nevar pārvietot, jo ir atlasīti ziņojumi no vairākiem kontiem."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -348,9 +312,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Neizdevās sinhronizēt."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Ierīcē nav pietiekami daudz atmiņas, lai sinhronizētu."</string>
     <string name="storage" msgid="3262760336059073446">"Krātuve"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Visas mapes"</string>
@@ -440,4 +401,6 @@
     <string name="airplane_mode_on" msgid="2206488373387145840">"Lidojuma režīms ir ieslēgts."</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Ieslēdziet to sadaļā <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Konta iestatījumi"</string>
+    <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
+    <skip />
 </resources>

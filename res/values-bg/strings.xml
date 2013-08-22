@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Ск"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Тема"</string>
     <string name="body_hint" msgid="4279864165439577668">"Напишете имейл"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Прикачване на файл"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Прикачване на снимка"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Прикачване на клип"</string>
@@ -66,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Подаване на сигнал за фишинг"</string>
     <string name="delete" msgid="844871204175957681">"Изтриване"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Отхвърляне на черновите"</string>
-    <string name="next" msgid="4674401197968248302">"По-стари"</string>
-    <string name="previous" msgid="309943944831349924">"По-нови"</string>
     <string name="refresh" msgid="490989798005710951">"Опресняване"</string>
     <string name="reply" msgid="2032052598496088561">"Отговор"</string>
     <string name="reply_all" msgid="7257248094625487557">"Отг. до всички"</string>
@@ -79,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Преместване във вх. поща"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Настройки за папките"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Възст. на авт. оразмеряв."</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Това съобщение е променено от оригиналната си версия, за да се побере на екрана.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Папки"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Още"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Още профили"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Синхронизиране и известяване"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Настройки за папката"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Настройки на профила"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Настройки"</string>
     <string name="menu_search" msgid="5297197523031943248">"Търсене"</string>
-    <string name="more" msgid="1238344647379009858">"Още"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> от <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"По-нови"</string>
-    <string name="older" msgid="6651690916337202936">"По-стари"</string>
     <string name="mark_important" msgid="6904096897104265870">"Означаване като важно"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Означаване като маловажно"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Добавяне на Як:/Ск:"</string>
@@ -101,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Включване на цитирания текст"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Цитиране на текста"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Отговор в текста"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> Б"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> КБ"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> МБ"</string>
@@ -131,12 +117,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Споделяне"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Спод. на всички"</string>
     <string name="saving" msgid="925514721138014677">"Запазва се…"</string>
-    <string name="attach_image" msgid="3713654042212409705">"Снимка"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Видеоклип"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d прикачен файл"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d прикачени файла"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Споделяне чрез"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Отваряне в браузъра"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Копиране"</string>
@@ -154,10 +134,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Преместване на кореспонденция"</item>
     <item quantity="other" msgid="1685896770174368261">"Преместване на <xliff:g id="ID_1">%1$d</xliff:g> кореспонденции"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 непрочетен имейл"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> непрочетени имейла"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> относно <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> на <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> относно <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> в <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -233,13 +209,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Преместено в/ъв „<xliff:g id="FOLDERNAME">%1$s</xliff:g>“"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Резултати"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Търсенето не се поддържа за този профил."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Режим на търсене"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Режим  на търсене в кореспонденциите"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Задаване на бутона за назад"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Премахване на бутона за назад"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Задаване на нормален режим"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Режим на търсене в резултатите"</string>
-    <string name="folderMode" msgid="553052020619895714">"Задаване на режим с папки"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Търси се…"</string>
     <string name="recent_folders" msgid="8240081561436891330">"Скорошни"</string>
     <string name="add_label" msgid="1638508840481944248">"Добавяне на етикет"</string>
@@ -284,8 +253,6 @@
     <string name="done" msgid="3079981801778027540">"Готово"</string>
     <string name="cancel" msgid="8762981157252199115">"Отказ"</string>
     <string name="clear" msgid="3184687982186479442">"Изчистване"</string>
-    <string name="close" msgid="419945428844076406">"Затваряне"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"В този профил не са зададени папки."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Успех"</item>
     <item msgid="7109065688039971961">"Няма връзка."</item>
@@ -318,9 +285,7 @@
     <string name="search_hint" msgid="3625734263059221350">"Търсене в пощата"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Папки"</string>
     <string name="network_error" msgid="2125579009654728299">"Няма връзка"</string>
-    <string name="loading" msgid="2600808404156989255">"Коресп. се зареждат…"</string>
     <string name="retry" msgid="4515885444824418022">"Нов опит"</string>
     <string name="load_more" msgid="420892447103014683">"Зареждане на още"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Наименуване на пряк път към папка"</string>
@@ -330,7 +295,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Този профил не е настроен за автоматично синхронизиране.\nДокоснете "<b>"Синхрон сега"</b>", за да синхронизирате еднократно пощата, или "<b>"Настройки за синхрон: Промяна"</b>", за да го настроите за автоматично синхронизиране."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхрон сега"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Настройки за синхрон: Промяна"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Няма нови съобщения"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Изображ. не можа да се зареди"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Не може да се премести, защото са избрани няколко профила."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -348,9 +312,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Не можа да се синхронизира."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Устройството ви няма достатъчно място в хранилището, за да се извърши синхронизиране."</string>
     <string name="storage" msgid="3262760336059073446">"Хранилище"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Всички папки"</string>
@@ -440,4 +401,6 @@
     <string name="airplane_mode_on" msgid="2206488373387145840">"Самолетният режим е включен"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Включете от <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"настройките на профила"</string>
+    <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
+    <skip />
 </resources>
