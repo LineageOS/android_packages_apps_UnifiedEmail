@@ -34,7 +34,7 @@
     <dimen name="folder_cell_width">32dip</dimen>
     <dimen name="folders_left_padding">8dip</dimen>
     <dimen name="conversation_page_gutter">16dp</dimen>
-    <dimen name="conversation_message_content_margin_side">16dp</dimen>
+    <dimen name="conversation_message_content_margin_side">10dp</dimen>
     <dimen name="conversation_view_margin_side">8dp</dimen>
     <dimen name="conversation_view_margin_side_minus_gradient">7dp</dimen>
     <dimen name="conversation_header_margin_side">0dp</dimen>
@@ -57,7 +57,8 @@
     <dimen name="message_header_presence_top_margin">-4dp</dimen>
     <dimen name="message_header_action_button_width">48dp</dimen>
     <dimen name="message_header_action_button_height">48dp</dimen>
-    <dimen name="message_header_padding_start">10dp</dimen>
+    <dimen name="message_header_padding_start">
+        @dimen/conversation_message_content_margin_side</dimen>
     <dimen name="message_header_title_container_margin_end_collapsed">10dp</dimen>
     <dimen name="message_sender_name_text_size">16sp</dimen>
     <dimen name="message_header_subtitle_text_size">12sp</dimen>

@@ -134,9 +134,8 @@ public class SecureConversationViewController implements
         mProgressController.showLoadingStatus(mCallbacks.isViewVisibleToUser());
 
         final Resources r = mCallbacks.getFragment().getResources();
-        mSideMarginInWebPx = (int) ((r.getDimensionPixelOffset(
-                R.dimen.conversation_view_margin_side) + r.getDimensionPixelOffset(
-                R.dimen.conversation_message_content_margin_side)) / r.getDisplayMetrics().density);
+        mSideMarginInWebPx = (int) (r.getDimensionPixelOffset(
+                R.dimen.conversation_message_content_margin_side) / r.getDisplayMetrics().density);
     }
 
     /**
