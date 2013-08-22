@@ -440,8 +440,7 @@ public class ConversationItemView extends View
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_forward_holo_light);
             STATE_CALENDAR_INVITE =
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
-            VISIBLE_CONVERSATION_CARET = BitmapFactory.decodeResource(res,
-                    R.drawable.ic_carrot_holo);
+            VISIBLE_CONVERSATION_CARET = BitmapFactory.decodeResource(res, R.drawable.caret_grey);
             RIGHT_EDGE_TABLET = res.getDrawable(R.drawable.list_edge_tablet);
             PLACEHOLDER = res.getDrawable(drawable.ic_attachment_load);
             PROGRESS_BAR = res.getDrawable(drawable.progress_holo);
