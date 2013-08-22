@@ -271,10 +271,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final MessageHeaderView snapHeader = mConversationContainer.getSnapHeader();
         initHeaderView(snapHeader);
 
-        mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
+        final Resources resources = getResources();
+        mMaxAutoLoadMessages = resources.getInteger(R.integer.max_auto_load_messages);
 
-        mSideMarginPx = getResources().getDimensionPixelOffset(
-                R.dimen.conversation_view_margin_side) + getResources().getDimensionPixelOffset(
+        mSideMarginPx = resources.getDimensionPixelOffset(
                 R.dimen.conversation_message_content_margin_side);
 
         mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(getActivity()));
