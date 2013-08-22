@@ -20,6 +20,10 @@
     android:id="@+id/conversation_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/conversation_header_margin_side"
+    android:layout_marginLeft="@dimen/conversation_header_margin_side"
+    android:layout_marginEnd="@dimen/conversation_header_margin_side"
+    android:layout_marginRight="@dimen/conversation_header_margin_side"
     android:background="@android:color/white"
     android:orientation="vertical" >
 

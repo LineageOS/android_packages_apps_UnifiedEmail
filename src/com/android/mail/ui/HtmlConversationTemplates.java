@@ -185,7 +185,7 @@ public class HtmlConversationTemplates {
         mInProgress = true;
     }
 
-    public String endConversation(String docBaseUri, String conversationBaseUri, int viewWidth,
+    public String endConversation(String docBaseUri, String conversationBaseUri,
             int viewportWidth, boolean enableContentReadySignal, boolean normalizeMessageWidths,
             boolean enableMungeTables, boolean enableMungeImages) {
         if (!mInProgress) {
@@ -196,7 +196,7 @@ public class HtmlConversationTemplates {
 
         append(sConversationLower, contentReadyClass, mContext.getString(R.string.hide_elided),
                 mContext.getString(R.string.show_elided), docBaseUri, conversationBaseUri,
-                viewWidth, viewportWidth, enableContentReadySignal, normalizeMessageWidths,
+                viewportWidth, enableContentReadySignal, normalizeMessageWidths,
                 enableMungeTables, enableMungeImages);
 
         mInProgress = false;
