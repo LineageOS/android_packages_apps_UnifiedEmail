@@ -16,10 +16,6 @@
      limitations under the License.
 -->
 <resources>
-    <style name="UnreadCountActionBar" parent="UnreadCountActionBarBase">
-        <item name="android:gravity">center_vertical|left</item>
-    </style>
-
     <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
     </style>
 
