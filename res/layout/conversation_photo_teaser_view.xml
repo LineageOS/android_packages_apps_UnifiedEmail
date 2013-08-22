@@ -60,6 +60,8 @@
             android:scaleType="center"
             android:contentDescription="@string/dismiss_tip_hover_text"
             android:src="@drawable/ic_cancel_holo_light" />
+
+        <include layout="@layout/teaser_right_edge" />
     </LinearLayout>
 
 </com.android.mail.ui.ConversationPhotoTeaserView>

@@ -41,6 +41,7 @@ import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.Utils;
 
 /**
  * Tip that is displayed in conversation list of 'Sent' folder whenever there are
@@ -65,6 +66,12 @@ public class ConversationsInOutboxTipView extends FrameLayout
 
     private int mAnimatedHeight = -1;
 
+    private View mTeaserRightEdge;
+    /** Whether we are on a tablet device or not */
+    private final boolean mTabletDevice;
+    /** When in conversation mode, true if the list is hidden */
+    private final boolean mListCollapsible;
+
     private static final int LOADER_FOLDER_LIST =
             AbstractActivityController.LAST_FRAGMENT_LOADER_ID + 100;
 
@@ -87,6 +94,9 @@ public class ConversationsInOutboxTipView extends FrameLayout
             sShrinkAnimationDuration = resources.getInteger(
                     R.integer.shrink_animation_duration);
         }
+
+        mTabletDevice = Utils.useTabletUI(resources);
+        mListCollapsible = resources.getBoolean(R.bool.list_collapsible);
     }
 
     public void bind(final Account account, final FolderSelector folderSelector) {
@@ -96,8 +106,12 @@ public class ConversationsInOutboxTipView extends FrameLayout
     }
 
     @Override
-    public void onGetView() {
-        // Do nothing
+    public void onGetView(final int viewMode) {
+        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible, viewMode)) {
+            mTeaserRightEdge.setVisibility(VISIBLE);
+        } else {
+            mTeaserRightEdge.setVisibility(GONE);
+        }
     }
 
     @Override
@@ -119,6 +133,8 @@ public class ConversationsInOutboxTipView extends FrameLayout
                 dismiss();
             }
         });
+
+        mTeaserRightEdge = findViewById(R.id.teaser_right_edge);
     }
 
     private void goToOutbox() {
