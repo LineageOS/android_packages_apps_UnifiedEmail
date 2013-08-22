@@ -23,7 +23,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -244,7 +243,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     }
 
     @Override
-    public void onFragmentVisible(Fragment fragment) {
+    public void onFragmentVisible(PhotoViewFragment fragment) {
         super.onFragmentVisible(fragment);
         final Attachment attachment = getCurrentAttachment();
         if (attachment.state == AttachmentState.PAUSED) {

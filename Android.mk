@@ -18,7 +18,7 @@ LOCAL_PATH:= $(call my-dir)
 chips_dir := ../../../frameworks/ex/chips/res
 
 #Include res dir from photoviewer
-photo_dir := ../../../frameworks/opt/photoviewer/res
+photo_dir := ../../../frameworks/opt/photoviewer/res ../../../frameworks/opt/photoviewer/activity/res
 res_dirs := res $(chips_dir) $(photo_dir)
 
 
