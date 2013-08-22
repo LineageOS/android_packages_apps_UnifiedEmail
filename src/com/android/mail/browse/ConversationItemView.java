@@ -1486,9 +1486,8 @@ public class ConversationItemView extends View
         }
 
         // right-side edge effect when in tablet conversation mode and the list is not collapsed
-        if (mTabletDevice && !mListCollapsible &&
-                (ViewMode.isConversationMode(mConfig.getViewMode())
-                        || ViewMode.isAdMode(mConfig.getViewMode()))) {
+        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible,
+                mConfig.getViewMode())) {
             RIGHT_EDGE_TABLET.setBounds(getWidth() - RIGHT_EDGE_TABLET.getIntrinsicWidth(), 0,
                     getWidth(), getHeight());
             RIGHT_EDGE_TABLET.draw(canvas);
