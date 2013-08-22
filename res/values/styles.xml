@@ -350,8 +350,14 @@
         <item name="android:displayOptions"></item>
     </style>
 
+    <style name="OverflowButtonStyle"
+           parent="@android:style/Widget.Holo.Light.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu_moreoverflow_normal_holo_light</item>
+    </style>
+
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
+        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
     </style>
 
