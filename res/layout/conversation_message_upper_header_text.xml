@@ -23,10 +23,10 @@
     android:id="@+id/title_container"
     android:layout_width="0dip"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical"
+    android:layout_weight="1"
+    android:layout_marginTop="12dp"
     android:paddingStart="@dimen/message_header_inner_side_padding"
-    android:paddingLeft="@dimen/message_header_inner_side_padding"
-    android:layout_weight="1">
+    android:paddingLeft="@dimen/message_header_inner_side_padding" >
 
     <TextView
         android:id="@+id/upper_date"
