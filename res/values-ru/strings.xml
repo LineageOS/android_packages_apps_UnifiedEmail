@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Скр. копия"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Тема"</string>
     <string name="body_hint" msgid="4279864165439577668">"Текст сообщения"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Прикрепить файл"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Прикрепить фото"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Прикрепить видео"</string>
@@ -66,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Сообщить о фишинге"</string>
     <string name="delete" msgid="844871204175957681">"Удалить"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Удалить черновики"</string>
-    <string name="next" msgid="4674401197968248302">"Более ранние"</string>
-    <string name="previous" msgid="309943944831349924">"Более поздние"</string>
     <string name="refresh" msgid="490989798005710951">"Обновить"</string>
     <string name="reply" msgid="2032052598496088561">"Ответить"</string>
     <string name="reply_all" msgid="7257248094625487557">"Ответить всем"</string>
@@ -79,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Во входящие"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Настройки папок"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Показать исходный размер"</string>
-    <string name="message_modified" msgid="2564340197585393687">"Сообщение было изменено, чтобы оно поместилось на экране."</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Папки"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Ещё"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Ещё аккаунты"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Синхронизация и уведомления"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Настройки папки"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Настройки аккаунта"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Настройки"</string>
     <string name="menu_search" msgid="5297197523031943248">"Поиск"</string>
-    <string name="more" msgid="1238344647379009858">"Еще"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> из <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Более поздние"</string>
-    <string name="older" msgid="6651690916337202936">"Более ранние"</string>
     <string name="mark_important" msgid="6904096897104265870">"Отметить как важное"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Отметить как неважное"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Копия/скрытая"</string>
@@ -101,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Включить цитируемый текст"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Цитировать"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Ответить в письме"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> байт(а)"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> КБ"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> МБ"</string>
@@ -131,12 +117,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Поделиться"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Поделиться"</string>
     <string name="saving" msgid="925514721138014677">"Сохранение…"</string>
-    <string name="attach_image" msgid="3713654042212409705">"Изображение"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Видео"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"Прикрепленных файлов: %d"</item>
-    <item quantity="other" msgid="4827833083675127409">"Прикрепленных файлов: %d"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Способ отправки"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Открыть в браузере"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Копировать"</string>
@@ -154,10 +134,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Переместить цепочку"</item>
     <item quantity="other" msgid="1685896770174368261">"Переместить цепочки (<xliff:g id="ID_1">%1$d</xliff:g>)"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"Непрочитанных писем: 1"</item>
-    <item quantity="other" msgid="1634106533609170998">"Непрочитанных писем: <xliff:g id="ID_1">%1$d</xliff:g>"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"Отправитель: <xliff:g id="SENDER">%1$s</xliff:g>; тема: <xliff:g id="SUBJECT">%2$s</xliff:g>; фрагмент: <xliff:g id="SNIPPET">%3$s</xliff:g>; дата: <xliff:g id="DATE">%4$s</xliff:g>; состояние: <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"Отправитель: <xliff:g id="SENDER">%1$s</xliff:g>; тема: <xliff:g id="SUBJECT">%2$s</xliff:g>; фрагмент: <xliff:g id="SNIPPET">%3$s</xliff:g>; время: <xliff:g id="TIME">%4$s</xliff:g>; состояние: <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -233,13 +209,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Перемещено в папку \"<xliff:g id="FOLDERNAME">%1$s</xliff:g>\""</string>
     <string name="search_results_header" msgid="4669917471897026269">"Результаты"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"В этом аккаунте не поддерживается поиск."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Режим поиска"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Режим поиска цепочек"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Настроить кнопку \"Назад\""</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Удалить кнопку \"Назад\""</string>
-    <string name="normalMode" msgid="4250277414924926730">"Обычный режим"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Результаты поиска"</string>
-    <string name="folderMode" msgid="553052020619895714">"Показать папки"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Поиск…"</string>
     <string name="recent_folders" msgid="8240081561436891330">"Недавние"</string>
     <string name="add_label" msgid="1638508840481944248">"Добавить ярлык"</string>
@@ -284,8 +253,6 @@
     <string name="done" msgid="3079981801778027540">"Готово"</string>
     <string name="cancel" msgid="8762981157252199115">"Отмена"</string>
     <string name="clear" msgid="3184687982186479442">"Очистить"</string>
-    <string name="close" msgid="419945428844076406">"Закрыть"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"В этом аккаунте нет папок."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Без ошибок"</item>
     <item msgid="7109065688039971961">"Нет соединения"</item>
@@ -318,9 +285,7 @@
     <string name="search_hint" msgid="3625734263059221350">"Поиск в почте"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Папки"</string>
     <string name="network_error" msgid="2125579009654728299">"Нет подключения"</string>
-    <string name="loading" msgid="2600808404156989255">"Загрузка…"</string>
     <string name="retry" msgid="4515885444824418022">"Повтор"</string>
     <string name="load_more" msgid="420892447103014683">"Загрузить еще"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Ярлык папки"</string>
@@ -330,7 +295,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"В этом аккаунте не настроена автоматическая синхронизация.\nВыберите "<b>"Настройки синхронизации"</b>", чтобы включить ее, или "<b>"Синхронизировать сейчас"</b>", чтобы синхронизировать почту один раз."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр."</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Настройки синхронизации"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Новых сообщений нет"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Не удалось загрузить фото"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Не удалось переместить сообщения, так как они находятся в разных аккаунтах."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>": <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -348,9 +312,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Ошибка синхронизации"</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Недостаточно места для синхронизации"</string>
     <string name="storage" msgid="3262760336059073446">"Память"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Все папки"</string>
@@ -440,4 +401,6 @@
     <string name="airplane_mode_on" msgid="2206488373387145840">"Режим полета включен"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Включите в <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>"</string>
     <string name="account_settings_param" msgid="5277032997773498476">"настройках аккаунта"</string>
+    <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
+    <skip />
 </resources>
