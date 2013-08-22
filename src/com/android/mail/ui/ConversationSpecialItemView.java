@@ -38,7 +38,7 @@ public interface ConversationSpecialItemView {
      * Called before returning this view from
      * {@link Adapter#getView(int, android.view.View, android.view.ViewGroup)}
      */
-    void onGetView();
+    void onGetView(int viewMode);
 
     /**
      * Returns whether this view is to be displayed in the list or not. A view can be added freely
