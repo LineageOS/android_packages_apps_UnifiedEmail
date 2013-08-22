@@ -473,4 +473,10 @@
         <item name="android:textColor">?android:attr/textColorLink</item>
     </style>
 
+    <style name="NewMessageButtonStyle" parent="@android:style/Widget.Holo.Light.Button">
+        <item name="android:background">@drawable/btn_default</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/dark_gray_text_color</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>

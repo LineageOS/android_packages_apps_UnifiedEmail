@@ -104,7 +104,7 @@
     <!-- Teaser colors -->
 
     <!-- The color of the section name text in the teaser -->
-    <color name="teaser_main_text">#58585b</color>
+    <color name="teaser_main_text">@color/dark_gray_text_color</color>
 
     <!-- swipe to refresh text color, this matches the color in
         progressbar_solid_holo.png -->
