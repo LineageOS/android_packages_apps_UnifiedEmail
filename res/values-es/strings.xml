@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Cco"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Asunto"</string>
     <string name="body_hint" msgid="4279864165439577668">"Redactar correo"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Adjuntar archivo"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Adjuntar imagen"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Adjuntar vídeo"</string>
@@ -66,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Denunciar suplantación identidad"</string>
     <string name="delete" msgid="844871204175957681">"Eliminar"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Descartar borradores"</string>
-    <string name="next" msgid="4674401197968248302">"Anterior"</string>
-    <string name="previous" msgid="309943944831349924">"Más reciente"</string>
     <string name="refresh" msgid="490989798005710951">"Actualizar"</string>
     <string name="reply" msgid="2032052598496088561">"Responder"</string>
     <string name="reply_all" msgid="7257248094625487557">"Responder a todos"</string>
@@ -79,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Mover a bandeja de entrada"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Ajustes de carpeta"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Volver al tamaño original"</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Se ha modificado la versión original de este mensaje para adaptarse a la pantalla)."</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Carpetas"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Más"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Más cuentas"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sincronizar y notificar"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Ajustes de carpeta"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Ajustes de cuenta"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Ajustes"</string>
     <string name="menu_search" msgid="5297197523031943248">"Buscar"</string>
-    <string name="more" msgid="1238344647379009858">"Más"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> de <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Más reciente"</string>
-    <string name="older" msgid="6651690916337202936">"Anterior"</string>
     <string name="mark_important" msgid="6904096897104265870">"Marcar como importante"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Marcar como no importante"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Añadir Cc/Cco"</string>
@@ -101,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Incluir texto citado"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Citar texto"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Responder entre líneas"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -131,12 +117,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Compartir"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Compartir todo"</string>
     <string name="saving" msgid="925514721138014677">"Guardando..."</string>
-    <string name="attach_image" msgid="3713654042212409705">"Imagen"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Vídeo"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d adjunto"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d adjuntos"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Compartir a través de"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Abrir en el navegador"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Copiar"</string>
@@ -154,10 +134,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Mover una conversación"</item>
     <item quantity="other" msgid="1685896770174368261">"Mover <xliff:g id="ID_1">%1$d</xliff:g> conversaciones"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 correo sin leer"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> correos sin leer"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> sobre <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> el <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> sobre <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> a la(s) <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -233,13 +209,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Movida a <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Resultados"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Esta cuenta no admite la función de búsqueda."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Modo de búsqueda"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Buscar modo de conversación"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Establecer botón para volver"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Eliminar botón para volver"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Establecer modo normal"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Buscar modo de resultados"</string>
-    <string name="folderMode" msgid="553052020619895714">"Establecer modo de carpeta"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Buscando..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"Recientes"</string>
     <string name="add_label" msgid="1638508840481944248">"Añadir etiqueta"</string>
@@ -284,8 +253,6 @@
     <string name="done" msgid="3079981801778027540">"Listo"</string>
     <string name="cancel" msgid="8762981157252199115">"Cancelar"</string>
     <string name="clear" msgid="3184687982186479442">"Borrar"</string>
-    <string name="close" msgid="419945428844076406">"Cerrar"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"No se ha establecido ninguna carpeta para esta cuenta."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Sin errores"</item>
     <item msgid="7109065688039971961">"Sin conexión"</item>
@@ -318,9 +285,7 @@
     <string name="search_hint" msgid="3625734263059221350">"Buscar mensaje"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Carpetas"</string>
     <string name="network_error" msgid="2125579009654728299">"Sin conexión"</string>
-    <string name="loading" msgid="2600808404156989255">"Cargando conversaciones..."</string>
     <string name="retry" msgid="4515885444824418022">"Reintentar"</string>
     <string name="load_more" msgid="420892447103014683">"Cargar más"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Asignar nombre a acceso directo de carpeta"</string>
@@ -330,7 +295,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Esta cuenta no está configurada para sincronizarse de forma automática.\nToca "<b>"Sincronizar ahora"</b>" para sincronizar el correo una vez o selecciona "<b>"Cambiar ajustes de sincronización"</b>" para configurar la sincronización automática del correo en esta cuenta."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincronizar ahora"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Cambiar ajustes de sincronización"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"No hay mensajes nuevos."</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Error al cargar la imagen"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"No se puede mover porque la selección contiene varias cuentas."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -348,9 +312,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Error al sincronizar"</string>
     <string name="sync_error_message" msgid="5367907194753034375">"No hay suficiente espacio en el dispositivo para sincronizar tu correo"</string>
     <string name="storage" msgid="3262760336059073446">"Almacenamiento"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Todas las carpetas"</string>
@@ -440,4 +401,6 @@
     <string name="airplane_mode_on" msgid="2206488373387145840">"Modo avión activado"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Activar en <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Configuración de la cuenta"</string>
+    <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
+    <skip />
 </resources>

@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Nakala fiche kwa"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Kichwa"</string>
     <string name="body_hint" msgid="4279864165439577668">"Tunga barua pepe"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Ambatisha faili"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Ambatisha picha"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Ambatisha video"</string>
@@ -49,7 +48,7 @@
     <string name="confirm_send_title" msgid="5663602035452564062">"Tuma ujumbe?"</string>
     <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"Hakuna maandishi katika kichwa cha ujumbe."</string>
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Hakuna maandishi katika kiini cha ujumbe."</string>
-    <string name="confirm_send_message" msgid="3221546155385562874">"Tuma ujumbe huu?"</string>
+    <string name="confirm_send_message" msgid="3221546155385562874">"Ungependa kuutuma ujumbe huu?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Ujumbe umetupwa."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="custom_from_account_label" msgid="5069652141632649722">"Tuma barua kama:"</string>
@@ -66,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Ripoti hadaa"</string>
     <string name="delete" msgid="844871204175957681">"Futa"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Tupa rasimu"</string>
-    <string name="next" msgid="4674401197968248302">"Nzee zaidi"</string>
-    <string name="previous" msgid="309943944831349924">"Mpya zaidi"</string>
     <string name="refresh" msgid="490989798005710951">"Onyesha upya"</string>
     <string name="reply" msgid="2032052598496088561">"Jibu"</string>
     <string name="reply_all" msgid="7257248094625487557">"Jibu wote"</string>
@@ -79,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Hamishia Kikasha"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mipangilio ya folda"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Rejesha ukubwa wa kiotomatiki"</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Ujumbe huu umerekebishwa kutoka kwa toleo lake asili ili kutoshea kwenye skrini hii.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Folda"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Zaidi"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Akaunti zaidi"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sawazisha na uarifu"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Mipangilio ya folda"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Mipangilio ya akaunti"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Mipangilio"</string>
     <string name="menu_search" msgid="5297197523031943248">"Tafuta"</string>
-    <string name="more" msgid="1238344647379009858">"Zaidi"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> wa <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Mpya zaidi"</string>
-    <string name="older" msgid="6651690916337202936">"Nzee zaidi"</string>
     <string name="mark_important" msgid="6904096897104265870">"Tia alama kama muhimu"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Tia alama kama isiyo muhimu"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Ongeza Nakala kwa/Nakala fiche kwa"</string>
@@ -101,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Jumuisha maandishi yaliyonukuliwa"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Nukuu maandishi"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Jibu katika mstari"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">" B <xliff:g id="COUNT">%s</xliff:g>"</string>
     <string name="kilobytes" msgid="9191949758901349712">"KB <xliff:g id="COUNT">%s</xliff:g> "</string>
     <string name="megabytes" msgid="130431176022837380">"MB <xliff:g id="COUNT">%s</xliff:g> "</string>
@@ -131,12 +117,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Shiriki"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Shiriki vyote"</string>
     <string name="saving" msgid="925514721138014677">"Inahifadhi..."</string>
-    <string name="attach_image" msgid="3713654042212409705">"Picha"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Video"</string>
-    <!-- String.format failed for translation -->
-    <!-- no translation found for number_of_attachments:one (6596149613229217650) -->
-    <!-- String.format failed for translation -->
-    <!-- no translation found for number_of_attachments:other (4827833083675127409) -->
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Shiriki kupitia"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Fungua katika Kivinjari"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Nakili"</string>
@@ -154,10 +134,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Hamisha mazungumzo"</item>
     <item quantity="other" msgid="1685896770174368261">"Hamisha mazungumzo <xliff:g id="ID_1">%1$d</xliff:g>"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"Barua 1 ambayo haijasomwa"</item>
-    <item quantity="other" msgid="1634106533609170998">"Barua <xliff:g id="ID_1">%1$d</xliff:g> ambazo hazijasomwa"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> kuhusu <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> tarehe <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> kuhusu <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> saa <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -233,13 +209,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Imehamishwa kwenda <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Matokeo"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Utafutaji hauauniwi kwenye akaunti hii."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Hali ya Utafutaji"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Hali ya Utafutaji Mazungumzo"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Weka Kitufe cha Nyuma"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Ondoa Kitufe cha Nyuma"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Weka Hali ya Kawaida"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Hali ya Matokeo ya Utafutaji"</string>
-    <string name="folderMode" msgid="553052020619895714">"Weka Hali ya Folda"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Inatafuta…"</string>
     <string name="recent_folders" msgid="8240081561436891330">"Hivi karibuni"</string>
     <string name="add_label" msgid="1638508840481944248">"Ongeza lebo"</string>
@@ -284,8 +253,6 @@
     <string name="done" msgid="3079981801778027540">"Nimemaliza"</string>
     <string name="cancel" msgid="8762981157252199115">"Ghairi"</string>
     <string name="clear" msgid="3184687982186479442">"Futa"</string>
-    <string name="close" msgid="419945428844076406">"Funga"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"Hakuna folda zilizowekwa za akaunti hii."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Mafanikio"</item>
     <item msgid="7109065688039971961">"Hakuna muunganisho."</item>
@@ -318,9 +285,7 @@
     <string name="search_hint" msgid="3625734263059221350">"Tafuta barua pepe"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Folda"</string>
     <string name="network_error" msgid="2125579009654728299">"Hakuna muunganisho"</string>
-    <string name="loading" msgid="2600808404156989255">"Inapakia mazungumzo..."</string>
     <string name="retry" msgid="4515885444824418022">"Jaribu tena"</string>
     <string name="load_more" msgid="420892447103014683">"Pakia zaidi"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Ipe jina njia ya mkato ya folda"</string>
@@ -330,7 +295,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Akaunti hii haijawekwa kusawazishwa kiotomatiki.\nGusa"<b>"Sawazisha Sasa"</b>" ili kusawazisha barua pepe mara moja, au "<b>"Badilisha Mipangilio ya Usawazishaji"</b>" ili kuweka akaunti hii isawazishe barua pepe kiotomatiki."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sawazisha sasa"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Badilisha mipangilio ya ulandanishi"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Hakuna ujumbe mpya"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Haikuweza kupakia picha"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Huwezi kusonaga kwa sababu chaguo lina akaunti nyingi."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -348,9 +312,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Haikuweza kusawazisha."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Kifaa chako hakina nafasi ya kutosha ya hifadhi ili kusawazisha."</string>
     <string name="storage" msgid="3262760336059073446">"Hifadhi"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Folda zote"</string>
@@ -435,9 +396,11 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Jana, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Ondoa kidokezo"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Usawazishaji otomatiki umezimwa."</string>
-    <string name="tap_to_enable_sync" msgid="8332275909378339123">"Gonga ili kuwasha kusawazisha otomatiki."</string>
+    <string name="tap_to_enable_sync" msgid="8332275909378339123">"Gonga ili kuwasha usawazishaji otomatiki."</string>
     <string name="account_sync_off" msgid="5699548271856775808">"Usawazishaji wa akaunti umezimwa."</string>
     <string name="airplane_mode_on" msgid="2206488373387145840">"Hali ya ndege imewashwa"</string>
-    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Washa katika <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Washa kwenye <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Mipangilio ya akaunti"</string>
+    <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
+    <skip />
 </resources>
