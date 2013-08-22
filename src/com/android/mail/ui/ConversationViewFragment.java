@@ -732,7 +732,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 false /* firstBorder */, true /* lastBorder */);
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
-        return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri), 320,
+        return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri),
                 mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount),
                 applyTransforms, applyTransforms);
     }

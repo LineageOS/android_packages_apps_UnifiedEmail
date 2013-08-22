@@ -18,10 +18,11 @@
 <resources>
     <dimen name="conversation_view_margin_side">16dp</dimen>
     <dimen name="conversation_view_margin_side_minus_gradient">15dp</dimen>
+    <dimen name="conversation_header_margin_side">15dp</dimen>
     <dimen name="conversation_header_font_size">24sp</dimen>
     <dimen name="conversation_header_vertical_padding">26dip</dimen>
     <dimen name="conversation_header_vertical_padding_condensed">26dip</dimen>
-    <dimen name="conversation_header_side_padding">40dip</dimen>
+    <dimen name="conversation_header_side_padding">24dip</dimen>
     <dimen name="conversation_page_gutter">0dip</dimen>
     <dimen name="message_border_height">16dp</dimen>
     <dimen name="message_header_padding_start">24dp</dimen>

@@ -37,6 +37,7 @@
     <dimen name="conversation_message_content_margin_side">16dp</dimen>
     <dimen name="conversation_view_margin_side">8dp</dimen>
     <dimen name="conversation_view_margin_side_minus_gradient">7dp</dimen>
+    <dimen name="conversation_header_margin_side">0dp</dimen>
     <dimen name="conversation_header_font_size">18sp</dimen>
     <dimen name="conversation_header_font_size_condensed">14sp</dimen>
     <dimen name="conversation_header_vertical_padding">16dip</dimen>
