@@ -58,6 +58,21 @@ public class Address {
     // Regex that matches escaped character '\\([\\"])'
     private static final Pattern UNQUOTE = Pattern.compile("\\\\([\\\\\"])");
 
+
+    // TODO: LOCAL_PART and DOMAIN_PART_PART are too permissive and can be improved.
+    // TODO: Fix this to better constrain comments.
+    /** Regex for the local part of an email address. */
+    private static final String LOCAL_PART = "[^@]+";
+    /** Regex for each part of the domain part, i.e. the thing between the dots. */
+    private static final String DOMAIN_PART_PART = "[[\\w][\\d]\\-\\(\\)\\[\\]]+";
+    /** Regex for the domain part, which is two or more {@link #DOMAIN_PART_PART} separated by . */
+    private static final String DOMAIN_PART =
+            "(" + DOMAIN_PART_PART + "\\.)+" + DOMAIN_PART_PART;
+
+    /** Pattern to check if an email address is valid. */
+    private static final Pattern EMAIL_ADDRESS =
+            Pattern.compile("\\A" + LOCAL_PART + "@" + DOMAIN_PART + "\\z");
+
     private static final Address[] EMPTY_ADDRESS_ARRAY = new Address[0];
 
     // delimiters are chars that do not appear in an email address, used by pack/unpack
@@ -162,17 +177,8 @@ public class Address {
      * E.g. name@domain.com is valid.
      */
     @VisibleForTesting
-    static boolean isValidAddress(String address) {
-        // Note: Some email provider may violate the standard, so here we only check that
-        // address consists of two part that are separated by '@', and domain part contains
-        // at least one '.'.
-        int len = address.length();
-        int firstAt = address.indexOf('@');
-        int lastAt = address.lastIndexOf('@');
-        int firstDot = address.indexOf('.', lastAt + 1);
-        int lastDot = address.lastIndexOf('.');
-        return firstAt > 0 && firstAt == lastAt && lastAt + 1 < firstDot
-            && firstDot <= lastDot && lastDot < len - 1;
+    static boolean isValidAddress(final String address) {
+        return EMAIL_ADDRESS.matcher(address).find();
     }
 
     @Override
