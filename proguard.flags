@@ -60,7 +60,6 @@
 
 -keepclasseswithmembers class com.android.mail.browse.ConversationItemView {
   *** setAnimatedHeightFraction(...);
-  *** setPhotoFlipFraction(...);
 }
 
 -keepclasseswithmembers class com.android.mail.ui.MailActivity {

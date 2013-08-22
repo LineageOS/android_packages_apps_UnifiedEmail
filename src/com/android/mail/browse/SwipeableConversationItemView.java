@@ -28,7 +28,6 @@ import android.widget.ListView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.AnimatedAdapter;
-import com.android.mail.ui.AnimatedAdapter.ConversationListListener;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 
@@ -56,15 +55,14 @@ public class SwipeableConversationItemView extends FrameLayout
     }
 
     public void bind(final Conversation conversation, final ControllableActivity activity,
-            final ConversationListListener conversationListListener,
             final ConversationSelectionSet set, final Folder folder,
             final int checkboxOrSenderImage, final boolean showAttachmentPreviews,
             final boolean parallaxSpeedAlternative, final boolean parallaxDirectionAlternative,
             final boolean swipeEnabled, final boolean priorityArrowsEnabled,
             final AnimatedAdapter animatedAdapter) {
-        mConversationItemView.bind(conversation, activity, conversationListListener, set, folder,
-                checkboxOrSenderImage, showAttachmentPreviews, parallaxSpeedAlternative,
-                parallaxDirectionAlternative, swipeEnabled, priorityArrowsEnabled, animatedAdapter);
+        mConversationItemView.bind(conversation, activity, set, folder, checkboxOrSenderImage,
+                showAttachmentPreviews, parallaxSpeedAlternative, parallaxDirectionAlternative,
+                swipeEnabled, priorityArrowsEnabled, animatedAdapter);
     }
 
     public void startUndoAnimation(AnimatorListener listener, boolean swipe) {

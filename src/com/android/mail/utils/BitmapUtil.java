@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package com.android.mail.photomanager;
+package com.android.mail.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-
-import com.android.mail.utils.LogUtils;
 
 /**
  * Provides static functions to decode bitmaps at the optimal size
  */
 public class BitmapUtil {
 
+    private static final String TAG = LogTag.getLogTag();
     private static final boolean DEBUG = false;
 
     private BitmapUtil() {
@@ -53,7 +52,7 @@ public class BitmapUtil {
             opts.inJustDecodeBounds = false;
             return BitmapFactory.decodeByteArray(src, 0, src.length, opts);
         } catch (Throwable t) {
-            LogUtils.w(PhotoManager.TAG, t, "unable to decode image");
+            LogUtils.w(TAG, t, "BitmapUtils unable to decode image");
             return null;
         }
     }
@@ -73,7 +72,7 @@ public class BitmapUtil {
             return centerCrop(decoded, w, h);
 
         } catch (Throwable t) {
-            LogUtils.w(PhotoManager.TAG, t, "unable to crop image");
+            LogUtils.w(TAG, t, "BitmapUtils unable to crop image");
             return null;
         }
     }
@@ -161,13 +160,13 @@ public class BitmapUtil {
         final Bitmap cropped = Bitmap.createBitmap(src, srcX, srcY, srcCroppedW, srcCroppedH, m,
                 true /* filter */);
 
-        if (DEBUG) LogUtils.i(PhotoManager.TAG,
-                "IN centerCrop, srcW/H=%s/%s desiredW/H=%s/%s srcX/Y=%s/%s" +
+        if (DEBUG) LogUtils.i(TAG,
+                "BitmapUtils IN centerCrop, srcW/H=%s/%s desiredW/H=%s/%s srcX/Y=%s/%s" +
                 " innerW/H=%s/%s scale=%s resultW/H=%s/%s",
                 srcWidth, srcHeight, w, h, srcX, srcY, srcCroppedW, srcCroppedH, scale,
                 cropped.getWidth(), cropped.getHeight());
         if (DEBUG && (w != cropped.getWidth() || h != cropped.getHeight())) {
-            LogUtils.e(PhotoManager.TAG, new Error(), "last center crop violated assumptions.");
+            LogUtils.e(TAG, new Error(), "BitmapUtils last center crop violated assumptions.");
         }
 
         return cropped;

@@ -115,4 +115,37 @@ public class ReusableBitmap implements Poolable {
         return sb.toString();
     }
 
+    /**
+     * Singleton class to represent a null Bitmap. We don't want to just use a regular
+     * ReusableBitmap with a null bmp field because that will render that ReusableBitmap useless
+     * and unable to be used by another decode process.
+     */
+    public final static class NullReusableBitmap extends ReusableBitmap {
+        private static NullReusableBitmap sInstance;
+
+        /**
+         * Get a singleton.
+         */
+        public static NullReusableBitmap getInstance() {
+            if (sInstance == null) {
+                sInstance = new NullReusableBitmap();
+            }
+            return sInstance;
+        }
+
+        private NullReusableBitmap() {
+            super(null /* bmp */, false /* reusable */);
+        }
+
+        @Override
+        public int getByteCount() {
+            return 0;
+        }
+
+        @Override
+        public void releaseReference() { }
+
+        @Override
+        public void acquireReference() { }
+    }
 }

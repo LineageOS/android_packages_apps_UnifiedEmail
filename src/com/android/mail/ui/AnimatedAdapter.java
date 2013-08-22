@@ -40,6 +40,7 @@ import com.android.bitmap.BitmapCache;
 import com.android.bitmap.DecodeAggregator;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewCoordinates.CoordinatesCache;
@@ -92,17 +93,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private Runnable mCountDown;
     private final Handler mHandler;
     protected long mLastLeaveBehind = -1;
-
-    private final BitmapCache mBitmapCache;
-    private final DecodeAggregator mDecodeAggregator;
-
-    public interface ConversationListListener {
-        /**
-         * @return <code>true</code> if the list is just exiting selection mode (so animations may
-         * be required), <code>false</code> otherwise
-         */
-        boolean isExitingSelectionMode();
-    }
 
     private final AnimatorListener mAnimatorListener = new AnimatorListenerAdapter() {
 
@@ -184,7 +174,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     /** True if priority inbox markers are enabled, false otherwise. */
     private boolean mPriorityMarkersEnabled;
     private final ControllableActivity mActivity;
-    private final ConversationListListener mConversationListListener;
     private final AccountObserver mAccountListener = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
@@ -250,31 +239,43 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private static final String LOG_TAG = LogTag.getLogTag();
     private static final int INCREASE_WAIT_COUNT = 2;
 
-    private static final int BITMAP_CACHE_TARGET_SIZE_BYTES = 0; // TODO: enable cache
+    private final BitmapCache mAttachmentPreviewsCache;
+    private final DecodeAggregator mAttachmentPreviewsDecodeAggregator;
+    private final BitmapCache mSendersImagesCache;
+    private final ContactResolver mContactResolver;
+
+    private static final int ATTACHMENT_PREVIEWS_CACHE_TARGET_SIZE_BYTES = 0; // TODO: enable cache
+    /** 339KB cache fits 10 bitmaps at 33856 bytes each. */
+    private static final int SENDERS_IMAGES_CACHE_TARGET_SIZE_BYTES = 1024 * 339;
     /**
      * This is the fractional portion of the total cache size above that's dedicated to non-pooled
      * bitmaps. (This is basically the portion of cache dedicated to GIFs.)
      */
-    private static final float BITMAP_CACHE_NON_POOLED_FRACTION = 0.1f;
+    private static final float ATTACHMENT_PREVIEWS_CACHE_NON_POOLED_FRACTION = 0.1f;
+    private static final float SENDERS_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION = 0f;
+    /** Each string has upper estimate of 50 bytes, so this cache would be 5KB. */
+    private static final int SENDERS_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY = 100;
 
     public AnimatedAdapter(Context context, ConversationCursor cursor,
             ConversationSelectionSet batch, ControllableActivity activity,
-            final ConversationListListener conversationListListener, SwipeableListView listView,
-            final List<ConversationSpecialItemView> specialViews,
+            SwipeableListView listView, final List<ConversationSpecialItemView> specialViews,
             final ObjectCursor<Folder> childFolders) {
         super(context, -1, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
         setAccount(mAccountListener.initialize(activity.getAccountController()));
         mActivity = activity;
-        mConversationListListener = conversationListListener;
         mShowFooter = false;
         mListView = listView;
         mFolderViews = getNestedFolders(childFolders);
 
-        mBitmapCache = new AltBitmapCache(BITMAP_CACHE_TARGET_SIZE_BYTES,
-                BITMAP_CACHE_NON_POOLED_FRACTION);
-        mDecodeAggregator = new DecodeAggregator();
+        mAttachmentPreviewsCache = new AltBitmapCache(ATTACHMENT_PREVIEWS_CACHE_TARGET_SIZE_BYTES,
+                ATTACHMENT_PREVIEWS_CACHE_NON_POOLED_FRACTION, 0);
+        mAttachmentPreviewsDecodeAggregator = new DecodeAggregator();
+        mSendersImagesCache = new AltBitmapCache(SENDERS_IMAGES_CACHE_TARGET_SIZE_BYTES,
+                SENDERS_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION,
+                SENDERS_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY);
+        mContactResolver = new ContactResolver(mContext.getContentResolver(), mSendersImagesCache);
 
         mHandler = new Handler();
         if (sDismissAllShortDelay == -1) {
@@ -415,10 +416,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         if (view == null) {
             view = new SwipeableConversationItemView(context, mAccount.name);
         }
-        view.bind(conv, mActivity, mConversationListListener, mBatchConversations, mFolder,
-                getCheckboxSetting(), getAttachmentPreviewsSetting(),
-                getParallaxSpeedAlternativeSetting(), getParallaxDirectionAlternativeSetting(),
-                mSwipeEnabled, mPriorityMarkersEnabled, this);
+        view.bind(conv, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
+                getAttachmentPreviewsSetting(), getParallaxSpeedAlternativeSetting(),
+                getParallaxDirectionAlternativeSetting(), mSwipeEnabled, mPriorityMarkersEnabled,
+                this);
         return view;
     }
 
@@ -803,10 +804,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         SwipeableConversationItemView view = (SwipeableConversationItemView) super.getView(
                 position, null, parent);
         view.reset();
-        view.bind(conversation, mActivity, mConversationListListener, mBatchConversations, mFolder,
-                getCheckboxSetting(), getAttachmentPreviewsSetting(),
-                getParallaxSpeedAlternativeSetting(), getParallaxDirectionAlternativeSetting(),
-                mSwipeEnabled, mPriorityMarkersEnabled, this);
+        view.bind(conversation, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
+                getAttachmentPreviewsSetting(), getParallaxSpeedAlternativeSetting(),
+                getParallaxDirectionAlternativeSetting(), mSwipeEnabled, mPriorityMarkersEnabled,
+                this);
         mAnimatingViews.put(conversation.id, view);
         return view;
     }
@@ -1117,12 +1118,20 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         return oldCursor;
     }
 
-    public BitmapCache getBitmapCache() {
-        return mBitmapCache;
+    public BitmapCache getAttachmentPreviewsCache() {
+        return mAttachmentPreviewsCache;
     }
 
-    public DecodeAggregator getDecodeAggregator() {
-        return mDecodeAggregator;
+    public DecodeAggregator getAttachmentPreviewsDecodeAggregator() {
+        return mAttachmentPreviewsDecodeAggregator;
+    }
+
+    public BitmapCache getSendersImagesCache() {
+        return mSendersImagesCache;
+    }
+
+    public ContactResolver getContactResolver() {
+        return mContactResolver;
     }
 
     /**
@@ -1178,7 +1187,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     public void onScrollStateChanged(final int scrollState) {
         final boolean scrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
-        mBitmapCache.setBlocking(scrolling);
+        mAttachmentPreviewsCache.setBlocking(scrolling);
     }
 
     public int getViewMode() {

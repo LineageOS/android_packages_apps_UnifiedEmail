@@ -2,6 +2,7 @@ package com.android.mail.bitmap;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
@@ -47,7 +48,7 @@ public class AttachmentGridDrawable extends CompositeDrawable<AttachmentDrawable
     }
 
     @Override
-    protected AttachmentDrawable createDivisionDrawable() {
+    protected AttachmentDrawable createDivisionDrawable(final int i) {
         final AttachmentDrawable result = new AttachmentDrawable(mResources, mCache,
                 mDecodeAggregator, mCoordinates, mPlaceholder, mProgress);
         return result;
@@ -105,8 +106,24 @@ public class AttachmentGridDrawable extends CompositeDrawable<AttachmentDrawable
     }
 
     @Override
+    public void setAlpha(final int alpha) {
+        super.setAlpha(alpha);
+        final int old = mPaint.getAlpha();
+        mPaint.setAlpha(alpha);
+        if (alpha != old) {
+            invalidateSelf();
+        }
+    }
+
+    @Override
+    public void setColorFilter(final ColorFilter cf) {
+        super.setColorFilter(cf);
+        mPaint.setColorFilter(cf);
+        invalidateSelf();
+    }
+
+    @Override
     public void setParallaxFraction(float fraction) {
         mParallaxFraction = fraction;
     }
-
 }

@@ -21,11 +21,13 @@ import java.util.List;
 public abstract class CompositeDrawable<T extends Drawable> extends Drawable
         implements Drawable.Callback {
 
+    public static final int MAX_COMPOSITE_DRAWABLES = 4;
+
     protected final List<T> mDrawables;
     protected int mCount;
 
     public CompositeDrawable(int maxDivisions) {
-        if (maxDivisions >= 4) {
+        if (maxDivisions > MAX_COMPOSITE_DRAWABLES) {
             throw new IllegalArgumentException("CompositeDrawable only supports 4 divisions");
         }
         mDrawables = new ArrayList<T>(maxDivisions);
@@ -35,7 +37,7 @@ public abstract class CompositeDrawable<T extends Drawable> extends Drawable
         mCount = 0;
     }
 
-    protected abstract T createDivisionDrawable();
+    protected abstract T createDivisionDrawable(final int i);
 
     public void setCount(int count) {
         // zero out the composite bounds, which will propagate to the division drawables
@@ -56,7 +58,7 @@ public abstract class CompositeDrawable<T extends Drawable> extends Drawable
         T result = mDrawables.get(i);
         if (result == null) {
             Trace.beginSection("create division drawable");
-            result = createDivisionDrawable();
+            result = createDivisionDrawable(i);
             mDrawables.set(i, result);
             result.setCallback(this);
             // Make sure drawables created after the bounds were already set have their bounds
@@ -109,6 +111,11 @@ public abstract class CompositeDrawable<T extends Drawable> extends Drawable
 
     @Override
     public void draw(Canvas canvas) {
+        final Rect bounds = getBounds();
+        if (!isVisible() || bounds.isEmpty()) {
+            return;
+        }
+
         for (int i = 0; i < mCount; i++) {
             mDrawables.get(i).draw(canvas);
         }
@@ -132,10 +139,7 @@ public abstract class CompositeDrawable<T extends Drawable> extends Drawable
     public int getOpacity() {
         int opacity = PixelFormat.OPAQUE;
         for (int i = 0; i < mCount; i++) {
-            if (mDrawables.get(i).getOpacity() != PixelFormat.OPAQUE) {
-                opacity = PixelFormat.TRANSLUCENT;
-                break;
-            }
+            opacity = resolveOpacity(opacity, mDrawables.get(i).getOpacity());
         }
         return opacity;
     }

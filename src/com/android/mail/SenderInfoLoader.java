@@ -17,6 +17,7 @@
 
 package com.android.mail;
 
+import com.android.bitmap.Trace;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -99,40 +100,53 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
     /**
      * Loads contact photos from the ContentProvider.
      * @param resolver {@link ContentResolver} to use in queries to the ContentProvider.
-     * @param senderSet The email addresses of the sender images to return.
+     * @param emails The email addresses of the sender images to return.
      * @param decodeBitmaps If {@code true}, decode the bitmaps and put them into
      *                      {@link ContactInfo}. Otherwise, just put the raw bytes of the photo
      *                      into the {@link ContactInfo}.
-     * @return A mapping of email addresses to {@link ContactInfo}s. The {@link ContactInfo} will
-     * contain either a byte array or an actual decoded bitmap for the sender image.
+     * @return A mapping of email to {@link ContactInfo}. How to interpret the map:
+     * <ul>
+     *     <li>The email is missing from the key set or maps to null - The email was skipped. Try
+     *     again.</li>
+     *     <li>Either {@link ContactInfo#photoBytes} or {@link ContactInfo#photo} is non-null -
+     *     Photo loaded successfully.</li>
+     *     <li>Both {@link ContactInfo#photoBytes} and {@link ContactInfo#photo} are null -
+     *     Photo load failed.</li>
+     * </ul>
      */
     public static ImmutableMap<String, ContactInfo> loadContactPhotos(
-            final ContentResolver resolver, final Set<String> senderSet,
-            final boolean decodeBitmaps) {
+            final ContentResolver resolver, final Set<String> emails, final boolean decodeBitmaps) {
+        Trace.beginSection("load contact photos util");
         Cursor cursor = null;
 
+        Trace.beginSection("build first query");
         Map<String, ContactInfo> results = Maps.newHashMap();
 
         // temporary structures
         Map<Long, Pair<String, ContactInfo>> photoIdMap = Maps.newHashMap();
         ArrayList<String> photoIdsAsStrings = new ArrayList<String>();
-        ArrayList<String> senders = getTruncatedQueryParams(senderSet);
+        ArrayList<String> emailsList = getTruncatedQueryParams(emails);
 
         // Build first query
         StringBuilder query = new StringBuilder()
                 .append(Data.MIMETYPE).append("='").append(Email.CONTENT_ITEM_TYPE)
                 .append("' AND ").append(Email.DATA).append(" IN (");
-        appendQuestionMarks(query, senders);
+        appendQuestionMarks(query, emailsList);
         query.append(')');
+        Trace.endSection();
 
         try {
+            Trace.beginSection("query 1");
             cursor = resolver.query(Data.CONTENT_URI, DATA_COLS,
-                    query.toString(), toStringArray(senders), null /* sortOrder */);
+                    query.toString(), toStringArray(emailsList), null /* sortOrder */);
+            Trace.endSection();
 
             if (cursor == null) {
+                Trace.endSection();
                 return null;
             }
 
+            Trace.beginSection("get photo id");
             int i = -1;
             while (cursor.moveToPosition(++i)) {
                 String email = cursor.getString(DATA_EMAIL_COLUMN);
@@ -154,11 +168,23 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
                 results.put(email, result);
             }
             cursor.close();
+            Trace.endSection();
+
+            // Put empty ContactInfo for all the emails that didn't map to a contact.
+            // This allows us to differentiate between lookup failed,
+            // and lookup skipped (truncated above).
+            for (String email : emailsList) {
+                if (!results.containsKey(email)) {
+                    results.put(email, new ContactInfo(null, null));
+                }
+            }
 
             if (photoIdsAsStrings.isEmpty()) {
+                Trace.endSection();
                 return ImmutableMap.copyOf(results);
             }
 
+            Trace.beginSection("build second query");
             // Build second query: photoIDs->blobs
             // based on photo batch-select code in ContactPhotoManager
             photoIdsAsStrings = getTruncatedQueryParams(photoIdsAsStrings);
@@ -166,14 +192,19 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
             query.append(Photo._ID).append(" IN (");
             appendQuestionMarks(query, photoIdsAsStrings);
             query.append(')');
+            Trace.endSection();
 
+            Trace.beginSection("query 2");
             cursor = resolver.query(Data.CONTENT_URI, PHOTO_COLS,
                     query.toString(), toStringArray(photoIdsAsStrings), null /* sortOrder */);
+            Trace.endSection();
 
             if (cursor == null) {
+                Trace.endSection();
                 return ImmutableMap.copyOf(results);
             }
 
+            Trace.beginSection("get photo blob");
             i = -1;
             while (cursor.moveToPosition(++i)) {
                 byte[] photoBytes = cursor.getBlob(PHOTO_PHOTO_COLUMN);
@@ -187,7 +218,9 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
                 ContactInfo prevResult = prev.second;
 
                 if (decodeBitmaps) {
+                    Trace.beginSection("decode bitmap");
                     Bitmap photo = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.length);
+                    Trace.endSection();
                     // overwrite existing photo-less result
                     results.put(email,
                             new ContactInfo(prevResult.contactUri, prevResult.status, photo));
@@ -197,12 +230,14 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
                             prevResult.contactUri, prevResult.status, photoBytes));
                 }
             }
+            Trace.endSection();
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
         }
 
+        Trace.endSection();
         return ImmutableMap.copyOf(results);
     }
 

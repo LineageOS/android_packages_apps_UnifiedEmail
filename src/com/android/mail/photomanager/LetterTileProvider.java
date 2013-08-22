@@ -29,12 +29,8 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 
 import com.android.mail.R;
-import com.android.mail.photomanager.ContactPhotoManager.ContactIdentifier;
-import com.android.mail.photomanager.PhotoManager.DefaultImageProvider;
-import com.android.mail.photomanager.PhotoManager.PhotoIdentifier;
-import com.android.mail.ui.DividedImageCanvas;
-import com.android.mail.ui.ImageCanvas;
 import com.android.mail.ui.ImageCanvas.Dimensions;
+import com.android.mail.utils.BitmapUtil;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -46,7 +42,8 @@ import com.android.mail.utils.LogUtils;
  * tile. If there is no English alphabet character (or digit), it creates a
  * bitmap with the default contact avatar.
  */
-public class LetterTileProvider implements DefaultImageProvider {
+@Deprecated
+public class LetterTileProvider {
     private static final String TAG = LogTag.getLogTag();
     private final Bitmap mDefaultBitmap;
     private final Bitmap[] mBitmapBackgroundCache;
@@ -87,30 +84,6 @@ public class LetterTileProvider implements DefaultImageProvider {
 
         mColors = res.obtainTypedArray(R.array.letter_tile_colors);
         mDefaultColor = res.getColor(R.color.letter_tile_default_color);
-    }
-
-    @Override
-    public void applyDefaultImage(PhotoIdentifier id, ImageCanvas view, int extent) {
-        ContactIdentifier contactIdentifier = (ContactIdentifier) id;
-        DividedImageCanvas dividedImageView = (DividedImageCanvas) view;
-
-        final String displayName = contactIdentifier.name;
-        final String address = (String) contactIdentifier.getKey();
-
-        // don't apply again if existing letter is there (and valid)
-        if (dividedImageView.hasImageFor(address)) {
-            return;
-        }
-
-        dividedImageView.getDesiredDimensions(address, mDims);
-
-        final Bitmap bitmap = getLetterTile(mDims, displayName, address);
-
-        if (bitmap == null) {
-            return;
-        }
-
-        dividedImageView.addDivisionImage(bitmap, address);
     }
 
     public Bitmap getLetterTile(final Dimensions dimensions, final String displayName,
