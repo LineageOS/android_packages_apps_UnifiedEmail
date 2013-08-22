@@ -109,5 +109,5 @@
 
     <!-- The background color of the message header -->
     <color name="message_header_background_color">@android:color/white</color>
-    <color name="message_border_gradient_color">#f8f8f8</color>
+    <color name="message_border_gradient_color">#ebebeb</color>
 </resources>
