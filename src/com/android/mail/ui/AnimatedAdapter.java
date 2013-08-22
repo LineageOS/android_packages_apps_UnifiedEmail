@@ -499,7 +499,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         // Check if this is a special view
         final ConversationSpecialItemView specialView = mSpecialViews.get(position);
         if (specialView != null) {
-            specialView.onGetView();
+            specialView.onGetView(mActivity.getViewMode().getMode());
             return (View) specialView;
         }
 

@@ -71,6 +71,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
 import com.android.mail.ui.FeedbackEnabledActivity;
+import com.android.mail.ui.ViewMode;
 
 import org.json.JSONObject;
 
@@ -542,6 +543,15 @@ public class Utils {
      */
     public static boolean useTabletUI(Resources res) {
         return res.getInteger(R.integer.use_tablet_ui) != 0;
+    }
+
+    /**
+     * @return <code>true</code> if the right edge effect should be displayed on list items
+     */
+    public static boolean getDisplayListRightEdgeEffect(final boolean tabletDevice,
+            final boolean listCollapsible, final int viewMode) {
+        return tabletDevice && !listCollapsible
+                && (ViewMode.isConversationMode(viewMode) || ViewMode.isAdMode(viewMode));
     }
 
     /**

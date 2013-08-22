@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * For folders that might contain other folders, we show the nested folders within this view.
@@ -45,22 +47,34 @@ public class NestedFolderView extends LinearLayout implements ConversationSpecia
     /** The folder this view represents */
     private Folder mFolder;
 
+    private View mTeaserRightEdge;
+    /** Whether we are on a tablet device or not */
+    private final boolean mTabletDevice;
+    /** When in conversation mode, true if the list is hidden */
+    private final boolean mListCollapsible;
+
     public NestedFolderView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public NestedFolderView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public NestedFolderView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        final Resources resources = context.getResources();
+        mTabletDevice = Utils.useTabletUI(resources);
+        mListCollapsible = resources.getBoolean(R.bool.list_collapsible);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mSwipeableContent = findViewById(R.id.swipeable_content);
+
+        mTeaserRightEdge = findViewById(R.id.teaser_right_edge);
     }
 
     @Override
@@ -71,8 +85,12 @@ public class NestedFolderView extends LinearLayout implements ConversationSpecia
     }
 
     @Override
-    public void onGetView() {
-        // Do nothing
+    public void onGetView(final int viewMode) {
+        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible, viewMode)) {
+            mTeaserRightEdge.setVisibility(VISIBLE);
+        } else {
+            mTeaserRightEdge.setVisibility(GONE);
+        }
     }
 
     /**
