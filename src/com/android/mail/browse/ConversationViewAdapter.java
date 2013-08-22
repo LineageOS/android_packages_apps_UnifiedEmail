@@ -247,6 +247,12 @@ public class ConversationViewAdapter extends BaseAdapter {
         public ConversationViewAdapter getAdapter() {
             return mAdapter;
         }
+
+        @Override
+        public void rebindView(View view) {
+            final MessageHeaderView header = (MessageHeaderView) view;
+            header.rebind(this);
+        }
     }
 
     public class MessageFooterItem extends ConversationOverlayItem {
