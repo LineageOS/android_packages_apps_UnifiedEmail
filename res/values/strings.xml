@@ -221,8 +221,6 @@
     <string name="preview_attachment">Preview</string>
     <!-- Read email screen, button name. Save an attachment to sd card. [CHAR LIMIT=10] -->
     <string name="save_attachment">Save</string>
-    <!-- Read email screen, button name. Open a dialog to explain that no application found to view the attachment. [CHAR LIMIT=10] -->
-    <string name="info_attachment">Info</string>
     <!-- Read email screen, button name. Cancel a downloading attachment. [CHAR LIMIT=10] -->
     <string name="cancel_attachment">Cancel</string>
     <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
@@ -437,19 +435,10 @@
     <!-- Search Results: Text for header that is shown above search results, while waiting for search results from the server [CHAR LIMIT=30] -->
     <string name="search_results_searching_header">Searching\u2026</string>
 
-    <!-- List header for recent folders for current account in account dropdown [CHAR LIMIT=100] -->
-    <string name="recent_folders">Recent</string>
-
     <!-- Conversation view -->
     <!--  Text anchor for control to add / change labels on a conversation when
           viewing it. [CHAR LIMIT=40] -->
     <string name="add_label">Add label</string>
-    <!-- position bar label in conversation view: number out of total [CHAR LIMIT=50]-->
-    <string name="conversation_count"><xliff:g id="count">%1$s</xliff:g> of <xliff:g id="total">%2$s</xliff:g></string>
-    <!-- position bar label in conversation view: label for a newer conversation [CHAR LIMIT=20]-->
-    <string name="conversation_newer">Newer</string>
-    <!-- position bar label in conversation view: label for an older conversation [CHAR LIMIT=20]-->
-    <string name="conversation_older">Older</string>
 
     <!-- New Message notification text that appears over conversation view on incoming message. [CHAR LIMIT=30] -->
     <string name="new_incoming_messages_one">New message from <xliff:g id="sender">%s</xliff:g>.</string>
@@ -582,17 +571,6 @@
 
     <!-- Name of the Folder shortcut widget. Should use "Email" to refer to the app. [CHAR LIMIT=30] -->
     <string name="folder_shortcut_widget_label">Email folder</string>
-
-    <!-- Manange folders mode, sync option: synchronize all conversations with this folder. [CHAR LIMIT=100] -->
-    <string name="sync_all">Sync: All</string>
-    <plurals name="sync_recent">
-        <!-- Manage folders mode, sync option: synchronize conversations in the last day with this folder [CHAR LIMIT=100] -->
-        <item quantity="one">Sync: Last <xliff:g id="count" example="1">%1$d</xliff:g> day</item>
-        <!-- Manage folders mode, sync option: synchronize conversations in the last 2+ day with this folder [CHAR LIMIT=100] -->
-        <item quantity="other">Sync: Last <xliff:g id="count" example="4">%1$d</xliff:g> days</item>
-    </plurals>
-    <!-- Manage folders mode, sync option: don't synchronize any conversation with this folder [CHAR LIMIT=100] -->
-    <string name="sync_none">Sync: None</string>
 
     <!-- Folder selection dialog -->
     <!-- Title for change folders dialog [CHAR LIMIT=30] -->
