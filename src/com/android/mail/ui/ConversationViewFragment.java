@@ -1433,8 +1433,14 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private void processNewOutgoingMessage(ConversationMessage msg) {
-        // make the last border no longer be the border
-        ((BorderItem) mAdapter.getItem(mAdapter.getCount() - 1)).setIsLastBorder(false);
+        // if there are items in the adapter and the last item is a border,
+        // make the last border no longer be the last border
+        if (mAdapter.getCount() > 0) {
+            final ConversationOverlayItem item = mAdapter.getItem(mAdapter.getCount() - 1);
+            if (item.getType() == ConversationViewAdapter.VIEW_TYPE_BORDER) {
+                ((BorderItem) item).setIsLastBorder(false);
+            }
+        }
 
         mTemplates.reset();
         // this method will add some items to mAdapter, but we deliberately want to avoid notifying
