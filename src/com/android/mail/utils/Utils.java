@@ -1408,8 +1408,14 @@ public class Utils {
     }
 
     public static boolean isAirplaneModeOnAndDeviceOffline(Context context) {
-        final int airplaneMode = Settings.System.getInt(context.getContentResolver(),
-                Settings.System.AIRPLANE_MODE_ON, 0);
+        final int airplaneMode;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            airplaneMode = Settings.System.getInt(context.getContentResolver(),
+                    Settings.System.AIRPLANE_MODE_ON, 0);
+        } else {
+            airplaneMode = Settings.Global.getInt(context.getContentResolver(),
+                    Settings.Global.AIRPLANE_MODE_ON, 0);
+        }
         if (airplaneMode == 0) {
             return false;
         }
