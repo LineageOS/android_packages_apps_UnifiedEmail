@@ -892,7 +892,7 @@
     <string name="auto_sync_off">Auto-sync is off.</string>
 
     <!-- Tap to turn on device auto-sync setting.  [CHAR LIMIT=250] -->
-    <string name="tap_to_enable_sync">Tap to turn auto-sync on.</string>
+    <string name="tap_to_enable_sync">Touch to turn on.</string>
 
     <!-- Tip for letting user know that their account level sync setting
         is turned off, in case they are wondering why they are not
@@ -918,4 +918,24 @@
     Outbox. [CHAR LIMIT=250] -->
     <string name="unsent_messages_in_outbox"><xliff:g id="number">%1$s</xliff:g>
     unsent in <xliff:g id="outbox">%2$s</xliff:g></string>
+
+    <!-- Title of dialog to turn auto-sync on [CHAR LIMIT=100] -->
+    <string name="turn_auto_sync_on_dialog_title">Turn auto-sync on?</string>
+
+    <!-- Text of dialog to turn auto-sync on [CHAR LIMIT=500] -->
+    <string name="turn_auto_sync_on_dialog_body">Changes you make to
+    all apps and accounts, not just Gmail, will be synchronized
+    between the web, your other devices, and your <xliff:g
+    id="phone_or_tablet">%1$s</xliff:g>.</string>
+
+    <!-- Phone (vs. tablet) for describing this device [CHAR LIMIT=30] -->
+    <string name="phone">phone</string>
+
+    <!-- Tablet (vs. phone) for describing this device [CHAR LIMIT=30] -->
+    <string name="tablet">tablet</string>
+
+    <!-- Confirm button text for dialog to turn auto-sync on [CHAR
+         LIMIT=30] -->
+    <string name="turn_auto_sync_on_dialog_confirm_btn">Turn on</string>
+
 </resources>
