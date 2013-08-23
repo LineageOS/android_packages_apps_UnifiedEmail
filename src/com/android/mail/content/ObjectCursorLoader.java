@@ -193,11 +193,11 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<ObjectCursor<T>> {
         return this;
     }
 
-    protected final Uri getUri() {
+    public final Uri getUri() {
         return mUri;
     }
 
-    protected final void setUri(Uri uri) {
+    public final void setUri(Uri uri) {
         if (uri == null) {
             throw new NullPointerException("The uri cannot be null");
         }
