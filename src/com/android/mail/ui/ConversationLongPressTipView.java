@@ -107,12 +107,8 @@ public class ConversationLongPressTipView extends FrameLayout
     }
 
     @Override
-    public void onGetView(final int viewMode) {
-        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible, viewMode)) {
-            mTeaserRightEdge.setVisibility(VISIBLE);
-        } else {
-            mTeaserRightEdge.setVisibility(GONE);
-        }
+    public void onGetView() {
+        // Do nothing
     }
 
     @Override
@@ -246,6 +242,13 @@ public class ConversationLongPressTipView extends FrameLayout
 
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
+        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible,
+                mAdapter.getViewMode())) {
+            mTeaserRightEdge.setVisibility(VISIBLE);
+        } else {
+            mTeaserRightEdge.setVisibility(GONE);
+        }
+
         if (mAnimatedHeight == -1) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         } else {
