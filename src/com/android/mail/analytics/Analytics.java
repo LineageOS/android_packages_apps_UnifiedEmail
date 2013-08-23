@@ -45,6 +45,8 @@ public final class Analytics {
 
     public static final int CD_INDEX_INBOX_SECTIONS_ENABLED = 6;
 
+    public static final int CD_INDEX_REPLY_ALL_SETTING = 7;
+
     private static Tracker sInstance;
 
     private Analytics() {

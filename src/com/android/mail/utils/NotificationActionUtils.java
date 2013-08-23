@@ -374,6 +374,7 @@ public class NotificationActionUtils {
             final Uri messageUri, final boolean isReplyAll) {
         final Intent intent = ComposeActivity.createReplyIntent(context, account, messageUri,
                 isReplyAll);
+        intent.putExtra(Utils.EXTRA_FROM_NOTIFICATION, true);
         return intent;
     }
 
@@ -383,6 +384,7 @@ public class NotificationActionUtils {
     public static Intent createForwardIntent(
             final Context context, final Account account, final Uri messageUri) {
         final Intent intent = ComposeActivity.createForwardIntent(context, account, messageUri);
+        intent.putExtra(Utils.EXTRA_FROM_NOTIFICATION, true);
         return intent;
     }
 

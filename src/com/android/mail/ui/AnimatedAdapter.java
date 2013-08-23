@@ -223,6 +223,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 .toString(newAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE));
         Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ATTACHMENT_PREVIEWS_ENABLED,
                 Boolean.toString(newAccount.settings.convListAttachmentPreviews));
+        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_REPLY_ALL_SETTING,
+                (newAccount.settings.replyBehavior == UIProvider.DefaultReplyBehavior.REPLY)
+                ? "reply"
+                : "reply_all");
     }
 
     private static final String LOG_TAG = LogTag.getLogTag();
