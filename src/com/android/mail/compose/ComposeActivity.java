@@ -2451,6 +2451,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @return boolean
      */
     public boolean isBlank() {
+        // Need to check for null since isBlank() can be called from onPause()
+        // before findViews() is called
+        if (mSubject == null || mBodyView == null || mTo == null || mCc == null ||
+                mAttachmentsView == null) {
+            LogUtils.w(LOG_TAG, "null views in isBlank check");
+            return true;
+        }
         return mSubject.getText().length() == 0
                 && (mBodyView.getText().length() == 0 || getSignatureStartPosition(mSignature,
                         mBodyView.getText().toString()) == 0)
