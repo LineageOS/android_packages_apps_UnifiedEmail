@@ -558,7 +558,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      */
     private void positionAdditionalBottomBorder() {
         final int lastBottom = mAdditionalBottomBorderOverlayTop;
-        final int containerHeight = getHeight();
+        final int containerHeight = webPxToScreenPx(mWebView.getContentHeight());
         final int speculativeHeight = containerHeight - lastBottom;
         if (speculativeHeight > 0) {
             if (mAdditionalBottomBorder == null) {
