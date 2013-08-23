@@ -1270,7 +1270,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         public String getNotificationText() {
             Resources res = getResources();
             if (count > 1) {
-                return res.getString(R.string.new_incoming_messages_many, count);
+                return res.getQuantityString(R.plurals.new_incoming_messages_many, count, count);
             } else {
                 final Address addr = getAddress(senderAddress);
                 return res.getString(R.string.new_incoming_messages_one,
