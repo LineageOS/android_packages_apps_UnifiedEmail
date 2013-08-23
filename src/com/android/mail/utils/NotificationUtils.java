@@ -44,6 +44,8 @@ import android.util.SparseArray;
 import com.android.mail.EmailAddress;
 import com.android.mail.MailIntentService;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
+import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.SendersView;
 import com.android.mail.photomanager.LetterTileProvider;
@@ -572,7 +574,8 @@ public class NotificationUtils {
                     final Intent notificationIntent;
 
                     // Launch directly to the conversation, if there is only 1 unseen conversation
-                    if (unseenCount == 1) {
+                    final boolean launchConversationMode = (unseenCount == 1);
+                    if (launchConversationMode) {
                         notificationIntent = createViewConversationIntent(context, account, folder,
                                 cursor);
                     } else {
@@ -580,12 +583,28 @@ public class NotificationUtils {
                                 null);
                     }
 
+                    Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_TYPE,
+                            AnalyticsUtils.getAccountTypeForAccount(account.name));
+                    Analytics.getInstance().sendEvent("notification_create",
+                            launchConversationMode ? "conversation" : "conversation_list",
+                            folder.getTypeDescription(), unseenCount);
+
                     if (notificationIntent == null) {
                         LogUtils.e(LOG_TAG, "Null intent when building notification");
                         return;
                     }
 
-                    clickIntent = PendingIntent.getActivity(context, -1, notificationIntent, 0);
+                    // Amend the click intent with a hint that its source was a notification,
+                    // but remove the hint before it's used to generate notification action
+                    // intents. This prevents the following sequence:
+                    // 1. generate single notification
+                    // 2. user clicks reply, then completes Compose activity
+                    // 3. main activity launches, gets FROM_NOTIFICATION hint in intent
+                    notificationIntent.putExtra(Utils.EXTRA_FROM_NOTIFICATION, true);
+                    clickIntent = PendingIntent.getActivity(context, -1, notificationIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    notificationIntent.removeExtra(Utils.EXTRA_FROM_NOTIFICATION);
+
                     configureLatestEventInfoFromConversation(context, account, folderPreferences,
                             notification, cursor, clickIntent, notificationIntent,
                             account.name, unreadCount, unseenCount, folder, when);
