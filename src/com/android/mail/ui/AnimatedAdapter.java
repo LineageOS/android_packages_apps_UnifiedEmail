@@ -1147,4 +1147,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     public int getViewMode() {
         return mActivity.getViewMode().getMode();
     }
+
+    public boolean isInCabMode() {
+        // If we have conversation in our selected set, we're in CAB mode
+        return !mBatchConversations.isEmpty();
+    }
 }
