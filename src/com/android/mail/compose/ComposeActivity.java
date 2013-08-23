@@ -457,6 +457,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             previews = intent.getParcelableArrayListExtra(EXTRA_ATTACHMENT_PREVIEWS);
             mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
             mRefMessageUri = (Uri) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI);
+
+            if (Analytics.isLoggable()) {
+                if (intent.getBooleanExtra(Utils.EXTRA_FROM_NOTIFICATION, false)) {
+                    Analytics.getInstance().sendEvent(
+                            "notification_action", "compose", getActionString(action), 0);
+                }
+            }
         }
         mAttachmentsView.setAttachmentPreviews(previews);
 
@@ -2907,15 +2914,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private void logSendOrSave(boolean save) {
-        if (!Analytics.isLoggable() || mAttachmentsView == null) {
-            return;
-        }
-
-        final String category = (save) ? "message_save" : "message_send";
-        final int attachmentCount = getAttachments().size();
+    private static String getActionString(int action) {
         final String msgType;
-        switch (mComposeMode) {
+        switch (action) {
             case COMPOSE:
                 msgType = "new_message";
                 break;
@@ -2932,6 +2933,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 msgType = "unknown";
                 break;
         }
+        return msgType;
+    }
+
+    private void logSendOrSave(boolean save) {
+        if (!Analytics.isLoggable() || mAttachmentsView == null) {
+            return;
+        }
+
+        final String category = (save) ? "message_save" : "message_send";
+        final int attachmentCount = getAttachments().size();
+        final String msgType = getActionString(mComposeMode);
         final String label;
         final long value;
         if (mComposeMode == COMPOSE) {

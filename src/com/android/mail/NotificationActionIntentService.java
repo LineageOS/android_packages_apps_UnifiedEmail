@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
 
+import com.android.mail.analytics.Analytics;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
@@ -66,6 +67,24 @@ public class NotificationActionIntentService extends IntentService {
         super("NotificationActionIntentService");
     }
 
+    private static void logNotificationAction(String intentAction, NotificationAction action) {
+        final String eventAction;
+        final String eventLabel;
+
+        if (ACTION_ARCHIVE_REMOVE_LABEL.equals(intentAction)) {
+            eventAction = "archive_remove_label";
+            eventLabel = action.getFolder().getTypeDescription();
+        } else if (ACTION_DELETE.equals(intentAction)) {
+            eventAction = "delete";
+            eventLabel = null;
+        } else {
+            eventAction = intentAction;
+            eventLabel = null;
+        }
+
+        Analytics.getInstance().sendEvent("notification_action", eventAction, eventLabel, 0);
+    }
+
     @Override
     protected void onHandleIntent(final Intent intent) {
         final Context context = this;
@@ -95,6 +114,8 @@ public class NotificationActionIntentService extends IntentService {
         final ContentResolver contentResolver = getContentResolver();
 
         LogUtils.i(LOG_TAG, "Handling %s", action);
+
+        logNotificationAction(action, notificationAction);
 
         if (ACTION_UNDO.equals(action)) {
             NotificationActionUtils.cancelUndoTimeout(context, notificationAction);
