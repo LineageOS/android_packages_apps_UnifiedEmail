@@ -39,6 +39,9 @@ import com.android.mail.utils.Utils;
 public class NestedFolderView extends LinearLayout implements ConversationSpecialItemView,
         SwipeableItemView {
     protected static final String LOG_TAG = LogTag.getLogTag();
+
+    private AnimatedAdapter mAdapter = null;
+
     /**
      * The actual view that is displayed and is perhaps swiped away. We don't allow swiping,
      * but this is required by the {@link SwipeableItemView} interface.
@@ -85,12 +88,20 @@ public class NestedFolderView extends LinearLayout implements ConversationSpecia
     }
 
     @Override
-    public void onGetView(final int viewMode) {
-        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible, viewMode)) {
+    public void onGetView() {
+        // Do nothing
+    }
+
+    @Override
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
+        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible,
+                mAdapter.getViewMode())) {
             mTeaserRightEdge.setVisibility(VISIBLE);
         } else {
             mTeaserRightEdge.setVisibility(GONE);
         }
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     /**
@@ -131,8 +142,8 @@ public class NestedFolderView extends LinearLayout implements ConversationSpecia
     }
 
     @Override
-    public void setAdapter(AnimatedAdapter animatedAdapter) {
-        // Do nothing, since the adapter creates these views.
+    public void setAdapter(final AnimatedAdapter animatedAdapter) {
+        mAdapter = animatedAdapter;
     }
 
     @Override

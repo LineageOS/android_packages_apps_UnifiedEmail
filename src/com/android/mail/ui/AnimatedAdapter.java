@@ -499,7 +499,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         // Check if this is a special view
         final ConversationSpecialItemView specialView = mSpecialViews.get(position);
         if (specialView != null) {
-            specialView.onGetView(mActivity.getViewMode().getMode());
+            specialView.onGetView();
             return (View) specialView;
         }
 
@@ -1138,5 +1138,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     public void onScrollStateChanged(final int scrollState) {
         final boolean scrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
         mBitmapCache.setBlocking(scrolling);
+    }
+
+    public int getViewMode() {
+        return mActivity.getViewMode().getMode();
     }
 }
