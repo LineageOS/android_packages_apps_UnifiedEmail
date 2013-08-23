@@ -438,7 +438,7 @@
     <!-- Conversation view -->
     <!--  Text anchor for control to add / change labels on a conversation when
           viewing it. [CHAR LIMIT=40] -->
-    <string name="add_label">Add label</string>
+    <string name="add_label">Add folder</string>
 
     <!-- New Message notification text that appears over conversation view on incoming message. [CHAR LIMIT=30] -->
     <string name="new_incoming_messages_one">New message from <xliff:g id="sender">%s</xliff:g>. Show.</string>
