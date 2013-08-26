@@ -296,6 +296,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         do {
             final NestedFolderView view =
                     (NestedFolderView) inflater.inflate(R.layout.nested_folder, null);
+            view.setAdapter(this);
             view.setFolder(cursor.getModel());
             folders.add(view);
         } while (cursor.moveToNext());
