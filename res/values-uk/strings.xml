@@ -102,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"Файл <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Перегляд"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Зберегти"</string>
-    <string name="info_attachment" msgid="607849900865956536">"Інформація"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Скасувати"</string>
     <string name="download_again" msgid="7418568915429156518">"Завантажити знову"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Інформація"</string>
@@ -210,14 +209,10 @@
     <string name="search_results_header" msgid="4669917471897026269">"Результати"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Функція пошуку в цьому обліковому записі не підтримується."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Пошук..."</string>
-    <string name="recent_folders" msgid="8240081561436891330">"Останні"</string>
-    <string name="add_label" msgid="1638508840481944248">"Додати мітку"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> з <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"Новіша"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"Старіша"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"Нове повідомлення від <xliff:g id="SENDER">%s</xliff:g>."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"Нових повідомлень: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
-    <string name="show" msgid="7114006150083237343">"Показати"</string>
+    <!-- no translation found for add_label (6060201715848652940) -->
+    <skip />
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Нове повідомл. від <xliff:g id="SENDER">%s</xliff:g>. Показати."</string>
+    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"Розгорнути дані отримувача"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Згорнути дані отримувача"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Показати контактну інформацію відправника <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -274,12 +269,6 @@
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Вибрати обліковий запис"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Вибрати папку"</string>
     <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Папка \"Електронна пошта\""</string>
-    <string name="sync_all" msgid="1057043212338233359">"Синхронізувати: усе"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Синхронізувати: за останній <xliff:g id="COUNT">%1$d</xliff:g> день"</item>
-    <item quantity="other" msgid="6856940335775567991">"Синхронізувати: за останні <xliff:g id="COUNT">%1$d</xliff:g> дн."</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Не синхронізувати"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Змінити папки"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Перемістити в"</string>
     <string name="search_hint" msgid="3625734263059221350">"Пошук у пошті"</string>
@@ -396,11 +385,21 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Учора, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Закрити пораду"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Автоматичну синхронізацію вимкнено."</string>
-    <string name="tap_to_enable_sync" msgid="8332275909378339123">"Торкніться, щоб увімкнути автоматичну синхронізацію."</string>
+    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
+    <skip />
     <string name="account_sync_off" msgid="5699548271856775808">"Синхронізацію облікового запису вимкнено."</string>
     <string name="airplane_mode_on" msgid="2206488373387145840">"Режим польоту ввімкнено"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Увімкніть у меню \"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>\"."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Налаштування облікового запису"</string>
-    <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"Ненадісланих листів у <xliff:g id="OUTBOX">%2$s</xliff:g>: <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
+    <skip />
+    <!-- no translation found for phone (5171715391553213328) -->
+    <skip />
+    <!-- no translation found for tablet (7956969657216748522) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
     <skip />
 </resources>
