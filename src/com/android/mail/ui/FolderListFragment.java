@@ -1119,7 +1119,8 @@ public class FolderListFragment extends ListFragment implements
     public void updateScroll() {
         final int selectedPosition = mCursorAdapter.getSelectedPosition();
         if (selectedPosition >= 0) {
-            mListView.smoothScrollToPosition(selectedPosition);
+            // It's called "setSelection" but it's really more like "jumpScrollToPosition"
+            mListView.setSelection(selectedPosition);
         }
     }
 
