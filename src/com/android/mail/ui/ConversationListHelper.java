@@ -36,7 +36,7 @@ public class ConversationListHelper {
         final ConversationSyncDisabledTipView conversationSyncDisabledTipView =
                 (ConversationSyncDisabledTipView) LayoutInflater.from(context)
                         .inflate(R.layout.conversation_sync_disabled_tip_view, null);
-        conversationSyncDisabledTipView.bindAccount(account);
+        conversationSyncDisabledTipView.bindAccount(account, activity);
 
         final ConversationsInOutboxTipView conversationsInOutboxTipView =
                 (ConversationsInOutboxTipView) LayoutInflater.from(context)

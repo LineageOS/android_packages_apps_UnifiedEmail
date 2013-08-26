@@ -19,6 +19,7 @@ package com.android.mail.ui;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.Animator.AnimatorListener;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -61,6 +62,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
     private final MailPrefs mMailPrefs;
     private AccountPreferences mAccountPreferences;
     private AnimatedAdapter mAdapter;
+    private Activity mActivity;
 
     private View mSwipeableContent;
     private TextView mText1;
@@ -116,7 +118,9 @@ public class ConversationSyncDisabledTipView extends FrameLayout
         mAutoSyncOffTextClickedListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGlobalAutoSyncSettingDialog();
+                final TurnAutoSyncOnDialog dialog = TurnAutoSyncOnDialog.newInstance(
+                        mAccount.name, mAccount.type, mAccount.syncAuthority);
+                dialog.show(mActivity.getFragmentManager(), TurnAutoSyncOnDialog.DIALOG_TAG);
             }
         };
 
@@ -144,9 +148,10 @@ public class ConversationSyncDisabledTipView extends FrameLayout
         mListCollapsible = resources.getBoolean(R.bool.list_collapsible);
     }
 
-    public void bindAccount(Account account) {
+    public void bindAccount(Account account, ControllableActivity activity) {
         mAccount = account;
         mAccountPreferences = AccountPreferences.get(getContext(), account.name);
+        mActivity = (Activity) activity;
     }
 
     @Override
@@ -412,12 +417,5 @@ public class ConversationSyncDisabledTipView extends FrameLayout
         } else {
             setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
         }
-    }
-
-    private void openGlobalAutoSyncSettingDialog() {
-        final Intent intent = new Intent(Settings.ACTION_SYNC_SETTINGS);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        intent.putExtra(Settings.EXTRA_AUTHORITIES, new String[] {mAccount.syncAuthority});
-        getContext().startActivity(intent);
     }
 }
