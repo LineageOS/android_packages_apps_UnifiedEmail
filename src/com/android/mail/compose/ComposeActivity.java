@@ -239,14 +239,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Button mCcBccButton;
     private CcBccView mCcBccView;
     private AttachmentsView mAttachmentsView;
-    private Account mAccount;
+    protected Account mAccount;
     protected ReplyFromAccount mReplyFromAccount;
     private Settings mCachedSettings;
     private Rfc822Validator mValidator;
     private TextView mSubject;
 
     private ComposeModeAdapter mComposeModeAdapter;
-    private int mComposeMode = -1;
+    protected int mComposeMode = -1;
     private boolean mForward;
     private QuotedTextView mQuotedTextView;
     protected EditText mBodyView;
@@ -279,7 +279,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private RecipientTextWatcher mBccListener;
     private Uri mRefMessageUri;
     private boolean mShowQuotedText = false;
-    private Bundle mInnerSavedState;
+    protected Bundle mInnerSavedState;
     private ContentValues mExtraValues = null;
 
     // Array of the outstanding send or save tasks.  Access is synchronized
@@ -323,6 +323,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public static void composeWithQuotedText(Context launcher, Account account,
             String quotedText, String subject, final ContentValues extraValues) {
         launch(launcher, account, null, COMPOSE, null, null, quotedText, subject, extraValues);
+    }
+
+    /**
+     * Can be called from a non-UI thread.
+     */
+    public static void composeWithExtraValues(Context launcher, Account account,
+            String subject, final ContentValues extraValues) {
+        launch(launcher, account, null, COMPOSE, null, null, null, subject, extraValues);
     }
 
     /**
@@ -510,8 +518,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mShowQuotedText = message.appendRefMessageContent;
             // if we should be showing quoted text but mRefMessage is null
             // and we have some quotedText, display that
-            if (mShowQuotedText && quotedText != null && mRefMessage == null) {
-                initQuotedText(quotedText, false /* shouldQuoteText */);
+            if (mShowQuotedText && mRefMessage == null) {
+                if (quotedText != null) {
+                    initQuotedText(quotedText, false /* shouldQuoteText */);
+                } else if (mExtraValues != null) {
+                    initExtraValues(mExtraValues);
+                    return;
+                }
             }
         } else if (action == EDIT_DRAFT) {
             initFromDraftMessage(message);
@@ -552,7 +565,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 mShowQuotedText = true;
             }
         } else {
-            initFromExtras(intent);
+            if (initFromExtras(intent)) {
+                return;
+            }
         }
 
         mComposeMode = action;
@@ -640,7 +655,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return account;
     }
 
-    private void finishSetup(int action, Intent intent, Bundle savedInstanceState) {
+    protected void finishSetup(int action, Intent intent, Bundle savedInstanceState) {
         setFocus(action);
         // Don't bother with the intent if we have procured a message from the
         // intent already.
@@ -1318,8 +1333,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * all, or forward), the original attachments from the message will not be
      * re-instantiated. The user's changes will be respected. This follows the
      * web gmail interaction.
+     * @return {@code true} if the activity should not call {@link #finishSetup}.
      */
-    public void initFromExtras(Intent intent) {
+    public boolean initFromExtras(Intent intent) {
         // If we were invoked with a SENDTO intent, the value
         // should take precedence
         final Uri dataUri = intent.getData();
@@ -1355,11 +1371,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mSubject.setText(extraString);
         }
 
-        mExtraValues = intent.getParcelableExtra(EXTRA_VALUES);
-        if (mExtraValues != null) {
-            LogUtils.d(LOG_TAG, "Launched with extra values: %s", mExtraValues.toString());
-        }
-
         for (String extra : ALL_EXTRAS) {
             if (intent.hasExtra(extra)) {
                 String value = intent.getStringExtra(extra);
@@ -1388,6 +1399,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
             // TODO - support EXTRA_HTML_TEXT
         }
+
+        mExtraValues = intent.getParcelableExtra(EXTRA_VALUES);
+        if (mExtraValues != null) {
+            LogUtils.d(LOG_TAG, "Launched with extra values: %s", mExtraValues.toString());
+            initExtraValues(mExtraValues);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected void initExtraValues(ContentValues extraValues) {
+        // DO NOTHING - Gmail will override
     }
 
 
@@ -1606,7 +1630,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private void initQuotedText(CharSequence quotedText, boolean shouldQuoteText) {
+    protected void initQuotedText(CharSequence quotedText, boolean shouldQuoteText) {
         mQuotedTextView.setQuotedTextFromHtml(quotedText, shouldQuoteText);
         mShowQuotedText = true;
     }
