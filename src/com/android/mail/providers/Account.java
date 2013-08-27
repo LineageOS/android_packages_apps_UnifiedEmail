@@ -278,43 +278,42 @@ public class Account extends android.accounts.Account implements Parcelable {
     private Account(String name, String type, String jsonAccount) throws JSONException {
         super(name, type);
         final JSONObject json = new JSONObject(jsonAccount);
-        providerVersion = json.getInt(UIProvider.AccountColumns.PROVIDER_VERSION);
-        uri = Uri.parse(json.optString(UIProvider.AccountColumns.URI));
-        capabilities = json.getInt(UIProvider.AccountColumns.CAPABILITIES);
+        providerVersion = json.getInt(AccountColumns.PROVIDER_VERSION);
+        uri = Uri.parse(json.optString(AccountColumns.URI));
+        capabilities = json.getInt(AccountColumns.CAPABILITIES);
         folderListUri = Utils
-                .getValidUri(json.optString(UIProvider.AccountColumns.FOLDER_LIST_URI));
+                .getValidUri(json.optString(AccountColumns.FOLDER_LIST_URI));
         fullFolderListUri = Utils.getValidUri(json
-                .optString(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI));
-        searchUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SEARCH_URI));
-        accountFromAddresses = json.optString(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES,
+                .optString(AccountColumns.FULL_FOLDER_LIST_URI));
+        searchUri = Utils.getValidUri(json.optString(AccountColumns.SEARCH_URI));
+        accountFromAddresses = json.optString(AccountColumns.ACCOUNT_FROM_ADDRESSES,
                 "");
         expungeMessageUri = Utils.getValidUri(json
-                .optString(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI));
-        undoUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.UNDO_URI));
+                .optString(AccountColumns.EXPUNGE_MESSAGE_URI));
+        undoUri = Utils.getValidUri(json.optString(AccountColumns.UNDO_URI));
         settingsIntentUri = Utils.getValidUri(json
-                .optString(UIProvider.AccountColumns.SETTINGS_INTENT_URI));
-        helpIntentUri = Utils
-                .getValidUri(json.optString(UIProvider.AccountColumns.HELP_INTENT_URI));
+                .optString(AccountColumns.SETTINGS_INTENT_URI));
+        helpIntentUri = Utils.getValidUri(json.optString(AccountColumns.HELP_INTENT_URI));
         sendFeedbackIntentUri = Utils.getValidUri(json
-                .optString(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI));
+                .optString(AccountColumns.SEND_FEEDBACK_INTENT_URI));
         reauthenticationIntentUri = Utils.getValidUri(
-                json.optString(UIProvider.AccountColumns.REAUTHENTICATION_INTENT_URI));
-        syncStatus = json.optInt(UIProvider.AccountColumns.SYNC_STATUS);
-        composeIntentUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.COMPOSE_URI));
-        mimeType = json.optString(UIProvider.AccountColumns.MIME_TYPE);
+                json.optString(AccountColumns.REAUTHENTICATION_INTENT_URI));
+        syncStatus = json.optInt(AccountColumns.SYNC_STATUS);
+        composeIntentUri = Utils.getValidUri(json.optString(AccountColumns.COMPOSE_URI));
+        mimeType = json.optString(AccountColumns.MIME_TYPE);
         recentFolderListUri = Utils.getValidUri(json
-                .optString(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI));
-        color = json.optInt(UIProvider.AccountColumns.COLOR, 0);
+                .optString(AccountColumns.RECENT_FOLDER_LIST_URI));
+        color = json.optInt(AccountColumns.COLOR, 0);
         defaultRecentFolderListUri = Utils.getValidUri(json
-                .optString(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI));
+                .optString(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI));
         manualSyncUri = Utils
-                .getValidUri(json.optString(UIProvider.AccountColumns.MANUAL_SYNC_URI));
+                .getValidUri(json.optString(AccountColumns.MANUAL_SYNC_URI));
         viewIntentProxyUri = Utils
-                .getValidUri(json.optString(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI));
+                .getValidUri(json.optString(AccountColumns.VIEW_INTENT_PROXY_URI));
         accoutCookieQueryUri = Utils.getValidUri(
-                json.optString(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI));
+                json.optString(AccountColumns.ACCOUNT_COOKIE_QUERY_URI));
         updateSettingsUri = Utils.getValidUri(
-                json.optString(UIProvider.AccountColumns.UPDATE_SETTINGS_URI));
+                json.optString(AccountColumns.UPDATE_SETTINGS_URI));
         enableMessageTransforms = json.optInt(AccountColumns.ENABLE_MESSAGE_TRANSFORMS);
         syncAuthority = json.optString(AccountColumns.SYNC_AUTHORITY);
         quickResponseUri = Utils.getValidUri(json.optString(AccountColumns.QUICK_RESPONSE_URI));
@@ -326,43 +325,6 @@ public class Account extends android.accounts.Account implements Parcelable {
             LogUtils.e(LOG_TAG, new Throwable(),
                     "Unexpected null settings in Account(name, type, jsonAccount)");
             settings = Settings.EMPTY_SETTINGS;
-        }
-    }
-
-    public Account(Parcel in, ClassLoader loader) {
-        super(in);
-        providerVersion = in.readInt();
-        uri = in.readParcelable(null);
-        capabilities = in.readInt();
-        folderListUri = in.readParcelable(null);
-        fullFolderListUri = in.readParcelable(null);
-        searchUri = in.readParcelable(null);
-        accountFromAddresses = in.readString();
-        expungeMessageUri = in.readParcelable(null);
-        undoUri = in.readParcelable(null);
-        settingsIntentUri = in.readParcelable(null);
-        helpIntentUri = in.readParcelable(null);
-        sendFeedbackIntentUri = in.readParcelable(null);
-        reauthenticationIntentUri = in.readParcelable(null);
-        syncStatus = in.readInt();
-        composeIntentUri = in.readParcelable(null);
-        mimeType = in.readString();
-        recentFolderListUri = in.readParcelable(null);
-        color = in.readInt();
-        defaultRecentFolderListUri = in.readParcelable(null);
-        manualSyncUri = in.readParcelable(null);
-        viewIntentProxyUri = in.readParcelable(null);
-        accoutCookieQueryUri = in.readParcelable(null);
-        updateSettingsUri = in.readParcelable(null);
-        enableMessageTransforms = in.readInt();
-        syncAuthority = in.readString();
-        quickResponseUri = in.readParcelable(null);
-        final int hasSettings = in.readInt();
-        if (hasSettings == 0) {
-            LogUtils.e(LOG_TAG, new Throwable(), "Unexpected null settings in Account(Parcel)");
-            settings = Settings.EMPTY_SETTINGS;
-        } else {
-            settings = in.readParcelable(loader);
         }
     }
 
@@ -422,6 +384,9 @@ public class Account extends android.accounts.Account implements Parcelable {
                 cursor.getColumnIndex(AccountColumns.ENABLE_MESSAGE_TRANSFORMS));
         syncAuthority = cursor.getString(
                 cursor.getColumnIndex(AccountColumns.SYNC_AUTHORITY));
+        if (TextUtils.isEmpty(syncAuthority)) {
+            LogUtils.e(LOG_TAG, "Unexpected empty syncAuthority from cursor");
+        }
         quickResponseUri = Utils.getValidUri(cursor.getString(
                 cursor.getColumnIndex(AccountColumns.QUICK_RESPONSE_URI)));
         settings = new Settings(cursor);
@@ -469,6 +434,46 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public boolean isAccountReady() {
         return !isAccountInitializationRequired() && !isAccountSyncRequired();
+    }
+
+    public Account(Parcel in, ClassLoader loader) {
+        super(in);
+        providerVersion = in.readInt();
+        uri = in.readParcelable(null);
+        capabilities = in.readInt();
+        folderListUri = in.readParcelable(null);
+        fullFolderListUri = in.readParcelable(null);
+        searchUri = in.readParcelable(null);
+        accountFromAddresses = in.readString();
+        expungeMessageUri = in.readParcelable(null);
+        undoUri = in.readParcelable(null);
+        settingsIntentUri = in.readParcelable(null);
+        helpIntentUri = in.readParcelable(null);
+        sendFeedbackIntentUri = in.readParcelable(null);
+        reauthenticationIntentUri = in.readParcelable(null);
+        syncStatus = in.readInt();
+        composeIntentUri = in.readParcelable(null);
+        mimeType = in.readString();
+        recentFolderListUri = in.readParcelable(null);
+        color = in.readInt();
+        defaultRecentFolderListUri = in.readParcelable(null);
+        manualSyncUri = in.readParcelable(null);
+        viewIntentProxyUri = in.readParcelable(null);
+        accoutCookieQueryUri = in.readParcelable(null);
+        updateSettingsUri = in.readParcelable(null);
+        enableMessageTransforms = in.readInt();
+        syncAuthority = in.readString();
+        if (TextUtils.isEmpty(syncAuthority)) {
+            LogUtils.e(LOG_TAG, "Unexpected empty syncAuthority from Parcel");
+        }
+        quickResponseUri = in.readParcelable(null);
+        final int hasSettings = in.readInt();
+        if (hasSettings == 0) {
+            LogUtils.e(LOG_TAG, new Throwable(), "Unexpected null settings in Account(Parcel)");
+            settings = Settings.EMPTY_SETTINGS;
+        } else {
+            settings = in.readParcelable(loader);
+        }
     }
 
     @Override
