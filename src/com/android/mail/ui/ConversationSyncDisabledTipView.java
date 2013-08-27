@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.provider.Settings;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.AttributeSet;
 import android.view.View;
@@ -230,12 +231,10 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             // Not sure why directly passing mAccount to ContentResolver doesn't just work.
             android.accounts.Account acct = new android.accounts.Account(
                     account.name, account.type);
-            if (!ContentResolver.getSyncAutomatically(acct, account.syncAuthority)) {
+            if (!TextUtils.isEmpty(account.syncAuthority) &&
+                    !ContentResolver.getSyncAutomatically(acct, account.syncAuthority)) {
                 // Account level sync is off
                 mailPrefs.resetNumOfDismissesForAirplaneModeOn();
-                // Logging to track down bug where this tip is showing when it shouldn't be.
-                LogUtils.i(LOG_TAG, "getSyncAutomatically() return false for %s %s %s",
-                        account.name, account.type, account.syncAuthority);
                 return ReasonSyncOff.ACCOUNT_SYNC_OFF;
             } else {
                 // Account sync is on, clear the number of times users has dismissed this
