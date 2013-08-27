@@ -1119,8 +1119,10 @@ public class FolderListFragment extends ListFragment implements
     public void updateScroll() {
         final int selectedPosition = mCursorAdapter.getSelectedPosition();
         if (selectedPosition >= 0) {
+            // TODO: setSelection() jumps the item to the top of the list "hiding" the accounts
+            // TODO: and smoothScrollToPosition() is too slow for lots of labels/folders
             // It's called "setSelection" but it's really more like "jumpScrollToPosition"
-            mListView.setSelection(selectedPosition);
+            // mListView.setSelection(selectedPosition);
         }
     }
 
