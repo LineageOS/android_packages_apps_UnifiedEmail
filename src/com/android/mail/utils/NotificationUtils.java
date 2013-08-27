@@ -97,7 +97,7 @@ public class NotificationUtils {
                 }
             };
 
-    private static final BidiFormatter sBidiFormatter = BidiFormatter.getInstance();
+    private static final BidiFormatter BIDI_FORMATTER = BidiFormatter.getInstance();
 
     /**
      * Clears all notifications in response to the user tapping "Clear" in the status bar.
@@ -819,13 +819,8 @@ public class NotificationUtils {
                                 sendersBuilder = getStyledSenders(context, conversationCursor,
                                         sendersLength, notificationAccount);
                             } else {
-                                if (from == null) {
-                                    LogUtils.e(LOG_TAG, "null from string in " +
-                                            "configureLatestEventInfoFromConversation");
-                                    from = "";
-                                }
-                                sendersBuilder = new SpannableStringBuilder(
-                                        sBidiFormatter.unicodeWrap(from));
+                                sendersBuilder =
+                                        new SpannableStringBuilder(getWrappedFromString(from));
                             }
                             final CharSequence digestLine = getSingleMessageInboxLine(context,
                                     sendersBuilder.toString(),
@@ -908,7 +903,7 @@ public class NotificationUtils {
                         // For a single new conversation, the ticker is based on the sender's name.
                         notificationTicker = sendersBuilder.toString();
                     } else {
-                        from = sBidiFormatter.unicodeWrap(from);
+                        from = getWrappedFromString(from);
                         // The title of a single message the sender.
                         notification.setContentTitle(from);
                         // For a single new conversation, the ticker is based on the sender's name.
@@ -997,6 +992,15 @@ public class NotificationUtils {
         }
 
         notification.setContentIntent(clickIntent);
+    }
+
+    private static String getWrappedFromString(String from) {
+        if (from == null) {
+            LogUtils.e(LOG_TAG, "null from string in getWrappedFromString");
+            from = "";
+        }
+        from = BIDI_FORMATTER.unicodeWrap(from);
+        return from;
     }
 
     private static SpannableStringBuilder getStyledSenders(final Context context,
@@ -1115,7 +1119,7 @@ public class NotificationUtils {
             // senders is already individually unicode wrapped so it does not need to be done here
             final String instantiatedString = String.format(formatString,
                     senders,
-                    sBidiFormatter.unicodeWrap(subjectSnippet));
+                    BIDI_FORMATTER.unicodeWrap(subjectSnippet));
 
             final SpannableString spannableString = new SpannableString(instantiatedString);
 
