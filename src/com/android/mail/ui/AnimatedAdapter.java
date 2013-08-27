@@ -188,8 +188,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private final AccountObserver mAccountListener = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
-            setAccount(newAccount);
-            notifyDataSetChanged();
+            if (setAccount(newAccount)) {
+                notifyDataSetChanged();
+            }
         }
     };
 
@@ -214,7 +215,25 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private final SparseArray<WeakReference<ConversationSetObserver>> mItemViewSetObservers =
             new SparseArray<WeakReference<ConversationSetObserver>>();
 
-    private void setAccount(Account newAccount) {
+    /**
+     * @return <code>true</code> if a relevant part of the account has changed, <code>false</code>
+     *         otherwise
+     */
+    private boolean setAccount(Account newAccount) {
+        final boolean accountChanged;
+        if (mAccount != null && mAccount.uri.equals(newAccount.uri)
+                && mAccount.settings.priorityArrowsEnabled ==
+                        newAccount.settings.priorityArrowsEnabled
+                && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO) ==
+                        newAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)
+                && mAccount.settings.convListIcon == newAccount.settings.convListIcon
+                && mAccount.settings.convListAttachmentPreviews ==
+                        newAccount.settings.convListAttachmentPreviews) {
+            accountChanged = false;
+        } else {
+            accountChanged = true;
+        }
+
         mAccount = newAccount;
         mPriorityMarkersEnabled = mAccount.settings.priorityArrowsEnabled;
         mSwipeEnabled = mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO);
@@ -227,6 +246,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 (newAccount.settings.replyBehavior == UIProvider.DefaultReplyBehavior.REPLY)
                 ? "reply"
                 : "reply_all");
+
+        return accountChanged;
     }
 
     private static final String LOG_TAG = LogTag.getLogTag();
