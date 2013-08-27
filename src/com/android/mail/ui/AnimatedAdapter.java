@@ -58,7 +58,6 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -211,9 +210,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     /** List of all child folders for this folder. */
     private List<NestedFolderView> mFolderViews;
-
-    private final SparseArray<WeakReference<ConversationSetObserver>> mItemViewSetObservers =
-            new SparseArray<WeakReference<ConversationSetObserver>>();
 
     /**
      * @return <code>true</code> if a relevant part of the account has changed, <code>false</code>
