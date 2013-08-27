@@ -23,9 +23,7 @@ import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.Utils;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.animation.Animator.AnimatorListener;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.res.Resources;
@@ -149,7 +147,9 @@ public class ConversationLongPressTipView extends FrameLayout
 
     @Override
     public void onCabModeEntered() {
-        dismiss();
+        if (mShow) {
+            dismiss();
+        }
     }
 
     @Override
@@ -204,29 +204,16 @@ public class ConversationLongPressTipView extends FrameLayout
                 ObjectAnimator.ofInt(this, "animatedHeight", start, end);
         heightAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
         heightAnimator.setDuration(sShrinkAnimationDuration);
-        heightAnimator.addListener(new AnimatorListener() {
-            @Override
-            public void onAnimationStart(final Animator animation) {
-                // Do nothing
-            }
-
-            @Override
-            public void onAnimationRepeat(final Animator animation) {
-                // Do nothing
-            }
-
-            @Override
-            public void onAnimationEnd(final Animator animation) {
-                // We should no longer exist, so notify the adapter
-                mAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onAnimationCancel(final Animator animation) {
-                // Do nothing
-            }
-        });
         heightAnimator.start();
+
+        /*
+         * Ideally, we would like to call mAdapter.notifyDataSetChanged() in a listener's
+         * onAnimationEnd(), but we are in the middle of a touch event, and this will cause all the
+         * views to get recycled, which will cause problems.
+         *
+         * Instead, we'll just leave the item in the list with a height of 0, and the next
+         * notifyDatasetChanged() will remove it from the adapter.
+         */
     }
 
     /**
