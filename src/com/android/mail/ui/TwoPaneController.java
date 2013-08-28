@@ -41,8 +41,19 @@ import com.android.mail.utils.Utils;
  * abounds.
  */
 public final class TwoPaneController extends AbstractActivityController {
+
+    private static final String SAVED_MISCELLANEOUS_VIEW = "saved-miscellaneous-view";
+    private static final String SAVED_MISCELLANEOUS_VIEW_TRANSACTION_ID =
+            "saved-miscellaneous-view-transaction-id";
+
     private TwoPaneLayout mLayout;
     private Conversation mConversationToShow;
+
+    /**
+     * Used to determine whether onViewModeChanged should skip a potential
+     * fragment transaction that would remove a miscellaneous view.
+     */
+    private boolean mSavedMiscellaneousView = false;
 
     public TwoPaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
@@ -118,11 +129,25 @@ public final class TwoPaneController extends AbstractActivityController {
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
         mLayout.setDrawerLayout(mDrawerContainer);
 
+        if (savedState != null) {
+            mSavedMiscellaneousView = savedState.getBoolean(SAVED_MISCELLANEOUS_VIEW, false);
+            mMiscellaneousViewTransactionId =
+                    savedState.getInt(SAVED_MISCELLANEOUS_VIEW_TRANSACTION_ID, -1);
+        }
+
         // 2-pane layout is the main listener of view mode changes, and issues secondary
         // notifications upon animation completion:
         // (onConversationVisibilityChanged, onConversationListVisibilityChanged)
         mViewMode.addListener(mLayout);
         return super.onCreate(savedState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(SAVED_MISCELLANEOUS_VIEW, mMiscellaneousViewTransactionId >= 0);
+        outState.putInt(SAVED_MISCELLANEOUS_VIEW_TRANSACTION_ID, mMiscellaneousViewTransactionId);
     }
 
     @Override
@@ -156,12 +181,13 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void onViewModeChanged(int newMode) {
-        if (mMiscellaneousViewTransactionId >= 0) {
+        if (!mSavedMiscellaneousView && mMiscellaneousViewTransactionId >= 0) {
             final FragmentManager fragmentManager = mActivity.getFragmentManager();
             fragmentManager.popBackStackImmediate(mMiscellaneousViewTransactionId,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
             mMiscellaneousViewTransactionId = -1;
         }
+        mSavedMiscellaneousView = false;
 
         super.onViewModeChanged(newMode);
         if (newMode != ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
