@@ -23,6 +23,8 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
+import com.android.mail.analytics.Analytics;
+import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.FolderUri;
@@ -69,6 +71,10 @@ public class MailIntentService extends IntentService {
             final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
 
             NotificationUtils.clearFolderNotification(this, account, folder, true /* markSeen */);
+
+            Analytics.getInstance().sendEvent("notification_dismiss", folder.getTypeDescription(),
+                    null, 0);
+
         } else if (ACTION_RESEND_NOTIFICATIONS.equals(action)) {
             final Uri accountUri = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT_URI);
             final Uri folderUri = intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
