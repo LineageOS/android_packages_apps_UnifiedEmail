@@ -102,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> 파일"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"미리보기"</string>
     <string name="save_attachment" msgid="5360128849867863132">"저장"</string>
-    <string name="info_attachment" msgid="607849900865956536">"정보"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"취소"</string>
     <string name="download_again" msgid="7418568915429156518">"다시 다운로드"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"정보"</string>
@@ -210,14 +209,10 @@
     <string name="search_results_header" msgid="4669917471897026269">"검색결과"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"이 계정에서는 검색이 지원되지 않습니다."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"검색 중…"</string>
-    <string name="recent_folders" msgid="8240081561436891330">"최근 항목"</string>
-    <string name="add_label" msgid="1638508840481944248">"라벨 추가"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="TOTAL">%2$s</xliff:g>개 중 <xliff:g id="COUNT">%1$s</xliff:g>개"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"다음"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"이전"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"<xliff:g id="SENDER">%s</xliff:g>님이 보낸 새 메일입니다."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"새 메일 <xliff:g id="COUNT">%1$d</xliff:g>개"</string>
-    <string name="show" msgid="7114006150083237343">"표시"</string>
+    <!-- no translation found for add_label (6060201715848652940) -->
+    <skip />
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g>님이 보낸 새 메일을 봅니다."</string>
+    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"수신자 세부정보 펼치기"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"수신자 세부정보 접기"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g>님에 대한 연락처 정보 표시"</string>
@@ -274,12 +269,6 @@
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"계정 선택"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"폴더 선택"</string>
     <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"이메일 폴더"</string>
-    <string name="sync_all" msgid="1057043212338233359">"동기화: 전체"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"동기화: 지난 <xliff:g id="COUNT">%1$d</xliff:g>일"</item>
-    <item quantity="other" msgid="6856940335775567991">"동기화: 지난 <xliff:g id="COUNT">%1$d</xliff:g>일"</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"동기화: 안함"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"폴더 변경"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"이동"</string>
     <string name="search_hint" msgid="3625734263059221350">"메일 검색"</string>
@@ -396,11 +385,21 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"어제 <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"도움말 닫기"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"자동 동기화가 사용 중지되어 있습니다."</string>
-    <string name="tap_to_enable_sync" msgid="8332275909378339123">"탭하여 자동 동기화를 사용하도록 설정하세요."</string>
+    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
+    <skip />
     <string name="account_sync_off" msgid="5699548271856775808">"계정 동기화가 사용 중지되어 있습니다."</string>
     <string name="airplane_mode_on" msgid="2206488373387145840">"비행기 모드를 사용 중입니다."</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>에서 동기화를 설정하세요."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"계정 설정"</string>
-    <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g>에 보내지 않은 메일 <xliff:g id="NUMBER">%1$s</xliff:g>개 있음"</string>
+    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
+    <skip />
+    <!-- no translation found for phone (5171715391553213328) -->
+    <skip />
+    <!-- no translation found for tablet (7956969657216748522) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
     <skip />
 </resources>
