@@ -39,6 +39,13 @@ public class TurnAutoSyncOnDialog extends DialogFragment {
 
     public static final String DIALOG_TAG = "auto sync";
 
+    public interface TurnAutoSyncOnDialogListener {
+        void onEnableAutoSync();
+        void onCancelAutoSync();
+    }
+
+    private TurnAutoSyncOnDialogListener mListener;
+
     // Public no-args constructor needed for fragment re-instantiation
     public TurnAutoSyncOnDialog() {}
 
@@ -78,9 +85,23 @@ public class TurnAutoSyncOnDialog extends DialogFragment {
                                         new Account(accountName, accountType),
                                         syncAuthority,
                                         true);
+                                if (mListener != null) {
+                                    mListener.onEnableAutoSync();
+                                }
                             }
                         })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mListener != null) {
+                            mListener.onCancelAutoSync();
+                        }
+                    }
+                })
                 .create();
+    }
+
+    public void setListener(final TurnAutoSyncOnDialogListener listener) {
+        mListener = listener;
     }
 }
