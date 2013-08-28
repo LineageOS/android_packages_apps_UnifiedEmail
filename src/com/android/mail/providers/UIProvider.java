@@ -965,7 +965,7 @@ public class UIProvider {
      * {@link UIProvider#CONVERSATION_PROJECTION} projection will fit in a single
      * {@link android.database.CursorWindow}
      */
-    public static final int CONVERSATION_PROJECTION_QUERY_CURSOR_WINDOW_LIMT = 2000;
+    public static final int CONVERSATION_PROJECTION_QUERY_CURSOR_WINDOW_LIMT = 1500;
 
     // These column indexes only work when the caller uses the
     // default CONVERSATION_PROJECTION defined above.
