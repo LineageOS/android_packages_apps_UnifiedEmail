@@ -583,8 +583,6 @@ public class NotificationUtils {
                                 null);
                     }
 
-                    Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_TYPE,
-                            AnalyticsUtils.getAccountTypeForAccount(account.name));
                     Analytics.getInstance().sendEvent("notification_create",
                             launchConversationMode ? "conversation" : "conversation_list",
                             folder.getTypeDescription(), unseenCount);
