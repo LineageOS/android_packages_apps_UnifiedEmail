@@ -19,7 +19,8 @@ chips_dir := ../../../frameworks/ex/chips/res
 
 #Include res dir from photoviewer
 photo_dir := ../../../frameworks/opt/photoviewer/res ../../../frameworks/opt/photoviewer/activity/res
-res_dirs := res $(chips_dir) $(photo_dir)
+gridlayout_dir := ../../../frameworks/support/v7/gridlayout/res
+res_dirs := res $(chips_dir) $(photo_dir) $(gridlayout_dir)
 
 
 ##################################################
@@ -34,6 +35,7 @@ LOCAL_STATIC_JAVA_LIBRARIES += libphotoviewer
 LOCAL_STATIC_JAVA_LIBRARIES += guava
 LOCAL_STATIC_JAVA_LIBRARIES += android-common
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
+LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-gridlayout
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 
 LOCAL_SDK_VERSION := current
@@ -42,7 +44,7 @@ LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs)) \
         $(call all-logtags-files-under, $(src_dirs))
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 LOCAL_AAPT_FLAGS := --auto-add-overlay
-LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo
+LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo:android.support.v7.gridlayout
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
