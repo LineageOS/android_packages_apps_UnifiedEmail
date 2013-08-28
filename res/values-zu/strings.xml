@@ -102,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"Ifayela <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Buka kuqala"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Londoloza"</string>
-    <string name="info_attachment" msgid="607849900865956536">"Imininingwane"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Khansela"</string>
     <string name="download_again" msgid="7418568915429156518">"Landa futhi"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Imininingwane"</string>
@@ -210,14 +209,9 @@
     <string name="search_results_header" msgid="4669917471897026269">"Imiphumela"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Usesho alusekelwe kule akhawunti."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Iyasesha..."</string>
-    <string name="recent_folders" msgid="8240081561436891330">"Okwakamuva"</string>
     <string name="add_label" msgid="1638508840481944248">"Yengeza ilebula"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> koku-<xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"Okusha kakhulu"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"Kudala kakhulu"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"Umlayezo omusha ovela ku-<xliff:g id="SENDER">%s</xliff:g>."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"<xliff:g id="COUNT">%1$d</xliff:g> imilayezo emisha"</string>
-    <string name="show" msgid="7114006150083237343">"Bonisa"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Imilayezo emisha esuka ku-<xliff:g id="SENDER">%s</xliff:g>. Bonisa."</string>
+    <string name="new_incoming_messages_many" msgid="4045403035994798162">"<xliff:g id="COUNT">%1$d</xliff:g> imilayezo emisha. Bonisa."</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Nweba imininigwane yomtholi"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Goqa imininingwane yomtholi"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Khombisa imininingwane yokuxhumana ka-<xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -274,12 +268,6 @@
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Khetha i-akhawunti"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Khetha ifolda"</string>
     <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Ifolda ye-imeyili"</string>
-    <string name="sync_all" msgid="1057043212338233359">"Vumelanisa: Konke"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Vumelanisa: Usuku olu-<xliff:g id="COUNT">%1$d</xliff:g> lokugcina"</item>
-    <item quantity="other" msgid="6856940335775567991">"Vumelanisa: Izinsuku ezingu-<xliff:g id="COUNT">%1$d</xliff:g> zokugcina"</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Ukuvumelanisa: Akukho"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Shintsha amafolda"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Hambisa ku-"</string>
     <string name="search_hint" msgid="3625734263059221350">"Sesha imeyili"</string>
@@ -401,6 +389,5 @@
     <string name="airplane_mode_on" msgid="2206488373387145840">"Imodi yendiza ivuliwe"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Yivule ku-<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Izilungiselelo ze-akhawunti"</string>
-    <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
-    <skip />
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> akuthunyelwanga ku-<xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
 </resources>

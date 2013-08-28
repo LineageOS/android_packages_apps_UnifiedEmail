@@ -179,8 +179,6 @@
     <skip />
     <!-- no translation found for save_attachment (5360128849867863132) -->
     <skip />
-    <!-- no translation found for info_attachment (607849900865956536) -->
-    <skip />
     <!-- no translation found for cancel_attachment (4651201258272223650) -->
     <skip />
     <!-- no translation found for download_again (7418568915429156518) -->
@@ -309,21 +307,11 @@
     <skip />
     <!-- no translation found for search_results_searching_header (3821361153909466819) -->
     <skip />
-    <!-- no translation found for recent_folders (8240081561436891330) -->
-    <skip />
     <!-- no translation found for add_label (1638508840481944248) -->
     <skip />
-    <!-- no translation found for conversation_count (4459776616201694172) -->
+    <!-- no translation found for new_incoming_messages_one (164529476439626369) -->
     <skip />
-    <!-- no translation found for conversation_newer (7381341099165809801) -->
-    <skip />
-    <!-- no translation found for conversation_older (6384287019562069353) -->
-    <skip />
-    <!-- no translation found for new_incoming_messages_one (3200934730744395520) -->
-    <skip />
-    <!-- no translation found for new_incoming_messages_many (1071412616544342913) -->
-    <skip />
-    <!-- no translation found for show (7114006150083237343) -->
+    <!-- no translation found for new_incoming_messages_many (4045403035994798162) -->
     <skip />
     <!-- no translation found for expand_recipient_details (2266544827446346880) -->
     <skip />
@@ -416,12 +404,6 @@
     <!-- no translation found for activity_folder_selection (5161845867397316052) -->
     <skip />
     <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
-    <!-- no translation found for sync_all (1057043212338233359) -->
-    <skip />
-    <!-- no translation found for sync_recent:one (137489911893192702) -->
-    <!-- no translation found for sync_recent:other (6856940335775567991) -->
-    <!-- no translation found for sync_none (3581727068747471804) -->
     <skip />
     <!-- no translation found for change_folders_selection_dialog_title (8640832109613405534) -->
     <skip />
