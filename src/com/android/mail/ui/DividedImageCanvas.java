@@ -418,10 +418,13 @@ public class DividedImageCanvas implements ImageCanvas {
         mWidth = width;
         mHeight = height;
 
-        // todo:ath this bitmap is creating a GC which is killing CIV.loadAttachmentPreviews()
         mDividedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mDividedBitmap);
-        mBitmapValid = true;
+
+        for (int i = 0; i < getDivisionCount(); i++) {
+            mDivisionImages.set(i, null);
+        }
+        mBitmapValid = false;
         Utils.traceEndSection();
     }
 
