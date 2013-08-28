@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -1080,6 +1081,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public void notifyDataSetChanged() {
+        // This may be a temporary catch for a problem, or we may leave it here.
+        // b/9527863
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            LogUtils.wtf(LOG_TAG, "notifyDataSetChanged() called off the main thread");
+        }
+
         updateSpecialViews();
         super.notifyDataSetChanged();
     }
