@@ -1694,8 +1694,13 @@ public class ConversationItemView extends View
             Conversation conv = mHeader.conversation;
             // Set the list position of this item in the conversation
             SwipeableListView listView = getListView();
-            conv.position = mSelected && listView != null ? listView.getPositionForView(this)
-                    : Conversation.NO_POSITION;
+
+            try {
+                conv.position = mSelected && listView != null ? listView.getPositionForView(this)
+                        : Conversation.NO_POSITION;
+            } catch (final NullPointerException e) {
+                // TODO(skennedy) Remove this if we find the root cause b/9527863
+            }
 
             if (mSelectedConversationSet.isEmpty()) {
                 final String source = (sourceOpt != null) ? sourceOpt : "checkbox";
