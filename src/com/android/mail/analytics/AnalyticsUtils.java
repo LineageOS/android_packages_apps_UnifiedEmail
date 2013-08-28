@@ -87,6 +87,10 @@ public class AnalyticsUtils {
             s = "home";
         } else if (id == R.id.inside_conversation_unread) {
             s = "inside_conversation_unread";
+        } else if (id == R.id.read) {
+            s = "mark_read";
+        } else if (id == R.id.unread) {
+            s = "mark_unread";
         } else if (id == R.id.show_original) {
             s = "show_original";
         } else if (id == R.id.add_photo_attachment) {
