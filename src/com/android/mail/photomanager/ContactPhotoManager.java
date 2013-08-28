@@ -208,7 +208,7 @@ public class ContactPhotoManager extends PhotoManager {
                 // Still need to set a null result for all addresses, otherwise we end
                 // up in the loop where photo manager attempts to load these again.
                 for (final String address: addresses) {
-                    photos.put(address, null);
+                    photos.put(address, new BitmapHolder(null, -1, -1));
                 }
             }
 
