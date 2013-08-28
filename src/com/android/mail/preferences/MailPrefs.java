@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  */
 public final class MailPrefs extends VersionedPrefs {
 
-    public static final boolean SHOW_EXPERIMENTAL_PREFS = true;
+    public static final boolean SHOW_EXPERIMENTAL_PREFS = false;
 
     private static final String PREFS_NAME = "UnifiedEmail";
 
