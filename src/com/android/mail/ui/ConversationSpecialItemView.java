@@ -17,6 +17,7 @@
 package com.android.mail.ui;
 
 import android.app.LoaderManager;
+import android.os.Bundle;
 import android.widget.Adapter;
 
 import com.android.mail.browse.ConversationCursor;
@@ -55,7 +56,7 @@ public interface ConversationSpecialItemView {
 
     void setAdapter(AnimatedAdapter adapter);
 
-    void bindLoaderManager(LoaderManager loaderManager);
+    void bindFragment(LoaderManager loaderManager, Bundle savedInstanceState);
 
     /**
      * Called when the view is being destroyed.
@@ -79,4 +80,12 @@ public interface ConversationSpecialItemView {
 
     /** Returns whether this special view is enabled (= accepts user taps). */
     boolean acceptsUserTaps();
+
+    /** Called when the conversation list's visibility changes */
+    void onConversationListVisibilityChanged(boolean visible);
+
+    /**
+     * Saves any state for the view to the fragment so it will be restored on configuration change
+     */
+    void saveInstanceState(Bundle outState);
 }

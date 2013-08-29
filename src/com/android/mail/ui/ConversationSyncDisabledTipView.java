@@ -25,6 +25,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -293,7 +294,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
     }
 
     @Override
-    public void bindLoaderManager(LoaderManager loaderManager) {
+    public void bindFragment(LoaderManager loaderManager, final Bundle savedInstanceState) {
     }
 
     @Override
@@ -311,6 +312,16 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
     @Override
     public void onCabModeExited() {
+        // Do nothing
+    }
+
+    @Override
+    public void onConversationListVisibilityChanged(final boolean visible) {
+        // Do nothing
+    }
+
+    @Override
+    public void saveInstanceState(final Bundle outState) {
         // Do nothing
     }
 
