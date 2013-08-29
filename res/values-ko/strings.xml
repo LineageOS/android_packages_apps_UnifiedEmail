@@ -211,7 +211,7 @@
     <string name="search_results_searching_header" msgid="3821361153909466819">"검색 중…"</string>
     <!-- no translation found for add_label (6060201715848652940) -->
     <skip />
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g>님이 보낸 새 메일을 봅니다."</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g>님이 보낸 새 메일 보기"</string>
     <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"수신자 세부정보 펼치기"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"수신자 세부정보 접기"</string>

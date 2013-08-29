@@ -376,7 +376,7 @@
     <string name="drawer_open" msgid="6074646853178471940">"ნავიგაციის უჯრის გახსნა"</string>
     <string name="drawer_close" msgid="2764774620737876943">"ნავიგაციის უჯრის დახურვა"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"მიმოწერის მოსანიშნად შეეხეთ გამომგზავნის სურათს."</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"შეეხეთ &amp; არ აუშვათ ერთი მიმოწერის ასარჩევად. შემდეგ, შეეხეთ მეტი ასარჩევად."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"შეეხეთ &amp; არ აუშვათ ერთი მიმოწერის ასარჩევად. შემდეგ, შეეხეთ მეტის ასარჩევად."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"საქაღალდის ხატულა"</string>
     <string name="add_account" msgid="2162808366829269770">"ანგარიშის დამატება"</string>
     <string name="attached_message" msgid="4267189489654642035">"დართული შეტყობინება"</string>

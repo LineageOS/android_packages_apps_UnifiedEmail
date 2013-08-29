@@ -211,7 +211,7 @@
     <string name="search_results_searching_header" msgid="3821361153909466819">"Որոնում..."</string>
     <!-- no translation found for add_label (6060201715848652940) -->
     <skip />
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"Նոր հաղորդագրություն <xliff:g id="SENDER">%s</xliff:g>-ից: Ցույց տալ:"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Նոր ուղերձ <xliff:g id="SENDER">%s</xliff:g>-ից: Ցույց տալ:"</string>
     <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"Ընդարձակել ստացողի մանրամասները"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Թաքցնել ստացողի մանրամասները"</string>
@@ -361,7 +361,7 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Զրույցի ցանկում"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Ուղարկողի պատկերը"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Ցուցադրել անվան կողքին խոսակցության ցանկում"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Կցորդի նախատեսք"</string>
+    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Կցորդների նախատեսք"</string>
     <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Խոսակցության ցանկում ցույց տալ վերջին հաղորդագրությունների կցորդների նախատեսքը"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Սահահարվածեք ներքև՝ թարմացնելու համար"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Ստուգվում է էլփոստը"</string>
@@ -391,7 +391,7 @@
     <string name="airplane_mode_on" msgid="2206488373387145840">"Ինքնաթիռային ռեժիմը միացված է"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Միացրեք <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>-ում:"</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Հաշվի կարգավորումներ"</string>
-    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> չուղարկված <xliff:g id="OUTBOX">%2$s</xliff:g>-ում"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> չուղարկված՝ <xliff:g id="OUTBOX">%2$s</xliff:g>-ում"</string>
     <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
     <skip />
     <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
