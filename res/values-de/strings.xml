@@ -391,7 +391,7 @@
     <string name="airplane_mode_on" msgid="2206488373387145840">"Flugzeugmodus ist aktiviert."</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"In <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> aktivieren"</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Kontoeinstellungen"</string>
-    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> nicht gesendete Nachrichten in <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> nicht gesendete Nachricht(en) in <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
     <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
     <skip />
     <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
