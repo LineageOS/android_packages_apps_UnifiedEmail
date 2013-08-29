@@ -73,12 +73,13 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final VeiledAddressMatcher mMatcher;
 
     public static final int VIEW_TYPE_CONVERSATION_HEADER = 0;
-    public static final int VIEW_TYPE_AD_HEADER = 1;
-    public static final int VIEW_TYPE_MESSAGE_HEADER = 2;
-    public static final int VIEW_TYPE_MESSAGE_FOOTER = 3;
-    public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 4;
-    public static final int VIEW_TYPE_BORDER = 5;
-    public static final int VIEW_TYPE_COUNT = 6;
+    public static final int VIEW_TYPE_MESSAGE_HEADER = 1;
+    public static final int VIEW_TYPE_MESSAGE_FOOTER = 2;
+    public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 3;
+    public static final int VIEW_TYPE_BORDER = 4;
+    public static final int VIEW_TYPE_AD_HEADER = 5;
+    public static final int VIEW_TYPE_AD_SENDER_HEADER = 6;
+    public static final int VIEW_TYPE_COUNT = 7;
 
     public class ConversationHeaderItem extends ConversationOverlayItem {
         public final Conversation mConversation;
