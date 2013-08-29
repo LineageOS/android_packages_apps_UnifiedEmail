@@ -114,6 +114,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private QuickContactBadge mPhotoView;
     private ImageView mStarView;
     private ViewGroup mTitleContainerView;
+    private ViewGroup mExtraContentView;
     private ViewGroup mCollapsedDetailsView;
     private ViewGroup mExpandedDetailsView;
     private SpamWarningView mSpamWarningView;
@@ -283,6 +284,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mEditDraftButton = findViewById(R.id.edit_draft);
         mUpperDateView = (TextView) findViewById(R.id.upper_date);
         mAttachmentIcon = findViewById(R.id.attachment);
+        mExtraContentView = (ViewGroup) findViewById(R.id.header_extra_content);
 
         mCollapsedStarVisible = mStarView.getVisibility() == VISIBLE;
         final Resources resources = getResources();
@@ -1122,7 +1124,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mInviteView == null) {
             mInviteView = (MessageInviteView) mInflater.inflate(
                     R.layout.conversation_message_invite, this, false);
-            addView(mInviteView);
+            mExtraContentView.addView(mInviteView);
         }
         mInviteView.bind(mMessage);
         mInviteView.setVisibility(VISIBLE);
@@ -1138,7 +1140,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mImagePromptView == null) {
             mImagePromptView = (TextView) mInflater.inflate(
                     R.layout.conversation_message_show_pics, this, false);
-            addView(mImagePromptView);
+            mExtraContentView.addView(mImagePromptView);
             mImagePromptView.setOnClickListener(this);
         }
         mImagePromptView.setVisibility(VISIBLE);
@@ -1177,7 +1179,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mSpamWarningView == null) {
             mSpamWarningView = (SpamWarningView)
                     mInflater.inflate(R.layout.conversation_message_spam_warning, this, false);
-            addView(mSpamWarningView);
+            mExtraContentView.addView(mSpamWarningView);
         }
 
         mSpamWarningView.showSpamWarning(mMessage, mSender);
@@ -1234,7 +1236,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mCollapsedDetailsView == null) {
             mCollapsedDetailsView = (ViewGroup) mInflater.inflate(
                     R.layout.conversation_message_details_header, this, false);
-            addView(mCollapsedDetailsView, indexOfChild(mUpperHeaderView) + 1);
+            mExtraContentView.addView(mCollapsedDetailsView, 0);
             mCollapsedDetailsView.setOnClickListener(this);
         }
         if (!mCollapsedDetailsValid) {
@@ -1261,7 +1263,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         // lazily create expanded details view
         final boolean expandedViewCreated = ensureExpandedDetailsView();
         if (expandedViewCreated) {
-            addView(mExpandedDetailsView, indexOfChild(mUpperHeaderView) + 1);
+            mExtraContentView.addView(mExpandedDetailsView, 0);
         }
         mExpandedDetailsView.setVisibility(VISIBLE);
     }
