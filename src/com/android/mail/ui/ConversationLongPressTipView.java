@@ -27,6 +27,7 @@ import android.animation.ObjectAnimator;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -133,7 +134,7 @@ public class ConversationLongPressTipView extends FrameLayout
     }
 
     @Override
-    public void bindLoaderManager(LoaderManager loaderManager) {
+    public void bindFragment(final LoaderManager loaderManager, final Bundle savedInstanceState) {
     }
 
     @Override
@@ -154,6 +155,16 @@ public class ConversationLongPressTipView extends FrameLayout
 
     @Override
     public void onCabModeExited() {
+        // Do nothing
+    }
+
+    @Override
+    public void onConversationListVisibilityChanged(final boolean visible) {
+        // Do nothing
+    }
+
+    @Override
+    public void saveInstanceState(final Bundle outState) {
         // Do nothing
     }
 
@@ -242,5 +253,4 @@ public class ConversationLongPressTipView extends FrameLayout
             setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
         }
     }
-
 }
