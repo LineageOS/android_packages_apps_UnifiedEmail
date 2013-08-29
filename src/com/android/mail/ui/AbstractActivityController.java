@@ -842,6 +842,12 @@ public abstract class AbstractActivityController implements ActivityController,
                 ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         mDrawerContainer.closeDrawers();
+
+        if (mFolder == null || !mFolder.equals(folder)) {
+            // We are actually changing the folder, so exit cab mode
+            exitCabMode();
+        }
+
         changeFolder(folder, null, force);
     }
 
