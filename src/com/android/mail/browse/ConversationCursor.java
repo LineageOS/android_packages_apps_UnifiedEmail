@@ -1946,6 +1946,15 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     }
 
     @Override
+    public Uri getNotificationUri() {
+        if (mUnderlyingCursor == null) {
+            return null;
+        } else {
+            return mUnderlyingCursor.getNotificationUri();
+        }
+    }
+
+    @Override
     public void setNotificationUri(ContentResolver cr, Uri uri) {
         throw new UnsupportedOperationException();
     }
