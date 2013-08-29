@@ -211,7 +211,7 @@
     <string name="search_results_searching_header" msgid="3821361153909466819">"Mencari..."</string>
     <!-- no translation found for add_label (6060201715848652940) -->
     <skip />
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"Mesej baharu daripada <xliff:g id="SENDER">%s</xliff:g>. Paparkan."</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Mesej baharu drp <xliff:g id="SENDER">%s</xliff:g>. Paparkan."</string>
     <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"Kembangkan butiran penerima"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Runtuhkan butiran penerima"</string>
