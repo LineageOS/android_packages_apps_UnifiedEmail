@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -147,7 +148,7 @@ public class NestedFolderView extends LinearLayout implements ConversationSpecia
     }
 
     @Override
-    public void bindLoaderManager(LoaderManager loaderManager) {
+    public void bindFragment(LoaderManager loaderManager, final Bundle savedInstanceState) {
         // Do nothing. We don't need the loader manager.
     }
 
@@ -168,6 +169,16 @@ public class NestedFolderView extends LinearLayout implements ConversationSpecia
 
     @Override
     public void onCabModeExited() {
+        // Do nothing
+    }
+
+    @Override
+    public void onConversationListVisibilityChanged(final boolean visible) {
+        // Do nothing
+    }
+
+    @Override
+    public void saveInstanceState(final Bundle outState) {
         // Do nothing
     }
 

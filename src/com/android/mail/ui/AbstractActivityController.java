@@ -1076,6 +1076,12 @@ public abstract class AbstractActivityController implements ActivityController,
     public void onConversationListVisibilityChanged(boolean visible) {
         informCursorVisiblity(visible);
         commitAutoAdvanceOperation();
+
+        // Notify special views
+        final ConversationListFragment convListFragment = getConversationListFragment();
+        if (convListFragment != null && convListFragment.getAnimatedAdapter() != null) {
+            convListFragment.getAnimatedAdapter().onConversationListVisibilityChanged(visible);
+        }
     }
 
     /**

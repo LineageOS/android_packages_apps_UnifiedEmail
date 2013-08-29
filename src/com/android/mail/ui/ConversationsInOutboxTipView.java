@@ -232,7 +232,7 @@ public class ConversationsInOutboxTipView extends FrameLayout
     }
 
     @Override
-    public void bindLoaderManager(LoaderManager loaderManager) {
+    public void bindFragment(final LoaderManager loaderManager, final Bundle savedInstanceState) {
         mLoaderManager = loaderManager;
     }
 
@@ -251,6 +251,16 @@ public class ConversationsInOutboxTipView extends FrameLayout
 
     @Override
     public void onCabModeExited() {
+    }
+
+    @Override
+    public void onConversationListVisibilityChanged(final boolean visible) {
+        // Do nothing
+    }
+
+    @Override
+    public void saveInstanceState(final Bundle outState) {
+        // Do nothing
     }
 
     @Override

@@ -1164,6 +1164,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
     }
 
+    public void onConversationListVisibilityChanged(final boolean visible) {
+        for (final ConversationSpecialItemView specialView : mFleetingViews) {
+            specialView.onConversationListVisibilityChanged(visible);
+        }
+    }
+
     public void onScrollStateChanged(final int scrollState) {
         final boolean scrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
         mBitmapCache.setBlocking(scrolling);
@@ -1176,5 +1182,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     public boolean isInCabMode() {
         // If we have conversation in our selected set, we're in CAB mode
         return !mBatchConversations.isEmpty();
+    }
+
+    public void saveSpecialItemInstanceState(final Bundle outState) {
+        for (final ConversationSpecialItemView specialView : mFleetingViews) {
+            specialView.saveInstanceState(outState);
+        }
     }
 }

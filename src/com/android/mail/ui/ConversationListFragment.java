@@ -346,7 +346,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (specialItemViews != null) {
             // Attach to the LoaderManager
             for (final ConversationSpecialItemView view : specialItemViews) {
-                view.bindLoaderManager(manager);
+                view.bindFragment(manager, savedState);
             }
         }
 
@@ -646,6 +646,10 @@ public final class ConversationListFragment extends ListFragment implements
         if (mListView != null) {
             outState.putParcelable(LIST_STATE_KEY, mListView.onSaveInstanceState());
             outState.putInt(CHOICE_MODE_KEY, mListView.getChoiceMode());
+        }
+
+        if (mListAdapter != null) {
+            mListAdapter.saveSpecialItemInstanceState(outState);
         }
     }
 
