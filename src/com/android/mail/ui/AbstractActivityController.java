@@ -4134,6 +4134,11 @@ public abstract class AbstractActivityController implements ActivityController,
             if (mHasNewAccountOrFolder) {
                 refreshDrawer();
             }
+
+            // When closed, we want to use either the burger, or up, based on where we are
+            final int mode = mViewMode.getMode();
+            final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
+            mDrawerToggle.setDrawerIndicatorEnabled(getShouldShowDrawerIndicator(mode, isTopLevel));
         }
 
         /**
@@ -4190,6 +4195,9 @@ public abstract class AbstractActivityController implements ActivityController,
             }
 
             mOldSlideOffset = slideOffset;
+
+            // If we're sliding, we always want to show the burger
+            mDrawerToggle.setDrawerIndicatorEnabled(true /* enable */);
         }
 
         /**
