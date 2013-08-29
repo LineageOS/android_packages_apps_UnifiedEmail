@@ -211,7 +211,7 @@
     <string name="search_results_searching_header" msgid="3821361153909466819">"Поиск…"</string>
     <!-- no translation found for add_label (6060201715848652940) -->
     <skip />
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"Новое сообщение от пользователя <xliff:g id="SENDER">%s</xliff:g>. Показать"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g> – новое сообщение. Показать..."</string>
     <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"Показать сведения о получателе"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Скрыть сведения о получателе"</string>
