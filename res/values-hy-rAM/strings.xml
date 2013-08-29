@@ -209,9 +209,10 @@
     <string name="search_results_header" msgid="4669917471897026269">"Արդյունքներ"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Որոնումը չի աջակցվում այս հաշվի համար:"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Որոնում..."</string>
-    <string name="add_label" msgid="1638508840481944248">"Ավելացնել պիտակ"</string>
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"Նոր հաղորդագրություն <xliff:g id="SENDER">%s</xliff:g>-ից: Ցույց տալ:"</string>
-    <string name="new_incoming_messages_many" msgid="4045403035994798162">"<xliff:g id="COUNT">%1$d</xliff:g> նոր հաղորդագրություն: Ցույց տալ:"</string>
+    <!-- no translation found for add_label (6060201715848652940) -->
+    <skip />
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Նոր ուղերձ <xliff:g id="SENDER">%s</xliff:g>-ից: Ցույց տալ:"</string>
+    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"Ընդարձակել ստացողի մանրամասները"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Թաքցնել ստացողի մանրամասները"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Ցուցադրել <xliff:g id="NAME">%1$s</xliff:g>-ի կոնտակտային տվյալները"</string>
@@ -360,7 +361,7 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Զրույցի ցանկում"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Ուղարկողի պատկերը"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Ցուցադրել անվան կողքին խոսակցության ցանկում"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Կցորդի նախատեսք"</string>
+    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Կցորդների նախատեսք"</string>
     <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Խոսակցության ցանկում ցույց տալ վերջին հաղորդագրությունների կցորդների նախատեսքը"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Սահահարվածեք ներքև՝ թարմացնելու համար"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Ստուգվում է էլփոստը"</string>
@@ -384,10 +385,21 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Երեկ, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Անտեսել հուշումը"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Ինքնահամաժամեցումն անջատված է:"</string>
-    <string name="tap_to_enable_sync" msgid="8332275909378339123">"Հպեք՝ ինքնահամաժամեցումը միացնելու համար:"</string>
+    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
+    <skip />
     <string name="account_sync_off" msgid="5699548271856775808">"Հաշվի համաժամեցումն անջատված է:"</string>
     <string name="airplane_mode_on" msgid="2206488373387145840">"Ինքնաթիռային ռեժիմը միացված է"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Միացրեք <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>-ում:"</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Հաշվի կարգավորումներ"</string>
-    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> չուղարկված <xliff:g id="OUTBOX">%2$s</xliff:g>-ում"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> չուղարկված՝ <xliff:g id="OUTBOX">%2$s</xliff:g>-ում"</string>
+    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
+    <skip />
+    <!-- no translation found for phone (5171715391553213328) -->
+    <skip />
+    <!-- no translation found for tablet (7956969657216748522) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
+    <skip />
 </resources>

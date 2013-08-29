@@ -209,9 +209,10 @@
     <string name="search_results_header" msgid="4669917471897026269">"លទ្ធផល"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"មិន​គាំទ្រ​ការ​ស្វែងរក​​នៅ​លើ​គណនី​នេះ​។"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"កំពុង​​ស្វែងរក..."</string>
-    <string name="add_label" msgid="1638508840481944248">"បន្ថែម​ស្លាក"</string>
+    <!-- no translation found for add_label (6060201715848652940) -->
+    <skip />
     <string name="new_incoming_messages_one" msgid="164529476439626369">"សារ​ថ្មី​ពី <xliff:g id="SENDER">%s</xliff:g>។ បង្ហាញ​។"</string>
-    <string name="new_incoming_messages_many" msgid="4045403035994798162">"<xliff:g id="COUNT">%1$d</xliff:g> សារ​ថ្មី​។ បង្ហាញ​។"</string>
+    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"ពង្រីក​សេចក្ដី​លម្អិត​របស់​អ្នក​ទទួល"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"បញ្ចូល​​ព័ត៌មាន​លម្អិត​អ្នក​ទទួល"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"បង្ហាញ​ព័ត៌មាន​ទំនាក់ទំនង​សម្រាប់ <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -360,7 +361,7 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"នៅ​ក្នុង​បញ្ជី​សន្ទនា"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"រូបភាព​អ្នក​ផ្ញើ"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"បង្ហាញ​ក្បែរ​ឈ្មោះ​នៅ​ក្នុង​បញ្ជី​​សន្ទនា"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"មើល​ជា​មុន​ឯកសារ​ភ្ជាប់"</string>
+    <string name="preference_attachment_previews_title" msgid="778099230423462593">"មើល​​ឯកសារ​ភ្ជាប់​ជា​មុន"</string>
     <string name="preference_attachment_previews_description" msgid="2468573302785576222">"បង្ហាញ​ការ​មើល​ជាមុន​សម្រាប់​ឯកសារ​ភ្ជាប់​ដែល​មាន​សារ​ថ្មី​នៅ​ក្នុង​បញ្ជី​​សន្ទនា"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"អូស​ចុះ​ក្រោយ​​ ដើម្បី​ផ្ទុក​ឡើង​វិញ"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"កំពុង​ពិនិត្យ​មើល​​សំបុត្រ"</string>
@@ -383,11 +384,22 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"ថ្ងៃ​នេះ <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"​ម្សិល​មិញ <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"បោះបង់​ព័ត៌មាន​ជំនួយ"</string>
-    <string name="auto_sync_off" msgid="7185342309138211107">"​បិទការធ្វើ​សម​កាល​កម្ម​ដោយ​ស្វ័យ​ប្រវត្តិ​។"</string>
-    <string name="tap_to_enable_sync" msgid="8332275909378339123">"ប៉ះ​បើក​​សម​កាល​កម្ម​ស្វ័យ​ប្រវត្តិ​។"</string>
-    <string name="account_sync_off" msgid="5699548271856775808">"​បិទសម​កាល​កម្ម​គណនី​។"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"​បិទ​ការ​ធ្វើ​សម​កាល​កម្ម​ដោយ​ស្វ័យ​ប្រវត្តិ​។"</string>
+    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
+    <skip />
+    <string name="account_sync_off" msgid="5699548271856775808">"​បិទ​សម​កាល​កម្ម​គណនី​។"</string>
     <string name="airplane_mode_on" msgid="2206488373387145840">"បើក​ទម្រង់​ជិះ​យន្ត​ហោះ"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"បើក​នៅ​ក្នុង <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> ។"</string>
     <string name="account_settings_param" msgid="5277032997773498476">"ការ​កំណត់​គណនី"</string>
-    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> មិនផ្ញើនៅ​ក្នុង <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"មិន​បាន​ផ្ញើ <xliff:g id="NUMBER">%1$s</xliff:g> ក្នុង <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
+    <skip />
+    <!-- no translation found for phone (5171715391553213328) -->
+    <skip />
+    <!-- no translation found for tablet (7956969657216748522) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
+    <skip />
 </resources>

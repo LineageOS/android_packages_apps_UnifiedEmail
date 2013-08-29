@@ -209,9 +209,10 @@
     <string name="search_results_header" msgid="4669917471897026269">"Resultados"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Não há suporte para pesquisa nesta conta."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Pesquisando..."</string>
-    <string name="add_label" msgid="1638508840481944248">"Adicionar marcador"</string>
+    <!-- no translation found for add_label (6060201715848652940) -->
+    <skip />
     <string name="new_incoming_messages_one" msgid="164529476439626369">"Nova mensagem de <xliff:g id="SENDER">%s</xliff:g>. Mostrar."</string>
-    <string name="new_incoming_messages_many" msgid="4045403035994798162">"<xliff:g id="COUNT">%1$d</xliff:g> novas mensagens. Mostrar."</string>
+    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"Expandir detalhes do destinatário"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Recolher detalhes do destinatário"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Mostrar informações de contato de <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -384,10 +385,21 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Ontem, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Dispensar dica"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"A sincronização automática está desativada."</string>
-    <string name="tap_to_enable_sync" msgid="8332275909378339123">"Toque para ativar a sincronização automática."</string>
+    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
+    <skip />
     <string name="account_sync_off" msgid="5699548271856775808">"A sincronização da conta está desativada."</string>
     <string name="airplane_mode_on" msgid="2206488373387145840">"Modo avião ativado"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Ative em <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Configurações da conta"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> não enviadas em <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
+    <skip />
+    <!-- no translation found for phone (5171715391553213328) -->
+    <skip />
+    <!-- no translation found for tablet (7956969657216748522) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
+    <skip />
 </resources>
