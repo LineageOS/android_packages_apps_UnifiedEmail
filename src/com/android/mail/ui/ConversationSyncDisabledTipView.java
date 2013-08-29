@@ -91,8 +91,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
         public static final int AUTO_SYNC_OFF = 1;
         // Global auto-sync is on, but Gmail app level sync is disabled for this particular account
         public static final int ACCOUNT_SYNC_OFF = 2;
-        // Auto-sync is enabled at both device and account level, but device is in airplane mode
-        public static final int AIRPLANE_MODE_ON = 3;
     }
 
     public ConversationSyncDisabledTipView(final Context context) {
@@ -207,8 +205,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
                 return (mMailPrefs.getNumOfDismissesForAutoSyncOff() == 0);
             case ReasonSyncOff.ACCOUNT_SYNC_OFF:
                 return (mAccountPreferences.getNumOfDismissesForAccountSyncOff() == 0);
-            case ReasonSyncOff.AIRPLANE_MODE_ON:
-                return (mMailPrefs.getNumOfDismissesForAirplaneModeOn() == 0);
             default:
                 return false;
         }
@@ -219,7 +215,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
         if (!ContentResolver.getMasterSyncAutomatically()) {
             // Global sync is turned off
             accountPreferences.resetNumOfDismissesForAccountSyncOff();
-            mailPrefs.resetNumOfDismissesForAirplaneModeOn();
             // Logging to track down bug where this tip is being showing when it shouldn't be.
             LogUtils.i(LOG_TAG, "getMasterSyncAutomatically() return false");
             return ReasonSyncOff.AUTO_SYNC_OFF;
@@ -235,20 +230,12 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             if (!TextUtils.isEmpty(account.syncAuthority) &&
                     !ContentResolver.getSyncAutomatically(acct, account.syncAuthority)) {
                 // Account level sync is off
-                mailPrefs.resetNumOfDismissesForAirplaneModeOn();
                 return ReasonSyncOff.ACCOUNT_SYNC_OFF;
             } else {
                 // Account sync is on, clear the number of times users has dismissed this
                 // warning so that next time sync is off, warning gets displayed again.
                 accountPreferences.resetNumOfDismissesForAccountSyncOff();
-
-                // Now check for whether airplane mode is on
-                if (Utils.isAirplaneModeOnAndDeviceOffline(context)) {
-                    return ReasonSyncOff.AIRPLANE_MODE_ON;
-                } else {
-                    mailPrefs.resetNumOfDismissesForAirplaneModeOn();
-                    return ReasonSyncOff.NONE;
-                }
+                return ReasonSyncOff.NONE;
             }
         }
     }
@@ -270,11 +257,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
                     mText2.setVisibility(View.VISIBLE);
                     mTextArea.setClickable(true);
                     mTextArea.setOnClickListener(mAccountSyncOffTextClickedListener);
-                    break;
-                case ReasonSyncOff.AIRPLANE_MODE_ON:
-                    mText1.setText(R.string.airplane_mode_on);
-                    mText2.setVisibility(View.GONE);
-                    mTextArea.setClickable(false);
                     break;
                 default:
                     // Doesn't matter what mText is since this view is not displayed
@@ -341,10 +323,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             case ReasonSyncOff.ACCOUNT_SYNC_OFF:
                 mAccountPreferences.incNumOfDismissesForAccountSyncOff();
                 reason = "account_sync_off";
-                break;
-            case ReasonSyncOff.AIRPLANE_MODE_ON:
-                mMailPrefs.incNumOfDismissesForAirplaneModeOn();
-                reason = "airplane_mode_on";
                 break;
             default:
                 reason = null;

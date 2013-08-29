@@ -346,14 +346,6 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                     mAccountPreferences.incNumOfDismissesForAccountSyncOff();
                 }
                 break;
-            case ReasonSyncOff.AIRPLANE_MODE_ON:
-                num = mMailPrefs.getNumOfDismissesForAirplaneModeOn();
-                if (num > 0 && num <= MAX_NUM_OF_SYNC_TOASTS) {
-                    Toast.makeText(getContext(), R.string.airplane_mode_on, Toast.LENGTH_SHORT)
-                            .show();
-                    mMailPrefs.incNumOfDismissesForAirplaneModeOn();
-                }
-                break;
         }
     }
 
