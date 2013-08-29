@@ -178,12 +178,12 @@
         android:layout_marginBottom="12dp"
         android:visibility="gone" />
 
-    <!-- Folders should be ~7dp below the subject *baseline*, so we cancel out part of the 12dp bottom margin above -->
+    <!-- Folders should be ~5dp below the subject *baseline*, so we cancel out part of the 12dp bottom margin above -->
     <TextView
         android:id="@+id/folders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-8dp"
+        android:layout_marginTop="-10dp"
         android:fontFamily="sans-serif-light"
         android:includeFontPadding="false"
         android:text="@string/long_string"
