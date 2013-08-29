@@ -209,9 +209,10 @@
     <string name="search_results_header" msgid="4669917471897026269">"შედეგები"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"ძიება ამ ანგარიშში არ არის მხარდაჭერილი."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"ძიება…"</string>
-    <string name="add_label" msgid="1638508840481944248">"ლეიბლის დამატება"</string>
+    <!-- no translation found for add_label (6060201715848652940) -->
+    <skip />
     <string name="new_incoming_messages_one" msgid="164529476439626369">"ახალი გზავნილი <xliff:g id="SENDER">%s</xliff:g>-გან. ჩვენება."</string>
-    <string name="new_incoming_messages_many" msgid="4045403035994798162">"<xliff:g id="COUNT">%1$d</xliff:g> ახალი შეტყობინება. ჩვენება."</string>
+    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"მიმღების ინფორმაციის გაშლა"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"გამომგზავნის მონაცემების აკეცვა"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g>-ის საკონტაქტო ინფორმაციის ნახვა"</string>
@@ -375,7 +376,7 @@
     <string name="drawer_open" msgid="6074646853178471940">"ნავიგაციის უჯრის გახსნა"</string>
     <string name="drawer_close" msgid="2764774620737876943">"ნავიგაციის უჯრის დახურვა"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"მიმოწერის მოსანიშნად შეეხეთ გამომგზავნის სურათს."</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"შეეხეთ &amp; არ აუშვათ ერთი მიმოწერის ასარჩევად. შემდეგ, შეეხეთ მეტი ასარჩევად."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"შეეხეთ &amp; არ აუშვათ ერთი მიმოწერის ასარჩევად. შემდეგ, შეეხეთ მეტის ასარჩევად."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"საქაღალდის ხატულა"</string>
     <string name="add_account" msgid="2162808366829269770">"ანგარიშის დამატება"</string>
     <string name="attached_message" msgid="4267189489654642035">"დართული შეტყობინება"</string>
@@ -384,10 +385,21 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"გუშინ, <xliff:g id="TIME">%1$s</xliff:g>-ზე"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"რჩევის დახურვა"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"ავტო სინქრონიზაცია გამორთულია."</string>
-    <string name="tap_to_enable_sync" msgid="8332275909378339123">"შეეხეთ ავტო-სინქრონიზაციის ჩასართავად."</string>
+    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
+    <skip />
     <string name="account_sync_off" msgid="5699548271856775808">"ანგარიშის სინქრონიზაცია გამორთულია."</string>
     <string name="airplane_mode_on" msgid="2206488373387145840">"თვითმფრინავის რეჟიმი ჩართულია"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"ჩართეთ <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>-ში."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"ანგარიშის პარამეტრები"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> გასაგზავნი <xliff:g id="OUTBOX">%2$s</xliff:g>-ში"</string>
+    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
+    <skip />
+    <!-- no translation found for phone (5171715391553213328) -->
+    <skip />
+    <!-- no translation found for tablet (7956969657216748522) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
+    <skip />
 </resources>

@@ -307,12 +307,11 @@
     <skip />
     <!-- no translation found for search_results_searching_header (3821361153909466819) -->
     <skip />
-    <!-- no translation found for add_label (1638508840481944248) -->
+    <!-- no translation found for add_label (6060201715848652940) -->
     <skip />
     <!-- no translation found for new_incoming_messages_one (164529476439626369) -->
     <skip />
-    <!-- no translation found for new_incoming_messages_many (4045403035994798162) -->
-    <skip />
+    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
     <!-- no translation found for expand_recipient_details (2266544827446346880) -->
     <skip />
     <!-- no translation found for collapse_recipient_details (3608892454869745927) -->
@@ -590,7 +589,7 @@
     <skip />
     <!-- no translation found for auto_sync_off (7185342309138211107) -->
     <skip />
-    <!-- no translation found for tap_to_enable_sync (8332275909378339123) -->
+    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
     <skip />
     <!-- no translation found for account_sync_off (5699548271856775808) -->
     <skip />
@@ -601,5 +600,15 @@
     <!-- no translation found for account_settings_param (5277032997773498476) -->
     <skip />
     <!-- no translation found for unsent_messages_in_outbox (8754987959475577698) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
+    <skip />
+    <!-- no translation found for phone (5171715391553213328) -->
+    <skip />
+    <!-- no translation found for tablet (7956969657216748522) -->
+    <skip />
+    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
     <skip />
 </resources>
