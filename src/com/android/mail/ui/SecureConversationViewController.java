@@ -93,6 +93,7 @@ public class SecureConversationViewController implements
                 mCallbacks.getFragment(), mCallbacks.getHandler());
         mProgressController.instantiateProgressIndicators(rootView);
         mWebView = (MessageWebView) rootView.findViewById(R.id.webview);
+        mWebView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         mWebView.setWebViewClient(mCallbacks.getWebViewClient());
         mWebView.setFocusable(false);
         final WebSettings settings = mWebView.getSettings();
