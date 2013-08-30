@@ -1279,7 +1279,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
         if (!mExpandedDetailsValid) {
             renderExpandedDetails(getResources(), mExpandedDetailsView, mMessage.viaDomain,
-                    mAddressCache, getAccount(), mVeiledMatcher, mFrom, mReplyTo, mTo, mCc, mBcc);
+                    mAddressCache, getAccount(), mVeiledMatcher, mFrom, mReplyTo, mTo, mCc, mBcc,
+                    mMessageHeaderItem.getTimestampLong());
 
             mExpandedDetailsValid = true;
         }
@@ -1294,7 +1295,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     public static void renderExpandedDetails(Resources res, View detailsView,
             String viaDomain, Map<String, Address> addressCache, Account account,
             VeiledAddressMatcher veiledMatcher, String[] from, String[] replyTo,
-            String[] to, String[] cc, String[] bcc) {
+            String[] to, String[] cc, String[] bcc, CharSequence receivedTimestamp) {
         renderEmailList(res, R.id.from_heading, R.id.from_details, from, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
         renderEmailList(res, R.id.replyto_heading, R.id.replyto_details, replyTo, viaDomain,
@@ -1305,6 +1306,12 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 detailsView, addressCache, account, veiledMatcher);
         renderEmailList(res, R.id.bcc_heading, R.id.bcc_details, bcc, viaDomain,
                 detailsView, addressCache, account, veiledMatcher);
+
+        // Render date
+        detailsView.findViewById(R.id.date_heading).setVisibility(VISIBLE);
+        final TextView date = (TextView) detailsView.findViewById(R.id.date_details);
+        date.setText(receivedTimestamp);
+        date.setVisibility(VISIBLE);
     }
 
     /**
@@ -1383,7 +1390,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mDetailsPopup = (DialogFragment) manager.findFragmentByTag(DETAILS_DIALOG_TAG);
         if (mDetailsPopup == null) {
             mDetailsPopup = MessageHeaderDetailsDialogFragment.newInstance(
-                    mAddressCache, getAccount(), mFrom, mReplyTo, mTo, mCc, mBcc);
+                    mAddressCache, getAccount(), mFrom, mReplyTo, mTo, mCc, mBcc,
+                    mMessageHeaderItem.getTimestampLong());
             mDetailsPopup.show(manager, DETAILS_DIALOG_TAG);
         }
     }

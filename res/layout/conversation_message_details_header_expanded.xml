@@ -26,7 +26,7 @@
     android:paddingLeft="@dimen/message_details_header_padding_start_collapsed"
     android:paddingRight="@dimen/message_details_header_padding_end"
     app:columnCount="3"
-    app:rowCount="5" >
+    app:rowCount="6" >
 
     <TextView
         android:id="@+id/from_heading"
@@ -141,6 +141,27 @@
         android:layout_marginBottom="4dp"
         app:layout_column="1"
         app:layout_row="4"
+        android:visibility="gone"
+        style="@style/MessageDetailsValueStyle" />
+    <TextView
+        android:id="@+id/date_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/message_header_inner_side_padding"
+        android:layout_marginRight="@dimen/message_header_inner_side_padding"
+        app:layout_column="0"
+        app:layout_row="5"
+        android:text="@string/date_heading"
+        android:visibility="gone"
+        style="@style/MessageHeaderSmallStyle" />
+    <TextView
+        android:id="@+id/date_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_gravity="fill_horizontal"
+        android:layout_marginBottom="4dp"
+        app:layout_column="1"
+        app:layout_row="5"
         android:visibility="gone"
         style="@style/MessageDetailsValueStyle" />
 
