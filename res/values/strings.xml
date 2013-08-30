@@ -461,18 +461,18 @@
     <plurals name="show_messages_read">
         <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
     </plurals>
-
+    <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
     <string name="from_heading">From:\u0020</string>
     <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
     <string name="replyto_heading">Reply-to:\u0020</string>
-    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
-    <!-- Shown in HTML to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <!-- Shown to display the to recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="to_heading">To:\u0020</string>
-    <!-- Shown in HTML to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <!-- Shown to display the cc recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="cc_heading">Cc:\u0020</string>
-    <!-- Shown in HTML to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <!-- Shown to display the bcc recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="bcc_heading">Bcc:\u0020</string>
-    <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
+    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="date_heading">Date:\u0020</string>
     <!-- Displayed above an HTML message to show the images in that message [CHAR LIMIT=40] -->
     <string name="show_images">Show pictures</string>
     <!-- Displayed above an HTML message to always show images in messages from that sender [CHAR LIMIT=40] -->
