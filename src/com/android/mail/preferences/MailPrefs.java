@@ -451,22 +451,4 @@ public final class MailPrefs extends VersionedPrefs {
                 PreferenceKeys.GLOBAL_SYNC_OFF_DISMISSES, 0);
         getEditor().putInt(PreferenceKeys.GLOBAL_SYNC_OFF_DISMISSES, value + 1).apply();
     }
-
-    public int getNumOfDismissesForAirplaneModeOn() {
-        return getSharedPreferences().getInt(PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, 0);
-    }
-
-    public void resetNumOfDismissesForAirplaneModeOn() {
-        final int value = getSharedPreferences().getInt(
-                PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, 0);
-        if (value != 0) {
-            getEditor().putInt(PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, 0).apply();
-        }
-    }
-
-    public void incNumOfDismissesForAirplaneModeOn() {
-        final int value = getSharedPreferences().getInt(
-                PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, 0);
-        getEditor().putInt(PreferenceKeys.AIRPLANE_MODE_ON_DISMISSES, value + 1).apply();
-    }
 }
