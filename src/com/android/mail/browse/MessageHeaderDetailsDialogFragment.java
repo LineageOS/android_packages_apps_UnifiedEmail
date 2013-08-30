@@ -45,6 +45,7 @@ public class MessageHeaderDetailsDialogFragment extends DialogFragment {
     private static final String ARG_TO = "to";
     private static final String ARG_CC = "cc";
     private static final String ARG_BCC = "bcc";
+    private static final String ARG_RECEIVED_TIME = "received-timestamp";
 
     // Public no-args constructor needed for fragment re-instantiation
     public MessageHeaderDetailsDialogFragment() {}
@@ -63,7 +64,7 @@ public class MessageHeaderDetailsDialogFragment extends DialogFragment {
      */
     public static MessageHeaderDetailsDialogFragment newInstance(
             Map<String, Address> addressCache, Account account, String[] from, String[] replyTo,
-            String[] to, String[] cc, String[] bcc) {
+            String[] to, String[] cc, String[] bcc, CharSequence receivedTimestamp) {
         final MessageHeaderDetailsDialogFragment f = new MessageHeaderDetailsDialogFragment();
 
         // Supply needed items as arguments
@@ -83,6 +84,7 @@ public class MessageHeaderDetailsDialogFragment extends DialogFragment {
         args.putStringArray(ARG_TO, to);
         args.putStringArray(ARG_CC, cc);
         args.putStringArray(ARG_BCC, bcc);
+        args.putCharSequence(ARG_RECEIVED_TIME, receivedTimestamp);
         f.setArguments(args);
 
         return f;
@@ -115,7 +117,7 @@ public class MessageHeaderDetailsDialogFragment extends DialogFragment {
                 addressCache, (Account) args.getParcelable(ARG_ACCOUNT), null,
                 args.getStringArray(ARG_FROM), args.getStringArray(ARG_REPLY_TO),
                 args.getStringArray(ARG_TO), args.getStringArray(ARG_CC),
-                args.getStringArray(ARG_BCC));
+                args.getStringArray(ARG_BCC), args.getCharSequence(ARG_RECEIVED_TIME));
 
         expandedDetails.findViewById(R.id.details_expander)
                 .setVisibility(View.GONE);
