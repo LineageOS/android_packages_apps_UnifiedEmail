@@ -419,7 +419,7 @@ public final class TwoPaneController extends AbstractActivityController {
             // folder list has had a chance to initialize.
             final FolderListFragment folderList = getFolderListFragment();
             if (mode == ViewMode.CONVERSATION_LIST && folderList != null
-                    && mFolder.parent != Uri.EMPTY) {
+                    && mFolder != null && mFolder.parent != Uri.EMPTY) {
                 // If the user navigated via the left folders list into a child folder,
                 // back should take the user up to the parent folder's conversation list.
                 navigateUpFolderHierarchy();
