@@ -33,14 +33,11 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
-import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -1407,23 +1404,4 @@ public class Utils {
         }
     }
 
-    public static boolean isAirplaneModeOnAndDeviceOffline(Context context) {
-        final int airplaneMode;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            airplaneMode = Settings.System.getInt(context.getContentResolver(),
-                    Settings.System.AIRPLANE_MODE_ON, 0);
-        } else {
-            airplaneMode = Settings.Global.getInt(context.getContentResolver(),
-                    Settings.Global.AIRPLANE_MODE_ON, 0);
-        }
-        if (airplaneMode == 0) {
-            return false;
-        }
-        // Otherwise check if device is online, since it's possible to still use
-        // wifi when airplane mode is on
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        return (info == null || !info.isConnected());
-    }
 }
