@@ -450,7 +450,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 break;
             case ViewMode.AD:
                 dispatchConversationVisibilityChanged(false);
-                dispatchConversationListVisibilityChange(false);
+                dispatchConversationListVisibilityChange(!isConversationListCollapsed());
 
                 break;
             default:
