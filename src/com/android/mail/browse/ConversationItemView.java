@@ -822,7 +822,11 @@ public class ConversationItemView extends View
         mHeader.hasDraftMessage = mHeader.conversation.numDrafts() > 0;
 
         // Parse senders fragments.
-        if (mHeader.conversation.conversationInfo != null) {
+        if (mHeader.preserveSendersText) {
+            // This is a special view that doesn't need special sender formatting
+            mHeader.sendersDisplayText = new SpannableStringBuilder(mHeader.sendersText);
+            loadSenderImages();
+        } else if (mHeader.conversation.conversationInfo != null) {
             // This is Gmail
             Context context = getContext();
             mHeader.messageInfoString = SendersView
