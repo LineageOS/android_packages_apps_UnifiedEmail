@@ -78,6 +78,9 @@ public class ConversationItemViewModel {
     // Paperclip
     Bitmap paperclip;
 
+    /** If <code>true</code>, we will not apply any formatting to {@link #sendersText}. */
+    public boolean preserveSendersText = false;
+
     // Senders
     public String sendersText;
 
