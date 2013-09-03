@@ -38,7 +38,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
@@ -157,8 +156,6 @@ public abstract class AbstractActivityController implements ActivityController,
     private static final String SAVED_ACTION_FROM_SELECTED = "saved-action-from-selected";
     /** Tag for {@link #mDetachedConvUri} */
     private static final String SAVED_DETACHED_CONV_URI = "saved-detached-conv-uri";
-    /** Key to store {@link #mInbox}. */
-    private final static String SAVED_INBOX_KEY = "m-inbox";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -174,7 +171,6 @@ public abstract class AbstractActivityController implements ActivityController,
 
     protected Account mAccount;
     protected Folder mFolder;
-    protected Folder mInbox;
     /** True when {@link #mFolder} is first shown to the user. */
     private boolean mFolderChanged = false;
     protected MailActionBarView mActionBarView;
@@ -831,7 +827,7 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void onFolderChanged(Folder folder, final boolean force) {
+    public void onFolderChanged(Folder folder) {
         /** If the folder doesn't exist, or its parent URI is empty,
          * this is not a child folder */
         final boolean isTopLevel = (folder == null) || (folder.parent == Uri.EMPTY);
@@ -842,7 +838,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         mDrawerContainer.closeDrawers();
-        changeFolder(folder, null, force);
+        changeFolder(folder, null);
     }
 
     /**
@@ -865,14 +861,12 @@ public abstract class AbstractActivityController implements ActivityController,
      * Changes the folder to the value provided here. This causes the view mode to change.
      * @param folder the folder to change to
      * @param query if non-null, this represents the search string that the folder represents.
-     * @param force <code>true</code> to force a folder change, <code>false</code> to disallow
-     *          changing to the current folder
      */
-    private void changeFolder(Folder folder, String query, final boolean force) {
+    private void changeFolder(Folder folder, String query) {
         if (!Objects.equal(mFolder, folder)) {
             commitDestructiveActions(false);
         }
-        if (folder != null && (!folder.equals(mFolder) || force)
+        if (folder != null && !folder.equals(mFolder)
                 || (mViewMode.getMode() != ViewMode.CONVERSATION_LIST)) {
             setListContext(folder, query);
             showConversationList(mConvListContext);
@@ -884,7 +878,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onFolderSelected(Folder folder) {
-        onFolderChanged(folder, false /* force */);
+        onFolderChanged(folder);
     }
 
     /**
@@ -917,7 +911,7 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mFolderWatcher != null) {
             final Folder inbox = mFolderWatcher.getDefaultInbox(mAccount);
             if (inbox != null) {
-                onFolderChanged(inbox, false /* force */);
+                onFolderChanged(inbox);
                 handled = true;
             }
         }
@@ -2029,8 +2023,6 @@ public abstract class AbstractActivityController implements ActivityController,
 
         outState.putParcelable(SAVED_HIERARCHICAL_FOLDER, mFolderListFolder);
         mSafeToModifyFragments = false;
-
-        outState.putParcelable(SAVED_INBOX_KEY, mInbox);
     }
 
     /**
@@ -2246,8 +2238,6 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mDialogAction != -1) {
             makeDialogListener(mDialogAction, mDialogFromSelectedSet);
         }
-
-        mInbox = savedState.getParcelable(SAVED_INBOX_KEY);
     }
 
     /**
@@ -3485,7 +3475,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 case LOADER_ACCOUNT_INBOX:
                     if (data != null && !data.isClosed() && data.moveToFirst()) {
                         final Folder inbox = data.getModel();
-                        onFolderChanged(inbox, false /* force */);
+                        onFolderChanged(inbox);
                         // Just want to get the inbox, don't care about updates to it
                         // as this will be tracked by the folder change listener.
                         mActivity.getLoaderManager().destroyLoader(LOADER_ACCOUNT_INBOX);
@@ -3517,7 +3507,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     final Folder folder = data.getModel();
                     boolean handled = false;
                     if (folder != null) {
-                        onFolderChanged(folder, false /* force */);
+                        onFolderChanged(folder);
                         handled = true;
                     }
                     if (mConversationToShow != null) {
@@ -4239,54 +4229,5 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public boolean shouldHideMenuItems() {
         return mHideMenuItems;
-    }
-
-    protected void navigateUpFolderHierarchy() {
-        new AsyncTask<Void, Void, Folder>() {
-            @Override
-            protected Folder doInBackground(final Void... params) {
-                if (mInbox == null) {
-                    // We don't have an inbox, but we need it
-                    final Cursor cursor = mContext.getContentResolver().query(
-                            mAccount.settings.defaultInbox, UIProvider.FOLDERS_PROJECTION, null,
-                            null, null);
-
-                    if (cursor != null) {
-                        try {
-                            if (cursor.moveToFirst()) {
-                                mInbox = new Folder(cursor);
-                            }
-                        } finally {
-                            cursor.close();
-                        }
-                    }
-                }
-
-                // Now try to load our parent
-                final Folder folder;
-
-                final Cursor cursor = mContext.getContentResolver().query(mFolder.parent,
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
-
-                if (cursor == null) {
-                    // We couldn't load the parent, so use the inbox
-                    folder = mInbox;
-                } else {
-                    try {
-                        cursor.moveToFirst();
-                        folder = new Folder(cursor);
-                    } finally {
-                        cursor.close();
-                    }
-                }
-
-                return folder;
-            }
-
-            @Override
-            protected void onPostExecute(final Folder result) {
-                onFolderSelected(result);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
     }
 }
