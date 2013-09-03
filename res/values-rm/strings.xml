@@ -331,6 +331,8 @@
     <skip />
     <!-- no translation found for bcc_heading (4698055226318660420) -->
     <skip />
+    <!-- no translation found for date_heading (2086174555097691910) -->
+    <skip />
     <!-- no translation found for show_images (1875700481186331432) -->
     <skip />
     <!-- no translation found for always_show_images (5966408990164581801) -->
@@ -592,8 +594,6 @@
     <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
     <skip />
     <!-- no translation found for account_sync_off (5699548271856775808) -->
-    <skip />
-    <!-- no translation found for airplane_mode_on (2206488373387145840) -->
     <skip />
     <!-- no translation found for enable_sync_in_account_settings (7707227409018294927) -->
     <skip />
