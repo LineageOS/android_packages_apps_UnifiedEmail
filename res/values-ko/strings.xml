@@ -209,10 +209,11 @@
     <string name="search_results_header" msgid="4669917471897026269">"검색결과"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"이 계정에서는 검색이 지원되지 않습니다."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"검색 중…"</string>
-    <!-- no translation found for add_label (6060201715848652940) -->
-    <skip />
+    <string name="add_label" msgid="6060201715848652940">"폴더 추가"</string>
     <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g>님이 보낸 새 메일 보기"</string>
-    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"새 메일 <xliff:g id="COUNT">%1$d</xliff:g>개 보기"</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"수신자 세부정보 펼치기"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"수신자 세부정보 접기"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g>님에 대한 연락처 정보 표시"</string>
@@ -225,6 +226,7 @@
     <string name="to_heading" msgid="1142876841308812954">"받는사람: "</string>
     <string name="cc_heading" msgid="52678613787360092">"참조: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"숨은참조: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"날짜: "</string>
     <string name="show_images" msgid="1875700481186331432">"사진 표시"</string>
     <string name="always_show_images" msgid="5966408990164581801">"이 발신자가 보낸 사진을 항상 표시"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"이 발신자가 보낸 사진이 자동으로 표시됩니다."</string>
@@ -385,21 +387,14 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"어제 <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"도움말 닫기"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"자동 동기화가 사용 중지되어 있습니다."</string>
-    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
-    <skip />
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"사용하려면 터치합니다."</string>
     <string name="account_sync_off" msgid="5699548271856775808">"계정 동기화가 사용 중지되어 있습니다."</string>
-    <string name="airplane_mode_on" msgid="2206488373387145840">"비행기 모드를 사용 중입니다."</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>에서 동기화를 설정하세요."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"계정 설정"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g>에 보내지 않은 메일 <xliff:g id="NUMBER">%1$s</xliff:g>개 있음"</string>
-    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
-    <skip />
-    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
-    <skip />
-    <!-- no translation found for phone (5171715391553213328) -->
-    <skip />
-    <!-- no translation found for tablet (7956969657216748522) -->
-    <skip />
-    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
-    <skip />
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"자동 동기화를 사용하시겠습니까?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Gmail뿐만 아니라 모든 앱 및 계정의 변경사항이 웹, 다른 기기, <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> 간에 동기화됩니다."</string>
+    <string name="phone" msgid="5171715391553213328">"휴대전화"</string>
+    <string name="tablet" msgid="7956969657216748522">"태블릿"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"사용"</string>
 </resources>

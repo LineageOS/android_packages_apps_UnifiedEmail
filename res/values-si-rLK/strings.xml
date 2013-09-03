@@ -209,10 +209,11 @@
     <string name="search_results_header" msgid="4669917471897026269">"ප්‍රතිඵල"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"මෙම ගිණුම සෙවුමට සහය නොදෙයි."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"සොයමින්..."</string>
-    <!-- no translation found for add_label (6060201715848652940) -->
-    <skip />
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g> වෙතින් නව පණිවිඩ. පෙන්වන්න."</string>
-    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
+    <string name="add_label" msgid="6060201715848652940">"ෆෝල්ඩරය එකතු කරන්න"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g> වෙතින් අලුත් පණිවිඩ. පෙන්වන්න."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"නව පණිවිඩ <xliff:g id="COUNT">%1$d</xliff:g>. පෙන්වන්න."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"ලබන්නන්ගේ විස්තර දිග හරින්න"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"ලබන්නාගේ තොරතුරු හකුළන්න"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g> සඳහා සම්බන්ධතා තොරතුරු පෙන්වන්න"</string>
@@ -225,6 +226,7 @@
     <string name="to_heading" msgid="1142876841308812954">"වෙත: "</string>
     <string name="cc_heading" msgid="52678613787360092">"කා.පි.: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"ර.කා.පි.: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"දිනය: "</string>
     <string name="show_images" msgid="1875700481186331432">"පින්තූර පෙන්වන්න"</string>
     <string name="always_show_images" msgid="5966408990164581801">"මෙම යවන්නාගෙන් සෑම විටම පින්තූර පෙන්වන්න"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"මෙම යවන්නාගෙන් පින්තූර ස්වයංක්‍රියව පෙන්වනු ඇත."</string>
@@ -385,21 +387,14 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"ඊයේ, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"චාරිකාව අස් කරන්න"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"ස්වයංක්‍රිය සමමුහුර්තය අක්‍රියයි."</string>
-    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
-    <skip />
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"සක්‍රිය කිරීමට ස්පර්ශ කරන්න."</string>
     <string name="account_sync_off" msgid="5699548271856775808">"ගිණුම් සමමුහුර්තය අක්‍රියයි."</string>
-    <string name="airplane_mode_on" msgid="2206488373387145840">"අහස්යානා ආකාරය සක්‍රීයයි."</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> හි සක්‍රිය කරන්න."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"ගිණුම් සැකසීම්"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g> හි නොයැවූ <xliff:g id="NUMBER">%1$s</xliff:g> කි"</string>
-    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
-    <skip />
-    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
-    <skip />
-    <!-- no translation found for phone (5171715391553213328) -->
-    <skip />
-    <!-- no translation found for tablet (7956969657216748522) -->
-    <skip />
-    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
-    <skip />
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"ස්වයංක්‍රිය-සමමුහුර්ත වීම සක්‍රිය කරන්නද?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Gmail පමණක් නොව, සියලුම යෙදුම් සහ ගිණුම්වලට ඔබ කරන වෙනස්කම්, වෙබය, ඔබගේ අනෙකුත් උපාංග සහ ඔබගේ <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> අතර සමමුහුර්ත වේ."</string>
+    <string name="phone" msgid="5171715391553213328">"දුරකථනය"</string>
+    <string name="tablet" msgid="7956969657216748522">"ටැබ්ලට්"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"සක්‍රිය කරන්න"</string>
 </resources>

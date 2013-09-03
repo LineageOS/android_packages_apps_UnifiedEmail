@@ -209,10 +209,11 @@
     <string name="search_results_header" msgid="4669917471897026269">"Rezultati"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Iskanje ni podprto za ta račun."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Iskanje ..."</string>
-    <!-- no translation found for add_label (6060201715848652940) -->
-    <skip />
+    <string name="add_label" msgid="6060201715848652940">"Dodaj mapo"</string>
     <string name="new_incoming_messages_one" msgid="164529476439626369">"Novo sporočilo od: <xliff:g id="SENDER">%s</xliff:g>. Prikaz."</string>
-    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"Št. novih sporočil: <xliff:g id="COUNT">%1$d</xliff:g>. Prikaz."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Razširi podrobnosti prejemnika"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Strni podrobnosti prejemnika"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Prikaz podatkov za stik za <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -225,6 +226,7 @@
     <string name="to_heading" msgid="1142876841308812954">"Za: "</string>
     <string name="cc_heading" msgid="52678613787360092">"Kp: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"Skp: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"Datum: "</string>
     <string name="show_images" msgid="1875700481186331432">"Pokaži slike"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Vedno pokaži slike tega pošiljatelja"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Slike tega pošiljatelja bodo samodejno prikazane."</string>
@@ -385,21 +387,14 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Včeraj ob <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Opusti nasvet"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Samodejna sinhronizacija je izklopljena."</string>
-    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
-    <skip />
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Dotaknite se za vklop."</string>
     <string name="account_sync_off" msgid="5699548271856775808">"Sinhronizacija računa je izklopljena."</string>
-    <string name="airplane_mode_on" msgid="2206488373387145840">"Način za letalo je vklopljen"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Vklopite v: <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Nastavitve računa"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"Št. neposlanih sporočil v <xliff:g id="OUTBOX">%2$s</xliff:g>: <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
-    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
-    <skip />
-    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
-    <skip />
-    <!-- no translation found for phone (5171715391553213328) -->
-    <skip />
-    <!-- no translation found for tablet (7956969657216748522) -->
-    <skip />
-    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
-    <skip />
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Želite vklopiti samodejno sinhronizacijo?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Spremembe vseh aplikacij in računov, ne samo za Gmaila, bodo sinhronizirane med spletom, vašimi drugimi napravami in napravo <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
+    <string name="phone" msgid="5171715391553213328">"telefon"</string>
+    <string name="tablet" msgid="7956969657216748522">"tablični računalnik"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Vklopi"</string>
 </resources>
