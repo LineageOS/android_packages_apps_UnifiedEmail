@@ -294,7 +294,6 @@ public final class MockUiProvider extends ContentProvider {
                 Long.valueOf(
                         FolderCapabilities.SYNCABLE |
                         FolderCapabilities.PARENT |
-                        FolderCapabilities.CAN_HOLD_MAIL |
                         FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
         folderMap.put(FolderColumns.UNREAD_COUNT, unread);
         folderMap.put(FolderColumns.TOTAL_COUNT, total);
