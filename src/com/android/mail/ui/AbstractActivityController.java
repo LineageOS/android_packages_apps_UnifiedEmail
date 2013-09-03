@@ -3139,8 +3139,6 @@ public abstract class AbstractActivityController implements ActivityController,
                 && event.getClipDescription() != null
                 && folder.supportsCapability
                     (UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
-                && folder.supportsCapability
-                    (UIProvider.FolderCapabilities.CAN_HOLD_MAIL)
                 && !mFolder.equals(folder));
     }
 

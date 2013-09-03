@@ -734,7 +734,8 @@ public class UIProvider {
     public static final class FolderCapabilities {
         public static final int SYNCABLE = 0x0001;
         public static final int PARENT = 0x0002;
-        public static final int CAN_HOLD_MAIL = 0x0004;
+        // FEEL FREE TO USE 0x0004 - was previous CAN_HOLD_MAIL but that was true for all
+        // folders so we removed that value
         public static final int CAN_ACCEPT_MOVED_MESSAGES = 0x0008;
          /**
          * For accounts that support archive, this will indicate that this folder supports
