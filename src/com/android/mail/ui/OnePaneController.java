@@ -20,7 +20,10 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
@@ -32,6 +35,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.FolderUri;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 /**
@@ -40,6 +44,9 @@ import com.android.mail.utils.Utils;
  */
 
 public final class OnePaneController extends AbstractActivityController {
+    /** Key used to store {@link #mLastInboxConversationListTransactionId} */
+    private static final String INBOX_CONVERSATION_LIST_TRANSACTION_KEY =
+            "inbox_conversation-list-transaction";
     /** Key used to store {@link #mLastConversationListTransactionId} */
     private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
     /** Key used to store {@link #mLastConversationTransactionId}. */
@@ -48,11 +55,15 @@ public final class OnePaneController extends AbstractActivityController {
     private static final String CONVERSATION_LIST_VISIBLE_KEY = "conversation-list-visible";
     /** Key used to store {@link #mConversationListNeverShown}. */
     private static final String CONVERSATION_LIST_NEVER_SHOWN_KEY = "conversation-list-never-shown";
+    /** Key to store {@link #mInbox}. */
+    private final static String SAVED_INBOX_KEY = "m-inbox";
 
     private static final int INVALID_ID = -1;
     private boolean mConversationListVisible = false;
+    private int mLastInboxConversationListTransactionId = INVALID_ID;
     private int mLastConversationListTransactionId = INVALID_ID;
     private int mLastConversationTransactionId = INVALID_ID;
+    private Folder mInbox;
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
 
@@ -66,20 +77,26 @@ public final class OnePaneController extends AbstractActivityController {
         if (inState == null) {
             return;
         }
+        mLastInboxConversationListTransactionId =
+                inState.getInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY, INVALID_ID);
         mLastConversationListTransactionId =
                 inState.getInt(CONVERSATION_LIST_TRANSACTION_KEY, INVALID_ID);
         mLastConversationTransactionId = inState.getInt(CONVERSATION_TRANSACTION_KEY, INVALID_ID);
         mConversationListVisible = inState.getBoolean(CONVERSATION_LIST_VISIBLE_KEY);
         mConversationListNeverShown = inState.getBoolean(CONVERSATION_LIST_NEVER_SHOWN_KEY);
+        mInbox = inState.getParcelable(SAVED_INBOX_KEY);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY,
+                mLastInboxConversationListTransactionId);
         outState.putInt(CONVERSATION_LIST_TRANSACTION_KEY, mLastConversationListTransactionId);
         outState.putInt(CONVERSATION_TRANSACTION_KEY, mLastConversationTransactionId);
         outState.putBoolean(CONVERSATION_LIST_VISIBLE_KEY, mConversationListVisible);
         outState.putBoolean(CONVERSATION_LIST_NEVER_SHOWN_KEY, mConversationListNeverShown);
+        outState.putParcelable(SAVED_INBOX_KEY, mInbox);
     }
 
     @Override
@@ -158,6 +175,8 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(super.toString());
+        sb.append(" lastInboxTransId=");
+        sb.append(mLastInboxConversationListTransactionId);
         sb.append(" lastConvListTransId=");
         sb.append(mLastConversationListTransactionId);
         sb.append("}");
@@ -183,13 +202,13 @@ public final class OnePaneController extends AbstractActivityController {
         if (!inInbox(mAccount, listContext)) {
             // Maintain fragment transaction history so we can get back to the
             // fragment used to launch this list.
-            mLastConversationListTransactionId = replaceFragment(conversationListFragment,
+            mLastConversationListTransactionId = replaceFragmentWithBack(conversationListFragment,
                     transition, TAG_CONVERSATION_LIST, R.id.content_pane);
         } else {
             // If going to the inbox, clear the folder list transaction history.
             mInbox = listContext.folder;
-            replaceFragment(conversationListFragment, transition, TAG_CONVERSATION_LIST,
-                    R.id.content_pane);
+            mLastInboxConversationListTransactionId = replaceFragmentWithBack(
+                    conversationListFragment, transition, TAG_CONVERSATION_LIST, R.id.content_pane);
 
             // If we ever to to the inbox, we want to unset the transation id for any other
             // non-inbox folder.
@@ -208,7 +227,7 @@ public final class OnePaneController extends AbstractActivityController {
         super.showConversation(conversation, inLoaderCallbacks);
         mConversationListVisible = false;
         if (conversation == null) {
-            transitionBackToConversationListMode();
+            transitionBackToConversationListMode(inLoaderCallbacks);
             return;
         }
         disableCabMode();
@@ -277,17 +296,30 @@ public final class OnePaneController extends AbstractActivityController {
     /**
      * Replace the content_pane with the fragment specified here. The tag is specified so that
      * the {@link ActivityController} can look up the fragments through the
-     * {@link android.app.FragmentManager}.
+     * {@link android.app.FragmentManager}. This action will be placed on the back stack.
      * @param fragment the new fragment to put
      * @param transition the transition to show
      * @param tag a tag for the fragment manager.
      * @param anchor ID of view to replace fragment in
      * @return transaction ID returned when the transition is committed.
      */
-    private int replaceFragment(Fragment fragment, int transition, String tag, int anchor) {
+    private int replaceFragmentWithBack(Fragment fragment, int transition, String tag, int anchor) {
+        return replaceFragment(fragment, transition, tag, anchor, true);
+    }
+
+    // (Not on the back stack -> no transaction ID to return.)
+    private void replaceFragment(Fragment fragment, int transition, String tag, int anchor) {
+        replaceFragment(fragment, transition, tag, anchor, false);
+    }
+
+    private int replaceFragment(Fragment fragment, int transition, String tag, int anchor,
+            boolean addToBackStack) {
         final FragmentManager fm = mActivity.getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.setTransition(transition);
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null);
+        }
         fragmentTransaction.replace(anchor, fragment, tag);
         final int id = fragmentTransaction.commitAllowingStateLoss();
         fm.executePendingTransactions();
@@ -315,14 +347,47 @@ public final class OnePaneController extends AbstractActivityController {
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         } else if (mViewMode.isListMode() && !inInbox(mAccount, mConvListContext)) {
-            navigateUpFolderHierarchy();
+            transitionToInbox();
         } else if (mViewMode.isConversationMode() || mViewMode.isAdMode()) {
-            transitionBackToConversationListMode();
+            transitionBackToConversationListMode(false /* inLoaderCallbacks */);
         } else {
             mActivity.finish();
         }
         mToastBar.hide(false, false /* actionClicked */);
         return true;
+    }
+
+    private void goUpFolderHierarchy(Folder current) {
+        // This code is currently never called. Now that we have the URI, load the parent, if
+        // required. http://b/9694899
+        // onFolderSelected(current.parent);
+    }
+
+    private void navigateUp() {
+        new AsyncTask<Void, Void, Folder>() {
+            @Override
+            protected Folder doInBackground(final Void... params) {
+                final Folder folder;
+
+                final Cursor cursor = mContext.getContentResolver().query(mFolder.parent,
+                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+
+                if (cursor == null) {
+                    folder = mInbox;
+                } else {
+                    cursor.moveToFirst();
+                    folder = new Folder(cursor);
+                    cursor.close();
+                }
+
+                return folder;
+            }
+
+            @Override
+            protected void onPostExecute(final Folder result) {
+                onFolderSelected(result);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
     }
 
     /**
@@ -333,7 +398,7 @@ public final class OnePaneController extends AbstractActivityController {
         if (mInbox == null || !isDefaultInbox(mInbox.folderUri, mAccount)) {
             loadAccountInbox();
         } else {
-            onFolderChanged(mInbox, false /* force */);
+            onFolderChanged(mInbox);
         }
     }
 
@@ -341,6 +406,10 @@ public final class OnePaneController extends AbstractActivityController {
     public void onFolderSelected(Folder folder) {
         setHierarchyFolder(folder);
         super.onFolderSelected(folder);
+    }
+
+    private static boolean isTransactionIdValid(int id) {
+        return id >= 0;
     }
 
     /**
@@ -365,7 +434,7 @@ public final class OnePaneController extends AbstractActivityController {
                 // Show the drawer.
                 toggleDrawerState();
             } else {
-                navigateUpFolderHierarchy();
+                navigateUp();
             }
         } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION
                 || mode == ViewMode.AD) {
@@ -375,7 +444,7 @@ public final class OnePaneController extends AbstractActivityController {
         return true;
     }
 
-    private void transitionBackToConversationListMode() {
+    private void transitionBackToConversationListMode(boolean inLoaderCallbacks) {
         final int mode = mViewMode.getMode();
         enableCabMode();
         mConversationListVisible = true;
@@ -384,12 +453,48 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationListMode();
         }
-
-        final Folder folder = mFolder != null ? mFolder : mInbox;
-        onFolderChanged(folder, true /* force */);
-
+        if (isTransactionIdValid(mLastConversationListTransactionId)) {
+            safelyPopBackStack(mLastConversationListTransactionId, inLoaderCallbacks);
+        } else if (isTransactionIdValid(mLastInboxConversationListTransactionId)) {
+            safelyPopBackStack(mLastInboxConversationListTransactionId, inLoaderCallbacks);
+            onFolderChanged(mInbox);
+        } else {
+            // TODO: revisit if this block is necessary
+            // Set the correct context for what the conversation view will be now.
+            onFolderChanged(mInbox);
+        }
         onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
+    }
+
+    /**
+     * Pop to a specified point in the fragment back stack without causing IllegalStateExceptions
+     * from committing a fragment transaction "at the wrong time".
+     * <p>
+     * If the caller specifies that we are in
+     * the scope of an {@link LoaderCallbacks#onLoadFinished(android.content.Loader, Object)},
+     * this method will pop back in a Handler. The deferred job will also check that the Activity
+     * is in a valid state for fragment transactions, using {@link #safeToModifyFragments()}.
+     * Otherwise, this method will pop back immediately if safe. Finally, if we are not in
+     * onLoadFinished and it's not safe, this method will just ignore the request.
+     *
+     * @param transactionId back stack destination to pop to, or -1 to just pop the top
+     * @param inLoaderCallbacks whether we are in the scope of an onLoadFinished (when fragment
+     * transactions are disallowed)
+     */
+    private void safelyPopBackStack(int transactionId, boolean inLoaderCallbacks) {
+        final PopBackStackRunnable r = new PopBackStackRunnable(transactionId);
+        if (inLoaderCallbacks) {
+            // always run deferred. ensure deferred job checks safety.
+            mHandler.post(r);
+        } else if (safeToModifyFragments()) {
+            // run now
+            r.popBackStack();
+        } else {
+            // ignore
+            LogUtils.i(LOG_TAG, "Activity has been saved; ignoring unsafe immediate request"
+                    + " to pop back stack");
+        }
     }
 
     @Override
@@ -453,6 +558,34 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    private final class PopBackStackRunnable implements Runnable {
+
+        private final int mTransactionId;
+
+        public PopBackStackRunnable(int transactionId) {
+            mTransactionId = transactionId;
+        }
+
+        public void popBackStack() {
+            final FragmentManager fm = mActivity.getFragmentManager();
+            if (mTransactionId < 0) {
+                fm.popBackStackImmediate();
+            } else {
+                fm.popBackStackImmediate(mTransactionId, 0);
+            }
+        }
+
+        @Override
+        public void run() {
+            if (safeToModifyFragments()) {
+                popBackStack();
+            } else {
+                LogUtils.i(LOG_TAG, "Activity has been saved; ignoring unsafe deferred request"
+                        + " to pop back stack");
+            }
+        }
+    }
+
     @Override
     public boolean isDrawerEnabled() {
         // The drawer is enabled for one pane mode
@@ -467,7 +600,7 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void launchFragment(final Fragment fragment, final int selectPosition) {
-        replaceFragment(fragment, FragmentTransaction.TRANSIT_FRAGMENT_OPEN,
+        replaceFragmentWithBack(fragment, FragmentTransaction.TRANSIT_FRAGMENT_OPEN,
                 TAG_CUSTOM_FRAGMENT, R.id.content_pane);
     }
 }
