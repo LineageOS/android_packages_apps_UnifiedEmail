@@ -219,7 +219,6 @@ public final class OnePaneController extends AbstractActivityController {
         }
         final FragmentManager fm = mActivity.getFragmentManager();
         final FragmentTransaction ft = fm.beginTransaction();
-        ft.addToBackStack(null);
         // Switching to conversation view is an incongruous transition:
         // we are not replacing a fragment with another fragment as
         // usual. Instead, reveal the heretofore inert conversation
