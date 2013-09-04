@@ -209,10 +209,11 @@
     <string name="search_results_header" msgid="4669917471897026269">"Tulokset"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Hakua ei voi käyttää tällä tilillä."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Haetaan.."</string>
-    <!-- no translation found for add_label (6060201715848652940) -->
-    <skip />
+    <string name="add_label" msgid="6060201715848652940">"Lisää kansio"</string>
     <string name="new_incoming_messages_one" msgid="164529476439626369">"Uusi viesti lähett. <xliff:g id="SENDER">%s</xliff:g>. Näytä."</string>
-    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> uutta viestiä. Näytä."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Laajenna vastaanottajan tiedot"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Tiivistä vastaanottajan tiedot"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Näytä henkilön <xliff:g id="NAME">%1$s</xliff:g> yhteystiedot"</string>
@@ -225,6 +226,7 @@
     <string name="to_heading" msgid="1142876841308812954">"Vast.ott.: "</string>
     <string name="cc_heading" msgid="52678613787360092">"Kopio: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"Piilokopio: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"Päiväys: "</string>
     <string name="show_images" msgid="1875700481186331432">"Näytä kuvat"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Näytä aina tämän lähettäjän kuvat"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Kuvat tältä lähettäjältä näytetään automaattisesti."</string>
@@ -385,21 +387,14 @@
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Eilen klo <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Hylkää vinkki"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Automaattinen synkronointi ei ole käytössä."</string>
-    <!-- no translation found for tap_to_enable_sync (3334767826332383085) -->
-    <skip />
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Ota käyttöön koskettamalla."</string>
     <string name="account_sync_off" msgid="5699548271856775808">"Tilin synkronointi ei ole käytössä."</string>
-    <string name="airplane_mode_on" msgid="2206488373387145840">"Lentokonetila on käytössä"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Ota käyttöön täällä: <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Tilin asetukset"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g>: <xliff:g id="NUMBER">%1$s</xliff:g> lähettämätöntä viestiä"</string>
-    <!-- no translation found for turn_auto_sync_on_dialog_title (8981949974921704813) -->
-    <skip />
-    <!-- no translation found for turn_auto_sync_on_dialog_body (5070811094706347971) -->
-    <skip />
-    <!-- no translation found for phone (5171715391553213328) -->
-    <skip />
-    <!-- no translation found for tablet (7956969657216748522) -->
-    <skip />
-    <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
-    <skip />
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Otetaanko automaattinen synkronointi käyttöön?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Gmailiin ja kaikkiin muihin sovelluksiin ja tileihin tekemäsi muutokset synkronoidaan seuraavissa kohteissa: verkko, muut laitteet ja <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
+    <string name="phone" msgid="5171715391553213328">"puhelin"</string>
+    <string name="tablet" msgid="7956969657216748522">"tablet-laite"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Ota käyttöön"</string>
 </resources>
