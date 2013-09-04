@@ -93,6 +93,7 @@ import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
 import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.DrawIdler;
@@ -848,7 +849,14 @@ public abstract class AbstractActivityController implements ActivityController,
             exitCabMode();
         }
 
-        changeFolder(folder, null, force);
+        final String query;
+        if (folder != null && folder.isType(FolderType.SEARCH)) {
+            query = mConvListContext.searchQuery;
+        } else {
+            query = null;
+        }
+
+        changeFolder(folder, query, force);
     }
 
     /**
