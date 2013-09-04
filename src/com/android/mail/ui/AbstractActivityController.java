@@ -4277,19 +4277,23 @@ public abstract class AbstractActivityController implements ActivityController,
                 // Now try to load our parent
                 final Folder folder;
 
-                final Cursor cursor = mContext.getContentResolver().query(mFolder.parent,
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+                if (mFolder != null) {
+                    final Cursor cursor = mContext.getContentResolver().query(mFolder.parent,
+                            UIProvider.FOLDERS_PROJECTION, null, null, null);
 
-                if (cursor == null) {
-                    // We couldn't load the parent, so use the inbox
-                    folder = mInbox;
-                } else {
-                    try {
-                        cursor.moveToFirst();
-                        folder = new Folder(cursor);
-                    } finally {
-                        cursor.close();
+                    if (cursor == null) {
+                        // We couldn't load the parent, so use the inbox
+                        folder = mInbox;
+                    } else {
+                        try {
+                            cursor.moveToFirst();
+                            folder = new Folder(cursor);
+                        } finally {
+                            cursor.close();
+                        }
                     }
+                } else {
+                    folder = mInbox;
                 }
 
                 return folder;
