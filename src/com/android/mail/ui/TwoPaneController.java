@@ -159,12 +159,6 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onFolderChanged(Folder folder, final boolean force) {
-        super.onFolderChanged(folder, force);
-        exitCabMode();
-    }
-
-    @Override
     public void onFolderSelected(Folder folder) {
         // It's possible that we are not in conversation list mode
         if (mViewMode.getMode() != ViewMode.CONVERSATION_LIST) {
