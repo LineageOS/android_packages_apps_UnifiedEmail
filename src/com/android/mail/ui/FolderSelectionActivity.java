@@ -266,7 +266,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public void onFolderChanged(Folder folder) {
+    public void onFolderChanged(Folder folder, final boolean force) {
         if (!folder.equals(mSelectedFolder)) {
             mSelectedFolder = folder;
             Intent resultIntent = new Intent();
@@ -350,7 +350,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             createFolderListFragment(FolderListFragment.ofTree(folder));
             return;
         }
-        onFolderChanged(folder);
+        onFolderChanged(folder, false /* force */);
     }
 
     @Override

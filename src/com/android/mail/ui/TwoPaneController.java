@@ -159,8 +159,8 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onFolderChanged(Folder folder) {
-        super.onFolderChanged(folder);
+    public void onFolderChanged(Folder folder, final boolean force) {
+        super.onFolderChanged(folder, force);
         exitCabMode();
     }
 
@@ -171,21 +171,12 @@ public final class TwoPaneController extends AbstractActivityController {
             mViewMode.enterConversationListMode();
         }
 
-        if (folder.hasChildren) {
+        if (folder.parent != Uri.EMPTY) {
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
         }
         setHierarchyFolder(folder);
         super.onFolderSelected(folder);
-    }
-
-    private void goUpFolderHierarchy(Folder current) {
-        // If the current folder is a child, up should show the parent folder.
-        // Fix this to load the parent folder: http://b/9694899
-//        final Folder parent = current.parent;
-//        if (parent != null) {
-//            onFolderSelected(parent);
-//        }
     }
 
     @Override
@@ -237,9 +228,10 @@ public final class TwoPaneController extends AbstractActivityController {
         if (isDrawerEnabled()) {
             return;
         }
-        // On two-pane, the back button is only removed in the conversation list mode, and shown
-        // for every other condition.
-        if (mViewMode.isListMode() || mViewMode.isWaitingForSync()) {
+        // On two-pane, the back button is only removed in the conversation list mode for top level
+        // folders, and shown for every other condition.
+        if ((mViewMode.isListMode() && (mFolder == null || mFolder.parent == null
+                || mFolder.parent == Uri.EMPTY)) || mViewMode.isWaitingForSync()) {
             mActionBarView.removeBackButton();
         } else {
             mActionBarView.setBackButton();
@@ -433,19 +425,10 @@ public final class TwoPaneController extends AbstractActivityController {
             // folder list has had a chance to initialize.
             final FolderListFragment folderList = getFolderListFragment();
             if (mode == ViewMode.CONVERSATION_LIST && folderList != null
-                    && folderList.showingHierarchy()) {
+                    && mFolder.parent != Uri.EMPTY) {
                 // If the user navigated via the left folders list into a child folder,
                 // back should take the user up to the parent folder's conversation list.
-                // TODO: Clean this code up: http://b/9694899
-                final Folder hierarchyFolder = getHierarchyFolder();
-                if (hierarchyFolder.parent != Uri.EMPTY) {
-                    goUpFolderHierarchy(hierarchyFolder);
-                } else  {
-                    // Show inbox; we are at the top of the hierarchy we were
-                    // showing, and it doesn't have a parent, so we must want to
-                    // the basic account folder list.
-                    loadAccountInbox();
-                }
+                navigateUpFolderHierarchy();
             // Otherwise, if we are in the conversation list but not in the default
             // inbox and not on expansive layouts, we want to switch back to the default
             // inbox. This fixes b/9006969 so that on smaller tablets where we have this
