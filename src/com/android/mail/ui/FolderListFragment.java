@@ -216,7 +216,7 @@ public class FolderListFragment extends ListFragment implements
      */
     private static Bundle getBundleFromArgs(Folder parentFolder, Uri folderListUri,
             final ArrayList<Integer> excludedFolderTypes) {
-        final Bundle args = new Bundle();
+        final Bundle args = new Bundle(3);
         if (parentFolder != null) {
             args.putParcelable(ARG_PARENT_FOLDER, parentFolder);
         }
@@ -1077,10 +1077,6 @@ public class FolderListFragment extends ListFragment implements
         }
     }
 
-    public Folder getParentFolder() {
-        return mParentFolder;
-    }
-
     /**
      * Sets the currently selected folder safely.
      * @param folder the folder to change to. It is an error to pass null here.
@@ -1156,14 +1152,6 @@ public class FolderListFragment extends ListFragment implements
             manager.destroyLoader(FOLDER_LIST_LOADER_ID);
             manager.destroyLoader(FULL_FOLDER_LIST_LOADER_ID);
         }
-    }
-
-    /**
-     * Get whether the FolderListFragment is currently showing the hierarchy
-     * under a single parent.
-     */
-    public boolean showingHierarchy() {
-        return mParentFolder != null;
     }
 
     /**
