@@ -26,6 +26,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.LruCache;
@@ -200,8 +201,8 @@ public final class RecentFolderList {
         }
         assert (folder != null);
 
-        if (folder.isProviderFolder()) {
-            LogUtils.d(TAG, "Not touching recent folder because it's provider folder");
+        if (folder.isProviderFolder() || folder.isType(FolderType.SEARCH)) {
+            LogUtils.d(TAG, "Not touching recent folder because it's provider or search folder");
             return;
         }
 
