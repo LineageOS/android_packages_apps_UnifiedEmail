@@ -27,6 +27,7 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -153,6 +154,12 @@ public final class ConversationListFragment extends ListFragment implements
     private static long sSelectionModeAnimationDuration = -1;
     /** The time at which we last exited CAB mode. */
     private long mSelectionModeExitedTimestamp = -1;
+
+    /**
+     * If <code>true</code>, we have restored (or attempted to restore) the list's scroll position
+     * from when we were last on this conversation list.
+     */
+    private boolean mScrollPositionRestored = false;
 
     /**
      * If the current list is for a folder with children, this set of loader callbacks will
@@ -628,6 +635,8 @@ public final class ConversationListFragment extends ListFragment implements
         final ConversationCursor conversationCursor = getConversationListCursor();
         if (conversationCursor != null) {
             conversationCursor.handleNotificationActions();
+
+            restoreLastScrolledPosition();
         }
 
         mSelectedSet.addObserver(mConversationSetObserver);
@@ -638,6 +647,8 @@ public final class ConversationListFragment extends ListFragment implements
         super.onPause();
 
         mSelectedSet.removeObserver(mConversationSetObserver);
+
+        saveLastScrolledPosition();
     }
 
     @Override
@@ -939,6 +950,12 @@ public final class ConversationListFragment extends ListFragment implements
         // Check against the previous cursor here and see if they are the same. If they are, then
         // do a notifyDataSetChanged.
         final ConversationCursor newCursor = mCallbacks.getConversationListCursor();
+
+        if (newCursor == null && mListAdapter.getCursor() != null) {
+            // We're losing our cursor, so save our scroll position
+            saveLastScrolledPosition();
+        }
+
         mListAdapter.swapCursor(newCursor);
         // When the conversation cursor is *updated*, we get back the same instance. In that
         // situation, CursorAdapter.swapCursor() silently returns, without forcing a
@@ -952,17 +969,17 @@ public final class ConversationListFragment extends ListFragment implements
 
         if (newCursor != null && newCursor.getCount() > 0) {
             newCursor.markContentsSeen();
+            restoreLastScrolledPosition();
         }
 
         // If a current conversation is available, and none is selected in the list, then ask
         // the list to select the current conversation.
         final Conversation conv = mCallbacks.getCurrentConversation();
-        if (conv == null) {
-            return;
-        }
-        if (mListView.getChoiceMode() != ListView.CHOICE_MODE_NONE
-                && mListView.getCheckedItemPosition() == -1) {
-            setSelected(conv.position, true);
+        if (conv != null) {
+            if (mListView.getChoiceMode() != ListView.CHOICE_MODE_NONE
+                    && mListView.getCheckedItemPosition() == -1) {
+                setSelected(conv.position, true);
+            }
         }
     }
 
@@ -1020,4 +1037,28 @@ public final class ConversationListFragment extends ListFragment implements
             // Do nothing
         }
     };
+
+    private void saveLastScrolledPosition() {
+        if (mListAdapter.getCursor() == null) {
+            // If you save your scroll position in an empty list, you're gonna have a bad time
+            return;
+        }
+
+        final Parcelable savedState = mListView.onSaveInstanceState();
+
+        mActivity.getListHandler().setConversationListScrollPosition(
+                mFolder.conversationListUri.toString(), savedState);
+    }
+
+    private void restoreLastScrolledPosition() {
+        // Scroll to our previous position, if necessary
+        if (!mScrollPositionRestored) {
+            final Parcelable savedState = mActivity.getListHandler()
+                    .getConversationListScrollPosition(mFolder.conversationListUri.toString());
+            if (savedState != null) {
+                mListView.onRestoreInstanceState(savedState);
+            }
+            mScrollPositionRestored = true;
+        }
+    }
 }

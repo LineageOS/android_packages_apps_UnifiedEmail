@@ -19,6 +19,8 @@ package com.android.mail.ui;
 
 import android.app.LoaderManager.LoaderCallbacks;
 import android.database.DataSetObserver;
+import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
@@ -80,7 +82,7 @@ public interface ConversationListCallbacks {
     void commitDestructiveActions(boolean animate);
 
     /**
-     * Detect if there are any animations occuring in the conversation list.
+     * Detect if there are any animations occurring in the conversation list.
      */
     boolean isAnimating();
 
@@ -88,4 +90,26 @@ public interface ConversationListCallbacks {
      * Tell the controller that the conversation view has entered detached mode.
      */
     void setDetachedMode();
+
+    String CONVERSATION_LIST_SCROLL_POSITION_INDEX = "index";
+    String CONVERSATION_LIST_SCROLL_POSITION_OFFSET = "offset";
+
+    /**
+     * Gets the last save scroll position of the conversation list for the specified Folder.
+     *
+     * @return A {@link Bundle} containing two ints,
+     *         {@link #CONVERSATION_LIST_SCROLL_POSITION_INDEX} and
+     *         {@link #CONVERSATION_LIST_SCROLL_POSITION_OFFSET}, or <code>null</code>
+     */
+    Parcelable getConversationListScrollPosition(String folderUri);
+
+    /**
+     * Sets the last save scroll position of the conversation list for the specified Folder for
+     * restoration on returning to this list.
+     *
+     * @param savedPosition A {@link Bundle} containing two ints,
+     *            {@link #CONVERSATION_LIST_SCROLL_POSITION_INDEX} and
+     *            {@link #CONVERSATION_LIST_SCROLL_POSITION_OFFSET}
+     */
+    void setConversationListScrollPosition(String folderUri, Parcelable savedPosition);
 }

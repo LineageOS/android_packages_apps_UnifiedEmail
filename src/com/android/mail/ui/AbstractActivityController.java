@@ -45,6 +45,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -158,7 +159,10 @@ public abstract class AbstractActivityController implements ActivityController,
     /** Tag for {@link #mDetachedConvUri} */
     private static final String SAVED_DETACHED_CONV_URI = "saved-detached-conv-uri";
     /** Key to store {@link #mInbox}. */
-    private final static String SAVED_INBOX_KEY = "m-inbox";
+    private static final String SAVED_INBOX_KEY = "m-inbox";
+    /** Key to store {@link #mConversationListScrollPositions} */
+    private static final String SAVED_CONVERSATION_LIST_SCROLL_POSITIONS =
+            "saved-conversation-list-scroll-positions";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -188,6 +192,9 @@ public abstract class AbstractActivityController implements ActivityController,
      * The hash of {@link #mCurrentConversation} in detached mode. 0 if we are not in detached mode.
      */
     private Uri mDetachedConvUri;
+
+    /** A map of {@link Folder} {@link Uri} to scroll position in the conversation list. */
+    private final Bundle mConversationListScrollPositions = new Bundle();
 
     /** A {@link android.content.BroadcastReceiver} that suppresses new e-mail notifications. */
     private SuppressNotificationReceiver mNewEmailReceiver = null;
@@ -2043,6 +2050,9 @@ public abstract class AbstractActivityController implements ActivityController,
         mSafeToModifyFragments = false;
 
         outState.putParcelable(SAVED_INBOX_KEY, mInbox);
+
+        outState.putBundle(SAVED_CONVERSATION_LIST_SCROLL_POSITIONS,
+                mConversationListScrollPositions);
     }
 
     /**
@@ -2260,6 +2270,10 @@ public abstract class AbstractActivityController implements ActivityController,
         }
 
         mInbox = savedState.getParcelable(SAVED_INBOX_KEY);
+
+        mConversationListScrollPositions.clear();
+        mConversationListScrollPositions.putAll(
+                savedState.getBundle(SAVED_CONVERSATION_LIST_SCROLL_POSITIONS));
     }
 
     /**
@@ -4310,5 +4324,16 @@ public abstract class AbstractActivityController implements ActivityController,
                 onFolderSelected(result);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
+    }
+
+    @Override
+    public Parcelable getConversationListScrollPosition(final String folderUri) {
+        return mConversationListScrollPositions.getParcelable(folderUri);
+    }
+
+    @Override
+    public void setConversationListScrollPosition(final String folderUri,
+            final Parcelable savedPosition) {
+        mConversationListScrollPositions.putParcelable(folderUri, savedPosition);
     }
 }
