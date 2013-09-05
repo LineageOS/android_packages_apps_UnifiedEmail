@@ -54,6 +54,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
     public interface Request {
         AssetFileDescriptor createFd() throws IOException;
         InputStream createInputStream() throws IOException;
+        boolean hasOrientationExif() throws IOException;
     }
 
     /**
@@ -130,20 +131,26 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
             Trace.endSection();
 
             Trace.beginSection("get orientation");
-            if (fd != null) {
-                // Creating an input stream from the file descriptor makes it useless afterwards.
-                Trace.beginSection("create fd and stream");
-                final AssetFileDescriptor orientationFd = mKey.createFd();
-                in = orientationFd.createInputStream();
-                Trace.endSection();
-            }
-            final int orientation = Exif.getOrientation(in, byteSize);
-            if (fd != null) {
-                try {
-                    // Close the temporary file descriptor.
-                    in.close();
-                } catch (IOException ex) {
+            final int orientation;
+            if (mKey.hasOrientationExif()) {
+                if (fd != null) {
+                    // Creating an input stream from the file descriptor makes it useless
+                    // afterwards.
+                    Trace.beginSection("create fd and stream");
+                    final AssetFileDescriptor orientationFd = mKey.createFd();
+                    in = orientationFd.createInputStream();
+                    Trace.endSection();
                 }
+                orientation = Exif.getOrientation(in, byteSize);
+                if (fd != null) {
+                    try {
+                        // Close the temporary file descriptor.
+                        in.close();
+                    } catch (IOException ex) {
+                    }
+                }
+            } else {
+                orientation = 0;
             }
             final boolean isNotRotatedOr180 = orientation == 0 || orientation == 180;
             Trace.endSection();
