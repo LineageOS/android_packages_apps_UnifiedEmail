@@ -729,6 +729,8 @@ public class UIProvider {
         public static final int INBOX_SECTION = 1 << 10;
         /** A system defined unread folder */
         public static final int UNREAD = 1 << 11;
+        /** A "fake" search folder */
+        public static final int SEARCH = 1 << 12;
     }
 
     public static final class FolderCapabilities {
