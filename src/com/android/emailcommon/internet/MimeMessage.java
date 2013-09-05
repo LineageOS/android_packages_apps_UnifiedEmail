@@ -23,6 +23,7 @@ import com.android.emailcommon.mail.Message;
 import com.android.emailcommon.mail.MessagingException;
 import com.android.emailcommon.mail.Multipart;
 import com.android.emailcommon.mail.Part;
+import com.android.mail.utils.LogUtils;
 
 import org.apache.james.mime4j.BodyDescriptor;
 import org.apache.james.mime4j.ContentHandler;
@@ -55,7 +56,7 @@ public class MimeMessage extends Message {
     private MimeHeader mHeader;
     private MimeHeader mExtendedHeader;
 
-    // NOTE:  The fields here are transcribed out of headers, and values stored here will supercede
+    // NOTE:  The fields here are transcribed out of headers, and values stored here will supersede
     // the values found in the headers.  Use caution to prevent any out-of-phase errors.  In
     // particular, any adds/changes/deletes here must be echoed by changes in the parse() function.
     private Address[] mFrom;
@@ -174,6 +175,20 @@ public class MimeMessage extends Message {
                 DateTimeField field = (DateTimeField)Field.parse("Date: "
                         + MimeUtility.unfoldAndDecode(getFirstHeader("Date")));
                 mSentDate = field.getDate();
+                // TODO: We should make it more clear what exceptions can be thrown here,
+                // and whether they reflect a normal or error condition.
+            } catch (Exception e) {
+
+            }
+        }
+        if (mSentDate == null) {
+            // If we still don't have a date, fall back to "Delivery-date"
+            try {
+                DateTimeField field = (DateTimeField)Field.parse("Date: "
+                        + MimeUtility.unfoldAndDecode(getFirstHeader("Delivery-date")));
+                mSentDate = field.getDate();
+                // TODO: We should make it more clear what exceptions can be thrown here,
+                // and whether they reflect a normal or error condition.
             } catch (Exception e) {
 
             }
@@ -527,7 +542,7 @@ public class MimeMessage extends Message {
     }
 
     class MimeMessageBuilder implements ContentHandler {
-        private Stack<Object> stack = new Stack<Object>();
+        private final Stack<Object> stack = new Stack<Object>();
 
         public MimeMessageBuilder() {
         }
