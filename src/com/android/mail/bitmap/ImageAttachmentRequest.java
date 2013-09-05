@@ -1,6 +1,5 @@
 package com.android.mail.bitmap;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -24,6 +23,9 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
     private final String mLookupUri;
     private final int mRendition;
     public final int mDestW;
+
+    private Uri mCachedUri;
+    private String mCachedMimeType;
 
     public ImageAttachmentRequest(final Context context, final String lookupUri,
             final int rendition, final int destW) {
@@ -78,26 +80,40 @@ public class ImageAttachmentRequest implements DecodeTask.Request {
 
     @Override
     public AssetFileDescriptor createFd() throws IOException {
-        AssetFileDescriptor result = null;
+        if (mCachedUri == null) {
+            cacheValues();
+        }
+        return mContext.getContentResolver().openAssetFileDescriptor(mCachedUri, "r");
+    }
+
+    private void cacheValues() throws IOException {
         Cursor cursor = null;
-        final ContentResolver cr = mContext.getContentResolver();
         try {
-            cursor = cr.query(Uri.parse(mLookupUri), UIProvider.ATTACHMENT_PROJECTION, null, null,
-                    null);
+            cursor = mContext.getContentResolver().query(Uri.parse(mLookupUri),
+                    UIProvider.ATTACHMENT_PROJECTION, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 final Attachment a = new Attachment(cursor);
-                result = cr.openAssetFileDescriptor(a.getUriForRendition(mRendition), "r");
+                mCachedUri = a.getUriForRendition(mRendition);
+                final String mimeType = a.getContentType();
+                mCachedMimeType = mimeType != null ? mimeType.toLowerCase() : null;
             }
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
         }
-        return result;
     }
 
     @Override
     public InputStream createInputStream() throws IOException {
         return null;
+    }
+
+    @Override
+    public boolean hasOrientationExif() throws IOException {
+        if (mCachedUri == null) {
+            cacheValues();
+        }
+        return mCachedMimeType == null || mCachedMimeType.equals("image/jpeg");
     }
 }
