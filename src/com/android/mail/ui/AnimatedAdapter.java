@@ -730,10 +730,16 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public long getItemId(int position) {
-        if (mShowFooter && position == getCount() - 1
-                || mSpecialViews.get(position) != null) {
+        if (mShowFooter && position == getCount() - 1) {
             return -1;
         }
+
+        final ConversationSpecialItemView specialView = mSpecialViews.get(position);
+        if (specialView != null) {
+            // TODO(skennedy) We probably want something better than this
+            return specialView.hashCode();
+        }
+
         final int cursorPos = position - getPositionOffset(position);
         // advance the cursor to the right position and read the cached conversation, if present
         //
