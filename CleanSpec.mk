@@ -50,3 +50,4 @@
 $(call add-clean-step, rm -rf $(OUT_DIR)/target/common/obj/APPS/UnifiedEmail_intermediates)
 $(call add-clean-step, rm -rf $(OUT_DIR)/target/common/obj/APPS/UnifiedEmail_intermediates)
 $(call add-clean-step, rm -rf $(OUT_DIR)/target/common/obj/APPS/UnifiedEmail_intermediates)
+$(call add-clean-step, rm -rf $(OUT_DIR)/target/common/obj/APPS/UnifiedEmail_intermediates)
