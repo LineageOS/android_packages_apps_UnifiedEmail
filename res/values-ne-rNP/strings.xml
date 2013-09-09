@@ -76,7 +76,7 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"इनबक्समा सार्नुहोस्"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"फोल्डर सेटिङ"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"स्वत: पूर्वाकारमा परिवर्तित"</string>
-    <string name="menu_folder_options" msgid="8897520487430647932">"फोल्डर सेटिंग्स"</string>
+    <string name="menu_folder_options" msgid="8897520487430647932">"फोल्डर सेटिङ्स"</string>
     <string name="menu_settings" msgid="6007027046949837282">"सेटिङहरु"</string>
     <string name="menu_search" msgid="5297197523031943248">"खोज्नुहोस्"</string>
     <string name="mark_important" msgid="6904096897104265870">"महत्वपूर्ण भनि चिनो लगाउनुहोस्"</string>
@@ -285,7 +285,7 @@
     <string name="not_synced_title" msgid="794279749170198599">"खाता सिंक भएको छैन"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"यस  खाता मा स्वचालित रूप मा सिङ्क गर्नको लागि सेटअप छैन। \nछुवाइ "<b>"अहिले सिङ्क गर्नुहोस्"</b>" एक पटक मेल सिङ्क गर्नको लागि, वा "<b>" सिङ्क सेटिङ परिवर्तन गर्नुहोस् "</b>" सिङ्क मेल मा स्वत:ः यस  खाता सेटअप गर्नको लागि।"</string>
     <string name="manual_sync" msgid="6743983544685622800">"अहिले सिङ्क  गर्नुहोस्"</string>
-    <string name="change_sync_settings" msgid="5514293926214426577">"सिंक सेटिंग्स परिवर्तन गर्नुहोस्"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"सिंक सेटिङ्स परिवर्तन गर्नुहोस्"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"तस्वीर लोड गर्न सकिएन"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"सार्न सकिँदैन किनभने चयनताले बहु खाताहरू समावेश गर्दछ।"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"  <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
