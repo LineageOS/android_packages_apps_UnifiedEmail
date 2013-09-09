@@ -916,7 +916,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 mCacheMap.put(uriString, map);
             }
             // If we're caching a deletion, add to our count
-            if (columnName == DELETED_COLUMN) {
+            if (columnName.equals(DELETED_COLUMN)) {
                 final boolean state = (Boolean)value;
                 final boolean hasValue = map.get(columnName) != null;
                 if (state && !hasValue) {
@@ -944,7 +944,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             }
             putInValues(map, columnName, value);
             map.put(UPDATE_TIME_COLUMN, System.currentTimeMillis());
-            if (DEBUG && (columnName != DELETED_COLUMN)) {
+            if (DEBUG && (!columnName.equals(DELETED_COLUMN))) {
                 LogUtils.i(LOG_TAG, "Caching value for %s: %s", uriString, columnName);
             }
         }
