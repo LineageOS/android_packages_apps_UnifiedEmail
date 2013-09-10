@@ -45,7 +45,7 @@ public class FolderWatcher {
     /** List of URIs that are watched. */
     private final List<Uri> mUris = new ArrayList<Uri>();
     /** Map returning the default inbox folder for each URI */
-    private final Map<Uri, Folder> mInbox = new HashMap<Uri, Folder>();
+    private final Map<Uri, Folder> mInboxMap = new HashMap<Uri, Folder>();
     private final RestrictedActivity mActivity;
     /** Handles folder callbacks and reads unread counts. */
     private final UnreadLoads mUnreadCallback = new UnreadLoads();
@@ -106,7 +106,7 @@ public class FolderWatcher {
         final int location = insertAtNextEmptyLocation(uri);
         LogUtils.d(LOG_TAG, "Watching %s, at position %d.", uri, location);
         // No inbox folder yet, put a safe placeholder for now.
-        mInbox.put(uri, null);
+        mInboxMap.put(uri, null);
         final LoaderManager lm = mActivity.getLoaderManager();
         final Bundle args = new Bundle();
         args.putString(FOLDER_URI, uri.toString());
@@ -167,7 +167,7 @@ public class FolderWatcher {
         // Destroy the loader before removing references to the object.
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(getLoaderFromPosition(id));
-        mInbox.remove(uri);
+        mInboxMap.remove(uri);
         mUris.set(id, null);
     }
 
@@ -189,8 +189,8 @@ public class FolderWatcher {
 
     public final Folder getDefaultInbox(Account account) {
         final Uri uri = account.settings.defaultInbox;
-        if (mInbox.containsKey(uri)) {
-            final Folder candidate = mInbox.get(uri);
+        if (mInboxMap.containsKey(uri)) {
+            final Folder candidate = mInboxMap.get(uri);
             if (candidate != null) {
                 return candidate;
             }
@@ -222,10 +222,10 @@ public class FolderWatcher {
             final Folder f = data.getModel();
             final Uri uri = f.folderUri.getComparisonUri();
             final int unreadCount = f.unreadCount;
-            final Folder previousFolder = mInbox.get(uri);
+            final Folder previousFolder = mInboxMap.get(uri);
             final boolean unreadCountChanged = previousFolder == null
                     || unreadCount != previousFolder.unreadCount;
-            mInbox.put(uri, f);
+            mInboxMap.put(uri, f);
             // Once we have updated data, we notify the parent class that something new appeared.
             if (unreadCountChanged) {
                 mConsumer.notifyDataSetChanged();
