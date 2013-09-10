@@ -99,7 +99,7 @@ public class ConversationLongPressTipView extends FrameLayout
     }
 
     @Override
-    public void onUpdate(String account, Folder folder, ConversationCursor cursor) {
+    public void onUpdate(Folder folder, ConversationCursor cursor) {
         // It's possible user has enabled/disabled sender images in settings, which affects
         // whether we want to show this tip or not.
         mShow = checkWhetherToShow();
