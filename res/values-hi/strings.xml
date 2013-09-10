@@ -24,9 +24,9 @@
     <string name="subject_hint" msgid="7253964583324677128">"विषय"</string>
     <string name="body_hint" msgid="4279864165439577668">"ईमेल लिखें"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"फ़ाइल अनुलग्‍न करें"</string>
-    <string name="add_photo_attachment" msgid="3738882100645552858">"चित्र अनुलग्न करें"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"वीडियो अनुलग्न करें"</string>
-    <string name="save_draft" msgid="5555744208032445632">"ड्राफ़्ट सहेजें"</string>
+    <string name="add_photo_attachment" msgid="3738882100645552858">"चित्र जोड़ें"</string>
+    <string name="add_video_attachment" msgid="8916625983712820173">"वीडियो जोड़ें"</string>
+    <string name="save_draft" msgid="5555744208032445632">"अधूरा ईमेल सहेजें"</string>
     <string name="discard" msgid="1714960202994370243">"छोड़ें"</string>
     <string name="compose" msgid="1473559896062432878">"लिखें"</string>
   <string-array name="compose_modes">
@@ -60,11 +60,11 @@
     <string name="remove_star" msgid="4372327933122106128">"तारा निकालें"</string>
     <string name="remove_folder" msgid="4906542720439865413">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> से निकालें"</string>
     <string name="archive" msgid="847250094775910499">"संग्रह"</string>
-    <string name="report_spam" msgid="6467567747975393907">"स्पैम की रिपोर्ट करें"</string>
-    <string name="mark_not_spam" msgid="694891665407228160">"स्पैम नहीं की रिपोर्ट करें"</string>
+    <string name="report_spam" msgid="6467567747975393907">"अनचाहा की रिपोर्ट करें"</string>
+    <string name="mark_not_spam" msgid="694891665407228160">"अनचाहा नहीं की रिपोर्ट करें"</string>
     <string name="report_phishing" msgid="5714205737453138338">"फ़िशिंग की रिपोर्ट करें"</string>
     <string name="delete" msgid="844871204175957681">"हटाएं"</string>
-    <string name="discard_drafts" msgid="6862272443470085375">"ड्राफ़्ट छोड़ें"</string>
+    <string name="discard_drafts" msgid="6862272443470085375">"अधूरा ईमेल छोड़ें"</string>
     <string name="refresh" msgid="490989798005710951">"रीफ्रेश करें"</string>
     <string name="reply" msgid="2032052598496088561">"प्रत्‍युत्तर दें"</string>
     <string name="reply_all" msgid="7257248094625487557">"सब को जवाब दें"</string>
@@ -83,7 +83,7 @@
     <string name="mark_not_important" msgid="4550967327747977068">"महत्वपूर्ण नहीं चिह्नित करें"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Cc/Bcc जोड़ें"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Bcc जोड़ें"</string>
-    <string name="feedback" msgid="79365993169715049">"फ़ीडबैक भेजें"</string>
+    <string name="feedback" msgid="79365993169715049">"सुझाव भेजें"</string>
     <string name="help_and_info" msgid="7873089811705257882">"सहायता"</string>
     <string name="quoted_text" msgid="7250749398672037355">"उद्धरित पाठ शामिल करें"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"उद्धरित पाठ"</string>
@@ -127,7 +127,7 @@
     <string name="contextmenu_map" msgid="7721544518698532954">"मानचित्र"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"लिंक साझा करें"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"सहायता"</string>
-    <string name="contextmenu_feedback" msgid="4429118420169571473">"फ़ीडबैक भेजें"</string>
+    <string name="contextmenu_feedback" msgid="4429118420169571473">"सुझाव भेजें"</string>
     <!-- no translation found for num_selected (5723323585692387843) -->
     <skip />
   <plurals name="move_conversation">
@@ -143,7 +143,7 @@
     <string name="ap_overflow_format" msgid="2285438422049030145">"+<xliff:g id="ID_1">%d</xliff:g>"</string>
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"ड्रॉफ़्ट"</item>
-    <item quantity="other" msgid="6961049507579977505">"ड्राफ़्ट"</item>
+    <item quantity="other" msgid="6961049507579977505">"अधूरा ईमेल"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"भेज रहा है…"</string>
     <string name="send_failed" msgid="750908595144529579">"संदेश नहीं भेजा गया था."</string>
@@ -159,8 +159,8 @@
     <item quantity="other" msgid="4713469868399246772">"ये <xliff:g id="COUNT">%1$d</xliff:g> बातचीत संग्रहीत करें?"</item>
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one" msgid="5974090449454432874">"इस बातचीत के ड्राफ़्ट छोड़ें?"</item>
-    <item quantity="other" msgid="4173815457177336569">"इन <xliff:g id="COUNT">%1$d</xliff:g> बातचीत के ड्राफ़्ट छोड़ें?"</item>
+    <item quantity="one" msgid="5974090449454432874">"इस बातचीत के अधूरा ईमेल छोड़ें?"</item>
+    <item quantity="other" msgid="4173815457177336569">"इन <xliff:g id="COUNT">%1$d</xliff:g> बातचीत के अधूरा ईमेल छोड़ें?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"यह संदेश छोड़ें?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"लोड हो रहा है…"</string>
@@ -175,12 +175,12 @@
     <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को म्‍यूट कि‍या गया."</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को स्पैम के रूप में रिपोर्ट किया गया."</item>
-    <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को स्पैम के रूप में रिपोर्ट किया गया."</item>
+    <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को अनचाहा के रूप में रिपोर्ट किया गया."</item>
+    <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को अनचाहा के रूप में रिपोर्ट किया गया."</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को स्पैम नहीं के रूप में रिपोर्ट किया गया."</item>
-    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को स्पैम नहीं के रूप में रिपोर्ट किया गया."</item>
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को अनचाहा नहीं के रूप में रिपोर्ट किया गया."</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को अनचाहा नहीं के रूप में रिपोर्ट किया गया."</item>
   </plurals>
   <plurals name="conversation_not_important">
     <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को महत्‍वपूर्ण नहीं के रूप में चि‍ह्नि‍त कि‍या गया."</item>
@@ -367,10 +367,10 @@
     <string name="preference_attachment_previews_description" msgid="2468573302785576222">"वार्तालाप सूची में हाल ही के संदेशों के लिए अनुलग्नक पूर्वावलोकन दिखाएं"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"रीफ्रेश करने के लिए नीचे स्वाइप करें"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"मेल के लिए जांच की जा रही है"</string>
-    <string name="empty_trash" msgid="652435297593538512">"ट्रैश रिक्त करें"</string>
-    <string name="empty_spam" msgid="6064497180615519589">"स्पैम रिक्त करें"</string>
-    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"ट्रैश रिक्त करें?"</string>
-    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"स्पैम रिक्त करें?"</string>
+    <string name="empty_trash" msgid="652435297593538512">"मिटाया हुआ रिक्त करें"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"अनचाहा रिक्त करें"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"मिटाया हुआ रिक्त करें?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"अनचाहा रिक्त करें?"</string>
   <plurals name="empty_folder_dialog_message">
     <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> संदेश स्थायी रूप हटा दिया जाएगा."</item>
     <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> संदेश स्थायी रूप से हटा दिए जाएंगे."</item>
