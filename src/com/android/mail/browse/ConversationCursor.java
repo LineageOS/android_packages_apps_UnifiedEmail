@@ -165,6 +165,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
     private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
 
+    private final boolean mCachingEnabled;
+
     private void setCursor(UnderlyingCursorWrapper cursor) {
         // If we have an existing underlying cursor, make sure it's closed
         if (mUnderlyingCursor != null) {
@@ -193,6 +195,9 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         mName = name;
         qProjection = UIProvider.CONVERSATION_PROJECTION;
         mCursorObserver = new CursorObserver(new Handler(Looper.getMainLooper()));
+
+        // Disable caching on low memory devices
+        mCachingEnabled = !Utils.isLowRamDevice(activity);
     }
 
     /**
@@ -357,7 +362,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
          * notes on thread safety.
          */
         private int mCachePos;
-        private boolean mCachingEnabled = true;
+        private boolean mCachingEnabled;
         private final NewCursorUpdateObserver mCursorUpdateObserver;
         private boolean mUpdateObserverRegistered = false;
 
@@ -370,8 +375,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
         private boolean mCursorUpdated = false;
 
-        public UnderlyingCursorWrapper(Cursor result) {
+        public UnderlyingCursorWrapper(Cursor result, boolean cachingEnabled) {
             super(result);
+
+            mCachingEnabled = cachingEnabled;
 
             // Register the content observer immediately, as we want to make sure that we don't miss
             // any updates
@@ -639,7 +646,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     uri, time, result.getCount());
         }
         System.gc();
-        return new UnderlyingCursorWrapper(result);
+
+        return new UnderlyingCursorWrapper(result, mCachingEnabled);
     }
 
     static boolean offUiThread() {

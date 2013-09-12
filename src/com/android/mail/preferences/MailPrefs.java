@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.android.mail.widget.BaseWidgetProvider;
 
 import com.google.common.collect.ImmutableSet;
@@ -396,6 +397,11 @@ public final class MailPrefs extends VersionedPrefs {
     }
 
     public boolean getShowSenderImages() {
+        if (Utils.isLowRamDevice(getContext())) {
+            // Do not show sender images in conversation list on low memory devices since they are
+            // expensive to render.
+            return false;
+        }
         final SharedPreferences sharedPreferences = getSharedPreferences();
         return sharedPreferences.getBoolean(PreferenceKeys.SHOW_SENDER_IMAGES, true);
     }
@@ -406,6 +412,9 @@ public final class MailPrefs extends VersionedPrefs {
     }
 
     public boolean getShowAttachmentPreviews() {
+        if (Utils.isLowRamDevice(getContext())) {
+            return false;
+        }
         final SharedPreferences sharedPreferences = getSharedPreferences();
         return sharedPreferences.getBoolean(PreferenceKeys.SHOW_ATTACHMENT_PREVIEWS, true);
     }

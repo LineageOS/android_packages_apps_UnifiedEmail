@@ -22,6 +22,7 @@ import com.google.android.mail.common.html.parser.HtmlTree;
 import com.google.android.mail.common.html.parser.HtmlTreeBuilder;
 import com.google.common.collect.Maps;
 
+import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
@@ -138,6 +139,21 @@ public class Utils {
 
     public static boolean isRunningJellybeanOrLater() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    }
+
+    /**
+     * @return Whether we are running on a low memory device.  This is used to disable certain
+     * memory intensive features in the app.
+     */
+    public static boolean isLowRamDevice(Context context) {
+        // TODO: use SDK_INT to check if device is KitKat or greater.
+        if (Build.VERSION.CODENAME.startsWith("K")) {
+            final ActivityManager am = (ActivityManager) context.getSystemService(
+                    Context.ACTIVITY_SERVICE);
+            return am.isLowRamDevice();
+        } else {
+            return false;
+        }
     }
 
     /**
