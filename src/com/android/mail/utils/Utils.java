@@ -140,6 +140,11 @@ public class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
     }
 
+    public static boolean isRunningKitkatOrLater() {
+        // TODO - change to SDK_INT check when API is finalized
+        return Build.VERSION.CODENAME.startsWith("K");
+    }
+
     /**
      * Sets WebView in a restricted mode suitable for email use.
      *

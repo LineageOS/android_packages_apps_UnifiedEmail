@@ -23,6 +23,7 @@ import android.content.res.Resources.NotFoundException;
 import com.android.mail.R;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.io.IOException;
@@ -181,7 +182,9 @@ public class HtmlConversationTemplates {
         }
 
         reset();
-        append(sConversationUpper, sideMargin, conversationHeaderHeight);
+        final String border = Utils.isRunningKitkatOrLater() ?
+                "img[blocked-src] { border: 1px solid #CCCCCC; }" : "";
+        append(sConversationUpper, border,  sideMargin, conversationHeaderHeight);
         mInProgress = true;
     }
 
