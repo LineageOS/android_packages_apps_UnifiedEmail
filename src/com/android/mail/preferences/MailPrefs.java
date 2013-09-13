@@ -85,9 +85,6 @@ public final class MailPrefs extends VersionedPrefs {
 
         public static final String SHOW_SENDER_IMAGES = "conversation-list-sender-image";
 
-        public static final String SHOW_ATTACHMENT_PREVIEWS
-                = "conversation-list-attachment-previews";
-
         public static final String
                 LONG_PRESS_TO_SELECT_TIP_SHOWN = "long-press-to-select-tip-shown";
 
@@ -106,7 +103,6 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(DISPLAY_IMAGES)
                 .add(DISPLAY_IMAGES_PATTERNS)
                 .add(SHOW_SENDER_IMAGES)
-                .add(SHOW_ATTACHMENT_PREVIEWS)
                 .add(LONG_PRESS_TO_SELECT_TIP_SHOWN)
                 .build();
     }
@@ -398,16 +394,6 @@ public final class MailPrefs extends VersionedPrefs {
     public boolean getShowSenderImages() {
         final SharedPreferences sharedPreferences = getSharedPreferences();
         return sharedPreferences.getBoolean(PreferenceKeys.SHOW_SENDER_IMAGES, true);
-    }
-
-    public void setShowAttachmentPreviews(final boolean enable) {
-        getEditor().putBoolean(PreferenceKeys.SHOW_ATTACHMENT_PREVIEWS, enable).apply();
-        notifyBackupPreferenceChanged();
-    }
-
-    public boolean getShowAttachmentPreviews() {
-        final SharedPreferences sharedPreferences = getSharedPreferences();
-        return sharedPreferences.getBoolean(PreferenceKeys.SHOW_ATTACHMENT_PREVIEWS, true);
     }
 
     public void setParallaxSpeedAlternative(final boolean alternative) {

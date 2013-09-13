@@ -143,7 +143,6 @@ public class ConversationItemView extends View
 
     private static String sSendersSplitToken;
     private static String sElidedPaddingToken;
-    private static String sOverflowCountFormat;
 
     // Static colors.
     private static int sSendersTextColorRead;
@@ -466,7 +465,6 @@ public class ConversationItemView extends View
             // Initialize static color.
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
-            sOverflowCountFormat = res.getString(string.ap_overflow_format);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
             sFoldersLeftPadding = res.getDimensionPixelOffset(R.dimen.folders_left_padding);
             sContactPhotoManager = ContactPhotoManager.createContactPhotoManager(context);
@@ -675,11 +673,7 @@ public class ConversationItemView extends View
             mConfig.showPersonalIndicator();
         }
 
-        final int overflowCount = Math.min(getOverflowCount(), sOverflowCountMax);
-        mHeader.overflowText = (overflowCount > 0) ?
-                String.format(sOverflowCountFormat, overflowCount) : null;
-
-        mAttachmentsView.setOverflowText(mHeader.overflowText);
+        mAttachmentsView.setOverflowText(null);
 
         setContentDescription();
         requestLayout();

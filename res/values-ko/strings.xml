@@ -140,7 +140,6 @@
     <string name="unread_string" msgid="588180203444398297">"대화 읽지 않음"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
-    <string name="ap_overflow_format" msgid="2285438422049030145">"+<xliff:g id="ID_1">%d</xliff:g>"</string>
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"임시보관"</item>
     <item quantity="other" msgid="6961049507579977505">"임시보관함"</item>
@@ -363,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"대화 목록"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"발신자 이미지"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"대화 목록에서 이름 옆에 표시"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"첨부파일 미리보기"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"대화 목록에서 최근 메시지의 첨부파일 미리보기 표시"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"아래로 스와이프하여 새로고침"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"메일 확인 중"</string>
     <string name="empty_trash" msgid="652435297593538512">"휴지통 비우기"</string>

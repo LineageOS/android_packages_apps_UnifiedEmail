@@ -140,7 +140,6 @@
     <string name="unread_string" msgid="588180203444398297">"Konversation ungelesen"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> – <xliff:g id="ID_2">%s</xliff:g>"</string>
-    <string name="ap_overflow_format" msgid="2285438422049030145">"+ <xliff:g id="ID_1">%d</xliff:g>"</string>
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"Entwurf"</item>
     <item quantity="other" msgid="6961049507579977505">"Entwürfe"</item>
@@ -363,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"In einer Unterhaltungsliste"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Bild des Absenders"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Neben Namen in der Konversationsliste anzeigen"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Anhangsvorschauen"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Anhangsvorschauen für neue Nachrichten in der Konversationsliste anzeigen"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Zum Aktualisieren nach unten wischen"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Nachrichten werden abgerufen..."</string>
     <string name="empty_trash" msgid="652435297593538512">"Papierkorb leeren"</string>
