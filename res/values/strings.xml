@@ -302,8 +302,6 @@
     <!-- Displayed in Conversation Header View and Widget in the form of "subject - snippet"
          [CHAR LIMIT=5] -->
     <string name="subject_and_snippet"><xliff:g>%s</xliff:g> \u2014 <xliff:g>%s</xliff:g></string>
-    <!-- Displayed in attachment previews in conversation list [CHAR LIMIT=2] -->
-    <string name="ap_overflow_format">+<xliff:g>%d</xliff:g></string>
     <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
     <plurals name="draft">
         <!-- Title of the screen when there is exactly one draft -->
@@ -822,11 +820,6 @@
     <string name="preference_sender_image_title">Sender image</string>
     <!-- Preference description for whether to display sender image option [CHAR LIMIT=200] -->
     <string name="preference_sender_image_description">Show beside name in conversation list</string>
-
-    <!-- Preference name for whether to display attachment previews in conversation list [CHAR LIMIT=100] -->
-    <string name="preference_attachment_previews_title">Attachment Previews</string>
-    <!-- Preference description for whether to display attachment previews [CHAR LIMIT=200] -->
-    <string name="preference_attachment_previews_description">Show attachment previews for recent messages in conversation list</string>
 
     <!-- In conversation list, when user initiates a downward swipe,
         this text is displayed in the action bar as a hint that they can trigger a
