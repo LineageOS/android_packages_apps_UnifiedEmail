@@ -136,7 +136,6 @@ public class ConversationItemView extends View
 
     private static String sSendersSplitToken;
     private static String sElidedPaddingToken;
-    private static String sOverflowCountFormat;
 
     // Static colors.
     private static int sSendersTextColorRead;
@@ -432,7 +431,6 @@ public class ConversationItemView extends View
             // Initialize static color.
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
-            sOverflowCountFormat = res.getString(string.ap_overflow_format);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
             sFoldersLeftPadding = res.getDimensionPixelOffset(R.dimen.folders_left_padding);
             sOverflowCountMax = res.getInteger(integer.ap_overflow_max_count);
@@ -627,10 +625,7 @@ public class ConversationItemView extends View
         Utils.traceEndSection();
 
         Utils.traceBeginSection("overflow");
-        final int overflowCount = Math.min(getOverflowCount(), sOverflowCountMax);
-        mHeader.overflowText = (overflowCount > 0) ?
-                String.format(sOverflowCountFormat, overflowCount) : null;
-        mAttachmentsView.setOverflowText(mHeader.overflowText);
+        mAttachmentsView.setOverflowText(null);
         Utils.traceEndSection();
 
         Utils.traceBeginSection("content description");
