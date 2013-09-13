@@ -60,7 +60,7 @@ public class WidgetService extends RemoteViewsService {
     /**
      * Lock to avoid race condition between widgets.
      */
-    private static Object sWidgetLock = new Object();
+    private static final Object sWidgetLock = new Object();
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -202,6 +202,7 @@ public class WidgetService extends RemoteViewsService {
 
         private static final int FOLDER_LOADER_ID = 0;
         private static final int CONVERSATION_CURSOR_LOADER_ID = 1;
+        private static final int ACCOUNT_LOADER_ID = 2;
 
         private final Context mContext;
         private final int mAppWidgetId;
@@ -214,6 +215,7 @@ public class WidgetService extends RemoteViewsService {
         private CursorLoader mConversationCursorLoader;
         private Cursor mConversationCursor;
         private CursorLoader mFolderLoader;
+        private CursorLoader mAccountLoader;
         private FolderUpdateHandler mFolderUpdateHandler;
         private int mFolderCount;
         private boolean mShouldShowViewMore;
@@ -232,8 +234,8 @@ public class WidgetService extends RemoteViewsService {
             mFolderType = intent.getIntExtra(WidgetProvider.EXTRA_FOLDER_TYPE, FolderType.DEFAULT);
             mFolderDisplayName = intent.getStringExtra(WidgetProvider.EXTRA_FOLDER_DISPLAY_NAME);
 
-            Uri folderUri = intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_URI);
-            Uri folderConversationListUri =
+            final Uri folderUri = intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_URI);
+            final Uri folderConversationListUri =
                     intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_CONVERSATION_LIST_URI);
             if (folderUri != null && folderConversationListUri != null) {
                 mFolderUri = folderUri;
@@ -241,6 +243,7 @@ public class WidgetService extends RemoteViewsService {
             } else {
                 // This is a old intent created in version UR8 (or earlier).
                 String folderString = intent.getStringExtra(Utils.EXTRA_FOLDER);
+                //noinspection deprecation
                 Folder folder = Folder.fromString(folderString);
                 if (folder != null) {
                     mFolderUri = folder.folderUri.fullUri;
@@ -304,6 +307,10 @@ public class WidgetService extends RemoteViewsService {
                     res.getInteger(R.integer.widget_folder_refresh_delay_ms));
             mFolderUpdateHandler.scheduleTask();
 
+            mAccountLoader = new CursorLoader(mContext, mAccount.uri,
+                    UIProvider.ACCOUNTS_PROJECTION_NO_CAPABILITIES, null, null, null);
+            mAccountLoader.registerListener(ACCOUNT_LOADER_ID, this);
+            mAccountLoader.startLoading();
         }
 
         @Override
@@ -324,6 +331,12 @@ public class WidgetService extends RemoteViewsService {
                 mFolderLoader.reset();
                 mFolderLoader.unregisterListener(this);
                 mFolderLoader = null;
+            }
+
+            if (mAccountLoader != null) {
+                mAccountLoader.reset();
+                mAccountLoader.unregisterListener(this);
+                mAccountLoader = null;
             }
         }
 
@@ -360,7 +373,7 @@ public class WidgetService extends RemoteViewsService {
          * Returns the number of conversations that should be shown in the widget.  This method
          * doesn't update the boolean that indicates that the "show more" item should be included
          * in the list.
-         * @return
+         * @return count
          */
         private int getConversationCount() {
             synchronized (sWidgetLock) {
@@ -519,6 +532,11 @@ public class WidgetService extends RemoteViewsService {
             final RemoteViews remoteViews =
                     new RemoteViews(mContext.getPackageName(), R.layout.widget);
 
+            if (!mService.isWidgetConfigured(mContext, mAppWidgetId, mAccount)) {
+                BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
+                        mFolderUri, mFolderConversationListUri, mFolderDisplayName);
+            }
+
             if (loader == mFolderLoader) {
                 if (!isDataValid(data)) {
                     return;
@@ -586,6 +604,9 @@ public class WidgetService extends RemoteViewsService {
                             mContext.getString(R.string.no_conversations));
                     appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
                 }
+            } else if (loader == mAccountLoader) {
+                BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
+                        mFolderUri, mFolderConversationListUri, mFolderDisplayName);
             }
         }
 
