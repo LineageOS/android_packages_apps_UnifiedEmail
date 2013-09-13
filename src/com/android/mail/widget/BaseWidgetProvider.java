@@ -52,7 +52,6 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
     public static final String EXTRA_FOLDER_URI = "folder-uri";
     public static final String EXTRA_FOLDER_CONVERSATION_LIST_URI = "folder-conversation-list-uri";
     public static final String EXTRA_FOLDER_DISPLAY_NAME = "folder-display-name";
-    public static final String EXTRA_UNREAD = "unread";
     public static final String EXTRA_UPDATE_ALL_WIDGETS = "update-all-widgets";
     public static final String WIDGET_ACCOUNT_PREFIX = "widget-account-";
 
@@ -139,8 +138,8 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         } else if (Utils.ACTION_NOTIFY_DATASET_CHANGED.equals(action)) {
             // Receive notification for a certain account.
             final Bundle extras = intent.getExtras();
-            final Uri accountUri = (Uri)extras.getParcelable(Utils.EXTRA_ACCOUNT_URI);
-            final Uri folderUri = (Uri)extras.getParcelable(Utils.EXTRA_FOLDER_URI);
+            final Uri accountUri = extras.getParcelable(Utils.EXTRA_ACCOUNT_URI);
+            final Uri folderUri = extras.getParcelable(Utils.EXTRA_FOLDER_URI);
             final boolean updateAllWidgets = extras.getBoolean(EXTRA_UPDATE_ALL_WIDGETS, false);
 
             if (accountUri == null && Utils.isEmpty(folderUri) && !updateAllWidgets) {
@@ -383,12 +382,12 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
                 WidgetService.class);
     }
 
-    private final void migrateAllLegacyWidgetInformation(Context context) {
+    private void migrateAllLegacyWidgetInformation(Context context) {
         final int[] currentWidgetIds = getCurrentWidgetIds(context);
         migrateLegacyWidgets(context, currentWidgetIds);
     }
 
-    private final void migrateLegacyWidgets(Context context, int[] widgetIds) {
+    private void migrateLegacyWidgets(Context context, int[] widgetIds) {
         for (int widgetId : widgetIds) {
             // We only want to bother to attempt to upgrade a widget if we don't already
             // have information about.
@@ -398,7 +397,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private final void validateAllWidgetInformation(Context context) {
+    private void validateAllWidgetInformation(Context context) {
         final int[] widgetIds = getCurrentWidgetIds(context);
         for (int widgetId : widgetIds) {
             final String accountFolder = MailPrefs.get(context).getWidgetConfiguration(widgetId);
