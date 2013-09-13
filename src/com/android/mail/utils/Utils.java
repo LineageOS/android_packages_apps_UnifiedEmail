@@ -141,6 +141,11 @@ public class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
     }
 
+    public static boolean isRunningKitkatOrLater() {
+        // TODO - change to SDK_INT check when API is finalized
+        return Build.VERSION.CODENAME.startsWith("K");
+    }
+
     /**
      * @return Whether we are running on a low memory device.  This is used to disable certain
      * memory intensive features in the app.
