@@ -60,7 +60,6 @@ import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
-import com.android.mail.ui.AnimatedAdapter.ConversationListListener;
 import com.android.mail.ui.SwipeableListView.ListItemSwipedListener;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -358,8 +357,7 @@ public final class ConversationListFragment extends ListFragment implements
         }
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), conversationCursor,
-                mActivity.getSelectedSet(), mActivity, mConversationListListener, mListView,
-                specialItemViews, null);
+                mActivity.getSelectedSet(), mActivity, mListView, specialItemViews, null);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mSelectedSet = mActivity.getSelectedSet();
@@ -742,15 +740,6 @@ public final class ConversationListFragment extends ListFragment implements
         setSelected(conv.position, true);
         mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
     }
-
-    private final ConversationListListener mConversationListListener =
-            new ConversationListListener() {
-        @Override
-        public boolean isExitingSelectionMode() {
-            return System.currentTimeMillis() <
-                    (mSelectionModeExitedTimestamp + sSelectionModeAnimationDuration);
-        }
-    };
 
     /**
      * Sets the selected conversation to the position given here.

@@ -24,4 +24,14 @@ public interface PooledCache<K, V> {
     V poll();
     String toDebugString();
 
+    /**
+     * Purge existing Poolables from the pool+cache. Usually, this is done when situations
+     * change and the items in the pool+cache are no longer appropriate. For example,
+     * if the layout changes, the pool+cache may need to hold larger bitmaps.
+     *
+     * <p/>
+     * The existing Poolables will be garbage collected when they are no longer being referenced
+     * by other objects.
+     */
+    void clear();
 }

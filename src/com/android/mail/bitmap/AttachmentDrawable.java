@@ -147,11 +147,13 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         // requests for different renditions of the same attachment
         final boolean onlyRenditionChange = (mCurrKey != null && mCurrKey.matches(key));
 
+        Trace.beginSection("release reference");
         if (mBitmap != null && !onlyRenditionChange) {
             mBitmap.releaseReference();
 //            System.out.println("view.bind() decremented ref to old bitmap: " + mBitmap);
             mBitmap = null;
         }
+        Trace.endSection();
         if (mCurrKey != null && SwipeableListView.ENABLE_ATTACHMENT_DECODE_AGGREGATOR) {
             mDecodeAggregator.forget(mCurrKey);
         }
@@ -169,6 +171,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
         setLoadState(LOAD_STATE_UNINITIALIZED);
 
         if (key == null) {
+            invalidateSelf();
             Trace.endSection();
             return;
         }
@@ -200,7 +203,7 @@ public class AttachmentDrawable extends Drawable implements DecodeTask.BitmapVie
             return;
         }
 
-        if (mBitmap != null) {
+        if (mBitmap != null && mBitmap.bmp != null) {
             BitmapUtils
                     .calculateCroppedSrcRect(mBitmap.getLogicalWidth(), mBitmap.getLogicalHeight(),
                             bounds.width(), bounds.height(),

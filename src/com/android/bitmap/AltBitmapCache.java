@@ -16,25 +16,40 @@
 
 package com.android.bitmap;
 
+import com.android.bitmap.DecodeTask.Request;
+import com.android.bitmap.ReusableBitmap.NullReusableBitmap;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.LruCache;
 
 /**
  * This subclass provides custom pool behavior. The pool can be set to block on {@link #poll()} if
  * nothing can be returned. This is useful if you know you will incur high costs upon receiving
  * nothing from the pool, and you do not want to incur those costs at the critical moment when the
  * UI is animating.
+ *
+ * This subclass provides custom cache behavior. Null values can be cached. Later,
+ * when the same key is used to retrieve the value, a {@link NullReusableBitmap} singleton will
+ * be returned.
  */
-public class AltBitmapCache extends AltPooledCache<DecodeTask.Request, ReusableBitmap>
+public class AltBitmapCache extends AltPooledCache<Request, ReusableBitmap>
         implements BitmapCache {
     private boolean mBlocking = false;
     private final Object mLock = new Object();
 
+    private final LruCache<Request, Void> mNullRequests;
+
     private final static boolean DEBUG = false;
     private final static String TAG = LogTag.getLogTag();
 
-    public AltBitmapCache(final int targetSizeBytes, final float nonPooledFraction) {
+    private int mDecodeWidth;
+    private int mDecodeHeight;
+
+    public AltBitmapCache(final int targetSizeBytes, final float nonPooledFraction,
+            final int nullCapacity) {
         super(targetSizeBytes, nonPooledFraction);
+
+        mNullRequests = new LruCache<Request, Void>(nullCapacity);
     }
 
     /**
@@ -78,7 +93,7 @@ public class AltBitmapCache extends AltPooledCache<DecodeTask.Request, ReusableB
                         LogUtils.d(TAG, "AltBitmapCache: %s notified",
                                 Thread.currentThread().getName());
                     }
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
                 Trace.endSection();
             }
@@ -94,5 +109,51 @@ public class AltBitmapCache extends AltPooledCache<DecodeTask.Request, ReusableB
             // new resource gained. Notify one thread.
             mLock.notify();
         }
+    }
+
+    @Override
+    public ReusableBitmap get(final Request key, final boolean incrementRefCount) {
+        if (mNullRequests.containsKey(key)) {
+            return NullReusableBitmap.getInstance();
+        }
+        return super.get(key, incrementRefCount);
+    }
+
+    @Override
+    public ReusableBitmap put(final Request key, final ReusableBitmap value) {
+        if (value == null || value == NullReusableBitmap.getInstance()) {
+            mNullRequests.put(key, null);
+            return null;
+        }
+
+        // Do not allow the pool to be filled with bitmaps that are of the wrong dimensions.
+        if (mDecodeWidth > value.bmp.getWidth() || mDecodeHeight > value.bmp.getHeight()) {
+            if (DEBUG) {
+                LogUtils.d(TAG, "Discarding ReusableBitmap size %d x %d for cache size %d x %d.",
+                        value.bmp.getWidth(), value.bmp.getHeight(), mDecodeWidth, mDecodeHeight);
+            }
+            return null;
+        }
+
+        return super.put(key, value);
+    }
+
+    @Override
+    public void setPoolDimensions(final int decodeWidth, final int decodeHeight) {
+        if (mDecodeWidth < decodeWidth || mDecodeHeight < decodeHeight) {
+            clear();
+            mDecodeWidth = decodeWidth;
+            mDecodeHeight = decodeHeight;
+        }
+    }
+
+    @Override
+    public int getDecodeWidth() {
+        return mDecodeWidth;
+    }
+
+    @Override
+    public int getDecodeHeight() {
+        return mDecodeHeight;
     }
 }

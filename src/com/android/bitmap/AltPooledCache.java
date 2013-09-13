@@ -67,6 +67,7 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
 
     @Override
     public V get(K key, boolean incrementRefCount) {
+        Trace.beginSection("cache get");
         synchronized (mCache) {
             V result = mCache.get(key);
             if (result == null && mNonPooledCache != null) {
@@ -75,12 +76,14 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
             if (incrementRefCount && result != null) {
                 result.acquireReference();
             }
+            Trace.endSection();
             return result;
         }
     }
 
     @Override
     public V put(K key, V value) {
+        Trace.beginSection("cache put");
         synchronized (mCache) {
             final V prev;
             if (value.isEligibleForPooling()) {
@@ -90,22 +93,27 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
             } else {
                 prev = null;
             }
+            Trace.endSection();
             return prev;
         }
     }
 
     @Override
     public void offer(V value) {
+        Trace.beginSection("pool offer");
         if (value.getRefCount() != 0 || !value.isEligibleForPooling()) {
             throw new IllegalArgumentException("unexpected offer of an invalid object: " + value);
         }
         mPool.offer(value);
+        Trace.endSection();
     }
 
     @Override
     public V poll() {
+        Trace.beginSection("pool poll");
         final V pooled = mPool.poll();
         if (pooled != null) {
+            Trace.endSection();
             return pooled;
         }
 
@@ -131,11 +139,13 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
                 if (DEBUG) System.err.println(
                         "POOL SCAVENGE FAILED, cache not fully warm yet. szDelta="
                         + (mTargetSize-unrefSize));
+                Trace.endSection();
                 return null;
             } else {
                 mCache.remove(eldestUnref.getKey());
                 if (DEBUG) System.err.println("POOL SCAVENGE SUCCESS, oldKey="
                         + eldestUnref.getKey());
+                Trace.endSection();
                 return eldestUnref.getValue();
             }
         }
@@ -209,4 +219,9 @@ public class AltPooledCache<K, V extends Poolable> implements PooledCache<K, V> 
 
     }
 
+    @Override
+    public void clear() {
+        mCache.clear();
+        mPool.clear();
+    }
 }

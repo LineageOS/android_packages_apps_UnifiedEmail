@@ -47,6 +47,6 @@ public class ContactInfo {
 
     @Override
     public String toString() {
-        return "{status=" + status + " photo=" + photo + "}";
+        return "{status=" + status + " photo=" + (photo != null ? photo : photoBytes) + "}";
     }
 }

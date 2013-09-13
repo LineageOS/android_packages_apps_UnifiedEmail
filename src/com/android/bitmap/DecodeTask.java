@@ -66,8 +66,6 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
          * may have been preempted by the scheduler or queued up by a bottlenecked executor.
          * <p>
          * N.B. this method runs on the UI thread.
-         *
-         * @param key
          */
         void onDecodeBegin(Request key);
         void onDecodeComplete(Request key, ReusableBitmap result);
@@ -87,12 +85,16 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
 
     @Override
     protected ReusableBitmap doInBackground(Void... params) {
+        // enqueue the 'onDecodeBegin' signal on the main thread
+        publishProgress();
+
+        return decode();
+    }
+
+    public ReusableBitmap decode() {
         if (isCancelled()) {
             return null;
         }
-
-        // enqueue the 'onDecodeBegin' signal on the main thread
-        publishProgress();
 
         ReusableBitmap result = null;
         AssetFileDescriptor fd = null;
@@ -146,7 +148,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                     try {
                         // Close the temporary file descriptor.
                         in.close();
-                    } catch (IOException ex) {
+                    } catch (IOException ignored) {
                     }
                 }
             } else {
@@ -253,6 +255,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
                 }
             }
 
+            //noinspection PointlessBooleanExpression
             if (!CROP_DURING_DECODE || (decodeResult == null && !isCancelled())) {
                 try {
                     Trace.beginSection("decode" + mOpts.inSampleSize);
@@ -314,13 +317,13 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
             if (fd != null) {
                 try {
                     fd.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
             }
             if (in != null) {
                 try {
                     in.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
             }
             if (result != null) {
@@ -395,7 +398,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         } else {
             try {
                 in.close();
-            } catch (IOException ex) {
+            } catch (IOException ignored) {
             }
             in = mKey.createInputStream();
         }
@@ -421,6 +424,7 @@ public class DecodeTask extends AsyncTask<Void, Void, ReusableBitmap> {
         // round to the nearest power of two, or just truncate
         final boolean stricter = true;
 
+        //noinspection ConstantConditions
         if (stricter) {
             result = (int) Math.pow(2, (int) (0.5 + (Math.log(sz) / Math.log(2))));
         } else {

@@ -119,5 +119,5 @@
     <integer name="ap_overflow_max_count">99</integer>
 
     <!-- Duration of the animations for entering/exiting CAB mode -->
-    <integer name="conv_item_view_cab_anim_duration">350</integer>
+    <integer name="conv_item_view_cab_anim_duration">250</integer>
 </resources>
