@@ -140,7 +140,6 @@
     <string name="unread_string" msgid="588180203444398297">"conversa não lida"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
-    <string name="ap_overflow_format" msgid="2285438422049030145">"+<xliff:g id="ID_1">%d</xliff:g>"</string>
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"Rascunho"</item>
     <item quantity="other" msgid="6961049507579977505">"Rascunhos"</item>
