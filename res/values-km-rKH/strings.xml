@@ -140,7 +140,6 @@
     <string name="unread_string" msgid="588180203444398297">"ការ​សន្ទនា​មិន​ទាន់​​អាន"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
-    <string name="ap_overflow_format" msgid="2285438422049030145">"+<xliff:g id="ID_1">%d</xliff:g>"</string>
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"សេចក្ដី​ព្រាង"</item>
     <item quantity="other" msgid="6961049507579977505">"សេចក្ដី​ព្រាង"</item>
@@ -363,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"នៅ​ក្នុង​បញ្ជី​សន្ទនា"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"រូបភាព​អ្នក​ផ្ញើ"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"បង្ហាញ​ក្បែរ​ឈ្មោះ​នៅ​ក្នុង​បញ្ជី​​សន្ទនា"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"មើល​​ឯកសារ​ភ្ជាប់​ជា​មុន"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"បង្ហាញ​ការ​មើល​ជាមុន​សម្រាប់​ឯកសារ​ភ្ជាប់​ដែល​មាន​សារ​ថ្មី​នៅ​ក្នុង​បញ្ជី​​សន្ទនា"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"អូស​ចុះ​ក្រោយ​​ ដើម្បី​ផ្ទុក​ឡើង​វិញ"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"កំពុង​ពិនិត្យ​មើល​​សំបុត្រ"</string>
     <string name="empty_trash" msgid="652435297593538512">"សម្អាត​ធុង​សំរាម"</string>
@@ -397,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"ទូរស័ព្ទ"</string>
     <string name="tablet" msgid="7956969657216748522">"កុំព្យូទ័រ​បន្ទះ"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"បើក"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>
