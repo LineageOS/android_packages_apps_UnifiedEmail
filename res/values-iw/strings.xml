@@ -394,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"טלפון"</string>
     <string name="tablet" msgid="7956969657216748522">"טאבלט"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"הפעל"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

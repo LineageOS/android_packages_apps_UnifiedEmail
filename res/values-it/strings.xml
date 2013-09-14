@@ -283,7 +283,7 @@
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Le email verranno visualizzate tra poco."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Account non sincronizzato"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Questo account non è configurato per la sincronizzazione automatica.\nTocca "<b>"Sincronizza ora"</b>" per sincronizzare una volta i messaggi, oppure "<b>"Modifica impostazioni sincronizzazione"</b>" per configurare la sincronizzazione automatica dei messaggi per questo account."</string>
-    <string name="manual_sync" msgid="6743983544685622800">"Sincron. ora"</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Sincronizza"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Modifica impostazioni sincr."</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Impossibile caricare immagine"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Impossibile spostare i messaggi perché la selezione contiene più account."</string>
@@ -394,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"telefono"</string>
     <string name="tablet" msgid="7956969657216748522">"tablet"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Attiva"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

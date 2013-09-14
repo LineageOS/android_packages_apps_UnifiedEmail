@@ -87,7 +87,7 @@
     <string name="help_and_info" msgid="7873089811705257882">"說明"</string>
     <string name="quoted_text" msgid="7250749398672037355">"包含引用文字"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"引用文字"</string>
-    <string name="respond_inline" msgid="6797117334768201180">"逐行回覆"</string>
+    <string name="respond_inline" msgid="6797117334768201180">"在內文中回覆"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -309,7 +309,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"郵件詳細資料"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"自動推進"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"選擇刪除郵件後所要顯示的畫面"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"設定自動推進偏好設定\n(在刪除等動作完成後執行)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"自動推進偏好設定\n(在刪除等動作完成後執行)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"較新"</item>
     <item msgid="5562093094216840213">"較舊"</item>
@@ -320,9 +320,9 @@
     <item msgid="732746454445519134">"在刪除動作完成後顯示較舊的會話群組"</item>
     <item msgid="2189929276292165301">"在刪除動作完成後顯示會話群組清單"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"取消圖片許可"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"要取消圖片許可嗎？"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"不再顯示先前許可的寄件者寄來的郵件內置圖片。"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"清除圖片顯示許可"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"要清除圖片顯示許可？"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"對於您之前允許顯示其郵件內置圖片的寄件者，停止顯示其郵件內的圖片。"</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"系統不會自動顯示圖片。"</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"簽名檔"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"簽名檔"</string>
@@ -394,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"手機"</string>
     <string name="tablet" msgid="7956969657216748522">"平板電腦"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"開啟"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>
