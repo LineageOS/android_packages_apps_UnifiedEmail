@@ -140,7 +140,6 @@
     <string name="unread_string" msgid="588180203444398297">"未讀取對話群組"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
-    <string name="ap_overflow_format" msgid="2285438422049030145">"還有 <xliff:g id="ID_1">%d</xliff:g> 個附件"</string>
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"草稿"</item>
     <item quantity="other" msgid="6961049507579977505">"草稿"</item>
@@ -363,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"在對話群組清單中"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"寄件者圖片"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"在對話群組清單中的名稱旁邊顯示"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"附件預覽"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"在對話群組清單中顯示近期郵件的附件預覽"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"向下快速滑動即可重新整理"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"正在查看郵件"</string>
     <string name="empty_trash" msgid="652435297593538512">"清空垃圾桶"</string>
@@ -397,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"手機"</string>
     <string name="tablet" msgid="7956969657216748522">"平板電腦"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"開啟"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

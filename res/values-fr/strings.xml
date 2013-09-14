@@ -362,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Dans la liste des conversations"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Image de l\'expéditeur"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Afficher à côté du nom dans la liste des conversations"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Aperçus des pièces jointes"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Afficher les aperçus des pièces jointes des messages récents de la liste de conversations"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Faire glisser le doigt vers le bas pour actualiser"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Vérification des e-mails en cours…"</string>
     <string name="empty_trash" msgid="652435297593538512">"Vider la corbeille"</string>
@@ -376,7 +374,7 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Ouvrir le panneau de navigation"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Fermer le panneau de navigation"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Appuyez sur l\'image d\'un expéditeur pour sélectionner cette conversation."</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Appuyez sur l\'image d\'un expéditeur pour sélectionner la conversation."</string>
     <string name="long_press_to_select_tip" msgid="9205666839837250150">"Appuyez de manière prolongée sur une conversation pour la sélectionner, et appuyez sur d\'autres pour les sélectionner."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Icône Dossier"</string>
     <string name="add_account" msgid="2162808366829269770">"Ajouter un compte"</string>
@@ -396,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"téléphone"</string>
     <string name="tablet" msgid="7956969657216748522">"tablette"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Activer"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

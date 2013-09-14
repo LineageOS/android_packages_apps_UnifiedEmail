@@ -362,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Na popisu razgovora"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Slika pošiljatelja"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Prikaži pored imena na popisu razgovora"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Pregledi privitaka"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Prikaži preglede privitaka za nedavne poruke na popisu razgovora"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Prijeđite prstom prema dolje za osvježivanje"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Provjeravanje pošte"</string>
     <string name="empty_trash" msgid="652435297593538512">"Pražnjenje otpada"</string>
@@ -396,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"telefon"</string>
     <string name="tablet" msgid="7956969657216748522">"tablet"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Uključi"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

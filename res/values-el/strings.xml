@@ -362,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Στη λίστα συνομιλιών"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Εικόνα αποστολέα"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Εμφάνιση δίπλα στο όνομα στη λίστα συνομιλιών"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Προεπισκοπήσεις συνημμένων αρχείων"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Εμφάνιση προεπισκοπήσεων συνημμένων αρχείων για τα πρόσφατα μηνύματα της λίστας συνομιλιών"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Σύρετε προς τα κάτω για ανανέωση"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Γίνεται έλεγχος για αλληλογραφία"</string>
     <string name="empty_trash" msgid="652435297593538512">"Άδειασμα κάδου απορριμάτων"</string>
@@ -396,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"τηλέφωνo"</string>
     <string name="tablet" msgid="7956969657216748522">"tablet"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Ενεργοποίηση"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

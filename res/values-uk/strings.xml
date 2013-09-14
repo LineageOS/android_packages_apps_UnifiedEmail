@@ -362,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"У списку бесід"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Зображення відправника"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Показувати біля імені в списку бесід"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Попередні перегляди вкладених файлів"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Показувати в списку бесід попередні перегляди вкладених файлів з останніх повідомлень"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Проведіть пальцем униз, щоб оновити"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Перевірка пошти"</string>
     <string name="empty_trash" msgid="652435297593538512">"Очистити кошик"</string>
@@ -396,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"телефоном"</string>
     <string name="tablet" msgid="7956969657216748522">"планшетом"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Увімкнути"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

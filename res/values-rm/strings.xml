@@ -247,8 +247,6 @@
     <skip />
     <!-- no translation found for subject_and_snippet (7884124651812798896) -->
     <skip />
-    <!-- no translation found for ap_overflow_format (2285438422049030145) -->
-    <skip />
     <!-- no translation found for draft:one (333591132893648383) -->
     <!-- no translation found for draft:other (6961049507579977505) -->
     <!-- no translation found for sending (8214361929125649771) -->
@@ -549,10 +547,6 @@
     <skip />
     <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
     <skip />
-    <!-- no translation found for preference_attachment_previews_title (778099230423462593) -->
-    <skip />
-    <!-- no translation found for preference_attachment_previews_description (2468573302785576222) -->
-    <skip />
     <!-- no translation found for swipe_down_to_refresh (6401908905820786227) -->
     <skip />
     <!-- no translation found for checking_for_mail (2301797903350897130) -->
@@ -610,5 +604,9 @@
     <!-- no translation found for tablet (7956969657216748522) -->
     <skip />
     <!-- no translation found for turn_auto_sync_on_dialog_confirm_btn (1445158420197688714) -->
+    <skip />
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
     <skip />
 </resources>

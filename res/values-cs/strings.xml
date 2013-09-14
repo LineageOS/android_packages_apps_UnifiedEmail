@@ -252,7 +252,7 @@
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Podařilo se"</item>
     <item msgid="7109065688039971961">"Žádné připojení."</item>
-    <item msgid="8437496123716232060">"Přihlášení se nezdařilo."</item>
+    <item msgid="8437496123716232060">"Přihlášení se nezdařilo"</item>
     <item msgid="1651266301325684887">"Chyba zabezpečení."</item>
     <item msgid="1461520171154288533">"Chyba synchronizace."</item>
     <item msgid="4779810016424303449">"Interní chyba"</item>
@@ -282,8 +282,8 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Čekání na synchronizaci"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Vaše e-maily se zobrazí za chvíli."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Účet není synchronizován"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tento účet není nastaven na automatickou synchronizaci.\nChcete-li poštu jednou synchronizovat, dotkněte se položky "<b>"Synchronizovat nyní"</b>". Chcete-li v účtu nastavit automatickou synchronizaci pošty, dotkněte se položky "<b>"Změnit nastavení Synchronizace"</b>"."</string>
-    <string name="manual_sync" msgid="6743983544685622800">"Synchroniz."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tento účet není nastaven na automatickou synchronizaci.\nChcete-li poštu jednou synchronizovat, dotkněte se položky "<b>"Synchronizovat"</b>". Chcete-li v účtu nastavit automatickou synchronizaci pošty, dotkněte se položky "<b>"Změnit nastavení synchronizace"</b>"."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Synchronizovat"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Změnit nastavení synchronizace"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Fotografii nelze načíst"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Přesun nelze uskutečnit, protože vybrané zprávy pocházejí z různých účtů."</string>
@@ -362,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"V seznamu konverzací"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Obrázek odesílatele"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Zobrazit vedle jména v seznamu konverzací"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Náhledy příloh"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Zobrazit náhledy příloh posledních zpráv v seznamu konverzací"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Seznam aktualizujete posunutím dolů."</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Kontrola pošty"</string>
     <string name="empty_trash" msgid="652435297593538512">"Vysypat koš"</string>
@@ -387,7 +385,7 @@
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Zavřít tip"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Automatická synchronizace je vypnuta."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Zapnete ji klepnutím."</string>
-    <string name="account_sync_off" msgid="5699548271856775808">"Synchronizace účtu je vypnuta."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Synchronizace účtu je vypnuta"</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Zapněte ji v <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
     <string name="account_settings_param" msgid="5277032997773498476">"Nastavení účtu"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"Neodeslané zprávy ve složce <xliff:g id="OUTBOX">%2$s</xliff:g>: <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
@@ -396,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"telefon"</string>
     <string name="tablet" msgid="7956969657216748522">"tablet"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Zapnout"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

@@ -124,7 +124,7 @@
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS भेजें…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"संपर्क जोड़ें"</string>
     <string name="contextmenu_send_mail" msgid="8301941130009797208">"ईमेल भेजें"</string>
-    <string name="contextmenu_map" msgid="7721544518698532954">"मानचित्र"</string>
+    <string name="contextmenu_map" msgid="7721544518698532954">"नक्शा"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"लिंक साझा करें"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"सहायता"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"सुझाव भेजें"</string>
@@ -362,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"बातचीत की सूची में"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"प्रेषक का चित्र"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"बातचीत सूची में नाम के पास दिखाएं"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"अनुलग्नक पूर्वावलोकन"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"वार्तालाप सूची में हाल ही के संदेशों के लिए अनुलग्नक पूर्वावलोकन दिखाएं"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"रीफ्रेश करने के लिए नीचे स्वाइप करें"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"मेल के लिए जांच की जा रही है"</string>
     <string name="empty_trash" msgid="652435297593538512">"मिटाया हुआ रिक्त करें"</string>
@@ -374,8 +372,8 @@
     <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> संदेश स्थायी रूप हटा दिया जाएगा."</item>
     <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> संदेश स्थायी रूप से हटा दिए जाएंगे."</item>
   </plurals>
-    <string name="drawer_open" msgid="6074646853178471940">"नेविगेशन ड्रॉवर खोलें"</string>
-    <string name="drawer_close" msgid="2764774620737876943">"नेविगेशन ड्रॉवर बंद करें"</string>
+    <string name="drawer_open" msgid="6074646853178471940">"मार्गदर्शक ड्रॉवर खोलें"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"मार्गदर्शक ड्रॉवर बंद करें"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"उस बातचीत को चुनने के लिए प्रेषक के चित्र को स्पर्श करें."</string>
     <string name="long_press_to_select_tip" msgid="9205666839837250150">"एक वार्तालाप चुनने के लिए स्पर्श करके रखें, फिर अधिक वार्तालाप चुनने के लिए स्पर्श करें."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"फ़ोल्डर आइकन"</string>
@@ -396,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"फ़ोन"</string>
     <string name="tablet" msgid="7956969657216748522">"टेबलेट"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"चालू करें"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

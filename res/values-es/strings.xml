@@ -22,7 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
     <string name="bcc" msgid="3098643138241111579">"Cco"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Asunto"</string>
-    <string name="body_hint" msgid="4279864165439577668">"Redactar correo"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Escribe tu correo"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Adjuntar archivo"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Adjuntar imagen"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Adjuntar vídeo"</string>
@@ -308,8 +308,8 @@
     <string name="recent_folders_heading" msgid="8613621794529777406">"Carpetas recientes"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Detalles del mensaje"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Avance automático"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"Selecciona la pantalla que se mostrará después de eliminar el mensaje"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Establecer preferencia de avance automático\n(después de eliminar, etc.)"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"Seleccionar la pantalla que se mostrará después de eliminar un mensaje"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Avance automático\n(después de eliminar, etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Más reciente"</item>
     <item msgid="5562093094216840213">"Más antigua"</item>
@@ -322,7 +322,7 @@
   </string-array>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Borrar aprobaciones de imágenes"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"¿Borrar aprobaciones de imágenes?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Dejar de mostrar imágenes entre líneas de remitentes que se hayan permitido anteriormente."</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Ya no se mostrarán imágenes de remitentes que se hayan permitido anteriormente."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Las imágenes de los mensajes no se mostrarán automáticamente."</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"Firma"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Firma"</string>
@@ -358,12 +358,10 @@
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Responder a todos"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Usar como opción predeterminada para responder mensajes"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Desliza para archivar"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Desliza para eliminar"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Deslizar para eliminar"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"En la lista de conversaciones"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Imagen del remitente"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Mostrar junto al nombre en la lista de conversaciones"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"Vistas previas de archivos adjuntos"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"Mostrar vistas previas de adjuntos de mensajes recientes en la lista de conversaciones"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Deslizar hacia abajo para actualizar"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Buscando correo electrónico..."</string>
     <string name="empty_trash" msgid="652435297593538512">"Vaciar papelera"</string>
@@ -389,11 +387,15 @@
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Tocar para activar."</string>
     <string name="account_sync_off" msgid="5699548271856775808">"La opción de sincronización de cuenta está desactivada."</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Activar en <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
-    <string name="account_settings_param" msgid="5277032997773498476">"Configuración de la cuenta"</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"Ajustes de la cuenta"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> sin enviar en <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"¿Quieres activar la sincronización automática?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Los cambios que realices en todas las aplicaciones y cuentas, no solo en Gmail, se sincronizarán en la Web, otros de tus dispositivos y tu <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
     <string name="phone" msgid="5171715391553213328">"teléfono"</string>
     <string name="tablet" msgid="7956969657216748522">"tablet"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Activar"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>

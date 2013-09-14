@@ -362,8 +362,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"ברשימת השיחות"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"תמונת השולח"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"הצג לצד השם ברשימת השיחות"</string>
-    <string name="preference_attachment_previews_title" msgid="778099230423462593">"תצוגה מקדימה של קבצים מצורפים"</string>
-    <string name="preference_attachment_previews_description" msgid="2468573302785576222">"הצג ברשימת השיחות תצוגה מקדימה של קבצים מצורפים עבור הודעות מהתקופה האחרונה"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"החלק מטה לביצוע רענון"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"בודק אם יש דואר"</string>
     <string name="empty_trash" msgid="652435297593538512">"רוקן את האשפה"</string>
@@ -396,4 +394,8 @@
     <string name="phone" msgid="5171715391553213328">"טלפון"</string>
     <string name="tablet" msgid="7956969657216748522">"טאבלט"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"הפעל"</string>
+    <!-- no translation found for show_n_more_folders (337747297817699776) -->
+    <skip />
+    <!-- no translation found for hide_folders (7473552966537131652) -->
+    <skip />
 </resources>
