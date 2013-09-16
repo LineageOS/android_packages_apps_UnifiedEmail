@@ -73,9 +73,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     protected ControllableActivity mActivity;
     protected ActivityController mController;
     /**
-     * The current mode of the ActionBar. This references constants in {@link ViewMode}
+     * The current mode of the ActionBar and Activity
      */
-    private int mMode = ViewMode.UNKNOWN;
+    private ViewMode mViewModeController;
 
     private MenuItem mSearch;
     /**
@@ -220,7 +220,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // If the mode is valid, then set the initial menu
-        if (mMode == ViewMode.UNKNOWN) {
+        if (getMode() == ViewMode.UNKNOWN) {
             return false;
         }
         mSearch = menu.findItem(R.id.search);
@@ -246,7 +246,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     public int getOptionsMenuId() {
-        switch (mMode) {
+        switch (getMode()) {
             case ViewMode.UNKNOWN:
                 return R.menu.conversation_list_menu;
             case ViewMode.CONVERSATION:
@@ -315,12 +315,11 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     @Override
     public void onViewModeChanged(int newMode) {
-        mMode = newMode;
         mActivity.invalidateOptionsMenu();
         mHandler.removeMessages(SubtitleHandler.EMAIL);
         // Check if we are either on a phone, or in Conversation mode on tablet. For these, the
         // recent folders is enabled.
-        switch (mMode) {
+        switch (getMode()) {
             case ViewMode.UNKNOWN:
                 break;
             case ViewMode.CONVERSATION_LIST:
@@ -356,7 +355,11 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     protected int getMode() {
-        return mMode;
+        if (mViewModeController != null) {
+            return mViewModeController.getMode();
+        } else {
+            return ViewMode.UNKNOWN;
+        }
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -402,7 +405,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                     && mFolder.isType(FolderType.SPAM) && mFolder.totalCount > 0);
         }
 
-        switch (mMode) {
+        switch (getMode()) {
             case ViewMode.CONVERSATION:
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 // We update the ActionBar options when we are entering conversation view because
@@ -667,14 +670,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (mActionBar == null || mActivity == null) {
             return;
         }
-        if (ViewMode.isWaitingForSync(mMode)) {
+        if (ViewMode.isWaitingForSync(getMode())) {
             // Account is not synced: clear title and update the subtitle.
             setTitle("");
             removeUnreadCount(true);
             return;
         }
         // Check if we should be changing the actionbar at all, and back off if not.
-        final boolean isShowingFolder = mIsOnTablet || ViewMode.isListMode(mMode);
+        final boolean isShowingFolder = mIsOnTablet || ViewMode.isListMode(getMode());
         if (!isShowingFolder) {
             // It isn't necessary to set the title in this case, as the title view will
             // be hidden
@@ -860,5 +863,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (v.getId() == R.id.legacy_title_container) {
             mController.onUpPressed();
         }
+    }
+
+    public ViewMode getViewModeController() {
+        return mViewModeController;
+    }
+
+    public void setViewModeController(ViewMode viewModeController) {
+        mViewModeController = viewModeController;
+        mViewModeController.addListener(this);
     }
 }
