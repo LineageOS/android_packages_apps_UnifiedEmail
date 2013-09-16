@@ -272,7 +272,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mAttachmentPreviewsCache = new AltBitmapCache(ATTACHMENT_PREVIEWS_CACHE_TARGET_SIZE_BYTES,
                 ATTACHMENT_PREVIEWS_CACHE_NON_POOLED_FRACTION, 0);
         mAttachmentPreviewsDecodeAggregator = new DecodeAggregator();
-        mSendersImagesCache = new AltBitmapCache(SENDERS_IMAGES_CACHE_TARGET_SIZE_BYTES,
+        mSendersImagesCache = new AltBitmapCache(Utils.isLowRamDevice(mContext) ?
+                0 : SENDERS_IMAGES_CACHE_TARGET_SIZE_BYTES,
                 SENDERS_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION,
                 SENDERS_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY);
         mContactResolver = new ContactResolver(mContext.getContentResolver(), mSendersImagesCache);

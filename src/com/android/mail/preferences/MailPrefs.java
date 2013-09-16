@@ -386,18 +386,12 @@ public final class MailPrefs extends VersionedPrefs {
         editor.apply();
     }
 
-
     public void setShowSenderImages(boolean enable) {
         getEditor().putBoolean(PreferenceKeys.SHOW_SENDER_IMAGES, enable).apply();
         notifyBackupPreferenceChanged();
     }
 
     public boolean getShowSenderImages() {
-        if (Utils.isLowRamDevice(getContext())) {
-            // Do not show sender images in conversation list on low memory devices since they are
-            // expensive to render.
-            return false;
-        }
         final SharedPreferences sharedPreferences = getSharedPreferences();
         return sharedPreferences.getBoolean(PreferenceKeys.SHOW_SENDER_IMAGES, true);
     }

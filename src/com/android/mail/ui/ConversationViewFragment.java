@@ -512,6 +512,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             timerMark("CVF.showConversation");
         } else {
             final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
+                    || Utils.isLowRamDevice(getContext())
                     || (mConversation != null && (mConversation.isRemote
                             || mConversation.getNumMessages() > mMaxAutoLoadMessages));
 
