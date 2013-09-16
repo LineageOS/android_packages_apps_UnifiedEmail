@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012 Google Inc.
  * Licensed to The Android Open Source Project.
  *
@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.content.Context;
-import android.content.res.Resources.NotFoundException;
 
 import com.android.mail.R;
 import com.android.mail.utils.LogTag;
@@ -26,30 +25,17 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Formatter;
 import java.util.regex.Pattern;
 
 /**
  * Renders data into very simple string-substitution HTML templates for conversation view.
- *
- * Templates should be UTF-8 encoded HTML with '%s' placeholders to be substituted upon render.
- * Plain-jane string substitution with '%s' is slightly faster than typed substitution.
- *
  */
-public class HtmlConversationTemplates {
+public class HtmlConversationTemplates extends AbstractHtmlTemplates {
 
     /**
      * Prefix applied to a message id for use as a div id
      */
     public static final String MESSAGE_PREFIX = "m";
-    public static final int MESSAGE_PREFIX_LENGTH = MESSAGE_PREFIX.length();
-
-    // TODO: refine. too expensive to iterate over cursor and pre-calculate total. so either
-    // estimate it, or defer assembly until the end when size is known (deferring increases
-    // working set size vs. estimation but is exact).
-    private static final int BUFFER_SIZE_CHARS = 64 * 1024;
 
     private static final String TAG = LogTag.getLogTag();
 
@@ -92,13 +78,8 @@ public class HtmlConversationTemplates {
     private static String sConversationUpper;
     private static String sConversationLower;
 
-    private Context mContext;
-    private Formatter mFormatter;
-    private StringBuilder mBuilder;
-    private boolean mInProgress = false;
-
     public HtmlConversationTemplates(Context context) {
-        mContext = context;
+        super(context);
 
         // The templates are small (~2KB total in ICS MR2), so it's okay to load them once and keep
         // them in memory.
@@ -178,7 +159,8 @@ public class HtmlConversationTemplates {
 
     public void startConversation(int sideMargin, int conversationHeaderHeight) {
         if (mInProgress) {
-            throw new IllegalStateException("must call startConversation first");
+            throw new IllegalStateException(
+                    "Should not call start conversation until end conversation has been called");
         }
 
         reset();
@@ -209,49 +191,4 @@ public class HtmlConversationTemplates {
 
         return emit();
     }
-
-    public String emit() {
-        String out = mFormatter.toString();
-        // release the builder memory ASAP
-        mFormatter = null;
-        mBuilder = null;
-        return out;
-    }
-
-    public void reset() {
-        mBuilder = new StringBuilder(BUFFER_SIZE_CHARS);
-        mFormatter = new Formatter(mBuilder, null /* no localization */);
-    }
-
-    private String readTemplate(int id) throws NotFoundException {
-        StringBuilder out = new StringBuilder();
-        InputStreamReader in = null;
-        try {
-            try {
-                in = new InputStreamReader(
-                        mContext.getResources().openRawResource(id), "UTF-8");
-                char[] buf = new char[4096];
-                int chars;
-
-                while ((chars=in.read(buf)) > 0) {
-                    out.append(buf, 0, chars);
-                }
-
-                return out.toString();
-
-            } finally {
-                if (in != null) {
-                    in.close();
-                }
-            }
-        } catch (IOException e) {
-            throw new NotFoundException("Unable to open template id=" + Integer.toHexString(id)
-                    + " exception=" + e.getMessage());
-        }
-    }
-
-    private void append(String template, Object... args) {
-        mFormatter.format(template, args);
-    }
-
 }

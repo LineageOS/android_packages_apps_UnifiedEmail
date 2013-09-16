@@ -16,6 +16,7 @@
 
 package com.android.mail.utils;
 
+import com.android.mail.providers.Address;
 import com.google.android.mail.common.html.parser.HtmlDocument;
 import com.google.android.mail.common.html.parser.HtmlParser;
 import com.google.android.mail.common.html.parser.HtmlTree;
@@ -726,7 +727,7 @@ public class Utils {
     /**
      * Create an intent to show a conversation.
      * @param conversation Conversation to open.
-     * @param folder
+     * @param folderUri
      * @param account
      * @return
      */
@@ -749,7 +750,7 @@ public class Utils {
     /**
      * Create an intent to open a folder.
      *
-     * @param folder Folder to open.
+     * @param folderUri Folder to open.
      * @param account
      * @return
      */
@@ -1043,8 +1044,8 @@ public class Utils {
     *
     * @param type MIME data type to normalize
     * @return normalized MIME data type, or null if the input was null
-    * @see {@link #setType}
-    * @see {@link #setTypeAndNormalize}
+    * @see {@link android.content.Intent#setType}
+    * @see {@link android.content.Intent#setTypeAndNormalize}
     */
    public static String normalizeMimeType(String type) {
        if (type == null) {
@@ -1061,7 +1062,7 @@ public class Utils {
    }
 
    /**
-    * (copied from {@link Uri#normalize()} for pre-J)
+    * (copied from {@link android.net.Uri#normalizeScheme()} for pre-J)
     *
     * Return a normalized representation of this Uri.
     *
@@ -1083,7 +1084,7 @@ public class Utils {
     *
     * @return normalized Uri (never null)
     * @see {@link android.content.Intent#setData}
-    * @see {@link #setNormalizedData}
+    * @see {@link android.content.Intent#setNormalizedData}
     */
    public static Uri normalizeUri(Uri uri) {
        String scheme = uri.getScheme();
@@ -1429,4 +1430,20 @@ public class Utils {
         }
     }
 
+
+    public static Address getAddress(Map<String, Address> cache, String emailStr) {
+        Address addr = null;
+        synchronized (cache) {
+            if (cache != null) {
+                addr = cache.get(emailStr);
+            }
+            if (addr == null) {
+                addr = Address.getEmailAddress(emailStr);
+                if (cache != null) {
+                    cache.put(emailStr, addr);
+                }
+            }
+        }
+        return addr;
+    }
 }

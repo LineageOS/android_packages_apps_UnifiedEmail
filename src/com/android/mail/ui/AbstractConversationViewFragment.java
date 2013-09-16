@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -326,6 +327,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         } else if (itemId == R.id.show_original) {
             showUntransformedConversation();
             handled = true;
+        } else if (itemId == R.id.print) {
+            printConversation();
+            handled = true;
         }
         return handled;
     }
@@ -335,6 +339,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         // Only show option if we support message transforms and message has been transformed.
         Utils.setMenuItemVisibility(menu, R.id.show_original, supportsMessageTransforms() &&
                 mHasConversationBeenTransformed && !mHasConversationTransformBeenReverted);
+        Utils.setMenuItemVisibility(menu, R.id.print, Utils.isRunningKitkatOrLater());
     }
 
     abstract boolean supportsMessageTransforms();
@@ -634,4 +639,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         return (mAccount.enableMessageTransforms > 0) &&
                 !mHasConversationTransformBeenReverted;
     }
+
+    protected abstract void printConversation();
 }

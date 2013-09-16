@@ -261,4 +261,8 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     public boolean supportsMessageTransforms() {
         return false;
     }
+
+    protected void printConversation() {
+        mViewController.printConversation();
+    }
 }
