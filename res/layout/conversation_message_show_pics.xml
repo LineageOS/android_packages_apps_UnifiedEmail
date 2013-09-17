@@ -23,6 +23,7 @@
     android:background="?android:attr/selectableItemBackground"
     android:drawablePadding="10dp"
     android:drawableStart="@drawable/ic_show_images_holo_light"
+    android:drawableLeft="@drawable/ic_show_images_holo_light"
     android:paddingTop="@dimen/message_details_header_vertical_padding"
     android:paddingBottom="@dimen/message_details_header_vertical_padding"
     android:paddingStart="@dimen/message_details_header_padding_start_collapsed"
