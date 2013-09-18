@@ -100,7 +100,10 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
      */
     public boolean updateStatus(final ConversationCursor cursor) {
         if (cursor == null) {
-            return false;
+            mLoading.setVisibility(View.VISIBLE);
+            mNetworkError.setVisibility(View.GONE);
+            mLoadMore.setVisibility(View.GONE);
+            return true;
         }
         boolean showFooter = true;
         final Bundle extras = cursor.getExtras();
