@@ -25,11 +25,8 @@
         android:id="@+id/card_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/conversation_view_margin_side"
-        android:layout_marginLeft="@dimen/conversation_view_margin_side"
-        android:layout_marginEnd="@dimen/conversation_view_margin_side"
-        android:layout_marginRight="@dimen/conversation_view_margin_side"
-        android:background="@drawable/card_bottom" />
+        android:background="@drawable/card_bottom"
+        style="@style/ConversationViewSideMarginStyle" />
     <Space
         android:id="@+id/border_space"
         android:layout_width="match_parent"
@@ -38,9 +35,6 @@
         android:id="@+id/card_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/conversation_view_margin_side"
-        android:layout_marginLeft="@dimen/conversation_view_margin_side"
-        android:layout_marginEnd="@dimen/conversation_view_margin_side"
-        android:layout_marginRight="@dimen/conversation_view_margin_side"
-        android:background="@drawable/card_top" />
+        android:background="@drawable/card_top"
+        style="@style/ConversationViewSideMarginStyle" />
 </com.android.mail.browse.BorderView>
