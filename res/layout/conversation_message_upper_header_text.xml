@@ -25,8 +25,7 @@
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:layout_marginTop="12dp"
-    android:paddingStart="@dimen/message_header_inner_side_padding"
-    android:paddingLeft="@dimen/message_header_inner_side_padding" >
+    style="@style/MessageUpperHeaderTextStyle" >
 
     <TextView
         android:id="@+id/upper_date"
@@ -43,11 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_toStartOf="@id/upper_date"
         android:layout_toLeftOf="@id/upper_date"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:src="@drawable/ic_attachment_holo_light" />
+        android:src="@drawable/ic_attachment_holo_light"
+        style="@style/AttachmentIconStyle" />
     <TextView
         android:id="@+id/sender_name"
         android:layout_width="wrap_content"

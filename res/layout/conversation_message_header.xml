@@ -21,10 +21,7 @@
     android:layout_height="wrap_content"
     android:visibility="visible"
     android:orientation="vertical"
-    android:layout_marginStart="@dimen/conversation_view_margin_side"
-    android:layout_marginEnd="@dimen/conversation_view_margin_side"
-    android:layout_marginLeft="@dimen/conversation_view_margin_side"
-    android:layout_marginRight="@dimen/conversation_view_margin_side" >
+    style="@style/ConversationViewSideMarginStyle" >
 
     <include layout="@layout/conversation_message_upper_header"
              android:id="@+id/upper_header" />

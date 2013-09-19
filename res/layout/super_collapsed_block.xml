@@ -20,10 +20,7 @@
     android:id="@+id/super_collapsed_block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/conversation_view_margin_side"
-    android:layout_marginEnd="@dimen/conversation_view_margin_side"
-    android:layout_marginLeft="@dimen/conversation_view_margin_side"
-    android:layout_marginRight="@dimen/conversation_view_margin_side"
+    style="@style/ConversationViewSideMarginStyle"
     android:background="@color/message_header_background_color" >
     <TextView
         android:id="@+id/super_collapsed_text"
