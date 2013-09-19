@@ -26,12 +26,11 @@
         android:layout_width="@dimen/message_header_contact_photo_width"
         android:layout_height="@dimen/message_header_contact_photo_height"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/message_header_padding_start"
-        android:layout_marginLeft="@dimen/message_header_padding_start"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:scaleType="centerCrop"
-        android:contentDescription="@string/contact_info_string" />
+        android:contentDescription="@string/contact_info_string"
+        style="@style/MessageHeaderContactImageStyle" />
     <!-- draft should match photo in dimensions -->
     <ImageView
         android:id="@+id/draft"
@@ -40,11 +39,10 @@
         android:layout_gravity="center_vertical"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
-        android:layout_marginStart="@dimen/message_header_padding_start"
-        android:layout_marginLeft="@dimen/message_header_padding_start"
         android:visibility="gone"
         android:scaleType="center"
-        android:src="@drawable/ic_draft" />
+        android:src="@drawable/ic_draft"
+        style="@style/MessageHeaderContactImageStyle" />
     <include layout="@layout/conversation_message_upper_header_text" />
     <include layout="@layout/conversation_message_upper_header_actions" />
 
