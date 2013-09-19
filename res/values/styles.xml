@@ -517,7 +517,6 @@
 
     <style name="ConversationHeaderFolderStyle">
         <item name="android:paddingLeft">@dimen/conversation_header_side_padding</item>
-        <item name="android:paddingRight">@dimen/conversation_header_side_padding</item>
     </style>
 
     <style name="CheckedTextStyle">
