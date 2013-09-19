@@ -307,9 +307,9 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"모든 폴더"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"최근 폴더"</string>
     <string name="message_details_title" msgid="2183394728494962332">"메시지 세부정보"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"자동 진행"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"삭제 후 표시 화면"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"메일을 삭제한 다음 표시할 화면 선택"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"자동 진행 환경설정\n(삭제 등을 수행한 후)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"메일 삭제 후\n표시할 화면"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"최신"</item>
     <item msgid="5562093094216840213">"이전"</item>
@@ -394,8 +394,6 @@
     <string name="phone" msgid="5171715391553213328">"휴대전화"</string>
     <string name="tablet" msgid="7956969657216748522">"태블릿"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"사용"</string>
-    <!-- no translation found for show_n_more_folders (337747297817699776) -->
-    <skip />
-    <!-- no translation found for hide_folders (7473552966537131652) -->
-    <skip />
+    <string name="show_n_more_folders" msgid="337747297817699776">"<xliff:g id="NUMBER">%1$s</xliff:g>개 폴더 더보기"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"폴더 숨기기"</string>
 </resources>
