@@ -862,7 +862,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     public void onConversationListStatusUpdated() {
         final ConversationCursor cursor = getConversationListCursor();
-        final boolean showFooter = cursor != null && mFooterView.updateStatus(cursor);
+        final boolean showFooter = mFooterView.updateStatus(cursor);
         // Update the folder status, in case the cursor could affect it.
         onFolderStatusUpdated();
         mListAdapter.setFooterVisibility(showFooter);
