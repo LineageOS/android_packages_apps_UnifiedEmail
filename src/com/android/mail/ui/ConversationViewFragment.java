@@ -577,8 +577,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         if (DEBUG_DUMP_CONVERSATION_HTML) {
             java.io.FileWriter fw = null;
             try {
-                fw = new java.io.FileWriter("/sdcard/conv" + mConversation.id
-                        + ".html");
+                fw = new java.io.FileWriter(getSdCardFilePath());
                 fw.write(convHtml);
             } catch (java.io.IOException e) {
                 e.printStackTrace();
@@ -601,6 +600,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mWebView.loadDataWithBaseURL(mBaseUri, convHtml, "text/html", "utf-8", null);
         mWebViewLoadedData = true;
         mWebViewLoadStartMs = SystemClock.uptimeMillis();
+    }
+
+    protected String getSdCardFilePath() {
+        return "/sdcard/conv" + mConversation.id + ".html";
     }
 
     /**

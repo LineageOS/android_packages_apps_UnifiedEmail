@@ -534,7 +534,9 @@ public class ConversationItemView extends View
         mHeader = header;
         mActivity = activity;
         mSelectedConversationSet = set;
-        mSelectedConversationSet.addObserver(this);
+        if (mSelectedConversationSet != null) {
+            mSelectedConversationSet.addObserver(this);
+        }
         mDisplayedFolder = folder;
         mStarEnabled = folder != null && !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
