@@ -31,7 +31,7 @@
     <string name="compose" msgid="1473559896062432878">"Levélírás"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Válasz"</item>
-    <item msgid="4085029907540221568">"Válasz mindenk."</item>
+    <item msgid="4085029907540221568">"válasz mindenkinek"</item>
     <item msgid="857480048798815437">"Továbbítás"</item>
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"<xliff:g id="PERSON">%s</xliff:g> ezt írta (<xliff:g id="DATE">%s</xliff:g>):"</string>
