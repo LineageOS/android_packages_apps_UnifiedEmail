@@ -20,14 +20,13 @@
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="12dp"
             android:layout_marginTop="12dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
             android:layout_weight="1"
             android:duplicateParentState="true"
             android:fontFamily="sans-serif-light"
             android:text="@string/long_press_to_select_tip"
             android:textColor="@color/teaser_main_text"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            style="@style/TeaserTextStyle" />
 
         <View
             android:id="@+id/dismiss_separator"
@@ -36,8 +35,7 @@
             android:background="@color/teaser_main_text"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp" />
+            style="@style/DismissSeparatorStyle" />
 
         <ImageButton
             android:id="@+id/dismiss_button"
@@ -45,13 +43,10 @@
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
-            android:paddingLeft="20dip"
-            android:paddingStart="20dip"
-            android:paddingRight="28dip"
-            android:paddingEnd="28dip"
             android:scaleType="center"
             android:contentDescription="@string/dismiss_tip_hover_text"
-            android:src="@drawable/ic_cancel_holo_light" />
+            android:src="@drawable/ic_cancel_holo_light"
+            style="@style/DismissButtonStyle" />
 
         <include layout="@layout/teaser_right_edge" />
     </LinearLayout>

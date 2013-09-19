@@ -21,24 +21,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingStart="@dimen/message_details_header_padding_start_collapsed"
-    android:paddingEnd="@dimen/message_details_header_padding_end"
-    android:paddingLeft="@dimen/message_details_header_padding_start_collapsed"
-    android:paddingRight="@dimen/message_details_header_padding_end"
     app:columnCount="3"
-    app:rowCount="6" >
+    app:rowCount="6"
+    style="@style/MessageDetailsHeaderStyle" >
 
     <TextView
         android:id="@+id/from_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/message_header_inner_side_padding"
-        android:layout_marginRight="@dimen/message_header_inner_side_padding"
         app:layout_column="0"
         app:layout_row="0"
         android:text="@string/from_heading"
         android:visibility="gone"
-        style="@style/MessageHeaderSmallStyle" />
+        style="@style/MessageHeaderDetailsHeadingStyle" />
     <TextView
         android:id="@+id/from_details"
         android:layout_width="0dp"
@@ -53,23 +48,20 @@
         android:id="@+id/details_expander"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/message_header_inner_side_padding"
-        android:layout_marginLeft="@dimen/message_header_inner_side_padding"
         app:layout_column="2"
         app:layout_row="0"
         android:contentDescription="@string/collapse_recipient_details"
-        android:src="@drawable/ic_menu_expander_maximized_holo_light" />
+        android:src="@drawable/ic_menu_expander_maximized_holo_light"
+        style="@style/DetailsExpanderStyle" />
     <TextView
         android:id="@+id/replyto_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/message_header_inner_side_padding"
-        android:layout_marginRight="@dimen/message_header_inner_side_padding"
         app:layout_column="0"
         app:layout_row="1"
         android:text="@string/replyto_heading"
         android:visibility="gone"
-        style="@style/MessageHeaderSmallStyle" />
+        style="@style/MessageHeaderDetailsHeadingStyle" />
     <TextView
         android:id="@+id/replyto_details"
         android:layout_width="0dp"
@@ -84,13 +76,11 @@
         android:id="@+id/to_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/message_header_inner_side_padding"
-        android:layout_marginRight="@dimen/message_header_inner_side_padding"
         app:layout_column="0"
         app:layout_row="2"
         android:text="@string/to_heading"
         android:visibility="gone"
-        style="@style/MessageHeaderSmallStyle" />
+        style="@style/MessageHeaderDetailsHeadingStyle" />
     <TextView
         android:id="@+id/to_details"
         android:layout_width="0dp"
@@ -105,13 +95,11 @@
         android:id="@+id/cc_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/message_header_inner_side_padding"
-        android:layout_marginRight="@dimen/message_header_inner_side_padding"
         app:layout_column="0"
         app:layout_row="3"
         android:text="@string/cc_heading"
         android:visibility="gone"
-        style="@style/MessageHeaderSmallStyle" />
+        style="@style/MessageHeaderDetailsHeadingStyle" />
     <TextView
         android:id="@+id/cc_details"
         android:layout_width="0dp"
@@ -126,13 +114,11 @@
         android:id="@+id/bcc_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/message_header_inner_side_padding"
-        android:layout_marginRight="@dimen/message_header_inner_side_padding"
         app:layout_column="0"
         app:layout_row="4"
         android:text="@string/bcc_heading"
         android:visibility="gone"
-        style="@style/MessageHeaderSmallStyle" />
+        style="@style/MessageHeaderDetailsHeadingStyle" />
     <TextView
         android:id="@+id/bcc_details"
         android:layout_width="0dp"
@@ -147,13 +133,11 @@
         android:id="@+id/date_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/message_header_inner_side_padding"
-        android:layout_marginRight="@dimen/message_header_inner_side_padding"
         app:layout_column="0"
         app:layout_row="5"
         android:text="@string/date_heading"
         android:visibility="gone"
-        style="@style/MessageHeaderSmallStyle" />
+        style="@style/MessageHeaderDetailsHeadingStyle" />
     <TextView
         android:id="@+id/date_details"
         android:layout_width="0dp"

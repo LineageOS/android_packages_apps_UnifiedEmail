@@ -68,7 +68,6 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="4dip"
             android:gravity="center_vertical"
-            android:paddingRight="16dip"
             android:textAllCaps="true" />
     </LinearLayout>
 

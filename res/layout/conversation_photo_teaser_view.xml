@@ -53,13 +53,10 @@
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
-            android:paddingLeft="20dip"
-            android:paddingStart="20dip"
-            android:paddingRight="28dip"
-            android:paddingEnd="28dip"
             android:scaleType="center"
             android:contentDescription="@string/dismiss_tip_hover_text"
-            android:src="@drawable/ic_cancel_holo_light" />
+            android:src="@drawable/ic_cancel_holo_light"
+            style="@style/DismissButtonStyle" />
 
         <include layout="@layout/teaser_right_edge" />
     </LinearLayout>
