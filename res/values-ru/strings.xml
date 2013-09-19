@@ -248,7 +248,7 @@
     <string name="ok" msgid="8339355733816891026">"ОК"</string>
     <string name="done" msgid="3079981801778027540">"Готово"</string>
     <string name="cancel" msgid="8762981157252199115">"Отмена"</string>
-    <string name="clear" msgid="3184687982186479442">"Очистить"</string>
+    <string name="clear" msgid="3184687982186479442">"Да"</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Без ошибок"</item>
     <item msgid="7109065688039971961">"Нет соединения"</item>
@@ -308,12 +308,12 @@
     <string name="recent_folders_heading" msgid="8613621794529777406">"Последние папки"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Сведения о сообщении"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Автопереход"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"Выберите экран для отображения после удаления цепочки писем"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Настройка автоперехода\n(после архивации, удаления и т. п.)"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"Выберите, что вы хотите видеть после удаления письма"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Что показывать после\n удаления писем"</string>
   <string-array name="prefEntries_autoAdvance">
-    <item msgid="3400401085256526376">"Более поздние"</item>
-    <item msgid="5562093094216840213">"Более ранние"</item>
-    <item msgid="3331655314944797957">"Список цепочек"</item>
+    <item msgid="3400401085256526376">"Следующее письмо"</item>
+    <item msgid="5562093094216840213">"Предыдущее письмо"</item>
+    <item msgid="3331655314944797957">"Список писем"</item>
   </string-array>
   <string-array name="prefSummaries_autoAdvance">
     <item msgid="6389534341359835440">"Показывать более позднюю цепочку после удаления текущей"</item>
@@ -322,7 +322,7 @@
   </string-array>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Запретить показ изображений"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Запретить показ изображений?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Изображения от ранее одобренных отправителей показываться не будут."</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Вы действительно хотите запретить показ изображений в письмах?"</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Автоматический показ изображений отключен."</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"Подпись"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Подпись"</string>
@@ -385,17 +385,15 @@
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Закрыть подсказку"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Автосинхронизация отключена"</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Нажмите, чтобы включить."</string>
-    <string name="account_sync_off" msgid="5699548271856775808">"Синхронизация для этого аккаунта отключена"</string>
-    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Включите в <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>"</string>
-    <string name="account_settings_param" msgid="5277032997773498476">"настройках аккаунта"</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Синхронизация для этого аккаунта отключена."</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Чтобы включить ее, перейдите в <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"настройки аккаунта"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"Неотправленных сообщений в папке \"<xliff:g id="OUTBOX">%2$s</xliff:g>\": <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Включить автосинхронизацию?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Изменения, которые вы вносите во все приложения и аккаунты (не только Gmail), будут синхронизироваться между Интернетом, другими вашими устройствами и вашим <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
     <string name="phone" msgid="5171715391553213328">"телефоном"</string>
     <string name="tablet" msgid="7956969657216748522">"планшетным ПК"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Включить"</string>
-    <!-- no translation found for show_n_more_folders (337747297817699776) -->
-    <skip />
-    <!-- no translation found for hide_folders (7473552966537131652) -->
-    <skip />
+    <string name="show_n_more_folders" msgid="337747297817699776">"Показать ещё папки (<xliff:g id="NUMBER">%1$s</xliff:g>)"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"Скрыть папки"</string>
 </resources>
