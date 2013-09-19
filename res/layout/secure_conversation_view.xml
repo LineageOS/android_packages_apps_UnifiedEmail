@@ -40,10 +40,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/conversation_view_margin_side_minus_gradient"
-                android:layout_marginEnd="@dimen/conversation_view_margin_side_minus_gradient"
-                android:layout_marginLeft="@dimen/conversation_view_margin_side_minus_gradient"
-                android:layout_marginRight="@dimen/conversation_view_margin_side_minus_gradient"
+                style="@style/ConversationViewSideMarginMinusGradientStyle"
                 android:orientation="horizontal" >
                 <View
                     android:layout_width="1dp"
@@ -63,10 +60,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/conversation_view_margin_side_minus_gradient"
-                android:layout_marginEnd="@dimen/conversation_view_margin_side_minus_gradient"
-                android:layout_marginLeft="@dimen/conversation_view_margin_side_minus_gradient"
-                android:layout_marginRight="@dimen/conversation_view_margin_side_minus_gradient"
+                style="@style/ConversationViewSideMarginMinusGradientStyle"
                 android:orientation="horizontal" >
                 <View
                     android:layout_width="1dp"
@@ -86,10 +80,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/conversation_view_margin_side_minus_gradient"
-                android:layout_marginEnd="@dimen/conversation_view_margin_side_minus_gradient"
-                android:layout_marginLeft="@dimen/conversation_view_margin_side_minus_gradient"
-                android:layout_marginRight="@dimen/conversation_view_margin_side_minus_gradient"
+                style="@style/ConversationViewSideMarginMinusGradientStyle"
                 android:orientation="horizontal" >
                 <View
                     android:layout_width="1dp"
