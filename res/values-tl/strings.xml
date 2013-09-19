@@ -309,7 +309,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Mga detalye ng mensahe"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"I-auto-advance"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Piliin ang screen na ipapakita pagkatapos magtanggal ng mensahe"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Magtakda auto-advance na kagustuhan\n(pagkatapos mong magtanggal, atbp.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Magtakda ng nais na auto-advance\n(pagkatapos mong magtanggal, atbp.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mas bago"</item>
     <item msgid="5562093094216840213">"Mas luma"</item>
@@ -320,7 +320,7 @@
     <item msgid="732746454445519134">"Magpakita ng mas lumang pag-uusap pagkatapos mong magtanggal"</item>
     <item msgid="2189929276292165301">"Ipakita ang listahan ng pag-uusap pagkatapos mong magtanggal"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"I-clear ang mga pag-apruba sa larawan"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"I-clear pag-apruba sa lararawan"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"I-clear ang mga pag-apruba sa larawan?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Huminto sa pagpapakita ng mga inline na larawan mula sa mga nagpadalang dati mong pinayagan."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Hindi awtomatikong ipapakita ang mga larawan."</string>

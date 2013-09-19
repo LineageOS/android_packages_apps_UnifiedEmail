@@ -394,6 +394,6 @@
     <string name="phone" msgid="5171715391553213328">"โทรศัพท์"</string>
     <string name="tablet" msgid="7956969657216748522">"แท็บเล็ต"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"เปิด"</string>
-    <string name="show_n_more_folders" msgid="337747297817699776">"แสดง <xliff:g id="NUMBER">%1$s</xliff:g> โฟลเดอร์เพิ่มเติม"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"แสดงอีก <xliff:g id="NUMBER">%1$s</xliff:g> โฟลเดอร์"</string>
     <string name="hide_folders" msgid="7473552966537131652">"ซ่อนโฟลเดอร์"</string>
 </resources>
