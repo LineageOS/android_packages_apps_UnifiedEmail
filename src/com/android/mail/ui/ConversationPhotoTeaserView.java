@@ -119,7 +119,7 @@ public class ConversationPhotoTeaserView extends FrameLayout
     }
 
     @Override
-    public void onUpdate(String account, Folder folder, ConversationCursor cursor) {
+    public void onUpdate(Folder folder, ConversationCursor cursor) {
         // Do nothing
     }
 

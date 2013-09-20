@@ -120,4 +120,7 @@
 
     <!-- Duration of the animations for entering/exiting CAB mode -->
     <integer name="conv_item_view_cab_anim_duration">350</integer>
+
+    <!-- Number of nested folders to display in the conversation list, before hiding the remainder under "Show more" -->
+    <integer name="nested_folders_collapse_threshold">3</integer>
 </resources>
