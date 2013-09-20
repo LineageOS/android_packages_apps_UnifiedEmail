@@ -52,18 +52,19 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = super.getView(position, convertView, parent);
+        final View view = super.getView(position, convertView, parent);
         if (isHeader(position)) {
             return view;
         }
-        Folder folder = ((FolderRow) getItem(position)).getFolder();
-        CompoundButton checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
-        TextView display = (TextView) view.findViewById(R.id.folder_name);
-        CharSequence displayText = TextUtils.isEmpty(folder.hierarchicalDesc) ? folder.name
-                : truncateHierarchy(folder.hierarchicalDesc);
+        final FolderRow row = (FolderRow) getItem(position);
+        final Folder folder = row.getFolder();
+        final CompoundButton checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
+        final TextView display = (TextView) view.findViewById(R.id.folder_name);
+        final CharSequence displayText = TextUtils.isEmpty(row.mPathName) ? folder.name
+                : truncateHierarchy(row.mPathName);
         if (checkBox != null) {
-            checkBox.setText(TextUtils.isEmpty(folder.hierarchicalDesc) ? folder.name
-                : truncateHierarchy(folder.hierarchicalDesc), TextView.BufferType.SPANNABLE);
+            checkBox.setText(TextUtils.isEmpty(row.mPathName) ? folder.name
+                : truncateHierarchy(row.mPathName), TextView.BufferType.SPANNABLE);
         } else {
             display.setText(displayText, TextView.BufferType.SPANNABLE);
         }
@@ -83,23 +84,26 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
         if (TextUtils.isEmpty(hierarchy)) {
             return null;
         }
-        String[] splitHierarchy = hierarchy.split("/");
+        final String[] splitHierarchy = hierarchy.split("/");
         // We want to keep the last part of the hierachy, as that is the name of
         // the folder.
-        String folderName = null;
-        String topParentName = null;
-        String directParentName = null;
-        SpannableStringBuilder display = new SpannableStringBuilder();
+        final String folderName;
+        final String topParentName;
+        final String directParentName;
+        final SpannableStringBuilder display = new SpannableStringBuilder();
         if (splitHierarchy != null && splitHierarchy.length > 0) {
-            int length = splitHierarchy.length;
+            final int length = splitHierarchy.length;
             if (length > 2) {
                 topParentName = splitHierarchy[0];
                 directParentName = splitHierarchy[length - 2];
                 folderName = splitHierarchy[length - 1];
             } else if (length > 1) {
                 topParentName = splitHierarchy[0];
+                directParentName = null;
                 folderName = splitHierarchy[length - 1];
             } else {
+                topParentName = null;
+                directParentName = null;
                 folderName = splitHierarchy[0];
             }
             if (!TextUtils.isEmpty(directParentName)) {
