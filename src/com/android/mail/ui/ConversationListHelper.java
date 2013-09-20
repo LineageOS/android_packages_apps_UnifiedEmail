@@ -53,6 +53,11 @@ public class ConversationListHelper {
                 (ConversationLongPressTipView) LayoutInflater.from(context)
                         .inflate(R.layout.conversation_long_press_to_select_tip_view, null);
 
+        final NestedFolderTeaserView nestedFolderTeaserView =
+                (NestedFolderTeaserView) LayoutInflater.from(context)
+                        .inflate(R.layout.nested_folder_teaser_view, null);
+        nestedFolderTeaserView.bind(account, activity.getFolderSelector());
+
         // Order matters.  If a and b are added in order itemViews.add(a), itemViews.add(b),
         // they will appear in conversation list as:
         // b
@@ -62,6 +67,7 @@ public class ConversationListHelper {
         itemViews.add(conversationLongPressTipView);
         itemViews.add(conversationSyncDisabledTipView);
         itemViews.add(conversationsInOutboxTipView);
+        itemViews.add(nestedFolderTeaserView);
         return itemViews;
     }
 }

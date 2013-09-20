@@ -127,4 +127,7 @@
     <dimen name="attachment_margin_side">16dip</dimen>
     <dimen name="attachment_icon_padding">5dip</dimen>
     <dimen name="recipient_summary_margin">16dip</dimen>
+
+    <!-- Minimum width of the folder teaser count TextView -->
+    <dimen name="folder_teaser_count_textview_minwidth">68dp</dimen>
 </resources>

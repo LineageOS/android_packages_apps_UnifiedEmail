@@ -68,7 +68,6 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.R.drawable;
 import com.android.mail.R.integer;
-import com.android.mail.R.string;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.bitmap.AttachmentDrawable;
 import com.android.mail.bitmap.AttachmentGridDrawable;

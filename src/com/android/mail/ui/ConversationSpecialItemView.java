@@ -33,7 +33,7 @@ public interface ConversationSpecialItemView {
      *
      * @param cursor The {@link ConversationCursor}. May be <code>null</code>
      */
-    void onUpdate(String account, Folder folder, ConversationCursor cursor);
+    void onUpdate(Folder folder, ConversationCursor cursor);
 
     /**
      * Called before returning this view from

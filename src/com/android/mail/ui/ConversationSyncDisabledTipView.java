@@ -23,10 +23,8 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
@@ -178,7 +176,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
     }
 
     @Override
-    public void onUpdate(String account, Folder folder, ConversationCursor cursor) {
+    public void onUpdate(Folder folder, ConversationCursor cursor) {
         mFolder = folder;
     }
 
@@ -193,8 +191,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             return false;
         }
 
-        setReasonSyncOff(calculateReasonSyncOff(
-                getContext(), mMailPrefs, mAccount, mAccountPreferences));
+        setReasonSyncOff(calculateReasonSyncOff(mMailPrefs, mAccount, mAccountPreferences));
 
         if (mReasonSyncOff != ReasonSyncOff.NONE) {
             LogUtils.i(LOG_TAG, "Sync is off with reason %d", mReasonSyncOff);
@@ -210,7 +207,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
         }
     }
 
-    public static int calculateReasonSyncOff(Context context, MailPrefs mailPrefs,
+    public static int calculateReasonSyncOff(MailPrefs mailPrefs,
             Account account, AccountPreferences accountPreferences) {
         if (!ContentResolver.getMasterSyncAutomatically()) {
             // Global sync is turned off
