@@ -979,18 +979,22 @@ public class Utils {
             final Bitmap drawingCache = rootView.getDrawingCache();
             // Null check to avoid NPE discovered from monkey crash:
             if (drawingCache != null) {
-                final Bitmap originalBitmap = drawingCache.copy(Bitmap.Config.RGB_565, false);
-                double originalHeight = originalBitmap.getHeight();
-                double originalWidth = originalBitmap.getWidth();
-                int newHeight = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
-                int newWidth = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
-                double scaleX, scaleY;
-                scaleX = newWidth  / originalWidth;
-                scaleY = newHeight / originalHeight;
-                final double scale = Math.min(scaleX, scaleY);
-                newWidth = (int)Math.round(originalWidth * scale);
-                newHeight = (int)Math.round(originalHeight * scale);
-                return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+                try {
+                    final Bitmap originalBitmap = drawingCache.copy(Bitmap.Config.RGB_565, false);
+                    double originalHeight = originalBitmap.getHeight();
+                    double originalWidth = originalBitmap.getWidth();
+                    int newHeight = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
+                    int newWidth = SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH;
+                    double scaleX, scaleY;
+                    scaleX = newWidth  / originalWidth;
+                    scaleY = newHeight / originalHeight;
+                    final double scale = Math.min(scaleX, scaleY);
+                    newWidth = (int)Math.round(originalWidth * scale);
+                    newHeight = (int)Math.round(originalHeight * scale);
+                    return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+                } catch (OutOfMemoryError e) {
+                    LogUtils.e(LOG_TAG, e, "OOME when attempting to scale screenshot");
+                }
             }
         }
         return null;
