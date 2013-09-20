@@ -45,7 +45,6 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewCoordinates.CoordinatesCache;
 import com.android.mail.browse.SwipeableConversationItemView;
-import com.android.mail.content.ObjectCursor;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
@@ -57,7 +56,6 @@ import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
@@ -198,9 +196,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
      */
     private final List<ConversationSpecialItemView> mFleetingViews;
 
-    /** List of all child folders for this folder. */
-    private List<NestedFolderView> mFolderViews;
-
     /**
      * @return <code>true</code> if a relevant part of the account has changed, <code>false</code>
      *         otherwise
@@ -258,8 +253,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     public AnimatedAdapter(Context context, ConversationCursor cursor,
             ConversationSelectionSet batch, ControllableActivity activity,
-            SwipeableListView listView, final List<ConversationSpecialItemView> specialViews,
-            final ObjectCursor<Folder> childFolders) {
+            SwipeableListView listView, final List<ConversationSpecialItemView> specialViews) {
         super(context, -1, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
@@ -267,7 +261,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mActivity = activity;
         mShowFooter = false;
         mListView = listView;
-        mFolderViews = getNestedFolders(childFolders);
 
         mAttachmentPreviewsCache = new AltBitmapCache(ATTACHMENT_PREVIEWS_CACHE_TARGET_SIZE_BYTES,
                 ATTACHMENT_PREVIEWS_CACHE_NON_POOLED_FRACTION, 0);
@@ -290,7 +283,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             mFleetingViews = new ArrayList<ConversationSpecialItemView>(0);
         }
         /** Total number of special views */
-        final int size = mFleetingViews.size() + mFolderViews.size();
+        final int size = mFleetingViews.size();
         mSpecialViews = new SparseArray<ConversationSpecialItemView>(size);
 
         // Only set the adapter in teaser views. Folder views don't care about the adapter.
@@ -298,38 +291,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             view.setAdapter(this);
         }
         updateSpecialViews();
-    }
-
-    /**
-     * Returns a list containing views for all the nested folders.
-     * @param cursor cursor containing the folders nested within the current folder
-     * @return a list, possibly empty of the views representing the folders.
-     */
-    private List<NestedFolderView> getNestedFolders (final ObjectCursor<Folder> cursor) {
-        if (cursor == null || !cursor.moveToFirst()) {
-            // The cursor has nothing valid.  Return an empty list.
-            return ImmutableList.of();
-        }
-
-        final LayoutInflater inflater = LayoutInflater.from(mContext);
-        final List<NestedFolderView> folders = new ArrayList<NestedFolderView>(cursor.getCount());
-        do {
-            final NestedFolderView view =
-                    (NestedFolderView) inflater.inflate(R.layout.nested_folder, null);
-            view.setAdapter(this);
-            view.setFolder(cursor.getModel());
-            folders.add(view);
-        } while (cursor.moveToNext());
-        return folders;
-    }
-
-    /**
-     * Updates the list of folders for the current list with the cursor provided here.
-     * @param childFolders A cursor containing child folders for the current folder.
-     */
-    public void updateNestedFolders (ObjectCursor<Folder> childFolders) {
-        mFolderViews = getNestedFolders(childFolders);
-        notifyDataSetChanged();
     }
 
     public void cancelDismissCounter() {
@@ -1044,24 +1005,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         // We recreate all the special views using mFolderViews and mFleetingViews (in that order).
         mSpecialViews.clear();
 
-        int folderCount = 0;
-        // Nested folders are added initially. They don't specify positions: we put them at the
-        // very top.
-        for (final NestedFolderView view : mFolderViews) {
-            mSpecialViews.put(folderCount, view);
-            folderCount++;
-        }
-
         // Fleeting (temporary) views go after this. They specify a position,which is 0-indexed and
         // has to be adjusted for the number of folders above it.
         for (final ConversationSpecialItemView specialView : mFleetingViews) {
-            specialView.onUpdate(mAccount.name, mFolder, getConversationCursor());
+            specialView.onUpdate(mFolder, getConversationCursor());
 
             if (specialView.getShouldDisplayInList()) {
-                // If the special view asks for position 0, it wants to be at the top. However,
-                // if there are already 3 folders above it, the real position it needs is 0+3 (4th
-                // from top, since everything is 0-indexed).
-                int position = (specialView.getPosition() + folderCount);
+                // If the special view asks for position 0, it wants to be at the top.
+                int position = (specialView.getPosition());
 
                 // insert the special view into the position, but if there is
                 // already an item occupying that position, move that item back
@@ -1145,8 +1096,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         for (int i = 0, size = mSpecialViews.size(); i < size; i++) {
             final int bidPosition = mSpecialViews.keyAt(i);
             // If the view bid for a position above the cursor position,
-            // it is above the conversation. Also, every nested folder is above the conversations.
-            if (bidPosition <= position || (mSpecialViews.get(i) instanceof NestedFolderView)) {
+            // it is above the conversation.
+            if (bidPosition <= position) {
                 viewsAbove++;
             }
         }
