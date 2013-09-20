@@ -140,7 +140,7 @@ public class ConversationsInOutboxTipView extends FrameLayout
     }
 
     @Override
-    public void onUpdate(String account, Folder folder, ConversationCursor cursor) {
+    public void onUpdate(Folder folder, ConversationCursor cursor) {
         if (mLoaderManager != null && folder != null) {
             if ((folder.type & UIProvider.FolderType.SENT) > 0) {
                 // Only display this tip if user is viewing the Sent folder

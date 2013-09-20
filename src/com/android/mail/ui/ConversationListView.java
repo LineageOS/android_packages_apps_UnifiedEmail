@@ -9,7 +9,6 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -326,7 +325,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     // If sync is turned off on this device or account, remind the user with a toast.
     private void showToastIfSyncIsOff() {
         final int reasonSyncOff = ConversationSyncDisabledTipView.calculateReasonSyncOff(
-                getContext(), mMailPrefs, mConvListContext.account, mAccountPreferences);
+                mMailPrefs, mConvListContext.account, mAccountPreferences);
         switch (reasonSyncOff) {
             case ReasonSyncOff.AUTO_SYNC_OFF:
                 // TODO: make this an actionable toast, tapping on it goes to Settings

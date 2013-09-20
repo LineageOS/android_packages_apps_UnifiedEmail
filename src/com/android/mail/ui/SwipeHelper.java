@@ -206,12 +206,6 @@ public class SwipeHelper {
                 mLastY = ev.getY();
                 mDragging = false;
                 View view = mCallback.getChildAtPosition(ev);
-                if (view instanceof NestedFolderView) {
-                    // We don't want to allow nested folders to swipe at all. This would give the
-                    // false hope that they might be deleted by swiping away. Instead, treat them
-                    // like a plain list view element that doesn't allow any swipe gesture.
-                    return false;
-                }
                 if (view instanceof SwipeableItemView) {
                     mCurrView = (SwipeableItemView) view;
                 }

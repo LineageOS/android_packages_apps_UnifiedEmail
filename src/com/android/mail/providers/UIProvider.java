@@ -303,6 +303,10 @@ public class UIProvider {
          * Whether the account supports emptying the spam folder
          */
         public static final int EMPTY_SPAM = 0x400000;
+        /**
+         * Whether the account supports nested folders
+         */
+        public static final int NESTED_FOLDERS = 0x800000;
     }
 
     public static final class AccountColumns implements BaseColumns {

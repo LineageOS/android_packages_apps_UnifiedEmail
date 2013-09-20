@@ -21,10 +21,8 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Context;
-import android.content.Loader;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -46,8 +44,6 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewModel;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.browse.ToggleableItem;
-import com.android.mail.content.ObjectCursor;
-import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -160,52 +156,6 @@ public final class ConversationListFragment extends ListFragment implements
      * from when we were last on this conversation list.
      */
     private boolean mScrollPositionRestored = false;
-
-    /**
-     * If the current list is for a folder with children, this set of loader callbacks will
-     * create a loader for all the child folders, and will return an {@link ObjectCursor} over the
-     * list.
-     */
-    private final class ChildFolderLoads
-            implements LoaderManager.LoaderCallbacks<ObjectCursor<Folder>> {
-        /** Load all child folders for the current folder. */
-        private static final int LOADER_CHIDREN = 0;
-        public static final String CHILD_URI = "arg-child-uri";
-        private final String[] projection = UIProvider.FOLDERS_PROJECTION;
-
-        @Override
-        public Loader<ObjectCursor<Folder>> onCreateLoader(int id, Bundle args) {
-            if (id != LOADER_CHIDREN) {
-                throw new IllegalStateException("ChildFolderLoads loading ID=" + id);
-            }
-            final Uri childUri = Uri.parse(args.getString(CHILD_URI));
-            return new ObjectCursorLoader<Folder>(
-                    getActivity(), childUri, projection, Folder.FACTORY);
-        }
-
-        @Override
-        public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
-            if (data != null && data.getCount() >= 0 && mListAdapter != null) {
-                mListAdapter.updateNestedFolders(data);
-            }
-        }
-
-        @Override
-        public void onLoaderReset(Loader<ObjectCursor<Folder>> loader) {
-            // Do nothing.
-        }
-    }
-
-    /** Callbacks to handle creating a loader and receiving child folders from it. */
-    private final ChildFolderLoads mChildCallback = new ChildFolderLoads();
-
-    /**
-     * Include all the folders at the cursor provided here in the conversation list.
-     * @param cursor The cursor containing child folders for the current folder.
-     */
-    private void showChildFolders(ObjectCursor<Folder> cursor) {
-
-    }
 
     /**
      * Constructor needs to be public to handle orientation changes and activity
@@ -334,14 +284,6 @@ public final class ConversationListFragment extends ListFragment implements
         final ConversationCursor conversationCursor = getConversationListCursor();
         final LoaderManager manager = getLoaderManager();
 
-        // If this a parent folder, load all the child folders.
-        if (mViewContext.folder.hasChildren) {
-            final Uri childUri = mViewContext.folder.childFoldersListUri;
-            final Bundle args = new Bundle();
-            args.putString(ChildFolderLoads.CHILD_URI, childUri.toString());
-            manager.initLoader(ChildFolderLoads.LOADER_CHIDREN, args, mChildCallback);
-        }
-
         // TODO: These special views are always created, doesn't matter whether they will
         // be shown or not, as we add more views this will get more expensive. Given these are
         // tips that are only shown once to the user, we should consider creating these on demand.
@@ -359,7 +301,7 @@ public final class ConversationListFragment extends ListFragment implements
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), conversationCursor,
                 mActivity.getSelectedSet(), mActivity, mConversationListListener, mListView,
-                specialItemViews, null);
+                specialItemViews);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mSelectedSet = mActivity.getSelectedSet();
@@ -600,10 +542,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     @Override
     public void onListItemClick(ListView l, View view, int position, long id) {
-        if (view instanceof NestedFolderView) {
-            final FolderSelector selector = mActivity.getFolderSelector();
-            selector.onFolderSelected(((NestedFolderView) view).getFolder());
-        } else if (view instanceof ToggleableItem) {
+        if (view instanceof ToggleableItem) {
             final boolean showSenderImage =
                     (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
             final boolean inCabMode = !mSelectedSet.isEmpty();
