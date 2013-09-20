@@ -110,4 +110,11 @@
     <!-- The background color of the message header -->
     <color name="message_header_background_color">@android:color/white</color>
     <color name="message_border_gradient_color">#ebebeb</color>
+
+    <!-- The color of the icon background in the teaser -->
+    <color name="folder_teaser_icon_background">#eeeeee</color>
+    <!-- The color of the senders text in the teaser -->
+    <color name="folder_teaser_senders_text">#58585b</color>
+    <!-- The color of the count text in the teaser -->
+    <color name="folder_teaser_count_text">@android:color/black</color>
 </resources>
