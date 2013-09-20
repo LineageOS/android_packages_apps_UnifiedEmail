@@ -136,6 +136,7 @@ public class UIProvider {
             .put(AccountColumns.URI, String.class)
             .put(AccountColumns.FOLDER_LIST_URI, String.class)
             .put(AccountColumns.FULL_FOLDER_LIST_URI, String.class)
+            .put(AccountColumns.ALL_FOLDER_LIST_URI, String.class)
             .put(AccountColumns.SEARCH_URI, String.class)
             .put(AccountColumns.ACCOUNT_FROM_ADDRESSES, String.class)
             .put(AccountColumns.EXPUNGE_MESSAGE_URI, String.class)
@@ -342,9 +343,15 @@ public class UIProvider {
 
         /**
          * This string column contains the content provider uri to return the
-         * list of all folders for this account.
+         * list of all real folders for this account.
          */
         public static final String FULL_FOLDER_LIST_URI = "fullFolderListUri";
+
+        /**
+         * This string column contains the content provider uri to return the
+         * list of all real and synthetic folders for this account.
+         */
+        public static final String ALL_FOLDER_LIST_URI = "allFolderListUri";
 
         /**
          * This string column contains the content provider uri that can be queried for search
