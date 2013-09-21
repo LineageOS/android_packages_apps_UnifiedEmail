@@ -86,6 +86,11 @@ public class AttachmentUtils {
      * @return friendly file type or empty string
      */
     public static String getDisplayType(final Context context, final Attachment attachment) {
+        if ((attachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
+            // This is a dummy attachment, display blank for type.
+            return null;
+        }
+
         // try to get a friendly name for the exact mime type
         // then try to show a friendly name for the mime family
         // finally, give up and just show the file extension
