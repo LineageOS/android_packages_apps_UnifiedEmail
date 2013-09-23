@@ -394,6 +394,6 @@
     <string name="phone" msgid="5171715391553213328">"ifoni"</string>
     <string name="tablet" msgid="7956969657216748522">"ithebulethi"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Vula"</string>
-    <string name="show_n_more_folders" msgid="337747297817699776">"Bonisa amafolder amaningi angu-<xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"Bonisa amafolda amaningi angu-<xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="hide_folders" msgid="7473552966537131652">"Fihla amafolda"</string>
 </resources>
