@@ -311,8 +311,8 @@
     <string name="auto_advance_summary" msgid="573927628806250719">"Choisissez l\'écran à afficher après la suppression d\'un message."</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"Définir les préférences d\'avance automatique\n(après suppression, etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
-    <item msgid="3400401085256526376">"Plus récente"</item>
-    <item msgid="5562093094216840213">"Plus ancienne"</item>
+    <item msgid="3400401085256526376">"Conversation précédente"</item>
+    <item msgid="5562093094216840213">"Conversation suivante"</item>
     <item msgid="3331655314944797957">"Liste des conversations"</item>
   </string-array>
   <string-array name="prefSummaries_autoAdvance">
@@ -357,8 +357,8 @@
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Actions d\'archivage et de suppression"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Répondre à tous"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Utiliser ce paramètre par défaut pour les réponses"</string>
-    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Faire glisser les éléments pour les archiver"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Faire glisser les éléments pour les supprimer"</string>
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Faire glisser pour archiver"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Faire glisser pour supprimer"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Dans la liste des conversations"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Image de l\'expéditeur"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Afficher à côté du nom dans la liste des conversations"</string>
