@@ -67,7 +67,7 @@
     <string name="discard_drafts" msgid="6862272443470085375">"Elimina bozze"</string>
     <string name="refresh" msgid="490989798005710951">"Aggiorna"</string>
     <string name="reply" msgid="2032052598496088561">"Rispondi"</string>
-    <string name="reply_all" msgid="7257248094625487557">"Risp. tutti"</string>
+    <string name="reply_all" msgid="7257248094625487557">"Rispondi a tutti"</string>
     <string name="resume_draft" msgid="6450150180834092146">"Modifica"</string>
     <string name="forward" msgid="6822914459902983767">"Inoltra"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Scrivi"</string>
@@ -322,7 +322,7 @@
   </string-array>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Cancella approvazioni immagini"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Cancellare le approvazioni per le immagini?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Smetti di visualizzare immagini incorporate da mittenti in precedenza consentiti."</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Non mostrare più le immagini incorporate nei messsaggi di mittenti in precedenza autorizzati."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Le immagini non saranno mostrate automaticamente."</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"Firma"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Firma"</string>
