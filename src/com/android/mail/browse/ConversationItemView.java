@@ -1658,13 +1658,13 @@ public class ConversationItemView extends View
         }
 
         if (mStarEnabled) {
-            if (mIsExpansiveTablet) {
+            if (mCoordinates.getMode() == ConversationItemViewCoordinates.WIDE_MODE) {
                 // Just check that we're left of the star's touch area
                 if (x >= mCoordinates.starX - sStarTouchSlop) {
                     return false;
                 }
             } else {
-                // We're on a phone or non-expansive tablet
+                // We're on a single pane device with the more condensed layout
 
                 // We allow touches all the way to the right edge, so no x check is necessary
 
@@ -1680,7 +1680,8 @@ public class ConversationItemView extends View
     }
 
     private boolean isTouchInStar(float x, float y) {
-        if (mHeader.infoIcon != null && !mIsExpansiveTablet) {
+        if (mHeader.infoIcon != null
+                && mCoordinates.getMode() != ConversationItemViewCoordinates.WIDE_MODE) {
             // We have an info icon, and it's above the star
             // We allow touches everywhere below the top of the subject text
             if (y < mCoordinates.subjectY) {
