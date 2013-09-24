@@ -113,11 +113,14 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
         mAttachmentPreviewCache = attachmentPreviewCache;
 
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
-                " contentUri=%s MIME=%s", attachment.getName(), attachment.state,
+                " contentUri=%s MIME=%s flags=%d", attachment.getName(), attachment.state,
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
-                attachment.getContentType());
+                attachment.getContentType(), attachment.flags);
 
-        if (prevAttachment == null
+        if ((attachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
+            // TODO: This is not an ideal string, but it's too late in KLP to add new strings.
+            mTitle.setText(R.string.load_more);
+        } else if (prevAttachment == null
                 || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
             mTitle.setText(attachment.getName());
         }
@@ -137,8 +140,10 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
         // not worth translation right now.
         StringBuilder sb = new StringBuilder();
         sb.append(mAttachmentSizeText);
-        sb.append(' ');
-        sb.append(mDisplayType);
+        if (mDisplayType != null) {
+            sb.append(' ');
+            sb.append(mDisplayType);
+        }
         mSubtitle.setText(sb.toString());
     }
 

@@ -1816,7 +1816,8 @@ public class UIProvider {
         AttachmentColumns.PREVIEW_INTENT_URI,
         AttachmentColumns.PROVIDER_DATA,
         AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN,
-        AttachmentColumns.TYPE
+        AttachmentColumns.TYPE,
+        AttachmentColumns.FLAGS
     };
     public static final int ATTACHMENT_NAME_COLUMN = 0;
     public static final int ATTACHMENT_SIZE_COLUMN = 1;
@@ -1830,6 +1831,7 @@ public class UIProvider {
     public static final int ATTACHMENT_PREVIEW_INTENT_COLUMN = 9;
     public static final int ATTACHMENT_SUPPORTS_DOWNLOAD_AGAIN_COLUMN = 10;
     public static final int ATTACHMENT_TYPE_COLUMN = 11;
+    public static final int ATTACHMENT_FLAGS_COLUMN = 12;
 
     /** Separates attachment info parts in strings in the database. */
     public static final String ATTACHMENT_INFO_SEPARATOR = "\n"; // use to join
@@ -2004,6 +2006,11 @@ public class UIProvider {
          * {@link AttachmentType} constants.
          */
         public static final String TYPE = "type";
+
+        /**
+         * This column holds various bitwise flags for status information.
+         */
+        public static final String FLAGS = "flags";
 
         private AttachmentColumns() {}
     }

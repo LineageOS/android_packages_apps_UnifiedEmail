@@ -121,11 +121,13 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         mSaveClicked = !attachment.isDownloading() ? false : mSaveClicked;
 
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
-                " contentUri=%s MIME=%s", attachment.getName(), attachment.state,
+                " contentUri=%s MIME=%s flags=%d", attachment.getName(), attachment.state,
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
-                attachment.getContentType());
+                attachment.getContentType(), attachment.flags);
 
-        if (prevAttachment == null
+        if ((attachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
+            mTitle.setText(R.string.load_attachment);
+        } else if (prevAttachment == null
                 || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
             mTitle.setText(attachment.getName());
         }
@@ -219,12 +221,19 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             // in any area that is not the overflow
             // button or cancel button or one of the
             // overflow items.
-
             final String mime = Utils.normalizeMimeType(mAttachment.getContentType());
             final String action;
 
+            if ((mAttachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
+                // This is a dummy. We need to download it, but not attempt to open or preview.
+                mActionHandler.showDownloadingDialog();
+                mActionHandler.setViewOnFinish(false);
+                mActionHandler.startDownloadingAttachment(AttachmentDestination.CACHE);
+
+                action = null;
+            }
             // If the mimetype is blocked, show the info dialog
-            if (MimeType.isBlocked(mAttachment.getContentType())) {
+            else if (MimeType.isBlocked(mAttachment.getContentType())) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 int dialogMessage = R.string.attachment_type_blocked;
                 builder.setTitle(R.string.more_info_attachment)
@@ -232,7 +241,6 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                        .show();
 
                 action = "attachment_bar_blocked";
-
             }
             // If we can install, install.
             else if (MimeType.isInstallable(mAttachment.getContentType())) {
@@ -399,8 +407,10 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             } else {
                 sb.append(mAttachmentSizeText);
             }
-            sb.append(' ');
-            sb.append(mDisplayType);
+            if (mDisplayType != null) {
+                sb.append(' ');
+                sb.append(mDisplayType);
+            }
         }
         mSubTitle.setText(sb.toString());
     }
