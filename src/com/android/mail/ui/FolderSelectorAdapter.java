@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +35,12 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Collections;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 /**
@@ -47,6 +52,8 @@ public class FolderSelectorAdapter extends BaseAdapter {
     public static class FolderRow implements Comparable<FolderRow> {
         private final Folder mFolder;
         private boolean mIsPresent;
+        // Filled in during folderSort
+        public String mPathName;
 
         public FolderRow(Folder folder, boolean isPresent) {
             mFolder = folder;
@@ -131,12 +138,135 @@ public class FolderSelectorAdapter extends BaseAdapter {
             } while (folders.moveToNext());
         }
         // Sort the checked folders.
-        Collections.sort(mFolderRows);
+        folderSort(mFolderRows);
         // Leave system folders unsorted, and add them.
         mFolderRows.addAll(systemUnselected);
         // Sort all the user rows, and then add them at the end of the output rows.
-        Collections.sort(userUnselected);
+        folderSort(userUnselected);
         mFolderRows.addAll(userUnselected);
+    }
+
+    /**
+     * Wrapper class to construct a hierarchy tree of FolderRow objects for sorting
+     */
+    private static class TreeNode implements Comparable<TreeNode> {
+        public FolderRow mWrappedObject;
+        final public PriorityQueue<TreeNode> mChildren = new PriorityQueue<TreeNode>();
+        public boolean mAddedToList = false;
+
+        TreeNode(FolderRow wrappedObject) {
+            mWrappedObject = wrappedObject;
+        }
+
+        void addChild(final TreeNode child) {
+            mChildren.add(child);
+        }
+
+        TreeNode pollChild() {
+            return mChildren.poll();
+        }
+
+        @Override
+        public int compareTo(TreeNode o) {
+            // mWrappedObject is always non-null here because we set it before we add this object
+            // to a sorted collection, otherwise we wouldn't have known what collection to add it to
+            return mWrappedObject.compareTo(o.mWrappedObject);
+        }
+    }
+
+    /**
+     * Sorts the folder list according to hierarchy.
+     * If no parent information exists this basically just turns into a heap sort
+     *
+     * How this works:
+     * When the first part of this algorithm completes, we want to have a tree of TreeNode objects
+     * mirroring the hierarchy of mailboxes/folders in the user's account, but we don't have any
+     * guarantee that we'll see the parents before their respective children.
+     * First we check the nodeMap to see if we've already pre-created (see below) a TreeNode for
+     * the current FolderRow, and if not then we create one now.
+     * Then for each folder, we check to see if the parent TreeNode has already been created. We
+     * special case the root node. If we don't find the parent node, then we pre-create one to fill
+     * in later (see above) when we eventually find the parent's entry.
+     * Whenever we create a new TreeNode we add it to the nodeMap keyed on the folder's provider
+     * Uri, so that we can find it later either to add children or to retrieve a half-created node.
+     * It should be noted that it is only valid to add a child node after the mWrappedObject
+     * member variable has been set.
+     * Finally we do a depth-first traversal of the constructed tree to re-fill the folderList in
+     * hierarchical order.
+     * @param folderList List of {@link Folder} objects to sort
+     */
+    private void folderSort(final List<FolderRow> folderList) {
+        final TreeNode root = new TreeNode(null);
+        // Make double-sure we don't accidentally add the root node to the final list
+        root.mAddedToList = true;
+        // Map from folder Uri to TreeNode containing said folder
+        final Map<Uri, TreeNode> nodeMap = new HashMap<Uri, TreeNode>(folderList.size());
+        nodeMap.put(Uri.EMPTY, root);
+
+        for (final FolderRow folderRow : folderList) {
+            final Folder folder = folderRow.mFolder;
+            // Find-and-complete or create the TreeNode wrapper
+            TreeNode node = nodeMap.get(folder.folderUri.getComparisonUri());
+            if (node == null) {
+                node = new TreeNode(folderRow);
+                nodeMap.put(folder.folderUri.getComparisonUri(), node);
+            } else {
+                node.mWrappedObject = folderRow;
+            }
+            // Special case the top level folders
+            if (folderRow.mFolder.parent == null || folderRow.mFolder.parent.equals(Uri.EMPTY)) {
+                root.addChild(node);
+            } else {
+                // Find or half-create the parent TreeNode wrapper
+                TreeNode parentNode = nodeMap.get(folder.parent);
+                if (parentNode == null) {
+                    parentNode = new TreeNode(null);
+                    nodeMap.put(folder.parent, parentNode);
+                }
+                parentNode.addChild(node);
+            }
+        }
+
+        folderList.clear();
+
+        // Depth-first traversal of the constructed tree. Flattens the tree back into the
+        // folderList list and sets mPathName in the FolderRow objects
+        final Deque<TreeNode> stack = new ArrayDeque<TreeNode>(10);
+        stack.push(root);
+        TreeNode currentNode;
+        while ((currentNode = stack.poll()) != null) {
+            final TreeNode parentNode = stack.peek();
+            // If parentNode is null then currentNode is the root node (not a real folder)
+            // If mAddedToList is true it means we've seen this node before and just want to
+            // iterate the children.
+            if (parentNode != null && !currentNode.mAddedToList) {
+                final String pathName;
+                // If the wrapped object is null then the parent is the root
+                if (parentNode.mWrappedObject == null ||
+                        TextUtils.isEmpty(parentNode.mWrappedObject.mPathName)) {
+                    pathName = currentNode.mWrappedObject.mFolder.name;
+                } else {
+                    /**
+                     * This path name is re-split at / characters in
+                     * {@link HierarchicalFolderSelectorAdapter#truncateHierarchy}
+                     */
+                    pathName = parentNode.mWrappedObject.mPathName + "/"
+                            + currentNode.mWrappedObject.mFolder.name;
+                }
+                currentNode.mWrappedObject.mPathName = pathName;
+                folderList.add(currentNode.mWrappedObject);
+                // Mark this node as done so we don't re-add it
+                currentNode.mAddedToList = true;
+            }
+            final TreeNode childNode = currentNode.pollChild();
+            if (childNode != null) {
+                // If we have children to deal with, re-push the current node as the parent...
+                stack.push(currentNode);
+                // ... then add the child node and loop around to deal with it...
+                stack.push(childNode);
+            }
+            // ... otherwise we're done with currentNode
+        }
     }
 
     /**
@@ -186,8 +316,6 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     /**
      * Returns true if this position represents the header.
-     * @param position
-     * @return
      */
     protected final boolean isHeader(int position) {
         return position == 0 && hasHeader();
@@ -202,21 +330,18 @@ public class FolderSelectorAdapter extends BaseAdapter {
             view.setText(mHeader);
             return view;
         }
-        View view = convertView;
-        CompoundButton checkBox = null;
-        View colorBlock;
-        ImageView iconView;
-        TextView display;
+        final View view;
 
-        if (view == null) {
+        if (convertView == null) {
             view = mInflater.inflate(mLayout, parent, false);
+        } else {
+            view = convertView;
         }
         final FolderRow row = (FolderRow) getItem(position);
         final Folder folder = row.getFolder();
-        final String folderDisplay = !TextUtils.isEmpty(folder.hierarchicalDesc) ?
-                folder.hierarchicalDesc : folder.name;
-        checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
-        display = (TextView) view.findViewById(R.id.folder_name);
+        final String folderDisplay = !TextUtils.isEmpty(row.mPathName) ?
+                row.mPathName : folder.name;
+        final CompoundButton checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
         if (checkBox != null) {
             // Suppress the checkbox selection, and handle the toggling of the
             // folder on the parent list item's click handler.
@@ -224,17 +349,18 @@ public class FolderSelectorAdapter extends BaseAdapter {
             checkBox.setText(folderDisplay);
             checkBox.setChecked(row.isPresent());
         }
+        final TextView display = (TextView) view.findViewById(R.id.folder_name);
         if (display != null) {
             display.setText(folderDisplay);
         }
-        colorBlock = view.findViewById(R.id.color_block);
-        iconView = (ImageView) view.findViewById(R.id.folder_icon);
+        final View colorBlock = view.findViewById(R.id.color_block);
+        final ImageView iconView = (ImageView) view.findViewById(R.id.folder_icon);
         Folder.setFolderBlockColor(folder, colorBlock);
         Folder.setIcon(folder, iconView);
         return view;
     }
 
-    private final boolean hasHeader() {
+    private boolean hasHeader() {
         return mHeader != null;
     }
 

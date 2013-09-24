@@ -92,7 +92,7 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
         mAccount = account;
         mBuilder = builder;
         mCurrentFolder = currentFolder;
-        mAdapter = new SeparatedFolderListAdapter(context);
+        mAdapter = new SeparatedFolderListAdapter();
         mRunner = new QueryRunner(context);
     }
 
