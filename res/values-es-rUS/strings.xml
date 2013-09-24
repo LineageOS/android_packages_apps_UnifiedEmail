@@ -309,7 +309,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Detalles del mensaje"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Avance automático"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Elige la pantalla que deseas ver luego de eliminar un mensaje."</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Configurar preferencia de avance automático\n(luego de eliminar, etc.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Preferencia de avance automático\n(luego de eliminar, etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Más reciente"</item>
     <item msgid="5562093094216840213">"Más antigua"</item>
