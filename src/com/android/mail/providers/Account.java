@@ -69,10 +69,15 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public final Uri folderListUri;
     /**
-     * The content provider uri to return the list of all folders for this
+     * The content provider uri to return the list of all real folders for this
      * account.
      */
     public Uri fullFolderListUri;
+    /**
+     * The content provider uri to return the list of all real and synthetic folders for this
+     * account.
+     */
+    public Uri allFolderListUri;
     /**
      * The content provider uri that can be queried for search results.
      */
@@ -207,6 +212,7 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(AccountColumns.CAPABILITIES, capabilities);
             json.put(AccountColumns.FOLDER_LIST_URI, folderListUri);
             json.put(AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
+            json.put(AccountColumns.ALL_FOLDER_LIST_URI, allFolderListUri);
             json.put(AccountColumns.SEARCH_URI, searchUri);
             json.put(AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
             json.put(AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
@@ -285,6 +291,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 .getValidUri(json.optString(AccountColumns.FOLDER_LIST_URI));
         fullFolderListUri = Utils.getValidUri(json
                 .optString(AccountColumns.FULL_FOLDER_LIST_URI));
+        allFolderListUri = Utils.getValidUri(json
+                .optString(AccountColumns.ALL_FOLDER_LIST_URI));
         searchUri = Utils.getValidUri(json.optString(AccountColumns.SEARCH_URI));
         accountFromAddresses = json.optString(AccountColumns.ACCOUNT_FROM_ADDRESSES,
                 "");
@@ -349,6 +357,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.FOLDER_LIST_URI)));
         fullFolderListUri = Utils.getValidUri(cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI)));
+        allFolderListUri = Utils.getValidUri(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.ALL_FOLDER_LIST_URI)));
         searchUri = Utils.getValidUri(
                 cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.SEARCH_URI)));
         expungeMessageUri = Utils.getValidUri(cursor.getString(
@@ -443,6 +453,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         capabilities = in.readInt();
         folderListUri = in.readParcelable(null);
         fullFolderListUri = in.readParcelable(null);
+        allFolderListUri = in.readParcelable(null);
         searchUri = in.readParcelable(null);
         accountFromAddresses = in.readString();
         expungeMessageUri = in.readParcelable(null);
@@ -484,6 +495,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeInt(capabilities);
         dest.writeParcelable(folderListUri, 0);
         dest.writeParcelable(fullFolderListUri, 0);
+        dest.writeParcelable(allFolderListUri, 0);
         dest.writeParcelable(searchUri, 0);
         dest.writeString(accountFromAddresses);
         dest.writeParcelable(expungeMessageUri, 0);
@@ -536,6 +548,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(uri, other.uri) &&
                 Objects.equal(folderListUri, other.folderListUri) &&
                 Objects.equal(fullFolderListUri, other.fullFolderListUri) &&
+                Objects.equal(allFolderListUri, other.allFolderListUri) &&
                 Objects.equal(searchUri, other.searchUri) &&
                 Objects.equal(accountFromAddresses, other.accountFromAddresses) &&
                 Objects.equal(expungeMessageUri, other.expungeMessageUri) &&
@@ -580,13 +593,34 @@ public class Account extends android.accounts.Account implements Parcelable {
     @Override
     public int hashCode() {
         return super.hashCode()
-                ^ Objects.hashCode(name, type, capabilities, providerVersion, uri, folderListUri,
-                        fullFolderListUri, searchUri, accountFromAddresses, expungeMessageUri,
-                        undoUri, settingsIntentUri, helpIntentUri, sendFeedbackIntentUri,
-                        reauthenticationIntentUri, syncStatus, composeIntentUri, mimeType,
-                        recentFolderListUri, color, defaultRecentFolderListUri, viewIntentProxyUri,
-                        accoutCookieQueryUri, updateSettingsUri, enableMessageTransforms,
-                        syncAuthority, quickResponseUri);
+                ^ Objects.hashCode(name,
+                        type,
+                        capabilities,
+                        providerVersion,
+                        uri,
+                        folderListUri,
+                        fullFolderListUri,
+                        allFolderListUri,
+                        searchUri,
+                        accountFromAddresses,
+                        expungeMessageUri,
+                        undoUri,
+                        settingsIntentUri,
+                        helpIntentUri,
+                        sendFeedbackIntentUri,
+                        reauthenticationIntentUri,
+                        syncStatus,
+                        composeIntentUri,
+                        mimeType,
+                        recentFolderListUri,
+                        color,
+                        defaultRecentFolderListUri,
+                        viewIntentProxyUri,
+                        accoutCookieQueryUri,
+                        updateSettingsUri,
+                        enableMessageTransforms,
+                        syncAuthority,
+                        quickResponseUri);
     }
 
     /**
@@ -681,6 +715,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         map.put(AccountColumns.CAPABILITIES, capabilities);
         map.put(AccountColumns.FOLDER_LIST_URI, folderListUri);
         map.put(AccountColumns.FULL_FOLDER_LIST_URI, fullFolderListUri);
+        map.put(AccountColumns.ALL_FOLDER_LIST_URI, allFolderListUri);
         map.put(AccountColumns.SEARCH_URI, searchUri);
         map.put(AccountColumns.ACCOUNT_FROM_ADDRESSES, accountFromAddresses);
         map.put(AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
