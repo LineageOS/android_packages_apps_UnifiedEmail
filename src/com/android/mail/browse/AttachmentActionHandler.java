@@ -52,6 +52,7 @@ public class AttachmentActionHandler {
     private final Context mContext;
     private final Handler mHandler;
     private FragmentManager mFragmentManager;
+    private boolean mViewOnFinish;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -60,6 +61,7 @@ public class AttachmentActionHandler {
         mView = view;
         mContext = context;
         mHandler = new Handler();
+        mViewOnFinish = true;
     }
 
     public void initialize(FragmentManager fragmentManager) {
@@ -68,6 +70,10 @@ public class AttachmentActionHandler {
 
     public void setAttachment(Attachment attachment) {
         mAttachment = attachment;
+    }
+
+    public void setViewOnFinish(boolean viewOnFinish) {
+        mViewOnFinish = viewOnFinish;
     }
 
     public void showAttachment(int destination) {
@@ -177,7 +183,7 @@ public class AttachmentActionHandler {
                 });
             }
 
-            if (mAttachment.state == AttachmentState.SAVED) {
+            if (mAttachment.state == AttachmentState.SAVED && mViewOnFinish) {
                 mView.viewAttachment();
             }
         } else {
