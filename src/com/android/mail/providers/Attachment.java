@@ -62,6 +62,9 @@ public class Attachment implements Parcelable {
      */
     public static final String EMPTY_PART_ID = "empty";
 
+    // Indicates that this is a dummy placeholder attachment.
+    public static final int FLAG_DUMMY_ATTACHMENT = 1<<10;
+
     /**
      * Part id of the attachment.
      */
@@ -149,6 +152,8 @@ public class Attachment implements Parcelable {
      */
     public int type;
 
+    public int flags;
+
     /**
      * Might be null. JSON string.
      *
@@ -162,6 +167,7 @@ public class Attachment implements Parcelable {
      * True if this attachment can be downloaded again.
      */
     private boolean supportsDownloadAgain;
+
 
     public Attachment() {
     }
@@ -180,6 +186,7 @@ public class Attachment implements Parcelable {
         providerData = in.readString();
         supportsDownloadAgain = in.readInt() == 1;
         type = in.readInt();
+        flags = in.readInt();
     }
 
     public Attachment(Cursor cursor) {
@@ -204,6 +211,7 @@ public class Attachment implements Parcelable {
         supportsDownloadAgain = cursor.getInt(
                 cursor.getColumnIndex(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN)) == 1;
         type = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.TYPE));
+        flags = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.FLAGS));
     }
 
     public Attachment(JSONObject srcJson) {
@@ -220,6 +228,7 @@ public class Attachment implements Parcelable {
         providerData = srcJson.optString(AttachmentColumns.PROVIDER_DATA);
         supportsDownloadAgain = srcJson.optBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, true);
         type = srcJson.optInt(AttachmentColumns.TYPE);
+        flags = srcJson.optInt(AttachmentColumns.FLAGS);
     }
 
     /**
@@ -246,6 +255,7 @@ public class Attachment implements Parcelable {
             supportsDownloadAgain = false;
             destination = AttachmentDestination.CACHE;
             type = AttachmentType.STANDARD;
+            flags = 0;
 
             // insert attachment into content provider so that we can open the file
             final ContentResolver resolver = context.getContentResolver();
@@ -290,6 +300,7 @@ public class Attachment implements Parcelable {
         providerData = values.getAsString(AttachmentColumns.PROVIDER_DATA);
         supportsDownloadAgain = values.getAsBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN);
         type = values.getAsInteger(AttachmentColumns.TYPE);
+        flags = values.getAsInteger(AttachmentColumns.FLAGS);
     }
 
     /**
@@ -313,6 +324,7 @@ public class Attachment implements Parcelable {
         values.put(AttachmentColumns.PROVIDER_DATA, providerData);
         values.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
         values.put(AttachmentColumns.TYPE, type);
+        values.put(AttachmentColumns.FLAGS, flags);
 
         return values;
     }
@@ -332,6 +344,7 @@ public class Attachment implements Parcelable {
         dest.writeString(providerData);
         dest.writeInt(supportsDownloadAgain ? 1 : 0);
         dest.writeInt(type);
+        dest.writeInt(flags);
     }
 
     public JSONObject toJSON() throws JSONException {
@@ -350,6 +363,7 @@ public class Attachment implements Parcelable {
         result.put(AttachmentColumns.PROVIDER_DATA, providerData);
         result.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
         result.put(AttachmentColumns.TYPE, type);
+        result.put(AttachmentColumns.FLAGS, flags);
 
         return result;
     }
