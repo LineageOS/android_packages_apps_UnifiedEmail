@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -27,21 +26,18 @@ import java.util.ArrayList;
 
 public class SeparatedFolderListAdapter extends BaseAdapter {
 
-    public final ArrayList<FolderSelectorAdapter> sections =
+    private final ArrayList<FolderSelectorAdapter> mSections =
             new ArrayList<FolderSelectorAdapter>();
     public final static int TYPE_SECTION_HEADER = 0;
     public final static int TYPE_ITEM = 1;
 
-    public SeparatedFolderListAdapter(Context context) {
-    }
-
     public void addSection(FolderSelectorAdapter adapter) {
-        sections.add(adapter);
+        mSections.add(adapter);
     }
 
     @Override
     public Object getItem(int position) {
-        for (FolderSelectorAdapter adapter : this.sections) {
+        for (FolderSelectorAdapter adapter : mSections) {
             int size = adapter.getCount();
 
             // check if position inside this section
@@ -58,7 +54,7 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
     public int getCount() {
         // total together all sections, plus one for each section header
         int total = 0;
-        for (FolderSelectorAdapter adapter : this.sections) {
+        for (FolderSelectorAdapter adapter : mSections) {
             total += adapter.getCount();
         }
         return total;
@@ -68,7 +64,7 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
     public int getViewTypeCount() {
         // assume that headers count as one, then total all sections
         int total = 0;
-        for (Adapter adapter : this.sections)
+        for (Adapter adapter : mSections)
             total += adapter.getViewTypeCount();
         return total;
     }
@@ -76,7 +72,7 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
     @Override
     public int getItemViewType(int position) {
         int type = 0;
-        for (FolderSelectorAdapter adapter : this.sections) {
+        for (FolderSelectorAdapter adapter : mSections) {
             int size = adapter.getCount();
             // check if position inside this section
             if (position == 0 || position < size) {
@@ -102,7 +98,7 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        for (FolderSelectorAdapter adapter : this.sections) {
+        for (FolderSelectorAdapter adapter : mSections) {
             int size = adapter.getCount();
             if (position == 0 || position < size) {
                 return adapter.getView(position, convertView, parent);
