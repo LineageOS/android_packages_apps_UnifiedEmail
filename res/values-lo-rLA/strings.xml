@@ -375,7 +375,7 @@
     <string name="drawer_open" msgid="6074646853178471940">"ເປີດລິ້ນຊັກໂຕນຳທາງ"</string>
     <string name="drawer_close" msgid="2764774620737876943">"ປິດລິ້ນຊັກໂຕນຳທາງ"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"ແຕະໄປທີ່ຮູບຜູ່ສົ່ງ ເພື່ອເລືອກການສົນທະນານັ້ນ."</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"ແຕະ &amp; ກົດຄ້າງໄວ້ເພື່ອເລືອກໜຶ່ງການສົນທະນາ ແລ້ວແຕະເພື່ອເລືອກເພີ່ມເຕີມ."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"ແຕະຄ້າງໄວ້ເພື່ອເລືອກນຶ່ງການສົນທະນາ ແລ້ວແຕະເພື່ອເລືອກເພີ່ມເຕີມ."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"ໄອຄອນໂຟນເດີ"</string>
     <string name="add_account" msgid="2162808366829269770">"ເພີ່ມບັນຊີ"</string>
     <string name="attached_message" msgid="4267189489654642035">"ໄຟລ໌ແນບຂໍ້ຄວາມ"</string>
