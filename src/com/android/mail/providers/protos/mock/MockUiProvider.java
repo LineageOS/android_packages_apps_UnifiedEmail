@@ -338,6 +338,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES, replyFroms.toString());
         accountMap.put(AccountColumns.FOLDER_LIST_URI, Uri.parse(accountUri + "/folders"));
         accountMap.put(AccountColumns.FULL_FOLDER_LIST_URI, Uri.parse(accountUri + "/folders"));
+        accountMap.put(AccountColumns.ALL_FOLDER_LIST_URI, Uri.parse(accountUri + "/folders"));
         accountMap.put(AccountColumns.SEARCH_URI, Uri.parse(accountUri + "/search"));
         accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI,
                 Uri.parse(accountUri + "/expungeMessage"));

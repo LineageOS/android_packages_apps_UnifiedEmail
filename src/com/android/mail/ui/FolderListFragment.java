@@ -123,8 +123,8 @@ public class FolderListFragment extends ListFragment implements
     private Folder mParentFolder;
 
     private static final int FOLDER_LIST_LOADER_ID = 0;
-    /** Loader id for the full list of folders in the account */
-    private static final int FULL_FOLDER_LIST_LOADER_ID = 1;
+    /** Loader id for the list of all folders in the account */
+    private static final int ALL_FOLDER_LIST_LOADER_ID = 1;
     /** Key to store {@link #mParentFolder}. */
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
     /** Key to store {@link #mFolderListUri}. */
@@ -523,8 +523,8 @@ public class FolderListFragment extends ListFragment implements
                 // Drawers get the folder list from the current account.
                 folderListUri = mCurrentAccount.folderListUri;
             }
-        } else if (id == FULL_FOLDER_LIST_LOADER_ID) {
-            folderListUri = mCurrentAccount.fullFolderListUri;
+        } else if (id == ALL_FOLDER_LIST_LOADER_ID) {
+            folderListUri = mCurrentAccount.allFolderListUri;
         } else {
             LogUtils.wtf(LOG_TAG, "FLF.onCreateLoader() with weird type");
             return null;
@@ -538,8 +538,8 @@ public class FolderListFragment extends ListFragment implements
         if (mCursorAdapter != null) {
             if (loader.getId() == FOLDER_LIST_LOADER_ID) {
                 mCursorAdapter.setCursor(data);
-            } else if (loader.getId() == FULL_FOLDER_LIST_LOADER_ID) {
-                mCursorAdapter.setFullFolderListCursor(data);
+            } else if (loader.getId() == ALL_FOLDER_LIST_LOADER_ID) {
+                mCursorAdapter.setAllFolderListCursor(data);
             }
         }
     }
@@ -549,8 +549,8 @@ public class FolderListFragment extends ListFragment implements
         if (mCursorAdapter != null) {
             if (loader.getId() == FOLDER_LIST_LOADER_ID) {
                 mCursorAdapter.setCursor(null);
-            } else if (loader.getId() == FULL_FOLDER_LIST_LOADER_ID) {
-                mCursorAdapter.setFullFolderListCursor(null);
+            } else if (loader.getId() == ALL_FOLDER_LIST_LOADER_ID) {
+                mCursorAdapter.setAllFolderListCursor(null);
             }
         }
     }
@@ -573,8 +573,8 @@ public class FolderListFragment extends ListFragment implements
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
         /** Update the folder list cursor with the cursor given here. */
         void setCursor(ObjectCursor<Folder> cursor);
-        /** Update the full folder list cursor with the cursor given here. */
-        void setFullFolderListCursor(ObjectCursor<Folder> cursor);
+        /** Update the all folder list cursor with the cursor given here. */
+        void setAllFolderListCursor(ObjectCursor<Folder> cursor);
         /**
          * Given an item, find the type of the item, which should only be {@link
          * DrawerItem#VIEW_FOLDER} or {@link DrawerItem#VIEW_ACCOUNT}
@@ -617,8 +617,8 @@ public class FolderListFragment extends ListFragment implements
         private List<DrawerItem> mItemList = new ArrayList<DrawerItem>();
         /** Cursor into the folder list. This might be null. */
         private ObjectCursor<Folder> mCursor = null;
-        /** Cursor into the full folder list. This might be null. */
-        private ObjectCursor<Folder> mFullFolderListCursor = null;
+        /** Cursor into the all folder list. This might be null. */
+        private ObjectCursor<Folder> mAllFolderListCursor = null;
         /** Watcher for tracking and receiving unread counts for mail */
         private FolderWatcher mFolderWatcher = null;
         private boolean mRegistered = false;
@@ -807,23 +807,23 @@ public class FolderListFragment extends ListFragment implements
                 }
             } while (mCursor.moveToNext());
 
-            // If we have the full folder list, verify that the current folder exists
+            // If we have the all folder list, verify that the current folder exists
             boolean currentFolderFound = false;
-            if (mFullFolderListCursor != null) {
+            if (mAllFolderListCursor != null) {
                 final String folderName = mSelectedFolderUri.toString();
-                LogUtils.d(LOG_TAG, "Checking if full folder list contains %s", folderName);
+                LogUtils.d(LOG_TAG, "Checking if all folder list contains %s", folderName);
 
-                if (mFullFolderListCursor.moveToFirst()) {
+                if (mAllFolderListCursor.moveToFirst()) {
                     LogUtils.d(LOG_TAG, "Cursor for %s seems reasonably valid", folderName);
                     do {
-                        final Folder f = mFullFolderListCursor.getModel();
+                        final Folder f = mAllFolderListCursor.getModel();
                         if (!isFolderTypeExcluded(f)) {
                             if (f.folderUri.equals(mSelectedFolderUri)) {
                                 LogUtils.d(LOG_TAG, "Found %s !", folderName);
                                 currentFolderFound = true;
                             }
                         }
-                    } while (mFullFolderListCursor.moveToNext());
+                    } while (!currentFolderFound && mAllFolderListCursor.moveToNext());
                 }
 
                 if (!currentFolderFound && mSelectedFolderUri != FolderUri.EMPTY
@@ -913,8 +913,8 @@ public class FolderListFragment extends ListFragment implements
         }
 
         @Override
-        public void setFullFolderListCursor(final ObjectCursor<Folder> cursor) {
-            mFullFolderListCursor = cursor;
+        public void setAllFolderListCursor(final ObjectCursor<Folder> cursor) {
+            mAllFolderListCursor = cursor;
             recalculateList();
         }
 
@@ -1038,7 +1038,7 @@ public class FolderListFragment extends ListFragment implements
         }
 
         @Override
-        public void setFullFolderListCursor(final ObjectCursor<Folder> cursor) {
+        public void setAllFolderListCursor(final ObjectCursor<Folder> cursor) {
             // Not necessary in HierarchicalFolderListAdapter
         }
 
@@ -1139,8 +1139,8 @@ public class FolderListFragment extends ListFragment implements
             final LoaderManager manager = getLoaderManager();
             manager.destroyLoader(FOLDER_LIST_LOADER_ID);
             manager.restartLoader(FOLDER_LIST_LOADER_ID, Bundle.EMPTY, this);
-            manager.destroyLoader(FULL_FOLDER_LIST_LOADER_ID);
-            manager.restartLoader(FULL_FOLDER_LIST_LOADER_ID, Bundle.EMPTY, this);
+            manager.destroyLoader(ALL_FOLDER_LIST_LOADER_ID);
+            manager.restartLoader(ALL_FOLDER_LIST_LOADER_ID, Bundle.EMPTY, this);
             // An updated cursor causes the entire list to refresh. No need to refresh the list.
             // But we do need to blank out the current folder, since the account might not be
             // synced.
@@ -1152,7 +1152,7 @@ public class FolderListFragment extends ListFragment implements
             LogUtils.e(LOG_TAG, "FLF.setSelectedAccount(null) called! Destroying existing loader.");
             final LoaderManager manager = getLoaderManager();
             manager.destroyLoader(FOLDER_LIST_LOADER_ID);
-            manager.destroyLoader(FULL_FOLDER_LIST_LOADER_ID);
+            manager.destroyLoader(ALL_FOLDER_LIST_LOADER_ID);
         }
     }
 
