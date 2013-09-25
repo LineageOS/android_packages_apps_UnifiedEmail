@@ -309,6 +309,8 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(BaseColumns._ID, Long.valueOf(accountId));
         accountMap.put(AccountColumns.NAME, "account" + accountId + "@mockuiprovider.com");
         accountMap.put(AccountColumns.TYPE, "com.android.mail.providers.protos.mock");
+        accountMap.put(AccountColumns.ACCOUNT_MANAGER_NAME,
+                "account" + accountId + "@mockuiprovider.com");
         accountMap.put(AccountColumns.PROVIDER_VERSION, Long.valueOf(1));
         accountMap.put(AccountColumns.URI, Uri.parse(accountUri));
         accountMap.put(AccountColumns.CAPABILITIES,

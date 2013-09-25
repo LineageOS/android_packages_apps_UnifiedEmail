@@ -23,6 +23,6 @@ import android.content.Context;
 public class RecipientAdapter extends BaseRecipientAdapter {
     public RecipientAdapter(Context context, Account account) {
         super(context);
-        setAccount(account);
+        setAccount(account.getAccountManagerAccount());
     }
 }
