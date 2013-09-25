@@ -27,7 +27,7 @@
     <string name="add_photo_attachment" msgid="3738882100645552858">"Bild anhängen"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Video anhängen"</string>
     <string name="save_draft" msgid="5555744208032445632">"Entwurf speichern"</string>
-    <string name="discard" msgid="1714960202994370243">"Verwerfen"</string>
+    <string name="discard" msgid="1714960202994370243">"Löschen"</string>
     <string name="compose" msgid="1473559896062432878">"Schreiben"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Antworten"</item>
@@ -49,7 +49,7 @@
     <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"Die Betreffzeile der E-Mail ist leer."</string>
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Die E-Mail ist leer."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Nachricht senden?"</string>
-    <string name="message_discarded" msgid="5079975378884765445">"Nachricht verworfen"</string>
+    <string name="message_discarded" msgid="5079975378884765445">"Nachricht gelöscht"</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="custom_from_account_label" msgid="5069652141632649722">"Senden als:"</string>
     <string name="send" msgid="8242003661397555986">"Senden"</string>
@@ -161,7 +161,7 @@
     <item quantity="one" msgid="5974090449454432874">"Entwürfe aus dieser Konversation löschen?"</item>
     <item quantity="other" msgid="4173815457177336569">"Entwürfe aus diesen <xliff:g id="COUNT">%1$d</xliff:g> Konversationen löschen?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="1149834186404614612">"Nachricht verwerfen?"</string>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Nachricht löschen?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Wird geladen…"</string>
     <string name="no_conversations" msgid="35400008890372241">"Keine Konversationen"</string>
     <string name="undo" msgid="6070869718469782251">"Rückgängig"</string>
