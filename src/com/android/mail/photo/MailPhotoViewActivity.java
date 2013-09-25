@@ -76,7 +76,8 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     public static void startMailPhotoViewActivity(final Context context, final Uri imageListUri,
             final int photoIndex) {
         final Intents.PhotoViewIntentBuilder builder =
-                Intents.newPhotoViewIntentBuilder(context, MailPhotoViewActivity.class);
+                Intents.newPhotoViewIntentBuilder(context,
+                        "com.android.mail.photo.MailPhotoViewActivity");
         builder
                 .setPhotosUri(imageListUri.toString())
                 .setProjection(UIProvider.ATTACHMENT_PROJECTION)
@@ -96,7 +97,8 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     public static void startMailPhotoViewActivity(final Context context, final Uri imageListUri,
             final String initialPhotoUri) {
         final Intents.PhotoViewIntentBuilder builder =
-                Intents.newPhotoViewIntentBuilder(context, MailPhotoViewActivity.class);
+                Intents.newPhotoViewIntentBuilder(context,
+                        "com.android.mail.photo.MailPhotoViewActivity");
         builder
                 .setPhotosUri(imageListUri.toString())
                 .setProjection(UIProvider.ATTACHMENT_PROJECTION)
