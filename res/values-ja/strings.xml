@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"同期を待機中"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"まもなくメールが表示されます。"</string>
     <string name="not_synced_title" msgid="794279749170198599">"アカウントが同期していません"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"このアカウントには自動同期が設定されていません。"\n"メールを一度だけ同期させるには["<b>"今すぐ同期"</b>"]をタップします。このアカウントでメールが自動的に同期されるように設定するには、["<b>"同期設定の変更"</b>"]をタップします。"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"このアカウントには自動同期が設定されていません。\nメールを一度だけ同期させるには["<b>"今すぐ同期"</b>"]をタップします。このアカウントでメールが自動的に同期されるように設定するには、["<b>"同期設定の変更"</b>"]をタップします。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"今すぐ同期"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"同期設定の変更"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"新しいメッセージはありません"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"画像を読み込めませんでした"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"移動できません。複数のアカウントを選択しています。"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"無視してこのメールを信頼する"</string>
     <string name="via_domain" msgid="380109230928079350">"<xliff:g id="VIADOMAIN">%1$s</xliff:g>経由"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"メッセージの詳細"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"自動表示"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"メッセージを削除した後に表示する画面を選択します"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"自動表示の設定"\n"（削除などの後）"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"自動表示の設定\n（削除などの後）"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"前"</item>
     <item msgid="5562093094216840213">"次"</item>

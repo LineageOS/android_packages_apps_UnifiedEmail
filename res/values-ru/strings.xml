@@ -278,7 +278,7 @@
     <string name="ok" msgid="8339355733816891026">"ОК"</string>
     <string name="done" msgid="3079981801778027540">"Готово"</string>
     <string name="cancel" msgid="8762981157252199115">"Отмена"</string>
-    <string name="clear" msgid="3184687982186479442">"Очистить"</string>
+    <string name="clear" msgid="3184687982186479442">"Да"</string>
     <string name="close" msgid="419945428844076406">"Закрыть"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"В этом аккаунте нет папок."</string>
   <string-array name="sync_status">
@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Синхронизация…"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Ваши сообщения загружаются."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Аккаунт не синхронизирован"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"В этом аккаунте не настроена автоматическая синхронизация."\n"Выберите "<b>"Настройки синхронизации"</b>", чтобы включить ее, или "<b>"Синхронизировать сейчас"</b>", чтобы синхронизировать почту один раз."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"В этом аккаунте не настроена автоматическая синхронизация.\nВыберите "<b>"Настройки синхронизации"</b>", чтобы включить ее, или "<b>"Синхронизировать сейчас"</b>", чтобы синхронизировать почту один раз."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр."</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Настройки синхронизации"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Новых сообщений нет"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Не удалось загрузить фото"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Не удалось переместить сообщения, так как они находятся в разных аккаунтах."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>": <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Я доверяю отправителю"</string>
     <string name="via_domain" msgid="380109230928079350">"из домена <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -349,12 +349,12 @@
     <string name="recent_folders_heading" msgid="8613621794529777406">"Последние папки"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Сведения о сообщении"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Автопереход"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"Выберите экран для отображения после удаления цепочки писем"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Настройка автоперехода"\n"(после архивации, удаления и т. п.)"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"Выберите, что вы хотите видеть после удаления письма"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Что показывать после\n удаления писем"</string>
   <string-array name="prefEntries_autoAdvance">
-    <item msgid="3400401085256526376">"Более поздние"</item>
-    <item msgid="5562093094216840213">"Более ранние"</item>
-    <item msgid="3331655314944797957">"Список цепочек"</item>
+    <item msgid="3400401085256526376">"Следующее письмо"</item>
+    <item msgid="5562093094216840213">"Предыдущее письмо"</item>
+    <item msgid="3331655314944797957">"Список писем"</item>
   </string-array>
   <string-array name="prefSummaries_autoAdvance">
     <item msgid="6389534341359835440">"Показывать более позднюю цепочку после удаления текущей"</item>

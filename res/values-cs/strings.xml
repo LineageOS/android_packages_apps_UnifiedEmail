@@ -284,7 +284,7 @@
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Podařilo se"</item>
     <item msgid="7109065688039971961">"Žádné připojení."</item>
-    <item msgid="8437496123716232060">"Přihlášení se nezdařilo."</item>
+    <item msgid="8437496123716232060">"Přihlášení se nezdařilo"</item>
     <item msgid="1651266301325684887">"Chyba zabezpečení."</item>
     <item msgid="1461520171154288533">"Chyba synchronizace."</item>
     <item msgid="4779810016424303449">"Interní chyba"</item>
@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Čekání na synchronizaci"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Vaše e-maily se zobrazí za chvíli."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Účet není synchronizován"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tento účet není nastaven na automatickou synchronizaci."\n"Chcete-li poštu jednou synchronizovat, dotkněte se položky "<b>"Synchronizovat nyní"</b>". Chcete-li v účtu nastavit automatickou synchronizaci pošty, dotkněte se položky "<b>"Změnit nastavení Synchronizace"</b>"."</string>
-    <string name="manual_sync" msgid="6743983544685622800">"Synchroniz."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tento účet není nastaven na automatickou synchronizaci.\nChcete-li poštu jednou synchronizovat, dotkněte se položky "<b>"Synchronizovat"</b>". Chcete-li v účtu nastavit automatickou synchronizaci pošty, dotkněte se položky "<b>"Změnit nastavení synchronizace"</b>"."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Synchronizovat"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Změnit nastavení synchronizace"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Žádné nové zprávy"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Fotografii nelze načíst"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Přesun nelze uskutečnit, protože vybrané zprávy pocházejí z různých účtů."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignorovat, zprávě důvěřuji"</string>
     <string name="via_domain" msgid="380109230928079350">"prostř. <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -348,9 +348,9 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Všechny složky"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Poslední složky"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Podrobnosti zprávy"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"Automaticky pokračovat"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"Automatický přechod"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Vyberte, kterou obrazovku chcete zobrazit po smazání zprávy."</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Nastavit volbu automatického pokračování"\n"(po archivaci, smazání atd.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Nastavit volbu automatického přechodu\n(po archivaci, smazání atd.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Novější"</item>
     <item msgid="5562093094216840213">"Starší"</item>

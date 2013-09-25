@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Чека се синхронизација"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Адреса е-поште ће се ускоро појавити."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Налог није синхронизован"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Овај налог није подешен за аутоматску синхронизацију."\n"Додирните "<b>"Синхронизуј одмах"</b>" да бисте синхронизовали пошту једном, односно "<b>"Промени подешавања синхронизације"</b>" да бисте подесили овај налог да аутоматски синхронизује пошту."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Овај налог није подешен за аутоматску синхронизацију.\nДодирните "<b>"Синхронизуј одмах"</b>" да бисте синхронизовали пошту једном, односно "<b>"Промени подешавања синхронизације"</b>" да бисте подесили овај налог да аутоматски синхронизује пошту."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр. одмах"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Промени подеш. синхронизације"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Нема нових порука"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Није могуће учитати слику"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Премештање није могуће зато што избор обухвата више налога."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Занемари, верујем овој поруци"</string>
     <string name="via_domain" msgid="380109230928079350">"преко <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Детаљи поруке"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Аутоматски пређи на"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Избор екрана који желите да прикажете након брисања поруке"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Подешавање аутоматског померања унапред"\n"(након брисања итд.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Подешавање аутоматског померања унапред\n(након брисања итд.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Новије"</item>
     <item msgid="5562093094216840213">"Старије"</item>

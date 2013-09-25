@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"در انتظار همگام‌سازی"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"ایمیل شما به زودی نمایش داده می‌شود."</string>
     <string name="not_synced_title" msgid="794279749170198599">"حساب همگام نشد"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"این حساب برای همگام‌سازی به طور خودکار تنظیم نشده است."\n"برای یک بار همگام‌سازی نامه، "<b>"اکنون همگام‌سازی شود"</b>" را لمس کنید، یا برای تنظیم این حساب برای همگام‌سازی نامه به طور خودکار، "<b>"تنظیمات همگام‌سازی را تغییر دهید"</b>"."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"این حساب برای همگام‌سازی به طور خودکار تنظیم نشده است.\nبرای یک بار همگام‌سازی نامه، "<b>"اکنون همگام‌سازی شود"</b>" را لمس کنید، یا برای تنظیم این حساب برای همگام‌سازی نامه به طور خودکار، "<b>"تنظیمات همگام‌سازی را تغییر دهید"</b>"."</string>
     <string name="manual_sync" msgid="6743983544685622800">"اکنون همگام‌سازی شود"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"تغییر تنظیمات همگام‌سازی"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"پیام جدیدی وجود ندارد"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"تصویر بارگیری نمی‌شود"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"امکان جابجایی وجود ندارد زیرا انتخاب شما شامل چندین حساب است."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"نادیده بگیر، پیام مطمئن است"</string>
     <string name="via_domain" msgid="380109230928079350">"از طریق <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"جزئیات پیام"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"پیشرفت خودکار"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"انتخاب کنید بعد از حذف یک پیام، چه صفحه‌ای نشان داده شود"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"تنظیم اولویت پیشروی خودکار"\n"(بعد از اینکه موردی را حذف کردید)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"تنظیم اولویت پیشروی خودکار\n(بعد از اینکه موردی را حذف کردید)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"جدیدتر"</item>
     <item msgid="5562093094216840213">"قدیمی‌تر"</item>

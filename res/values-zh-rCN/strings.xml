@@ -22,7 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"抄送"</string>
     <string name="bcc" msgid="3098643138241111579">"密送"</string>
     <string name="subject_hint" msgid="7253964583324677128">"主题"</string>
-    <string name="body_hint" msgid="4279864165439577668">"撰写电子邮件"</string>
+    <string name="body_hint" msgid="4279864165439577668">"邮件内容"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"添加附件"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"附加图片"</string>
@@ -98,7 +98,7 @@
     <string name="help_and_info" msgid="7873089811705257882">"帮助"</string>
     <string name="quoted_text" msgid="7250749398672037355">"包含引用文字"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"引用文字"</string>
-    <string name="respond_inline" msgid="6797117334768201180">"内联回复"</string>
+    <string name="respond_inline" msgid="6797117334768201180">"在原邮件内容上回复"</string>
     <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
@@ -258,7 +258,7 @@
     <string name="bcc_heading" msgid="5528824453033598299">"密送："</string>
     <string name="show_images" msgid="1875700481186331432">"显示图片"</string>
     <string name="always_show_images" msgid="5966408990164581801">"总是显示来自此发件人的图片"</string>
-    <string name="always_show_images_toast" msgid="6218061921546973716">"系统会自动显示来自此发件人的图片。"</string>
+    <string name="always_show_images_toast" msgid="6218061921546973716">"来自该发件人的图片将会自动显示。"</string>
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> 来自 <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"邮件已另存为草稿。"</string>
@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"正在等待同步"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"您的电子邮件很快就会显示。"</string>
     <string name="not_synced_title" msgid="794279749170198599">"帐户未同步"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"此帐户未设置为自动同步。您可以"\n"触摸"<b>"立即同步"</b>"同步邮件一次，或者触摸"<b>"更改同步设置"</b>"，将此帐户设置为自动同步邮件。"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"此帐户未设置为自动同步。您可以\n触摸"<b>"立即同步"</b>"同步邮件一次，或者触摸"<b>"更改同步设置"</b>"，将此帐户设置为自动同步邮件。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"更改同步设置"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"没有新邮件"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"无法加载图片"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"所选内容分属多个帐户，因此无法进行移动。"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"忽略，我信任此邮件"</string>
     <string name="via_domain" msgid="380109230928079350">"来自 <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -349,8 +349,8 @@
     <string name="recent_folders_heading" msgid="8613621794529777406">"近期文件夹"</string>
     <string name="message_details_title" msgid="2183394728494962332">"邮件详情"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"自动跳转"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"选择删除邮件后所要显示的屏幕"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"自动跳转偏好设置"\n"（在您执行删除等操作后）"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"选择删除邮件后显示的屏幕"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"自动跳转偏好设置\n（在您执行删除等操作后）"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"后一个会话"</item>
     <item msgid="5562093094216840213">"前一个会话"</item>
@@ -393,7 +393,7 @@
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"全部回复"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"用作默认的邮件回复方式"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"滑动即可归档"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"滑动即可删除"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"滑动删除邮件"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"在会话列表中"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"发件人头像"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"在会话列表中的名称旁显示"</string>
@@ -409,5 +409,5 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"打开抽屉式导航栏"</string>
     <string name="drawer_close" msgid="2764774620737876943">"关闭抽屉式导航栏"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"触摸发件人头像即可选择该会话。"</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"触摸发件人头像即可选择相应的会话。"</string>
 </resources>

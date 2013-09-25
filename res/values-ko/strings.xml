@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"동기화 대기 중"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"이메일이 곧 표시됩니다."</string>
     <string name="not_synced_title" msgid="794279749170198599">"계정이 동기화되지 않음"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"이 계정은 자동으로 동기화되도록 설정되지 않았습니다."\n<b>"지금 동기화"</b>"를 터치하여 메일을 한 번 동기화하거나 "<b>"동기화 설정 변경"</b>"을 터치하여 이 계정이 메일을 자동으로 동기화하도록 설정하세요."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"이 계정은 자동으로 동기화되도록 설정되지 않았습니다.\n"<b>"지금 동기화"</b>"를 터치하여 메일을 한 번 동기화하거나 "<b>"동기화 설정 변경"</b>"을 터치하여 이 계정이 메일을 자동으로 동기화하도록 설정하세요."</string>
     <string name="manual_sync" msgid="6743983544685622800">"지금 동기화"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"동기화 설정 변경"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"새 메시지 없음"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"이미지를 로드할 수 없음"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"선택하신 메일에 여러 계정이 포함되어 있어 이동할 수 없습니다."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"신뢰할 수 있는 메일입니다."</string>
     <string name="via_domain" msgid="380109230928079350">"<xliff:g id="VIADOMAIN">%1$s</xliff:g> 경유"</string>
   <string-array name="moveto_folder_sections">
@@ -348,9 +348,9 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"모든 폴더"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"최근 폴더"</string>
     <string name="message_details_title" msgid="2183394728494962332">"메시지 세부정보"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"자동 진행"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"삭제 후 표시 화면"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"메일을 삭제한 다음 표시할 화면 선택"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"자동 진행 환경설정"\n"(삭제 등을 수행한 후)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"메일 삭제 후\n표시할 화면"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"최신"</item>
     <item msgid="5562093094216840213">"이전"</item>

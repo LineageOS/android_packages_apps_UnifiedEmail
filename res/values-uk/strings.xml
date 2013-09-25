@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Очікування на синхронізацію"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Електронна пошта з’явиться незабаром."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Обліковий запис не синхронізовано"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Цей обліковий запис не налаштовано для автоматичної синхронізації."\n"Виберіть "<b>"Синхронізувати зараз"</b>", щоб синхронізувати пошту один раз, або "<b>"Змінити налаштування синхронізації"</b>", щоб налаштувати цей обліковий запис для автоматичної синхронізації пошти."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Цей обліковий запис не налаштовано для автоматичної синхронізації.\nВиберіть "<b>"Синхронізувати зараз"</b>", щоб синхронізувати пошту один раз, або "<b>"Змінити налаштування синхронізації"</b>", щоб налаштувати цей обліковий запис для автоматичної синхронізації пошти."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр. зараз"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Змінити налашт. синхронізації"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Немає нових повідомлень"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Зображення не завантажено"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Неможливо перемістити, оскільки вибрано декілька облікових записів."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Я довіряю цьому повідомленню"</string>
     <string name="via_domain" msgid="380109230928079350">"через <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Деталі повідомлення"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Автоматичний перехід"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Виберіть, що відображати після видалення повідомлення"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Установити параметр автоматичного переходу"\n"(після видалення тощо)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Установити параметр автоматичного переходу\n(після видалення тощо)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Новіші"</item>
     <item msgid="5562093094216840213">"Старіші"</item>

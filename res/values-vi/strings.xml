@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Đang đợi đồng bộ hóa"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Email của bạn sẽ xuất hiện trong chốc lát."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Tài khoản chưa được đồng bộ hóa"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tài khoản này không được thiết lập để tự động đồng bộ hóa."\n"Chạm vào "<b>"Đồng bộ hóa ngay bây giờ"</b>" để đồng bộ hóa thư một lần hoặc "<b>"Thay đổi cài đặt đồng bộ hóa"</b>" để thiết lập tài khoản này tự động đồng bộ hóa thư."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tài khoản này không được thiết lập để tự động đồng bộ hóa.\nChạm vào "<b>"Đồng bộ hóa ngay bây giờ"</b>" để đồng bộ hóa thư một lần hoặc "<b>"Thay đổi cài đặt đồng bộ hóa"</b>" để thiết lập tài khoản này tự động đồng bộ hóa thư."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Đồng bộ hóa ngay bây giờ"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Thay đổi cài đặt đồng bộ hóa"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Không có tin nhắn mới"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Không thể tải ảnh"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Không thể di chuyển vì lựa chọn chứa nhiều tài khoản."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Hãy bỏ qua, tôi tin tưởng thư này"</string>
     <string name="via_domain" msgid="380109230928079350">"qua <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Chi tiết tin nhắn"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Tự động tiến"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Chọn màn hình hiển thị sau khi bạn xóa thư"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Đặt tùy chọn tự động tiến"\n"(sau khi bạn xóa, v.v.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Đặt tùy chọn tự động tiến\n(sau khi bạn xóa, v.v.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mới hơn"</item>
     <item msgid="5562093094216840213">"Cũ hơn"</item>

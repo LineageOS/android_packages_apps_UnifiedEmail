@@ -48,7 +48,7 @@
     <string name="confirm_send_title" msgid="5663602035452564062">"Tuma ujumbe?"</string>
     <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"Hakuna maandishi katika kichwa cha ujumbe."</string>
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Hakuna maandishi katika kiini cha ujumbe."</string>
-    <string name="confirm_send_message" msgid="3221546155385562874">"Tuma ujumbe huu?"</string>
+    <string name="confirm_send_message" msgid="3221546155385562874">"Ungependa kuutuma ujumbe huu?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Ujumbe umetupwa."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="custom_from_account_label" msgid="5069652141632649722">"Tuma barua kama:"</string>
@@ -276,7 +276,7 @@
     <string name="yes" msgid="7474216525286833848">"Ndiyo"</string>
     <string name="no" msgid="427548507197604096">"Hapana"</string>
     <string name="ok" msgid="8339355733816891026">"SAWA"</string>
-    <string name="done" msgid="3079981801778027540">"Imekamilika"</string>
+    <string name="done" msgid="3079981801778027540">"Nimemaliza"</string>
     <string name="cancel" msgid="8762981157252199115">"Ghairi"</string>
     <string name="clear" msgid="3184687982186479442">"Futa"</string>
     <string name="close" msgid="419945428844076406">"Funga"</string>
@@ -316,17 +316,17 @@
     <string name="retry" msgid="4515885444824418022">"Jaribu tena"</string>
     <string name="load_more" msgid="420892447103014683">"Pakia zaidi"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Ipe jina njia ya mkato ya folda"</string>
-    <string name="wait_for_sync_title" msgid="2767841242539238015">"Inasubiri ulandanishi"</string>
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"Inasubiri usawazishaji"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Barua pepe yako itaonekana baada ya muda mfupi."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Akaunti haijalandanishwa"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Akaunti hii haijawekwa kusawazishwa kiotomatiki."\n"Gusa"<b>"Sawazisha Sasa"</b>" ili kusawazisha barua pepe mara moja, au "<b>"Badilisha Mipangilio ya Usawazishaji"</b>" ili kuweka akaunti hii isawazishe barua pepe kiotomatiki."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Akaunti hii haijawekwa kusawazishwa kiotomatiki.\nGusa"<b>"Sawazisha Sasa"</b>" ili kusawazisha barua pepe mara moja, au "<b>"Badilisha Mipangilio ya Usawazishaji"</b>" ili kuweka akaunti hii isawazishe barua pepe kiotomatiki."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sawazisha sasa"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Badilisha mipangilio ya ulandanishi"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Hakuna ujumbe mpya"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Haikuweza kupakia picha"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Huwezi kusonaga kwa sababu chaguo lina akaunti nyingi."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Puuza, nina amini ujumbe huu"</string>
     <string name="via_domain" msgid="380109230928079350">"kupitia <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -349,8 +349,8 @@
     <string name="recent_folders_heading" msgid="8613621794529777406">"Folda za hivi karibuni"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Maelezo ya ujumbe"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Endeleza kiotomatiki"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"Chagua skrini gani ya kuonyesha baada ya kufuta ujumbe"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Weka mapendeleo pevu ya kitomatiki"\n"(baada ya kufuta, n.k.)"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"Chagua skrini ya kuonyesha baada ya kufuta barua pepe"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Weka mapendeleo pevu ya kitomatiki\n(baada ya kufuta, n.k.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mpya zaidi"</item>
     <item msgid="5562093094216840213">"Nzee zaidi"</item>
@@ -375,7 +375,7 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</string>
+    <string name="new_messages" msgid="4419173946074516420">"Barua pepe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Kimya"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Kuweka kwenye kumbukumbu na kufuta"</string>

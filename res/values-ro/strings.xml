@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Se aşteaptă sincronizarea"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"E-mailul dvs. va apărea în curând."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Cont nesincronizat"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Acest cont nu este configurat să se sincronizeze în mod automat."\n"Atingeţi "<b>"Sincronizaţi acum"</b>", pentru a sincroniza mesajele de e-mail o dată sau "<b>"Modificaţi setările de sincronizare"</b>" ca să configuraţi acest cont pentru a sincroniza mesajele de e-mail în mod automat."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Acest cont nu este configurat să se sincronizeze în mod automat.\nAtingeţi "<b>"Sincronizaţi acum"</b>", pentru a sincroniza mesajele de e-mail o dată sau "<b>"Modificaţi setările de sincronizare"</b>" ca să configuraţi acest cont pentru a sincroniza mesajele de e-mail în mod automat."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincron.acum"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Modificaţi setări sincronizare"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Niciun mesaj nou"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Imaginea nu s-a putut încărca"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Nu se poate muta, deoarece selecţia conţine mai multe conturi."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignor, am încredere în mesaj"</string>
     <string name="via_domain" msgid="380109230928079350">"prin <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Detalii mesaj"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Înaintare automată"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Alegeţi ce ecran se afişează după ştergerea unui mesaj"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Setaţi preferinţa pentru înaintare automată"\n"(după ce ştergeţi etc.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Setaţi preferinţa pentru înaintare automată\n(după ce ştergeţi etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mai noi"</item>
     <item msgid="5562093094216840213">"Mai vechi"</item>

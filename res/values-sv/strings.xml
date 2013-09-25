@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Väntar på synk"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Ditt e-postmeddelande visas snart."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Kontot är inte synkat"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Det här kontot har inte konfigurerats så att det synkroniseras automatiskt."\n"Tryck på "<b>"Synka nu"</b>" om du vill synkronisera e-post en gång eller "<b>"Ändra synkroniseringsinställn."</b>" om du vill konfigurera kontot så att e-post synkroniseras automatiskt."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Det här kontot har inte konfigurerats så att det synkroniseras automatiskt.\nTryck på "<b>"Synka nu"</b>" om du vill synkronisera e-post en gång eller "<b>"Ändra synkroniseringsinställn."</b>" om du vill konfigurera kontot så att e-post synkroniseras automatiskt."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synka nu"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Ändra synkroniseringsinställn."</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Inga nya meddelanden"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Bilden gick inte att läsa in"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Det går inte att flytta meddelandena. De markerade objekten kommer från flera olika konton."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignorera varningen"</string>
     <string name="via_domain" msgid="380109230928079350">"via <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Meddelandeinfo"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Flytta automatiskt"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Välj vilken skärm som ska visas när du tar bort ett meddelande"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Ange inställningar för automatisk flytt"\n"(efter borttagning osv.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Ange inställningar för automatisk flytt\n(efter borttagning osv.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Nyare"</item>
     <item msgid="5562093094216840213">"Äldre"</item>

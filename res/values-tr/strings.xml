@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Senkronize etmek için bekleniyor"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"E-postanız birazdan görüntülenecektir."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Hesap senkronize değil"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Bu hesap otomatik olarak senkronize edilecek şekilde yapılandırılmadı."\n"Postayı bir kez senkronize etmek için "<b>"Şimdi Senk Et"</b>"\'e veya bu hesabı postayı otomatik olarak senkronize edilecek şekilde ayarlamak için "<b>"Senk Ayarlarını Değiştir"</b>"\'e dokunun."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Bu hesap otomatik olarak senkronize edilecek şekilde yapılandırılmadı.\nPostayı bir kez senkronize etmek için "<b>"Şimdi Senk Et"</b>"\'e veya bu hesabı postayı otomatik olarak senkronize edilecek şekilde ayarlamak için "<b>"Senk Ayarlarını Değiştir"</b>"\'e dokunun."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Şimdi senk et"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Senk ayarlarını değiştir"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Yeni mesaj yok"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Resim yüklenemedi"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Seçim birden fazla hesap içerdiğinden taşınamıyor."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Yoksay, bu iletiye güveniyorum"</string>
     <string name="via_domain" msgid="380109230928079350">"<xliff:g id="VIADOMAIN">%1$s</xliff:g> üzerinden"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Mesaj ayrıntıları"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Otomatik ilerle"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Bir iletiyi sildikten sonra gösterilecek ekranı seçin"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Otomatik ilerleme tercihini ayarla"\n"(silme vb. sonrası)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Otomatik ilerleme tercihini ayarla\n(silme vb. sonrası)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Daha yeni"</item>
     <item msgid="5562093094216840213">"Daha eski"</item>

@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Naghihintay ng pag-sync"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Lilitaw na ang iyong email."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Hindi na-sync ang account"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Hindi naka-set up ang account na ito upang awtomatikong mag-sync."\n"Pindutin ang "<b>"I-sync Ngayon"</b>" upang i-sync ang mail nang isang beses, o "<b>"Baguhin ang Mga Setting ng Pag-sync"</b>" upang i-set up ang account na ito upang awtomatikong i-sync ang mail."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Hindi naka-set up ang account na ito upang awtomatikong mag-sync.\nPindutin ang "<b>"I-sync Ngayon"</b>" upang i-sync ang mail nang isang beses, o "<b>"Baguhin ang Mga Setting ng Pag-sync"</b>" upang i-set up ang account na ito upang awtomatikong i-sync ang mail."</string>
     <string name="manual_sync" msgid="6743983544685622800">"I-sync na"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Baguhin mga setting ng sync"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Walang mga bagong mensahe"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Hindi mai-load ang larawan"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Hindi mailipat dahil naglalaman ng maraming account ang pinili."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Balewalain, tiwala sa mensahe"</string>
     <string name="via_domain" msgid="380109230928079350">"gamit ang <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Mga detalye ng mensahe"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"I-auto-advance"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Piliin ang screen na ipapakita pagkatapos magtanggal ng mensahe"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Magtakda auto-advance na kagustuhan"\n"(pagkatapos mong magtanggal, atbp.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Magtakda ng nais na auto-advance\n(pagkatapos mong magtanggal, atbp.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mas bago"</item>
     <item msgid="5562093094216840213">"Mas luma"</item>

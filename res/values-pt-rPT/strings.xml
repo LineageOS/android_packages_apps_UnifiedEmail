@@ -319,14 +319,14 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"A aguardar sincronização"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"O seu email aparecerá em breve."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Conta não sincronizada"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"A conta não está configurada para sincronização automática."\n"Toque em "<b>"Sincronizar Agora"</b>" para sincronizar correio uma vez ou em "<b>"Alterar Definições de Sincronização"</b>" para configurar esta conta para sincronização automática de correio."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"A conta não está configurada para sincronização automática.\nToque em "<b>"Sincronizar Agora"</b>" para sincronizar correio uma vez ou em "<b>"Alterar Definições de Sincronização"</b>" para configurar esta conta para sincronização automática de correio."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincronizar agora"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Alterar def. de sincronização"</string>
     <string name="no_new_messages" msgid="2315965287002311844">"Nenhuma mensagem nova"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Não foi poss. carregar imagem"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Não é possível mover porque a seleção contém várias contas."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignorar. Confio nesta mensagem"</string>
     <string name="via_domain" msgid="380109230928079350">"via <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
@@ -350,7 +350,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Detalhes da mensagem"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Avanço automático"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Selecionar o ecrã a apresentar após eliminar uma mensagem"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Definir preferência de avanço autom."\n"(depois de eliminar, etc.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Definir preferência de avanço autom.\n(depois de eliminar, etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mais recente"</item>
     <item msgid="5562093094216840213">"Mais antigo"</item>
