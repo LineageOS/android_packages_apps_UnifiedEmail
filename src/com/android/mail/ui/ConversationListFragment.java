@@ -991,9 +991,10 @@ public final class ConversationListFragment extends ListFragment implements
 
     private void restoreLastScrolledPosition() {
         // Scroll to our previous position, if necessary
-        if (!mScrollPositionRestored) {
+        if (!mScrollPositionRestored && mFolder != null) {
+            final String key = mFolder.conversationListUri.toString();
             final Parcelable savedState = mActivity.getListHandler()
-                    .getConversationListScrollPosition(mFolder.conversationListUri.toString());
+                    .getConversationListScrollPosition(key);
             if (savedState != null) {
                 mListView.onRestoreInstanceState(savedState);
             }
