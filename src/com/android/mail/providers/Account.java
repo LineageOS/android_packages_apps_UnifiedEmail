@@ -44,8 +44,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Account extends android.accounts.Account implements Parcelable {
+public class Account implements Parcelable {
     private static final String SETTINGS_KEY = "settings";
+
+    /**
+     * Human readable account name. Not guaranteed to be the account's email address, nor to match
+     * the system account manager.
+     */
+    // TODO: rename this to displayName to avoid confusion
+    public final String name;
+
+    /**
+     * Account manager name. MUST MATCH SYSTEM ACCOUNT MANAGER NAME
+     */
+
+    private final String accountManagerName;
+
+    /**
+     * Account type. MUST MATCH SYSTEM ACCOUNT MANAGER TYPE
+     */
+
+    private final String type;
 
     /**
      * The version of the UI provider schema from which this account provider
@@ -207,6 +226,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         try {
             json.put(AccountColumns.NAME, name);
             json.put(AccountColumns.TYPE, type);
+            json.put(AccountColumns.ACCOUNT_MANAGER_NAME, accountManagerName);
             json.put(AccountColumns.PROVIDER_VERSION, providerVersion);
             json.put(AccountColumns.URI, uri);
             json.put(AccountColumns.CAPABILITIES, capabilities);
@@ -276,14 +296,23 @@ public class Account extends android.accounts.Account implements Parcelable {
      * <p>
      * This is private. Public uses should go through the safe {@link #newinstance(String)} method.
      * </p>
-     * @param name name of account in {@link android.accounts.Account}
-     * @param type type of account in {@link android.accounts.Account}
+     * @param acctName name of account in {@link android.accounts.Account}
+     * @param acctType type of account in {@link android.accounts.Account}
      * @param jsonAccount string obtained from {@link #serialize()} on a valid account.
      * @throws JSONException
      */
-    private Account(String name, String type, String jsonAccount) throws JSONException {
-        super(name, type);
+    private Account(String acctName, String acctType, String jsonAccount) throws JSONException {
+        name = acctName;
+        type = acctType;
         final JSONObject json = new JSONObject(jsonAccount);
+        final String amName = json.getString(AccountColumns.ACCOUNT_MANAGER_NAME);
+        // We need accountManagerName to be filled in, but we might be dealing with an old cache
+        // entry which doesn't have it, so use the display name instead in that case as a fallback
+        if (TextUtils.isEmpty(amName)) {
+            accountManagerName = name;
+        } else {
+            accountManagerName = amName;
+        }
         providerVersion = json.getInt(AccountColumns.PROVIDER_VERSION);
         uri = Uri.parse(json.optString(AccountColumns.URI));
         capabilities = json.getInt(AccountColumns.CAPABILITIES);
@@ -337,8 +366,10 @@ public class Account extends android.accounts.Account implements Parcelable {
     }
 
     public Account(Cursor cursor) {
-        super(cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.NAME)),
-                cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.TYPE)));
+        name = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.NAME));
+        type = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.TYPE));
+        accountManagerName = cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_MANAGER_NAME));
         accountFromAddresses = cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES));
 
@@ -425,6 +456,10 @@ public class Account extends android.accounts.Account implements Parcelable {
         return allAccounts;
     }
 
+    public android.accounts.Account getAccountManagerAccount() {
+        return new android.accounts.Account(accountManagerName, type);
+    }
+
     public boolean supportsCapability(int capability) {
         return (capabilities & capability) != 0;
     }
@@ -447,7 +482,9 @@ public class Account extends android.accounts.Account implements Parcelable {
     }
 
     public Account(Parcel in, ClassLoader loader) {
-        super(in);
+        name = in.readString();
+        type = in.readString();
+        accountManagerName = in.readString();
         providerVersion = in.readInt();
         uri = in.readParcelable(null);
         capabilities = in.readInt();
@@ -489,7 +526,9 @@ public class Account extends android.accounts.Account implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
+        dest.writeString(name);
+        dest.writeString(type);
+        dest.writeString(accountManagerName);
         dest.writeInt(providerVersion);
         dest.writeParcelable(uri, 0);
         dest.writeInt(capabilities);
@@ -524,6 +563,11 @@ public class Account extends android.accounts.Account implements Parcelable {
             dest.writeInt(1);
             dest.writeParcelable(settings, 0);
         }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     @Override
@@ -710,6 +754,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         map.put(AccountColumns._ID, 0);
         map.put(AccountColumns.NAME, name);
         map.put(AccountColumns.TYPE, type);
+        map.put(AccountColumns.ACCOUNT_MANAGER_NAME, accountManagerName);
         map.put(AccountColumns.PROVIDER_VERSION, providerVersion);
         map.put(AccountColumns.URI, uri);
         map.put(AccountColumns.CAPABILITIES, capabilities);

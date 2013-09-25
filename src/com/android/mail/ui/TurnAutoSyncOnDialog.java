@@ -33,8 +33,7 @@ import com.android.mail.utils.Utils;
  */
 public class TurnAutoSyncOnDialog extends DialogFragment {
 
-    private static final String ACCOUNT_NAME = "accountName";
-    private static final String ACCOUNT_TYPE = "accountType";
+    private static final String ACCOUNT = "account";
     private static final String SYNC_AUTHORITY = "syncAuthority";
 
     public static final String DIALOG_TAG = "auto sync";
@@ -49,12 +48,11 @@ public class TurnAutoSyncOnDialog extends DialogFragment {
     // Public no-args constructor needed for fragment re-instantiation
     public TurnAutoSyncOnDialog() {}
 
-    public static TurnAutoSyncOnDialog newInstance(String accountName, String accountType,
+    public static TurnAutoSyncOnDialog newInstance(Account account,
             String syncAuthority) {
         final TurnAutoSyncOnDialog frag = new TurnAutoSyncOnDialog();
         final Bundle args = new Bundle(3);
-        args.putString(ACCOUNT_NAME, accountName);
-        args.putString(ACCOUNT_TYPE, accountType);
+        args.putParcelable(ACCOUNT, account);
         args.putString(SYNC_AUTHORITY, syncAuthority);
         frag.setArguments(args);
         return frag;
@@ -62,8 +60,7 @@ public class TurnAutoSyncOnDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final String accountName = getArguments().getString(ACCOUNT_NAME);
-        final String accountType = getArguments().getString(ACCOUNT_TYPE);
+        final Account account = getArguments().getParcelable(ACCOUNT);
         final String syncAuthority = getArguments().getString(SYNC_AUTHORITY);
         final Resources resources = getResources();
         final boolean isTablet = Utils.useTabletUI(resources);
@@ -82,7 +79,7 @@ public class TurnAutoSyncOnDialog extends DialogFragment {
                                 // Since we're enabling auto-sync from within Gmail, should
                                 // almost always enable sync for Gmail as well:
                                 ContentResolver.setSyncAutomatically(
-                                        new Account(accountName, accountType),
+                                        account,
                                         syncAuthority,
                                         true);
                                 if (mListener != null) {
