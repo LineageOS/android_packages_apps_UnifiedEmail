@@ -117,7 +117,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             @Override
             public void onClick(View v) {
                 final TurnAutoSyncOnDialog dialog = TurnAutoSyncOnDialog.newInstance(
-                        mAccount.name, mAccount.type, mAccount.syncAuthority);
+                        mAccount.getAccountManagerAccount(), mAccount.syncAuthority);
                 dialog.show(mActivity.getFragmentManager(), TurnAutoSyncOnDialog.DIALOG_TAG);
             }
         };
@@ -221,9 +221,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
             mailPrefs.resetNumOfDismissesForAutoSyncOff();
 
             // Now check for whether account level sync is on/off.
-            // Not sure why directly passing mAccount to ContentResolver doesn't just work.
-            android.accounts.Account acct = new android.accounts.Account(
-                    account.name, account.type);
+            android.accounts.Account acct = account.getAccountManagerAccount();
             if (!TextUtils.isEmpty(account.syncAuthority) &&
                     !ContentResolver.getSyncAutomatically(acct, account.syncAuthority)) {
                 // Account level sync is off
