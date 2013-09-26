@@ -278,6 +278,8 @@
     <string name="network_error" msgid="2125579009654728299">"연결되지 않음"</string>
     <string name="retry" msgid="4515885444824418022">"다시 시도"</string>
     <string name="load_more" msgid="420892447103014683">"추가 로드"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"폴더 바로가기 이름 지정"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"동기화 대기 중"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"이메일이 곧 표시됩니다."</string>

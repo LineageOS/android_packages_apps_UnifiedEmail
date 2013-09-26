@@ -278,6 +278,8 @@
     <string name="network_error" msgid="2125579009654728299">"Aucune connexion"</string>
     <string name="retry" msgid="4515885444824418022">"Réessayer"</string>
     <string name="load_more" msgid="420892447103014683">"Plus"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Nom du raccourci du dossier"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"En attente de synchronisation"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Votre courriel va bientôt s\'afficher."</string>
