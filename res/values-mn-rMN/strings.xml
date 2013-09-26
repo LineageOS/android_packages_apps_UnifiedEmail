@@ -278,6 +278,8 @@
     <string name="network_error" msgid="2125579009654728299">"Холбогдоогүй"</string>
     <string name="retry" msgid="4515885444824418022">"Дахин оролдох"</string>
     <string name="load_more" msgid="420892447103014683">"Нэмж харуулах"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Нэрийн фолдерын товчилбор"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Синк хийгдэхийг хүлээж байна"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Таны имэйл удахгүй гарч ирэх болно."</string>
@@ -322,7 +324,7 @@
   </string-array>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Зургийн зөвшөөрлүүдийг арилгах"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Зургийн зөвшөөрлүүдийг арилгах уу?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Таны өмнө нь зөвшөөрсөн илгээгчдээс ирүүлсэн  мөр доторх зургуудыг харуулахыг зогсоох."</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Таны өмнө нь зөвшөөрсөн илгээгчдээс ирүүлсэн  зурвас доторх зургуудыг харуулахыг зогсоох."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Зургийг автоматаар харуулахгүй."</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"Гарын үсэг"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Гарын үсэг"</string>
@@ -376,7 +378,7 @@
     <string name="drawer_close" msgid="2764774620737876943">"Навигацын татуургыг хаах"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Тухайн харилцааг сонгохын тулд илгээгчийн зурганд хүрнэ үү."</string>
     <string name="long_press_to_select_tip" msgid="9205666839837250150">"Нэг харилцааг сонгохын тулд хүрээд &amp; барина уу, дараа нь илүү олныг сонгохын тулд хүрнэ үү."</string>
-    <string name="folder_icon_desc" msgid="1500547397347480618">"Фолдерын дүрс"</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Хавтасны дүрс"</string>
     <string name="add_account" msgid="2162808366829269770">"Акаунт нэмэх"</string>
     <string name="attached_message" msgid="4267189489654642035">"Хавсаргасан зурвас"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
