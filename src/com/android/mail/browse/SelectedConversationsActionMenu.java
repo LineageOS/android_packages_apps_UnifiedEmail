@@ -397,7 +397,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuItem moveToInbox = menu.findItem(R.id.move_to_inbox);
         final boolean showRemoveFolder = mFolder != null && mFolder.isType(FolderType.DEFAULT)
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
-                && !mFolder.isProviderFolder();
+                && !mFolder.isProviderFolder()
+                && mAccount.supportsCapability(AccountCapabilities.ARCHIVE);
         final boolean showMoveTo = mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION);
         final boolean showMoveToInbox = mFolder != null
