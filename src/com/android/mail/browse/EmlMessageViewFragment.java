@@ -283,7 +283,10 @@ public class EmlMessageViewFragment extends Fragment
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            data.moveToFirst();
+            if (data == null || !data.moveToFirst()) {
+                return;
+            }
+
             getActivity().getActionBar().setSubtitle(
                     data.getString(data.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
         }
