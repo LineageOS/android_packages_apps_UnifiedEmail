@@ -305,7 +305,7 @@ public class Account implements Parcelable {
         name = acctName;
         type = acctType;
         final JSONObject json = new JSONObject(jsonAccount);
-        final String amName = json.getString(AccountColumns.ACCOUNT_MANAGER_NAME);
+        final String amName = json.optString(AccountColumns.ACCOUNT_MANAGER_NAME);
         // We need accountManagerName to be filled in, but we might be dealing with an old cache
         // entry which doesn't have it, so use the display name instead in that case as a fallback
         if (TextUtils.isEmpty(amName)) {
