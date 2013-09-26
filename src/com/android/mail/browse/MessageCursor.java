@@ -73,6 +73,10 @@ public class MessageCursor extends ObjectCursor<ConversationMessage> {
         return m;
     }
 
+    public Conversation getConversation() {
+        return mController != null ? mController.getConversation() : null;
+    }
+
     // Is the conversation starred?
     public boolean isConversationStarred() {
         int pos = -1;

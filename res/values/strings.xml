@@ -935,4 +935,25 @@
     <string name="show_n_more_folders">Show <xliff:g id="number">%1$s</xliff:g> more folders</string>
     <!-- Button in conversation list to hide folders [CHAR LIMIT=50] -->
     <string name="hide_folders">Hide folders</string>
+
+    <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
+    <string name="print">Print</string>
+    <!-- Number of messages in a conversation [CHAR LIMIT=30]-->
+    <plurals name="num_messages">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> message</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> messages</item>
+    </plurals>
+
+    <!-- Display format of an email recipient, displayed in printed message details [CHAR LIMIT=10] -->
+    <string name="address_print_display_format"><xliff:g id="name">%1$s</xliff:g> &amp;lt;<xliff:g id="email">%2$s</xliff:g>&amp;gt;</string>
+    <!-- Shown to display the date of the message [CHAR LIMIT=50] -->
+    <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> at <xliff:g id="time">%2$s</xliff:g></string>
+    <!-- Shown to display the to recipient(s) of the message if the message is a draft [CHAR LIMIT=20] -->
+    <string name="draft_to_heading">Draft To:\u0020</string>
+
+    <!-- Shown to display in the message header if the message is a draft and there are no "to" addresses in the draft [CHAR LIMIT=10] -->
+    <string name="draft_heading">Draft</string>
+    <!-- Shown to inform the user that the quoted text for this message has been hidden. [CHAR LIMIT=50] -->
+    <string name="quoted_text_hidden_print">Quoted text hidden</string>
+
 </resources>

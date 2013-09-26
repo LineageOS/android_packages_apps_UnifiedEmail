@@ -495,23 +495,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     public Address getAddress(String emailStr) {
-        return getAddress(mAddressCache, emailStr);
-    }
-
-    public static Address getAddress(Map<String, Address> cache, String emailStr) {
-        Address addr = null;
-        synchronized (cache) {
-            if (cache != null) {
-                addr = cache.get(emailStr);
-            }
-            if (addr == null) {
-                addr = Address.getEmailAddress(emailStr);
-                if (cache != null) {
-                    cache.put(emailStr, addr);
-                }
-            }
-        }
-        return addr;
+        return Utils.getAddress(mAddressCache, emailStr);
     }
 
     private void updateSpacerHeight() {
@@ -758,7 +742,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             final int len = Math.min(maxToCopy, rawAddrs.length);
             boolean first = true;
             for (int i = 0; i < len; i++) {
-                final Address email = getAddress(mAddressCache, rawAddrs[i]);
+                final Address email = Utils.getAddress(mAddressCache, rawAddrs[i]);
                 final String emailAddress = email.getAddress();
                 final String name;
                 if (mMatcher != null && mMatcher.isVeiledAddress(emailAddress)) {
@@ -1326,7 +1310,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
         final String[] formattedEmails = new String[emails.length];
         for (int i = 0; i < emails.length; i++) {
-            final Address email = getAddress(addressCache, emails[i]);
+            final Address email = Utils.getAddress(addressCache, emails[i]);
             String name = email.getName();
             final String address = email.getAddress();
             // Check if the address here is a veiled address.  If it is, we need to display an

@@ -111,6 +111,10 @@
         android:title="@string/report_phishing"
         android:visible="false" />
 
+    <item android:id="@+id/print"
+          android:title="@string/print"
+          android:visible="false" />
+
     <!-- Always available -->
     <item android:id="@+id/settings"
         android:title="@string/menu_settings" />

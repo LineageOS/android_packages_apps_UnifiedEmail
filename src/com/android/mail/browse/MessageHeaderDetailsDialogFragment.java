@@ -19,15 +19,16 @@ package com.android.mail.browse;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
+import com.android.mail.utils.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +94,7 @@ public class MessageHeaderDetailsDialogFragment extends DialogFragment {
     private static void addAddressesToBundle(
             Bundle addresses, Map<String, Address> addressCache, String[] emails) {
         for (final String email : emails) {
-            addresses.putParcelable(email, MessageHeaderView.getAddress(addressCache, email));
+            addresses.putParcelable(email, Utils.getAddress(addressCache, email));
         }
     }
 

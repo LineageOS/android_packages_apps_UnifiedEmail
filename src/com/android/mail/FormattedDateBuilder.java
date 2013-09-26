@@ -58,7 +58,7 @@ public class FormattedDateBuilder {
         }
     }
 
-    private CharSequence formatLongDayAndDate(long when) {
+    public CharSequence formatLongDayAndDate(long when) {
         sb.setLength(0);
         DateUtils.formatDateRange(mContext, dateFormatter, when, when,
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
@@ -66,7 +66,7 @@ public class FormattedDateBuilder {
         return sb.toString();
     }
 
-    private CharSequence formatLongTime(long when) {
+    public CharSequence formatLongTime(long when) {
         sb.setLength(0);
         DateUtils.formatDateRange(mContext, dateFormatter, when, when,
                 DateUtils.FORMAT_SHOW_TIME);

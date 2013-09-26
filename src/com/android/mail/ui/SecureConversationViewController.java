@@ -183,6 +183,10 @@ public class SecureConversationViewController implements
         mConversationHeaderView.setSubject(subject);
     }
 
+    public void printConversation() {
+        // TODO - implement this
+    }
+
     // Start MessageHeaderViewCallbacks implementations
 
     @Override
