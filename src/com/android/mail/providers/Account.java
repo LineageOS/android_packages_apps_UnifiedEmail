@@ -272,15 +272,14 @@ public class Account implements Parcelable {
      * @return Account object
      */
     public static Account newinstance(String serializedAccount) {
-        // The heavy lifting is done by Account(name, type, serializedAccount). This method
+        // The heavy lifting is done by Account(name, type, json). This method
         // is a wrapper to check for errors and exceptions and return back a null in cases
         // something breaks.
-        JSONObject json;
         try {
-            json = new JSONObject(serializedAccount);
+            final JSONObject json = new JSONObject(serializedAccount);
             final String name = (String) json.get(UIProvider.AccountColumns.NAME);
             final String type = (String) json.get(UIProvider.AccountColumns.TYPE);
-            return new Account(name, type, serializedAccount);
+            return new Account(name, type, json);
         } catch (JSONException e) {
             LogUtils.w(LOG_TAG, e, "Could not create an account from this input: \"%s\"",
                     serializedAccount);
@@ -298,13 +297,12 @@ public class Account implements Parcelable {
      * </p>
      * @param acctName name of account in {@link android.accounts.Account}
      * @param acctType type of account in {@link android.accounts.Account}
-     * @param jsonAccount string obtained from {@link #serialize()} on a valid account.
+     * @param {@link JSONObject} representing a valid account.
      * @throws JSONException
      */
-    private Account(String acctName, String acctType, String jsonAccount) throws JSONException {
+    private Account(String acctName, String acctType, JSONObject json) throws JSONException {
         name = acctName;
         type = acctType;
-        final JSONObject json = new JSONObject(jsonAccount);
         final String amName = json.optString(AccountColumns.ACCOUNT_MANAGER_NAME);
         // We need accountManagerName to be filled in, but we might be dealing with an old cache
         // entry which doesn't have it, so use the display name instead in that case as a fallback

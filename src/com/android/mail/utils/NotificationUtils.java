@@ -417,10 +417,14 @@ public class NotificationUtils {
             ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
                     .cancel(notificationId);
         } else {
+            LogUtils.d(LOG_TAG, "setNewEmailIndicator - update count for: %s / %s " +
+                    "to: unread: %d unseen %d", account.name, folder.persistentId,
+                    unreadCount, unseenCount);
             if (!notificationMap.containsKey(key)) {
                 // This account previously didn't have any unread mail; ignore the "unobtrusive
                 // notifications" setting and play sound and/or vibrate the device even if a
                 // notification already exists (bug 2412348).
+                LogUtils.d(LOG_TAG, "setNewEmailIndicator - ignoringUnobtrusiveSetting");
                 ignoreUnobtrusiveSetting = true;
             }
             notificationMap.put(key, unreadCount, unseenCount);
@@ -452,11 +456,13 @@ public class NotificationUtils {
         final NotificationMap notificationMap = getNotificationMap(context);
         if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
             LogUtils.i(LOG_TAG, "Validating Notification: %s mapSize: %d "
-                    + "folder: %s getAttention: %b", createNotificationString(notificationMap),
-                    notificationMap.size(), folder.name, getAttention);
+                    + "folder: %s getAttention: %b ignoreUnobtrusive: %b",
+                    createNotificationString(notificationMap),
+                    notificationMap.size(), folder.name, getAttention, ignoreUnobtrusiveSetting);
         } else {
             LogUtils.i(LOG_TAG, "Validating Notification, mapSize: %d "
-                    + "getAttention: %b", notificationMap.size(), getAttention);
+                    + "getAttention: %b ignoreUnobtrusive: %b", notificationMap.size(),
+                    getAttention, ignoreUnobtrusiveSetting);
         }
         // The number of unread messages for this account and label.
         final Integer unread = notificationMap.getUnread(key);
@@ -618,6 +624,7 @@ public class NotificationUtils {
                 // If the user has "unobtrusive notifications" enabled, only alert the first time
                 // new mail is received in this account.  This is the default behavior.  See
                 // bugs 2412348 and 2413490.
+                LogUtils.d(LOG_TAG, "Setting Alert Once");
                 notification.setOnlyAlertOnce(true);
             }
 
