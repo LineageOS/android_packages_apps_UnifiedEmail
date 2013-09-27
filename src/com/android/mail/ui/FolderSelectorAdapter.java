@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -114,35 +115,41 @@ public class FolderSelectorAdapter extends BaseAdapter {
         if (folders == null) {
             return;
         }
-        // Rows corresponding to user created, unchecked folders.
-        final List<FolderRow> userUnselected = Lists.newArrayList();
-        // Rows corresponding to system created, unchecked folders.
-        final List<FolderRow> systemUnselected = Lists.newArrayList();
+        final List<FolderRow> allFolders = new ArrayList<FolderRow>(folders.getCount());
+
         if (folders.moveToFirst()) {
             do {
                 final Folder folder = new Folder(folders);
                 final boolean isSelected = initiallySelected != null
                         && initiallySelected.contains(
-                                folder.folderUri.getComparisonUri().toString());
-                if (meetsRequirements(folder) && !Objects.equal(folder, mExcludedFolder)) {
-                    final FolderRow row = new FolderRow(folder, isSelected);
-                    // Add the currently selected first.
-                    if (isSelected) {
-                        mFolderRows.add(row);
-                    } else if (folder.isProviderFolder()) {
-                        systemUnselected.add(row);
-                    } else {
-                        userUnselected.add(row);
-                    }
-                }
+                        folder.folderUri.getComparisonUri().toString());
+                final FolderRow row = new FolderRow(folder, isSelected);
+                allFolders.add(row);
             } while (folders.moveToNext());
         }
-        // Sort the checked folders.
-        folderSort(mFolderRows);
-        // Leave system folders unsorted, and add them.
+        // Need to do the foldersort first with all folders present to avoid dropping orphans
+        folderSort(allFolders);
+
+        // Rows corresponding to user created, unchecked folders.
+        final List<FolderRow> userUnselected = new ArrayList<FolderRow>();
+        // Rows corresponding to system created, unchecked folders.
+        final List<FolderRow> systemUnselected = new ArrayList<FolderRow>();
+
+        // Divert the folders to the appropriate sections
+        for (final FolderRow row : allFolders) {
+            final Folder folder = row.getFolder();
+            if (meetsRequirements(folder) && !Objects.equal(folder, mExcludedFolder)) {
+                // Add the currently selected first.
+                if (row.isPresent()) {
+                    mFolderRows.add(row);
+                } else if (folder.isProviderFolder()) {
+                    systemUnselected.add(row);
+                } else {
+                    userUnselected.add(row);
+                }
+            }
+        }
         mFolderRows.addAll(systemUnselected);
-        // Sort all the user rows, and then add them at the end of the output rows.
-        folderSort(userUnselected);
         mFolderRows.addAll(userUnselected);
     }
 
