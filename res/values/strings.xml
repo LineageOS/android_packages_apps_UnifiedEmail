@@ -955,5 +955,10 @@
     <string name="draft_heading">Draft</string>
     <!-- Shown to inform the user that the quoted text for this message has been hidden. [CHAR LIMIT=50] -->
     <string name="quoted_text_hidden_print">Quoted text hidden</string>
+    <!-- Number of attachments in a message [CHAR LIMIT=30]-->
+    <plurals name="num_attachments">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> attachment</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> attachments</item>
+    </plurals>
 
 </resources>
