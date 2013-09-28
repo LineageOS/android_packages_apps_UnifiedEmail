@@ -1584,10 +1584,12 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final String convHtml =
                 Printer.print(getContext(), mAccount, getMessageCursor(),
                         mAddressCache, true /* userJavascript */);
-        mWebView.loadDataWithBaseURL(mBaseUri, convHtml, "text/html", "utf-8", null);
+        mWebView.getSettings().setBlockNetworkImage(false);
+        mWebView.loadDataWithBaseURL(
+                mConversation.getBaseUri(mBaseUri), convHtml, "text/html", "utf-8", null);
         final PrintManager printManager =
                 (PrintManager) getContext().getSystemService(Context.PRINT_SERVICE);
-        printManager.print(getConversation().subject,
+        printManager.print(mConversation.subject,
                 mWebView.createPrintDocumentAdapter(),
                 new PrintAttributes.Builder().build());
     }

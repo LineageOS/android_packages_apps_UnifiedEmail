@@ -27,10 +27,13 @@ import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
+import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.Utils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,7 +73,7 @@ public class Printer {
 
             templates.appendMessage(fromAddress.getName(), fromAddress.getAddress(), date,
                     renderRecipients(res, addressCache, message), message.getBodyAsHtml(),
-                    ""); // TODO - attachment html
+                    renderAttachments(context, res, message));
         } while (cursor.moveToNext());
 
         // only include JavaScript if specifically requested
@@ -154,5 +157,87 @@ public class Printer {
         }
 
         return TextUtils.join(", ", formattedEmails);
+    }
+
+    /**
+     * Builds and returns html for a message's attachments.
+     */
+    private static String renderAttachments(
+            Context context, Resources resources, ConversationMessage message) {
+        if (!message.hasAttachments) {
+            return "";
+        }
+
+        final List<Attachment> attachments = message.getAttachments();
+        final StringBuilder sb = new StringBuilder("<br clear=all>"
+                + "<div style=\"width:50%;border-top:2px #AAAAAA solid\"></div>"
+                + "<table class=att cellspacing=0 cellpadding=5 border=0>");
+
+        // If the message has more than one attachment, list the number of attachments.
+        final int numAttachments = attachments.size();
+        if (numAttachments > 1) {
+            sb.append("<tr><td colspan=2><b style=\"padding-left:3\">")
+                    .append(resources.getQuantityString(
+                            R.plurals.num_attachments, numAttachments, numAttachments))
+                    .append("</b></td></tr>");
+        }
+
+        for (final Attachment attachment : attachments) {
+            sb.append("<tr><td><table cellspacing=\"0\" cellpadding=\"0\"><tr>");
+
+            // TODO - thumbnail previews of images
+
+            sb.append("<td><img width=\"16\" height=\"16\" src=\"file:///android_asset/images/")
+                    .append(getIconFilename(attachment.getContentType()))
+                    .append("\"></td><td width=\"7\"></td><td><b>")
+                    .append(attachment.getName())
+                    .append("</b><br>").append(
+                    AttachmentUtils.convertToHumanReadableSize(context, attachment.size))
+                    .append("</td></tr></table></td></tr>");
+        }
+
+        sb.append("</table>");
+
+        return sb.toString();
+    }
+
+    /**
+     * Returns an appropriate filename for various attachment mime types.
+     */
+    private static String getIconFilename(String mimeType) {
+        if (mimeType.startsWith("application/msword") ||
+                mimeType.startsWith("application/vnd.oasis.opendocument.text") ||
+                mimeType.equals("application/rtf") ||
+                mimeType.equals("application/"
+                        + "vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+            return "doc.gif";
+        } else if (mimeType.startsWith("image/")) {
+            return "graphic.gif";
+        } else if (mimeType.startsWith("text/html")) {
+            return "html.gif";
+        } else if (mimeType.startsWith("application/pdf")) {
+            return "pdf.gif";
+        } else if (mimeType.endsWith("powerpoint") ||
+                mimeType.equals("application/vnd.oasis.opendocument.presentation") ||
+                mimeType.equals("application/"
+                        + "vnd.openxmlformats-officedocument.presentationml.presentation")) {
+            return "ppt.gif";
+        } else if ((mimeType.startsWith("audio/")) ||
+                (mimeType.startsWith("music/"))) {
+            return "sound.gif";
+        } else if (mimeType.startsWith("text/plain")) {
+            return "txt.gif";
+        } else if (mimeType.endsWith("excel") ||
+                mimeType.equals("application/vnd.oasis.opendocument.spreadsheet") ||
+                mimeType.equals("application/"
+                        + "vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+            return "xls.gif";
+        } else if ((mimeType.endsWith("zip")) ||
+                (mimeType.endsWith("/x-compress")) ||
+                (mimeType.endsWith("/x-compressed"))) {
+            return "zip.gif";
+        } else {
+            return "generic.gif";
+        }
     }
 }
