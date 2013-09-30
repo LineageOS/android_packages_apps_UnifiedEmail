@@ -27,7 +27,7 @@
     <string name="add_photo_attachment" msgid="3738882100645552858">"Anexar imagem"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Anexar vídeo"</string>
     <string name="save_draft" msgid="5555744208032445632">"Guardar rascunho"</string>
-    <string name="discard" msgid="1714960202994370243">"Rejeitar"</string>
+    <string name="discard" msgid="1714960202994370243">"Descartar"</string>
     <string name="compose" msgid="1473559896062432878">"Compor"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Responder"</item>
@@ -398,4 +398,17 @@
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Ativar"</string>
     <string name="show_n_more_folders" msgid="337747297817699776">"Mostrar mais <xliff:g id="NUMBER">%1$s</xliff:g> pastas"</string>
     <string name="hide_folders" msgid="7473552966537131652">"Ocultar pastas"</string>
+    <string name="print" msgid="7905250801319578415">"Imprimir"</string>
+  <plurals name="num_messages">
+    <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> mensagem"</item>
+    <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g> mensagens"</item>
+  </plurals>
+    <!-- unknown quoting pattern: original 2, translation 2 -->
+    <string name="address_print_display_format" msgid="5121906176898767156">"<xliff:g id="NAME">%1$s</xliff:g> &amp;amp;lt;<xliff:g id="EMAIL">%2$s</xliff:g>&amp;amp;gt;"</string>
+    <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> às <xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="draft_to_heading" msgid="3448702197598500284">"Rascunho para: "</string>
+    <string name="draft_heading" msgid="4654861166951306093">"Rascunho"</string>
+    <string name="quoted_text_hidden_print" msgid="8572207101897331252">"Citação ocultada"</string>
+    <!-- no translation found for num_attachments:one (3344123914734915029) -->
+    <!-- no translation found for num_attachments:other (3556482119464721042) -->
 </resources>
