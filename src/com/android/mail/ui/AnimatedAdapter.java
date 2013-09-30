@@ -183,7 +183,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     /**
      * A list of all views that are not conversations. These include temporary views from
-     * {@link #mFleetingViews} and child folders from {@link #mFolderViews}.
+     * {@link #mFleetingViews}.
      */
     private final SparseArray<ConversationSpecialItemView> mSpecialViews;
 
@@ -286,7 +286,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         final int size = mFleetingViews.size();
         mSpecialViews = new SparseArray<ConversationSpecialItemView>(size);
 
-        // Only set the adapter in teaser views. Folder views don't care about the adapter.
+        // Set the adapter in teaser views.
         for (final ConversationSpecialItemView view : mFleetingViews) {
             view.setAdapter(this);
         }
@@ -998,15 +998,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     }
 
     /**
-     * Updates special (non-conversation view) when either {@link #mFolderViews} or
-     * {@link #mFleetingViews} changed
+     * Updates special (non-conversation view) when {@link #mFleetingViews} changed
      */
     private void updateSpecialViews() {
-        // We recreate all the special views using mFolderViews and mFleetingViews (in that order).
+        // We recreate all the special views using mFleetingViews.
         mSpecialViews.clear();
 
-        // Fleeting (temporary) views go after this. They specify a position,which is 0-indexed and
-        // has to be adjusted for the number of folders above it.
+        // Fleeting (temporary) views specify a position, which is 0-indexed and
+        // has to be adjusted for the number of fleeting views above it.
         for (final ConversationSpecialItemView specialView : mFleetingViews) {
             specialView.onUpdate(mFolder, getConversationCursor());
 
@@ -1106,14 +1105,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     }
 
     public void cleanup() {
-        // Only clean up teaser views. Folder views don't care about clean up.
+        // Clean up teaser views.
         for (final ConversationSpecialItemView view : mFleetingViews) {
             view.cleanup();
         }
     }
 
     public void onConversationSelected() {
-        // Only notify teaser views. Folder views don't care about selected conversations.
+        // Notify teaser views.
         for (final ConversationSpecialItemView specialView : mFleetingViews) {
             specialView.onConversationSelected();
         }
