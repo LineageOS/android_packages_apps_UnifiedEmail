@@ -587,8 +587,11 @@ public class Account implements Parcelable {
         }
 
         final Account other = (Account) o;
-        return TextUtils.equals(name, other.name) && TextUtils.equals(type, other.type) &&
-                capabilities == other.capabilities && providerVersion == other.providerVersion &&
+        return TextUtils.equals(name, other.name) &&
+                TextUtils.equals(accountManagerName, other.accountManagerName) &&
+                TextUtils.equals(type, other.type) &&
+                capabilities == other.capabilities &&
+                providerVersion == other.providerVersion &&
                 Objects.equal(uri, other.uri) &&
                 Objects.equal(folderListUri, other.folderListUri) &&
                 Objects.equal(fullFolderListUri, other.fullFolderListUri) &&
@@ -636,35 +639,35 @@ public class Account implements Parcelable {
 
     @Override
     public int hashCode() {
-        return super.hashCode()
-                ^ Objects.hashCode(name,
-                        type,
-                        capabilities,
-                        providerVersion,
-                        uri,
-                        folderListUri,
-                        fullFolderListUri,
-                        allFolderListUri,
-                        searchUri,
-                        accountFromAddresses,
-                        expungeMessageUri,
-                        undoUri,
-                        settingsIntentUri,
-                        helpIntentUri,
-                        sendFeedbackIntentUri,
-                        reauthenticationIntentUri,
-                        syncStatus,
-                        composeIntentUri,
-                        mimeType,
-                        recentFolderListUri,
-                        color,
-                        defaultRecentFolderListUri,
-                        viewIntentProxyUri,
-                        accoutCookieQueryUri,
-                        updateSettingsUri,
-                        enableMessageTransforms,
-                        syncAuthority,
-                        quickResponseUri);
+        return Objects.hashCode(name,
+                accountManagerName,
+                type,
+                capabilities,
+                providerVersion,
+                uri,
+                folderListUri,
+                fullFolderListUri,
+                allFolderListUri,
+                searchUri,
+                accountFromAddresses,
+                expungeMessageUri,
+                undoUri,
+                settingsIntentUri,
+                helpIntentUri,
+                sendFeedbackIntentUri,
+                reauthenticationIntentUri,
+                syncStatus,
+                composeIntentUri,
+                mimeType,
+                recentFolderListUri,
+                color,
+                defaultRecentFolderListUri,
+                viewIntentProxyUri,
+                accoutCookieQueryUri,
+                updateSettingsUri,
+                enableMessageTransforms,
+                syncAuthority,
+                quickResponseUri);
     }
 
     /**
