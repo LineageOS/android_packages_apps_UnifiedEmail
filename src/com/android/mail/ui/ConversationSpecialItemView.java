@@ -88,4 +88,18 @@ public interface ConversationSpecialItemView {
      * Saves any state for the view to the fragment so it will be restored on configuration change
      */
     void saveInstanceState(Bundle outState);
+
+    /**
+     * <p>
+     * Commits any leave-behind items for this special view.
+     * </p>
+     * <p>
+     * This should generally be used for committing any destructive actions that the leave-behind
+     * allows you to undo, and it should cause the leave-behind to disappear.
+     * </p>
+     *
+     * @return <code>true</code> if there was a leave-behind that has been committed,
+     *         <code>false</code> otherwise
+     */
+    boolean commitLeaveBehindItem();
 }

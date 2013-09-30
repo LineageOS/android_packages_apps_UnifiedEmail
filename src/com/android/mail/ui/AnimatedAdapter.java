@@ -678,6 +678,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             mLastDeletingItems.clear();
             changed = true;
         }
+
+        for (final ConversationSpecialItemView view : mFleetingViews) {
+            if (view.commitLeaveBehindItem()) {
+                changed = true;
+            }
+        }
+
         if (changed) {
             notifyDataSetChanged();
         }

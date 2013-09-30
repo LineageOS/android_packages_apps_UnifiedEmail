@@ -253,4 +253,10 @@ public class ConversationLongPressTipView extends FrameLayout
             setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
         }
     }
+
+    @Override
+    public boolean commitLeaveBehindItem() {
+        // This view has no leave-behind
+        return false;
+    }
 }

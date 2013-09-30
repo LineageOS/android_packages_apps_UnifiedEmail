@@ -621,4 +621,10 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
                     UIProvider.CONVERSATION_PROJECTION, Conversation.FACTORY);
         }
     };
+
+    @Override
+    public boolean commitLeaveBehindItem() {
+        // This view has no leave-behind
+        return false;
+    }
 }
