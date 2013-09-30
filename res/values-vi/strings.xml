@@ -27,7 +27,7 @@
     <string name="add_photo_attachment" msgid="3738882100645552858">"Đính kèm ảnh"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Đính kèm video"</string>
     <string name="save_draft" msgid="5555744208032445632">"Lưu bản nháp"</string>
-    <string name="discard" msgid="1714960202994370243">"Hủy"</string>
+    <string name="discard" msgid="1714960202994370243">"Loại bỏ"</string>
     <string name="compose" msgid="1473559896062432878">"Soạn thư"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Trả lời"</item>
