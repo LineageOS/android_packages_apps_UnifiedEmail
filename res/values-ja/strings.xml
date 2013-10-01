@@ -398,4 +398,20 @@
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"ONにする"</string>
     <string name="show_n_more_folders" msgid="337747297817699776">"他<xliff:g id="NUMBER">%1$s</xliff:g>個のフォルダを表示"</string>
     <string name="hide_folders" msgid="7473552966537131652">"フォルダを表示しない"</string>
+    <!-- no translation found for print (7905250801319578415) -->
+    <skip />
+    <!-- no translation found for num_messages:one (1997403772739309847) -->
+    <!-- no translation found for num_messages:other (3111597053027796035) -->
+    <!-- no translation found for address_print_display_format (5121906176898767156) -->
+    <skip />
+    <!-- no translation found for date_message_received_print (456269555541859826) -->
+    <skip />
+    <!-- no translation found for draft_to_heading (3448702197598500284) -->
+    <skip />
+    <!-- no translation found for draft_heading (4654861166951306093) -->
+    <skip />
+    <!-- no translation found for quoted_text_hidden_print (8572207101897331252) -->
+    <skip />
+    <!-- no translation found for num_attachments:one (3344123914734915029) -->
+    <!-- no translation found for num_attachments:other (3556482119464721042) -->
 </resources>
