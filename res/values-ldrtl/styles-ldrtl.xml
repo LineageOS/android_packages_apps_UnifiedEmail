@@ -139,4 +139,22 @@
     <style name="AttachmentTextContainer">
         <item name="android:paddingStart">@dimen/compose_attachment_text_padding</item>
     </style>
+
+    <style name="ToastBarDescriptionIconStyle">
+        <item name="android:paddingStart">@dimen/toast_bar_description_icon_padding_start</item>
+        <item name="android:paddingEnd">@dimen/toast_bar_description_icon_padding_end</item>
+    </style>
+
+    <style name="ToastBarSeparatorStyle" parent="AbstractToastBarSeparatorStyle">
+        <item name="android:layout_marginEnd">@dimen/toast_bar_separator_margin</item>
+    </style>
+
+    <style name="ToastBarActionIconStyle">
+        <item name="android:layout_marginEnd">@dimen/toast_bar_action_margin</item>
+    </style>
+
+    <style name="ToastBarActionTextStyle" parent="AbstractUndoTextStyle">
+        <item name="android:layout_marginStart">@dimen/toast_bar_action_margin</item>
+        <item name="android:paddingEnd">@dimen/toast_bar_undo_text_padding</item>
+    </style>
 </resources>

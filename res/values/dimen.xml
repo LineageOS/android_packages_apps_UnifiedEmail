@@ -132,4 +132,12 @@
     <dimen name="folder_teaser_count_textview_minwidth">68dp</dimen>
 
     <dimen name="compose_attachment_text_padding">8dip</dimen>
+
+    <dimen name="toast_bar_description_icon_padding_start">16dip</dimen>
+    <dimen name="toast_bar_description_icon_padding_end">16dip</dimen>
+    <dimen name="toast_bar_separator_margin">12dip</dimen>
+    <dimen name="toast_bar_separator_margin_vertical">10dip</dimen>
+    <dimen name="toast_bar_action_margin">4dip</dimen>
+    <dimen name="toast_bar_undo_text_padding">16dip</dimen>
+    <dimen name="toast_bar_margin">4dip</dimen>
 </resources>

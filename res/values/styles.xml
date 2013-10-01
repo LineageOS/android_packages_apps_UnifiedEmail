@@ -413,9 +413,9 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dip</item>
         <item name="android:layout_gravity">bottom</item>
-        <item name="android:layout_marginLeft">4dip</item>
-        <item name="android:layout_marginRight">4dip</item>
-        <item name="android:layout_marginBottom">4dip</item>
+        <item name="android:layout_marginLeft">@dimen/toast_bar_margin</item>
+        <item name="android:layout_marginRight">@dimen/toast_bar_margin</item>
+        <item name="android:layout_marginBottom">@dimen/toast_bar_margin</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@drawable/panel_undo_holo</item>
@@ -601,5 +601,27 @@
 
     <style name="RecipientSummaryStyle" parent="MessageHeaderSmallStyle">
         <item name="android:layout_marginRight">@dimen/recipient_summary_margin</item>
+    </style>
+
+    <style name="ToastBarDescriptionIconStyle">
+        <item name="android:paddingLeft">@dimen/toast_bar_description_icon_padding_start</item>
+        <item name="android:paddingRight">@dimen/toast_bar_description_icon_padding_end</item>
+    </style>
+
+    <style name="AbstractToastBarSeparatorStyle">
+        <item name="android:layout_marginTop">@dimen/toast_bar_separator_margin_vertical</item>
+        <item name="android:layout_marginBottom">@dimen/toast_bar_separator_margin_vertical</item>
+    </style>
+    <style name="ToastBarSeparatorStyle" parent="AbstractToastBarSeparatorStyle">
+        <item name="android:layout_marginRight">@dimen/toast_bar_separator_margin</item>
+    </style>
+
+    <style name="ToastBarActionIconStyle">
+        <item name="android:layout_marginRight">@dimen/toast_bar_action_margin</item>
+    </style>
+
+    <style name="ToastBarActionTextStyle" parent="AbstractUndoTextStyle">
+        <item name="android:layout_marginLeft">@dimen/toast_bar_action_margin</item>
+        <item name="android:paddingRight">@dimen/toast_bar_undo_text_padding</item>
     </style>
 </resources>
