@@ -27,7 +27,7 @@
     <string name="add_photo_attachment" msgid="3738882100645552858">"แนบรูปภาพ"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"แนบวิดีโอ"</string>
     <string name="save_draft" msgid="5555744208032445632">"บันทึกร่างจดหมาย"</string>
-    <string name="discard" msgid="1714960202994370243">"ยกเลิก"</string>
+    <string name="discard" msgid="1714960202994370243">"ทิ้ง"</string>
     <string name="compose" msgid="1473559896062432878">"เขียน"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"ตอบ"</item>
