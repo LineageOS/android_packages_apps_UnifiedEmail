@@ -45,9 +45,6 @@ public class MimeType {
             "message/rfc822", "application/eml");
     public static final String EML_ATTACHMENT_CONTENT_TYPE = "message/rfc822";
     private static final String NULL_ATTACHMENT_CONTENT_TYPE = "null";
-    private static final Set<String> UNACCEPTABLE_ATTACHMENT_TYPES = ImmutableSet.of(
-            "application/zip", "application/x-gzip", "application/x-bzip2",
-            "application/x-compress", "application/x-compressed", "application/x-tar");
 
     /**
      * Returns whether or not an attachment of the specified type is installable (e.g. an apk).
@@ -67,11 +64,6 @@ public class MimeType {
         if (contentType == null || contentType.length() == 0 ||
                 NULL_ATTACHMENT_CONTENT_TYPE.equals(contentType)) {
             LogUtils.d(LOG_TAG, "Attachment with null content type. '%s", contentUri);
-            return false;
-        }
-
-        if (isBlocked(contentType)) {
-            LogUtils.d(LOG_TAG, "content type '%s' is blocked. '%s", contentType, contentUri);
             return false;
         }
 
@@ -103,13 +95,6 @@ public class MimeType {
                     contentType, contentUri, mimetypeIntent.getType(), mimetypeIntent.getData());
         }
         return list.size() > 0;
-    }
-
-    /**
-     * @return whether the specified type is blocked.
-     */
-    public static boolean isBlocked(String contentType) {
-        return UNACCEPTABLE_ATTACHMENT_TYPES.contains(contentType);
     }
 
     /**

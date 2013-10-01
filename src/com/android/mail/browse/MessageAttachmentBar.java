@@ -232,16 +232,6 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
                 action = null;
             }
-            // If the mimetype is blocked, show the info dialog
-            else if (MimeType.isBlocked(mAttachment.getContentType())) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                int dialogMessage = R.string.attachment_type_blocked;
-                builder.setTitle(R.string.more_info_attachment)
-                       .setMessage(dialogMessage)
-                       .show();
-
-                action = "attachment_bar_blocked";
-            }
             // If we can install, install.
             else if (MimeType.isInstallable(mAttachment.getContentType())) {
                 // Save to external because the package manager only handles
