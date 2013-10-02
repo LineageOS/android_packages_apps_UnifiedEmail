@@ -943,7 +943,7 @@
     </plurals>
 
     <!-- Display format of an email recipient, displayed in printed message details [CHAR LIMIT=10] -->
-    <string name="address_print_display_format"><xliff:g id="name">%1$s</xliff:g> &amp;lt;<xliff:g id="email">%2$s</xliff:g>&amp;gt;</string>
+    <string name="address_print_display_format" translatable="false"><xliff:g id="name">%1$s</xliff:g> &amp;lt;<xliff:g id="email">%2$s</xliff:g>&amp;gt;</string>
     <!-- Shown to display the date of the message [CHAR LIMIT=50] -->
     <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> at <xliff:g id="time">%2$s</xliff:g></string>
     <!-- Shown to display the to recipient(s) of the message if the message is a draft [CHAR LIMIT=20] -->
