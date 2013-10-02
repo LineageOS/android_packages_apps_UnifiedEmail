@@ -118,7 +118,7 @@
                     android:clickable="true"
                     android:focusable="true">
                     <ImageView
-                        android:text="@string/add_file_attachment"
+                        android:text="@string/add_photo_attachment"
                         android:src="@drawable/ic_attach_image_holo_light"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

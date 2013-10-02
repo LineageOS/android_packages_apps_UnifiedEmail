@@ -226,6 +226,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final int INIT_DRAFT_USING_REFERENCE_MESSAGE = 2;
     private static final String EXTRA_SELECTED_ACCOUNT = "selectedAccount";
     private static final String TAG_WAIT = "wait-fragment";
+    private static final String MIME_TYPE_ALL = "*/*";
     private static final String MIME_TYPE_PHOTO = "image/*";
     private static final String MIME_TYPE_VIDEO = "video/*";
 
@@ -1121,10 +1122,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mPhotoAttachmentsButton != null) {
             mPhotoAttachmentsButton.setOnClickListener(this);
         }
-        mVideoAttachmentsButton = findViewById(R.id.add_video_attachment);
-        if (mVideoAttachmentsButton != null) {
-            mVideoAttachmentsButton.setOnClickListener(this);
-        }
         mTo = (RecipientEditTextView) findViewById(R.id.to);
         mTo.setTokenizer(new Rfc822Tokenizer());
         mCc = (RecipientEditTextView) findViewById(R.id.cc);
@@ -1953,8 +1950,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             showCcBccViews();
         } else if (id == R.id.add_photo_attachment) {
             doAttach(MIME_TYPE_PHOTO);
-        } else if (id == R.id.add_video_attachment) {
-            doAttach(MIME_TYPE_VIDEO);
         }
     }
 
@@ -2003,6 +1998,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             sendFeedbackItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.SEND_FEEDBACK));
         }
+
+        // Only show attach file on K. Sigh.
+        menu.findItem(R.id.add_file_attachment).setVisible(Utils.isRunningKitkatOrLater());
+
         return true;
     }
 
@@ -2031,7 +2030,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, id, null, 0);
 
         boolean handled = true;
-        if (id == R.id.add_photo_attachment) {
+        if (id == R.id.add_file_attachment) {
+            doAttach(MIME_TYPE_ALL);
+        } else if (id == R.id.add_photo_attachment) {
             doAttach(MIME_TYPE_PHOTO);
         } else if (id == R.id.add_video_attachment) {
             doAttach(MIME_TYPE_VIDEO);
