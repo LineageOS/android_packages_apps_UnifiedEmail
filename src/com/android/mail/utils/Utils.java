@@ -1432,14 +1432,12 @@ public class Utils {
 
 
     public static Address getAddress(Map<String, Address> cache, String emailStr) {
-        Address addr = null;
+        Address addr;
         synchronized (cache) {
-            if (cache != null) {
-                addr = cache.get(emailStr);
-            }
+            addr = cache.get(emailStr);
             if (addr == null) {
                 addr = Address.getEmailAddress(emailStr);
-                if (cache != null) {
+                if (addr != null) {
                     cache.put(emailStr, addr);
                 }
             }

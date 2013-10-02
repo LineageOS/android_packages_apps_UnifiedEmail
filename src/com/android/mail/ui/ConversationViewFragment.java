@@ -1013,15 +1013,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     protected Address getAddress(String rawFrom) {
-        Address addr;
-        synchronized (mAddressCache) {
-            addr = mAddressCache.get(rawFrom);
-            if (addr == null) {
-                addr = Address.getEmailAddress(rawFrom);
-                mAddressCache.put(rawFrom, addr);
-            }
-        }
-        return addr;
+        return Utils.getAddress(mAddressCache, rawFrom);
     }
 
     private void ensureContentSizeChangeListener() {
