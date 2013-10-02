@@ -30,6 +30,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.content.CursorCreator;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.providers.UIProvider.ConversationCursorCommand;
 import com.android.mail.ui.ConversationCursorLoader;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -460,8 +461,24 @@ public class Conversation implements Parcelable {
         return conversation;
     }
 
-    private static final Bundle sConversationInfoRequest = new Bundle(1);
-    private static final Bundle sRawFoldersRequest = new Bundle(1);
+    private static final Bundle CONVERSATION_INFO_REQUEST;
+    private static final Bundle RAW_FOLDERS_REQUEST;
+
+    static {
+        RAW_FOLDERS_REQUEST = new Bundle(2);
+        RAW_FOLDERS_REQUEST.putBoolean(
+                ConversationCursorCommand.COMMAND_GET_RAW_FOLDERS, true);
+        RAW_FOLDERS_REQUEST.putInt(
+                ConversationCursorCommand.COMMAND_KEY_OPTIONS,
+                ConversationCursorCommand.OPTION_MOVE_POSITION);
+
+        CONVERSATION_INFO_REQUEST = new Bundle(2);
+        CONVERSATION_INFO_REQUEST.putBoolean(
+                ConversationCursorCommand.COMMAND_GET_CONVERSATION_INFO, true);
+        CONVERSATION_INFO_REQUEST.putInt(
+                ConversationCursorCommand.COMMAND_KEY_OPTIONS,
+                ConversationCursorCommand.OPTION_MOVE_POSITION);
+    }
 
     private static ConversationInfo readConversationInfo(Cursor cursor) {
         final ConversationInfo ci;
@@ -474,16 +491,9 @@ public class Conversation implements Parcelable {
             }
         }
 
-        final String key = UIProvider.ConversationCursorCommand.COMMAND_GET_CONVERSATION_INFO;
-        if (sConversationInfoRequest.isEmpty()) {
-            sConversationInfoRequest.putBoolean(key, true);
-            sConversationInfoRequest.putInt(
-                    UIProvider.ConversationCursorCommand.COMMAND_KEY_OPTIONS,
-                    UIProvider.ConversationCursorCommand.OPTION_MOVE_POSITION);
-        }
-        final Bundle response = cursor.respond(sConversationInfoRequest);
-        if (response.containsKey(key)) {
-            ci = response.getParcelable(key);
+        final Bundle response = cursor.respond(CONVERSATION_INFO_REQUEST);
+        if (response.containsKey(ConversationCursorCommand.COMMAND_GET_CONVERSATION_INFO)) {
+            ci = response.getParcelable(ConversationCursorCommand.COMMAND_GET_CONVERSATION_INFO);
         } else {
             // legacy fallback
             ci = ConversationInfo.fromBlob(cursor.getBlob(UIProvider.CONVERSATION_INFO_COLUMN));
@@ -502,16 +512,9 @@ public class Conversation implements Parcelable {
             }
         }
 
-        final String key = UIProvider.ConversationCursorCommand.COMMAND_GET_RAW_FOLDERS;
-        if (sRawFoldersRequest.isEmpty()) {
-            sRawFoldersRequest.putBoolean(key, true);
-            sRawFoldersRequest.putInt(
-                    UIProvider.ConversationCursorCommand.COMMAND_KEY_OPTIONS,
-                    UIProvider.ConversationCursorCommand.OPTION_MOVE_POSITION);
-        }
-        final Bundle response = cursor.respond(sRawFoldersRequest);
-        if (response.containsKey(key)) {
-            fl = response.getParcelable(key);
+        final Bundle response = cursor.respond(RAW_FOLDERS_REQUEST);
+        if (response.containsKey(ConversationCursorCommand.COMMAND_GET_RAW_FOLDERS)) {
+            fl = response.getParcelable(ConversationCursorCommand.COMMAND_GET_RAW_FOLDERS);
         } else {
             // legacy fallback
             // TODO: delete this once Email supports the respond call
