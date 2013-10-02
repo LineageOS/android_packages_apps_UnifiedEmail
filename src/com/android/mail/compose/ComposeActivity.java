@@ -26,6 +26,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
+import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,6 +38,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -1671,7 +1673,21 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @param data
      */
     public void addAttachmentAndUpdateView(Intent data) {
-        addAttachmentAndUpdateView(data != null ? data.getData() : (Uri) null);
+        if (data == null) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            final ClipData clipData = data.getClipData();
+            if (clipData != null) {
+                for (int i = 0, size = clipData.getItemCount(); i < size; i++) {
+                    addAttachmentAndUpdateView(clipData.getItemAt(i).getUri());
+                }
+                return;
+            }
+        }
+
+        addAttachmentAndUpdateView(data.getData());
     }
 
     public void addAttachmentAndUpdateView(Uri contentUri) {
@@ -2932,6 +2948,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         i.setType(type);
         mAddingAttachment = true;
         startActivityForResult(Intent.createChooser(i, getText(R.string.select_attachment_type)),
