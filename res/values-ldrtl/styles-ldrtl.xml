@@ -135,4 +135,8 @@
     <style name="RecipientSummaryStyle" parent="MessageHeaderSmallStyle">
         <item name="android:layout_marginEnd">@dimen/recipient_summary_margin</item>
     </style>
+
+    <style name="AttachmentTextContainer">
+        <item name="android:paddingStart">@dimen/compose_attachment_text_padding</item>
+    </style>
 </resources>

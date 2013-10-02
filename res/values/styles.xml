@@ -97,15 +97,16 @@
         <item name="android:layout_height">48dip</item>
     </style>
 
+    <style name="AttachmentTextContainer">
+        <item name="android:paddingLeft">@dimen/compose_attachment_text_padding</item>
+    </style>
+
     <style name="AttachmentName">
-        <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_marginRight">32dip</item>
-        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">#333333</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="AttachmentSize" parent="@style/AttachmentName">

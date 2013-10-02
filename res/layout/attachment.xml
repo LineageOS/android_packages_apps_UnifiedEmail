@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/AttachmentContainer"
     android:focusableInTouchMode="true"
     android:focusable="true">
@@ -23,17 +23,17 @@
     <ImageView
         android:id="@+id/thumbnail"
         android:src="@drawable/ic_attachment_holo_light"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
         style="@style/AttachmentThumbnail"/>
 
     <!-- Attachment name and size -->
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/thumbnail">
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        style="@style/AttachmentTextContainer" >
 
         <TextView android:id="@+id/attachment_name"
             style="@style/AttachmentName" />
@@ -48,12 +48,9 @@
         android:src="@drawable/ic_cancel_holo_light"
         android:layout_width="48dip"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:paddingRight="16dip"
-        android:paddingLeft="16dip"
         android:clickable="true"
-        android:layout_centerVertical="true"
+        android:gravity="center"
         android:background="?android:attr/selectableItemBackground"/>
 
 
-</RelativeLayout>
+</LinearLayout>

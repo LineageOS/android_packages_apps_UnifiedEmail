@@ -130,4 +130,6 @@
 
     <!-- Minimum width of the folder teaser count TextView -->
     <dimen name="folder_teaser_count_textview_minwidth">68dp</dimen>
+
+    <dimen name="compose_attachment_text_padding">8dip</dimen>
 </resources>
