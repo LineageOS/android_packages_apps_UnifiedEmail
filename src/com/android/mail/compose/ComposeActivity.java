@@ -2677,6 +2677,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                                             showToast);
                                 }
                             })
+                    .setNegativeButton(R.string.cancel, null)
                     .create();
         }
     }
