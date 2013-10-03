@@ -33,6 +33,7 @@ import com.android.mail.R;
 import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
+import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.FeedbackEnabledActivity;
@@ -155,6 +156,11 @@ public class EmlViewerActivity extends Activity implements FeedbackEnabledActivi
     @Override
     public Account getAccount() {
         return mAccount;
+    }
+
+    @Override
+    public AccountPreferences getAccountPreferences() {
+        return null;
     }
 
     private class AccountLoadCallbacks

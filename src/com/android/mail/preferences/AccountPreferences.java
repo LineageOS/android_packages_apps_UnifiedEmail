@@ -15,10 +15,11 @@
  */
 package com.android.mail.preferences;
 
+import android.content.Context;
+
+import com.android.mail.R;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-
-import android.content.Context;
 
 import java.util.Map;
 
@@ -30,6 +31,8 @@ public class AccountPreferences extends VersionedPrefs {
     private static final String PREFS_NAME_PREFIX = "Account";
 
     private static Map<String, AccountPreferences> mInstances = Maps.newHashMap();
+
+    private final boolean mAlwaysShowImagesDefault;
 
     public static final class PreferenceKeys {
         /**
@@ -53,8 +56,14 @@ public class AccountPreferences extends VersionedPrefs {
          */
         public static final String LAST_SEEN_OUTBOX_COUNT = "last-seen-outbox-count";
 
+        /**
+         * Boolean value indicating whether inline images should be shown in the conversation view.
+         */
+        public static final String ALWAYS_SHOW_IMAGES = "show-images";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
-                new ImmutableSet.Builder<String>().add(NOTIFICATIONS_ENABLED).build();
+                new ImmutableSet.Builder<String>()
+                        .add(NOTIFICATIONS_ENABLED).add(ALWAYS_SHOW_IMAGES).build();
     }
 
     /**
@@ -62,6 +71,9 @@ public class AccountPreferences extends VersionedPrefs {
      */
     public AccountPreferences(final Context context, final String account) {
         super(context, buildSharedPrefsName(account));
+
+        mAlwaysShowImagesDefault =
+                context.getResources().getBoolean(R.bool.always_show_images_default);
     }
 
     private static String buildSharedPrefsName(final String account) {
@@ -140,5 +152,14 @@ public class AccountPreferences extends VersionedPrefs {
 
     public void setLastSeenOutboxCount(final int count) {
         getEditor().putInt(PreferenceKeys.LAST_SEEN_OUTBOX_COUNT, count).apply();
+    }
+
+    public boolean shouldAlwaysShowImages() {
+        return getSharedPreferences().getBoolean(
+                PreferenceKeys.ALWAYS_SHOW_IMAGES, mAlwaysShowImagesDefault);
+    }
+
+    public void setShouldAlwaysShowImages(final boolean shouldAlwaysShowImages) {
+        getEditor().putBoolean(PreferenceKeys.ALWAYS_SHOW_IMAGES, shouldAlwaysShowImages).apply();
     }
 }

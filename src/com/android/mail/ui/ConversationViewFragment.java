@@ -66,6 +66,7 @@ import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.content.ObjectCursor;
+import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.print.Printer;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
@@ -653,7 +654,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         int collapsedStart = -1;
         ConversationMessage prevCollapsedMsg = null;
-        boolean prevSafeForImages = false;
+
+        final boolean alwaysShowImages =
+                AccountPreferences.get(getContext(), mAccount.name).shouldAlwaysShowImages();
+        boolean prevSafeForImages = alwaysShowImages;
 
         // Store the previous expanded state so that the border between
         // the previous and current message can be properly initialized.
@@ -661,7 +665,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         while (messageCursor.moveToPosition(++pos)) {
             final ConversationMessage msg = messageCursor.getMessage();
 
-            final boolean safeForImages =
+            final boolean safeForImages = alwaysShowImages ||
                     msg.alwaysShowImages || prevState.getShouldShowImages(msg);
             allowNetworkImages |= safeForImages;
 
@@ -798,6 +802,9 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         mTemplates.reset();
 
+        final boolean alwaysShowImages =
+                AccountPreferences.get(getContext(), mAccount.name).shouldAlwaysShowImages();
+
         // In devices with non-integral density multiplier, screen pixels translate to non-integral
         // web pixels. Keep track of the error that occurs when we cast all heights to int
         float error = 0f;
@@ -822,7 +829,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
             final MessageHeaderItem header = ConversationViewAdapter.newMessageHeaderItem(
                     mAdapter, mAdapter.getDateBuilder(), msg, false /* expanded */,
-                    mViewState.getShouldShowImages(msg));
+                    alwaysShowImages || mViewState.getShouldShowImages(msg));
             final MessageFooterItem footer = mAdapter.newMessageFooterItem(header);
 
             final int headerPx = measureOverlayHeight(header);
@@ -838,7 +845,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 error -= 1;
             }
 
-            mTemplates.appendMessageHtml(msg, false /* expanded */, msg.alwaysShowImages,
+            mTemplates.appendMessageHtml(msg, false /* expanded */,
+                    alwaysShowImages || msg.alwaysShowImages,
                     mWebView.screenPxToWebPx(headerPx) + correction,
                     mWebView.screenPxToWebPx(footerPx));
             replacements.add(header);

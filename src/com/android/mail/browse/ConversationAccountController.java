@@ -17,8 +17,10 @@
 
 package com.android.mail.browse;
 
+import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.providers.Account;
 
 public interface ConversationAccountController {
     Account getAccount();
+    AccountPreferences getAccountPreferences();
 }

@@ -54,6 +54,7 @@ import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.LetterTileProvider;
+import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
@@ -405,7 +406,12 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mExpandedDetailsValid = false;
 
         mMessage = mMessageHeaderItem.getMessage();
-        mShowImagePrompt = mMessage.shouldShowImagePrompt();
+
+        final AccountPreferences accountPreferences = mAccountController.getAccountPreferences();
+        final boolean alwaysShowImages =
+                accountPreferences != null ? accountPreferences.shouldAlwaysShowImages() : false;
+        mShowImagePrompt = mMessage.shouldShowImagePrompt() && !alwaysShowImages;
+
         setExpanded(mMessageHeaderItem.isExpanded());
 
         mFrom = mMessage.getFromAddresses();
