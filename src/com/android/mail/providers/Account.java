@@ -67,6 +67,12 @@ public class Account implements Parcelable {
     private final String type;
 
     /**
+     * Cached android.accounts.Account based on the above two values
+     */
+
+    private android.accounts.Account amAccount;
+
+    /**
      * The version of the UI provider schema from which this account provider
      * will return results.
      */
@@ -455,7 +461,12 @@ public class Account implements Parcelable {
     }
 
     public android.accounts.Account getAccountManagerAccount() {
-        return new android.accounts.Account(accountManagerName, type);
+        if (amAccount == null) {
+            // We don't really need to synchronize this
+            // as worst case is we'd create an extra identical object and throw it away
+            amAccount = new android.accounts.Account(accountManagerName, type);
+        }
+        return amAccount;
     }
 
     public boolean supportsCapability(int capability) {

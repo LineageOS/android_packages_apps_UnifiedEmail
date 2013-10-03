@@ -675,7 +675,8 @@ public class NotificationActionUtils {
                 notificationAction.getNotificationActionType());
 
         final int notificationId = NotificationUtils.getNotificationId(
-                notificationAction.getAccount().name, notificationAction.getFolder());
+                notificationAction.getAccount().getAccountManagerAccount(),
+                notificationAction.getFolder());
 
         final Notification notification =
                 createUndoNotification(context, notificationAction, notificationId);
@@ -699,7 +700,8 @@ public class NotificationActionUtils {
         final Account account = notificationAction.getAccount();
         final Folder folder = notificationAction.getFolder();
         final Conversation conversation = notificationAction.getConversation();
-        final int notificationId = NotificationUtils.getNotificationId(account.name, folder);
+        final int notificationId =
+                NotificationUtils.getNotificationId(account.getAccountManagerAccount(), folder);
 
         // Note: we must add the conversation before removing the undo notification
         // Otherwise, the observer for sUndoNotifications gets called, which calls
@@ -721,7 +723,7 @@ public class NotificationActionUtils {
         final Account account = notificationAction.getAccount();
         final Folder folder = notificationAction.getFolder();
         final int notificationId = NotificationUtils.getNotificationId(
-                account.name, folder);
+                account.getAccountManagerAccount(), folder);
         removeUndoNotification(context, notificationId, true);
         sNotificationTimestamps.delete(notificationId);
         processDestructiveAction(context, notificationAction);
