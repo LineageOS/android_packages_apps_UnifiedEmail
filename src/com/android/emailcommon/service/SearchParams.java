@@ -18,8 +18,11 @@ package com.android.emailcommon.service;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.SparseArray;
 
 import com.google.common.base.Objects;
+
+import java.util.Date;
 
 public class SearchParams implements Parcelable {
 
@@ -33,6 +36,10 @@ public class SearchParams implements Parcelable {
     // The search terms (the search MUST only select messages whose contents include all of the
     // search terms in the query)
     public final String mFilter;
+    // The start date (GreaterThan) for date-windowing results
+    public final Date mStartDate;
+    // The end date (LessThan) for date-windowing results
+    public final Date mEndDate;
     // The maximum number of results to be created by this search
     public int mLimit = DEFAULT_LIMIT;
     // If zero, specifies a "new" search; otherwise, asks for a continuation of the previous
@@ -54,12 +61,25 @@ public class SearchParams implements Parcelable {
     public SearchParams(long mailboxId, String filter) {
         mMailboxId = mailboxId;
         mFilter = filter;
+        mStartDate = null;
+        mEndDate = null;
     }
 
     public SearchParams(long mailboxId, String filter, long searchMailboxId) {
         mMailboxId = mailboxId;
         mFilter = filter;
+        mStartDate = null;
+        mEndDate = null;
         mSearchMailboxId = searchMailboxId;
+    }
+
+    public SearchParams(long mailboxId, String filter, long searchMailboxId, Date startDate,
+            Date endDate) {
+        mMailboxId = mailboxId;
+        mFilter = filter;
+        mSearchMailboxId = searchMailboxId;
+        mStartDate = startDate;
+        mEndDate = endDate;
     }
 
     @Override
@@ -75,18 +95,24 @@ public class SearchParams implements Parcelable {
         return mMailboxId == os.mMailboxId
                 && mIncludeChildren == os.mIncludeChildren
                 && mFilter.equals(os.mFilter)
+                && Objects.equal(mStartDate, os.mStartDate)
+                && Objects.equal(mEndDate, os.mEndDate)
                 && mLimit == os.mLimit
                 && mOffset == os.mOffset;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(mMailboxId, mFilter, mOffset);
+        return Objects.hashCode(mMailboxId, mFilter, mStartDate, mEndDate, mLimit, mOffset);
     }
 
     @Override
     public String toString() {
-        return "[SearchParams " + mMailboxId + ":" + mFilter + " (" + mOffset + ", " + mLimit + "]";
+        return "[SearchParams "
+                + mMailboxId + ":" + mFilter
+                + " (" + mOffset + ", " + mLimit + ")"
+                + " {" + mStartDate + ", " + mEndDate + "}"
+                + "]";
     }
 
     @Override
@@ -120,6 +146,14 @@ public class SearchParams implements Parcelable {
         dest.writeString(mFilter);
         dest.writeInt(mLimit);
         dest.writeInt(mOffset);
+        SparseArray<Object> dateWindow = new SparseArray<Object>(2);
+        if (mStartDate != null) {
+            dateWindow.put(0, mStartDate.getTime());
+        }
+        if (mEndDate != null) {
+            dateWindow.put(1, mEndDate.getTime());
+        }
+        dest.writeSparseArray(dateWindow);
     }
 
     /**
@@ -131,5 +165,16 @@ public class SearchParams implements Parcelable {
         mFilter = in.readString();
         mLimit = in.readInt();
         mOffset = in.readInt();
+        SparseArray dateWindow = in.readSparseArray(this.getClass().getClassLoader());
+        if (dateWindow.get(0) != null) {
+            mStartDate = new Date((Long)dateWindow.get(0));
+        } else {
+            mStartDate = null;
+        }
+        if (dateWindow.get(1) != null) {
+            mEndDate = new Date((Long)dateWindow.get(1));
+        } else {
+            mEndDate = null;
+        }
     }
 }
