@@ -27,7 +27,7 @@
     <string name="add_photo_attachment" msgid="3738882100645552858">"پیوست کردن تصویر"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"پیوست کردن ویدیو"</string>
     <string name="save_draft" msgid="5555744208032445632">"ذخیره پیش‌نویس"</string>
-    <string name="discard" msgid="1714960202994370243">"رد کردن"</string>
+    <string name="discard" msgid="1714960202994370243">"دور انداختن"</string>
     <string name="compose" msgid="1473559896062432878">"نوشتن نامه"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"پاسخ"</item>

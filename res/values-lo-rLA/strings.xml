@@ -161,7 +161,7 @@
     <item quantity="one" msgid="5974090449454432874">"ຍົກເລີກສະບັບຮ່າງຈາກການສົນທະນານີ້?"</item>
     <item quantity="other" msgid="4173815457177336569">"ຍົກເລີກສະບັບຮ່າງສຳລັບ <xliff:g id="COUNT">%1$d</xliff:g> ການສົນທະນານີ້?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="1149834186404614612">"ຍົກເລີກຂໍ້ຄວາມນີ້ບໍ່?"</string>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"ປິດການຂຽນອິເມວນີ້ບໍ່?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"ກຳລັງໂຫລດ..."</string>
     <string name="no_conversations" msgid="35400008890372241">"ບໍ່ມີບົດສົນທະນາ."</string>
     <string name="undo" msgid="6070869718469782251">"ແກ້ໄຂຄືນ"</string>
