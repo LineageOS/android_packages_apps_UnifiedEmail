@@ -105,7 +105,6 @@
     <string name="cancel_attachment" msgid="4651201258272223650">"Zrušit"</string>
     <string name="download_again" msgid="7418568915429156518">"Stáhnout znovu"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informace"</string>
-    <string name="attachment_type_blocked" msgid="7878184764428642891">"Tento typ přílohy bohužel nemůžete uložit ani otevřít."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Tuto přílohu nelze zobrazit v žádné dostupné aplikaci."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Načítání přílohy"</string>
     <string name="please_wait" msgid="8797634225088247121">"Čekejte prosím…"</string>
@@ -342,7 +341,7 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"Počet nových zpráv: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
+    <string name="new_messages" msgid="4419173946074516420">"Nové zprávy: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Tichý režim"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Akce archivace a smazání"</string>
@@ -398,20 +397,17 @@
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Zapnout"</string>
     <string name="show_n_more_folders" msgid="337747297817699776">"Zobrazit další složky (<xliff:g id="NUMBER">%1$s</xliff:g>)"</string>
     <string name="hide_folders" msgid="7473552966537131652">"Skrýt složky"</string>
-    <!-- no translation found for print (7905250801319578415) -->
-    <skip />
-    <!-- no translation found for num_messages:one (1997403772739309847) -->
-    <!-- no translation found for num_messages:other (3111597053027796035) -->
-    <!-- no translation found for address_print_display_format (5121906176898767156) -->
-    <skip />
-    <!-- no translation found for date_message_received_print (456269555541859826) -->
-    <skip />
-    <!-- no translation found for draft_to_heading (3448702197598500284) -->
-    <skip />
-    <!-- no translation found for draft_heading (4654861166951306093) -->
-    <skip />
-    <!-- no translation found for quoted_text_hidden_print (8572207101897331252) -->
-    <skip />
-    <!-- no translation found for num_attachments:one (3344123914734915029) -->
-    <!-- no translation found for num_attachments:other (3556482119464721042) -->
+    <string name="print" msgid="7905250801319578415">"Tisk"</string>
+  <plurals name="num_messages">
+    <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> zpráva"</item>
+    <item quantity="other" msgid="3111597053027796035">"Počet zpráv: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+  </plurals>
+    <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> v <xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="draft_to_heading" msgid="3448702197598500284">"Koncept zprávy pro: "</string>
+    <string name="draft_heading" msgid="4654861166951306093">"Koncept"</string>
+    <string name="quoted_text_hidden_print" msgid="8572207101897331252">"Citovaný text byl skryt"</string>
+  <plurals name="num_attachments">
+    <item quantity="one" msgid="3344123914734915029">"<xliff:g id="COUNT">%1$d</xliff:g> příloha"</item>
+    <item quantity="other" msgid="3556482119464721042">"Počet příloh: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+  </plurals>
 </resources>

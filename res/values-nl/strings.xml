@@ -105,7 +105,6 @@
     <string name="cancel_attachment" msgid="4651201258272223650">"Annuleren"</string>
     <string name="download_again" msgid="7418568915429156518">"Opnieuw downloaden"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Info"</string>
-    <string name="attachment_type_blocked" msgid="7878184764428642891">"U kunt dit type bijlage niet opslaan of openen."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Er is geen app die deze bijlage kan openen voor weergave."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Bijlage ophalen"</string>
     <string name="please_wait" msgid="8797634225088247121">"Even geduld…"</string>
@@ -403,12 +402,12 @@
     <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> bericht"</item>
     <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g> berichten"</item>
   </plurals>
-    <!-- unknown quoting pattern: original 2, translation 2 -->
-    <string name="address_print_display_format" msgid="5121906176898767156">"<xliff:g id="NAME">%1$s</xliff:g> &amp;amp;lt;<xliff:g id="EMAIL">%2$s</xliff:g>&amp;amp;gt;"</string>
     <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> om <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="draft_to_heading" msgid="3448702197598500284">"Conceptbericht aan: "</string>
     <string name="draft_heading" msgid="4654861166951306093">"Concept"</string>
     <string name="quoted_text_hidden_print" msgid="8572207101897331252">"Tekst uit oorspronkelijke bericht is verborgen"</string>
-    <!-- no translation found for num_attachments:one (3344123914734915029) -->
-    <!-- no translation found for num_attachments:other (3556482119464721042) -->
+  <plurals name="num_attachments">
+    <item quantity="one" msgid="3344123914734915029">"<xliff:g id="COUNT">%1$d</xliff:g> bijlage"</item>
+    <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> bijlagen"</item>
+  </plurals>
 </resources>

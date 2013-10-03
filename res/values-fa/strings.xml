@@ -27,7 +27,7 @@
     <string name="add_photo_attachment" msgid="3738882100645552858">"پیوست کردن تصویر"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"پیوست کردن ویدیو"</string>
     <string name="save_draft" msgid="5555744208032445632">"ذخیره پیش‌نویس"</string>
-    <string name="discard" msgid="1714960202994370243">"رد کردن"</string>
+    <string name="discard" msgid="1714960202994370243">"دور انداختن"</string>
     <string name="compose" msgid="1473559896062432878">"نوشتن نامه"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"پاسخ"</item>
@@ -105,7 +105,6 @@
     <string name="cancel_attachment" msgid="4651201258272223650">"لغو"</string>
     <string name="download_again" msgid="7418568915429156518">"دانلود دوباره"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"اطلاعات"</string>
-    <string name="attachment_type_blocked" msgid="7878184764428642891">"متأسفانه نمی‌توانید این نوع پیوست را ذخیره یا باز کنید."</string>
     <string name="no_application_found" msgid="1945184804521392093">"هیچ برنامه‌ای نمی‌تواند این پیوست را جهت مشاهده باز کند."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"واکشی پیوست"</string>
     <string name="please_wait" msgid="8797634225088247121">"لطفاً منتظر بمانید…"</string>
@@ -398,20 +397,17 @@
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"روشن کردن"</string>
     <string name="show_n_more_folders" msgid="337747297817699776">"نمایش <xliff:g id="NUMBER">%1$s</xliff:g> پوشه بیشتر"</string>
     <string name="hide_folders" msgid="7473552966537131652">"پنهان کردن پوشه‌ها"</string>
-    <!-- no translation found for print (7905250801319578415) -->
-    <skip />
-    <!-- no translation found for num_messages:one (1997403772739309847) -->
-    <!-- no translation found for num_messages:other (3111597053027796035) -->
-    <!-- no translation found for address_print_display_format (5121906176898767156) -->
-    <skip />
-    <!-- no translation found for date_message_received_print (456269555541859826) -->
-    <skip />
-    <!-- no translation found for draft_to_heading (3448702197598500284) -->
-    <skip />
-    <!-- no translation found for draft_heading (4654861166951306093) -->
-    <skip />
-    <!-- no translation found for quoted_text_hidden_print (8572207101897331252) -->
-    <skip />
-    <!-- no translation found for num_attachments:one (3344123914734915029) -->
-    <!-- no translation found for num_attachments:other (3556482119464721042) -->
+    <string name="print" msgid="7905250801319578415">"چاپ"</string>
+  <plurals name="num_messages">
+    <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> پیام"</item>
+    <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g> پیام"</item>
+  </plurals>
+    <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> ساعت <xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="draft_to_heading" msgid="3448702197598500284">"گیرنده پیش‌نویس: "</string>
+    <string name="draft_heading" msgid="4654861166951306093">"پیش‌نویس‌"</string>
+    <string name="quoted_text_hidden_print" msgid="8572207101897331252">"نوشتار نقل‌قول شده پنهان است"</string>
+  <plurals name="num_attachments">
+    <item quantity="one" msgid="3344123914734915029">"<xliff:g id="COUNT">%1$d</xliff:g> پیوست"</item>
+    <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> پیوست"</item>
+  </plurals>
 </resources>
