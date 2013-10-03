@@ -307,8 +307,8 @@ public class NotificationUtils {
         final Set<NotificationKey> keys = notificationMap.keySet();
         for (NotificationKey notification : keys) {
             final Folder folder = notification.folder;
-            final int notificationId = getNotificationId(notification.account.name,
-                    folder);
+            final int notificationId =
+                    getNotificationId(notification.account.getAccountManagerAccount(), folder);
 
             // Only resend notifications if the notifications are from the same folder
             // and same account as the undo notification that was previously displayed.
@@ -351,7 +351,7 @@ public class NotificationUtils {
         if (!enabled) {
             // Cancel all notifications for this account
             for (NotificationKey notification : keys) {
-                if (notification.account.name.equals(account)) {
+                if (notification.account.getAccountManagerAccount().name.equals(account)) {
                     notificationsToCancel.add(notification);
                 }
             }
@@ -359,7 +359,7 @@ public class NotificationUtils {
             // Iterate through the notification map to see if there are any entries that
             // correspond to labels that are not in the notification set.
             for (NotificationKey notification : keys) {
-                if (notification.account.name.equals(account)) {
+                if (notification.account.getAccountManagerAccount().name.equals(account)) {
                     // If notification is not enabled for this label, remember this NotificationKey
                     // to later cancel the notification, and remove the entry from the map
                     final Folder folder = notification.folder;
@@ -381,7 +381,8 @@ public class NotificationUtils {
                     Context.NOTIFICATION_SERVICE);
             for (NotificationKey notification : notificationsToCancel) {
                 final Folder folder = notification.folder;
-                final int notificationId = getNotificationId(notification.account.name, folder);
+                final int notificationId =
+                        getNotificationId(notification.account.getAccountManagerAccount(), folder);
                 LogUtils.d(LOG_TAG, "validateAccountNotifications - cancelling %s / %s",
                         notification.account.name, folder.persistentId);
                 nm.cancel(notificationId);
@@ -405,7 +406,7 @@ public class NotificationUtils {
 
         boolean ignoreUnobtrusiveSetting = false;
 
-        final int notificationId = getNotificationId(account.name, folder);
+        final int notificationId = getNotificationId(account.getAccountManagerAccount(), folder);
 
         // Update the notification map
         final NotificationMap notificationMap = getNotificationMap(context);
@@ -501,7 +502,8 @@ public class NotificationUtils {
                 unseenCount = unreadCount;
             }
 
-            final int notificationId = getNotificationId(account.name, folder);
+            final int notificationId =
+                    getNotificationId(account.getAccountManagerAccount(), folder);
 
             if (unseenCount == 0) {
                 LogUtils.i(LOG_TAG, "validateNotifications - cancelling account %s / folder %s",
@@ -605,7 +607,7 @@ public class NotificationUtils {
 
                     configureLatestEventInfoFromConversation(context, account, folderPreferences,
                             notification, cursor, clickIntent, notificationIntent,
-                            account.name, unreadCount, unseenCount, folder, when);
+                            unreadCount, unseenCount, folder, when);
                     eventInfoConfigured = true;
                 }
             }
@@ -732,9 +734,10 @@ public class NotificationUtils {
             final Account account, final FolderPreferences folderPreferences,
             final NotificationCompat.Builder notification, final Cursor conversationCursor,
             final PendingIntent clickIntent, final Intent notificationIntent,
-            final String notificationAccount, final int unreadCount, final int unseenCount,
+            final int unreadCount, final int unseenCount,
             final Folder folder, final long when) {
         final Resources res = context.getResources();
+        final String notificationAccount = account.name;
 
         LogUtils.i(LOG_TAG, "Showing notification with unreadCount of %d and unseenCount of %d",
                 unreadCount, unseenCount);
@@ -939,7 +942,8 @@ public class NotificationUtils {
                         final Set<String> notificationActions =
                                 folderPreferences.getNotificationActions(account);
 
-                        final int notificationId = getNotificationId(notificationAccount, folder);
+                        final int notificationId = getNotificationId(
+                                account.getAccountManagerAccount(), folder);
 
                         NotificationActionUtils.addNotificationActions(context, notificationIntent,
                                 notification, account, conversation, message, folder,
@@ -1255,7 +1259,7 @@ public class NotificationUtils {
 
         final NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(getNotificationId(account.name, folder));
+        notificationManager.cancel(getNotificationId(account.getAccountManagerAccount(), folder));
 
         if (markSeen) {
             markSeen(context, folder);
@@ -1265,7 +1269,8 @@ public class NotificationUtils {
     /**
      * Clears all notifications for the specified account.
      */
-    public static void clearAccountNotifications(final Context context, final String account) {
+    public static void clearAccountNotifications(final Context context,
+            final android.accounts.Account account) {
         LogUtils.v(LOG_TAG, "Clearing all notifications for %s", account);
         final NotificationMap notificationMap = getNotificationMap(context);
 
@@ -1273,7 +1278,7 @@ public class NotificationUtils {
         final ImmutableList.Builder<NotificationKey> keyBuilder = ImmutableList.builder();
 
         for (final NotificationKey key : notificationMap.keySet()) {
-            if (account.equals(key.account.name)) {
+            if (account.equals(key.account.getAccountManagerAccount())) {
                 keyBuilder.add(key);
             }
         }
@@ -1452,7 +1457,8 @@ public class NotificationUtils {
         return tokenizedAddress;
     }
 
-    public static int getNotificationId(final String account, final Folder folder) {
+    public static int getNotificationId(final android.accounts.Account account,
+            final Folder folder) {
         return 1 ^ account.hashCode() ^ folder.hashCode();
     }
 
@@ -1471,7 +1477,8 @@ public class NotificationUtils {
                 return false;
             }
             NotificationKey key = (NotificationKey) other;
-            return account.equals(key.account) && folder.equals(key.folder);
+            return account.getAccountManagerAccount().equals(key.account.getAccountManagerAccount())
+                    && folder.equals(key.folder);
         }
 
         @Override
@@ -1481,7 +1488,7 @@ public class NotificationUtils {
 
         @Override
         public int hashCode() {
-            final int accountHashCode = account.hashCode();
+            final int accountHashCode = account.getAccountManagerAccount().hashCode();
             final int folderHashCode = folder.hashCode();
             return accountHashCode ^ folderHashCode;
         }
