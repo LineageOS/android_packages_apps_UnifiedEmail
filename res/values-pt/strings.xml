@@ -55,7 +55,7 @@
     <string name="send" msgid="8242003661397555986">"Enviar"</string>
     <string name="mark_read" msgid="8438349154394313195">"Marcar como lida"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Marcar como não lida"</string>
-    <string name="mute" msgid="1995954983688603977">"Desativar som"</string>
+    <string name="mute" msgid="1995954983688603977">"Ignorar"</string>
     <string name="add_star" msgid="2866003744391266498">"Adicionar estrela"</string>
     <string name="remove_star" msgid="4372327933122106128">"Remover estrela"</string>
     <string name="remove_folder" msgid="4906542720439865413">"Remover de <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
