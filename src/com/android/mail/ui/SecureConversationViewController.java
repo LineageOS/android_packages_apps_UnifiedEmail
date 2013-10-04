@@ -160,6 +160,8 @@ public class SecureConversationViewController implements
                 "text/html", "utf-8", null);
         final MessageHeaderItem item = ConversationViewAdapter.newMessageHeaderItem(
                 null, mDateBuilder, mMessage, true, mMessage.alwaysShowImages);
+        // Clear out the old info from the header before (re)binding
+        mMessageHeaderView.unbind();
         mMessageHeaderView.bind(item, false);
         if (mMessage.hasAttachments) {
             mMessageFooterView.setVisibility(View.VISIBLE);

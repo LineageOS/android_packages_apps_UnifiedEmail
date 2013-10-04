@@ -85,7 +85,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             callbacks.setSenders(emailAddresses);
             getLoaderManager().restartLoader(CONTACT_LOADER, Bundle.EMPTY, callbacks);
         }
-    };
+    }
 
     /**
      * Creates a new instance of {@link ConversationViewFragment}, initialized
@@ -209,7 +209,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     public void onAccountChanged(Account newAccount, Account oldAccount) {
-        // Do nothing.
+        renderMessage(getMessageCursor());
     }
 
     @Override
@@ -230,6 +230,10 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     @Override
     protected void onMessageCursorLoadFinished(Loader<ObjectCursor<ConversationMessage>> loader,
             MessageCursor newCursor, MessageCursor oldCursor) {
+        renderMessage(newCursor);
+    }
+
+    private void renderMessage(MessageCursor newCursor) {
         // ignore cursors that are still loading results
         if (newCursor == null || !newCursor.isLoaded()) {
             LogUtils.i(LOG_TAG, "CONV RENDER: existing cursor is null, rendering from scratch");
