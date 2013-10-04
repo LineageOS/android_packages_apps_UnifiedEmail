@@ -397,7 +397,7 @@
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Washa"</string>
     <string name="show_n_more_folders" msgid="337747297817699776">"Onyesha folda <xliff:g id="NUMBER">%1$s</xliff:g> zaidi"</string>
     <string name="hide_folders" msgid="7473552966537131652">"Ficha folda"</string>
-    <string name="print" msgid="7905250801319578415">"Chapa"</string>
+    <string name="print" msgid="7905250801319578415">"Chapisha"</string>
   <plurals name="num_messages">
     <item quantity="one" msgid="1997403772739309847">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g>"</item>
     <item quantity="other" msgid="3111597053027796035">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g>"</item>

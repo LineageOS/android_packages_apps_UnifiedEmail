@@ -407,7 +407,7 @@
     <string name="draft_heading" msgid="4654861166951306093">"Черновик"</string>
     <string name="quoted_text_hidden_print" msgid="8572207101897331252">"Цитируемый текст скрыт"</string>
   <plurals name="num_attachments">
-    <item quantity="one" msgid="3344123914734915029">"Прикрепленных файлов: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
-    <item quantity="other" msgid="3556482119464721042">"Прикрепленных файлов: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+    <item quantity="one" msgid="3344123914734915029">"Файлов: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+    <item quantity="other" msgid="3556482119464721042">"Файлов: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
 </resources>
