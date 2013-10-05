@@ -161,7 +161,7 @@
     <item quantity="one" msgid="5974090449454432874">"ຍົກເລີກສະບັບຮ່າງຈາກການສົນທະນານີ້?"</item>
     <item quantity="other" msgid="4173815457177336569">"ຍົກເລີກສະບັບຮ່າງສຳລັບ <xliff:g id="COUNT">%1$d</xliff:g> ການສົນທະນານີ້?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="1149834186404614612">"ຍົກເລີກຂໍ້ຄວາມນີ້ບໍ່?"</string>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"ປິດການຂຽນອິເມວນີ້ບໍ່?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"ກຳລັງໂຫລດ..."</string>
     <string name="no_conversations" msgid="35400008890372241">"ບໍ່ມີບົດສົນທະນາ."</string>
     <string name="undo" msgid="6070869718469782251">"ແກ້ໄຂຄືນ"</string>
@@ -232,7 +232,7 @@
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> ຜ່ານ <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"ບັນທຶກຂໍ້ຄວາມເປັນສະບັບຮ່າງແລ້ວ."</string>
-    <string name="sending_message" msgid="1498583163419122128">"ການສົ່ງຂໍ້ຄວາມ..."</string>
+    <string name="sending_message" msgid="1498583163419122128">"ກຳລັງສົ່ງຂໍ້ຄວາມ..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"ທີ່ຢູ່ <xliff:g id="WRONGEMAIL">%s</xliff:g> ແມ່ນບໍ່ຖືກຕ້ອງ."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ ສະແດງຂໍ້ຄວາມອ້າງອີງ"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ເຊື່ອງຄຳເວົ້າອ້າງອີງ"</string>
