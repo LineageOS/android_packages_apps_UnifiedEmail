@@ -45,8 +45,6 @@ public class SearchParams implements Parcelable {
     // If zero, specifies a "new" search; otherwise, asks for a continuation of the previous
     // query(ies) starting with the mOffset'th match (0 based)
     public int mOffset = DEFAULT_OFFSET;
-    // The total number of results for this search
-    public int mTotalCount = 0;
     // The id of the "search" mailbox being used
     public long mSearchMailboxId;
 
