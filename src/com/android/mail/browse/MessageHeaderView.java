@@ -895,6 +895,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             final Menu m = mPopup.getMenu();
             m.findItem(R.id.reply).setVisible(defaultReplyAll);
             m.findItem(R.id.reply_all).setVisible(!defaultReplyAll);
+            m.findItem(R.id.print_message).setVisible(Utils.isRunningKitkatOrLater());
 
             final boolean reportRendering = ENABLE_REPORT_RENDERING_PROBLEM
                 && mCallbacks.supportsMessageTransforms();

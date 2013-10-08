@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2013 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,6 @@
           android:title="@string/reply" />
     <item android:id="@+id/reply_all"
           android:title="@string/reply_all" />
-    <item android:id="@+id/forward"
-          android:title="@string/forward" />
     <item android:id="@+id/print_message"
           android:title="@string/print" />
     <item android:id="@+id/report_rendering_problem"

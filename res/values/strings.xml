@@ -808,7 +808,9 @@
     <!--  Settings screen, Reply to all default setting title  [CHAR LIMIT=30] -->
     <string name="preferences_default_reply_all_title">Reply all</string>
     <!--  Settings screen, Reply to all default setting summary [CHAR LIMIT=70] -->
-    <string name="preferences_default_reply_all_summary">Use as default for message replies</string>
+    <string name="preferences_default_reply_all_summary_impl">Use as default for message replies</string>
+    <!--  DO NOT TRANSLATE THE BELOW STRING - In order to allow overriding of this for K tablets (but not pre-K tablets), we use an indirection with the actual string defined above. -->
+    <string name="preferences_default_reply_all_summary" translatable="false">@string/preferences_default_reply_all_summary_impl</string>
 
     <!-- Preference name for swipe action when action is archive [CHAR LIMIT=100]-->
     <string name="preference_swipe_title_archive">Swipe to archive</string>
@@ -934,8 +936,10 @@
     <!-- Button in conversation list to hide folders [CHAR LIMIT=50] -->
     <string name="hide_folders">Hide folders</string>
 
-    <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
+    <!-- Menu item text to that when clicked will allow a user to print an email message. [CHAR LIMIT=25] -->
     <string name="print">Print</string>
+    <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
+    <string name="print_all">Print all</string>
     <!-- Number of messages in a conversation [CHAR LIMIT=30]-->
     <plurals name="num_messages">
         <item quantity="one"><xliff:g id="count">%1$d</xliff:g> message</item>

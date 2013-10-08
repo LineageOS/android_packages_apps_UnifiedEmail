@@ -102,6 +102,11 @@
         android:id="@+id/mute"
         android:title="@string/mute"
         android:showAsAction="never" />
+
+    <item android:id="@+id/print_all"
+          android:title="@string/print_all"
+          android:visible="false" />
+
     <item
         android:id="@+id/show_original"
         android:title="@string/menu_show_original"
