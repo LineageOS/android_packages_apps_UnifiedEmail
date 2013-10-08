@@ -29,5 +29,6 @@
 
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.Dialog.MinWidth">
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
     </style>
 </resources>
