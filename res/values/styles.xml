@@ -357,12 +357,14 @@
 
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.DialogWhenLarge">
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
     </style>
 
     <style name="ComposeTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
@@ -386,6 +388,7 @@
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
     </style>
 
