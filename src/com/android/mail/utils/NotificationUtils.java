@@ -833,7 +833,7 @@ public class NotificationUtils {
                             final CharSequence digestLine = getSingleMessageInboxLine(context,
                                     sendersBuilder.toString(),
                                     conversation.subject,
-                                    conversation.snippet);
+                                    conversation.getSnippet());
                             digest.addLine(digestLine);
                             numDigestItems++;
                         } finally {

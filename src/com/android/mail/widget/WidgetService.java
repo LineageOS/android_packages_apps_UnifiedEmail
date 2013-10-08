@@ -407,16 +407,11 @@ public class WidgetService extends RemoteViewsService {
                 // Split the senders and status from the instructions.
                 SpannableStringBuilder senderBuilder = new SpannableStringBuilder();
 
-                if (conversation.conversationInfo != null) {
-                    ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
-                    SendersView.format(mContext, conversation.conversationInfo, "",
-                            MAX_SENDERS_LENGTH, senders, null, null, mAccount.name, true);
-                    senderBuilder = ellipsizeStyledSenders(senders);
-                } else {
-                    senderBuilder.append(conversation.senders);
-                    senderBuilder.setSpan(conversation.read ? getReadStyle() : getUnreadStyle(), 0,
-                            senderBuilder.length(), 0);
-                }
+                ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
+                SendersView.format(mContext, conversation.conversationInfo, "",
+                        MAX_SENDERS_LENGTH, senders, null, null, mAccount.name, true);
+                senderBuilder = ellipsizeStyledSenders(senders);
+
                 // Get styled date.
                 CharSequence date = DateUtils.getRelativeTimeSpanString(mContext,
                         conversation.dateMs);
