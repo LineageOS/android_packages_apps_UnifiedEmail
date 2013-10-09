@@ -143,7 +143,7 @@ public class Utils {
     }
 
     public static boolean isRunningKitkatOrLater() {
-        return Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     /**
@@ -151,8 +151,7 @@ public class Utils {
      * memory intensive features in the app.
      */
     public static boolean isLowRamDevice(Context context) {
-        // TODO: use SDK_INT to check if device is KitKat or greater.
-        if (Build.VERSION.CODENAME.startsWith("K")) {
+        if (isRunningKitkatOrLater()) {
             final ActivityManager am = (ActivityManager) context.getSystemService(
                     Context.ACTIVITY_SERVICE);
             return am.isLowRamDevice();
