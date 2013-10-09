@@ -122,7 +122,7 @@
     <integer name="conv_item_view_cab_anim_duration">250</integer>
 
     <!-- Number of nested folders to display in the conversation list, before hiding the remainder under "Show more" -->
-    <integer name="nested_folders_collapse_threshold">3</integer>
+    <integer name="nested_folders_collapse_threshold">1</integer>
 
     <!-- True if messages should show inline images by default. -->
     <bool name="always_show_images_default">false</bool>
