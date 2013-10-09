@@ -143,8 +143,7 @@ public class Utils {
     }
 
     public static boolean isRunningKitkatOrLater() {
-        // TODO - change to SDK_INT check when API is finalized
-        return Build.VERSION.CODENAME.startsWith("K");
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2;
     }
 
     /**
