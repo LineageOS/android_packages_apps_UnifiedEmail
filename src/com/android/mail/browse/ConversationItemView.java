@@ -636,6 +636,15 @@ public class ConversationItemView extends View
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        if (mSelectedConversationSet != null) {
+            mSelectedConversationSet.removeObserver(this);
+        }
+    }
+
+    @Override
     public void invalidateDrawable(final Drawable who) {
         boolean handled = false;
         if (mCoordinates != null) {
