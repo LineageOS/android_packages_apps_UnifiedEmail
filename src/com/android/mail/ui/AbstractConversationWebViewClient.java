@@ -84,7 +84,8 @@ public class AbstractConversationWebViewClient extends WebViewClient {
         }
 
         try {
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+                    | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mActivity.startActivity(intent);
             result = true;
         } catch (ActivityNotFoundException ex) {
