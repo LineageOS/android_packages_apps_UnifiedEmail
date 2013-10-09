@@ -70,7 +70,7 @@ public class ConversationSelectionSet implements Parcelable {
     private final BiMap<String, Long> mConversationUriToIdMap = HashBiMap.create();
     /** All objects that are interested in changes to the selected set. */
     @VisibleForTesting
-    final ArrayList<ConversationSetObserver> mObservers = new ArrayList<ConversationSetObserver>();
+    final Set<ConversationSetObserver> mObservers = new HashSet<ConversationSetObserver>();
 
     /**
      * Create a new object,
