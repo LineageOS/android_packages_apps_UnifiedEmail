@@ -680,18 +680,18 @@ public abstract class AbstractActivityController implements ActivityController,
             LogUtils.e(LOG_TAG, "AAC.changeAccount(null) called.");
             return;
         }
-        final String accountName = account.name;
+        final String emailAddress = account.getEmailAddress();
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                MailActivity.setNfcMessage(accountName);
+                MailActivity.setNfcMessage(emailAddress);
             }
         });
         if (accountChanged) {
             commitDestructiveActions(false);
         }
         Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_TYPE,
-                AnalyticsUtils.getAccountTypeForAccount(accountName));
+                AnalyticsUtils.getAccountTypeForAccount(emailAddress));
         // Change the account here
         setAccount(account);
         // And carry out associated actions.
@@ -2307,7 +2307,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
             if (intent.getBooleanExtra(Utils.EXTRA_FROM_NOTIFICATION, false)) {
                 Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_TYPE,
-                        AnalyticsUtils.getAccountTypeForAccount(mAccount.name));
+                        AnalyticsUtils.getAccountTypeForAccount(mAccount.getEmailAddress()));
                 Analytics.getInstance().sendEvent("notification_click",
                         isConversationMode ? "conversation" : "conversation_list", null, 0);
             }

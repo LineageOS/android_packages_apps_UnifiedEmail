@@ -635,7 +635,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // For backwards compatibility, we need to check account
                 // names.
                 for (Account a : mAccounts) {
-                    if (a.name.equals(accountExtra)) {
+                    if (a.getEmailAddress().equals(accountExtra)) {
                         account = a;
                     }
                 }
@@ -938,7 +938,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 .getQuotedTextOffset(quotedText.toString()) : -1;
         message.accountUri = null;
         message.setFrom(selectedReplyFromAccount != null ? selectedReplyFromAccount.address
-                : mAccount != null ? mAccount.name : null);
+                : mAccount != null ? mAccount.getEmailAddress() : null);
         message.draftType = getDraftType(mode);
         return message;
     }
@@ -961,7 +961,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             appendSignature();
         }
         if (mAccount != null) {
-            MailActivity.setNfcMessage(mAccount.name);
+            MailActivity.setNfcMessage(mAccount.getEmailAddress());
         }
     }
 
@@ -1085,20 +1085,21 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 return from;
             }
         }
-        return new ReplyFromAccount(account, account.uri, account.name, account.name, account.name,
-                true, false);
+        return new ReplyFromAccount(account, account.uri, account.getEmailAddress(), account.name,
+                account.getEmailAddress(), true, false);
     }
 
     private ReplyFromAccount getReplyFromAccountFromDraft(Account account, Message msg) {
         String sender = msg.getFrom();
         ReplyFromAccount replyFromAccount = null;
         List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
-        if (TextUtils.equals(account.name, sender)) {
-            replyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
-                    mAccount.name, mAccount.name, true, false);
+        if (TextUtils.equals(account.getEmailAddress(), sender)) {
+            replyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri,
+                    mAccount.getEmailAddress(), mAccount.name, mAccount.getEmailAddress(),
+                    true, false);
         } else {
             for (ReplyFromAccount fromAccount : replyFromAccounts) {
-                if (TextUtils.equals(fromAccount.name, sender)) {
+                if (TextUtils.equals(fromAccount.address, sender)) {
                     replyFromAccount = fromAccount;
                     break;
                 }
@@ -1917,11 +1918,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void setupRecipients(RecipientEditTextView view) {
         view.setAdapter(new RecipientAdapter(this, mAccount));
         if (mValidator == null) {
-            final String accountName = mAccount.name;
+            final String accountName = mAccount.getEmailAddress();
             int offset = accountName.indexOf("@") + 1;
             String account = accountName;
-            if (offset > -1) {
-                account = account.substring(accountName.indexOf("@") + 1);
+            if (offset > 0) {
+                account = account.substring(offset);
             }
             mValidator = new Rfc822Validator(account);
         }
