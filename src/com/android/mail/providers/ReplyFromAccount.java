@@ -112,7 +112,7 @@ public class ReplyFromAccount implements Serializable {
         Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(possibleCustomFrom);
         if (tokens != null && tokens.length > 0) {
             String parsedFromAddress = tokens[0].getAddress();
-            if (TextUtils.equals(account.name, parsedFromAddress)) {
+            if (TextUtils.equals(account.getEmailAddress(), parsedFromAddress)) {
                 return true;
             }
             for (ReplyFromAccount replyFromAccount : replyFromAccounts) {

@@ -51,7 +51,7 @@ public class Account implements Parcelable {
      * Human readable account name. Not guaranteed to be the account's email address, nor to match
      * the system account manager.
      */
-    // TODO: rename this to displayName to avoid confusion
+    // TODO: Make this private and add getDisplayName() accessor
     public final String name;
 
     /**
@@ -699,8 +699,8 @@ public class Account implements Parcelable {
             }
 
             // add the main account address
-            mReplyFroms.add(new ReplyFromAccount(this, uri, name, name, name,
-                    false /* isDefault */, false /* isCustom */));
+            mReplyFroms.add(new ReplyFromAccount(this, uri, getEmailAddress(), name,
+                    getEmailAddress(), false /* isDefault */, false /* isCustom */));
 
             if (!TextUtils.isEmpty(accountFromAddresses)) {
                 try {
@@ -735,6 +735,10 @@ public class Account implements Parcelable {
         }
 
         return false;
+    }
+
+    public String getEmailAddress() {
+        return accountManagerName;
     }
 
     @SuppressWarnings("hiding")
