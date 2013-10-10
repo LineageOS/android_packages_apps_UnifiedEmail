@@ -963,4 +963,7 @@
         <item quantity="other"><xliff:g id="count">%1$d</xliff:g> attachments</item>
     </plurals>
 
+    <!-- Provider name for widgets -->
+    <string name="widget_provider" translatable="false">com.android.mail.widget.WidgetProvider</string>
+
 </resources>
