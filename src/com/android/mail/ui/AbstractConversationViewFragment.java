@@ -222,7 +222,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     protected void setBaseUri() {
         // Since the uri specified in the conversation base uri may not be unique, we specify a
         // base uri that us guaranteed to be unique for this conversation.
-        mBaseUri = "x-thread://" + mAccount.name.hashCode() + "/" + mConversation.id;
+        mBaseUri = "x-thread://" + mAccount.getEmailAddress().hashCode() + "/" + mConversation.id;
     }
 
     @Override
