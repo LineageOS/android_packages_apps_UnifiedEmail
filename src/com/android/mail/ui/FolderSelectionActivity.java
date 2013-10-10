@@ -284,6 +284,10 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                 resultIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                         Intent.ShortcutIconResource.fromContext(this,
                                 R.mipmap.ic_launcher_shortcut_folder));
+                /**
+                 * Note: Email1 created shortcuts using R.mipmap#ic_launcher_email
+                 * so don't delete that resource until we have an upgrade/migration solution
+                 */
 
                 final CharSequence humanFolderName = mSelectedFolder.name;
 
