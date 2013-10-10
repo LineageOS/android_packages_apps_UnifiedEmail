@@ -76,15 +76,20 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         MailPrefs.get(context).clearWidgets(appWidgetIds);
     }
 
+    public static String getProviderName(Context context) {
+        return context.getString(R.string.widget_provider);
+    }
+
     /**
-     * If a widget provider extends this class, this method needs to be overriden, so the correct
-     * widget ids are returned.
+     * Note: this method calls {@link BaseWidgetProvider#getProviderName} and thus returns widget
+     * IDs based on the widget_provider string resource. When subclassing, be sure to either
+     * override this method or provide the correct provider name in the string resource.
+     *
      * @return the list ids for the currently configured widgets.
      */
     protected int[] getCurrentWidgetIds(Context context) {
         final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        final ComponentName mailComponent =
-                new ComponentName(context, WidgetProvider.PROVIDER_NAME);
+        final ComponentName mailComponent = new ComponentName(context, getProviderName(context));
         return appWidgetManager.getAppWidgetIds(mailComponent);
     }
 
