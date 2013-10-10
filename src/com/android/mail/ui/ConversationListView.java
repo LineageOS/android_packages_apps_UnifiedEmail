@@ -27,6 +27,8 @@ import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.MailPrefs;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.ui.ConversationSyncDisabledTipView.ReasonSyncOff;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -78,8 +80,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
     private float mDensity;
 
     private ControllableActivity mActivity;
-    private WindowManager mWindowManager;
-    private HintText mHintText;
+    private final WindowManager mWindowManager;
+    private final HintText mHintText;
     private boolean mHasHintTextViewBeenAdded = false;
 
     // Minimum vertical distance (in dips) of swipe to trigger a sync.
@@ -202,6 +204,17 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mTrackingScrollMovement) {
+                    if (mActivity.getFolderController().getFolder().isDraft()) {
+                        // Don't allow refreshing of DRAFT folders. See b/11158759
+                        LogUtils.d(LOG_TAG, "ignoring swipe to refresh on DRAFT folder");
+                        break;
+                    }
+                    if (mActivity.getFolderController().getFolder().supportsCapability(
+                            FolderCapabilities.IS_VIRTUAL)) {
+                        // Don't allow refreshing of virtual folders.
+                        LogUtils.d(LOG_TAG, "ignoring swipe to refresh on virtual folder");
+                        break;
+                    }
                     // Sync is triggered when tap and drag distance goes over a certain threshold
                     float verticalDistancePx = y - mTrackingScrollStartY;
                     float verticalDistanceDp = verticalDistancePx / mDensity;
@@ -412,7 +425,7 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
         // Can be one of NONE, SWIPE_TO_REFRESH, CHECKING_FOR_MAIL
         private int mDisplay;
 
-        private TextView mTextView;
+        private final TextView mTextView;
 
         private final Interpolator mDecelerateInterpolator = new DecelerateInterpolator(1.5f);
         private final Interpolator mAccelerateInterpolator = new AccelerateInterpolator(1.5f);
