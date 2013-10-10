@@ -90,6 +90,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private SearchView mSearchWidget;
     private MenuItem mHelpItem;
     private MenuItem mSendFeedbackItem;
+    private MenuItem mRefreshItem;
     private MenuItem mFolderSettingsItem;
     private MenuItem mEmptyTrashItem;
     private MenuItem mEmptySpamItem;
@@ -239,6 +240,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
         mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
+        mRefreshItem = menu.findItem(R.id.refresh);
         mFolderSettingsItem = menu.findItem(R.id.folder_options);
         mEmptyTrashItem = menu.findItem(R.id.empty_trash);
         mEmptySpamItem = menu.findItem(R.id.empty_spam);
@@ -387,6 +389,15 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             }
             return false;
         }
+
+        if (mRefreshItem != null) {
+            // See b/11158759
+            // Disable refresh on drafts folders.
+            mRefreshItem.setVisible(mFolder != null &&
+                    !mFolder.isDraft() &&
+                    !mFolder.supportsCapability(FolderCapabilities.IS_VIRTUAL));
+        }
+
         if (mFolderSettingsItem != null) {
             mFolderSettingsItem.setVisible(mFolder != null
                     && mFolder.supportsCapability(FolderCapabilities.SUPPORTS_SETTINGS));
