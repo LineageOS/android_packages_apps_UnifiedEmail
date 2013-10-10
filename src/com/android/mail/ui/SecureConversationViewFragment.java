@@ -267,6 +267,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     protected void printConversation() {
-        mViewController.printConversation();
+        mViewController.printMessage();
     }
 }

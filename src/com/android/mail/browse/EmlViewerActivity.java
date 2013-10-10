@@ -134,7 +134,6 @@ public class EmlViewerActivity extends Activity implements FeedbackEnabledActivi
         final int itemId = item.getItemId();
         if (itemId == android.R.id.home) {
             finish();
-            return true;
         } else if (itemId == R.id.settings) {
             Utils.showSettings(this, mAccount);
         } else if (itemId == R.id.help_info_menu_item) {

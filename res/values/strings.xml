@@ -966,4 +966,8 @@
     <!-- Provider name for widgets -->
     <string name="widget_provider" translatable="false">com.android.mail.widget.WidgetProvider</string>
 
+    <string name="print_job_name" translatable="false">Unified Email - <xliff:g id="subject">%1$s</xliff:g></string>
+    <!-- Title to display when an email has no subject. [CHAR LIMIT=50]-->
+    <string name="no_subject">(no subject)</string>
+
 </resources>
