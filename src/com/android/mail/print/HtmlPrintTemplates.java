@@ -19,6 +19,7 @@ package com.android.mail.print;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.ui.AbstractHtmlTemplates;
@@ -51,8 +52,7 @@ public class HtmlPrintTemplates extends AbstractHtmlTemplates {
      * until {@link #endPrintConversation()} or {@link #endPrintConversationNoJavascript()}
      * is called.
      */
-    public void startPrintConversation(String accountName, String accountAddress,
-            String subject, int numMessages) {
+    public void startPrintConversation(String subject, int numMessages) {
         if (mInProgress) {
             throw new IllegalStateException("Should not call startPrintConversation twice");
         }
@@ -62,9 +62,11 @@ public class HtmlPrintTemplates extends AbstractHtmlTemplates {
         final Resources res = mContext.getResources();
         final String numMessageString = res.getQuantityString(
                 R.plurals.num_messages, numMessages, numMessages);
+
+        final String printedSubject = TextUtils.isEmpty(subject)
+                ? res.getString(R.string.no_subject) : subject;
         append(mConversationUpper, mContext.getString(R.string.app_name),
-                accountName == null ? "" : accountName,
-                accountAddress, subject, numMessageString);
+                printedSubject, numMessageString);
 
         mInProgress = true;
     }

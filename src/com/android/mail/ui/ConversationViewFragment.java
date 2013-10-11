@@ -27,9 +27,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.print.PrintAttributes;
-import android.print.PrintJob;
-import android.print.PrintManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ScaleGestureDetector;
@@ -67,7 +64,7 @@ import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.preferences.AccountPreferences;
-import com.android.mail.print.Printer;
+import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
@@ -1580,17 +1577,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     protected void printConversation() {
-        // TODO - offscreen webview stuff so that we don't clobber
-        final String convHtml =
-                Printer.print(getContext(), mAccount, getMessageCursor(),
-                        mAddressCache, true /* userJavascript */);
-        mWebView.getSettings().setBlockNetworkImage(false);
-        mWebView.loadDataWithBaseURL(
-                mConversation.getBaseUri(mBaseUri), convHtml, "text/html", "utf-8", null);
-        final PrintManager printManager =
-                (PrintManager) getContext().getSystemService(Context.PRINT_SERVICE);
-        printManager.print(mConversation.subject,
-                mWebView.createPrintDocumentAdapter(),
-                new PrintAttributes.Builder().build());
+        PrintUtils.printConversation(getContext(), getMessageCursor(), mAddressCache,
+                mConversation.getBaseUri(mBaseUri), true /* useJavascript */);
     }
 }

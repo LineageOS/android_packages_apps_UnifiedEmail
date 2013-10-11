@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -149,6 +150,7 @@ public class EmlMessageViewFragment extends Fragment
         mWebViewClient = new EmlWebViewClient(null);
         mViewController = new SecureConversationViewController(this);
 
+        setHasOptionsMenu(true);
         getActivity().getActionBar().setTitle(R.string.attached_message);
     }
 
@@ -163,6 +165,18 @@ public class EmlMessageViewFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
         mWebViewClient.setActivity(getActivity());
         mViewController.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final int itemId = item.getItemId();
+        if (itemId == R.id.print_message) {
+            mViewController.printMessage();
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+
+        return true;
     }
 
     // Start SecureConversationViewControllerCallbacks

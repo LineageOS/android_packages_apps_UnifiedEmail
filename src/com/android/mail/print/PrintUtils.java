@@ -19,16 +19,20 @@ package com.android.mail.print;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.print.PrintAttributes;
+import android.print.PrintManager;
 import android.text.TextUtils;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
-import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.MessageCursor;
-import com.android.mail.providers.Account;
+
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.Utils;
@@ -37,17 +41,63 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Static class that provides a {@link #print} function to build a print html document.
+ * Utility class that provides utility functions to print
+ * either a conversation or message.
  */
-public class Printer {
+public class PrintUtils {
     private static final String DIV_START = "<div>";
     private static final String REPLY_TO_DIV_START = "<div class=\"replyto\">";
     private static final String DIV_END = "</div>";
 
     /**
+     * Prints an entire conversation.
+     */
+    public static void printConversation(Context context,
+            MessageCursor cursor, Map<String, Address> addressCache,
+            String baseUri, boolean useJavascript) {
+        final String convHtml = buildConversationHtml(context, cursor,
+                        addressCache, useJavascript);
+        printHtml(context, convHtml, baseUri, cursor.getConversation().subject, useJavascript);
+    }
+
+    /**
+     * Prints one message.
+     */
+    public static void printMessage(Context context, Message message, String subject,
+            Map<String, Address> addressCache, String baseUri, boolean useJavascript) {
+        final String msgHtml = buildMessageHtml(context, message,
+                subject, addressCache, useJavascript);
+        printHtml(context, msgHtml, baseUri, subject, useJavascript);
+    }
+
+    /**
+     * Prints the html provided using the framework printing APIs.
+     *
+     * Sets up a webview to perform the printing work.
+     */
+    private static void printHtml(Context context, String html,
+            String baseUri, String subject, boolean useJavascript) {
+        final WebView webView = new WebView(context);
+        final WebSettings settings = webView.getSettings();
+        settings.setBlockNetworkImage(false);
+        settings.setJavaScriptEnabled(useJavascript);
+        webView.loadDataWithBaseURL(baseUri, html,
+                "text/html", "utf-8", null);
+        final PrintManager printManager =
+                (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
+
+        final String printJobName = TextUtils.isEmpty(subject)
+                ? context.getString(R.string.app_name)
+                : context.getString(R.string.print_job_name, subject);
+        printManager.print(printJobName,
+                webView.createPrintDocumentAdapter(),
+                new PrintAttributes.Builder().build());
+    }
+
+    /**
      * Builds an html document that is suitable for printing and returns it as a {@link String}.
      */
-    public static String print(Context context, Account account,
+    private static String buildConversationHtml(Context context,
             MessageCursor cursor, Map<String, Address> addressCache, boolean useJavascript) {
         final HtmlPrintTemplates templates = new HtmlPrintTemplates(context);
         final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(context);
@@ -56,24 +106,14 @@ public class Printer {
             throw new IllegalStateException("trying to print without a conversation");
         }
 
-        // TODO - remove account name(not account.name which is email address) or get it somehow
         final Conversation conversation = cursor.getConversation();
-        templates.startPrintConversation("", account.name,
-                conversation.subject, conversation.getNumMessages());
+        templates.startPrintConversation(conversation.subject, conversation.getNumMessages());
 
         // for each message in the conversation, add message html
         final Resources res = context.getResources();
         do {
-            final ConversationMessage message = cursor.getMessage();
-            final Address fromAddress = Utils.getAddress(addressCache, message.getFrom());
-            final long when = message.dateReceivedMs;
-            final String date = res.getString(R.string.date_message_received_print,
-                    dateBuilder.formatLongDayAndDate(when), dateBuilder.formatLongTime(when));
-
-
-            templates.appendMessage(fromAddress.getName(), fromAddress.getAddress(), date,
-                    renderRecipients(res, addressCache, message), message.getBodyAsHtml(),
-                    renderAttachments(context, res, message));
+            final Message message = cursor.getMessage();
+            appendSingleMessageHtml(context, res, message, addressCache, templates, dateBuilder);
         } while (cursor.moveToNext());
 
         // only include JavaScript if specifically requested
@@ -82,11 +122,48 @@ public class Printer {
     }
 
     /**
+     * Builds an html document suitable for printing and returns it as a {@link String}.
+     */
+    private static String buildMessageHtml(Context context, Message message,
+            String subject, Map<String, Address> addressCache, boolean useJavascript) {
+        final HtmlPrintTemplates templates = new HtmlPrintTemplates(context);
+        final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(context);
+
+        templates.startPrintConversation(subject, 1 /* numMessages */);
+
+        // add message html
+        final Resources res = context.getResources();
+        appendSingleMessageHtml(context, res, message, addressCache, templates, dateBuilder);
+
+        // only include JavaScript if specifically requested
+        return useJavascript ?
+                templates.endPrintConversation() : templates.endPrintConversationNoJavascript();
+    }
+
+    /**
+     * Adds the html for a single message to the
+     * {@link HtmlPrintTemplates} provided.
+     */
+    private static void appendSingleMessageHtml(Context context, Resources res,
+            Message message, Map<String, Address> addressCache,
+            HtmlPrintTemplates templates, FormattedDateBuilder dateBuilder) {
+        final Address fromAddress = Utils.getAddress(addressCache, message.getFrom());
+        final long when = message.dateReceivedMs;
+        final String date = res.getString(R.string.date_message_received_print,
+                dateBuilder.formatLongDayAndDate(when), dateBuilder.formatLongTime(when));
+
+
+        templates.appendMessage(fromAddress.getName(), fromAddress.getAddress(), date,
+                renderRecipients(res, addressCache, message), message.getBodyAsHtml(),
+                renderAttachments(context, res, message));
+    }
+
+    /**
      * Builds html for the message header. Specifically, the (optional) lists of
      * reply-to, to, cc, and bcc.
      */
-    private static String renderRecipients(Resources res, Map<String, Address> addressCache,
-            ConversationMessage message) {
+    private static String renderRecipients(Resources res,
+            Map<String, Address> addressCache, Message message) {
         final StringBuilder recipients = new StringBuilder();
 
         // reply-to
@@ -163,7 +240,7 @@ public class Printer {
      * Builds and returns html for a message's attachments.
      */
     private static String renderAttachments(
-            Context context, Resources resources, ConversationMessage message) {
+            Context context, Resources resources, Message message) {
         if (!message.hasAttachments) {
             return "";
         }
@@ -186,7 +263,6 @@ public class Printer {
             sb.append("<tr><td><table cellspacing=\"0\" cellpadding=\"0\"><tr>");
 
             // TODO - thumbnail previews of images
-
             sb.append("<td><img width=\"16\" height=\"16\" src=\"file:///android_asset/images/")
                     .append(getIconFilename(attachment.getContentType()))
                     .append("\"></td><td width=\"7\"></td><td><b>")

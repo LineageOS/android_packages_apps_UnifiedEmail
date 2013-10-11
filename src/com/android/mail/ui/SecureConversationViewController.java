@@ -37,6 +37,8 @@ import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageScrollView;
 import com.android.mail.browse.MessageWebView;
+import com.android.mail.print.PrintUtils;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.utils.ConversationViewUtils;
 
@@ -185,8 +187,12 @@ public class SecureConversationViewController implements
         mConversationHeaderView.setSubject(subject);
     }
 
-    public void printConversation() {
-        // TODO - implement this
+    public void printMessage() {
+        final Conversation conversation = mMessage.getConversation();
+        PrintUtils.printMessage(mCallbacks.getContext(), mMessage,
+                conversation != null ? conversation.subject : mMessage.subject,
+                mCallbacks.getAddressCache(), mCallbacks.getBaseUri(), false /* useJavascript */);
+
     }
 
     // Start MessageHeaderViewCallbacks implementations

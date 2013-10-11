@@ -55,12 +55,14 @@ import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.preferences.AccountPreferences;
+import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.AbstractConversationViewFragment;
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -869,14 +871,16 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             ComposeActivity.replyAll(getContext(), getAccount(), mMessage);
         } else if (id == R.id.forward) {
             ComposeActivity.forward(getContext(), getAccount(), mMessage);
+        } else if (id == R.id.print_message) {
+            printMessage();
         } else if (id == R.id.report_rendering_problem) {
             final String text = getContext().getString(R.string.report_rendering_problem_desc);
             ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
-                text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
+                    text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
         } else if (id == R.id.report_rendering_improvement) {
             final String text = getContext().getString(R.string.report_rendering_improvement_desc);
             ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
-                text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
+                    text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
         } else if (id == R.id.star) {
             final boolean newValue = !v.isSelected();
             v.setSelected(newValue);
@@ -917,8 +921,20 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return handled;
     }
 
+    private void printMessage() {
+        // Secure conversation view does not use a conversation view adapter
+        // so it's safe to test for existence as a signal to use javascript or not.
+        final boolean useJavascript = mMessageHeaderItem.getAdapter() != null;
+        final Account account = mAccountController.getAccount();
+        final Conversation conversation = mMessage.getConversation();
+        final String baseUri =
+                AbstractConversationViewFragment.buildBaseUri(account, conversation);
+        PrintUtils.printMessage(getContext(), mMessage, conversation.subject,
+                mAddressCache, conversation.getBaseUri(baseUri), useJavascript);
+    }
+
     /**
-     * Set to true if the user should not be able to perfrom message actions
+     * Set to true if the user should not be able to perform message actions
      * on the message such as reply/reply all/forward/star/etc.
      *
      * Default is false.
