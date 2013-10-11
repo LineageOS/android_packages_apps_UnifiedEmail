@@ -424,7 +424,7 @@ public abstract class AbstractActivityController implements ActivityController,
     protected AsyncRefreshTask mFolderSyncTask;
     private Folder mFolderListFolder;
     private boolean mIsDragHappening;
-    private int mShowUndoBarDelay;
+    private final int mShowUndoBarDelay;
     private boolean mRecentsDataUpdated;
     /** A wait fragment we added, if any. */
     private WaitFragment mWaitFragment;
@@ -3268,9 +3268,9 @@ public abstract class AbstractActivityController implements ActivityController,
     // When dragging conversations to the starred folder, remove from the
     // original folder and add a star
     private class DroppedInStarredAction implements DestructiveAction {
-        private Collection<Conversation> mConversations;
-        private Folder mInitialFolder;
-        private Folder mStarred;
+        private final Collection<Conversation> mConversations;
+        private final Folder mInitialFolder;
+        private final Folder mStarred;
 
         public DroppedInStarredAction(Collection<Conversation> conversations, Folder initialFolder,
                 Folder starredFolder) {
@@ -3759,9 +3759,9 @@ public abstract class AbstractActivityController implements ActivityController,
         private final boolean mIsDestructive;
         /** Whether this destructive action has already been performed */
         private boolean mCompleted;
-        private boolean mIsSelectedSet;
-        private boolean mShowUndo;
-        private int mAction;
+        private final boolean mIsSelectedSet;
+        private final boolean mShowUndo;
+        private final int mAction;
         private final Folder mActionFolder;
 
         /**
@@ -4306,17 +4306,19 @@ public abstract class AbstractActivityController implements ActivityController,
                 final Folder folder;
 
                 if (mFolder != null) {
-                    final Cursor cursor = mContext.getContentResolver().query(mFolder.parent,
-                            UIProvider.FOLDERS_PROJECTION, null, null, null);
+                    Cursor cursor = null;
+                    try {
+                        cursor = mContext.getContentResolver().query(mFolder.parent,
+                                UIProvider.FOLDERS_PROJECTION, null, null, null);
 
-                    if (cursor == null) {
-                        // We couldn't load the parent, so use the inbox
-                        folder = mInbox;
-                    } else {
-                        try {
-                            cursor.moveToFirst();
+                        if (cursor == null || !cursor.moveToFirst()) {
+                            // We couldn't load the parent, so use the inbox
+                            folder = mInbox;
+                        } else {
                             folder = new Folder(cursor);
-                        } finally {
+                        }
+                    } finally {
+                        if (cursor != null) {
                             cursor.close();
                         }
                     }
