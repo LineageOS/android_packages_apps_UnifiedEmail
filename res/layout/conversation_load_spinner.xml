@@ -20,8 +20,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@android:color/white"
-    android:visibility="gone">
+    android:background="@color/conversation_view_border_color"
+    android:visibility="visible">
     <ProgressBar
         android:id="@+id/loading_progress"
         style="?android:attr/progressBarStyle"
