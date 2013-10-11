@@ -95,8 +95,6 @@ public class AnalyticsUtils {
             s = "show_original";
         } else if (id == R.id.add_photo_attachment) {
             s = "add_photo_attachment";
-        } else if (id == R.id.add_video_attachment) {
-            s = "add_video_attachment";
         } else if (id == R.id.add_cc_bcc) {
             s = "add_cc_bcc";
         } else if (id == R.id.save) {

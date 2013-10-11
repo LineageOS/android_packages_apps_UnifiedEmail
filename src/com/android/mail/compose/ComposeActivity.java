@@ -228,7 +228,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String TAG_WAIT = "wait-fragment";
     private static final String MIME_TYPE_ALL = "*/*";
     private static final String MIME_TYPE_PHOTO = "image/*";
-    private static final String MIME_TYPE_VIDEO = "video/*";
 
     private static final String KEY_INNER_SAVED_STATE = "compose_state";
 
@@ -263,7 +262,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private boolean mTextChanged;
     private boolean mReplyFromChanged;
     private MenuItem mSave;
-    private MenuItem mSend;
     @VisibleForTesting
     protected Message mRefMessage;
     private long mDraftId = UIProvider.INVALID_MESSAGE_ID;
@@ -271,7 +269,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private ReplyFromAccount mDraftAccount;
     private Object mDraftLock = new Object();
     private View mPhotoAttachmentsButton;
-    private View mVideoAttachmentsButton;
 
     /**
      * Boolean indicating whether ComposeActivity was launched from a Gmail controlled view.
@@ -1988,7 +1985,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                             || Intent.ACTION_SENDTO.equals(action)
                             || shouldSave()));
 
-        mSend = menu.findItem(R.id.send);
         MenuItem helpItem = menu.findItem(R.id.help_info_menu_item);
         MenuItem sendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
         if (helpItem != null) {
@@ -2000,8 +1996,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     && mAccount.supportsCapability(AccountCapabilities.SEND_FEEDBACK));
         }
 
-        // Only show attach file on K. Sigh.
-        menu.findItem(R.id.add_file_attachment).setVisible(Utils.isRunningKitkatOrLater());
+        // Show attach picture on pre-K devices.
+        menu.findItem(R.id.add_photo_attachment).setVisible(!Utils.isRunningKitkatOrLater());
 
         return true;
     }
@@ -2035,8 +2031,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             doAttach(MIME_TYPE_ALL);
         } else if (id == R.id.add_photo_attachment) {
             doAttach(MIME_TYPE_PHOTO);
-        } else if (id == R.id.add_video_attachment) {
-            doAttach(MIME_TYPE_VIDEO);
         } else if (id == R.id.add_cc_bcc) {
             showCcBccViews();
         } else if (id == R.id.save) {
