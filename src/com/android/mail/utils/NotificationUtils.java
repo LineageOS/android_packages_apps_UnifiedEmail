@@ -366,7 +366,7 @@ public class NotificationUtils {
                     final boolean isInbox = folder.folderUri.equals(
                             notification.account.settings.defaultInbox);
                     final FolderPreferences folderPreferences = new FolderPreferences(
-                            context, notification.account.name, folder, isInbox);
+                            context, notification.account.getEmailAddress(), folder, isInbox);
 
                     if (!folderPreferences.areNotificationsEnabled()) {
                         notificationsToCancel.add(notification);
@@ -556,11 +556,11 @@ public class NotificationUtils {
 
             final boolean isInbox = folder.folderUri.equals(account.settings.defaultInbox);
             final FolderPreferences folderPreferences =
-                    new FolderPreferences(context, account.name, folder, isInbox);
+                    new FolderPreferences(context, account.getEmailAddress(), folder, isInbox);
 
             if (isInbox) {
                 final AccountPreferences accountPreferences =
-                        new AccountPreferences(context, account.name);
+                        new AccountPreferences(context, account.getEmailAddress());
                 moveNotificationSetting(accountPreferences, folderPreferences);
             }
 
