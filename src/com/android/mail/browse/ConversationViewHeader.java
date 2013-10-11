@@ -138,9 +138,10 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
     }
 
     public void setSubject(final String subject) {
-        mSubjectView.setText(subject);
         if (TextUtils.isEmpty(subject)) {
-            mSubjectView.setVisibility(GONE);
+            mSubjectView.setText(R.string.no_subject);
+        } else {
+            mSubjectView.setText(subject);
         }
     }
 
