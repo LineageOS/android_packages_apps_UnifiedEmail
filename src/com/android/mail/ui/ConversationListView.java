@@ -143,7 +143,8 @@ public class ConversationListView extends FrameLayout implements SwipeableListVi
 
     protected void setConversationContext(ConversationListContext convListContext) {
         mConvListContext = convListContext;
-        mAccountPreferences = AccountPreferences.get(getContext(), convListContext.account.name);
+        mAccountPreferences = AccountPreferences.get(getContext(),
+                convListContext.account.getEmailAddress());
     }
 
     @Override
