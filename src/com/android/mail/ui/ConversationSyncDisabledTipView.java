@@ -148,7 +148,7 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
     public void bindAccount(Account account, ControllableActivity activity) {
         mAccount = account;
-        mAccountPreferences = AccountPreferences.get(getContext(), account.name);
+        mAccountPreferences = AccountPreferences.get(getContext(), account.getEmailAddress());
         mActivity = (Activity) activity;
     }
 
