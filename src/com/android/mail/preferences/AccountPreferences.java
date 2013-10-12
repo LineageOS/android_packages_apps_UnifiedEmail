@@ -67,7 +67,7 @@ public class AccountPreferences extends VersionedPrefs {
     }
 
     /**
-     * @param account The account name. This must never change for the account.
+     * @param account The account email. This must never change for the account.
      */
     public AccountPreferences(final Context context, final String account) {
         super(context, buildSharedPrefsName(account));
@@ -80,11 +80,11 @@ public class AccountPreferences extends VersionedPrefs {
         return PREFS_NAME_PREFIX + '-' + account;
     }
 
-    public static synchronized AccountPreferences get(Context context, String account) {
-        AccountPreferences pref = mInstances.get(account);
+    public static synchronized AccountPreferences get(Context context, String accountEmail) {
+        AccountPreferences pref = mInstances.get(accountEmail);
         if (pref == null) {
-            pref = new AccountPreferences(context, account);
-            mInstances.put(account, pref);
+            pref = new AccountPreferences(context, accountEmail);
+            mInstances.put(accountEmail, pref);
         }
         return pref;
     }
