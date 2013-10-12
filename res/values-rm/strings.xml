@@ -535,7 +535,7 @@
     <skip />
     <!-- no translation found for preferences_default_reply_all_title (7088691949152598569) -->
     <skip />
-    <!-- no translation found for preferences_default_reply_all_summary (7389395579918128940) -->
+    <!-- no translation found for preferences_default_reply_all_summary_impl (9131944420965452592) -->
     <skip />
     <!-- no translation found for preference_swipe_title_archive (1178014339238995814) -->
     <skip />
@@ -611,6 +611,8 @@
     <skip />
     <!-- no translation found for print (7905250801319578415) -->
     <skip />
+    <!-- no translation found for print_all (1789808179145024065) -->
+    <skip />
     <!-- no translation found for num_messages:one (1997403772739309847) -->
     <!-- no translation found for num_messages:other (3111597053027796035) -->
     <!-- no translation found for date_message_received_print (456269555541859826) -->
@@ -623,4 +625,6 @@
     <skip />
     <!-- no translation found for num_attachments:one (3344123914734915029) -->
     <!-- no translation found for num_attachments:other (3556482119464721042) -->
+    <!-- no translation found for no_subject (7823949839148118599) -->
+    <skip />
 </resources>
