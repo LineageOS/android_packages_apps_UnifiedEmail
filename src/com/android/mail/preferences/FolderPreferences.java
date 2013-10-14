@@ -71,12 +71,13 @@ public class FolderPreferences extends VersionedPrefs {
     private final boolean mUseInboxDefaultNotificationSettings;
 
     /**
-     * @param account The account name. This must never change for the account.
+     * @param accountEmail The account email. This must never change for the account.
      * @param folder The folder
      */
-    public FolderPreferences(final Context context, final String account, final Folder folder,
+    public FolderPreferences(final Context context, final String accountEmail, final Folder folder,
             final boolean useInboxDefaultNotificationSettings) {
-        this(context, account, folder, folder.persistentId, useInboxDefaultNotificationSettings);
+        this(context, accountEmail, folder, folder.persistentId,
+                useInboxDefaultNotificationSettings);
     }
 
     /**
@@ -86,18 +87,18 @@ public class FolderPreferences extends VersionedPrefs {
      * {@link #FolderPreferences(Context, String, Folder, boolean)} should be used if at all
      * possible.
      *
-     * @param account The account name. This must never change for the account.
+     * @param accountEmail The account email. This must never change for the account.
      * @param persistentId An identifier for the folder that does not change across app
      *        installations.
      */
-    public FolderPreferences(final Context context, final String account, final String persistentId,
+    public FolderPreferences(final Context context, final String accountEmail, final String persistentId,
             final boolean useInboxDefaultNotificationSettings) {
-        this(context, account, null, persistentId, useInboxDefaultNotificationSettings);
+        this(context, accountEmail, null, persistentId, useInboxDefaultNotificationSettings);
     }
 
-    private FolderPreferences(final Context context, final String account, final Folder folder,
+    private FolderPreferences(final Context context, final String accountEmail, final Folder folder,
             final String persistentId, final boolean useInboxDefaultNotificationSettings) {
-        super(context, buildSharedPrefsName(account, persistentId));
+        super(context, buildSharedPrefsName(accountEmail, persistentId));
         mFolder = folder;
         mPersistentId = persistentId;
         mUseInboxDefaultNotificationSettings = useInboxDefaultNotificationSettings;
