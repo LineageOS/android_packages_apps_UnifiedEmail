@@ -24,6 +24,7 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.utils.Utils;
@@ -37,6 +38,13 @@ public class TurnAutoSyncOnDialog extends DialogFragment {
     private static final String SYNC_AUTHORITY = "syncAuthority";
 
     public static final String DIALOG_TAG = "auto sync";
+
+    private static String sDefaultSyncAuthority;
+
+    // Should be called once per app.
+    static public void setDefaultSyncAuthority(String defaultSyncAuthority) {
+        sDefaultSyncAuthority = defaultSyncAuthority;
+    }
 
     public interface TurnAutoSyncOnDialogListener {
         void onEnableAutoSync();
@@ -76,14 +84,21 @@ public class TurnAutoSyncOnDialog extends DialogFragment {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 // Turn on auto-sync
                                 ContentResolver.setMasterSyncAutomatically(true);
-                                // Since we're enabling auto-sync from within Gmail, should
-                                // almost always enable sync for Gmail as well:
-                                ContentResolver.setSyncAutomatically(
-                                        account,
-                                        syncAuthority,
-                                        true);
-                                if (mListener != null) {
-                                    mListener.onEnableAutoSync();
+                                // Also enable auto-sync for Gmail.
+                                // Note it's possible for syncAuthority to be empty on the
+                                // account (used for constructing this dialog) was
+                                // cached from shared prefs.  This can happen during app upgrade.
+                                // As work around use default value set by app.
+                                final String authority = TextUtils.isEmpty(syncAuthority) ?
+                                        sDefaultSyncAuthority : syncAuthority;
+                                if (!TextUtils.isEmpty(authority)) {
+                                    ContentResolver.setSyncAutomatically(
+                                            account,
+                                            authority,
+                                            true);
+                                    if (mListener != null) {
+                                        mListener.onEnableAutoSync();
+                                    }
                                 }
                             }
                         })
