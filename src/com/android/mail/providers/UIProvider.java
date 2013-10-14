@@ -683,7 +683,7 @@ public class UIProvider {
             "vnd.android.cursor.item/vnd.com.android.mail.folder";
 
     public static final String[] FOLDERS_PROJECTION = {
-        BaseColumns._ID,
+        FolderColumns._ID,
         FolderColumns.PERSISTENT_ID,
         FolderColumns.URI,
         FolderColumns.NAME,
@@ -849,7 +849,7 @@ public class UIProvider {
         public static final int ALLOWS_MOVE_TO_INBOX = 0x10000;
     }
 
-    public static final class FolderColumns {
+    public static final class FolderColumns implements BaseColumns {
         /**
          * This string column contains an id for the folder that is constant across devices, or
          * null if there is no constant id.
