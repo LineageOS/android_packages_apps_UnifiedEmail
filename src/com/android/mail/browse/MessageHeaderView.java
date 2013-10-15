@@ -39,7 +39,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.QuickContactBadge;
@@ -74,7 +73,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
-public class MessageHeaderView extends LinearLayout implements OnClickListener,
+public class MessageHeaderView extends SnapHeaderView implements OnClickListener,
         OnMenuItemClickListener, ConversationContainer.DetachListener {
 
     /**
@@ -144,12 +143,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private boolean mIsDraft = false;
 
     private boolean mIsSending;
-
-    /**
-     * The snappy header has special visibility rules (i.e. no details header,
-     * even though it has an expanded appearance)
-     */
-    private boolean mIsSnappy;
 
     private String mSnippet;
 
@@ -311,6 +304,15 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
+    @Override
+    public void initialize(ConversationAccountController accountController,
+            Map<String, Address> addressCache, MessageHeaderViewCallbacks callbacks,
+            ContactInfoSource contactInfoSource, VeiledAddressMatcher veiledAddressMatcher) {
+        initialize(accountController, addressCache);
+        setCallbacks(callbacks);
+        setContactInfoSource(contactInfoSource);
+        setVeiledMatcher(veiledAddressMatcher);
+    }
     /**
      * Associate the header with a contact info source for later contact
      * presence/photo lookup.
@@ -332,11 +334,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return mMessageHeaderItem == null || mMessageHeaderItem.isExpanded();
     }
 
-    public void setSnappy(boolean snappy) {
-        mIsSnappy = snappy;
-        hideMessageDetails();
-    }
-
     @Override
     public void onDetachedFromParent() {
         unbind();
@@ -348,6 +345,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * data, though. To re-bind this header to message data, call render() or
      * renderUpperHeaderFrom().
      */
+    @Override
     public void unbind() {
         mMessageHeaderItem = null;
         mMessage = null;
@@ -392,6 +390,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         render(false /* measureOnly */);
     }
 
+    @Override
     public void refresh() {
         render(false);
     }
@@ -498,6 +497,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mEmailCopyMenu.setAddress(mSender.getAddress());
     }
 
+    @Override
     public boolean isBoundTo(ConversationOverlayItem item) {
         return item == mMessageHeaderItem;
     }
@@ -612,8 +612,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         } else if (isExpanded()) {
             int normalVis, draftVis;
 
-            setMessageDetailsVisibility((mIsSnappy) ? GONE : VISIBLE);
-            setChildVisibility(mIsSnappy ? VISIBLE : GONE, mSnapHeaderBottomBorder);
+            final boolean isSnappy = isSnappy();
+            setMessageDetailsVisibility((isSnappy) ? GONE : VISIBLE);
+            setChildVisibility(isSnappy ? VISIBLE : GONE, mSnapHeaderBottomBorder);
 
             if (mIsDraft) {
                 normalVis = GONE;
@@ -954,7 +955,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         setExpanded(!isExpanded());
 
         // The snappy header will disappear; no reason to update text.
-        if (!mIsSnappy) {
+        if (!isSnappy()) {
             mSenderNameView.setText(getHeaderTitle());
             mSenderEmailView.setText(getHeaderSubtitle());
             mDateView.setText(mMessageHeaderItem.getTimestampLong());
@@ -1105,7 +1106,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
-    public void hideMessageDetails() {
+    @Override
+    public void hideDetails() {
         setMessageDetailsVisibility(GONE);
     }
 

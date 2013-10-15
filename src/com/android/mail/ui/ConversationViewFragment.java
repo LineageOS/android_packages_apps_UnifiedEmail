@@ -270,8 +270,9 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         // set up snap header (the adapter usually does this with the other ones)
-        final MessageHeaderView snapHeader = mConversationContainer.getSnapHeader();
-        initHeaderView(snapHeader);
+        mConversationContainer.getSnapHeader().initialize(
+                this, mAddressCache, this, getContactInfoSource(),
+                mActivity.getAccountController().getVeiledAddressMatcher());
 
         final Resources resources = getResources();
         mMaxAutoLoadMessages = resources.getInteger(R.integer.max_auto_load_messages);
@@ -309,13 +310,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         }
     }
 
-    private void initHeaderView(MessageHeaderView headerView) {
-        headerView.initialize(this, mAddressCache);
-        headerView.setCallbacks(this);
-        headerView.setContactInfoSource(getContactInfoSource());
-        headerView.setVeiledMatcher(mActivity.getAccountController().getVeiledAddressMatcher());
-    }
-
     @Override
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -340,13 +334,12 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 .findViewById(R.id.conversation_container);
         mConversationContainer.setAccountController(this);
 
-        mNewMessageBar = (Button) mConversationContainer.findViewById(R.id.new_message_notification_bar);
-        mNewMessageBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onNewMessageBarClick();
-            }
-        });
+        final ViewGroup topmostOverlay =
+                (ViewGroup) mConversationContainer.findViewById(R.id.conversation_topmost_overlay);
+        inflateSnapHeader(topmostOverlay, inflater);
+        mConversationContainer.setupSnapHeader();
+
+        setupNewMessageBar();
 
         mProgressController = new ConversationViewProgressController(this, getHandler());
         mProgressController.instantiateProgressIndicators(rootView);
@@ -394,6 +387,21 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mWebViewLoadedData = false;
 
         return rootView;
+    }
+
+    protected void inflateSnapHeader(ViewGroup topmostOverlay, LayoutInflater inflater) {
+        inflater.inflate(R.layout.conversation_topmost_overlay_items, topmostOverlay, true);
+    }
+
+    protected void setupNewMessageBar() {
+        mNewMessageBar = (Button) mConversationContainer.findViewById(
+                R.id.new_message_notification_bar);
+        mNewMessageBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNewMessageBarClick();
+            }
+        });
     }
 
     @Override

@@ -87,7 +87,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private ConversationViewAdapter mOverlayAdapter;
     private OverlayPosition[] mOverlayPositions;
     private ConversationWebView mWebView;
-    private MessageHeaderView mSnapHeader;
+    private SnapHeaderView mSnapHeader;
     private View mTopMostOverlay;
 
     /**
@@ -264,9 +264,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
         mTopMostOverlay = findViewById(R.id.conversation_topmost_overlay);
 
-        mSnapHeader = (MessageHeaderView) findViewById(R.id.snap_header);
-        mSnapHeader.setSnappy(true);
-
         for (int id : BOTTOM_LAYER_VIEW_IDS) {
             mNonScrollingChildren.add(findViewById(id));
         }
@@ -275,7 +272,12 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
     }
 
-    public MessageHeaderView getSnapHeader() {
+    public void setupSnapHeader() {
+        mSnapHeader = (SnapHeaderView) findViewById(R.id.snap_header);
+        mSnapHeader.setSnappy(true);
+    }
+
+    public SnapHeaderView getSnapHeader() {
         return mSnapHeader;
     }
 

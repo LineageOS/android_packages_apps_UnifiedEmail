@@ -40,28 +40,7 @@
         <FrameLayout
             android:id="@+id/conversation_topmost_overlay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <include layout="@layout/conversation_message_header"
-                android:id="@+id/snap_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/ConversationViewSideMarginStyle"
-                android:layout_gravity="top"
-                android:visibility="gone" />
-
-            <Button xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/new_message_notification_bar"
-                style="@style/NewMessageButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:animateLayoutChanges="true"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:visibility="gone" />
-
-        </FrameLayout>
+            android:layout_height="match_parent" />
 
     </com.android.mail.browse.ConversationContainer>
 
