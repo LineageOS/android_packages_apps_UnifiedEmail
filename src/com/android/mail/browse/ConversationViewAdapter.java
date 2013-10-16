@@ -79,8 +79,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     public static final int VIEW_TYPE_BORDER = 4;
     public static final int VIEW_TYPE_AD_HEADER = 5;
     public static final int VIEW_TYPE_AD_SENDER_HEADER = 6;
-    public static final int VIEW_TYPE_AD_BORDER = 7;
-    public static final int VIEW_TYPE_COUNT = 8;
+    public static final int VIEW_TYPE_COUNT = 7;
 
     public class ConversationHeaderItem extends ConversationOverlayItem {
         public final Conversation mConversation;

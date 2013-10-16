@@ -73,7 +73,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
-public class MessageHeaderView extends SnapHeaderView implements OnClickListener,
+public class MessageHeaderView extends SnapHeader implements OnClickListener,
         OnMenuItemClickListener, ConversationContainer.DetachListener {
 
     /**
@@ -211,6 +211,13 @@ public class MessageHeaderView extends SnapHeaderView implements OnClickListener
     private final int mContactPhotoWidth;
     private final int mContactPhotoHeight;
 
+    /**
+     * The snappy header has special visibility rules (i.e. no details header,
+     * even though it has an expanded appearance)
+     */
+    private boolean mIsSnappy;
+
+
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
 
@@ -242,6 +249,7 @@ public class MessageHeaderView extends SnapHeaderView implements OnClickListener
     public MessageHeaderView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        mIsSnappy = false;
         mEmailCopyMenu = new EmailCopyContextMenu(getContext());
         mInflater = LayoutInflater.from(context);
         mMyName = context.getString(R.string.me_object_pronun);
@@ -313,6 +321,7 @@ public class MessageHeaderView extends SnapHeaderView implements OnClickListener
         setContactInfoSource(contactInfoSource);
         setVeiledMatcher(veiledAddressMatcher);
     }
+
     /**
      * Associate the header with a contact info source for later contact
      * presence/photo lookup.
@@ -1041,6 +1050,16 @@ public class MessageHeaderView extends SnapHeaderView implements OnClickListener
         return position >= 0 && position < size;
     }
 
+    @Override
+    public void setSnappy() {
+        mIsSnappy = true;
+        hideMessageDetails();
+    }
+
+    private boolean isSnappy() {
+        return mIsSnappy;
+    }
+
     private void toggleMessageDetails(View visibleDetailsView) {
         int heightBefore = measureHeight();
         final boolean detailsExpanded = (visibleDetailsView == mCollapsedDetailsView);
@@ -1106,8 +1125,7 @@ public class MessageHeaderView extends SnapHeaderView implements OnClickListener
         }
     }
 
-    @Override
-    public void hideDetails() {
+    private void hideMessageDetails() {
         setMessageDetailsVisibility(GONE);
     }
 
