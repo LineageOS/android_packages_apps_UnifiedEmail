@@ -25,39 +25,33 @@
 
     <ImageView
         android:id="@+id/account_graphic"
-        style="@style/AccountItemIcon"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        style="@style/AccountItemIcon" />
 
     <ImageView
         android:id="@+id/account_radio_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/account_item_left_margin"
         android:src="@drawable/account_radio_button"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        style="@style/AccountRadioButtonStyle" />
 
     <TextView
         android:id="@+id/unread"
-        style="@style/UnreadCount"
-        android:layout_marginRight="@dimen/account_item_right_margin"
-        android:layout_alignParentRight="true"
+        style="@style/AccountUnreadCountStyle"
         android:textColor="@color/account_item_text_color" />
 
     <TextView
         android:id="@+id/name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_toRightOf="@id/account_radio_button"
-        android:layout_toLeftOf="@id/unread"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_marginLeft="@dimen/account_item_left_margin"
-        android:layout_marginRight="@dimen/account_item_right_margin"
         android:layout_centerVertical="true"
         android:includeFontPadding="false"
         android:singleLine="true"
         android:ellipsize="end"
         android:textColor="@color/account_item_text_color"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/AccountNameStyle" />
 
 </com.android.mail.ui.AccountItemView>

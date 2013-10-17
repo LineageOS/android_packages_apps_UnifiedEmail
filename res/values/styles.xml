@@ -307,9 +307,13 @@
     <!-- End conversation view message header styles -->
 
     <!-- Account Item (Folder List) styles -->
-    <style name="AccountItemIcon">
+    <style name="AbstractAccountItemIcon">
         <item name="android:layout_height">@dimen/account_item_swatch_height</item>
         <item name="android:layout_width">@dimen/account_item_folder_color_width</item>
+    </style>
+
+    <style name="AccountItemIcon" parent="AbstractAccountItemIcon">
+        <item name="android:layout_alignParentLeft">true</item>
     </style>
 
     <!-- Folder styles -->
@@ -623,5 +627,21 @@
     <style name="ToastBarActionTextStyle" parent="AbstractUndoTextStyle">
         <item name="android:layout_marginLeft">@dimen/toast_bar_action_margin</item>
         <item name="android:paddingRight">@dimen/toast_bar_undo_text_padding</item>
+    </style>
+
+    <style name="AccountRadioButtonStyle">
+        <item name="android:layout_marginLeft">@dimen/account_item_margin_start</item>
+    </style>
+
+    <style name="AccountUnreadCountStyle" parent="UnreadCount">
+        <item name="android:layout_marginRight">@dimen/account_item_margin_end</item>
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+
+    <style name="AccountNameStyle">
+        <item name="android:layout_marginLeft">@dimen/account_item_margin_start</item>
+        <item name="android:layout_marginRight">@dimen/account_item_margin_end</item>
+        <item name="android:layout_toLeftOf">@id/unread</item>
+        <item name="android:layout_toRightOf">@id/account_radio_button</item>
     </style>
 </resources>

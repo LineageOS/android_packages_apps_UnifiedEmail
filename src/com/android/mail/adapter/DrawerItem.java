@@ -17,6 +17,12 @@
 
 package com.android.mail.adapter;
 
+import android.support.v4.text.BidiFormatter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
@@ -26,12 +32,6 @@ import com.android.mail.ui.FolderItemView;
 import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-
-import android.support.v4.text.BidiFormatter;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 /**
  * An element that is shown in the {@link com.android.mail.ui.FolderListFragment}. This class is
@@ -344,7 +344,7 @@ public class DrawerItem {
             accountItemView = (AccountItemView) convertView;
         } else {
             accountItemView =
-                    (AccountItemView) mInflater.inflate(R.layout.account_item, null, false);
+                    (AccountItemView) mInflater.inflate(R.layout.account_item, parent, false);
         }
         accountItemView.bind(mAccount, mIsSelected, mResource);
         View v = accountItemView.findViewById(R.id.account_graphic);
@@ -384,7 +384,7 @@ public class DrawerItem {
             folderItemView = (FolderItemView) convertView;
         } else {
             folderItemView =
-                    (FolderItemView) mInflater.inflate(R.layout.folder_item, null, false);
+                    (FolderItemView) mInflater.inflate(R.layout.folder_item, parent, false);
         }
         folderItemView.bind(mFolder, mActivity, mBidiFormatter);
         Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
