@@ -357,8 +357,7 @@
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"ប័ណ្ណសារ &amp; លុប​សកម្មភាព"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"ឆ្លើយតប​ទាំងអស់"</string>
-    <!-- no translation found for preferences_default_reply_all_summary_impl (9131944420965452592) -->
-    <skip />
+    <string name="preferences_default_reply_all_summary_impl" msgid="9131944420965452592">"ប្រើ​ជា​លំនាំ​ដើម​ សម្រាប់​ការ​ឆ្លើយ​តប​សារ"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"អូស​ ដើម្បី​ទុក​ក្នុង​ប័ណ្ណសារ"</string>
     <string name="preference_swipe_title_delete" msgid="8611320022727435597">"អូស​ ​ដើម្បី​លុប"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"នៅ​ក្នុង​បញ្ជី​សន្ទនា"</string>
@@ -399,20 +398,18 @@
     <string name="show_n_more_folders" msgid="337747297817699776">"បង្ហាញ​ថត​ <xliff:g id="NUMBER">%1$s</xliff:g> ទៀត"</string>
     <string name="hide_folders" msgid="7473552966537131652">"លាក់​ថត"</string>
     <string name="print" msgid="7905250801319578415">"បោះពុម្ព"</string>
-    <!-- no translation found for print_all (1789808179145024065) -->
-    <skip />
+    <string name="print_all" msgid="1789808179145024065">"បោះពុម្ព​ទាំងអស់"</string>
   <plurals name="num_messages">
-    <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> សារ"</item>
-    <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g> សារ"</item>
+    <item quantity="one" msgid="1997403772739309847">"សារ​ <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+    <item quantity="other" msgid="3111597053027796035">"សារ <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
     <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> នៅ <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="draft_to_heading" msgid="3448702197598500284">"សេចក្ដី​ព្រាង​ជូន​ចំពោះ "</string>
+    <string name="draft_to_heading" msgid="3448702197598500284">"សេចក្ដី​ព្រាង​ជូន​ចំពោះ៖ "</string>
     <string name="draft_heading" msgid="4654861166951306093">"សេចក្ដីព្រាង"</string>
-    <string name="quoted_text_hidden_print" msgid="8572207101897331252">"ចំណុះអត្ថបទដែលបានលាក់ទុក"</string>
+    <string name="quoted_text_hidden_print" msgid="8572207101897331252">"បាន​លាក់​អត្ថបទ​សម្រង់"</string>
   <plurals name="num_attachments">
     <item quantity="one" msgid="3344123914734915029">"ឯកសារ​ភ្ជាប់ <xliff:g id="COUNT">%1$d</xliff:g>"</item>
     <item quantity="other" msgid="3556482119464721042">"ឯកសារ​ភ្ជាប់ <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <!-- no translation found for no_subject (7823949839148118599) -->
-    <skip />
+    <string name="no_subject" msgid="7823949839148118599">"(គ្មាន​ប្រធាន​បទ)"</string>
 </resources>

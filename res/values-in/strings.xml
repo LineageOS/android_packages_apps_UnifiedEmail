@@ -357,8 +357,7 @@
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Tindakan mengarsipkan dan &amp; menghapus"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Balas ke semua"</string>
-    <!-- no translation found for preferences_default_reply_all_summary_impl (9131944420965452592) -->
-    <skip />
+    <string name="preferences_default_reply_all_summary_impl" msgid="9131944420965452592">"Gunakan sebagai default untuk balasan pesan"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Gesek untuk mengarsipkan"</string>
     <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Gesek untuk menghapus"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Dalam daftar percakapan"</string>
@@ -399,8 +398,7 @@
     <string name="show_n_more_folders" msgid="337747297817699776">"Tampilkan <xliff:g id="NUMBER">%1$s</xliff:g> folder lagi"</string>
     <string name="hide_folders" msgid="7473552966537131652">"Sembunyikan folder"</string>
     <string name="print" msgid="7905250801319578415">"Cetak"</string>
-    <!-- no translation found for print_all (1789808179145024065) -->
-    <skip />
+    <string name="print_all" msgid="1789808179145024065">"Cetak semua"</string>
   <plurals name="num_messages">
     <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> pesan"</item>
     <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g> pesan"</item>
@@ -413,6 +411,5 @@
     <item quantity="one" msgid="3344123914734915029">"<xliff:g id="COUNT">%1$d</xliff:g> lampiran"</item>
     <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> lampiran"</item>
   </plurals>
-    <!-- no translation found for no_subject (7823949839148118599) -->
-    <skip />
+    <string name="no_subject" msgid="7823949839148118599">"(tanpa subjek)"</string>
 </resources>

@@ -54,7 +54,7 @@
     <string name="custom_from_account_label" msgid="5069652141632649722">"Tuma barua kama:"</string>
     <string name="send" msgid="8242003661397555986">"Tuma"</string>
     <string name="mark_read" msgid="8438349154394313195">"Weka alama kuwa imesomwa"</string>
-    <string name="mark_unread" msgid="6231373939351125713">"Tia alama kuwa haijasomwa"</string>
+    <string name="mark_unread" msgid="6231373939351125713">"Tia alama kuwa hujasoma"</string>
     <string name="mute" msgid="1995954983688603977">"Komesha arifa"</string>
     <string name="add_star" msgid="2866003744391266498">"Ongeza nyota"</string>
     <string name="remove_star" msgid="4372327933122106128">"Ondoa nyota"</string>
@@ -357,8 +357,7 @@
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Kuweka kwenye kumbukumbu na kufuta"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Jibu wote"</string>
-    <!-- no translation found for preferences_default_reply_all_summary_impl (9131944420965452592) -->
-    <skip />
+    <string name="preferences_default_reply_all_summary_impl" msgid="9131944420965452592">"Tumia kama chaguo-msingi la majibu ya ujumbe"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Telezesha ili uweke kwenye kumbukumbu"</string>
     <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Telezesha ili ufute"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"Katika orodha ya mazungumzo"</string>
@@ -377,7 +376,7 @@
     <string name="drawer_open" msgid="6074646853178471940">"Fungua menyu"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Funga menyu"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Gusa picha ya mtumaji ili uchague mazungumzo hayo."</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Gusa na ushikile ili uchague mazungumzo moja, kisha ugusa ili uchague zaidi."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Gusa na ushikilie ili uchague gumzo moja, kisha uguse ili uchague mengine."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ikoni ya folda"</string>
     <string name="add_account" msgid="2162808366829269770">"Ongeza akaunti"</string>
     <string name="attached_message" msgid="4267189489654642035">"Ujumbe ulioambatishwa"</string>
@@ -399,8 +398,7 @@
     <string name="show_n_more_folders" msgid="337747297817699776">"Onyesha folda <xliff:g id="NUMBER">%1$s</xliff:g> zaidi"</string>
     <string name="hide_folders" msgid="7473552966537131652">"Ficha folda"</string>
     <string name="print" msgid="7905250801319578415">"Chapisha"</string>
-    <!-- no translation found for print_all (1789808179145024065) -->
-    <skip />
+    <string name="print_all" msgid="1789808179145024065">"Chapisha zote"</string>
   <plurals name="num_messages">
     <item quantity="one" msgid="1997403772739309847">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g>"</item>
     <item quantity="other" msgid="3111597053027796035">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g>"</item>
@@ -413,6 +411,5 @@
     <item quantity="one" msgid="3344123914734915029">"Kiambatisho <xliff:g id="COUNT">%1$d</xliff:g>"</item>
     <item quantity="other" msgid="3556482119464721042">"Viambatisho <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <!-- no translation found for no_subject (7823949839148118599) -->
-    <skip />
+    <string name="no_subject" msgid="7823949839148118599">"(haina kichwa)"</string>
 </resources>
