@@ -400,6 +400,10 @@
         <item name="android:actionBarStyle">@style/PlainActionBarStyle</item>
     </style>
 
+    <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme">
+    </style>
+
+
     <style name="WaitFragmentTitle" parent="@android:style/Widget.Holo.TextView">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textColor">@android:color/black</item>
@@ -643,5 +647,106 @@
         <item name="android:layout_marginRight">@dimen/account_item_margin_end</item>
         <item name="android:layout_toLeftOf">@id/unread</item>
         <item name="android:layout_toRightOf">@id/account_radio_button</item>
+    </style>
+
+    <style name="CustomActionButton" parent="android:style/Widget.Holo.Light.ActionButton">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:focusable">true</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="CustomActionButtonImage">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="CustomActionButtonText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/actionMenuTextAppearance</item>
+        <item name="android:textColor">?android:attr/actionMenuTextColor</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="VacationResponderStyle">
+        <item name="android:paddingLeft">@dimen/vacation_responder_padding_horizontal</item>
+        <item name="android:paddingRight">@dimen/vacation_responder_padding_horizontal</item>
+    </style>
+
+    <style name="AbstractVacationResponderDateSpinner"
+           parent="android:style/Widget.Holo.Light.Spinner">
+        <item name="android:textColor">@color/vacation_responder_spinner_text</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="VacationResponderDateSpinner" parent="AbstractVacationResponderDateSpinner">
+        <item name="android:paddingLeft">@dimen/vacation_responder_inner_padding</item>
+        <item name="android:paddingRight">@dimen/vacation_responder_inner_padding</item>
+    </style>
+
+    <style name="VactionResponderStartDateSpinner" parent="VacationResponderDateSpinner">
+        <item name="android:layout_marginRight">
+            @dimen/vacation_responder_padding_between_date_spinners</item>
+    </style>
+
+    <style name="VactionResponderEndDateSpinner" parent="VacationResponderDateSpinner">
+        <item name="android:layout_marginLeft">
+            @dimen/vacation_responder_padding_between_date_spinners</item>
+    </style>
+
+    <style name="VacationResponderScrollViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="AbstractVacationResponderLabelSmall" parent="android:TextAppearance">
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/compose_label_text</item>
+    </style>
+
+    <style name="VacationResponderLabelSmall" parent="AbstractVacationResponderLabelSmall">
+        <item name="android:paddingLeft">@dimen/vacation_responder_inner_padding</item>
+        <item name="android:paddingRight">@dimen/vacation_responder_inner_padding</item>
+    </style>
+
+    <style name="VactionResponderStartDateLabel" parent="VacationResponderLabelSmall">
+        <item name="android:layout_marginRight">
+            @dimen/vacation_responder_padding_between_date_spinners</item>
+    </style>
+
+    <style name="VactionResponderEndDateLabel" parent="VacationResponderLabelSmall">
+        <item name="android:layout_marginLeft">
+            @dimen/vacation_responder_padding_between_date_spinners</item>
+    </style>
+
+    <style name="AbstractVacationResponderCheckBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:checked">true</item>
+        <item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeightSmall</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+
+    <style name="VacationResponderCheckBox" parent="AbstractVacationResponderCheckBox">
+        <item name="android:paddingLeft">@dimen/vacation_responder_inner_padding</item>
+        <item name="android:paddingRight">@dimen/vacation_responder_inner_padding</item>
+    </style>
+
+    <style name="VacationResponderSwitch">
+        <item name="android:paddingLeft">@dimen/vacation_responder_inner_padding</item>
+        <item name="android:paddingRight">@dimen/vacation_responder_inner_padding</item>
     </style>
 </resources>

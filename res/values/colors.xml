@@ -117,4 +117,8 @@
     <color name="folder_teaser_senders_text">#58585b</color>
     <!-- The color of the count text in the teaser -->
     <color name="folder_teaser_count_text">@android:color/black</color>
+
+    <color name="vacation_responder_foreground">@android:color/white</color>
+    <color name="vacation_responder_background">#ffe9e9e9</color>
+    <color name="vacation_responder_spinner_text">#333333</color>
 </resources>

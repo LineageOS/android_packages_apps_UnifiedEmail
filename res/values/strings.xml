@@ -39,7 +39,7 @@
     <string name="bcc">Bcc</string>
     <!-- Shown in Compose; the subject of the message [CHAR LIMIT=100] -->
     <string name="subject_hint">Subject</string>
-    <!-- Shown in Compose; the subject of the message [CHAR LIMIT=100] -->
+    <!-- Shown in Compose; the body of the message [CHAR LIMIT=100] -->
     <string name="body_hint">Compose email</string>
     <!--  Compose screen button. Add an attachment to this message [CHAR LIMIT=20] -->
     <string name="add_file_attachment">Attach file</string>
@@ -970,4 +970,43 @@
     <!-- Title to display when an email has no subject. [CHAR LIMIT=50]-->
     <string name="no_subject">(no subject)</string>
 
+    <!-- Action bar title for the screen to set a vacation responder (out-of-office) message. [CHAR LIMIT=50] -->
+    <string name="vacation_responder">Vacation responder</string>
+    <!-- Account preference: Title of the setting to set a vacation responder (out-of-office) message. [CHAR LIMIT=50]-->
+    <string name="preferences_vacation_responder_title">Vacation responder</string>
+    <!-- Shown in vacation responder; the body of the message [CHAR LIMIT=100] -->
+    <string name="vacation_responder_body_hint_text">Message</string>
+    <!-- Shown in vacation responder; accompanies a checkbox that, if checked, causes vacation responses to be sent to people in the user's contacts [CHAR LIMIT=75] -->
+    <string name="send_to_contacts_text">Send only to my Contacts</string>
+    <!-- Shown in vacation responder; accompanies a checkbox that, if checked, causes vacation responses to be sent to people in the user's corporate domain [CHAR LIMIT=75] -->
+    <string name="send_to_domain_text">Send only to <xliff:g id="domain">%1$s</xliff:g></string>
+    <!-- Title text for the button to be pressed if the user wishes to change the start date of the vacation responder. [CHAR LIMIT=25]-->
+    <string name="pick_start_date_title">Starts</string>
+    <!-- Title text for the button to be pressed if the user wishes to change the end date of the vacation responder.
+            This text should include a note that this field is optional to set. [CHAR LIMIT=25]-->
+    <string name="pick_end_date_title">Ends (Optional)</string>
+    <!-- Shown to display that an end date in the vacation responder has not been set. [CHAR LIMIT=25]-->
+    <string name="date_not_set">Not set</string>
+    <!-- Title text for the dialog that appears when the user wishes to change the end date of the vacation responder.
+            This text should include a note that this field is optional to set. [CHAR LIMIT=35]-->
+    <string name="set_end_date_dialog_title">End date (optional)</string>
+    <!-- Shown as an option in a dialog to set a custom end date for a vacation responder message.  [CHAR LIMIT=30] -->
+    <string name="custom_date">Custom</string>
+    <!-- Shown as an option in a dialog to set no end date for a vacation responder message. [CHAR LIMIT=30]-->
+    <string name="date_none">None</string>
+    <!-- Asks the user whether they wish to discard changes. [CHAR LIMIT=50]-->
+    <string name="discard_changes">Discard changes?</string>
+    <!-- Toast, vacation responder changes were saved. [CHAR LIMIT=100]-->
+    <string name="vacation_responder_changes_saved">Vacation responder changes saved</string>
+    <!-- Toast, vacation responder changes were discarded. [CHAR LIMIT=100]-->
+    <string name="vacation_responder_changes_discarded">Vacation responder changes discarded</string>
+    <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
+            when the vacation responder is off. [CHAR LIMIT=50]-->
+    <string name="vacation_responder_off">Off</string>
+    <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
+            when the vacation responder is on but does not have an end date set (only a start date). [CHAR LIMIT=50]-->
+    <string name="vacation_responder_on">On, from <xliff:g id="date">%1$s</xliff:g></string>
+    <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
+            when the vacation responder is on and has both a start and end date set. [CHAR LIMIT=50]-->
+    <string name="vacation_responder_on_with_end_date">On, from <xliff:g id="start-date">%1$s</xliff:g> to <xliff:g id="end-date">%2$s</xliff:g></string>
 </resources>
