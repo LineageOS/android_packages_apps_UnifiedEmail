@@ -71,7 +71,7 @@ public class ReplyFromAccount implements Serializable {
             json.put(IS_DEFAULT, isDefault);
             json.put(IS_CUSTOM_FROM, isCustomFrom);
         } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with name " + name);
+            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with address " + address);
         }
         return json;
     }
