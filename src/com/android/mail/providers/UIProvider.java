@@ -131,6 +131,7 @@ public class UIProvider {
             new ImmutableMap.Builder<String, Class<?>>()
             .put(AccountColumns._ID, Integer.class)
             .put(AccountColumns.NAME, String.class)
+            .put(AccountColumns.SENDER_NAME, String.class)
             .put(AccountColumns.ACCOUNT_MANAGER_NAME, String.class)
             .put(AccountColumns.TYPE, String.class)
             .put(AccountColumns.PROVIDER_VERSION, Integer.class)
@@ -316,6 +317,11 @@ public class UIProvider {
          * This string column contains the human visible name for the account.
          */
         public static final String NAME = "name";
+
+        /**
+         * This string column contains the real name associated with the account, e.g. "John Doe"
+         */
+        public static final String SENDER_NAME = "senderName";
 
         /**
          * This string column contains the account manager name of this account.
