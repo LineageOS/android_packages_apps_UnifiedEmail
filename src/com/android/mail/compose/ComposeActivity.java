@@ -937,8 +937,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.quotedTextOffset = !TextUtils.isEmpty(quotedText) ? QuotedTextView
                 .getQuotedTextOffset(quotedText.toString()) : -1;
         message.accountUri = null;
-        message.setFrom(selectedReplyFromAccount != null ? selectedReplyFromAccount.address
-                : mAccount != null ? mAccount.getEmailAddress() : null);
+        final String email = selectedReplyFromAccount != null ? selectedReplyFromAccount.address
+                : mAccount != null ? mAccount.getEmailAddress() : null;
+        // TODO: this behavior is wrong. Pull the name from selectedReplyFromAccount.name
+        final String senderName = mAccount != null ? mAccount.getSenderName() : null;
+        final Address address = new Address(senderName, email);
+        message.setFrom(address.pack());
         message.draftType = getDraftType(mode);
         return message;
     }
@@ -998,10 +1002,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Otherwise, give the user the ability to choose which account to
             // send mail from / save drafts to.
             mFromStatic.setVisibility(View.GONE);
+            // TODO: do we want name or address here?
             mFromStaticText.setText(mReplyFromAccount.name);
             mFromSpinnerWrapper.setVisibility(View.VISIBLE);
         } else {
             mFromStatic.setVisibility(View.VISIBLE);
+            // TODO: do we want name or address here?
             mFromStaticText.setText(mReplyFromAccount.name);
             mFromSpinnerWrapper.setVisibility(View.GONE);
         }
