@@ -55,6 +55,11 @@ public class Account implements Parcelable {
     public final String name;
 
     /**
+     * The real name associated with the account, e.g. "John Doe"
+     */
+    private final String senderName;
+
+    /**
      * Account manager name. MUST MATCH SYSTEM ACCOUNT MANAGER NAME
      */
 
@@ -232,6 +237,7 @@ public class Account implements Parcelable {
         try {
             json.put(AccountColumns.NAME, name);
             json.put(AccountColumns.TYPE, type);
+            json.put(AccountColumns.SENDER_NAME, senderName);
             json.put(AccountColumns.ACCOUNT_MANAGER_NAME, accountManagerName);
             json.put(AccountColumns.PROVIDER_VERSION, providerVersion);
             json.put(AccountColumns.URI, uri);
@@ -309,6 +315,7 @@ public class Account implements Parcelable {
     private Account(String acctName, String acctType, JSONObject json) throws JSONException {
         name = acctName;
         type = acctType;
+        senderName = json.optString(AccountColumns.SENDER_NAME);
         final String amName = json.optString(AccountColumns.ACCOUNT_MANAGER_NAME);
         // We need accountManagerName to be filled in, but we might be dealing with an old cache
         // entry which doesn't have it, so use the display name instead in that case as a fallback
@@ -371,6 +378,7 @@ public class Account implements Parcelable {
 
     public Account(Cursor cursor) {
         name = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.NAME));
+        senderName = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.SENDER_NAME));
         type = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.TYPE));
         accountManagerName = cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_MANAGER_NAME));
@@ -492,6 +500,7 @@ public class Account implements Parcelable {
 
     public Account(Parcel in, ClassLoader loader) {
         name = in.readString();
+        senderName = in.readString();
         type = in.readString();
         accountManagerName = in.readString();
         providerVersion = in.readInt();
@@ -536,6 +545,7 @@ public class Account implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
+        dest.writeString(senderName);
         dest.writeString(type);
         dest.writeString(accountManagerName);
         dest.writeInt(providerVersion);
@@ -597,6 +607,7 @@ public class Account implements Parcelable {
 
         final Account other = (Account) o;
         return TextUtils.equals(name, other.name) &&
+                TextUtils.equals(senderName, other.senderName) &&
                 TextUtils.equals(accountManagerName, other.accountManagerName) &&
                 TextUtils.equals(type, other.type) &&
                 capabilities == other.capabilities &&
@@ -649,6 +660,7 @@ public class Account implements Parcelable {
     @Override
     public int hashCode() {
         return Objects.hashCode(name,
+                senderName,
                 accountManagerName,
                 type,
                 capabilities,
@@ -699,6 +711,8 @@ public class Account implements Parcelable {
             }
 
             // add the main account address
+            // TODO: name is incorrect here, use senderName once FromAddressSpinner is fixed
+            // b/11292541
             mReplyFroms.add(new ReplyFromAccount(this, uri, getEmailAddress(), name,
                     getEmailAddress(), false /* isDefault */, false /* isCustom */));
 
@@ -741,6 +755,15 @@ public class Account implements Parcelable {
         return accountManagerName;
     }
 
+    /**
+     * Returns the real name associated with the account, e.g. "John Doe" or null if no such name
+     * has been configured
+     * @return sender name
+     */
+    public String getSenderName() {
+        return senderName;
+    }
+
     @SuppressWarnings("hiding")
     public static final ClassLoaderCreator<Account> CREATOR = new ClassLoaderCreator<Account>() {
         @Override
@@ -769,6 +792,7 @@ public class Account implements Parcelable {
 
         map.put(AccountColumns._ID, 0);
         map.put(AccountColumns.NAME, name);
+        map.put(AccountColumns.SENDER_NAME, senderName);
         map.put(AccountColumns.TYPE, type);
         map.put(AccountColumns.ACCOUNT_MANAGER_NAME, accountManagerName);
         map.put(AccountColumns.PROVIDER_VERSION, providerVersion);
