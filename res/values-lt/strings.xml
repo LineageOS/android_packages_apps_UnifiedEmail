@@ -398,7 +398,7 @@
     <string name="show_n_more_folders" msgid="337747297817699776">"Rodyti aplankų: dar <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="hide_folders" msgid="7473552966537131652">"Slėpti aplankus"</string>
     <string name="print" msgid="7905250801319578415">"Spausdinti"</string>
-    <string name="print_all" msgid="1789808179145024065">"Išspausdinti viską"</string>
+    <string name="print_all" msgid="1789808179145024065">"Spausdinti viską"</string>
   <plurals name="num_messages">
     <item quantity="one" msgid="1997403772739309847">"Pranešimų: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
     <item quantity="other" msgid="3111597053027796035">"Pranešimų: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
