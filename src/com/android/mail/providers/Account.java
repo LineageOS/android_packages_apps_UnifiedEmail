@@ -712,9 +712,7 @@ public class Account implements Parcelable {
             }
 
             // add the main account address
-            // TODO: name is incorrect here, use senderName once FromAddressSpinner is fixed
-            // b/11292541
-            mReplyFroms.add(new ReplyFromAccount(this, uri, getEmailAddress(), name,
+            mReplyFroms.add(new ReplyFromAccount(this, uri, getEmailAddress(), getSenderName(),
                     getEmailAddress(), false /* isDefault */, false /* isCustom */));
 
             if (!TextUtils.isEmpty(accountFromAddresses)) {
