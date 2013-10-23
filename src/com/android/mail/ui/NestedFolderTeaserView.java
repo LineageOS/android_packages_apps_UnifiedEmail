@@ -39,6 +39,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MessageInfo;
@@ -51,11 +52,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The teaser list item in the conversation list that shows nested folders.
@@ -479,6 +483,7 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
                              * unread count has changed.
                              */
                             if (oldFolder == null || oldFolder.unreadCount != folder.unreadCount) {
+                                populateUnreadSenders(holder, folder.unreadSenders);
                                 updateViews(holder);
                             }
                         } else {
@@ -491,6 +496,7 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
                             // because it doesn't scale. Disabling it for now, until we can
                             // optimize it.
                             // initFolderLoader(getLoaderId(folder.id));
+                            populateUnreadSenders(newHolder, folder.unreadSenders);
 
                             updateViews(newHolder);
 
@@ -528,11 +534,50 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
         @Override
         public Loader<ObjectCursor<Folder>> onCreateLoader(final int id, final Bundle args) {
             final ObjectCursorLoader<Folder> loader = new ObjectCursorLoader<Folder>(getContext(),
-                    mFolderListUri, UIProvider.FOLDERS_PROJECTION, Folder.FACTORY);
+                    mFolderListUri, UIProvider.FOLDERS_PROJECTION_WITH_UNREAD_SENDERS,
+                    Folder.FACTORY);
             loader.setUpdateThrottle(mFolderItemUpdateDelayMs);
             return loader;
         }
     };
+
+    /**
+     * This code is intended to roughly duplicate the FolderLoaderCallback's onLoadFinished
+     */
+    private void populateUnreadSenders(final FolderHolder folderHolder,
+            final String unreadSenders) {
+        if (TextUtils.isEmpty(unreadSenders)) {
+            folderHolder.setUnreadSenders(Collections.<String>emptyList());
+            return;
+        }
+        // Use a LinkedHashMap here to maintain ordering
+        final Map<String, String> emailtoNameMap = Maps.newLinkedHashMap();
+
+        final Address[] senderAddresses = Address.parse(unreadSenders);
+
+        for (final Address senderAddress : senderAddresses) {
+            String sender = senderAddress.getName();
+            final String senderEmail = senderAddress.getAddress();
+
+            if (!TextUtils.isEmpty(sender)) {
+                final String existingSender = emailtoNameMap.get(senderEmail);
+                if (!TextUtils.isEmpty(existingSender)) {
+                    // Prefer longer names
+                    if (existingSender.length() >= sender.length()) {
+                        // old name is longer
+                        sender = existingSender;
+                    }
+                }
+                emailtoNameMap.put(senderEmail, sender);
+            }
+            if (emailtoNameMap.size() >= 20) {
+                break;
+            }
+        }
+
+        final List<String> senders = Lists.newArrayList(emailtoNameMap.values());
+        folderHolder.setUnreadSenders(senders);
+    }
 
     private final LoaderCallbacks<ObjectCursor<Conversation>> mFolderLoaderCallbacks =
             new LoaderCallbacks<ObjectCursor<Conversation>>() {
