@@ -27,6 +27,7 @@ import android.provider.BaseColumns;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
@@ -703,6 +704,12 @@ public class UIProvider {
         FolderColumns.PARENT_URI
     };
 
+    public static final String[] FOLDERS_PROJECTION_WITH_UNREAD_SENDERS =
+            (new ImmutableList.Builder<String>()
+                    .addAll(ImmutableList.copyOf(FOLDERS_PROJECTION))
+                    .add(FolderColumns.UNREAD_SENDERS)
+                    .build().toArray(new String[0]));
+
     public static final int FOLDER_ID_COLUMN = 0;
     public static final int FOLDER_PERSISTENT_ID_COLUMN = 1;
     public static final int FOLDER_URI_COLUMN = 2;
@@ -943,6 +950,12 @@ public class UIProvider {
          * The URI, possibly null, of the parent folder.
          */
         public static final String PARENT_URI = "parentUri";
+
+        /**
+         * A string of unread senders sorted by date, so we don't have to fetch this in multiple
+         * queries
+         */
+        public static final String UNREAD_SENDERS = "unreadSenders";
 
         public FolderColumns() {}
     }
