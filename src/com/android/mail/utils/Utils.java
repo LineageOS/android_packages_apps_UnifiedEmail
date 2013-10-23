@@ -49,6 +49,7 @@ import android.text.TextUtils.SimpleStringSplitter;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -1441,5 +1442,24 @@ public class Utils {
             }
         }
         return addr;
+    }
+
+    /**
+     * Applies the given appearance on the given subString, and inserts that as a parameter in the
+     * given parentString.
+     */
+    public static Spanned insertStringWithStyle(Context context,
+            int parentStringId, int subStringId, int appearance) {
+        final Resources resources = context.getResources();
+        final String subString = resources.getString(subStringId);
+        final String entireString = resources.getString(parentStringId, subString);
+        final int index = entireString.indexOf(subString);
+        final SpannableString descriptionText = new SpannableString(entireString);
+        descriptionText.setSpan(
+                new TextAppearanceSpan(context, appearance),
+                index,
+                index + subString.length(),
+                0);
+        return descriptionText;
     }
 }
