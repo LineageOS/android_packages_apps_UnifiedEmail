@@ -71,8 +71,8 @@
     </style>
 
     <style name="NewMessageButtonStyle" parent="AbstractNewMessageButtonStyle">
-        <item name="android:layout_marginStart">@dimen/conversation_view_margin_side</item>
-        <item name="android:layout_marginEnd">@dimen/conversation_view_margin_side</item>
+        <item name="android:layout_marginStart">@dimen/toast_bar_margin</item>
+        <item name="android:layout_marginEnd">@dimen/toast_bar_margin</item>
     </style>
 
     <style name="ConversationViewSideMarginMinusGradientStyle">

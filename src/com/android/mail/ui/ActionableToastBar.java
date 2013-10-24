@@ -17,9 +17,15 @@ package com.android.mail.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.utils.Utils;
 
 /**
  * A custom {@link View} that exposes an action to the user.
@@ -46,6 +53,8 @@ public class ActionableToastBar extends LinearLayout {
     private ImageView mActionDescriptionIcon;
     /** The clickable view */
     private View mActionButton;
+    /** The divider between the description and the action button. */
+    private View mDivider;
     /** Icon for the action button. */
     private View mActionIcon;
     /** The view that contains the description. */
@@ -53,6 +62,10 @@ public class ActionableToastBar extends LinearLayout {
     /** The view that contains the text for the action button. */
     private TextView mActionText;
     private ToastBarOperation mOperation;
+
+    private boolean mRtl;
+
+    private ClipBoundsDrawable mButtonDrawable;
 
     public ActionableToastBar(Context context) {
         this(context, null);
@@ -77,14 +90,41 @@ public class ActionableToastBar extends LinearLayout {
     }
 
     @Override
+    @SuppressLint("NewApi")
     protected void onFinishInflate() {
         super.onFinishInflate();
 
         mActionDescriptionIcon = (ImageView) findViewById(R.id.description_icon);
         mActionDescriptionView = (TextView) findViewById(R.id.description_text);
         mActionButton = findViewById(R.id.action_button);
+        mDivider = findViewById(R.id.divider);
         mActionIcon = findViewById(R.id.action_icon);
         mActionText = (TextView) findViewById(R.id.action_text);
+
+        if (Utils.isRunningKitkatOrLater()) {
+            mRtl = Utils.isLayoutRtl(this);
+
+            // Wrap the drawable so we can clip the bounds (see explanation in onLayout).
+            final Drawable buttonToastBackground = mActionButton.getBackground();
+            mActionButton.setBackground(null);
+            mButtonDrawable = new ClipBoundsDrawable(buttonToastBackground);
+            mActionButton.setBackground(mButtonDrawable);
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        // The button has the same background on pressed state so it will have rounded corners
+        // on both the right edge. We clip the background before the divider to remove the
+        // rounded edge there, creating a split-pill button effect.
+        if (mButtonDrawable != null) {
+            mButtonDrawable.setClipBounds(
+                    (mRtl ? 0 : mDivider.getLeft()), 0,
+                    (mRtl ? mDivider.getRight() : mActionButton.getWidth()),
+                    mActionButton.getHeight());
+        }
     }
 
     /**
@@ -250,5 +290,37 @@ public class ActionableToastBar extends LinearLayout {
      */
     public interface ActionClickedListener {
         public void onActionClicked(Context context);
+    }
+
+    /**
+     * A wrapper that allows a drawable to be clipped at specific bounds. {@link ClipDrawable} only
+     * supports clipping based on a relative level. This extends {@link ClipDrawable} since it is
+     * the simplest base class that will delegate the rest of the methods to the wrapped drawable.
+     *
+     * <br/><br/><b>Note: Only use on JBMR2 or later as clipRect is not supported until API 18.</b>
+     */
+    private static class ClipBoundsDrawable extends ClipDrawable {
+        private final Drawable mDrawable;
+        private final Rect mClipRect = new Rect();
+
+        public ClipBoundsDrawable(Drawable drawable) {
+            super(drawable, Gravity.START, ClipDrawable.HORIZONTAL);
+            mDrawable = drawable;
+        }
+
+        public void setClipBounds(int left, int top, int right, int bottom) {
+            mClipRect.left = left;
+            mClipRect.top = top;
+            mClipRect.right = right;
+            mClipRect.bottom = bottom;
+        }
+
+        @Override
+        public void draw(Canvas canvas) {
+            canvas.save();
+            canvas.clipRect(mClipRect);
+            mDrawable.draw(canvas);
+            canvas.restore();
+        }
     }
 }

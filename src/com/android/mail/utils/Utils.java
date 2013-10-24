@@ -1083,7 +1083,6 @@ public class Utils {
     *
     * @return normalized Uri (never null)
     * @see {@link android.content.Intent#setData}
-    * @see {@link android.content.Intent#setNormalizedData}
     */
    public static Uri normalizeUri(Uri uri) {
        String scheme = uri.getScheme();
@@ -1499,5 +1498,13 @@ public class Utils {
             // Doing this for other locales might really screw things up, so do US-version only
             return email.toLowerCase(Locale.US);
         }
+    }
+
+    /**
+     * Determines whether the given view has RTL layout.
+     */
+    public static boolean isLayoutRtl(View view) {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
+                View.LAYOUT_DIRECTION_RTL == view.getLayoutDirection() : false;
     }
 }
