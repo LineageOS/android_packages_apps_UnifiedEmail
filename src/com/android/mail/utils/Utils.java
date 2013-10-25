@@ -1429,7 +1429,6 @@ public class Utils {
         }
     }
 
-
     public static Address getAddress(Map<String, Address> cache, String emailStr) {
         Address addr;
         synchronized (cache) {
@@ -1461,5 +1460,34 @@ public class Utils {
                 index + subString.length(),
                 0);
         return descriptionText;
+    }
+
+    /**
+     * Email addresses are supposed to be treated as case-insensitive for the host-part and
+     * case-sensitive for the local-part, but nobody really wants email addresses to match
+     * case-sensitive on the local-part, so just smash everything to lower case.
+     * @param email Hello@Example.COM
+     * @return hello@example.com
+     */
+    public static String normalizeEmailAddress(String email) {
+        /*
+        // The RFC5321 version
+        if (TextUtils.isEmpty(email)) {
+            return email;
+        }
+        String[] parts = email.split("@");
+        if (parts.length != 2) {
+            LogUtils.d(LOG_TAG, "Tried to normalize a malformed email address: ", email);
+            return email;
+        }
+
+        return parts[0] + "@" + parts[1].toLowerCase(Locale.US);
+        */
+        if (TextUtils.isEmpty(email)) {
+            return email;
+        } else {
+            // Doing this for other locales might really screw things up, so do US-version only
+            return email.toLowerCase(Locale.US);
+        }
     }
 }
