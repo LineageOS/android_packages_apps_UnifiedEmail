@@ -612,6 +612,10 @@
         <item name="android:paddingRight">@dimen/toast_bar_description_icon_padding_end</item>
     </style>
 
+    <style name="ToastBarDescriptionTextStyle">
+        <item name="android:paddingLeft">@dimen/toast_bar_description_text_padding_start</item>
+    </style>
+
     <style name="AbstractToastBarSeparatorStyle">
         <item name="android:layout_marginTop">@dimen/toast_bar_separator_margin_vertical</item>
         <item name="android:layout_marginBottom">@dimen/toast_bar_separator_margin_vertical</item>
