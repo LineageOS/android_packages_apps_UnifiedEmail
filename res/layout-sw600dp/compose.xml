@@ -112,14 +112,14 @@
                     <com.android.mail.compose.EnterSubject android:id="@+id/subject"
                         style="@style/ComposeSubjectView" />
                 </RelativeLayout>
-                <RelativeLayout android:id="@+id/add_photo_attachment"
+                <RelativeLayout android:id="@+id/add_attachment"
                     style="@style/AttachmentButtonStyle"
                     android:layout_column="2"
                     android:clickable="true"
                     android:focusable="true">
                     <ImageView
-                        android:text="@string/add_photo_attachment"
-                        android:src="@drawable/ic_attach_image_holo_light"
+                        android:contentDescription="@string/attach_file_content_description"
+                        android:src="@drawable/ic_attach"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="4dip"

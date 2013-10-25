@@ -1009,4 +1009,13 @@
     <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
             when the vacation responder is on and has both a start and end date set. [CHAR LIMIT=50]-->
     <string name="vacation_responder_on_with_end_date">On, from <xliff:g id="start-date">%1$s</xliff:g> to <xliff:g id="end-date">%2$s</xliff:g></string>
+
+    <!-- Content description for the attach button that appears in compose for tablet layouts.
+         This is not to be confused with the menu items, this is an actual button in the layout.
+         On v18 and below devices, this button is used to attach photos only and so the text
+         is for adding a photo attachment. On v19, it is used to attach an arbitrary file
+         and so this string is overridden to use the "attach file" text. The drawable used
+         for this button is overrridden similarly. -->
+    <string name="attach_file_content_description" translatable="false">@string/add_photo_attachment</string>
+
 </resources>
