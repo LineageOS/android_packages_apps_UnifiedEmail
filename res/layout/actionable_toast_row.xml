@@ -34,7 +34,8 @@
         android:singleLine="true"
         android:text="@string/no_conversations"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        style="@style/ToastBarDescriptionTextStyle" />
 
     <LinearLayout
         android:id="@+id/action_button"
