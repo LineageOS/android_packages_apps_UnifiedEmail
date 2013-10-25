@@ -69,20 +69,20 @@ public class AbstractConversationWebViewClient extends WebViewClient {
             return false;
         }
 
-        boolean result = false;
-        final Intent intent;
         final Uri uri = Uri.parse(url);
+        if (Utils.divertMailtoUri(mActivity, uri, mAccount)) {
+            return true;
+        }
+
+        final Intent intent;
         if (mAccount != null && !Utils.isEmpty(mAccount.viewIntentProxyUri)) {
             intent = generateProxyIntent(uri);
         } else {
             intent = new Intent(Intent.ACTION_VIEW, uri);
-
-            // If this is a mailto: uri, we want to set the account name in the intent so
-            // the ComposeActivity can default to the current account
-            Utils.addAccountToMailtoIntent(intent, mAccount);
             intent.putExtra(Browser.EXTRA_APPLICATION_ID, mActivity.getPackageName());
         }
 
+        boolean result = false;
         try {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
                     | Intent.FLAG_ACTIVITY_NO_ANIMATION);
