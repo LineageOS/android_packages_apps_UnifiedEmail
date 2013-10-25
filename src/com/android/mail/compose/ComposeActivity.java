@@ -157,7 +157,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_ATTACHMENT_PREVIEWS = "attachmentPreviews";
 
     // Extra that we can get passed from other activities
-    private static final String EXTRA_TO = "to";
+    @VisibleForTesting
+    protected static final String EXTRA_TO = "to";
     private static final String EXTRA_CC = "cc";
     private static final String EXTRA_BCC = "bcc";
 
