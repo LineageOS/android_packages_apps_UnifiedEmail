@@ -1343,12 +1343,22 @@ public class Utils {
     }
 
     /**
-     * Adds the Account extra to mailto intents.
+     * Convenience method for diverting mailto: uris directly to our compose activity. Using this
+     * method ensures that the Account object is not accidentally sent to a different process.
+     *
+     * @param context for sending the intent
+     * @param uri mailto: or other uri
+     * @param account desired account for potential compose activity
+     * @return true if a compose activity was started, false if uri should be sent to a view intent
      */
-    public static void addAccountToMailtoIntent(Intent intent, Account account) {
-        if (TextUtils.equals(MAILTO_SCHEME, intent.getData().getScheme())) {
-            intent.putExtra(Utils.EXTRA_ACCOUNT, account);
+    public static boolean divertMailtoUri(final Context context, final Uri uri,
+            final Account account) {
+        final String scheme = normalizeUri(uri).getScheme();
+        if (TextUtils.equals(MAILTO_SCHEME, scheme)) {
+            ComposeActivity.composeToAddress(context, account, uri.getSchemeSpecificPart());
+            return true;
         }
+        return false;
     }
 
     /**

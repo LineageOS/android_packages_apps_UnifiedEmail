@@ -194,7 +194,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String[] bcc = activity.getBccAddresses();
                 String toAsString = TextUtils.join(",", to);
                 assertEquals(1, to.length);
-                assertTrue(toAsString.contains(account.name));
+                assertTrue(toAsString.contains(account.getEmailAddress()));
                 assertEquals(0, cc.length);
                 assertEquals(0, bcc.length);
             }
@@ -686,7 +686,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                         Rfc822Tokenizer.tokenize(to[0])[0].getAddress());
                 assertEquals(0, cc.length);
                 assertEquals(0, bcc.length);
-                assertEquals("account0@mockuiprovider.com", fromAccount.name);
+                assertEquals("account0@mockuiprovider.com", fromAccount.getEmailAddress());
             }
         });
     }
@@ -726,13 +726,13 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                         Rfc822Tokenizer.tokenize(to[0])[0].getAddress());
                 assertEquals(0, cc.length);
                 assertEquals(0, bcc.length);
-                assertEquals("account2@mockuiprovider.com", fromAccount.name);
+                assertEquals("account2@mockuiprovider.com", fromAccount.getEmailAddress());
             }
         });
     }
 
-    // Test a mailto VIEW Intent, with an account specified
-    public void testMailToAccount() throws Throwable {
+    // Test a mailto VIEW Intent, with an account specified in JSON format
+    public void testMailToAccountJSON() throws Throwable {
         final Context context = getInstrumentation().getContext();
         // Get the test account
         final Account currentAccount = getAccountForName(context, "account2@mockuiprovider.com");
@@ -740,7 +740,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         // Create the mailto intent
         final Intent mailtoIntent =
                 new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:test@localhost.com"));
-        Utils.addAccountToMailtoIntent(mailtoIntent, currentAccount);
+        mailtoIntent.putExtra(Utils.EXTRA_ACCOUNT, currentAccount.serialize());
 
         setActivityIntent(mailtoIntent);
 
@@ -759,7 +759,42 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                         Rfc822Tokenizer.tokenize(to[0])[0].getAddress());
                 assertEquals(0, cc.length);
                 assertEquals(0, bcc.length);
-                assertEquals("account2@mockuiprovider.com", fromAccount.name);
+                assertEquals("account2@mockuiprovider.com", fromAccount.getEmailAddress());
+            }
+        });
+    }
+
+    // Test a COMPOSE Intent, with an account specified in parcel format
+    public void testMailToAccount() throws Throwable {
+        final Context context = getInstrumentation().getContext();
+        // Get the test account
+        final Account currentAccount = getAccountForName(context, "account2@mockuiprovider.com");
+
+        // Create the mailto intent
+        Intent intent = new Intent(context, ComposeActivity.class);
+        intent.putExtra(ComposeActivity.EXTRA_FROM_EMAIL_TASK, true);
+        intent.putExtra(ComposeActivity.EXTRA_ACTION, ComposeActivity.COMPOSE);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, currentAccount);
+        intent.putExtra(ComposeActivity.EXTRA_TO, "test@localhost.com");
+
+        setActivityIntent(intent);
+
+        final ComposeActivity activity = getActivity();
+        Account fromAccount = activity.getFromAccount();
+
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String[] to = activity.getToAddresses();
+                String[] cc = activity.getCcAddresses();
+                String[] bcc = activity.getBccAddresses();
+                Account fromAccount = activity.getFromAccount();
+                assertEquals( 1, to.length);
+                assertEquals("test@localhost.com",
+                        Rfc822Tokenizer.tokenize(to[0])[0].getAddress());
+                assertEquals(0, cc.length);
+                assertEquals(0, bcc.length);
+                assertEquals("account2@mockuiprovider.com", fromAccount.getEmailAddress());
             }
         });
     }
@@ -795,7 +830,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                         Rfc822Tokenizer.tokenize(to[0])[0].getAddress());
                 assertEquals(0, cc.length);
                 assertEquals(0, bcc.length);
-                assertEquals("account1@mockuiprovider.com", fromAccount.name);
+                assertEquals("account1@mockuiprovider.com", fromAccount.getEmailAddress());
             }
         });
     }
