@@ -268,7 +268,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Message mDraft;
     private ReplyFromAccount mDraftAccount;
     private Object mDraftLock = new Object();
-    private View mPhotoAttachmentsButton;
+    private View mAddAttachmentsButton;
 
     /**
      * Boolean indicating whether ComposeActivity was launched from a Gmail controlled view.
@@ -1122,9 +1122,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
-        mPhotoAttachmentsButton = findViewById(R.id.add_photo_attachment);
-        if (mPhotoAttachmentsButton != null) {
-            mPhotoAttachmentsButton.setOnClickListener(this);
+        mAddAttachmentsButton = findViewById(R.id.add_attachment);
+        if (mAddAttachmentsButton != null) {
+            mAddAttachmentsButton.setOnClickListener(this);
         }
         mTo = (RecipientEditTextView) findViewById(R.id.to);
         mTo.setTokenizer(new Rfc822Tokenizer());
@@ -1952,8 +1952,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Verify that cc/ bcc aren't showing.
             // Animate in cc/bcc.
             showCcBccViews();
-        } else if (id == R.id.add_photo_attachment) {
-            doAttach(MIME_TYPE_PHOTO);
+        } else if (id == R.id.add_attachment) {
+            doAttach(Utils.isRunningKitkatOrLater() ? MIME_TYPE_ALL : MIME_TYPE_PHOTO);
         }
     }
 
