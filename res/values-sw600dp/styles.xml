@@ -31,4 +31,18 @@
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
     </style>
+
+    <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme">
+        <item name="android:windowBackground">@color/vacation_responder_background</item>
+    </style>
+
+    <style name="VacationResponderStyle">
+        <item name="android:paddingLeft">@dimen/vacation_responder_padding_horizontal_wide</item>
+        <item name="android:paddingRight">@dimen/vacation_responder_padding_horizontal_wide</item>
+    </style>
+
+    <style name="VacationResponderScrollViewStyle">
+        <item name="android:layout_width">@dimen/vacation_responder_width</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
 </resources>

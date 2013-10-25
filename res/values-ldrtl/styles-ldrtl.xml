@@ -178,8 +178,49 @@
         <item name="android:layout_toEndOf">@id/account_radio_button</item>
     </style>
 
-    <style name="FolderListHeadingStyle" parent="@android:attr/listSeparatorTextViewStyle">
-        <item name="android:paddingStart">@dimen/folder_list_heading_padding_side</item>
-        <item name="android:paddingEnd">@dimen/folder_list_heading_padding_side</item>
+    <style name="VacationResponderStyle">
+        <item name="android:paddingStart">@dimen/vacation_responder_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/vacation_responder_padding_horizontal</item>
     </style>
+
+    <style name="VacationResponderLabelSmall" parent="AbstractVacationResponderLabelSmall">
+        <item name="android:paddingStart">@dimen/vacation_responder_inner_padding</item>
+        <item name="android:paddingEnd">@dimen/vacation_responder_inner_padding</item>
+    </style>
+
+    <style name="VactionResponderStartDateLabel" parent="VacationResponderLabelSmall">
+        <item name="android:layout_marginEnd">
+            @dimen/vacation_responder_padding_between_date_spinners</item>
+    </style>
+
+    <style name="VactionResponderEndDateLabel" parent="VacationResponderLabelSmall">
+        <item name="android:layout_marginStart">
+            @dimen/vacation_responder_padding_between_date_spinners</item>
+    </style>
+
+    <style name="VacationResponderDateSpinner" parent="AbstractVacationResponderDateSpinner">
+        <item name="android:paddingStart">@dimen/vacation_responder_inner_padding</item>
+        <item name="android:paddingEnd">@dimen/vacation_responder_inner_padding</item>
+    </style>
+
+    <style name="VactionResponderStartDateSpinner" parent="VacationResponderDateSpinner">
+        <item name="android:layout_marginEnd">
+            @dimen/vacation_responder_padding_between_date_spinners</item>
+    </style>
+
+    <style name="VactionResponderEndDateSpinner" parent="VacationResponderDateSpinner">
+        <item name="android:layout_marginStart">
+            @dimen/vacation_responder_padding_between_date_spinners</item>
+    </style>
+
+    <style name="VacationResponderCheckBox" parent="AbstractVacationResponderCheckBox">
+        <item name="android:paddingStart">@dimen/vacation_responder_inner_padding</item>
+        <item name="android:paddingEnd">@dimen/vacation_responder_inner_padding</item>
+    </style>
+
+    <style name="VacationResponderSwitch">
+        <item name="android:paddingStart">@dimen/vacation_responder_inner_padding</item>
+        <item name="android:paddingEnd">@dimen/vacation_responder_inner_padding</item>
+    </style>
+
 </resources>
