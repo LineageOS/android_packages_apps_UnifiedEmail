@@ -17,7 +17,7 @@
 -->
 <resources>
     <!-- Boolean value indicating whether the tablet UI should be used. -->
-    <integer name="use_tablet_ui">0</integer>
+    <bool name="use_tablet_ui">false</bool>
     <integer name="conversation_header_mode">1</integer>
     <integer name="conversation_list_search_header_mode">1</integer>
 
