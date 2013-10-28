@@ -28,10 +28,12 @@
             android:id="@+id/new_message_notification_bar"
             style="@style/NewMessageButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_height="48dip"
+            android:layout_gravity="bottom|center_horizontal"
             android:animateLayoutChanges="true"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
+            android:gravity="center"
+            android:paddingLeft="@dimen/new_message_button_padding"
+            android:paddingRight="@dimen/new_message_button_padding"
             android:visibility="gone"/>
+
 </merge>

@@ -417,7 +417,7 @@
     <style name="NotificationSecondaryText">
     </style>
 
-    <style name="ToastBarStyle">
+    <style name="AbstractToastBarStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dip</item>
         <item name="android:layout_gravity">bottom</item>
@@ -430,6 +430,10 @@
         <item name="android:visibility">gone</item>
         <item name="android:alpha">0</item>
         <item name="android:clickable">true</item>
+    </style>
+
+    <!-- Overridden in v19 -->
+    <style name="ToastBarStyle" parent="AbstractToastBarStyle">
     </style>
 
     <style name="AccountSpinnerStyle">
@@ -501,15 +505,16 @@
     </style>
 
     <style name="AbstractNewMessageButtonStyle" parent="@android:style/Widget.Holo.Light.Button">
-        <item name="android:background">@drawable/btn_default</item>
+        <item name="android:layout_marginBottom">@dimen/toast_bar_margin</item>
+        <item name="android:background">@drawable/new_message_toast_background</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/dark_gray_text_color</item>
+        <item name="android:textColor">@color/new_message_bar_text</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="NewMessageButtonStyle" parent="AbstractNewMessageButtonStyle">
-        <item name="android:layout_marginLeft">@dimen/conversation_view_margin_side</item>
-        <item name="android:layout_marginRight">@dimen/conversation_view_margin_side</item>
+        <item name="android:layout_marginLeft">@dimen/toast_bar_margin</item>
+        <item name="android:layout_marginRight">@dimen/toast_bar_margin</item>
     </style>
 
     <style name="DismissButtonStyle">
@@ -752,5 +757,10 @@
     <style name="VacationResponderSwitch">
         <item name="android:paddingLeft">@dimen/vacation_responder_inner_padding</item>
         <item name="android:paddingRight">@dimen/vacation_responder_inner_padding</item>
+    </style>
+
+    <!-- Overridden in v19 -->
+    <style name="ToastButtonStyle">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 </resources>

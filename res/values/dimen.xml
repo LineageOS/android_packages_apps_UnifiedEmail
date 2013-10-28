@@ -148,4 +148,7 @@
     <dimen name="vacation_responder_padding_horizontal_wide">80dip</dimen>
     <dimen name="vacation_responder_inner_padding">12dip</dimen>
     <dimen name="vacation_responder_padding_between_date_spinners">8dip</dimen>
+
+    <dimen name="new_message_button_padding">24dip</dimen>
+
 </resources>

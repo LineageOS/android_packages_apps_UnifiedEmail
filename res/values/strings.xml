@@ -437,10 +437,10 @@
     <string name="add_label">Add folder</string>
 
     <!-- New Message notification text that appears over conversation view on incoming message. [CHAR LIMIT=40] -->
-    <string name="new_incoming_messages_one">New message from <xliff:g id="sender">%s</xliff:g>. Show.</string>
+    <string name="new_incoming_messages_one">Show new message from <xliff:g id="sender">%s</xliff:g>.</string>
     <!-- New Message notification text that appears over conversation view on incoming messages. Will only be used if there is more than one new message. [CHAR LIMIT=40] -->
     <plurals name="new_incoming_messages_many">
-        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> new messages. Show.</item>
+        <item quantity="other">Show <xliff:g id="count">%1$d</xliff:g> new messages.</item>
     </plurals>
 
     <!-- Conversation message header strings -->
