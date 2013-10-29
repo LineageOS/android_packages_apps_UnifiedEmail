@@ -412,4 +412,21 @@
     <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> קבצים מצורפים"</item>
   </plurals>
     <string name="no_subject" msgid="7823949839148118599">"(ללא נושא)"</string>
+    <string name="vacation_responder" msgid="145292667520371875">"הודעת חופשה"</string>
+    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"הודעת חופשה"</string>
+    <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"הודעה"</string>
+    <string name="send_to_contacts_text" msgid="2696513899649703420">"שלח רק לאנשי הקשר שלי"</string>
+    <string name="send_to_domain_text" msgid="5055332409482662383">"שלח רק אל <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"התחלה"</string>
+    <string name="pick_end_date_title" msgid="2068598706186320098">"סיום (אופציונלי)"</string>
+    <string name="date_not_set" msgid="4925325938525330766">"לא מוגדר"</string>
+    <string name="set_end_date_dialog_title" msgid="72028456826019380">"תאריך סיום (אופציונלי)"</string>
+    <string name="custom_date" msgid="7566383722092597487">"מותאם אישית"</string>
+    <string name="date_none" msgid="1033448683454519235">"ללא"</string>
+    <string name="discard_changes" msgid="57677638191085556">"האם למחוק שינויים?"</string>
+    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"השינויים בהודעת החופשה נשמרו"</string>
+    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"השינויים בהודעת החופשה נמחקו"</string>
+    <string name="vacation_responder_off" msgid="3502054743467746285">"כבוי"</string>
+    <string name="vacation_responder_on" msgid="5242690599331655563">"פועל, מ-<xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"פועל, מ-<xliff:g id="START_DATE">%1$s</xliff:g> עד <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
 </resources>
