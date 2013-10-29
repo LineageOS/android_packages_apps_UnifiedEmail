@@ -202,9 +202,10 @@
     </style>
 
     <style name="AbstractConversationSubjectStyle">
+        <item name="android:textColor">@color/conv_header_text_dark</item>
+        <item name="android:textIsSelectable">true</item>
         <item name="android:textSize">@dimen/conversation_header_font_size</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/conv_header_text_dark</item>
     </style>
 
     <style name="ConversationSubjectStyle" parent="AbstractConversationSubjectStyle">
