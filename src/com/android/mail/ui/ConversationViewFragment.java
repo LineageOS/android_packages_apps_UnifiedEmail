@@ -1585,7 +1585,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     protected void printConversation() {
-        PrintUtils.printConversation(getContext(), getMessageCursor(), mAddressCache,
-                mConversation.getBaseUri(mBaseUri), true /* useJavascript */);
+        PrintUtils.printConversation(mActivity.getActivityContext(), getMessageCursor(),
+                mAddressCache, mConversation.getBaseUri(mBaseUri), true /* useJavascript */);
     }
 }
