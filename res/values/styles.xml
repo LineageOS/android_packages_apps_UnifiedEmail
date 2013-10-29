@@ -446,7 +446,7 @@
         <item name="android:layout_height">48dip</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
         <item name="android:addStatesFromChildren">true</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">center|left</item>
         <item name="android:layout_gravity">center|left</item>
     </style>
 
