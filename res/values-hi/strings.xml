@@ -412,4 +412,38 @@
     <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> अनुलग्नक"</item>
   </plurals>
     <string name="no_subject" msgid="7823949839148118599">"(कोई विषय नहीं)"</string>
+    <!-- no translation found for vacation_responder (145292667520371875) -->
+    <skip />
+    <!-- no translation found for preferences_vacation_responder_title (5775829187605350564) -->
+    <skip />
+    <!-- no translation found for vacation_responder_body_hint_text (5731550117332146705) -->
+    <skip />
+    <!-- no translation found for send_to_contacts_text (2696513899649703420) -->
+    <skip />
+    <!-- no translation found for send_to_domain_text (5055332409482662383) -->
+    <skip />
+    <!-- no translation found for pick_start_date_title (915230000170560933) -->
+    <skip />
+    <!-- no translation found for pick_end_date_title (2068598706186320098) -->
+    <skip />
+    <!-- no translation found for date_not_set (4925325938525330766) -->
+    <skip />
+    <!-- no translation found for set_end_date_dialog_title (72028456826019380) -->
+    <skip />
+    <!-- no translation found for custom_date (7566383722092597487) -->
+    <skip />
+    <!-- no translation found for date_none (1033448683454519235) -->
+    <skip />
+    <!-- no translation found for discard_changes (57677638191085556) -->
+    <skip />
+    <!-- no translation found for vacation_responder_changes_saved (7996997204497945275) -->
+    <skip />
+    <!-- no translation found for vacation_responder_changes_discarded (5699324320463227712) -->
+    <skip />
+    <!-- no translation found for vacation_responder_off (3502054743467746285) -->
+    <skip />
+    <!-- no translation found for vacation_responder_on (5242690599331655563) -->
+    <skip />
+    <!-- no translation found for vacation_responder_on_with_end_date (8198920866703798811) -->
+    <skip />
 </resources>
