@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 
@@ -47,5 +46,4 @@ public interface SecureConversationViewControllerCallbacks {
     public String getBaseUri();
     public boolean isViewOnlyMode();
     public Uri getAccountUri();
-    public Context getContext();
 }

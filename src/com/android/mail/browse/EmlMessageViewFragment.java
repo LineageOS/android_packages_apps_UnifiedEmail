@@ -19,7 +19,6 @@ package com.android.mail.browse;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -249,11 +248,6 @@ public class EmlMessageViewFragment extends Fragment
     @Override
     public Uri getAccountUri() {
         return mAccountUri;
-    }
-
-    @Override
-    public Context getContext() {
-        return getActivity().getApplicationContext();
     }
 
     // End SecureConversationViewControllerCallbacks

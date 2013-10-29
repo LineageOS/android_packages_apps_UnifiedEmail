@@ -189,7 +189,7 @@ public class SecureConversationViewController implements
 
     public void printMessage() {
         final Conversation conversation = mMessage.getConversation();
-        PrintUtils.printMessage(mCallbacks.getContext(), mMessage,
+        PrintUtils.printMessage(mCallbacks.getFragment().getActivity(), mMessage,
                 conversation != null ? conversation.subject : mMessage.subject,
                 mCallbacks.getAddressCache(), mCallbacks.getBaseUri(), false /* useJavascript */);
 
