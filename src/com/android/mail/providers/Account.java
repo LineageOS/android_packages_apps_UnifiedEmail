@@ -438,6 +438,7 @@ public class Account implements Parcelable {
         syncAuthority = cursor.getString(
                 cursor.getColumnIndex(AccountColumns.SYNC_AUTHORITY));
         if (TextUtils.isEmpty(syncAuthority)) {
+            // NOTE: this is actually expected in Email for the "combined view" account only
             LogUtils.e(LOG_TAG, "Unexpected empty syncAuthority from cursor");
         }
         quickResponseUri = Utils.getValidUri(cursor.getString(
