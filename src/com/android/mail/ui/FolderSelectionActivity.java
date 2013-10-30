@@ -345,9 +345,11 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         return null;
     }
 
+    private Folder mNavigatedFolder;
     @Override
     public void onFolderSelected(Folder folder) {
-        if (folder.hasChildren) {
+        if (folder.hasChildren && !folder.equals(mNavigatedFolder)) {
+            mNavigatedFolder = folder;
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
