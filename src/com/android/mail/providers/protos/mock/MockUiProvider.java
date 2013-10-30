@@ -29,6 +29,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderList;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.ReplyFromAccount;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AccountColumns.SettingsColumns;
@@ -385,6 +386,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(SettingsColumns.CONVERSATION_VIEW_MODE, 1);
         accountMap.put(SettingsColumns.VEILED_ADDRESS_PATTERN, null);
         accountMap.put(SettingsColumns.MOVE_TO_INBOX, Uri.EMPTY);
+        accountMap.put(SettingsColumns.SHOW_IMAGES, Settings.ShowImages.ASK_FIRST);
         return accountMap;
     }
 

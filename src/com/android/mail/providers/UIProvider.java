@@ -181,6 +181,7 @@ public class UIProvider {
             .put(AccountColumns.SYNC_AUTHORITY, String.class)
             .put(AccountColumns.QUICK_RESPONSE_URI, String.class)
             .put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, String.class)
+            .put(AccountColumns.SettingsColumns.SHOW_IMAGES, Integer.class)
             .build();
 
     public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
@@ -610,6 +611,10 @@ public class UIProvider {
              * account.
              */
             public static final String MOVE_TO_INBOX = "move_to_inbox";
+            /**
+             * Show images in conversation view.
+             */
+            public static final String SHOW_IMAGES = "show_images";
         }
     }
 
