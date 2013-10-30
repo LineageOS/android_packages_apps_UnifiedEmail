@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ScaleGestureDetector;
@@ -209,6 +210,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     private static final String BUNDLE_KEY_WEBVIEW_Y_PERCENT =
             ConversationViewFragment.class.getName() + "webview-y-percent";
 
+    private BidiFormatter sBidiFormatter;
+
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
@@ -318,6 +321,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         if (savedState != null) {
             mWebViewYPercent = savedState.getFloat(BUNDLE_KEY_WEBVIEW_Y_PERCENT);
+        }
+
+        if (sBidiFormatter == null) {
+            sBidiFormatter = BidiFormatter.getInstance();
         }
     }
 
@@ -1287,7 +1294,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             } else {
                 final Address addr = getAddress(senderAddress);
                 return res.getString(R.string.new_incoming_messages_one,
-                        TextUtils.isEmpty(addr.getName()) ? addr.getAddress() : addr.getName());
+                        sBidiFormatter.unicodeWrap(TextUtils.isEmpty(addr.getName())
+                        ? addr.getAddress() : addr.getName()));
             }
         }
     }
