@@ -2432,9 +2432,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final String message = getArguments().getString("message");
-            return new AlertDialog.Builder(getActivity()).setMessage(message).setTitle(
-                    R.string.recipient_error_dialog_title)
-                    .setIconAttribute(android.R.attr.alertDialogIcon)
+            return new AlertDialog.Builder(getActivity())
+                    .setMessage(message)
                     .setPositiveButton(
                             R.string.ok, new Dialog.OnClickListener() {
                         @Override
@@ -2646,7 +2645,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return mCachedSettings != null ? mCachedSettings.confirmSend : false;
     }
 
-    public static class SendConfirmDialogFragment extends DialogFragment {
+    public static class SendConfirmDialogFragment extends DialogFragment
+            implements DialogInterface.OnClickListener {
+
+        private boolean mSave;
+        private boolean mShowToast;
+
         // Public no-args constructor needed for fragment re-instantiation
         public SendConfirmDialogFragment() {}
 
@@ -2664,23 +2668,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final int messageId = getArguments().getInt("messageId");
-            final boolean save = getArguments().getBoolean("save");
-            final boolean showToast = getArguments().getBoolean("showToast");
+            mSave = getArguments().getBoolean("save");
+            mShowToast = getArguments().getBoolean("showToast");
+
+            final int confirmTextId = (messageId == R.string.confirm_send_message) ?
+                    R.string.ok : R.string.send;
 
             return new AlertDialog.Builder(getActivity())
                     .setMessage(messageId)
-                    .setTitle(R.string.confirm_send_title)
-                    .setIconAttribute(android.R.attr.alertDialogIcon)
-                    .setPositiveButton(R.string.send,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    ((ComposeActivity)getActivity()).finishSendConfirmDialog(save,
-                                            showToast);
-                                }
-                            })
+                    .setPositiveButton(confirmTextId, this)
                     .setNegativeButton(R.string.cancel, null)
                     .create();
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+                ((ComposeActivity) getActivity()).finishSendConfirmDialog(mSave, mShowToast);
+            }
         }
     }
 
