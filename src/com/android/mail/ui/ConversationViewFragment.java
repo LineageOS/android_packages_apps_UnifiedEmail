@@ -69,6 +69,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ConversationViewState.ExpansionState;
 import com.android.mail.utils.ConversationViewUtils;
@@ -660,8 +661,9 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         int collapsedStart = -1;
         ConversationMessage prevCollapsedMsg = null;
 
-        final boolean alwaysShowImages =
-                AccountPreferences.get(getContext(), mAccount.name).shouldAlwaysShowImages();
+        final boolean alwaysShowImages = (mAccount != null) &&
+                (mAccount.settings.showImages == Settings.ShowImages.ALWAYS);
+
         boolean prevSafeForImages = alwaysShowImages;
 
         // Store the previous expanded state so that the border between
@@ -807,8 +809,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         mTemplates.reset();
 
-        final boolean alwaysShowImages =
-                AccountPreferences.get(getContext(), mAccount.name).shouldAlwaysShowImages();
+        final boolean alwaysShowImages = (mAccount != null) &&
+                (mAccount.settings.showImages == Settings.ShowImages.ALWAYS);
 
         // In devices with non-integral density multiplier, screen pixels translate to non-integral
         // web pixels. Keep track of the error that occurs when we cast all heights to int

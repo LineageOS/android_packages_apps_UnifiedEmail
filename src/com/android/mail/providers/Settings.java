@@ -58,6 +58,11 @@ public class Settings implements Parcelable {
 
     private static final int DEFAULT = SWIPE_SETTING_ARCHIVE;
 
+    public interface ShowImages {
+        public static final int ALWAYS = 0;
+        public static final int ASK_FIRST = 1;
+    }
+
     public final String signature;
     /**
      * Auto advance setting for this account.
@@ -92,6 +97,7 @@ public class Settings implements Parcelable {
     public final boolean priorityArrowsEnabled;
     public final Uri setupIntentUri;
     public final String veiledAddressPattern;
+    public final int showImages;
 
     /**
      * The {@link Uri} to use when moving a conversation to the inbox. May
@@ -126,6 +132,7 @@ public class Settings implements Parcelable {
         conversationViewMode = UIProvider.ConversationViewMode.UNDEFINED;
         veiledAddressPattern = null;
         moveToInbox = Uri.EMPTY;
+        showImages = ShowImages.ASK_FIRST;
     }
 
     public Settings(Parcel inParcel) {
@@ -149,6 +156,7 @@ public class Settings implements Parcelable {
         conversationViewMode = inParcel.readInt();
         veiledAddressPattern = inParcel.readString();
         moveToInbox = Utils.getValidUri(inParcel.readString());
+        showImages = inParcel.readInt();
     }
 
     public Settings(Cursor cursor) {
@@ -182,6 +190,7 @@ public class Settings implements Parcelable {
                 cursor.getString(cursor.getColumnIndex(SettingsColumns.VEILED_ADDRESS_PATTERN));
         moveToInbox = Utils.getValidUri(
                 cursor.getString(cursor.getColumnIndex(SettingsColumns.MOVE_TO_INBOX)));
+        showImages = cursor.getInt(cursor.getColumnIndex(SettingsColumns.SHOW_IMAGES));
     }
 
     private Settings(JSONObject json) {
@@ -211,6 +220,7 @@ public class Settings implements Parcelable {
                 UIProvider.ConversationViewMode.UNDEFINED);
         veiledAddressPattern = json.optString(SettingsColumns.VEILED_ADDRESS_PATTERN, null);
         moveToInbox = Utils.getValidUri(json.optString(SettingsColumns.MOVE_TO_INBOX));
+        showImages = json.optInt(SettingsColumns.SHOW_IMAGES, sDefault.showImages);
     }
 
     /**
@@ -256,6 +266,7 @@ public class Settings implements Parcelable {
             json.put(SettingsColumns.VEILED_ADDRESS_PATTERN, veiledAddressPattern);
             json.put(SettingsColumns.MOVE_TO_INBOX,
                     getNonNull(moveToInbox, sDefault.moveToInbox));
+            json.put(SettingsColumns.SHOW_IMAGES, showImages);
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not serialize settings");
         }
@@ -297,6 +308,7 @@ public class Settings implements Parcelable {
         map.put(UIProvider.AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN,
                 veiledAddressPattern);
         map.put(UIProvider.AccountColumns.SettingsColumns.MOVE_TO_INBOX, moveToInbox);
+        map.put(UIProvider.AccountColumns.SettingsColumns.SHOW_IMAGES, showImages);
 
         return map;
     }
@@ -343,6 +355,7 @@ public class Settings implements Parcelable {
         dest.writeInt(conversationViewMode);
         dest.writeString(veiledAddressPattern);
         dest.writeString(getNonNull(moveToInbox, sDefault.moveToInbox).toString());
+        dest.writeInt(showImages);
     }
 
     /**
