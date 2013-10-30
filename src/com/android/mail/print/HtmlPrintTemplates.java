@@ -37,6 +37,7 @@ public class HtmlPrintTemplates extends AbstractHtmlTemplates {
     private final String mMessage;
     private final String mConversationLower;
     private final String mConversationLowerNoJs;
+    private final String mLogo;
 
     public HtmlPrintTemplates(Context context) {
         super(context);
@@ -45,6 +46,7 @@ public class HtmlPrintTemplates extends AbstractHtmlTemplates {
         mMessage = readTemplate(R.raw.template_print_message);
         mConversationLower = readTemplate(R.raw.template_print_conversation_lower);
         mConversationLowerNoJs = readTemplate(R.raw.template_print_conversation_lower_no_js);
+        mLogo = readTemplate(R.raw.logo);
     }
 
     /**
@@ -65,7 +67,7 @@ public class HtmlPrintTemplates extends AbstractHtmlTemplates {
 
         final String printedSubject = TextUtils.isEmpty(subject)
                 ? res.getString(R.string.no_subject) : subject;
-        append(mConversationUpper, mContext.getString(R.string.app_name),
+        append(mConversationUpper, mLogo, mContext.getString(R.string.app_name),
                 printedSubject, numMessageString);
 
         mInProgress = true;
