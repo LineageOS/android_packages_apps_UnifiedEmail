@@ -365,7 +365,7 @@
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Afsenderbillede"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Vis ved siden af navnet i samtalelisten"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Stryg ned for at opdatere"</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"Tjekker for e-mails"</string>
+    <string name="checking_for_mail" msgid="2301797903350897130">"Tjekker din e-mail"</string>
     <string name="empty_trash" msgid="652435297593538512">"Tøm papirkurv"</string>
     <string name="empty_spam" msgid="6064497180615519589">"Tøm spammappe"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Skal papirkurven tømmes?"</string>
