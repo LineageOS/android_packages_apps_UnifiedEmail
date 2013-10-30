@@ -212,9 +212,9 @@
     <string name="search_results_searching_header" msgid="3821361153909466819">"Пошук..."</string>
     <!-- no translation found for add_label (6060201715848652940) -->
     <skip />
-    <!-- no translation found for new_incoming_messages_one (164529476439626369) -->
+    <!-- no translation found for new_incoming_messages_one (827152289636155810) -->
     <skip />
-    <!-- no translation found for new_incoming_messages_many:other (6028908826781946980) -->
+    <!-- no translation found for new_incoming_messages_many:other (1018949581192786598) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"Разгарнуць звесткi пра атрымальніка"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Згарнуць дадзеныя пра атрымальніка"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Паказаць кантактную інфармацыю карыстальнiка <xliff:g id="NAME">%1$s</xliff:g>"</string>

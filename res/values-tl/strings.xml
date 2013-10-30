@@ -208,9 +208,9 @@
     <string name="search_unsupported" msgid="4654227193354052607">"Hindi sinusuportahan ang paghahanap sa account na ito."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Naghahanap..."</string>
     <string name="add_label" msgid="6060201715848652940">"Magdagdag ng folder"</string>
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"Bagong mensahe mula <xliff:g id="SENDER">%s</xliff:g>. Ipakita."</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"Ipakita mga bagong mensahe mula kay <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> (na) bagong mensahe. Ipakita."</item>
+    <item quantity="other" msgid="1018949581192786598">"Ipakita ang <xliff:g id="COUNT">%1$d</xliff:g> (na) bagong mensahe."</item>
   </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Palawakin ang mga detalye ng recipient"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Tiklupin ang mga detalye ng recipient"</string>
