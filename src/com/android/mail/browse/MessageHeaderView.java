@@ -60,6 +60,7 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AbstractConversationViewFragment;
 import com.android.mail.ui.ImageCanvas;
@@ -417,9 +418,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
         mMessage = mMessageHeaderItem.getMessage();
 
-        final AccountPreferences accountPreferences = mAccountController.getAccountPreferences();
-        final boolean alwaysShowImages =
-                accountPreferences != null ? accountPreferences.shouldAlwaysShowImages() : false;
+        final boolean alwaysShowImages = (getAccount() != null) &&
+                (getAccount().settings.showImages == Settings.ShowImages.ALWAYS);
         mShowImagePrompt = mMessage.shouldShowImagePrompt() && !alwaysShowImages;
 
         setExpanded(mMessageHeaderItem.isExpanded());
