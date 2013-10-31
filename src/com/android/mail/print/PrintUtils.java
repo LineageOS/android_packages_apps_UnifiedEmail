@@ -17,6 +17,7 @@
 
 package com.android.mail.print;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.print.PrintAttributes;
@@ -75,6 +76,7 @@ public class PrintUtils {
      *
      * Sets up a webview to perform the printing work.
      */
+    @SuppressLint("NewApi")
     private static void printHtml(Context context, String html,
             String baseUri, String subject, boolean useJavascript) {
         final WebView webView = new WebView(context);
