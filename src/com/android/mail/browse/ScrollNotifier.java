@@ -19,7 +19,7 @@ package com.android.mail.browse;
 
 public interface ScrollNotifier {
     public interface ScrollListener {
-        void onNotifierScroll(int x, int y);
+        void onNotifierScroll(int y);
     }
 
     void addScrollListener(ScrollListener l);
