@@ -1952,10 +1952,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+        final boolean superCreated = super.onCreateOptionsMenu(menu);
         // Don't render any menu items when there are no accounts.
         if (mAccounts == null || mAccounts.length == 0) {
-            return true;
+            return superCreated;
         }
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.compose_menu, menu);
