@@ -35,7 +35,7 @@
     <item msgid="857480048798815437">"باز ارسال"</item>
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"در تاریخ <xliff:g id="DATE">%s</xliff:g>، <xliff:g id="PERSON">%s</xliff:g> نوشت:"</string>
-    <string name="forward_attribution" msgid="1498936339458535158">"---------- پیام باز ارسال شده ----------&lt;br&gt;فرستنده: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;موضوع: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;گیرنده: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution" msgid="1498936339458535158">"‏---------- پیام باز ارسال شده ----------&lt;br&gt;فرستنده: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;موضوع: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;گیرنده: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
     <string name="forward_attribution_no_headers" msgid="3239825787227110752">"------- پیام باز ارسال شده -------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"انتخاب نوع پیوست"</string>
@@ -118,7 +118,7 @@
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"اشتراک‌گذاری از طریق"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"بازکردن در مرورگر"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"کپی"</string>
-    <string name="contextmenu_copylink" msgid="3580131515400610839">"کپی URL پیوند"</string>
+    <string name="contextmenu_copylink" msgid="3580131515400610839">"‏کپی URL پیوند"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"شماره‌گیری..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"پیامک..."</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"افزودن مخاطب"</string>
@@ -169,32 +169,32 @@
     <item quantity="other" msgid="2222365088907519938">"در حال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد نادیده گرفته شد."</item>
-    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد نادیده گرفته شد."</item>
+    <item quantity="one" msgid="3197365771487542615">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد نادیده گرفته شد."</item>
+    <item quantity="other" msgid="1941193356069303587">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد نادیده گرفته شد."</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان هرزنامه گزارش شد."</item>
-    <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان هرزنامه گزارش شد."</item>
+    <item quantity="one" msgid="3060864972122279220">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان هرزنامه گزارش شد."</item>
+    <item quantity="other" msgid="5071459475389411227">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان هرزنامه گزارش شد."</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان غیرهرزنامه گزارش شد"</item>
-    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان غیرهرزنامه گزارش شد."</item>
+    <item quantity="one" msgid="7361303622131552596">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان غیرهرزنامه گزارش شد"</item>
+    <item quantity="other" msgid="2250720080221922267">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان غیرهرزنامه گزارش شد."</item>
   </plurals>
   <plurals name="conversation_not_important">
-    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان غیرمهم علامت‌گذاری شد."</item>
-    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان غیرمهم علامت‌گذاری شد."</item>
+    <item quantity="one" msgid="788387259924027833">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان غیرمهم علامت‌گذاری شد."</item>
+    <item quantity="other" msgid="6662213740575340397">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان غیرمهم علامت‌گذاری شد."</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان فیشینگ گزارش شد."</item>
-    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان فیشینگ گزارش شد."</item>
+    <item quantity="one" msgid="5386916574432049235">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان فیشینگ گزارش شد."</item>
+    <item quantity="other" msgid="3678624994662639442">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان فیشینگ گزارش شد."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بایگانی شد."</item>
-    <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بایگانی شد."</item>
+    <item quantity="one" msgid="5457612502965117672">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بایگانی شد."</item>
+    <item quantity="other" msgid="3012054504370916482">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بایگانی شد."</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد حذف شد."</item>
-    <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد حذف شد."</item>
+    <item quantity="one" msgid="4398693029405479323">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد حذف شد."</item>
+    <item quantity="other" msgid="8630099095360065837">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد حذف شد."</item>
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"حذف شد"</string>
     <string name="archived" msgid="7533995360704366325">"بایگانی شد"</string>
@@ -208,9 +208,9 @@
     <string name="search_unsupported" msgid="4654227193354052607">"جستجو در این حساب پشتیبانی نمی‌شود."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"در حال جستجو..."</string>
     <string name="add_label" msgid="6060201715848652940">"افزودن پوشه"</string>
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"پیام جدید از <xliff:g id="SENDER">%s</xliff:g>. نمایش."</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"نمایش پیام جدید از <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> پیام جدید. نمایش."</item>
+    <item quantity="other" msgid="1018949581192786598">"نمایش <xliff:g id="COUNT">%1$d</xliff:g> پیام جدید."</item>
   </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"گسترش جزئیات گیرنده"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"کوچک کردن جزئیات گیرنده"</string>
@@ -391,7 +391,7 @@
     <string name="account_settings_param" msgid="5277032997773498476">"تنظیمات حساب"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> پیام ارسال نشده در <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"همگام‌سازی خودکار روشن شود؟"</string>
-    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"تغییراتی که در تمام برنامه‌ها و حساب‌ها ایجاد می‌کنید نه فقط Gmail، بین وب، سایر دستگاه‌هایتان و <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> شما همگام‌سازی می‌شود."</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"‏تغییراتی که در تمام برنامه‌ها و حساب‌ها ایجاد می‌کنید نه فقط Gmail، بین وب، سایر دستگاه‌هایتان و <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> شما همگام‌سازی می‌شود."</string>
     <string name="phone" msgid="5171715391553213328">"تلفن"</string>
     <string name="tablet" msgid="7956969657216748522">"رایانه لوحی"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"روشن کردن"</string>
@@ -412,38 +412,21 @@
     <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> پیوست"</item>
   </plurals>
     <string name="no_subject" msgid="7823949839148118599">"‫(بدون موضوع)‏"</string>
-    <!-- no translation found for vacation_responder (145292667520371875) -->
-    <skip />
-    <!-- no translation found for preferences_vacation_responder_title (5775829187605350564) -->
-    <skip />
-    <!-- no translation found for vacation_responder_body_hint_text (5731550117332146705) -->
-    <skip />
-    <!-- no translation found for send_to_contacts_text (2696513899649703420) -->
-    <skip />
-    <!-- no translation found for send_to_domain_text (5055332409482662383) -->
-    <skip />
-    <!-- no translation found for pick_start_date_title (915230000170560933) -->
-    <skip />
-    <!-- no translation found for pick_end_date_title (2068598706186320098) -->
-    <skip />
-    <!-- no translation found for date_not_set (4925325938525330766) -->
-    <skip />
-    <!-- no translation found for set_end_date_dialog_title (72028456826019380) -->
-    <skip />
-    <!-- no translation found for custom_date (7566383722092597487) -->
-    <skip />
-    <!-- no translation found for date_none (1033448683454519235) -->
-    <skip />
-    <!-- no translation found for discard_changes (57677638191085556) -->
-    <skip />
-    <!-- no translation found for vacation_responder_changes_saved (7996997204497945275) -->
-    <skip />
-    <!-- no translation found for vacation_responder_changes_discarded (5699324320463227712) -->
-    <skip />
-    <!-- no translation found for vacation_responder_off (3502054743467746285) -->
-    <skip />
-    <!-- no translation found for vacation_responder_on (5242690599331655563) -->
-    <skip />
-    <!-- no translation found for vacation_responder_on_with_end_date (8198920866703798811) -->
-    <skip />
+    <string name="vacation_responder" msgid="145292667520371875">"پاسخگوی خودکار"</string>
+    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"پاسخگوی خودکار"</string>
+    <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"پیام"</string>
+    <string name="send_to_contacts_text" msgid="2696513899649703420">"ارسال فقط به مخاطبین من"</string>
+    <string name="send_to_domain_text" msgid="5055332409482662383">"ارسال فقط به <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"تاریخ شروع"</string>
+    <string name="pick_end_date_title" msgid="2068598706186320098">"تاریخ پایان (اختیاری)"</string>
+    <string name="date_not_set" msgid="4925325938525330766">"تنظیم نشده است"</string>
+    <string name="set_end_date_dialog_title" msgid="72028456826019380">"تاریخ پایان (اختیاری)"</string>
+    <string name="custom_date" msgid="7566383722092597487">"سفارشی"</string>
+    <string name="date_none" msgid="1033448683454519235">"هیچ‌کدام"</string>
+    <string name="discard_changes" msgid="57677638191085556">"از تغییرات صرف‌نظر شود؟"</string>
+    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"تغییرات پاسخگوی خودکار ذخیره شد"</string>
+    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"از تغییرات پاسخگوی خودکار صرفنظر شد"</string>
+    <string name="vacation_responder_off" msgid="3502054743467746285">"خاموش"</string>
+    <string name="vacation_responder_on" msgid="5242690599331655563">"روشن، از تاریخ <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"روشن، از تاریخ <xliff:g id="START_DATE">%1$s</xliff:g> تا <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
 </resources>
