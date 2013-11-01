@@ -106,7 +106,7 @@
     <string name="download_again" msgid="7418568915429156518">"पुनः डाउनलोड करें"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"जानकारी"</string>
     <string name="attachment_type_blocked" msgid="7878184764428642891">"दुर्भाग्‍यवश, आप इस प्रकार के अनुलग्‍नक को सहेज या खोल नहीं सकते."</string>
-    <string name="no_application_found" msgid="1945184804521392093">"कोई भी एप्स इस अनुलग्नक को देखने के लिए नहीं खोल सकता."</string>
+    <string name="no_application_found" msgid="1945184804521392093">"कोई भी ऐप्स  इस अनुलग्नक को देखने के लिए नहीं खोल सकता."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"अनुलग्‍नक फ़ेच कर रहा है"</string>
     <string name="please_wait" msgid="8797634225088247121">"कृपया प्रतीक्षा करें…"</string>
     <string name="saved" msgid="6660844285730790469">"सहेजा गया, <xliff:g id="SIZE">%s</xliff:g>"</string>
@@ -392,7 +392,7 @@
     <string name="account_settings_param" msgid="5277032997773498476">"खाता सेटिंग"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g> में <xliff:g id="NUMBER">%1$s</xliff:g> अप्रेषित"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"स्वत:-समन्वयन चालू करें?"</string>
-    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"आपके द्वारा न केवल Gmail में, बल्कि सभी एप्स और खातों में किए जाने वाले बदलाव, वेब, आपके अन्य उपकरणों, और आपके <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> के बीच समन्वयित किए जाएंगे."</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"आपके द्वारा न केवल Gmail में, बल्कि सभी ऐप्स  और खातों में किए जाने वाले बदलाव, वेब, आपके अन्य उपकरणों, और आपके <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> के बीच समन्वयित किए जाएंगे."</string>
     <string name="phone" msgid="5171715391553213328">"फ़ोन"</string>
     <string name="tablet" msgid="7956969657216748522">"टेबलेट"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"चालू करें"</string>
