@@ -144,7 +144,8 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             }
             return originalBitmap;
         } catch (Throwable t) {
-            LogUtils.e(LOG_TAG, t, "Unable to decode thumbnail %s", thumbnailUri);
+            LogUtils.i(LOG_TAG, "Unable to decode thumbnail %s: %s %s", thumbnailUri,
+                    t.getClass(), t.getMessage());
         } finally {
             if (fd != null) {
                 try {
@@ -169,7 +170,8 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             in = resolver.openInputStream(thumbnailUri);
             return Exif.getOrientation(in, -1);
         } catch (Throwable t) {
-            LogUtils.e(LOG_TAG, t, "Unable to get orientation of thumbnail %s", thumbnailUri);
+            LogUtils.i(LOG_TAG, "Unable to get orientation of thumbnail %s: %s %s", thumbnailUri,
+                    t.getClass(), t.getMessage());
         } finally {
             if (in != null) {
                 try {
