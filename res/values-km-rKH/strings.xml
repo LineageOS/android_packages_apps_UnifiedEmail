@@ -208,9 +208,9 @@
     <string name="search_unsupported" msgid="4654227193354052607">"មិន​គាំទ្រ​ការ​ស្វែងរក​​នៅ​លើ​គណនី​នេះ​។"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"កំពុង​​ស្វែងរក..."</string>
     <string name="add_label" msgid="6060201715848652940">"បន្ថែម​ថត"</string>
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"សារ​ថ្មី​ពី <xliff:g id="SENDER">%s</xliff:g>។ បង្ហាញ​។"</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"បង្ហាញ​សារ​ថ្មី​ពី <xliff:g id="SENDER">%s</xliff:g> ។"</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="6028908826781946980">"សារ​ថ្មី <xliff:g id="COUNT">%1$d</xliff:g> ។ បង្ហាញ​។"</item>
+    <item quantity="other" msgid="1018949581192786598">"បង្ហាញ​សារ​ថ្មី <xliff:g id="COUNT">%1$d</xliff:g> ​។"</item>
   </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"ពង្រីក​សេចក្ដី​លម្អិត​របស់​អ្នក​ទទួល"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"បញ្ចូល​​ព័ត៌មាន​លម្អិត​អ្នក​ទទួល"</string>

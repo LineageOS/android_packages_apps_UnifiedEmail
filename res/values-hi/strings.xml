@@ -105,7 +105,7 @@
     <string name="cancel_attachment" msgid="4651201258272223650">"रद्द करें"</string>
     <string name="download_again" msgid="7418568915429156518">"पुनः डाउनलोड करें"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"जानकारी"</string>
-    <string name="no_application_found" msgid="1945184804521392093">"कोई भी एप्स इस अनुलग्नक को देखने के लिए नहीं खोल सकता."</string>
+    <string name="no_application_found" msgid="1945184804521392093">"कोई भी ऐप्स  इस अनुलग्नक को देखने के लिए नहीं खोल सकता."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"अनुलग्‍नक फ़ेच कर रहा है"</string>
     <string name="please_wait" msgid="8797634225088247121">"कृपया प्रतीक्षा करें…"</string>
     <string name="saved" msgid="6660844285730790469">"सहेजा गया, <xliff:g id="SIZE">%s</xliff:g>"</string>
@@ -208,9 +208,9 @@
     <string name="search_unsupported" msgid="4654227193354052607">"इस खाते पर खोज समर्थित नहीं है."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"खोज रहा है…"</string>
     <string name="add_label" msgid="6060201715848652940">"फ़ोल्‍डर जोड़ें"</string>
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g> की ओर से नया संदेश. दिखाएं."</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"<xliff:g id="SENDER">%s</xliff:g> के नए संदेश दिखाएं."</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> नए संदेश. दिखाएं."</item>
+    <item quantity="other" msgid="1018949581192786598">"<xliff:g id="COUNT">%1$d</xliff:g> नए संदेश दिखाएं."</item>
   </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"प्राप्तकर्ता जानकारी विस्तृत करें"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"प्राप्तकर्ता जानकारी संक्षिप्त करें"</string>
@@ -391,7 +391,7 @@
     <string name="account_settings_param" msgid="5277032997773498476">"खाता सेटिंग"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g> में <xliff:g id="NUMBER">%1$s</xliff:g> अप्रेषित"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"स्वत:-समन्वयन चालू करें?"</string>
-    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"आपके द्वारा न केवल Gmail में, बल्कि सभी एप्स और खातों में किए जाने वाले बदलाव, वेब, आपके अन्य उपकरणों, और आपके <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> के बीच समन्वयित किए जाएंगे."</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"आपके द्वारा न केवल Gmail में, बल्कि सभी ऐप्स  और खातों में किए जाने वाले बदलाव, वेब, आपके अन्य उपकरणों, और आपके <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> के बीच समन्वयित किए जाएंगे."</string>
     <string name="phone" msgid="5171715391553213328">"फ़ोन"</string>
     <string name="tablet" msgid="7956969657216748522">"टेबलेट"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"चालू करें"</string>
@@ -412,38 +412,21 @@
     <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> अनुलग्नक"</item>
   </plurals>
     <string name="no_subject" msgid="7823949839148118599">"(कोई विषय नहीं)"</string>
-    <!-- no translation found for vacation_responder (145292667520371875) -->
-    <skip />
-    <!-- no translation found for preferences_vacation_responder_title (5775829187605350564) -->
-    <skip />
-    <!-- no translation found for vacation_responder_body_hint_text (5731550117332146705) -->
-    <skip />
-    <!-- no translation found for send_to_contacts_text (2696513899649703420) -->
-    <skip />
-    <!-- no translation found for send_to_domain_text (5055332409482662383) -->
-    <skip />
-    <!-- no translation found for pick_start_date_title (915230000170560933) -->
-    <skip />
-    <!-- no translation found for pick_end_date_title (2068598706186320098) -->
-    <skip />
-    <!-- no translation found for date_not_set (4925325938525330766) -->
-    <skip />
-    <!-- no translation found for set_end_date_dialog_title (72028456826019380) -->
-    <skip />
-    <!-- no translation found for custom_date (7566383722092597487) -->
-    <skip />
-    <!-- no translation found for date_none (1033448683454519235) -->
-    <skip />
-    <!-- no translation found for discard_changes (57677638191085556) -->
-    <skip />
-    <!-- no translation found for vacation_responder_changes_saved (7996997204497945275) -->
-    <skip />
-    <!-- no translation found for vacation_responder_changes_discarded (5699324320463227712) -->
-    <skip />
-    <!-- no translation found for vacation_responder_off (3502054743467746285) -->
-    <skip />
-    <!-- no translation found for vacation_responder_on (5242690599331655563) -->
-    <skip />
-    <!-- no translation found for vacation_responder_on_with_end_date (8198920866703798811) -->
-    <skip />
+    <string name="vacation_responder" msgid="145292667520371875">"अवकाश प्रतिसाददाता"</string>
+    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"अवकाश प्रतिसाददाता"</string>
+    <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"संदेश"</string>
+    <string name="send_to_contacts_text" msgid="2696513899649703420">"केवल मेरे संपर्कों को भेजें"</string>
+    <string name="send_to_domain_text" msgid="5055332409482662383">"केवल <xliff:g id="DOMAIN">%1$s</xliff:g> को भेजें"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"प्रारंभ"</string>
+    <string name="pick_end_date_title" msgid="2068598706186320098">"समाप्ति (वैकल्पिक)"</string>
+    <string name="date_not_set" msgid="4925325938525330766">"सेट नहीं है"</string>
+    <string name="set_end_date_dialog_title" msgid="72028456826019380">"समाप्ति दिनांक (वैकल्पिक)"</string>
+    <string name="custom_date" msgid="7566383722092597487">"कस्टम"</string>
+    <string name="date_none" msgid="1033448683454519235">"कोई नहीं"</string>
+    <string name="discard_changes" msgid="57677638191085556">"बदलाव छोड़ें?"</string>
+    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"अवकाश प्रतिसाददाता बदलावों को सहेजा गया"</string>
+    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"अवकाश प्रतिसाददाता बदलावों को छोड़ा गया"</string>
+    <string name="vacation_responder_off" msgid="3502054743467746285">"बंद"</string>
+    <string name="vacation_responder_on" msgid="5242690599331655563">"चालू, <xliff:g id="DATE">%1$s</xliff:g> से"</string>
+    <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"चालू, <xliff:g id="START_DATE">%1$s</xliff:g> से <xliff:g id="END_DATE">%2$s</xliff:g> तक"</string>
 </resources>
