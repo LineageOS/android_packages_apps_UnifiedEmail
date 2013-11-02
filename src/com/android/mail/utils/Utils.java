@@ -1457,10 +1457,8 @@ public class Utils {
      * given parentString.
      */
     public static Spanned insertStringWithStyle(Context context,
-            int parentStringId, int subStringId, int appearance) {
+            String entireString, String subString, int appearance) {
         final Resources resources = context.getResources();
-        final String subString = resources.getString(subStringId);
-        final String entireString = resources.getString(parentStringId, subString);
         final int index = entireString.indexOf(subString);
         final SpannableString descriptionText = new SpannableString(entireString);
         descriptionText.setSpan(
