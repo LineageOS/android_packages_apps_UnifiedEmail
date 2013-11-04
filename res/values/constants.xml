@@ -126,4 +126,9 @@
 
     <!-- True if messages should show inline images by default. -->
     <bool name="always_show_images_default">false</bool>
+
+    <!-- Number of characters allowed for a vacation responder subject. -->
+    <integer name="vacation_responder_subject_length">500</integer>
+    <!-- Number of characters allowed for a vacation responder body. -->
+    <integer name="vacation_responder_body_length">1024000</integer>
 </resources>
