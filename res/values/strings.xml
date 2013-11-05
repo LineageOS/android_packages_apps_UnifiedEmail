@@ -1009,6 +1009,9 @@
     <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
             when the vacation responder is on and has both a start and end date set. [CHAR LIMIT=50]-->
     <string name="vacation_responder_on_with_end_date">On, from <xliff:g id="start-date">%1$s</xliff:g> to <xliff:g id="end-date">%2$s</xliff:g></string>
+    <!-- Informs the user that both the subject and body of the vacation responder are empty
+         when they try to enable the responder. [CHAR LIMIT=50]-->
+    <string name="vacation_responder_empty_subject_and_body_warning">Add a subject or message</string>
 
     <!-- Content description for the attach button that appears in compose for tablet layouts.
          This is not to be confused with the menu items, this is an actual button in the layout.

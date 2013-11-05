@@ -70,9 +70,24 @@
 
         </LinearLayout>
 
-        <include layout="@layout/compose_subject" />
+        <RelativeLayout style="@style/ComposeFieldLayout">
+            <!-- Subject: localization cannot control what field pressing tab
+                 will bring the user to. This is controlled at runtime.  -->
+            <com.android.mail.compose.EnterSubject
+                    android:id="@+id/subject"
+                    style="@style/VacationResponderSubject" />
+        </RelativeLayout>
 
-        <include layout="@layout/compose_body" />
+        <RelativeLayout android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:id="@+id/body_wrapper"
+                        style="@style/ComposeFieldLayout">
+
+            <EditText android:id="@+id/body"
+                      android:hint="@string/vacation_responder_body_hint_text"
+                      style="@style/VacationResponderBody" />
+
+        </RelativeLayout>
 
         <CheckedTextView android:id="@+id/checkbox_send_to_contacts"
                          android:text="@string/send_to_contacts_text"
