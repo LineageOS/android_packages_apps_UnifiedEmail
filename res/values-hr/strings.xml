@@ -210,7 +210,7 @@
     <string name="add_label" msgid="6060201715848652940">"Dodaj mapu"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Pokaži nove poruke pošiljatelja <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="1018949581192786598">"Pokaži ovoliko novih poruka: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
+    <item quantity="other" msgid="1018949581192786598">"Pokaži sljedeći broj novih poruka: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Proširi podatke o primatelju"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Sažmi podatke o primatelju"</string>

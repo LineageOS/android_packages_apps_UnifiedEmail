@@ -415,8 +415,8 @@
     <string name="vacation_responder" msgid="145292667520371875">"Vakansieantwoorder"</string>
     <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"Vakansieantwoorder"</string>
     <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"Boodskap"</string>
-    <string name="send_to_contacts_text" msgid="2696513899649703420">"Stuur net vir my Kontakte"</string>
-    <string name="send_to_domain_text" msgid="5055332409482662383">"Stuur net vir <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
+    <string name="send_to_contacts_text" msgid="2696513899649703420">"Stuur net na my Kontakte"</string>
+    <string name="send_to_domain_text" msgid="5055332409482662383">"Stuur net na <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
     <string name="pick_start_date_title" msgid="915230000170560933">"Begin"</string>
     <string name="pick_end_date_title" msgid="2068598706186320098">"Eindig (opsioneel)"</string>
     <string name="date_not_set" msgid="4925325938525330766">"Nie gestel nie"</string>

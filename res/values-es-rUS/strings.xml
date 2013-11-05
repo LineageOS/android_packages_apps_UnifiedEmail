@@ -417,7 +417,7 @@
     <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"Mensaje"</string>
     <string name="send_to_contacts_text" msgid="2696513899649703420">"Enviar solo a mis contactos"</string>
     <string name="send_to_domain_text" msgid="5055332409482662383">"Enviar solo a <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
-    <string name="pick_start_date_title" msgid="915230000170560933">"Comienzo"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"Inicio"</string>
     <string name="pick_end_date_title" msgid="2068598706186320098">"Fin (opcional)"</string>
     <string name="date_not_set" msgid="4925325938525330766">"Sin establecer"</string>
     <string name="set_end_date_dialog_title" msgid="72028456826019380">"Fecha de finalización (opcional)"</string>
