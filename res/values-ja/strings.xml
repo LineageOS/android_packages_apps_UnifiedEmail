@@ -418,9 +418,9 @@
     <string name="send_to_contacts_text" msgid="2696513899649703420">"連絡先にのみ送信"</string>
     <string name="send_to_domain_text" msgid="5055332409482662383">"<xliff:g id="DOMAIN">%1$s</xliff:g>にのみ送信"</string>
     <string name="pick_start_date_title" msgid="915230000170560933">"開始日"</string>
-    <string name="pick_end_date_title" msgid="2068598706186320098">"終了日（オプション）"</string>
+    <string name="pick_end_date_title" msgid="2068598706186320098">"終了日（省略可）"</string>
     <string name="date_not_set" msgid="4925325938525330766">"未設定"</string>
-    <string name="set_end_date_dialog_title" msgid="72028456826019380">"終了日（オプション）"</string>
+    <string name="set_end_date_dialog_title" msgid="72028456826019380">"終了日（省略可）"</string>
     <string name="custom_date" msgid="7566383722092597487">"カスタム"</string>
     <string name="date_none" msgid="1033448683454519235">"未設定"</string>
     <string name="discard_changes" msgid="57677638191085556">"変更を破棄しますか？"</string>

@@ -208,7 +208,7 @@
     <string name="search_unsupported" msgid="4654227193354052607">"Функція пошуку в цьому обліковому записі не підтримується."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Пошук..."</string>
     <string name="add_label" msgid="6060201715848652940">"Додати папку"</string>
-    <string name="new_incoming_messages_one" msgid="827152289636155810">"Показати нове повідомлення (від <xliff:g id="SENDER">%s</xliff:g>)."</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"Показати нове повідомлення (автор <xliff:g id="SENDER">%s</xliff:g>)."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Показати нові повідомлення (<xliff:g id="COUNT">%1$d</xliff:g>)."</item>
   </plurals>
@@ -421,7 +421,7 @@
     <string name="pick_end_date_title" msgid="2068598706186320098">"Кінець (необов’язково)"</string>
     <string name="date_not_set" msgid="4925325938525330766">"Не встановлено"</string>
     <string name="set_end_date_dialog_title" msgid="72028456826019380">"Дата кінця (необов’язково)"</string>
-    <string name="custom_date" msgid="7566383722092597487">"Спеціальна"</string>
+    <string name="custom_date" msgid="7566383722092597487">"Вибрати"</string>
     <string name="date_none" msgid="1033448683454519235">"Немає"</string>
     <string name="discard_changes" msgid="57677638191085556">"Відхилити зміни?"</string>
     <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"Зміни до автоматичної відповіді збережено"</string>
