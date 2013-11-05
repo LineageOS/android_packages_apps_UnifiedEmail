@@ -208,9 +208,10 @@
     <string name="search_unsupported" msgid="4654227193354052607">"Căutarea nu este acceptată pentru acest cont."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Se caută..."</string>
     <string name="add_label" msgid="6060201715848652940">"Adăugați un dosar"</string>
-    <!-- no translation found for new_incoming_messages_one (827152289636155810) -->
-    <skip />
-    <!-- no translation found for new_incoming_messages_many:other (1018949581192786598) -->
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"Afișați mesajul nou de la <xliff:g id="SENDER">%s</xliff:g>."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="1018949581192786598">"Afișați <xliff:g id="COUNT">%1$d</xliff:g> (de) mesaje noi."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Extindeţi detaliile destinatarului"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Restrângeţi detaliile destinatarului"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Afişaţi informaţiile de contact pentru <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -411,38 +412,21 @@
     <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> (de) atașamente"</item>
   </plurals>
     <string name="no_subject" msgid="7823949839148118599">"(fără subiect)"</string>
-    <!-- no translation found for vacation_responder (145292667520371875) -->
-    <skip />
-    <!-- no translation found for preferences_vacation_responder_title (5775829187605350564) -->
-    <skip />
-    <!-- no translation found for vacation_responder_body_hint_text (5731550117332146705) -->
-    <skip />
-    <!-- no translation found for send_to_contacts_text (2696513899649703420) -->
-    <skip />
-    <!-- no translation found for send_to_domain_text (5055332409482662383) -->
-    <skip />
-    <!-- no translation found for pick_start_date_title (915230000170560933) -->
-    <skip />
-    <!-- no translation found for pick_end_date_title (2068598706186320098) -->
-    <skip />
-    <!-- no translation found for date_not_set (4925325938525330766) -->
-    <skip />
-    <!-- no translation found for set_end_date_dialog_title (72028456826019380) -->
-    <skip />
-    <!-- no translation found for custom_date (7566383722092597487) -->
-    <skip />
-    <!-- no translation found for date_none (1033448683454519235) -->
-    <skip />
-    <!-- no translation found for discard_changes (57677638191085556) -->
-    <skip />
-    <!-- no translation found for vacation_responder_changes_saved (7996997204497945275) -->
-    <skip />
-    <!-- no translation found for vacation_responder_changes_discarded (5699324320463227712) -->
-    <skip />
-    <!-- no translation found for vacation_responder_off (3502054743467746285) -->
-    <skip />
-    <!-- no translation found for vacation_responder_on (5242690599331655563) -->
-    <skip />
-    <!-- no translation found for vacation_responder_on_with_end_date (8198920866703798811) -->
-    <skip />
+    <string name="vacation_responder" msgid="145292667520371875">"Răspuns automat"</string>
+    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"Răspuns automat"</string>
+    <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"Mesaj"</string>
+    <string name="send_to_contacts_text" msgid="2696513899649703420">"Trimiteți doar persoanelor din Agendă"</string>
+    <string name="send_to_domain_text" msgid="5055332409482662383">"Trimiteți doar pe <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"Începe"</string>
+    <string name="pick_end_date_title" msgid="2068598706186320098">"Încetează (opțional)"</string>
+    <string name="date_not_set" msgid="4925325938525330766">"Nesetată"</string>
+    <string name="set_end_date_dialog_title" msgid="72028456826019380">"Data încetării (opțional)"</string>
+    <string name="custom_date" msgid="7566383722092597487">"Particularizată"</string>
+    <string name="date_none" msgid="1033448683454519235">"Niciuna"</string>
+    <string name="discard_changes" msgid="57677638191085556">"Renunțați la modificări?"</string>
+    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"Modificările răspunsului automat au fost salvate"</string>
+    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"Modificările răspunsului automat au fost șterse"</string>
+    <string name="vacation_responder_off" msgid="3502054743467746285">"Dezactivat"</string>
+    <string name="vacation_responder_on" msgid="5242690599331655563">"Activ, de la <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Activ, de la <xliff:g id="START_DATE">%1$s</xliff:g> până la <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
 </resources>

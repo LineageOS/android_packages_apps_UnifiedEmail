@@ -422,7 +422,7 @@
     <string name="date_not_set" msgid="4925325938525330766">"არ არის დაყენებული"</string>
     <string name="set_end_date_dialog_title" msgid="72028456826019380">"დასრულების თარიღი (არასავალდებულო)"</string>
     <string name="custom_date" msgid="7566383722092597487">"მორგებული"</string>
-    <string name="date_none" msgid="1033448683454519235">"არც ერთი"</string>
+    <string name="date_none" msgid="1033448683454519235">"არცერთი"</string>
     <string name="discard_changes" msgid="57677638191085556">"გაუქმდეს ცვლილებები?"</string>
     <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"შვებულების ავტომოპასუხის ცვლილებები შენახულია"</string>
     <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"შვებულების ავტომოპასუხის ცვლილებები გაუქმდა"</string>

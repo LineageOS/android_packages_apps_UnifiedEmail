@@ -416,7 +416,7 @@
     <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"Αυτόματη απάντηση"</string>
     <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"Μήνυμα"</string>
     <string name="send_to_contacts_text" msgid="2696513899649703420">"Αποστολή μόνο στις Επαφές μου"</string>
-    <string name="send_to_domain_text" msgid="5055332409482662383">"Αποστολή μόνο στον τομέα <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
+    <string name="send_to_domain_text" msgid="5055332409482662383">"Αποστολή μόνο στο <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
     <string name="pick_start_date_title" msgid="915230000170560933">"Έναρξη"</string>
     <string name="pick_end_date_title" msgid="2068598706186320098">"Λήξη (Προαιρετικό)"</string>
     <string name="date_not_set" msgid="4925325938525330766">"Δεν ορίστηκε"</string>
