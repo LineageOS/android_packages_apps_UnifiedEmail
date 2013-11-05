@@ -760,6 +760,14 @@
         <item name="android:paddingRight">@dimen/vacation_responder_inner_padding</item>
     </style>
 
+    <style name="VacationResponderSubject" parent="ComposeSubjectView">
+        <item name="android:maxLength">@integer/vacation_responder_subject_length</item>
+    </style>
+
+    <style name="VacationResponderBody" parent="ComposeBodyView">
+        <item name="android:maxLength">@integer/vacation_responder_body_length</item>
+    </style>
+
     <!-- Overridden in v19 -->
     <style name="ToastButtonStyle">
         <item name="android:background">?android:attr/selectableItemBackground</item>
