@@ -421,7 +421,7 @@
     <string name="pick_end_date_title" msgid="2068598706186320098">"Baigiasi (pasirenkama)"</string>
     <string name="date_not_set" msgid="4925325938525330766">"Nenustatyta"</string>
     <string name="set_end_date_dialog_title" msgid="72028456826019380">"Pabaigos data (pasirenkama)"</string>
-    <string name="custom_date" msgid="7566383722092597487">"Pasirinktinė"</string>
+    <string name="custom_date" msgid="7566383722092597487">"Tinkinta"</string>
     <string name="date_none" msgid="1033448683454519235">"Nėra"</string>
     <string name="discard_changes" msgid="57677638191085556">"Atmesti pakeitimus?"</string>
     <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"Atsakymų laisvadieniais pakeitimai išsaugoti"</string>

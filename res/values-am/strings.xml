@@ -420,7 +420,7 @@
     <string name="pick_start_date_title" msgid="915230000170560933">"የሚጀምረው"</string>
     <string name="pick_end_date_title" msgid="2068598706186320098">"ማብቂያ (አስገዳጅ ያልሆነ)"</string>
     <string name="date_not_set" msgid="4925325938525330766">"አልተዘጋጀም"</string>
-    <string name="set_end_date_dialog_title" msgid="72028456826019380">"ማብቂያ (አስገዳጅ ያልሆነ)"</string>
+    <string name="set_end_date_dialog_title" msgid="72028456826019380">"ማብቂያ ቀን(አስገዳጅ ያልሆነ)"</string>
     <string name="custom_date" msgid="7566383722092597487">"ብጁ"</string>
     <string name="date_none" msgid="1033448683454519235">"የለም"</string>
     <string name="discard_changes" msgid="57677638191085556">"ለውጦች ይወገዱ?"</string>
