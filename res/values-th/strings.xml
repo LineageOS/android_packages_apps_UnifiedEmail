@@ -429,4 +429,6 @@
     <string name="vacation_responder_off" msgid="3502054743467746285">"ปิด"</string>
     <string name="vacation_responder_on" msgid="5242690599331655563">"เปิด ตั้งแต่ <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"เปิด ตั้งแต่ <xliff:g id="START_DATE">%1$s</xliff:g> ถึง <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
+    <!-- no translation found for vacation_responder_empty_subject_and_body_warning (2344675863430827845) -->
+    <skip />
 </resources>
