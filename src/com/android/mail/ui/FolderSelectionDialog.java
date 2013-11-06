@@ -76,6 +76,8 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
         sDialogShown = false;
     }
 
+    // TODO: use a loader instead
+    @Deprecated
     protected abstract void updateAdapterInBackground(Context context);
 
     protected abstract void onListItemClick(int position);
@@ -98,7 +100,8 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
 
     public void show() {
         sDialogShown = true;
-        mRunner.execute();
+        // TODO: use a loader instead
+        mRunner.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     protected void showInternal() {
@@ -121,6 +124,8 @@ public abstract class FolderSelectionDialog implements OnClickListener, OnDismis
      * Class to query the Folder list database in the background and update the
      * adapter with an open cursor.
      */
+    // TODO: use a loader instead
+    @Deprecated
     private class QueryRunner extends AsyncTask<Void, Void, Void> {
         private final Context mContext;
 
