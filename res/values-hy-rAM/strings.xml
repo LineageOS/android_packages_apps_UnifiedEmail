@@ -429,4 +429,6 @@
     <string name="vacation_responder_off" msgid="3502054743467746285">"Անջատված"</string>
     <string name="vacation_responder_on" msgid="5242690599331655563">"Միացված է <xliff:g id="DATE">%1$s</xliff:g>-ից"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Միացված է <xliff:g id="START_DATE">%1$s</xliff:g>-ից <xliff:g id="END_DATE">%2$s</xliff:g>-ը"</string>
+    <!-- no translation found for vacation_responder_empty_subject_and_body_warning (2344675863430827845) -->
+    <skip />
 </resources>
