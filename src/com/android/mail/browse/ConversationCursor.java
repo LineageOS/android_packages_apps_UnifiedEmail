@@ -1951,6 +1951,11 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     }
 
     @Override
+    public Uri getNotificationUri() {
+        return null;
+    }
+
+    @Override
     public boolean getWantsAllOnMoveCalls() {
         throw new UnsupportedOperationException();
     }
