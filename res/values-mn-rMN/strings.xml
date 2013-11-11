@@ -429,6 +429,5 @@
     <string name="vacation_responder_off" msgid="3502054743467746285">"Идэвхгүй"</string>
     <string name="vacation_responder_on" msgid="5242690599331655563">"Идэвхтэй, <xliff:g id="DATE">%1$s</xliff:g>-с эхлэн"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Идэвхтэй, <xliff:g id="START_DATE">%1$s</xliff:g>-с <xliff:g id="END_DATE">%2$s</xliff:g> хүртэл"</string>
-    <!-- no translation found for vacation_responder_empty_subject_and_body_warning (2344675863430827845) -->
-    <skip />
+    <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Гарчиг буюу зурвас нэмнэ үү"</string>
 </resources>

@@ -366,7 +366,7 @@
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Fai scorrere verso il basso per aggiornare"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Controllo della posta"</string>
     <string name="empty_trash" msgid="652435297593538512">"Svuota cestino"</string>
-    <string name="empty_spam" msgid="6064497180615519589">"Cartella spam vuota"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"Svuota cartella spam"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Svuotare il cestino?"</string>
     <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Svuotare la cartella spam?"</string>
   <plurals name="empty_folder_dialog_message">
@@ -429,6 +429,5 @@
     <string name="vacation_responder_off" msgid="3502054743467746285">"Non attivo"</string>
     <string name="vacation_responder_on" msgid="5242690599331655563">"Attivo, dal <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Attivo, dal <xliff:g id="START_DATE">%1$s</xliff:g> al <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
-    <!-- no translation found for vacation_responder_empty_subject_and_body_warning (2344675863430827845) -->
-    <skip />
+    <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Aggiungi un oggetto o un messaggio"</string>
 </resources>
