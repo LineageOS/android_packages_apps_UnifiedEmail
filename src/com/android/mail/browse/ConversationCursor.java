@@ -1954,10 +1954,6 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         }
     }
 
-    public Uri getNotificationUri() {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public void setNotificationUri(ContentResolver cr, Uri uri) {
         throw new UnsupportedOperationException();
