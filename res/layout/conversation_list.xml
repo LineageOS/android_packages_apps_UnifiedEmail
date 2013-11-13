@@ -24,31 +24,28 @@
 
     <include layout="@layout/search_results_view"/>
 
-    <com.android.mail.ui.ConversationListView
-        android:id="@+id/conversation_list"
+    <!-- Note: intentionally not called "empty" because we call
+             setEmptyView programmatically-->
+    <!-- Offset by height of undo bar and action bar -->
+    <com.android.mail.ui.EmptyConversationListView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/no_conversations"
+        android:layout_marginTop="@dimen/empty_view_top_padding"
+        android:visibility="gone" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <!-- Note: intentionally not called "empty" because we call
-             setEmptyView programmatically-->
-        <!-- Offset by height of undo bar and action bar -->
-        <com.android.mail.ui.EmptyConversationListView
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/no_conversations"
-            android:layout_marginTop="@dimen/empty_view_top_padding"
-            android:visibility="gone" />
-
         <com.android.mail.ui.SwipeableListView android:id="@android:id/list"
             style="@style/ConversationListFade"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fadingEdge="none"
             android:layout_alignParentTop="true"/>
-
-    </com.android.mail.ui.ConversationListView>
-
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
