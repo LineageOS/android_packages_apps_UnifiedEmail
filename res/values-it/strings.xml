@@ -367,7 +367,7 @@
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Fai scorrere verso il basso per aggiornare"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Controllo della posta"</string>
     <string name="empty_trash" msgid="652435297593538512">"Svuota cestino"</string>
-    <string name="empty_spam" msgid="6064497180615519589">"Cartella spam vuota"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"Svuota cartella spam"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Svuotare il cestino?"</string>
     <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Svuotare la cartella spam?"</string>
   <plurals name="empty_folder_dialog_message">
