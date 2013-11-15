@@ -46,6 +46,7 @@ import android.widget.Button;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationContainer.OverlayPosition;
 import com.android.mail.browse.ConversationMessage;
@@ -502,12 +503,29 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         if (!userVisible) {
             mProgressController.dismissLoadingStatus();
         } else if (mViewsCreated) {
+            String loadTag = null;
+            final boolean isInitialLoading = mActivity.getConversationUpdater()
+                    .isInitialConversationLoading();
+
             if (getMessageCursor() != null) {
                 LogUtils.d(LOG_TAG, "Fragment is now user-visible, onConversationSeen: %s", this);
+                if (!isInitialLoading) {
+                    loadTag = "preloaded";
+                }
                 onConversationSeen();
             } else if (isLoadWaiting()) {
                 LogUtils.d(LOG_TAG, "Fragment is now user-visible, showing conversation: %s", this);
+                if (!isInitialLoading) {
+                    loadTag = "load_deferred";
+                }
                 handleDelayedConversationLoad();
+            }
+
+            if (loadTag != null) {
+                // pager swipes are visibility transitions to 'visible' except during initial
+                // pager load on A) enter conversation mode B) rotate C) 2-pane conv-mode list-tap
+              Analytics.getInstance().sendEvent("pager_swipe", loadTag,
+                      getCurrentFolderTypeDesc(), 0);
             }
         }
 

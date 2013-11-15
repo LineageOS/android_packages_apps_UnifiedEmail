@@ -2159,16 +2159,37 @@ public class UIProvider {
             final int autoAdvance;
 
             if (AUTO_ADVANCE_MODE_NEWER.equals(autoAdvanceSetting)) {
-                autoAdvance = UIProvider.AutoAdvance.NEWER;
+                autoAdvance = NEWER;
             } else if (AUTO_ADVANCE_MODE_OLDER.equals(autoAdvanceSetting)) {
-                autoAdvance = UIProvider.AutoAdvance.OLDER;
+                autoAdvance = OLDER;
             } else if (AUTO_ADVANCE_MODE_LIST.equals(autoAdvanceSetting)) {
-                autoAdvance = UIProvider.AutoAdvance.LIST;
+                autoAdvance = LIST;
             } else {
-                autoAdvance = UIProvider.AutoAdvance.UNSET;
+                autoAdvance = UNSET;
             }
 
             return autoAdvance;
+        }
+
+        public static String getAutoAdvanceStr(int autoAdvance) {
+            final String str;
+
+            switch (autoAdvance) {
+                case OLDER:
+                    str = AUTO_ADVANCE_MODE_OLDER;
+                    break;
+                case NEWER:
+                    str = AUTO_ADVANCE_MODE_NEWER;
+                    break;
+                case LIST:
+                    str = AUTO_ADVANCE_MODE_LIST;
+                    break;
+                default:
+                    str = "unset";
+                    break;
+            }
+
+            return str;
         }
     }
 

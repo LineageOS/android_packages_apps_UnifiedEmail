@@ -45,6 +45,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.CursorStatus;
@@ -109,6 +110,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     private boolean mHasConversationBeenTransformed;
     private boolean mHasConversationTransformBeenReverted;
+
+    protected boolean mConversationSeen = false;
 
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
@@ -516,6 +519,31 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         });
     }
 
+    /**
+     * @see Folder#getTypeDescription()
+     */
+    protected String getCurrentFolderTypeDesc() {
+        final Folder currFolder;
+        if (mActivity != null) {
+            currFolder = mActivity.getFolderController().getFolder();
+        } else {
+            currFolder = null;
+        }
+        final String folderStr;
+        if (currFolder != null) {
+            folderStr = currFolder.getTypeDescription();
+        } else {
+            folderStr = "unknown_folder";
+        }
+        return folderStr;
+    }
+
+    private void logConversationView() {
+      final String folderStr = getCurrentFolderTypeDesc();
+      Analytics.getInstance().sendEvent("view_conversation", folderStr,
+              mConversation.isRemote ? "unsynced" : "synced", mConversation.getNumMessages());
+    }
+
     protected void onConversationSeen() {
         LogUtils.d(LOG_TAG, "AbstractConversationViewFragment#onConversationSeen()");
 
@@ -524,6 +552,13 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         if (activity == null) {
             LogUtils.w(LOG_TAG, "ignoring onConversationSeen for conv=%s", mConversation.id);
             return;
+        }
+
+        // this method is called 2x on rotation; debounce this a bit so as not to
+        // dramatically skew analytics data too much. Ideally, it should be called zero times
+        // on rotation...
+        if (!mConversationSeen) {
+            logConversationView();
         }
 
         mViewState.setInfoForConversation(mConversation);
@@ -557,6 +592,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             }
         }
         activity.getListHandler().onConversationSeen();
+
+        mConversationSeen = true;
     }
 
     protected ConversationViewState getNewViewState() {

@@ -93,6 +93,8 @@ public class AnalyticsUtils {
             s = "mark_unread";
         } else if (id == R.id.show_original) {
             s = "show_original";
+        } else if (id == R.id.add_file_attachment) {
+            s = "add_file_attachment";
         } else if (id == R.id.add_photo_attachment) {
             s = "add_photo_attachment";
         } else if (id == R.id.add_cc_bcc) {
@@ -105,6 +107,38 @@ public class AnalyticsUtils {
             s = "compose_discard_draft";
         } else if (id == R.id.search) {
             s = "search";
+        } else if (id == R.id.print_all) {
+            s = "print_all";
+        } else if (id == R.id.print_message) {
+            s = "print_message";
+        } else if (id == R.id.star) {
+            s = "star";
+        } else if (id == R.id.remove_star) {
+            s = "unstar";
+        } else if (id == R.id.reply) {
+            s = "reply";
+        } else if (id == R.id.reply_all) {
+            s = "reply_all";
+        } else if (id == R.id.forward) {
+            s = "forward";
+        } else if (id == R.id.edit_draft) {
+            s = "edit_draft";
+        } else if (id == R.id.details_collapsed_content) {
+            s = "expand_message_details";
+        } else if (id == R.id.details_expanded_content) {
+            s = "collapse_message_details";
+        } else if (id == R.id.upper_header) {
+            s = "message_upper_header";
+        } else if (id == R.id.download_again || id == R.id.menu_download_again) {
+            s = "download_again";
+        } else if (id == R.id.menu_save) {
+            s = "photo_save";
+        } else if (id == R.id.menu_save_all) {
+            s = "photo_save_all";
+        } else if (id == R.id.menu_share) {
+            s = "photo_share";
+        } else if (id == R.id.menu_share_all) {
+            s = "photo_share_all";
         } else {
             s = null;
         }

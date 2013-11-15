@@ -48,6 +48,7 @@ import android.widget.Toast;
 import com.android.mail.ContactInfo;
 import com.android.mail.ContactInfoSource;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationViewAdapter.BorderItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.compose.ComposeActivity;
@@ -928,6 +929,12 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             LogUtils.i(LOG_TAG, "unrecognized header tap: %d", id);
             handled = false;
         }
+
+        if (handled && id != R.id.overflow) {
+            Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, id,
+                    "message_header", 0);
+        }
+
         return handled;
     }
 
