@@ -318,8 +318,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             final String folderDisplayName) {
         final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
 
-        final boolean isAccountValid = isAccountValid(context, account);
-        if (!isAccountValid || Utils.isEmpty(folderUri)) {
+        if (!isAccountValid(context, account) || !isFolderValid(context, folderUri)) {
             // Widget has not been configured yet
             remoteViews.setViewVisibility(R.id.widget_folder, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_account_noflip, View.GONE);
@@ -363,7 +362,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
     }
 
     protected boolean isFolderValid(Context context, Uri folderUri) {
-        if (folderUri != null) {
+        if (!Utils.isEmpty(folderUri)) {
             final Cursor folderCursor =
                     context.getContentResolver().query(folderUri,
                             UIProvider.FOLDERS_PROJECTION, null, null, null);

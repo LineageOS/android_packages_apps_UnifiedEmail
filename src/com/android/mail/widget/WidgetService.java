@@ -539,6 +539,10 @@ public class WidgetService extends RemoteViewsService {
 
             if (loader == mFolderLoader) {
                 if (!isDataValid(data)) {
+                    // Our folder may have disappeared on us
+                    BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
+                            mFolderUri, mFolderConversationListUri, mFolderDisplayName);
+
                     return;
                 }
 
