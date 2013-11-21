@@ -36,6 +36,7 @@ import com.android.ex.photo.PhotoViewActivity;
 import com.android.ex.photo.fragments.PhotoViewFragment;
 import com.android.ex.photo.views.ProgressBarWrapper;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
@@ -193,6 +194,10 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final int itemId = item.getItemId();
+
+        Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, itemId,
+                "photo_viewer", 0);
+
         if (itemId == android.R.id.home) {
             // app icon in action bar clicked; go back to conversation
             finish();

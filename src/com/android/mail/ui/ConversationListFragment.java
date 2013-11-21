@@ -884,6 +884,19 @@ public final class ConversationListFragment extends ListFragment implements
             saveLastScrolledPosition();
         }
 
+        // log the first cursor load. don't log on each updated cursor!
+        if (newCursor != null && (mListAdapter == null || mListAdapter.getCursor() == null)) {
+            // try to get an order-of-magnitude sense for message count within folders
+            final long countLog;
+            if (mFolder.totalCount > 0) {
+                countLog = Math.round(Math.log10(mFolder.totalCount));
+            } else {
+                countLog = 0;
+            }
+            Analytics.getInstance().sendEvent("view_folder", mFolder.getTypeDescription(),
+                    Long.toString(countLog), mFolder.totalCount);
+        }
+
         mListAdapter.swapCursor(newCursor);
         // When the conversation cursor is *updated*, we get back the same instance. In that
         // situation, CursorAdapter.swapCursor() silently returns, without forcing a

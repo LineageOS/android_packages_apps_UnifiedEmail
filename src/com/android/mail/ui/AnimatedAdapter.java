@@ -227,6 +227,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 (newAccount.settings.replyBehavior == UIProvider.DefaultReplyBehavior.REPLY)
                 ? "reply"
                 : "reply_all");
+        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_AUTO_ADVANCE,
+                UIProvider.AutoAdvance.getAutoAdvanceStr(
+                        newAccount.settings.getAutoAdvanceSetting()));
 
         return accountChanged;
     }
