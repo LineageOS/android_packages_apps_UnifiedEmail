@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"Napísať e-mail"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Pripojiť súbor"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Priložiť obrázok"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"Priložiť video"</string>
     <string name="save_draft" msgid="5555744208032445632">"Uložiť koncept"</string>
     <string name="discard" msgid="1714960202994370243">"Zahodiť"</string>
     <string name="compose" msgid="1473559896062432878">"Napísať správu"</string>

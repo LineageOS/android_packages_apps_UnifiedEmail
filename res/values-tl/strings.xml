@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"Bumuo ng email"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Mag-attach ng file"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Mag-attach larawan"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"Mag-attach ng Video"</string>
     <string name="save_draft" msgid="5555744208032445632">"I-save ang draft"</string>
     <string name="discard" msgid="1714960202994370243">"i-discard"</string>
     <string name="compose" msgid="1473559896062432878">"Bumuo"</string>
