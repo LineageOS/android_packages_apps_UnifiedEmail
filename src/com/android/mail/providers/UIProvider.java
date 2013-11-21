@@ -2281,6 +2281,11 @@ public class UIProvider {
          * to run.
          */
         public static final String EXTRA_UPDATED_UNREAD_COUNT = "notification_updated_unread_count";
+
+        /**
+         * Integer extra containing the update unseen count for the account/folder.
+         */
+        public static final String EXTRA_UPDATED_UNSEEN_COUNT = "notification_updated_unseen_count";
     }
 
     public static final class EditSettingsExtras {
