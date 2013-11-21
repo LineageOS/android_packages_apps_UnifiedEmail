@@ -504,8 +504,13 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             mProgressController.dismissLoadingStatus();
         } else if (mViewsCreated) {
             String loadTag = null;
-            final boolean isInitialLoading = mActivity.getConversationUpdater()
+            final boolean isInitialLoading;
+            if (mActivity != null) {
+                isInitialLoading = mActivity.getConversationUpdater()
                     .isInitialConversationLoading();
+            } else {
+                isInitialLoading = true;
+            }
 
             if (getMessageCursor() != null) {
                 LogUtils.d(LOG_TAG, "Fragment is now user-visible, onConversationSeen: %s", this);
