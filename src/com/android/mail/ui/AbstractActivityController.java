@@ -605,7 +605,7 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     private void attachActionBar() {
         final ActionBar actionBar = mActivity.getActionBar();
-        if (actionBar != null && mActionBarView != null) {
+        if (actionBar != null) {
             actionBar.setCustomView(mActionBarView, new ActionBar.LayoutParams(
                     LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
             // Show a custom view and home icon, keep the title and subttitle
@@ -613,7 +613,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     | ActionBar.DISPLAY_SHOW_HOME;
             actionBar.setDisplayOptions(mask, mask);
         }
-        mViewMode.addListener(mActionBarView);
+        mActionBarView.setViewModeController(mViewMode);
     }
 
     /**
