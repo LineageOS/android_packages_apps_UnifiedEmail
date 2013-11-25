@@ -305,7 +305,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     @Override
     public AccountPreferences getAccountPreferences() {
-        return AccountPreferences.get(getContext(), mAccount.name);
+        return AccountPreferences.get(getContext(), mAccount.getEmailAddress());
     }
 
     @Override

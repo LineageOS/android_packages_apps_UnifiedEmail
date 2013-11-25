@@ -642,7 +642,7 @@ public class NotificationUtils {
              */
             if (getAttention && oldWhen == 0) {
                 final AccountPreferences accountPreferences =
-                        new AccountPreferences(context, account.name);
+                        new AccountPreferences(context, account.getEmailAddress());
                 if (accountPreferences.areNotificationsEnabled()) {
                     if (vibrate) {
                         defaults |= Notification.DEFAULT_VIBRATE;
