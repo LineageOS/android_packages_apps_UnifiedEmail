@@ -48,8 +48,7 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
     private final int mWidth;
     private final int mHeight;
 
-    public static void setupThumbnailPreview(
-            ThumbnailLoadTask task, final AttachmentBitmapHolder holder,
+    public static void setupThumbnailPreview(final AttachmentBitmapHolder holder,
             final Attachment attachment, final Attachment prevAttachment) {
         final int width = holder.getThumbnailWidth();
         final int height = holder.getThumbnailHeight();
@@ -68,12 +67,7 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
         if ((thumbnailUri != null || contentUri != null)
                 && (holder.bitmapSetToDefault() ||
                 prevUri == null || !uri.equals(prevUri))) {
-            // cancel/dispose any existing task and start a new one
-            if (task != null) {
-                task.cancel(true);
-            }
-
-            task = new ThumbnailLoadTask(
+            final ThumbnailLoadTask task = new ThumbnailLoadTask(
                     holder, width, height);
             task.execute(thumbnailUri, contentUri);
         } else if (thumbnailUri == null && contentUri == null) {
