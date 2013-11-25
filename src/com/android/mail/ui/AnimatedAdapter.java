@@ -476,6 +476,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         if (list.isEmpty()) {
             // If we have no deleted items on screen, skip the animation
             listener.onListItemsRemoved();
+            // If we have an action queued up, perform it
+            performAndSetNextAction(null);
         } else {
             performAndSetNextAction(listener);
         }
