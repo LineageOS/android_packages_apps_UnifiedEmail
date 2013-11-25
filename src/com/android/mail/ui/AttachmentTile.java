@@ -47,7 +47,6 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     protected Attachment mAttachment;
     private ImageView mIcon;
     private ImageView mDefaultIcon;
-    private ThumbnailLoadTask mThumbnailTask;
     private TextView mTitle;
     private TextView mSubtitle;
     private String mAttachmentSizeText;
@@ -93,7 +92,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        ThumbnailLoadTask.setupThumbnailPreview(mThumbnailTask, this, mAttachment, null);
+        ThumbnailLoadTask.setupThumbnailPreview(this, mAttachment, null);
     }
 
     /**
@@ -132,7 +131,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
             updateSubtitleText();
         }
 
-        ThumbnailLoadTask.setupThumbnailPreview(mThumbnailTask, this, attachment, prevAttachment);
+        ThumbnailLoadTask.setupThumbnailPreview(this, attachment, prevAttachment);
     }
 
     private void updateSubtitleText() {
@@ -155,6 +154,8 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
             return;
         }
         mDefaultIcon.setVisibility(View.VISIBLE);
+        mTitle.setVisibility(View.VISIBLE);
+        mSubtitle.setVisibility(View.VISIBLE);
         mDefaultThumbnailSet = true;
     }
 
@@ -166,6 +167,8 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
 
         // We got a real thumbnail; hide the default thumbnail.
         mDefaultIcon.setVisibility(View.GONE);
+        mTitle.setVisibility(View.GONE);
+        mSubtitle.setVisibility(View.GONE);
 
         final int maxSize = getResources().getInteger(R.integer.attachment_preview_max_size);
         final int width = result.getWidth();
