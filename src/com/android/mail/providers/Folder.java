@@ -583,15 +583,18 @@ public class Folder implements Parcelable, Comparable<Folder> {
     @Override
     public String toString() {
         // log extra info at DEBUG level or finer
-        final StringBuilder sb = new StringBuilder("[folder id=");
+        final StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("{id=");
         sb.append(id);
         if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
             sb.append(", uri=");
             sb.append(folderUri);
             sb.append(", name=");
             sb.append(name);
+            sb.append(", count=");
+            sb.append(totalCount);
         }
-        sb.append("]");
+        sb.append("}");
         return sb.toString();
     }
 
@@ -758,6 +761,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
             desc = "trash";
         } else if (isType(FolderType.UNREAD)) {
             desc = "unread";
+        } else if (isType(FolderType.SEARCH)) {
+            desc = "search";
         } else if (isViewAll()) {
             desc = "all_mail";
         } else if (isProviderFolder()) {
