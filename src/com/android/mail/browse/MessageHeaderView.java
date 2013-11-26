@@ -16,7 +16,6 @@
 
 package com.android.mail.browse;
 
-import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
@@ -54,7 +53,6 @@ import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.LetterTileProvider;
-import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
@@ -99,13 +97,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
-    public static final int DEFAULT_MODE = 0;
-    public static final int POPUP_MODE = 1;
-
     // This is a debug only feature
     public static final boolean ENABLE_REPORT_RENDERING_PROBLEM = false;
-
-    private static final String DETAILS_DIALOG_TAG = "details-dialog";
 
     private MessageHeaderViewCallbacks mCallbacks;
 
@@ -201,10 +194,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
     private boolean mExpandable = true;
 
-    private int mExpandMode = DEFAULT_MODE;
-
-    private DialogFragment mDetailsPopup;
-
     private VeiledAddressMatcher mVeiledMatcher;
 
     private boolean mIsViewOnlyMode = false;
@@ -261,13 +250,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
                 R.dimen.message_header_contact_photo_width);
         mContactPhotoHeight = resources.getDimensionPixelSize(
                 R.dimen.message_header_contact_photo_height);
-    }
-
-    /**
-     * Expand mode is DEFAULT_MODE by default.
-     */
-    public void setExpandMode(int mode) {
-        mExpandMode = mode;
     }
 
     @Override
@@ -1078,22 +1060,14 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     }
 
     private void setMessageDetailsExpanded(boolean expand) {
-        if (mExpandMode == DEFAULT_MODE) {
-            if (expand) {
-                showExpandedDetails();
-                hideCollapsedDetails();
-            } else {
-                hideExpandedDetails();
-                showCollapsedDetails();
-            }
-        } else if (mExpandMode == POPUP_MODE) {
-            if (expand) {
-                showDetailsPopup();
-            } else {
-                hideDetailsPopup();
-                showCollapsedDetails();
-            }
+        if (expand) {
+            showExpandedDetails();
+            hideCollapsedDetails();
+        } else {
+            hideExpandedDetails();
+            showCollapsedDetails();
         }
+
         if (mMessageHeaderItem != null) {
             mMessageHeaderItem.detailsExpanded = expand;
         }
@@ -1416,24 +1390,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             spannable.removeSpan(span);
             span = new EmailAddressSpan(account, span.getURL().substring(7));
             spannable.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-    }
-
-    private void showDetailsPopup() {
-        final FragmentManager manager = mCallbacks.getFragmentManager();
-        mDetailsPopup = (DialogFragment) manager.findFragmentByTag(DETAILS_DIALOG_TAG);
-        if (mDetailsPopup == null) {
-            mDetailsPopup = MessageHeaderDetailsDialogFragment.newInstance(
-                    mAddressCache, getAccount(), mFrom, mReplyTo, mTo, mCc, mBcc,
-                    mMessageHeaderItem.getTimestampLong());
-            mDetailsPopup.show(manager, DETAILS_DIALOG_TAG);
-        }
-    }
-
-    private void hideDetailsPopup() {
-        if (mDetailsPopup != null) {
-            mDetailsPopup.dismiss();
-            mDetailsPopup = null;
         }
     }
 

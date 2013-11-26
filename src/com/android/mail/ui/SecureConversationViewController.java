@@ -122,7 +122,6 @@ public class SecureConversationViewController implements
         mDateBuilder = new FormattedDateBuilder(fragment.getActivity());
         mMessageHeaderView.initialize(
                 mCallbacks.getConversationAccountController(), mCallbacks.getAddressCache());
-        mMessageHeaderView.setExpandMode(MessageHeaderView.POPUP_MODE);
         mMessageHeaderView.setContactInfoSource(mCallbacks.getContactInfoSource());
         mMessageHeaderView.setCallbacks(this);
         mMessageHeaderView.setExpandable(false);
