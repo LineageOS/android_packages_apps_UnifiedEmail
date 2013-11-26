@@ -139,6 +139,8 @@ public class AnalyticsUtils {
             s = "photo_share";
         } else if (id == R.id.menu_share_all) {
             s = "photo_share_all";
+        } else if (id == R.id.show_pictures_text) {
+            s = "show_pictures";
         } else {
             s = null;
         }
