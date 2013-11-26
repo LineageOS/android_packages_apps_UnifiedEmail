@@ -605,7 +605,7 @@ public final class ConversationListFragment extends ListFragment implements
     public void onStart() {
         super.onStart();
         mHandler.postDelayed(mUpdateTimestampsRunnable, TIMESTAMP_UPDATE_INTERVAL);
-        Analytics.getInstance().sendView(getClass().getName());
+        Analytics.getInstance().sendView("ConversationListFragment");
     }
 
     @Override
@@ -649,6 +649,21 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setEmptyView(null);
         onFolderUpdated(mActivity.getFolderController().getFolder());
         onConversationListStatusUpdated();
+
+        // try to get an order-of-magnitude sense for message count within folders
+        // (N.B. this count currently isn't working for search folders, since their counts stream
+        // in over time in pieces.)
+        final Folder f = mViewContext.folder;
+        if (f != null) {
+            final long countLog;
+            if (f.totalCount > 0) {
+                countLog = (long) Math.log10(f.totalCount);
+            } else {
+                countLog = 0;
+            }
+            Analytics.getInstance().sendEvent("view_folder", f.getTypeDescription(),
+                    Long.toString(countLog), f.totalCount);
+        }
     }
 
     /**
@@ -882,19 +897,6 @@ public final class ConversationListFragment extends ListFragment implements
         if (newCursor == null && mListAdapter.getCursor() != null) {
             // We're losing our cursor, so save our scroll position
             saveLastScrolledPosition();
-        }
-
-        // log the first cursor load. don't log on each updated cursor!
-        if (newCursor != null && (mListAdapter == null || mListAdapter.getCursor() == null)) {
-            // try to get an order-of-magnitude sense for message count within folders
-            final long countLog;
-            if (mFolder.totalCount > 0) {
-                countLog = Math.round(Math.log10(mFolder.totalCount));
-            } else {
-                countLog = 0;
-            }
-            Analytics.getInstance().sendEvent("view_folder", mFolder.getTypeDescription(),
-                    Long.toString(countLog), mFolder.totalCount);
         }
 
         mListAdapter.swapCursor(newCursor);
