@@ -244,6 +244,8 @@
     <string name="menu_photo_share">Share</string>
     <!-- Photo view screen, button name. Share all attachments. [CHAR LIMIT=20] -->
     <string name="menu_photo_share_all">Share all</string>
+    <!-- Photo view screen, button name. Print photo. [CHAR LIMIT=20] -->
+    <string name="menu_photo_print">Print</string>
     <!-- Displayed in the action bar as a subtitle. Save in progress. [CHAR LIMIT=15] -->
     <string name="saving">Saving&#8230;</string>
 

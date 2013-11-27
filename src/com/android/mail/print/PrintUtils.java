@@ -71,6 +71,12 @@ public class PrintUtils {
         printHtml(context, msgHtml, baseUri, subject, useJavascript);
     }
 
+    public static String buildPrintJobName(Context context, String name) {
+        return TextUtils.isEmpty(name)
+                ? context.getString(R.string.app_name)
+                : context.getString(R.string.print_job_name, name);
+    }
+
     /**
      * Prints the html provided using the framework printing APIs.
      *
@@ -88,9 +94,7 @@ public class PrintUtils {
         final PrintManager printManager =
                 (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
 
-        final String printJobName = TextUtils.isEmpty(subject)
-                ? context.getString(R.string.app_name)
-                : context.getString(R.string.print_job_name, subject);
+        final String printJobName = buildPrintJobName(context, subject);
         printManager.print(printJobName,
                 webView.createPrintDocumentAdapter(),
                 new PrintAttributes.Builder().build());
