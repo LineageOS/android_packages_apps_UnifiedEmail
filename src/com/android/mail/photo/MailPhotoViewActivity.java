@@ -23,6 +23,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.print.PrintHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,14 +39,18 @@ import com.android.ex.photo.views.ProgressBarWrapper;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.AttachmentActionHandler;
+import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.AttachmentUtils;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,10 +59,14 @@ import java.util.List;
  * to the {@link ActionBar} from the default implementation.
  */
 public class MailPhotoViewActivity extends PhotoViewActivity {
+
+    private static final String LOG_TAG = LogTag.getLogTag();
+
     private MenuItem mSaveItem;
     private MenuItem mSaveAllItem;
     private MenuItem mShareItem;
     private MenuItem mShareAllItem;
+    private MenuItem mPrintItem;
     /**
      * Only for attachments that are currently downloading. Attachments that failed show the
      * retry button.
@@ -128,6 +137,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         mSaveAllItem = mMenu.findItem(R.id.menu_save_all);
         mShareItem = mMenu.findItem(R.id.menu_share);
         mShareAllItem = mMenu.findItem(R.id.menu_share_all);
+        mPrintItem = mMenu.findItem(R.id.menu_print);
         mDownloadAgainItem = mMenu.findItem(R.id.menu_download_again);
 
         return true;
@@ -146,13 +156,14 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      */
     @Override
     protected void updateActionItems() {
-        final boolean runningJellyBeanOrLater = Utils.isRunningJellybeanOrLater();
         final Attachment attachment = getCurrentAttachment();
 
         if (attachment != null && mSaveItem != null && mShareItem != null) {
             mSaveItem.setEnabled(!attachment.isDownloading()
                     && attachment.canSave() && !attachment.isSavedToExternal());
-            mShareItem.setEnabled(attachment.canShare());
+            final boolean canShare = attachment.canShare();
+            mShareItem.setEnabled(canShare);
+            mPrintItem.setEnabled(canShare);
             mDownloadAgainItem.setEnabled(attachment.canSave() && attachment.isDownloading());
         } else {
             if (mMenu != null) {
@@ -184,10 +195,15 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             mShareAllItem.setEnabled(enabled);
         }
 
-        // Turn off the functionality that only works on JellyBean.
-        if (!runningJellyBeanOrLater) {
+        // Turn off functionality that only works on JellyBean.
+        if (!Utils.isRunningJellybeanOrLater()) {
             mShareItem.setVisible(false);
             mShareAllItem.setVisible(false);
+        }
+
+        // Turn off functionality that only works on KitKat.
+        if (!Utils.isRunningKitkatOrLater()) {
+            mPrintItem.setVisible(false);
         }
     }
 
@@ -213,6 +229,9 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             return true;
         } else if (itemId == R.id.menu_share_all) { // share all of the photos
             shareAllAttachments();
+            return true;
+        } else if (itemId == R.id.menu_print) { // print the current photo
+            printAttachment();
             return true;
         } else if (itemId == R.id.menu_download_again) { // redownload the current photo
             redownloadAttachment();
@@ -386,6 +405,20 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         }
 
         mActionHandler.shareAttachments(uris);
+    }
+
+    private void printAttachment() {
+        final Attachment attachment = getCurrentAttachment();
+        final Context context = this;
+        final PrintHelper printHelper = new PrintHelper(context);
+        try {
+            printHelper.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+            printHelper.printBitmap(PrintUtils.buildPrintJobName(context, attachment.getName()),
+                    attachment.contentUri);
+        } catch (FileNotFoundException e) {
+            // couldn't print a photo at the particular Uri. Should we notify the user?
+            LogUtils.e(LOG_TAG, e, "Can't print photo");
+        }
     }
 
     /**
