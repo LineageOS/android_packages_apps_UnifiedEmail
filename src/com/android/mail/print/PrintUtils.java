@@ -56,6 +56,9 @@ public class PrintUtils {
     public static void printConversation(Context context,
             MessageCursor cursor, Map<String, Address> addressCache,
             String baseUri, boolean useJavascript) {
+        if (cursor == null) {
+            return;
+        }
         final String convHtml = buildConversationHtml(context, cursor,
                         addressCache, useJavascript);
         printHtml(context, convHtml, baseUri, cursor.getConversation().subject, useJavascript);
