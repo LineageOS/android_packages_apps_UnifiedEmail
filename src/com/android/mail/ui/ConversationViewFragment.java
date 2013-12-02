@@ -30,8 +30,6 @@ import android.os.SystemClock;
 import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.ScaleGestureDetector;
-import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
@@ -65,7 +63,6 @@ import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.content.ObjectCursor;
-import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
@@ -97,8 +94,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
-
-    private static final boolean ENABLE_CSS_ZOOM = false;
 
     /**
      * Difference in the height of the message header whose details have been expanded/collapsed
@@ -1088,17 +1083,11 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final boolean overviewMode = isOverviewMode(mAccount);
         final WebSettings settings = mWebView.getSettings();
         settings.setUseWideViewPort(overviewMode);
-
-        final OnScaleGestureListener listener;
-
         settings.setSupportZoom(overviewMode);
         settings.setBuiltInZoomControls(overviewMode);
         if (overviewMode) {
             settings.setDisplayZoomControls(false);
         }
-        listener = ENABLE_CSS_ZOOM && !overviewMode ? new CssScaleInterceptor() : null;
-
-        mWebView.setOnScaleGestureListener(listener);
     }
 
     public class ConversationWebViewClient extends AbstractConversationWebViewClient {
@@ -1582,39 +1571,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     public void setMessageDetailsExpanded(MessageHeaderItem i, boolean expanded,
             int heightBefore) {
         mDiff = (expanded ? 1 : -1) * Math.abs(i.getHeight() - heightBefore);
-    }
-
-    private class CssScaleInterceptor implements OnScaleGestureListener {
-
-        private float getFocusXWebPx(ScaleGestureDetector detector) {
-            return (detector.getFocusX() - mSideMarginPx) / mWebView.getInitialScale();
-        }
-
-        private float getFocusYWebPx(ScaleGestureDetector detector) {
-            return detector.getFocusY() / mWebView.getInitialScale();
-        }
-
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            mWebView.loadUrl(String.format("javascript:onScale(%s, %s, %s);",
-                    detector.getScaleFactor(), getFocusXWebPx(detector),
-                    getFocusYWebPx(detector)));
-            return false;
-        }
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            mWebView.loadUrl(String.format("javascript:onScaleBegin(%s, %s);",
-                    getFocusXWebPx(detector), getFocusYWebPx(detector)));
-            return true;
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            mWebView.loadUrl(String.format("javascript:onScaleEnd(%s, %s);",
-                    getFocusXWebPx(detector), getFocusYWebPx(detector)));
-        }
-
     }
 
     protected void printConversation() {
