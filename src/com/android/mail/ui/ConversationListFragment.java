@@ -26,6 +26,8 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +73,7 @@ import java.util.List;
  * The conversation list UI component.
  */
 public final class ConversationListFragment extends ListFragment implements
-        OnItemLongClickListener, ModeChangeListener, ListItemSwipedListener {
+        OnItemLongClickListener, ModeChangeListener, ListItemSwipedListener, OnRefreshListener {
     /** Key used to pass data to {@link ConversationListFragment}. */
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     /** Key used to keep track of the scroll state of the list. */
@@ -98,8 +100,6 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationListCallbacks mCallbacks;
 
     private final Handler mHandler = new Handler();
-
-    private ConversationListView mConversationListView;
 
     // The internal view objects.
     private SwipeableListView mListView;
@@ -155,6 +155,7 @@ public final class ConversationListFragment extends ListFragment implements
      * from when we were last on this conversation list.
      */
     private boolean mScrollPositionRestored = false;
+    private SwipeRefreshLayout mSwipeRefreshWidget;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity
@@ -205,10 +206,9 @@ public final class ConversationListFragment extends ListFragment implements
             mSearchResultCountTextView.setText("");
         }
         mSearchStatusView.setVisibility(showHeader ? View.VISIBLE : View.GONE);
-        int marginTop = showHeader ? (int) res.getDimension(R.dimen.notification_view_height) : 0;
-        MarginLayoutParams layoutParams = (MarginLayoutParams) mListView.getLayoutParams();
-        layoutParams.topMargin = marginTop;
-        mListView.setLayoutParams(layoutParams);
+        int paddingTop = showHeader ? (int) res.getDimension(R.dimen.notification_view_height) : 0;
+        mListView.setPadding(mListView.getPaddingLeft(), paddingTop, mListView.getPaddingRight(),
+                mListView.getPaddingBottom());
     }
 
     /**
@@ -279,7 +279,6 @@ public final class ConversationListFragment extends ListFragment implements
                 activityContext).inflate(R.layout.conversation_list_footer_view,
                 null);
         mFooterView.setClickListener(mActivity);
-        mConversationListView.setActivity(mActivity);
         final ConversationCursor conversationCursor = getConversationListCursor();
         final LoaderManager manager = getLoaderManager();
 
@@ -417,9 +416,6 @@ public final class ConversationListFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = rootView.findViewById(R.id.empty_view);
-        mConversationListView =
-                (ConversationListView) rootView.findViewById(R.id.conversation_list);
-        mConversationListView.setConversationContext(mViewContext);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);
@@ -429,6 +425,11 @@ public final class ConversationListFragment extends ListFragment implements
         if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
         }
+        mSwipeRefreshWidget = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_widget);
+        mSwipeRefreshWidget.setColorScheme(R.color.swipe_refresh_color1,
+                R.color.swipe_refresh_color2,
+                R.color.swipe_refresh_color3, R.color.swipe_refresh_color4);
+        mSwipeRefreshWidget.setOnRefreshListener(this);
 
         return rootView;
     }
@@ -784,6 +785,10 @@ public final class ConversationListFragment extends ListFragment implements
     public void onFolderUpdated(Folder folder) {
         mFolder = folder;
         setSwipeAction();
+
+        // Update enabled state of swipe to refresh.
+        mSwipeRefreshWidget.setEnabled(!ConversationListContext.isSearchResult(mViewContext));
+
         if (mFolder == null) {
             return;
         }
@@ -945,7 +950,7 @@ public final class ConversationListFragment extends ListFragment implements
         } else {
             // Finished syncing:
             LogUtils.d(LOG_TAG, "CLF.checkSyncStatus done syncing");
-            mConversationListView.onSyncFinished();
+            mSwipeRefreshWidget.setRefreshing(false);
         }
     }
 
@@ -954,7 +959,7 @@ public final class ConversationListFragment extends ListFragment implements
      * should only be called if user manually requested a sync, and not for background syncs.
      */
     protected void showSyncStatusBar() {
-        mConversationListView.showSyncStatusBar();
+        mSwipeRefreshWidget.setRefreshing(true);
     }
 
     /**
@@ -967,12 +972,14 @@ public final class ConversationListFragment extends ListFragment implements
     private final ConversationSetObserver mConversationSetObserver = new ConversationSetObserver() {
         @Override
         public void onSetPopulated(final ConversationSelectionSet set) {
-            // Do nothing
+            // Disable the swipe to refresh widget.
+            mSwipeRefreshWidget.setEnabled(false);
         }
 
         @Override
         public void onSetEmpty() {
             mSelectionModeExitedTimestamp = System.currentTimeMillis();
+            mSwipeRefreshWidget.setEnabled(true);
         }
 
         @Override
@@ -1004,5 +1011,17 @@ public final class ConversationListFragment extends ListFragment implements
             }
             mScrollPositionRestored = true;
         }
+    }
+
+    /* (non-Javadoc)
+     * @see android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener#onRefresh()
+     */
+    @Override
+    public void onRefresh() {
+        Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, "swipe_refresh", null,
+                0);
+
+        // This will call back to showSyncStatusBar():
+        mActivity.getFolderController().requestFolderRefresh();
     }
 }
