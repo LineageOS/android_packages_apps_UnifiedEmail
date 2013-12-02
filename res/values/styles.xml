@@ -222,16 +222,24 @@
         <item name="android:layout_marginTop">@dimen/message_header_presence_top_margin</item>
     </style>
 
-    <style name="MessageSenderNameStyle">
+    <style name="AbstractMessageSenderNameStyle">
         <item name="android:singleLine">true</item>
         <item name="android:textSize">@dimen/message_sender_name_text_size</item>
         <item name="android:textColor">@color/conv_header_text_dark</item>
     </style>
 
-    <style name="MessageHeaderSubtitleStyle">
+    <style name="MessageSenderNameStyle" parent="AbstractMessageSenderNameStyle">
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="AbstractMessageHeaderSubtitleStyle">
         <item name="android:singleLine">true</item>
         <item name="android:textSize">@dimen/message_header_subtitle_text_size</item>
         <item name="android:textColor">@color/conv_header_text_dark</item>
+    </style>
+
+    <style name="MessageHeaderSubtitleStyle" parent="AbstractMessageHeaderSubtitleStyle">
+        <item name="android:layout_alignParentLeft">true</item>
     </style>
 
     <style name="MessageHeaderSnippetStyle">
@@ -262,8 +270,12 @@
         <item name="android:drawableLeft">@drawable/ic_show_images_holo_light</item>
     </style>
 
-    <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderSmallStyle">
+    <style name="AbstractMessageHeaderUpperDateStyle" parent="MessageHeaderSmallStyle">
         <item name="android:minHeight">24dp</item>
+    </style>
+
+    <style name="MessageHeaderUpperDateStyle" parent="AbstractMessageHeaderUpperDateStyle">
+        <item name="android:layout_alignParentRight">true</item>
     </style>
 
     <style name="AbstractMessageAttachmentsHeaderStyle" parent="MessageHeaderSmallStyle">
@@ -318,13 +330,13 @@
     </style>
 
     <!-- Folder styles -->
-    <style name="FolderItemIcon">
+    <style name="AbstractFolderColorBoxStyle">
         <item name="android:layout_height">@dimen/folder_swatch_height</item>
         <item name="android:layout_width">@dimen/folder_list_folder_color_width</item>
+        <item name="android:layout_alignParentTop">true</item>
     </style>
 
-    <style name="FolderColorBoxStyle" parent="@style/FolderItemIcon">
-        <item name="android:layout_alignParentTop">true</item>
+    <style name="FolderColorBoxStyle" parent="AbstractFolderColorBoxStyle">
         <item name="android:layout_alignParentLeft">true</item>
     </style>
 
@@ -562,8 +574,17 @@
         <item name="android:layout_marginLeft">@dimen/folder_list_item_start_margin</item>
     </style>
 
+    <style name="FolderListIconStyle">
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="FolderParentIconStyle">
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+
     <style name="FolderListItemEndStyle">
         <item name="android:layout_marginRight">@dimen/folder_list_item_end_margin</item>
+        <item name="android:layout_alignParentRight">true</item>
     </style>
 
     <style name="FolderListItemStyle">
@@ -607,6 +628,7 @@
 
     <style name="UnreadCountWithMarginEndStyle" parent="UnreadCount">
         <item name="android:layout_marginRight">@dimen/folder_list_item_end_margin</item>
+        <item name="android:layout_alignParentRight">true</item>
     </style>
 
     <style name="UnseenCountWithMarginEndStyle" parent="UnseenCount">
