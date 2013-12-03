@@ -73,3 +73,7 @@
 -keepclasseswithmembers class * extends com.android.mail.ui.ConversationSpecialItemView {
   *** setAnimatedHeight(...);
 }
+
+# the widget "Tap to set up" intent builder references this class by name...
+-keep class com.android.mail.ui.MailboxSelectionActivity
+
