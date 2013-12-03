@@ -1899,9 +1899,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Returns a formatted subject string with the appropriate prefix for the action type.
      * E.g., "FWD: " is prepended if action is {@link ComposeActivity#FORWARD}.
      */
-    public static String buildFormattedSubject(Resources res, String subject, int action) {
-        String prefix;
-        String correctedSubject = null;
+    public static String buildFormattedSubject(final Resources res, final String subject,
+            final int action) {
+        final String prefix;
+        final String correctedSubject;
         if (action == ComposeActivity.COMPOSE) {
             prefix = "";
         } else if (action == ComposeActivity.FORWARD) {
@@ -1915,8 +1916,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 && subject.toLowerCase().startsWith(prefix.toLowerCase())) {
             correctedSubject = subject;
         } else {
-            correctedSubject = String.format(
-                    res.getString(R.string.formatted_subject), prefix, subject);
+            final String subjectOrNoSubject = TextUtils.isEmpty(subject) ?
+                    res.getString(R.string.no_subject) :
+                    subject;
+
+            correctedSubject =
+                    res.getString(R.string.formatted_subject, prefix, subjectOrNoSubject);
         }
 
         return correctedSubject;
