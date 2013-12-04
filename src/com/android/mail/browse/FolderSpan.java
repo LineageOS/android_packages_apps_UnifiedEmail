@@ -34,6 +34,8 @@ import android.text.style.ReplacementSpan;
  */
 public class FolderSpan extends ReplacementSpan {
 
+    private final boolean mIsRtl;
+
     public interface FolderSpanDimensions {
         int getPadding();
 
@@ -63,9 +65,10 @@ public class FolderSpan extends ReplacementSpan {
     private final Spanned mSpanned;
     private final FolderSpanDimensions mDims;
 
-    public FolderSpan(Spanned spanned, FolderSpanDimensions dims) {
+    public FolderSpan(Spanned spanned, FolderSpanDimensions dims, boolean isRtl) {
         mSpanned = spanned;
         mDims = dims;
+        mIsRtl = isRtl;
     }
 
     @Override
@@ -124,7 +127,16 @@ public class FolderSpan extends ReplacementSpan {
 
             mWorkPaint.setColor(mWorkPaint.bgColor);
             mWorkPaint.setStyle(Paint.Style.FILL);
-            canvas.drawRect(x + paddingBefore, top + paddingAbove, x + bgWidth + paddingBefore, bottom,
+            final float left;
+            final float right;
+            if (mIsRtl) {
+                left = x;
+                right = x + bgWidth;
+            } else {
+                left = x + paddingBefore;
+                right = x + bgWidth + paddingBefore;
+            }
+            canvas.drawRect(left, top + paddingAbove, right, bottom,
                     mWorkPaint);
 
             mWorkPaint.setColor(prevColor);
@@ -138,7 +150,11 @@ public class FolderSpan extends ReplacementSpan {
             start = 0;
             end = text.length();
         }
-        canvas.drawText(text, start, end, x + paddingW + paddingBefore, y + paddingAbove, mWorkPaint);
+        float textX = x + paddingW;
+        if (!mIsRtl) {
+            textX += paddingBefore;
+        }
+        canvas.drawText(text, start, end, textX, y + paddingAbove, mWorkPaint);
     }
 
 }

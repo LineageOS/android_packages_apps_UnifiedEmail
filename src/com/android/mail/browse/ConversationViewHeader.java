@@ -44,6 +44,8 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
+import java.util.Locale;
+
 /**
  * A view for the subject and folders in the conversation view. This container
  * makes an attempt to combine subject and folders on the same horizontal line if
@@ -51,6 +53,8 @@ import com.android.mail.utils.Utils;
  * adjusts the layout to position the folders below the subject.
  */
 public class ConversationViewHeader extends LinearLayout implements OnClickListener {
+
+    private final boolean mIsRtl;
 
     public interface ConversationViewHeaderCallbacks {
         /**
@@ -94,6 +98,8 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
                 resources.getDimensionPixelSize(R.dimen.conversation_header_font_size_condensed);
         mCondensedTopPadding = resources.getDimensionPixelSize(
                 R.dimen.conversation_header_vertical_padding_condensed);
+        mIsRtl =
+                TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == LAYOUT_DIRECTION_RTL;
     }
 
     @Override
@@ -104,7 +110,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
         mFoldersView = (FolderSpanTextView) findViewById(R.id.folders);
 
         mFoldersView.setOnClickListener(this);
-        mFolderDisplayer = new ConversationFolderDisplayer(getContext(), mFoldersView);
+        mFolderDisplayer = new ConversationFolderDisplayer(getContext(), mFoldersView, mIsRtl);
     }
 
     @Override
@@ -157,7 +163,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
             sb.append('.');
             sb.setSpan(new PriorityIndicatorSpan(getContext(),
                     R.drawable.ic_email_caret_none_important_unread, mFoldersView.getPadding(), 0,
-                    mFoldersView.getPaddingAbove()),
+                    mFoldersView.getPaddingAbove(), mFoldersView.getPaddingBefore(), mIsRtl),
                     0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
 
@@ -209,11 +215,15 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
 
     private static class ConversationFolderDisplayer extends FolderDisplayer {
 
+        private final boolean mIsRtl;
+
         private FolderSpanDimensions mDims;
 
-        public ConversationFolderDisplayer(Context context, FolderSpanDimensions dims) {
+        public ConversationFolderDisplayer(
+                Context context, FolderSpanDimensions dims, boolean isRtl) {
             super(context);
             mDims = dims;
+            mIsRtl = isRtl;
         }
 
         public void appendFolderSpans(SpannableStringBuilder sb) {
@@ -242,7 +252,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.setSpan(new ForegroundColorSpan(fgColor), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            sb.setSpan(new FolderSpan(sb, mDims), start, end,
+            sb.setSpan(new FolderSpan(sb, mDims, mIsRtl), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
