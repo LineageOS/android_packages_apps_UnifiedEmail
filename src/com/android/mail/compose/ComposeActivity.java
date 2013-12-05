@@ -157,7 +157,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_ATTACHMENT_PREVIEWS = "attachmentPreviews";
 
     // Extra that we can get passed from other activities
-    private static final String EXTRA_TO = "to";
+    @VisibleForTesting
+    protected static final String EXTRA_TO = "to";
     private static final String EXTRA_CC = "cc";
     private static final String EXTRA_BCC = "bcc";
 
@@ -937,8 +938,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.quotedTextOffset = !TextUtils.isEmpty(quotedText) ? QuotedTextView
                 .getQuotedTextOffset(quotedText.toString()) : -1;
         message.accountUri = null;
-        message.setFrom(selectedReplyFromAccount != null ? selectedReplyFromAccount.address
-                : mAccount != null ? mAccount.getEmailAddress() : null);
+        final String email = selectedReplyFromAccount != null ? selectedReplyFromAccount.address
+                : mAccount != null ? mAccount.getEmailAddress() : null;
+        // TODO: this behavior is wrong. Pull the name from selectedReplyFromAccount.name
+        final String senderName = mAccount != null ? mAccount.getSenderName() : null;
+        final Address address = new Address(senderName, email);
+        message.setFrom(address.pack());
         message.draftType = getDraftType(mode);
         return message;
     }
@@ -998,10 +1003,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Otherwise, give the user the ability to choose which account to
             // send mail from / save drafts to.
             mFromStatic.setVisibility(View.GONE);
+            // TODO: do we want name or address here?
             mFromStaticText.setText(mReplyFromAccount.name);
             mFromSpinnerWrapper.setVisibility(View.VISIBLE);
         } else {
             mFromStatic.setVisibility(View.VISIBLE);
+            // TODO: do we want name or address here?
             mFromStaticText.setText(mReplyFromAccount.name);
             mFromSpinnerWrapper.setVisibility(View.GONE);
         }
@@ -1945,10 +1952,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+        final boolean superCreated = super.onCreateOptionsMenu(menu);
         // Don't render any menu items when there are no accounts.
         if (mAccounts == null || mAccounts.length == 0) {
-            return true;
+            return superCreated;
         }
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.compose_menu, menu);

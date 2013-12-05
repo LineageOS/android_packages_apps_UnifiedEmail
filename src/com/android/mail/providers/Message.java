@@ -25,8 +25,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.text.Html;
-import android.text.SpannedString;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.util.Linkify;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
@@ -605,7 +606,9 @@ public class Message implements Parcelable, HtmlMessage {
         if (!TextUtils.isEmpty(bodyHtml)) {
             body = bodyHtml;
         } else if (!TextUtils.isEmpty(bodyText)) {
-            body = Html.toHtml(new SpannedString(bodyText));
+            final SpannableString spannable = new SpannableString(bodyText);
+            Linkify.addLinks(spannable, Linkify.EMAIL_ADDRESSES);
+            body = Html.toHtml(spannable);
         }
         return body;
     }

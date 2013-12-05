@@ -71,7 +71,7 @@ public class ReplyFromAccount implements Serializable {
             json.put(IS_DEFAULT, isDefault);
             json.put(IS_CUSTOM_FROM, isCustomFrom);
         } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with name " + name);
+            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with address " + address);
         }
         return json;
     }
@@ -111,13 +111,14 @@ public class ReplyFromAccount implements Serializable {
             List<ReplyFromAccount> replyFromAccounts) {
         Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(possibleCustomFrom);
         if (tokens != null && tokens.length > 0) {
-            String parsedFromAddress = tokens[0].getAddress();
-            if (TextUtils.equals(account.getEmailAddress(), parsedFromAddress)) {
+            String parsedFromAddress = Utils.normalizeEmailAddress(tokens[0].getAddress());
+            if (TextUtils.equals(Utils.normalizeEmailAddress(account.getEmailAddress()),
+                    parsedFromAddress)) {
                 return true;
             }
             for (ReplyFromAccount replyFromAccount : replyFromAccounts) {
-                if (TextUtils.equals(replyFromAccount.address, parsedFromAddress)
-                        && replyFromAccount.isCustomFrom) {
+                if (TextUtils.equals(Utils.normalizeEmailAddress(replyFromAccount.address),
+                        parsedFromAddress) && replyFromAccount.isCustomFrom) {
                     return true;
                 }
             }
