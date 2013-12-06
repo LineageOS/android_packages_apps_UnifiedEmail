@@ -35,7 +35,7 @@
     <item msgid="857480048798815437">"باز ارسال"</item>
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"در تاریخ <xliff:g id="DATE">%s</xliff:g>، <xliff:g id="PERSON">%s</xliff:g> نوشت:"</string>
-    <string name="forward_attribution" msgid="1498936339458535158">"---------- پیام باز ارسال شده ----------&lt;br&gt;فرستنده: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;موضوع: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;گیرنده: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution" msgid="1498936339458535158">"‏---------- پیام باز ارسال شده ----------&lt;br&gt;فرستنده: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;موضوع: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;گیرنده: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
     <string name="forward_attribution_no_headers" msgid="3239825787227110752">"------- پیام باز ارسال شده -------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"انتخاب نوع پیوست"</string>
@@ -119,7 +119,7 @@
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"اشتراک‌گذاری از طریق"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"بازکردن در مرورگر"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"کپی"</string>
-    <string name="contextmenu_copylink" msgid="3580131515400610839">"کپی URL پیوند"</string>
+    <string name="contextmenu_copylink" msgid="3580131515400610839">"‏کپی URL پیوند"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"شماره‌گیری..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"پیامک..."</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"افزودن مخاطب"</string>
@@ -170,32 +170,32 @@
     <item quantity="other" msgid="2222365088907519938">"در حال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد نادیده گرفته شد."</item>
-    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد نادیده گرفته شد."</item>
+    <item quantity="one" msgid="3197365771487542615">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد نادیده گرفته شد."</item>
+    <item quantity="other" msgid="1941193356069303587">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد نادیده گرفته شد."</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان هرزنامه گزارش شد."</item>
-    <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان هرزنامه گزارش شد."</item>
+    <item quantity="one" msgid="3060864972122279220">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان هرزنامه گزارش شد."</item>
+    <item quantity="other" msgid="5071459475389411227">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان هرزنامه گزارش شد."</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان غیرهرزنامه گزارش شد"</item>
-    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان غیرهرزنامه گزارش شد."</item>
+    <item quantity="one" msgid="7361303622131552596">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان غیرهرزنامه گزارش شد"</item>
+    <item quantity="other" msgid="2250720080221922267">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان غیرهرزنامه گزارش شد."</item>
   </plurals>
   <plurals name="conversation_not_important">
-    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان غیرمهم علامت‌گذاری شد."</item>
-    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان غیرمهم علامت‌گذاری شد."</item>
+    <item quantity="one" msgid="788387259924027833">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان غیرمهم علامت‌گذاری شد."</item>
+    <item quantity="other" msgid="6662213740575340397">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان غیرمهم علامت‌گذاری شد."</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان فیشینگ گزارش شد."</item>
-    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان فیشینگ گزارش شد."</item>
+    <item quantity="one" msgid="5386916574432049235">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان فیشینگ گزارش شد."</item>
+    <item quantity="other" msgid="3678624994662639442">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; به‌عنوان فیشینگ گزارش شد."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بایگانی شد."</item>
-    <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بایگانی شد."</item>
+    <item quantity="one" msgid="5457612502965117672">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بایگانی شد."</item>
+    <item quantity="other" msgid="3012054504370916482">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بایگانی شد."</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد حذف شد."</item>
-    <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد حذف شد."</item>
+    <item quantity="one" msgid="4398693029405479323">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد حذف شد."</item>
+    <item quantity="other" msgid="8630099095360065837">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد حذف شد."</item>
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"حذف شد"</string>
     <string name="archived" msgid="7533995360704366325">"بایگانی شد"</string>
@@ -392,7 +392,7 @@
     <string name="account_settings_param" msgid="5277032997773498476">"تنظیمات حساب"</string>
     <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> پیام ارسال نشده در <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"همگام‌سازی خودکار روشن شود؟"</string>
-    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"تغییراتی که در تمام برنامه‌ها و حساب‌ها ایجاد می‌کنید نه فقط Gmail، بین وب، سایر دستگاه‌هایتان و <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> شما همگام‌سازی می‌شود."</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"‏تغییراتی که در تمام برنامه‌ها و حساب‌ها ایجاد می‌کنید نه فقط Gmail، بین وب، سایر دستگاه‌هایتان و <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> شما همگام‌سازی می‌شود."</string>
     <string name="phone" msgid="5171715391553213328">"تلفن"</string>
     <string name="tablet" msgid="7956969657216748522">"رایانه لوحی"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"روشن کردن"</string>

@@ -1322,12 +1322,22 @@ public class Utils {
     }
 
     /**
-     * Adds the Account extra to mailto intents.
+     * Convenience method for diverting mailto: uris directly to our compose activity. Using this
+     * method ensures that the Account object is not accidentally sent to a different process.
+     *
+     * @param context for sending the intent
+     * @param uri mailto: or other uri
+     * @param account desired account for potential compose activity
+     * @return true if a compose activity was started, false if uri should be sent to a view intent
      */
-    public static void addAccountToMailtoIntent(Intent intent, Account account) {
-        if (TextUtils.equals(MAILTO_SCHEME, intent.getData().getScheme())) {
-            intent.putExtra(Utils.EXTRA_ACCOUNT, account);
+    public static boolean divertMailtoUri(final Context context, final Uri uri,
+            final Account account) {
+        final String scheme = normalizeUri(uri).getScheme();
+        if (TextUtils.equals(MAILTO_SCHEME, scheme)) {
+            ComposeActivity.composeToAddress(context, account, uri.getSchemeSpecificPart());
+            return true;
         }
+        return false;
     }
 
     /**
@@ -1408,4 +1418,32 @@ public class Utils {
         }
     }
 
+    /**
+     * Email addresses are supposed to be treated as case-insensitive for the host-part and
+     * case-sensitive for the local-part, but nobody really wants email addresses to match
+     * case-sensitive on the local-part, so just smash everything to lower case.
+     * @param email Hello@Example.COM
+     * @return hello@example.com
+     */
+    public static String normalizeEmailAddress(String email) {
+        /*
+        // The RFC5321 version
+        if (TextUtils.isEmpty(email)) {
+            return email;
+        }
+        String[] parts = email.split("@");
+        if (parts.length != 2) {
+            LogUtils.d(LOG_TAG, "Tried to normalize a malformed email address: ", email);
+            return email;
+        }
+
+        return parts[0] + "@" + parts[1].toLowerCase(Locale.US);
+        */
+        if (TextUtils.isEmpty(email)) {
+            return email;
+        } else {
+            // Doing this for other locales might really screw things up, so do US-version only
+            return email.toLowerCase(Locale.US);
+        }
+    }
 }

@@ -54,11 +54,11 @@
     <string name="custom_from_account_label" msgid="5069652141632649722">"Tuma barua kama:"</string>
     <string name="send" msgid="8242003661397555986">"Tuma"</string>
     <string name="mark_read" msgid="8438349154394313195">"Weka alama kuwa imesomwa"</string>
-    <string name="mark_unread" msgid="6231373939351125713">"Tia alama kuwa haijasomwa"</string>
+    <string name="mark_unread" msgid="6231373939351125713">"Tia alama kuwa hujasoma"</string>
     <string name="mute" msgid="1995954983688603977">"Komesha arifa"</string>
     <string name="add_star" msgid="2866003744391266498">"Ongeza nyota"</string>
     <string name="remove_star" msgid="4372327933122106128">"Ondoa nyota"</string>
-    <string name="remove_folder" msgid="4906542720439865413">"Ondoa kutoka kwenye <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+    <string name="remove_folder" msgid="4906542720439865413">"Ondoa kwenye <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="847250094775910499">"Weka kwenye kumbukumbu"</string>
     <string name="report_spam" msgid="6467567747975393907">"Ripoti barua taka"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Ripoti kuwa siyo barua taka"</string>
@@ -377,7 +377,7 @@
     <string name="drawer_open" msgid="6074646853178471940">"Fungua menyu"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Funga menyu"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Gusa picha ya mtumaji ili uchague mazungumzo hayo."</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Gusa na ushikile ili uchague mazungumzo moja, kisha ugusa ili uchague zaidi."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Gusa na ushikilie ili uchague gumzo moja, kisha uguse ili uchague mengine."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ikoni ya folda"</string>
     <string name="add_account" msgid="2162808366829269770">"Ongeza akaunti"</string>
     <string name="attached_message" msgid="4267189489654642035">"Ujumbe ulioambatishwa"</string>
