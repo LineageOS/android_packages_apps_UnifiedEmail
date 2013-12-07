@@ -31,10 +31,10 @@
             android:id="@+id/attachment_icon"
             android:layout_width="48dip"
             android:layout_height="match_parent"
-            android:layout_marginRight="8dip"
             android:background="@color/attachment_image_background_color"
             android:scaleType="center"
-            android:src="@drawable/ic_menu_attachment_holo_light" />
+            android:src="@drawable/ic_menu_attachment_holo_light"
+            style="@style/MessageAttachmentBarMarginEndStyle" />
 
         <RelativeLayout
             android:layout_width="0dip"
@@ -46,32 +46,24 @@
                 android:id="@+id/attachment_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dip"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="#333333"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                style="@style/MessageAttachmentBarMarginEndStyle" />
 
             <TextView
                 android:id="@+id/attachment_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/attachment_title"
-                android:layout_marginRight="8dip"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="#aaaaaa"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                style="@style/MessageAttachmentBarMarginEndStyle" />
 
-            <ProgressBar
-                android:id="@+id/attachment_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/attachment_title"
-                android:layout_marginRight="8dip"
-                android:indeterminate="true"
-                android:visibility="invisible" />
+            <include layout="@layout/conversation_message_attachment_bar_progress_bar"/>
         </RelativeLayout>
 
         <ImageView

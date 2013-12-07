@@ -794,4 +794,8 @@
     <style name="ToastButtonStyle">
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
+
+    <style name="MessageAttachmentBarMarginEndStyle">
+        <item name="android:layout_marginRight">@dimen/message_attachment_bar_padding</item>
+    </style>
 </resources>
