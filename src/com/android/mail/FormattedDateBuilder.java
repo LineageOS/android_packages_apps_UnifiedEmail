@@ -17,11 +17,13 @@
 package com.android.mail;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.text.format.DateUtils;
-import android.text.format.Time;
 
+import com.android.mail.R;
+
+import java.util.Calendar;
 import java.util.Formatter;
+import java.util.GregorianCalendar;
 
 /**
  * Convenience class to efficiently make multiple short date strings. Instantiating and reusing
@@ -30,9 +32,9 @@ import java.util.Formatter;
  */
 public class FormattedDateBuilder {
 
-    private StringBuilder sb;
-    private Formatter dateFormatter;
-    private Context mContext;
+    private final StringBuilder sb;
+    private final Formatter dateFormatter;
+    private final Context mContext;
 
     public FormattedDateBuilder(Context context) {
         mContext = context;
@@ -40,53 +42,109 @@ public class FormattedDateBuilder {
         dateFormatter = new Formatter(sb);
     }
 
-    public CharSequence formatShortDate(long when) {
-        return DateUtils.getRelativeTimeSpanString(mContext, when);
-    }
-
-    public CharSequence formatLongDateTime(long when) {
-        final Resources resources = mContext.getResources();
-
+    /**
+     * This is used in the conversation list, and headers of collapsed messages in
+     * threaded conversations.
+     * Times on today's date will just display time, e.g. 8:15 AM
+     * Times not today, but within the same calendar year will display absolute date, e.g. Nov 6
+     * Times not in the same year display a numeric absolute date, e.g. 11/18/12
+     *
+     * @param when The time to generate a formatted date for
+     * @return The formatted date
+     */
+    public CharSequence formatShortDateTime(long when) {
         if (DateUtils.isToday(when)) {
-            return resources.getString(R.string.date_message_received_today, formatLongTime(when));
-        } else if (isYesterday(when)) {
-            return resources.getString(
-                    R.string.date_message_received_yesterday, formatLongTime(when));
+            return formatDateTime(when, DateUtils.FORMAT_SHOW_TIME);
+        } else if (isCurrentYear(when)) {
+            return formatDateTime(when, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_MONTH);
         } else {
-            return resources.getString(R.string.date_message_received,
-                    formatLongDayAndDate(when), formatLongTime(when));
+            return formatDateTime(when, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE);
         }
     }
 
-    public CharSequence formatLongDayAndDate(long when) {
-        sb.setLength(0);
-        DateUtils.formatDateRange(mContext, dateFormatter, when, when,
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                        | DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL);
-        return sb.toString();
-    }
-
-    public CharSequence formatLongTime(long when) {
-        sb.setLength(0);
-        DateUtils.formatDateRange(mContext, dateFormatter, when, when,
-                DateUtils.FORMAT_SHOW_TIME);
-        return sb.toString();
+    /**
+     * This is used in regular message headers.
+     * Times on today's date will just display time, e.g. 8:15 AM
+     * Times not today, but within two weeks ago will display relative date and time,
+     * e.g. 6 days ago, 8:15 AM
+     * Times more than two weeks ago but within the same calendar year will display
+     * absolute date and time, e.g. Nov 6, 8:15 AM
+     * Times not in the same year display a numeric absolute date, e.g. 11/18/12
+     *
+     * @param when The time to generate a formatted date for
+     * @return The formatted date
+     */
+    public CharSequence formatLongDateTime(long when) {
+        if (DateUtils.isToday(when)) {
+            return formatDateTime(when, DateUtils.FORMAT_SHOW_TIME);
+        } else if (isCurrentYear(when)) {
+            return DateUtils.getRelativeDateTimeString(mContext, when, DateUtils.DAY_IN_MILLIS,
+                    2 * DateUtils.WEEK_IN_MILLIS,
+                    DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE |
+                    DateUtils.FORMAT_ABBREV_MONTH);
+        } else {
+            return formatDateTime(when, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE);
+        }
     }
 
     /**
-     * @return true if the supplied when is today else false
+     * This is used in expanded details headers.
+     * Displays full date and time e.g. Tue, Nov 18, 2012, 8:15 AM, or
+     * Yesterday, Nov 18, 2012, 8:15 AM
+     *
+     * @param when The time to generate a formatted date for
+     * @return The formatted date
      */
-    private static boolean isYesterday(long when) {
-        final Time time = new Time();
-        time.set(when);
+    public CharSequence formatFullDateTime(long when) {
+        sb.setLength(0);
+        if (isYesterday(when)) {
+            DateUtils.formatDateRange(mContext, dateFormatter, when, when,
+                    DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE |
+                    DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL);
+            return mContext.getString(R.string.date_message_received_yesterday, sb.toString());
+        } else {
+            DateUtils.formatDateRange(mContext, dateFormatter, when, when,
+                    DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE |
+                    DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR |
+                    DateUtils.FORMAT_ABBREV_ALL);
+            return sb.toString();
+        }
+    }
 
-        final int thenYear = time.year;
-        final int thenMonth = time.month;
-        final int thenMonthDay = time.monthDay;
+    /**
+     * This is used for displaying dates when printing.
+     * Displays the full date, e.g. Tue, Nov 18, 2012 at 8:15 PM
+     *
+     * @param when The time to generate a formatted date for
+     * @return The formatted date
+     */
+    public String formatDateTimeForPrinting(long when) {
+        return mContext.getString(R.string.date_message_received_print,
+                formatDateTime(when, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY |
+                        DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL),
+                        formatDateTime(when, DateUtils.FORMAT_SHOW_TIME));
+    }
 
-        time.set(System.currentTimeMillis());
-        return (thenYear == time.year)
-                && (thenMonth == time.month)
-                && (thenMonthDay == (time.monthDay-1));
+    private boolean isCurrentYear(long when) {
+        final Calendar nowCal = Calendar.getInstance();
+        final Calendar whenCal = Calendar.getInstance();
+        whenCal.setTimeInMillis(when);
+        return (nowCal.get(Calendar.YEAR) == whenCal.get(Calendar.YEAR));
+    }
+
+    private boolean isYesterday(long when) {
+        final Calendar nowCal = Calendar.getInstance();
+        final Calendar whenCal = Calendar.getInstance();
+        whenCal.setTimeInMillis(when);
+        // Decrement the "now" calendar back one day, and see if both are now the same day.
+        nowCal.add(Calendar.DAY_OF_YEAR, -1);
+        return (whenCal.get(Calendar.DAY_OF_YEAR) == nowCal.get(Calendar.DAY_OF_YEAR) &&
+                whenCal.get(Calendar.YEAR) == nowCal.get(Calendar.YEAR));
+    }
+
+    private CharSequence formatDateTime(long when, int flags) {
+        sb.setLength(0);
+        DateUtils.formatDateRange(mContext, dateFormatter, when, when, flags);
+        return sb.toString();
     }
 }

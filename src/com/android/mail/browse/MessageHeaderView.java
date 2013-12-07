@@ -1288,7 +1288,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         if (!mExpandedDetailsValid) {
             renderExpandedDetails(getResources(), mExpandedDetailsView, mMessage.viaDomain,
                     mAddressCache, getAccount(), mVeiledMatcher, mFrom, mReplyTo, mTo, mCc, mBcc,
-                    mMessageHeaderItem.getTimestampLong());
+                    mMessageHeaderItem.getTimestampFull());
 
             mExpandedDetailsValid = true;
         }

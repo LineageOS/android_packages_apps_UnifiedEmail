@@ -57,16 +57,16 @@ import java.util.Map;
  */
 public class ConversationViewAdapter extends BaseAdapter {
 
-    private Context mContext;
+    private final Context mContext;
     private final FormattedDateBuilder mDateBuilder;
     private final ConversationAccountController mAccountController;
     private final LoaderManager mLoaderManager;
     private final FragmentManager mFragmentManager;
     private final MessageHeaderViewCallbacks mMessageCallbacks;
     private final ContactInfoSource mContactInfoSource;
-    private ConversationViewHeaderCallbacks mConversationCallbacks;
-    private OnClickListener mSuperCollapsedListener;
-    private Map<String, Address> mAddressCache;
+    private final ConversationViewHeaderCallbacks mConversationCallbacks;
+    private final OnClickListener mSuperCollapsedListener;
+    private final Map<String, Address> mAddressCache;
     private final LayoutInflater mInflater;
 
     private final List<ConversationOverlayItem> mItems;
@@ -135,8 +135,9 @@ public class ConversationViewAdapter extends BaseAdapter {
         // cached values to speed up re-rendering during view recycling
         private CharSequence mTimestampShort;
         private CharSequence mTimestampLong;
+        private CharSequence mTimestampFull;
         private long mTimestampMs;
-        private FormattedDateBuilder mDateBuilder;
+        private final FormattedDateBuilder mDateBuilder;
         public CharSequence recipientSummaryText;
 
         MessageHeaderItem(ConversationViewAdapter adapter, FormattedDateBuilder dateBuilder,
@@ -237,11 +238,17 @@ public class ConversationViewAdapter extends BaseAdapter {
             return mTimestampLong;
         }
 
+        public CharSequence getTimestampFull() {
+            ensureTimestamps();
+            return mTimestampFull;
+        }
+
         private void ensureTimestamps() {
             if (mMessage.dateReceivedMs != mTimestampMs) {
                 mTimestampMs = mMessage.dateReceivedMs;
-                mTimestampShort = mDateBuilder.formatShortDate(mTimestampMs);
+                mTimestampShort = mDateBuilder.formatShortDateTime(mTimestampMs);
                 mTimestampLong = mDateBuilder.formatLongDateTime(mTimestampMs);
+                mTimestampFull = mDateBuilder.formatFullDateTime(mTimestampMs);
             }
         }
 

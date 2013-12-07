@@ -158,9 +158,7 @@ public class PrintUtils {
             HtmlPrintTemplates templates, FormattedDateBuilder dateBuilder) {
         final Address fromAddress = Utils.getAddress(addressCache, message.getFrom());
         final long when = message.dateReceivedMs;
-        final String date = res.getString(R.string.date_message_received_print,
-                dateBuilder.formatLongDayAndDate(when), dateBuilder.formatLongTime(when));
-
+        final String date = dateBuilder.formatDateTimeForPrinting(when);
 
         templates.appendMessage(fromAddress.getName(), fromAddress.getAddress(), date,
                 renderRecipients(res, addressCache, message), message.getBodyAsHtml(),
