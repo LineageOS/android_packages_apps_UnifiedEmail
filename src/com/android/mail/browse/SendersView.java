@@ -151,49 +151,47 @@ public class SendersView {
                 }
             }
             getSenderResources(context, resourceCachingRequired);
-            if (conversationInfo != null) {
-                int count = conversationInfo.messageCount;
-                int draftCount = conversationInfo.draftCount;
-                boolean showSending = sendingStatus == UIProvider.ConversationSendingState.SENDING;
-                if (count > 1) {
-                    messageInfo.append(count + "");
+            int count = conversationInfo.messageCount;
+            int draftCount = conversationInfo.draftCount;
+            boolean showSending = sendingStatus == UIProvider.ConversationSendingState.SENDING;
+            if (count > 1) {
+                messageInfo.append(count + "");
+            }
+            messageInfo.setSpan(CharacterStyle.wrap(
+                    conv.read ? sMessageInfoReadStyleSpan : sMessageInfoUnreadStyleSpan),
+                    0, messageInfo.length(), 0);
+            if (draftCount > 0) {
+                // If we are showing a message count or any draft text and there
+                // is at least 1 sender, prepend the sending state text with a
+                // comma.
+                if (hasSenders || count > 1) {
+                    messageInfo.append(sSendersSplitToken);
                 }
-                messageInfo.setSpan(CharacterStyle.wrap(
-                        conv.read ? sMessageInfoReadStyleSpan : sMessageInfoUnreadStyleSpan),
-                        0, messageInfo.length(), 0);
-                if (draftCount > 0) {
-                    // If we are showing a message count or any draft text and there
-                    // is at least 1 sender, prepend the sending state text with a
-                    // comma.
-                    if (hasSenders || count > 1) {
-                        messageInfo.append(sSendersSplitToken);
-                    }
-                    SpannableStringBuilder draftString = new SpannableStringBuilder();
-                    if (draftCount == 1) {
-                        draftString.append(sDraftSingularString);
-                    } else {
-                        draftString.append(sDraftPluralString
-                                + String.format(sDraftCountFormatString, draftCount));
-                    }
-                    draftString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0,
-                            draftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    messageInfo.append(draftString);
+                SpannableStringBuilder draftString = new SpannableStringBuilder();
+                if (draftCount == 1) {
+                    draftString.append(sDraftSingularString);
+                } else {
+                    draftString.append(sDraftPluralString
+                            + String.format(sDraftCountFormatString, draftCount));
                 }
-                if (showSending) {
-                    // If we are showing a message count or any draft text, prepend
-                    // the sending state text with a comma.
-                    if (count > 1 || draftCount > 0) {
-                        messageInfo.append(sSendersSplitToken);
-                    }
-                    SpannableStringBuilder sending = new SpannableStringBuilder();
-                    sending.append(sSendingString);
-                    sending.setSpan(sSendingStyleSpan, 0, sending.length(), 0);
-                    messageInfo.append(sending);
+                draftString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0,
+                        draftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                messageInfo.append(draftString);
+            }
+            if (showSending) {
+                // If we are showing a message count or any draft text, prepend
+                // the sending state text with a comma.
+                if (count > 1 || draftCount > 0) {
+                    messageInfo.append(sSendersSplitToken);
                 }
-                // Prepend a space if we are showing other message info text.
-                if (count > 1 || (draftCount > 0 && hasSenders) || showSending) {
-                    messageInfo.insert(0, sMessageCountSpacerString);
-                }
+                SpannableStringBuilder sending = new SpannableStringBuilder();
+                sending.append(sSendingString);
+                sending.setSpan(sSendingStyleSpan, 0, sending.length(), 0);
+                messageInfo.append(sending);
+            }
+            // Prepend a space if we are showing other message info text.
+            if (count > 1 || (draftCount > 0 && hasSenders) || showSending) {
+                messageInfo.insert(0, sMessageCountSpacerString);
             }
         } finally {
             if (!resourceCachingRequired) {
@@ -420,30 +418,6 @@ public class SendersView {
         header.sendersText = TextUtils.join(Address.ADDRESS_DELIMETER + " ", names);
         header.addSenderFragment(0, header.sendersText.length(), getWrappedStyleSpan(readStyleSpan),
                 true);
-    }
-
-    public static void formatSenders(ConversationItemViewModel header, Context context,
-            final boolean resourceCachingRequired) {
-        try {
-            getSenderResources(context, resourceCachingRequired);
-            formatSenders(header, context, sReadStyleSpan, resourceCachingRequired);
-        } finally {
-            if (!resourceCachingRequired) {
-                clearResourceCache();
-            }
-        }
-    }
-
-    public static void formatSenders(ConversationItemViewModel header, Context context,
-            final CharacterStyle readStyleSpan, final boolean resourceCachingRequired) {
-        try {
-            formatDefault(header, header.conversation.senders, context, readStyleSpan,
-                    resourceCachingRequired);
-        } finally {
-            if (!resourceCachingRequired) {
-                clearResourceCache();
-            }
-        }
     }
 
     private static void clearResourceCache() {

@@ -1726,11 +1726,9 @@ public abstract class AbstractActivityController implements ActivityController,
                 value.put(ConversationColumns.VIEWED, true);
             }
             final ConversationInfo info = target.conversationInfo;
-            if (info != null) {
-                boolean changed = info.markRead(read);
-                if (changed) {
-                    value.put(ConversationColumns.CONVERSATION_INFO, info.toBlob());
-                }
+            final boolean changed = info.markRead(read);
+            if (changed) {
+                value.put(ConversationColumns.CONVERSATION_INFO, info.toBlob());
             }
             opList.add(mConversationListCursor.getOperationForConversation(
                     target, ConversationOperation.UPDATE, value));

@@ -58,6 +58,20 @@ public class ConversationInfo implements Parcelable {
         messageInfos = in.createTypedArrayList(MessageInfo.CREATOR);
     }
 
+    /**
+     * Sets all public fields to match the passed in ConversationInfo (does not copy objects)
+     * @param orig ConversationInfo to copy
+     */
+    public void overwriteWith(ConversationInfo orig) {
+        messageInfos.clear();
+        messageInfos.addAll(orig.messageInfos);
+        messageCount = orig.messageCount;
+        draftCount = orig.draftCount;
+        firstSnippet = orig.firstSnippet;
+        firstUnreadSnippet = orig.firstUnreadSnippet;
+        lastSnippet = orig.lastSnippet;
+    }
+
     @Override
     public int describeContents() {
         return 0;

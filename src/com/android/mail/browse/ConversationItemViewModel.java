@@ -232,17 +232,12 @@ public class ConversationItemViewModel {
         return Objects.hashCode(mDataHashCode, viewWidth, standardScaledDimen, gadgetMode);
     }
 
-    private Object getConvInfo() {
-        return conversation.conversationInfo != null ?
-                conversation.conversationInfo : conversation.getSnippet();
-    }
-
     /**
      * Marks this header as having valid data and layout.
      */
     void validate() {
         mDataHashCode = getHashCode(dateText,
-                getConvInfo(), conversation.getRawFolders(), conversation.starred,
+                conversation.conversationInfo, conversation.getRawFolders(), conversation.starred,
                 conversation.read, conversation.priority, conversation.sendingState);
         mLayoutHashCode = getLayoutHashCode();
     }
@@ -252,7 +247,7 @@ public class ConversationItemViewModel {
      */
     boolean isDataValid() {
         return mDataHashCode == getHashCode(dateText,
-                getConvInfo(), conversation.getRawFolders(), conversation.starred,
+                conversation.conversationInfo, conversation.getRawFolders(), conversation.starred,
                 conversation.read, conversation.priority, conversation.sendingState);
     }
 
@@ -314,33 +309,31 @@ public class ConversationItemViewModel {
             // If all are unread, get the first sender.
             // If all are read, get the last sender.
             String sender = "";
-            if (conversation.conversationInfo != null) {
-                String lastSender = "";
-                int last = conversation.conversationInfo.messageInfos != null ?
-                        conversation.conversationInfo.messageInfos.size() - 1 : -1;
-                if (last != -1) {
-                    lastSender = conversation.conversationInfo.messageInfos.get(last).sender;
-                }
-                if (conversation.read) {
-                    sender = TextUtils.isEmpty(lastSender) ?
-                            SendersView.getMe(context) : lastSender;
-                } else {
-                    MessageInfo firstUnread = null;
-                    for (MessageInfo m : conversation.conversationInfo.messageInfos) {
-                        if (!m.read) {
-                            firstUnread = m;
-                            break;
-                        }
-                    }
-                    if (firstUnread != null) {
-                        sender = TextUtils.isEmpty(firstUnread.sender) ?
-                                SendersView.getMe(context) : firstUnread.sender;
+            String lastSender = "";
+            int last = conversation.conversationInfo.messageInfos != null ?
+                    conversation.conversationInfo.messageInfos.size() - 1 : -1;
+            if (last != -1) {
+                lastSender = conversation.conversationInfo.messageInfos.get(last).sender;
+            }
+            if (conversation.read) {
+                sender = TextUtils.isEmpty(lastSender) ?
+                        SendersView.getMe(context) : lastSender;
+            } else {
+                MessageInfo firstUnread = null;
+                for (MessageInfo m : conversation.conversationInfo.messageInfos) {
+                    if (!m.read) {
+                        firstUnread = m;
+                        break;
                     }
                 }
-                if (TextUtils.isEmpty(sender)) {
-                    // Just take the last sender
-                    sender = lastSender;
+                if (firstUnread != null) {
+                    sender = TextUtils.isEmpty(firstUnread.sender) ?
+                            SendersView.getMe(context) : firstUnread.sender;
                 }
+            }
+            if (TextUtils.isEmpty(sender)) {
+                // Just take the last sender
+                sender = lastSender;
             }
             boolean isToday = DateUtils.isToday(conversation.dateMs);
             String date = DateUtils.getRelativeTimeSpanString(context, conversation.dateMs)

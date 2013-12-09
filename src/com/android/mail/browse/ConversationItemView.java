@@ -793,7 +793,6 @@ public class ConversationItemView extends View
             mHeader.sendersDisplayText = new SpannableStringBuilder(mHeader.sendersText);
             loadSenderImages();
         } else if (mHeader.conversation.conversationInfo != null) {
-            // This is Gmail
             Context context = getContext();
             mHeader.messageInfoString = SendersView
                     .createMessageInfo(context, mHeader.conversation, true);
@@ -815,23 +814,7 @@ public class ConversationItemView extends View
             // If we have displayable senders, load their thumbnails
             loadSenderImages();
         } else {
-            // This is Email
-            SendersView.formatSenders(mHeader, getContext(), true);
-            if (!TextUtils.isEmpty(mHeader.conversation.senders)) {
-                mHeader.displayableSenderEmails = new ArrayList<String>();
-                mHeader.displayableSenderNames = new ArrayList<String>();
-
-                final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(mHeader.conversation.senders);
-                for (int i = 0; i < tokens.length;i++) {
-                    final Rfc822Token token = tokens[i];
-                    final String senderName = Address.decodeAddressName(token.getName());
-                    final String senderAddress = token.getAddress();
-                    mHeader.displayableSenderEmails.add(senderAddress);
-                    mHeader.displayableSenderNames.add(
-                            !TextUtils.isEmpty(senderName) ? senderName : senderAddress);
-                }
-                loadSenderImages();
-            }
+            LogUtils.wtf(LOG_TAG, "Null conversationInfo");
         }
 
         if (isAttachmentPreviewsEnabled()) {
