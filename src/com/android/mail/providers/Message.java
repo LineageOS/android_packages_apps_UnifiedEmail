@@ -44,6 +44,7 @@ import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -376,7 +377,16 @@ public class Message implements Parcelable, HtmlMessage {
                 com.android.emailcommon.mail.Message.RecipientType.BCC)));
         setReplyTo(com.android.emailcommon.mail.Address.pack(mimeMessage.getReplyTo()));
         subject = mimeMessage.getSubject();
-        dateReceivedMs = mimeMessage.getSentDate().getTime();
+
+        final Date sentDate = mimeMessage.getSentDate();
+        final Date internalDate = mimeMessage.getInternalDate();
+        if (sentDate != null) {
+            dateReceivedMs = sentDate.getTime();
+        } else if (internalDate != null) {
+            dateReceivedMs = internalDate.getTime();
+        } else {
+            dateReceivedMs = System.currentTimeMillis();
+        }
 
         // for now, always set defaults
         alwaysShowImages = false;
