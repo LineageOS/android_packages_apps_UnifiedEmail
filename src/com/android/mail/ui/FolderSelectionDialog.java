@@ -18,11 +18,10 @@
 package com.android.mail.ui;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface.OnClickListener;
-import android.content.DialogInterface.OnDismissListener;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -32,117 +31,87 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
 
-public abstract class FolderSelectionDialog implements OnClickListener, OnDismissListener {
+public abstract class FolderSelectionDialog extends DialogFragment implements OnClickListener {
     protected static final String LOG_TAG = LogTag.getLogTag();
-    private static boolean sDialogShown;
 
-    protected AlertDialog mDialog;
-    protected final ConversationUpdater mUpdater;
-    protected final SeparatedFolderListAdapter mAdapter;
-    protected final Collection<Conversation> mTarget;
-    protected final boolean mBatch;
-    protected final QueryRunner mRunner;
-    protected final Account mAccount;
-    protected final AlertDialog.Builder mBuilder;
-    protected final Folder mCurrentFolder;
+    private static final String ARG_FOLDER_TAG = "folder";
+    private static final String ARG_ACCOUNT_TAG = "account";
+    private static final String ARG_BATCH_TAG = "batch";
+    private static final String ARG_TARGET_TAG = "target";
 
-    public static FolderSelectionDialog getInstance(final Context context, final Account account,
-            final ConversationUpdater updater, final Collection<Conversation> target,
-            final boolean isBatch, final Folder currentFolder, final boolean isMoveTo) {
-        if (sDialogShown) {
-            return null;
-        }
+    protected SeparatedFolderListAdapter mAdapter;
+    protected Collection<Conversation> mTarget;
+    // True for CAB mode
+    protected boolean mBatch;
+    protected Account mAccount;
+    protected Folder mCurrentFolder;
+    protected int mTitleId;
 
+    public static FolderSelectionDialog getInstance(final Account account,
+            final Collection<Conversation> target, final boolean isBatch,
+            final Folder currentFolder, final boolean isMoveTo) {
         /*
          * TODO: This method should only be called with isMoveTo=true if this capability is not
          * present on the account, so we should be able to remove the check here.
          */
+        final FolderSelectionDialog f;
         if (isMoveTo || !account.supportsCapability(
                 UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
-            return new SingleFolderSelectionDialog(
-                    context, account, updater, target, isBatch, currentFolder);
+            f = new SingleFolderSelectionDialog();
         } else {
-            return new MultiFoldersSelectionDialog(
-                    context, account, updater, target, isBatch, currentFolder);
+            f = new MultiFoldersSelectionDialog();
         }
+        final Bundle args = new Bundle(4);
+        args.putParcelable(ARG_FOLDER_TAG, currentFolder);
+        args.putParcelable(ARG_ACCOUNT_TAG, account);
+        args.putBoolean(ARG_BATCH_TAG, isBatch);
+        args.putParcelableArray(ARG_TARGET_TAG, target.toArray(new Conversation[target.size()]));
+        f.setArguments(args);
+        return f;
     }
-
-    public static void setDialogDismissed() {
-        LogUtils.d(LOG_TAG, "Folder Selection dialog dismissed");
-        sDialogShown = false;
-    }
-
-    // TODO: use a loader instead
-    @Deprecated
-    protected abstract void updateAdapterInBackground(Context context);
 
     protected abstract void onListItemClick(int position);
 
-    protected FolderSelectionDialog(final Context context, final Account account,
-            final ConversationUpdater updater, final Collection<Conversation> target,
-            final boolean isBatch, final Folder currentFolder) {
-        mUpdater = updater;
-        mTarget = target;
-        mBatch = isBatch;
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setNegativeButton(R.string.cancel, this);
-        mAccount = account;
-        mBuilder = builder;
-        mCurrentFolder = currentFolder;
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mAdapter = new SeparatedFolderListAdapter();
-        mRunner = new QueryRunner(context);
+
+        final Bundle args = getArguments();
+
+        mCurrentFolder = args.getParcelable(ARG_FOLDER_TAG);
+        mAccount = args.getParcelable(ARG_ACCOUNT_TAG);
+        mBatch = args.getBoolean(ARG_BATCH_TAG);
+        mTarget = Arrays.asList((Conversation[])args.getParcelableArray(ARG_TARGET_TAG));
     }
 
-    public void show() {
-        sDialogShown = true;
-        // TODO: use a loader instead
-        mRunner.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    protected void showInternal() {
-        mDialog.show();
-        mDialog.setOnDismissListener(this);
-        mDialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setNegativeButton(R.string.cancel, this)
+                .setPositiveButton(R.string.ok, this)
+                .setAdapter(mAdapter, this)
+                .setTitle(mTitleId)
+                .create();
+        dialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 onListItemClick(position);
             }
         });
+        return dialog;
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        FolderSelectionDialog.setDialogDismissed();
-    }
-
-    /**
-     * Class to query the Folder list database in the background and update the
-     * adapter with an open cursor.
-     */
-    // TODO: use a loader instead
-    @Deprecated
-    private class QueryRunner extends AsyncTask<Void, Void, Void> {
-        private final Context mContext;
-
-        private QueryRunner(final Context context) {
-            mContext = context;
+    protected ConversationUpdater getConversationUpdater() {
+        if (!isResumed()) {
+            throw new IllegalStateException(
+                    "Tried to update conversations while fragment is not running");
         }
-
-        @Override
-        protected Void doInBackground(Void... v) {
-            updateAdapterInBackground(mContext);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            mDialog = mBuilder.create();
-            showInternal();
-        }
+        final ControllableActivity activity = (ControllableActivity)getActivity();
+        return activity.getConversationUpdater();
     }
 }

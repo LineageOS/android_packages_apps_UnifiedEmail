@@ -17,13 +17,17 @@
 
 package com.android.mail.ui;
 
+import android.app.AlertDialog;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 
 import com.android.mail.R;
-import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -33,7 +37,6 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,75 +46,105 @@ import java.util.List;
  * the user to mark folders to assign that conversation to.
  */
 public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
-    private final boolean mSingle;
+    private boolean mSingle;
     private final HashMap<Uri, FolderOperation> mOperations;
 
-    /**
-     * Create a new {@link MultiFoldersSelectionDialog}. It is displayed when
-     * the {@link #show()} method is called.
-     * @param context
-     * @param account the current account
-     * @param updater
-     * @param target conversations that are impacted
-     * @param isBatch whether the dialog is shown during Contextual Action Bar
-     *            (CAB) mode
-     * @param currentFolder the current folder that the
-     *            {@link FolderListFragment} is showing
-     */
-    public MultiFoldersSelectionDialog(final Context context, final Account account,
-            final ConversationUpdater updater, final Collection<Conversation> target,
-            final boolean isBatch, final Folder currentFolder) {
-        super(context, account, updater, target, isBatch, currentFolder);
-        mSingle = !account
-                .supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
+    public MultiFoldersSelectionDialog() {
         mOperations = new HashMap<Uri, FolderOperation>();
+    }
 
-        mBuilder.setTitle(R.string.change_folders_selection_dialog_title);
-        mBuilder.setPositiveButton(R.string.ok, this);
+    private static final int FOLDER_LOADER_ID = 0;
+    private static final String FOLDER_QUERY_URI_TAG = "folderQueryUri";
+
+    private static final String SAVESTATE_OPERATIONS_TAG = "operations";
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mSingle = !mAccount
+                .supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
+        mTitleId = R.string.change_folders_selection_dialog_title;
+
+        if (savedInstanceState != null) {
+            final FolderOperation[] savedOps = (FolderOperation[])
+                    savedInstanceState.getParcelableArray(SAVESTATE_OPERATIONS_TAG);
+            for (final FolderOperation op : savedOps) {
+                mOperations.put(op.mFolder.folderUri.fullUri, op);
+            }
+        }
+
+        final Bundle args = new Bundle(1);
+        args.putParcelable(FOLDER_QUERY_URI_TAG, !Utils.isEmpty(mAccount.fullFolderListUri) ?
+                mAccount.fullFolderListUri : mAccount.folderListUri);
+        final Context loaderContext = getActivity().getApplicationContext();
+        getLoaderManager().initLoader(FOLDER_LOADER_ID, args,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                        final Uri queryUri = args.getParcelable(FOLDER_QUERY_URI_TAG);
+                        return new CursorLoader(loaderContext, queryUri,
+                                UIProvider.FOLDERS_PROJECTION, null, null, null);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+                        final Context context = getActivity();
+                        if (data == null || context == null) {
+                            return;
+                        }
+                        final AlertDialog dialog = (AlertDialog) getDialog();
+                        // The number of view types changes here, so we have to reset the listview's
+                        // adapter.
+                        dialog.getListView().setAdapter(null);
+
+                        final HashSet<String> checked = new HashSet<String>();
+                        for (final Conversation conversation : mTarget) {
+                            final List<Folder> rawFolders = conversation.getRawFolders();
+                            if (rawFolders != null && rawFolders.size() > 0) {
+                                // Parse the raw folders and get all the uris.
+                                checked.addAll(Arrays.asList(Folder.getUriArray(rawFolders)));
+                            } else {
+                                // There are no folders for this conversation, so it must
+                                // belong to the folder we are currently looking at.
+                                checked.add(mCurrentFolder.folderUri.fullUri.toString());
+                            }
+                        }
+                        for (final Uri folderUri : mOperations.keySet()) {
+                            // TODO: this makes these entries sort to the top after rotation
+                            checked.add(folderUri.toString());
+                        }
+                        // TODO(mindyp) : bring this back in UR8 when Email providers
+                        // will have divided folder sections.
+                        /* final String[] headers = mContext.getResources()
+                                .getStringArray(R.array.moveto_folder_sections);
+                         // Currently, the number of adapters are assumed to match the
+                         // number of headers in the string array.
+                         mAdapter.addSection(new SystemFolderSelectorAdapter(mContext,
+                         foldersCursor, checked, R.layout.multi_folders_view, null));
+
+                        // TODO(mindyp): we currently do not support frequently moved to
+                        // folders, at headers[1]; need to define what that means.*/
+                        mAdapter.addSection(new AddableFolderSelectorAdapter(context,
+                                AddableFolderSelectorAdapter.filterFolders(data,
+                                        ImmutableSet.of(FolderType.INBOX_SECTION)), checked,
+                                R.layout.multi_folders_view, null));
+
+                        dialog.getListView().setAdapter(mAdapter);
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> loader) {
+                        mAdapter.clearSections();
+                    }
+                });
     }
 
     @Override
-    protected void updateAdapterInBackground(Context context) {
-        Cursor foldersCursor = null;
-        try {
-            foldersCursor = context.getContentResolver().query(
-                    !Utils.isEmpty(mAccount.fullFolderListUri) ? mAccount.fullFolderListUri
-                            : mAccount.folderListUri, UIProvider.FOLDERS_PROJECTION, null, null,
-                            null);
-            /** All the folders that this conversations is assigned to. */
-            final HashSet<String> checked = new HashSet<String>();
-            for (final Conversation conversation : mTarget) {
-                final List<Folder> rawFolders = conversation.getRawFolders();
-                if (rawFolders != null && rawFolders.size() > 0) {
-                    // Parse the raw folders and get all the uris.
-                    checked.addAll(Arrays.asList(Folder.getUriArray(rawFolders)));
-                } else {
-                    // There are no folders for this conversation, so it must
-                    // belong to the folder we are currently looking at.
-                    checked.add(mCurrentFolder.folderUri.fullUri.toString());
-                }
-            }
-            // TODO(mindyp) : bring this back in UR8 when Email providers
-            // will have divided folder sections.
-            /* final String[] headers = mContext.getResources()
-             .getStringArray(R.array.moveto_folder_sections);
-             // Currently, the number of adapters are assumed to match the
-             // number of headers in the string array.
-             mAdapter.addSection(new SystemFolderSelectorAdapter(mContext,
-             foldersCursor, checked, R.layout.multi_folders_view, null));
-
-            // TODO(mindyp): we currently do not support frequently moved to
-            // folders, at headers[1]; need to define what that means.*/
-            mAdapter.addSection(new AddableFolderSelectorAdapter(context,
-                    AddableFolderSelectorAdapter.filterFolders(foldersCursor,
-                            ImmutableSet.of(FolderType.INBOX_SECTION)), checked,
-                    R.layout.multi_folders_view, null));
-            mBuilder.setAdapter(mAdapter, MultiFoldersSelectionDialog.this);
-        } finally {
-            if (foldersCursor != null) {
-                foldersCursor.close();
-            }
-        }
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArray(SAVESTATE_OPERATIONS_TAG,
+                mOperations.values().toArray(new FolderOperation[mOperations.size()]));
     }
 
     @Override
@@ -128,7 +161,7 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
      *
      * @param row The item being updated.
      */
-    private final void update(FolderSelectorAdapter.FolderRow row) {
+    private void update(FolderSelectorAdapter.FolderRow row) {
         final boolean add = !row.isPresent();
         if (mSingle) {
             if (!add) {
@@ -157,10 +190,8 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
     public void onClick(DialogInterface dialog, int which) {
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
-                if (mUpdater != null) {
-                    mUpdater.assignFolder(mOperations.values(), mTarget, mBatch,
-                            true /* showUndo */, false /* isMoveTo */);
-                }
+                getConversationUpdater().assignFolder(mOperations.values(), mTarget, mBatch,
+                        true /* showUndo */, false /* isMoveTo */);
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 break;

@@ -17,76 +17,91 @@
 
 package com.android.mail.ui;
 
+import android.app.AlertDialog;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
 
 import com.android.mail.R;
-import com.android.mail.providers.Account;
-import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.FolderSelectorAdapter.FolderRow;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Displays a folder selection dialog for the conversation provided. It allows
  * the user to switch a conversation from one folder to another.
  */
 public class SingleFolderSelectionDialog extends FolderSelectionDialog {
+    public SingleFolderSelectionDialog() {}
 
-    /**
-     * Create a new {@link SingleFolderSelectionDialog}. It is displayed when
-     * the {@link #show()} method is called.
-     * @param context
-     * @param account the current account
-     * @param updater
-     * @param target conversations that are impacted
-     * @param isBatch whether the dialog is shown during Contextual Action Bar
-     *            (CAB) mode
-     * @param currentFolder the current folder that the
-     *            {@link FolderListFragment} is showing
-     */
-    public SingleFolderSelectionDialog(final Context context, final Account account,
-            final ConversationUpdater updater, final Collection<Conversation> target,
-            final boolean isBatch, final Folder currentFolder) {
-        super(context, account, updater, target, isBatch, currentFolder);
-
-        mBuilder.setTitle(R.string.move_to_selection_dialog_title);
-    }
+    private static final int FOLDER_LOADER_ID = 0;
+    private static final String FOLDER_QUERY_URI_TAG = "folderQueryUri";
 
     @Override
-    protected void updateAdapterInBackground(Context context) {
-        Cursor foldersCursor = null;
-        try {
-            foldersCursor = context.getContentResolver().query(
-                    !Utils.isEmpty(mAccount.fullFolderListUri) ? mAccount.fullFolderListUri
-                            : mAccount.folderListUri, UIProvider.FOLDERS_PROJECTION, null,
-                    null, null);
-            // TODO(mindyp) : bring this back in UR8 when Email providers
-            // will have divided folder sections.
-            final String[] headers = context.getResources().getStringArray(
-                    R.array.moveto_folder_sections);
-            // Currently, the number of adapters are assumed to match the
-            // number of headers in the string array.
-            mAdapter.addSection(new SystemFolderSelectorAdapter(context, foldersCursor,
-                    R.layout.single_folders_view, headers[0], mCurrentFolder));
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-            // TODO(mindyp): we currently do not support frequently moved to
-            // folders, at headers[1]; need to define what that means.*/
-            // TODO(pwestbro): determine if we need to call filterFolders
-            mAdapter.addSection(new UserFolderHierarchicalFolderSelectorAdapter(context,
-                    AddableFolderSelectorAdapter.filterFolders(foldersCursor, null),
-                    R.layout.single_folders_view, headers[2], mCurrentFolder));
-            mBuilder.setAdapter(mAdapter, SingleFolderSelectionDialog.this);
-        } finally {
-            if (foldersCursor != null) {
-                foldersCursor.close();
-            }
-        }
+        mTitleId = R.string.move_to_selection_dialog_title;
+
+        final Bundle args = new Bundle(1);
+        args.putParcelable(FOLDER_QUERY_URI_TAG, !Utils.isEmpty(mAccount.fullFolderListUri) ?
+                mAccount.fullFolderListUri : mAccount.folderListUri);
+        final Context loaderContext = getActivity().getApplicationContext();
+        getLoaderManager().initLoader(FOLDER_LOADER_ID, args,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                        final Uri queryUri = args.getParcelable(FOLDER_QUERY_URI_TAG);
+                        return new CursorLoader(loaderContext, queryUri,
+                                UIProvider.FOLDERS_PROJECTION, null, null, null);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+                        final Context context = getActivity();
+                        if (data == null || context == null) {
+                            return;
+                        }
+
+                        final AlertDialog dialog = (AlertDialog) getDialog();
+                        // The number of view types changes here, so we have to reset the ListView's
+                        // adapter.
+                        dialog.getListView().setAdapter(null);
+
+                        mAdapter.clearSections();
+                        // TODO(mindyp) : bring this back in UR8 when Email providers
+                        // will have divided folder sections.
+                        final String[] headers = context.getResources().getStringArray(
+                                R.array.moveto_folder_sections);
+                        // Currently, the number of adapters are assumed to match the
+                        // number of headers in the string array.
+                        mAdapter.addSection(new SystemFolderSelectorAdapter(context, data,
+                                R.layout.single_folders_view, headers[0], mCurrentFolder));
+
+                        // TODO(mindyp): we currently do not support frequently moved to
+                        // folders, at headers[1]; need to define what that means.*/
+                        // TODO(pwestbro): determine if we need to call filterFolders
+                        mAdapter.addSection(
+                                new UserFolderHierarchicalFolderSelectorAdapter(context,
+                                AddableFolderSelectorAdapter.filterFolders(data, null),
+                                R.layout.single_folders_view, headers[2], mCurrentFolder));
+
+                        dialog.getListView().setAdapter(mAdapter);
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> loader) {
+                        mAdapter.clearSections();
+                    }
+                });
     }
 
     @Override
@@ -98,8 +113,9 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
             // Remove the current folder and add the new folder.
             ops.add(new FolderOperation(mCurrentFolder, false));
             ops.add(new FolderOperation(folder, true));
-            mUpdater.assignFolder(ops, mTarget, mBatch, true /* showUndo */, true /* isMoveTo */);
-            mDialog.dismiss();
+            getConversationUpdater()
+                    .assignFolder(ops, mTarget, mBatch, true /* showUndo */, true /* isMoveTo */);
+            dismiss();
         }
     }
 
