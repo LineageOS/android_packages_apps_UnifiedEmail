@@ -242,7 +242,9 @@ public class EmlAttachmentProvider extends ContentProvider {
                 .add(attachment.thumbnailUri)                       // thumbnailUri
                 .add(attachment.previewIntentUri)                   // previewIntentUri
                 .add(attachment.providerData)                       // providerData
-                .add(attachment.supportsDownloadAgain() ? 1 : 0);   // supportsDownloadAgain
+                .add(attachment.supportsDownloadAgain() ? 1 : 0)    // supportsDownloadAgain
+                .add(attachment.type)                               // type
+                .add(attachment.flags);                             // flags
     }
 
     /**

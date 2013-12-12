@@ -72,13 +72,6 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         COPY_GEO_MENU,
     }
 
-    protected static enum MenuGroupType {
-        PHONE_GROUP,
-        EMAIL_GROUP,
-        GEO_GROUP,
-        ANCHOR_GROUP,
-    }
-
     public WebViewContextMenu(Activity host) {
         mActivity = host;
 
@@ -92,7 +85,6 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         mSupportsSms = !pm.queryIntentActivities(
                 new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:")),
                 PackageManager.MATCH_DEFAULT_ONLY).isEmpty();
-        ;
     }
 
     // For our copy menu items.
@@ -190,14 +182,12 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
 
         // Show the correct menu group
         String extra = result.getExtra();
-        menu.setGroupVisible(getMenuGroupResId(MenuGroupType.PHONE_GROUP),
-                type == WebView.HitTestResult.PHONE_TYPE);
-        menu.setGroupVisible(getMenuGroupResId(MenuGroupType.EMAIL_GROUP),
-                type == WebView.HitTestResult.EMAIL_TYPE);
-        menu.setGroupVisible(getMenuGroupResId(MenuGroupType.GEO_GROUP),
-                type == WebView.HitTestResult.GEO_TYPE);
-        menu.setGroupVisible(getMenuGroupResId(MenuGroupType.ANCHOR_GROUP),
-                type == WebView.HitTestResult.SRC_ANCHOR_TYPE
+        menu.setGroupVisible(R.id.PHONE_MENU, type == WebView.HitTestResult.PHONE_TYPE);
+        menu.setGroupVisible(R.id.EMAIL_MENU, type == WebView.HitTestResult.EMAIL_TYPE);
+        menu.setGroupVisible(R.id.GEO_MENU, type == WebView.HitTestResult.GEO_TYPE);
+        menu.setGroupVisible(R.id.ANCHOR_MENU, type == WebView.HitTestResult.SRC_ANCHOR_TYPE
+                || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE);
+        menu.setGroupVisible(R.id.IMAGE_MENU, type == WebView.HitTestResult.IMAGE_TYPE
                 || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE);
 
         // Setup custom handling depending on the type
@@ -305,6 +295,7 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
                 menu.findItem(getMenuResIdForMenuType(MenuType.SHARE_LINK_MENU)).
                         setOnMenuItemClickListener(new Share(extra));
                 break;
+            case WebView.HitTestResult.IMAGE_TYPE:
             default:
                 break;
         }
@@ -313,39 +304,6 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return onMenuItemSelected(item);
-    }
-
-    /**
-     * Returns the menu type from the given resource id
-     * @param menuResId resource id of the menu
-     * @return MenuType for the specified menu resource id
-     */
-    protected MenuType getMenuTypeFromResId(final int menuResId) {
-        if (menuResId == R.id.open_context_menu_id) {
-            return MenuType.OPEN_MENU;
-        } else if (menuResId == R.id.copy_link_context_menu_id) {
-            return MenuType.COPY_LINK_MENU;
-        } else if (menuResId == R.id.share_link_context_menu_id) {
-            return MenuType.SHARE_LINK_MENU;
-        } else if (menuResId == R.id.dial_context_menu_id) {
-            return MenuType.DIAL_MENU;
-        } else if (menuResId == R.id.sms_context_menu_id) {
-            return MenuType.SMS_MENU;
-        } else if (menuResId == R.id.add_contact_context_menu_id) {
-            return MenuType.ADD_CONTACT_MENU;
-        } else if (menuResId == R.id.copy_phone_context_menu_id) {
-            return MenuType.COPY_PHONE_MENU;
-        } else if (menuResId == R.id.email_context_menu_id) {
-            return MenuType.EMAIL_CONTACT_MENU;
-        } else if (menuResId == R.id.copy_mail_context_menu_id) {
-            return MenuType.COPY_MAIL_MENU;
-        } else if (menuResId == R.id.map_context_menu_id) {
-            return MenuType.MAP_MENU;
-        } else if (menuResId == R.id.copy_geo_context_menu_id) {
-            return MenuType.COPY_GEO_MENU;
-        } else {
-            throw new IllegalStateException("Unexpected resource id");
-        }
     }
 
     /**
@@ -393,26 +351,6 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
                 return R.string.choosertitle_sharevia;
             default:
                 throw new IllegalStateException("Unexpected MenuType");
-        }
-    }
-
-    /**
-     * Returns the menu group resource id for the specified menu group type.
-     * @param menuGroupType menu group type
-     * @return menu group resource id
-     */
-    protected int getMenuGroupResId(MenuGroupType menuGroupType) {
-        switch (menuGroupType) {
-            case PHONE_GROUP:
-                return R.id.PHONE_MENU;
-            case EMAIL_GROUP:
-                return R.id.EMAIL_MENU;
-            case GEO_GROUP:
-                return R.id.GEO_MENU;
-            case ANCHOR_GROUP:
-                return R.id.ANCHOR_MENU;
-            default:
-                throw new IllegalStateException("Unexpected MenuGroupType");
         }
     }
 

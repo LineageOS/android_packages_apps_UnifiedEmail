@@ -37,6 +37,7 @@ import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageScrollView;
 import com.android.mail.browse.MessageWebView;
+import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
@@ -97,6 +98,8 @@ public class SecureConversationViewController implements
         mWebView = (MessageWebView) rootView.findViewById(R.id.webview);
         mWebView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         mWebView.setWebViewClient(mCallbacks.getWebViewClient());
+        mWebView.setOnCreateContextMenuListener(
+                new WebViewContextMenu(mCallbacks.getFragment().getActivity()));
         mWebView.setFocusable(false);
         final WebSettings settings = mWebView.getSettings();
 

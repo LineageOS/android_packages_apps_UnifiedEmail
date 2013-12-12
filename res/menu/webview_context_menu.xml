@@ -47,13 +47,11 @@
         <item android:id="@+id/share_link_context_menu_id"
             android:title="@string/contextmenu_sharelink"/>
     </group>
-    <group android:id="@+id/HELP_FEEDBACK_GROUP">
-        <item android:id="@+id/help_info_menu_item"
-            android:icon="@android:drawable/ic_menu_help"
-            android:title="@string/contextmenu_help" />
-        <item android:id="@+id/feedback_menu_item"
-            android:icon="@android:drawable/ic_menu_send"
-            android:title="@string/contextmenu_feedback" />
+    <group android:id="@+id/IMAGE_MENU">
+        <item android:id="@+id/view_image_context_menu_id"
+              android:title="@string/contextmenu_view_image"/>
+        <item android:id="@+id/save_image_context_menu_id"
+              android:title="@string/contextmenu_save_image"/>
     </group>
 </menu>
 
