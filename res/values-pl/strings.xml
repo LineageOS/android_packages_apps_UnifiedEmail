@@ -376,7 +376,7 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Otwórz szufladę nawigacji"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Zamknij szufladę nawigacji"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Kliknij zdjęcie nadawcy, by wybrać tę rozmowę."</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Kliknij zdjęcie nadawcy, by wybrać wątek."</string>
     <string name="long_press_to_select_tip" msgid="9205666839837250150">"Kliknij i przytrzymaj, by zaznaczyć jeden wątek, a następnie kliknij, by zaznaczyć więcej."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ikona folderu"</string>
     <string name="add_account" msgid="2162808366829269770">"Dodaj konto"</string>

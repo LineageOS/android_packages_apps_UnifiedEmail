@@ -62,7 +62,7 @@
     <string name="archive" msgid="847250094775910499">"העבר לארכיון"</string>
     <string name="report_spam" msgid="6467567747975393907">"דווח על ספאם"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"דווח שפריט זה אינו דואר זבל"</string>
-    <string name="report_phishing" msgid="5714205737453138338">"דווח על התחזות"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"דווח על דיוג"</string>
     <string name="delete" msgid="844871204175957681">"מחק"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"מחק טיוטות"</string>
     <string name="refresh" msgid="490989798005710951">"רענן"</string>
@@ -186,8 +186,8 @@
     <item quantity="other" msgid="6662213740575340397">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; סומנה כלא חשובה."</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו כהתחזות."</item>
-    <item quantity="other" msgid="3678624994662639442">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו כהתחזות."</item>
+    <item quantity="one" msgid="5386916574432049235">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחה כדיוג."</item>
+    <item quantity="other" msgid="3678624994662639442">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו כדיוג."</item>
   </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; הועברה לארכיון."</item>
