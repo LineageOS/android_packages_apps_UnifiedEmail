@@ -35,6 +35,10 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
         mSections.add(adapter);
     }
 
+    public void clearSections() {
+        mSections.clear();
+    }
+
     @Override
     public Object getItem(int position) {
         for (FolderSelectorAdapter adapter : mSections) {
@@ -66,7 +70,7 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
         int total = 0;
         for (Adapter adapter : mSections)
             total += adapter.getViewTypeCount();
-        return total;
+        return total == 0 ? 1 : total;
     }
 
     @Override

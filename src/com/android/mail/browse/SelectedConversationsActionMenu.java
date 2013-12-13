@@ -110,7 +110,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mFolder = folder;
         mContext = mActivity.getActivityContext();
         mUpdater = activity.getConversationUpdater();
-        FolderSelectionDialog.setDialogDismissed();
     }
 
     @Override
@@ -186,10 +185,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             }
             if (!cantMove) {
                 final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
-                        mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder,
+                        acct, mSelectionSet.values(), true, mFolder,
                         item.getItemId() == R.id.move_to);
                 if (dialog != null) {
-                    dialog.show();
+                    dialog.show(mActivity.getFragmentManager(), null);
                 }
             }
         } else if (itemId == R.id.move_to_inbox) {

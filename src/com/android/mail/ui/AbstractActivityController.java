@@ -1240,7 +1240,6 @@ public abstract class AbstractActivityController implements ActivityController,
         mPagerController = new ConversationPagerController(mActivity, this);
         mToastBar = (ActionableToastBar) mActivity.findViewById(R.id.toast_bar);
         attachActionBar();
-        FolderSelectionDialog.setDialogDismissed();
 
         mDrawIdler.setRootView(mActivity.getWindow().getDecorView());
 
@@ -1429,12 +1428,11 @@ public abstract class AbstractActivityController implements ActivityController,
         } else if (id == R.id.manage_folders_item) {
             Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
         } else if (id == R.id.move_to || id == R.id.change_folders) {
-            final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
-                    mActivity.getActivityContext(), mAccount, this,
+            final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(mAccount,
                     Conversation.listOf(mCurrentConversation), isBatch, mFolder,
                     id == R.id.move_to);
             if (dialog != null) {
-                dialog.show();
+                dialog.show(mActivity.getFragmentManager(), null);
             }
         } else if (id == R.id.move_to_inbox) {
             new AsyncTask<Void, Void, Folder>() {

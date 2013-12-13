@@ -17,6 +17,9 @@
 
 package com.android.mail.ui;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.android.mail.providers.Folder;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -26,11 +29,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
-public class FolderOperation {
+public class FolderOperation implements Parcelable {
     /** An immutable, empty conversation list */
     public static final Collection<FolderOperation> EMPTY = Collections.emptyList();
-    public Folder mFolder;
-    public boolean mAdd;
+    public final Folder mFolder;
+    public final boolean mAdd;
 
     public FolderOperation(Folder folder, Boolean operation) {
         mAdd = operation;
@@ -39,10 +42,10 @@ public class FolderOperation {
 
     /**
      * Get all the unique folders associated with a set of folder operations.
-     * @param ops
-     * @return
+     * @param ops Operations to inspect
+     * @return ArrayList of Folder objects
      */
-    public final static ArrayList<Folder> getFolders(Collection<FolderOperation> ops) {
+    public static ArrayList<Folder> getFolders(Collection<FolderOperation> ops) {
         HashSet<Folder> folders = new HashSet<Folder>();
         for (FolderOperation op : ops) {
             folders.add(op.mFolder);
@@ -77,4 +80,34 @@ public class FolderOperation {
         }
         return false;
     }
+
+    // implements Parcelable
+
+    FolderOperation(Parcel in) {
+        mAdd = in.readByte() != 0;
+        mFolder = in.readParcelable(getClass().getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte)(mAdd ? 1 : 0));
+        dest.writeParcelable(mFolder, 0);
+    }
+
+    public static final Creator<FolderOperation> CREATOR = new Creator<FolderOperation>() {
+        @Override
+        public FolderOperation createFromParcel(Parcel source) {
+            return new FolderOperation(source);
+        }
+
+        @Override
+        public FolderOperation[] newArray(int size) {
+            return new FolderOperation[size];
+        }
+    };
 }
