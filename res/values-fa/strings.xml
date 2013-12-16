@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"نوشتن ایمیل"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"پیوست کردن فایل"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"پیوست کردن تصویر"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"پیوست کردن ویدیو"</string>
     <string name="save_draft" msgid="5555744208032445632">"ذخیره پیش‌نویس"</string>
     <string name="discard" msgid="1714960202994370243">"دور انداختن"</string>
     <string name="compose" msgid="1473559896062432878">"نوشتن نامه"</string>
@@ -114,11 +113,14 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"ذخیره همه"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"اشتراک‌گذاری"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"اشتراک‌گذاری همه"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"چاپ"</string>
     <string name="saving" msgid="925514721138014677">"در حال ذخیره…"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"اشتراک‌گذاری از طریق"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"بازکردن در مرورگر"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"کپی"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"‏کپی URL پیوند"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"مشاهده تصویر"</string>
+    <string name="contextmenu_save_image" msgid="8060193290720783002">"ذخیره تصویر"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"شماره‌گیری..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"پیامک..."</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"افزودن مخاطب"</string>
@@ -363,8 +365,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"در لیست مکالمه"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"تصویر فرستنده"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"نمایش در کنار نام در فهرست مکالمه"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"برای بازخوانی، صفحه را با انگشت به سمت پایین بکشید"</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"در حال بررسی برای ایمیل"</string>
     <string name="empty_trash" msgid="652435297593538512">"خالی کردن پوشه حذف‌ شده‌ها"</string>
     <string name="empty_spam" msgid="6064497180615519589">"خالی کردن پوشه هرزنامه"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"خالی کردن پوشه حذف‌ شده‌ها؟"</string>
@@ -380,9 +380,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"نماد پوشه"</string>
     <string name="add_account" msgid="2162808366829269770">"افزودن حساب"</string>
     <string name="attached_message" msgid="4267189489654642035">"پیام پیوست شده"</string>
-    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>،‏ <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="date_message_received_today" msgid="7923108495669251362">"امروز، <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="date_message_received_yesterday" msgid="2240669381396206434">"دیروز، <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"دیروز، <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"رد کردن نکته راهنما"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"همگام‌سازی خودکار خاموش است."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"برای روشن کردن لمس کنید."</string>

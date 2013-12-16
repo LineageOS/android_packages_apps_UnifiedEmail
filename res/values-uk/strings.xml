@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"Напишіть електронний лист"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Вкласти файл"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Вкласти фото"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"Вкласти відео"</string>
     <string name="save_draft" msgid="5555744208032445632">"Зберегти як чернетку"</string>
     <string name="discard" msgid="1714960202994370243">"Закрити"</string>
     <string name="compose" msgid="1473559896062432878">"Написати"</string>
@@ -114,11 +113,14 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Зберег.всі"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Надіслати"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Надісл.всі"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"Друк"</string>
     <string name="saving" msgid="925514721138014677">"Збереження…"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Надіслати через"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Відкрити у веб-переглядачі"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Копіювати"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"Копіювати URL-адресу посилання"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"Переглянути зображення"</string>
+    <string name="contextmenu_save_image" msgid="8060193290720783002">"Зберегти зображення"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Дзвонити..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Додати контакт"</string>
@@ -363,8 +365,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"У списку бесід"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Зображення відправника"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Показувати біля імені в списку бесід"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Проведіть пальцем униз, щоб оновити"</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"Перевірка пошти"</string>
     <string name="empty_trash" msgid="652435297593538512">"Очистити кошик"</string>
     <string name="empty_spam" msgid="6064497180615519589">"Очистити папку для спаму"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Очистити кошик?"</string>
@@ -380,9 +380,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"Значок папки"</string>
     <string name="add_account" msgid="2162808366829269770">"Додати обліковий запис"</string>
     <string name="attached_message" msgid="4267189489654642035">"Вкладене повідомлення"</string>
-    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="date_message_received_today" msgid="7923108495669251362">"Сьогодні, <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="date_message_received_yesterday" msgid="2240669381396206434">"Учора, <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"Учора, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Закрити пораду"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Автоматичну синхронізацію вимкнено."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Торкніться, щоб увімкнути."</string>
@@ -412,8 +410,8 @@
     <item quantity="other" msgid="3556482119464721042">"Вкладених файлів: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
     <string name="no_subject" msgid="7823949839148118599">"(без теми)"</string>
-    <string name="vacation_responder" msgid="145292667520371875">"Автоматична відповідь"</string>
-    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"Автоматична відповідь"</string>
+    <string name="vacation_responder" msgid="145292667520371875">"Автовідповідач"</string>
+    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"Автовідповідач"</string>
     <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"Повідомлення"</string>
     <string name="send_to_contacts_text" msgid="2696513899649703420">"Надсилати лише моїм контактам"</string>
     <string name="send_to_domain_text" msgid="5055332409482662383">"Надсилати лише в домен <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
@@ -424,8 +422,8 @@
     <string name="custom_date" msgid="7566383722092597487">"Вибрати"</string>
     <string name="date_none" msgid="1033448683454519235">"Немає"</string>
     <string name="discard_changes" msgid="57677638191085556">"Відхилити зміни?"</string>
-    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"Зміни до автоматичної відповіді збережено"</string>
-    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"Зміни до автоматичної відповіді відхилено"</string>
+    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"Зміни налаштувань автовідповідача збережено"</string>
+    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"Зміни налаштувань автовідповідача відхилено"</string>
     <string name="vacation_responder_off" msgid="3502054743467746285">"Вимкнено"</string>
     <string name="vacation_responder_on" msgid="5242690599331655563">"Увімкнено від <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Увімкнено від <xliff:g id="START_DATE">%1$s</xliff:g> до <xliff:g id="END_DATE">%2$s</xliff:g>"</string>

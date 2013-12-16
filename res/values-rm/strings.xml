@@ -32,8 +32,6 @@
     <skip />
     <!-- no translation found for add_photo_attachment (3738882100645552858) -->
     <skip />
-    <!-- no translation found for add_video_attachment (8916625983712820173) -->
-    <skip />
     <!-- no translation found for save_draft (5555744208032445632) -->
     <skip />
     <!-- no translation found for discard (1714960202994370243) -->
@@ -203,6 +201,8 @@
     <skip />
     <!-- no translation found for menu_photo_share_all (4577299400844129078) -->
     <skip />
+    <!-- no translation found for menu_photo_print (1751063711206436775) -->
+    <skip />
     <!-- no translation found for saving (925514721138014677) -->
     <skip />
     <!-- no translation found for choosertitle_sharevia (6142681649048665134) -->
@@ -212,6 +212,10 @@
     <!-- no translation found for contextmenu_copy (4604170699444153037) -->
     <skip />
     <!-- no translation found for contextmenu_copylink (3580131515400610839) -->
+    <skip />
+    <!-- no translation found for contextmenu_view_image (8855189263365643422) -->
+    <skip />
+    <!-- no translation found for contextmenu_save_image (8060193290720783002) -->
     <skip />
     <!-- no translation found for contextmenu_dial_dot (9104426720103729453) -->
     <skip />
@@ -547,10 +551,6 @@
     <skip />
     <!-- no translation found for preference_sender_image_description (7126493917536558232) -->
     <skip />
-    <!-- no translation found for swipe_down_to_refresh (6401908905820786227) -->
-    <skip />
-    <!-- no translation found for checking_for_mail (2301797903350897130) -->
-    <skip />
     <!-- no translation found for empty_trash (652435297593538512) -->
     <skip />
     <!-- no translation found for empty_spam (6064497180615519589) -->
@@ -575,11 +575,7 @@
     <skip />
     <!-- no translation found for attached_message (4267189489654642035) -->
     <skip />
-    <!-- no translation found for date_message_received (6302308934790266050) -->
-    <skip />
-    <!-- no translation found for date_message_received_today (7923108495669251362) -->
-    <skip />
-    <!-- no translation found for date_message_received_yesterday (2240669381396206434) -->
+    <!-- no translation found for date_message_received_yesterday (5690676561028193570) -->
     <skip />
     <!-- no translation found for dismiss_tip_hover_text (1930345936314578166) -->
     <skip />
