@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"Rakstiet e-pasta ziņojumu"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Pievienot failu"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Pievienot attēlu"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"Pievienot videoklipu"</string>
     <string name="save_draft" msgid="5555744208032445632">"Saglabāt melnrakstu"</string>
     <string name="discard" msgid="1714960202994370243">"Atmest"</string>
     <string name="compose" msgid="1473559896062432878">"Rakstīt"</string>
@@ -114,11 +113,14 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Sagl. visu"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Kopīgot"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Kopīg.visu"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"Drukāt"</string>
     <string name="saving" msgid="925514721138014677">"Notiek saglabāšana…"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Kopīgošanas veids"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Atvērt pārlūkprogrammā"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopēt"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"Kopēt saites URL"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"Skatīt attēlu"</string>
+    <string name="contextmenu_save_image" msgid="8060193290720783002">"Saglabāt attēlu"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Ievadīt numuru..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"Sūtīt īsziņu…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Pievienot kontaktpersonu"</string>
@@ -363,8 +365,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"Sarunu sarakstā"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Sūtītāja attēls"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Rādīt blakus vārdam sarunu sarakstā"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Lai atsvaidzinātu, velciet uz leju."</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"Notiek e-pasta pārbaude"</string>
     <string name="empty_trash" msgid="652435297593538512">"Iztukšot atkritni"</string>
     <string name="empty_spam" msgid="6064497180615519589">"Iztukšot mēstuļu mapi"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Vai iztukšot atkritni?"</string>
@@ -380,9 +380,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"Mapes ikona"</string>
     <string name="add_account" msgid="2162808366829269770">"Pievienot kontu"</string>
     <string name="attached_message" msgid="4267189489654642035">"Pievienots ziņojums"</string>
-    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, plkst. <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="date_message_received_today" msgid="7923108495669251362">"Šodien plkst. <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="date_message_received_yesterday" msgid="2240669381396206434">"Vakar plkst. <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"Vakar, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Noraidīt padomu"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Automātiskā sinhronizācija ir izslēgta."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Pieskarieties, lai ieslēgtu."</string>

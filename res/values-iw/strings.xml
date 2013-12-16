@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"כתוב דוא\"ל"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"צרף קובץ"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"צרף תמונה"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"צרף סרטון"</string>
     <string name="save_draft" msgid="5555744208032445632">"שמור טיוטה"</string>
     <string name="discard" msgid="1714960202994370243">"מחק"</string>
     <string name="compose" msgid="1473559896062432878">"כתוב"</string>
@@ -62,7 +61,7 @@
     <string name="archive" msgid="847250094775910499">"העבר לארכיון"</string>
     <string name="report_spam" msgid="6467567747975393907">"דווח על ספאם"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"דווח שפריט זה אינו דואר זבל"</string>
-    <string name="report_phishing" msgid="5714205737453138338">"דווח על התחזות"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"דווח על דיוג"</string>
     <string name="delete" msgid="844871204175957681">"מחק"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"מחק טיוטות"</string>
     <string name="refresh" msgid="490989798005710951">"רענן"</string>
@@ -114,11 +113,14 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"שמור הכל"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"שתף"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"שתף הכל"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"הדפס"</string>
     <string name="saving" msgid="925514721138014677">"שומר…"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"שתף באמצעות"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"פתח בדפדפן"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"העתק"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"העתק כתובת אתר של קישור"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"הצג תמונה"</string>
+    <string name="contextmenu_save_image" msgid="8060193290720783002">"שמור תמונה"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"חייג..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"הוסף איש קשר"</string>
@@ -185,8 +187,8 @@
     <item quantity="other" msgid="6662213740575340397">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; סומנה כלא חשובה."</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו כהתחזות."</item>
-    <item quantity="other" msgid="3678624994662639442">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו כהתחזות."</item>
+    <item quantity="one" msgid="5386916574432049235">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחה כדיוג."</item>
+    <item quantity="other" msgid="3678624994662639442">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו כדיוג."</item>
   </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"‏&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; הועברה לארכיון."</item>
@@ -363,8 +365,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"ברשימת השיחות"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"תמונת השולח"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"הצג לצד השם ברשימת השיחות"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"החלק מטה לביצוע רענון"</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"בודק אם יש דואר"</string>
     <string name="empty_trash" msgid="652435297593538512">"רוקן את האשפה"</string>
     <string name="empty_spam" msgid="6064497180615519589">"רוקן את דואר הזבל"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"האם לרוקן את האשפה?"</string>
@@ -380,9 +380,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"סמל תיקיה"</string>
     <string name="add_account" msgid="2162808366829269770">"הוסף חשבון"</string>
     <string name="attached_message" msgid="4267189489654642035">"הודעה מצורפת"</string>
-    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>‏, <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="date_message_received_today" msgid="7923108495669251362">"היום ב-<xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="date_message_received_yesterday" msgid="2240669381396206434">"אתמול ב-<xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"אתמול, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"סגור את הטיפ"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"הסנכרון האוטומטי כבוי."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"גע כדי להפעיל."</string>

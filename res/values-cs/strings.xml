@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"Napsat zprávu"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Přiložit soubor"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Připojit obrázek"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"Připojit video"</string>
     <string name="save_draft" msgid="5555744208032445632">"Uložit koncept"</string>
     <string name="discard" msgid="1714960202994370243">"Zahodit"</string>
     <string name="compose" msgid="1473559896062432878">"Napsat"</string>
@@ -114,11 +113,17 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Uložit vše"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Sdílet"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Sdílet vše"</string>
+    <!-- no translation found for menu_photo_print (1751063711206436775) -->
+    <skip />
     <string name="saving" msgid="925514721138014677">"Ukládání…"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Sdílet pomocí"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Otevřít v prohlížeči"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopírovat"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"Kopírovat adresu URL odkazu"</string>
+    <!-- no translation found for contextmenu_view_image (8855189263365643422) -->
+    <skip />
+    <!-- no translation found for contextmenu_save_image (8060193290720783002) -->
+    <skip />
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Vytočit..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS..."</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Přidat kontakt"</string>
@@ -226,7 +231,7 @@
     <string name="bcc_heading" msgid="4698055226318660420">"Skrytá: "</string>
     <string name="date_heading" msgid="2086174555097691910">"Datum: "</string>
     <string name="show_images" msgid="1875700481186331432">"Zobrazit obrázky"</string>
-    <string name="always_show_images" msgid="5966408990164581801">"Obr. od tohoto odesílatele vždy zobrazit"</string>
+    <string name="always_show_images" msgid="5966408990164581801">"Vždy zobrazit obrázky od tohoto kontaktu"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Obrázky od tohoto odesílatele se zobrazí automaticky."</string>
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> přes <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
@@ -363,8 +368,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"V seznamu konverzací"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Obrázek odesílatele"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Zobrazit vedle jména v seznamu konverzací"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Seznam aktualizujete posunutím dolů."</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"Kontrola pošty"</string>
     <string name="empty_trash" msgid="652435297593538512">"Vysypat koš"</string>
     <string name="empty_spam" msgid="6064497180615519589">"Vyprázdnit složku se spamem"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Chcete vysypat koš?"</string>
@@ -380,9 +383,8 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ikona složky"</string>
     <string name="add_account" msgid="2162808366829269770">"Přidat účet"</string>
     <string name="attached_message" msgid="4267189489654642035">"Přiložená zpráva"</string>
-    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="date_message_received_today" msgid="7923108495669251362">"Dnes v <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="date_message_received_yesterday" msgid="2240669381396206434">"Včera v <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <!-- no translation found for date_message_received_yesterday (5690676561028193570) -->
+    <skip />
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Zavřít tip"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Automatická synchronizace je vypnuta."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Zapnete ji klepnutím."</string>
