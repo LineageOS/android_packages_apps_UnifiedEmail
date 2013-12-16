@@ -17,7 +17,6 @@
 
 package com.android.mail.browse;
 
-import android.content.AsyncTaskLoader;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +25,7 @@ import android.net.Uri;
 import com.android.emailcommon.TempDirectory;
 import com.android.emailcommon.internet.MimeMessage;
 import com.android.emailcommon.mail.MessagingException;
+import com.android.mail.ui.MailAsyncTaskLoader;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -37,11 +37,10 @@ import java.io.InputStream;
 /**
  * Loader that builds a ConversationMessage from an EML file Uri.
  */
-public class EmlMessageLoader extends AsyncTaskLoader<ConversationMessage> {
+public class EmlMessageLoader extends MailAsyncTaskLoader<ConversationMessage> {
     private static final String LOG_TAG = LogTag.getLogTag();
 
     private Uri mEmlFileUri;
-    private ConversationMessage mMessage;
 
     public EmlMessageLoader(Context context, Uri emlFileUri) {
         super(context);
@@ -62,7 +61,7 @@ public class EmlMessageLoader extends AsyncTaskLoader<ConversationMessage> {
         }
 
         final MimeMessage mimeMessage;
-        final ConversationMessage convMessage;
+        ConversationMessage convMessage;
         try {
             mimeMessage = new MimeMessage(stream);
             convMessage = new ConversationMessage(context, mimeMessage, mEmlFileUri);
@@ -76,117 +75,30 @@ public class EmlMessageLoader extends AsyncTaskLoader<ConversationMessage> {
             try {
                 stream.close();
             } catch (IOException e) {
-                return null;
+                convMessage = null;
             }
 
             // delete temp files created during parsing
             final File[] cacheFiles = TempDirectory.getTempDirectory().listFiles();
             for (final File file : cacheFiles) {
                 if (file.getName().startsWith("body")) {
-                    file.delete();
+                    final boolean deleted = file.delete();
+                    if (!deleted) {
+                        LogUtils.d(LOG_TAG, "Failed to delete temp file" + file.getName());
+                    }
                 }
             }
-
         }
 
         return convMessage;
     }
 
     /**
-     * Called when there is new data to deliver to the client.  The
-     * super class will take care of delivering it; the implementation
-     * here just adds a little more logic.
-     */
-    @Override
-    public void deliverResult(ConversationMessage result) {
-        if (isReset()) {
-            // An async query came in while the loader is stopped.  We
-            // don't need the result.
-            if (result != null) {
-                onReleaseResources(result);
-            }
-            return;
-        }
-        ConversationMessage oldMessage = mMessage;
-        mMessage = result;
-
-        if (isStarted()) {
-            // If the Loader is currently started, we can immediately
-            // deliver its results.
-            super.deliverResult(result);
-        }
-
-        // At this point we can release the resources associated with
-        // 'oldMessage' if needed; now that the new result is delivered we
-        // know that it is no longer in use.
-        if (oldMessage != null && oldMessage != mMessage) {
-            onReleaseResources(oldMessage);
-        }
-    }
-
-    /**
-     * Handles a request to start the Loader.
-     */
-    @Override
-    protected void onStartLoading() {
-        if (mMessage != null) {
-            // If we currently have a result available, deliver it immediately.
-            deliverResult(mMessage);
-        }
-
-        if (takeContentChanged() || mMessage == null) {
-            // If the data has changed since the last time it was loaded
-            // or is not currently available, start a load.
-            forceLoad();
-        }
-    }
-
-    /**
-     * Handles a request to stop the Loader.
-     */
-    @Override protected void onStopLoading() {
-        // Attempt to cancel the current load task if possible.
-        cancelLoad();
-    }
-
-    /**
-     * Handles a request to cancel a load.
-     */
-    @Override
-    public void onCanceled(ConversationMessage result) {
-        super.onCanceled(result);
-
-        // At this point we can release the resources associated with
-        // the message, if needed.
-        if (result != null) {
-            onReleaseResources(result);
-        }
-    }
-
-    /**
-     * Handles a request to completely reset the Loader.
-     */
-    @Override
-    protected void onReset() {
-        super.onReset();
-
-        // Ensure the loader is stopped
-        onStopLoading();
-
-        // At this point we can release the resources associated with
-        // the message, if needed.
-        if (mMessage != null) {
-            onReleaseResources(mMessage);
-            mMessage = null;
-        }
-    }
-
-
-    /**
      * Helper function to take care of releasing resources associated
      * with an actively loaded data set.
      */
-    protected void onReleaseResources(ConversationMessage message) {
+    @Override
+    protected void onDiscardResult(ConversationMessage message) {
         // if this eml message had attachments, start a service to clean up the cache files
         if (message.attachmentListUri != null) {
             final Intent intent = new Intent(Intent.ACTION_DELETE);
