@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"เขียนอีเมล"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"แนบไฟล์"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"แนบรูปภาพ"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"แนบวิดีโอ"</string>
     <string name="save_draft" msgid="5555744208032445632">"บันทึกร่างจดหมาย"</string>
     <string name="discard" msgid="1714960202994370243">"ทิ้ง"</string>
     <string name="compose" msgid="1473559896062432878">"เขียน"</string>
@@ -114,11 +113,14 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"บันทึกทั้งหมด"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"แบ่งปัน"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"แบ่งปันหมด"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"พิมพ์"</string>
     <string name="saving" msgid="925514721138014677">"กำลังบันทึก…"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"แบ่งปันผ่าน"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"เปิดในเบราว์เซอร์"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"คัดลอก"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"คัดลอก URL ของลิงก์"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"ดูภาพ"</string>
+    <string name="contextmenu_save_image" msgid="8060193290720783002">"บันทึกภาพ"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"หมุนหมายเลข..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"เพิ่มรายชื่อติดต่อ"</string>
@@ -363,8 +365,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"ในรายการการสนทนา"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"ภาพของผู้ส่ง"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"แสดงข้างชื่อในรายการสนทนา"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"กวาดลงเพื่อรีเฟรช"</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"กำลังตรวจดูจดหมาย"</string>
     <string name="empty_trash" msgid="652435297593538512">"ลบทุกอย่างในถังขยะ"</string>
     <string name="empty_spam" msgid="6064497180615519589">"ลบทุกอย่างในสแปม"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"ลบทุกอย่างในถังขยะหรือไม่"</string>
@@ -380,9 +380,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"ไอคอนโฟลเดอร์"</string>
     <string name="add_account" msgid="2162808366829269770">"เพิ่มบัญชี"</string>
     <string name="attached_message" msgid="4267189489654642035">"ข้อความที่แนบมา"</string>
-    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> เวลา <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="date_message_received_today" msgid="7923108495669251362">"วันนี้เวลา <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="date_message_received_yesterday" msgid="2240669381396206434">"เมื่อวานนี้เวลา <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"เมื่อวาน <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"ปิดเคล็ดลับ"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"การซิงค์อัตโนมัติปิดอยู่"</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"แตะเพื่อเปิด"</string>

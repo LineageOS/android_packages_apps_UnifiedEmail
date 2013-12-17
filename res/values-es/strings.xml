@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"Escribe tu correo"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Adjuntar archivo"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Adjuntar imagen"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"Adjuntar vídeo"</string>
     <string name="save_draft" msgid="5555744208032445632">"Guardar borrador"</string>
     <string name="discard" msgid="1714960202994370243">"Descartar"</string>
     <string name="compose" msgid="1473559896062432878">"Redactar"</string>
@@ -114,11 +113,14 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Guardar todo"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Compartir"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Compartir todo"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"Imprimir"</string>
     <string name="saving" msgid="925514721138014677">"Guardando..."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Compartir a través de"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Abrir en el navegador"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Copiar"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"Copiar URL de enlace"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"Ver imagen"</string>
+    <string name="contextmenu_save_image" msgid="8060193290720783002">"Guardar imagen"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Marcar..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS..."</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Añadir contacto"</string>
@@ -363,8 +365,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"En la lista de conversaciones"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Imagen del remitente"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Mostrar junto al nombre en la lista de conversaciones"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Deslizar hacia abajo para actualizar"</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"Buscando correo electrónico..."</string>
     <string name="empty_trash" msgid="652435297593538512">"Vaciar papelera"</string>
     <string name="empty_spam" msgid="6064497180615519589">"Vaciar carpeta de spam"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"¿Vaciar papelera?"</string>
@@ -380,9 +380,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"Icono de carpeta"</string>
     <string name="add_account" msgid="2162808366829269770">"Añadir cuenta"</string>
     <string name="attached_message" msgid="4267189489654642035">"Mensaje adjunto"</string>
-    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="date_message_received_today" msgid="7923108495669251362">"Hoy a las <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="date_message_received_yesterday" msgid="2240669381396206434">"Ayer a las <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"Ayer, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Ignorar sugerencia"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"La opción de sincronización automática está desactivada."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Tocar para activar."</string>

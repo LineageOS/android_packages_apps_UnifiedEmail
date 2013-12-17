@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"តែង​អ៊ីមែល"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"ភ្ជាប់​​ឯកសារ"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"ភ្ជាប់​រូបភាព"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"ភ្ជាប់​វីដេអូ"</string>
     <string name="save_draft" msgid="5555744208032445632">"រក្សាទុក​សេចក្ដី​ព្រាង"</string>
     <string name="discard" msgid="1714960202994370243">"បោះបង់"</string>
     <string name="compose" msgid="1473559896062432878">"តែង"</string>
@@ -114,11 +113,14 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"រក្សា​ទុក​ទាំងអស់"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"ចែករំលែក"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"ចែក​រំលែក​ទាំងអស់"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"បោះពុម្ព"</string>
     <string name="saving" msgid="925514721138014677">"កំពុង​រក្សាទុក..."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"ចែករំលែក​តាម"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"បើក​ក្នុង​កម្មវិធី​អ៊ីនធឺណិត"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"ចម្លង"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"ចម្លង URL របស់​តំណ"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"មើល​រូបភាព"</string>
+    <string name="contextmenu_save_image" msgid="8060193290720783002">"រក្សាទុក​រូបភាព"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"ហៅ…"</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"សារ SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"បន្ថែម​ទំនាក់ទំនង"</string>
@@ -363,8 +365,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"នៅ​ក្នុង​បញ្ជី​សន្ទនា"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"រូបភាព​អ្នក​ផ្ញើ"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"បង្ហាញ​ក្បែរ​ឈ្មោះ​នៅ​ក្នុង​បញ្ជី​​សន្ទនា"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"អូស​ចុះ​ក្រោយ​​ ដើម្បី​ផ្ទុក​ឡើង​វិញ"</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"កំពុង​ពិនិត្យ​មើល​​សំបុត្រ"</string>
     <string name="empty_trash" msgid="652435297593538512">"សម្អាត​ធុង​សំរាម"</string>
     <string name="empty_spam" msgid="6064497180615519589">"សម្អាត​សារ​ឥត​បាន​ការ"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"សម្អាត​ធុង​សំរាម?"</string>
@@ -380,9 +380,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"រូប​តំណាង​ថត"</string>
     <string name="add_account" msgid="2162808366829269770">"បន្ថែម​គណនី"</string>
     <string name="attached_message" msgid="4267189489654642035">"សារ​ដែល​បាន​ភ្ជាប់"</string>
-    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="date_message_received_today" msgid="7923108495669251362">"ថ្ងៃ​នេះ <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="date_message_received_yesterday" msgid="2240669381396206434">"​ម្សិល​មិញ <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"​​ម្សិល​មិញ <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"បោះបង់​ព័ត៌មាន​ជំនួយ"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"​បិទ​ការ​ធ្វើ​សម​កាល​កម្ម​ដោយ​ស្វ័យ​ប្រវត្តិ​។"</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"ប៉ះ​​ ដើម្បី​បើក។"</string>
