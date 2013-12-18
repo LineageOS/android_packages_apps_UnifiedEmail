@@ -447,6 +447,9 @@ function hideUnsafeImages(msgContentDivs) {
     var msgContentDiv, image;
     var images;
     var showImages;
+    var k = 0;
+    var urls = new Array();
+    var messageIds = new Array();
     for (i = 0, msgContentCount = msgContentDivs.length; i < msgContentCount; i++) {
         msgContentDiv = msgContentDivs[i];
         showImages = msgContentDiv.classList.contains("mail-show-images");
@@ -454,7 +457,12 @@ function hideUnsafeImages(msgContentDivs) {
         images = msgContentDiv.getElementsByTagName("img");
         for (j = 0, imgCount = images.length; j < imgCount; j++) {
             image = images[j];
-            rewriteRelativeImageSrc(image);
+            var src = rewriteRelativeImageSrc(image);
+            if (src) {
+                urls[k] = src;
+                messageIds[k] = msgContentDiv.parentNode.id;
+                k++;
+            }
             attachImageLoadListener(image);
             // TODO: handle inline image attachments for all supported protocols
             if (!showImages) {
@@ -462,11 +470,14 @@ function hideUnsafeImages(msgContentDivs) {
             }
         }
     }
+
+    window.mail.onInlineAttachmentsParsed(urls, messageIds);
 }
 
 /**
- * Changes relative paths to absolute path by pre-pending the account uri
+ * Changes relative paths to absolute path by pre-pending the account uri.
  * @param {Element} imgElement Image for which the src path will be updated.
+ * @returns the rewritten image src string or null if the imgElement was not rewritten.
  */
 function rewriteRelativeImageSrc(imgElement) {
     var src = imgElement.src;
@@ -476,7 +487,10 @@ function rewriteRelativeImageSrc(imgElement) {
         // The conversation specifies a different base uri than the document
         src = CONVERSATION_BASE_URI + src.substring(DOC_BASE_URI.length);
         imgElement.src = src;
+        return src;
     }
+
+    return null;
 };
 
 

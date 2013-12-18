@@ -19,6 +19,7 @@ package com.android.mail.photo;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -106,15 +107,20 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      */
     public static void startMailPhotoViewActivity(final Context context, final Uri imageListUri,
             final String initialPhotoUri) {
-        final Intents.PhotoViewIntentBuilder builder =
-                Intents.newPhotoViewIntentBuilder(context,
-                        "com.android.mail.photo.MailPhotoViewActivity");
-        builder
-                .setPhotosUri(imageListUri.toString())
+        context.startActivity(
+                buildMailPhotoViewActivityIntent(context, imageListUri, initialPhotoUri));
+    }
+
+    public static Intent buildMailPhotoViewActivityIntent(
+            final Context context, final Uri imageListUri, final String initialPhotoUri) {
+        final Intents.PhotoViewIntentBuilder builder = Intents.newPhotoViewIntentBuilder(
+                context, "com.android.mail.photo.MailPhotoViewActivity");
+
+        builder.setPhotosUri(imageListUri.toString())
                 .setProjection(UIProvider.ATTACHMENT_PROJECTION)
                 .setInitialPhotoUri(initialPhotoUri);
 
-        context.startActivity(builder.build());
+        return builder.build();
     }
 
     @Override

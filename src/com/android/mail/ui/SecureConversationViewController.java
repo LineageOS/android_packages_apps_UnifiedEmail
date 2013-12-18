@@ -33,6 +33,8 @@ import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationViewAdapter;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewHeader;
+import com.android.mail.browse.InlineAttachmentViewIntentBuilderCreator;
+import com.android.mail.browse.InlineAttachmentViewIntentBuilderCreatorHolder;
 import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageScrollView;
@@ -98,8 +100,12 @@ public class SecureConversationViewController implements
         mWebView = (MessageWebView) rootView.findViewById(R.id.webview);
         mWebView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         mWebView.setWebViewClient(mCallbacks.getWebViewClient());
-        mWebView.setOnCreateContextMenuListener(
-                new WebViewContextMenu(mCallbacks.getFragment().getActivity()));
+        final InlineAttachmentViewIntentBuilderCreator creator =
+                InlineAttachmentViewIntentBuilderCreatorHolder.
+                getInlineAttachmentViewIntentCreator();
+        mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(
+                mCallbacks.getFragment().getActivity(),
+                creator.createInlineAttachmentViewIntentBuilder(null, null, -1)));
         mWebView.setFocusable(false);
         final WebSettings settings = mWebView.getSettings();
 
@@ -151,7 +157,9 @@ public class SecureConversationViewController implements
     public void renderMessage(ConversationMessage message) {
         mMessage = message;
 
-        mWebView.getSettings().setBlockNetworkImage(!mMessage.alwaysShowImages);
+        final boolean alwaysShowImages = mCallbacks.shouldAlwaysShowImages();
+        mWebView.getSettings().setBlockNetworkImage(
+                !alwaysShowImages && !mMessage.alwaysShowImages);
 
         // Add formatting to message body
         // At this point, only adds margins.

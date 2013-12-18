@@ -36,6 +36,7 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
      * Prefix applied to a message id for use as a div id
      */
     public static final String MESSAGE_PREFIX = "m";
+    public static final int MESSAGE_PREFIX_LENGTH = MESSAGE_PREFIX.length();
 
     private static final String TAG = LogTag.getLogTag();
 

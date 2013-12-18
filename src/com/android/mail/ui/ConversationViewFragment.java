@@ -28,6 +28,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.text.BidiFormatter;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,8 @@ import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
+import com.android.mail.browse.InlineAttachmentViewIntentBuilderCreator;
+import com.android.mail.browse.InlineAttachmentViewIntentBuilderCreatorHolder;
 import com.android.mail.browse.MailWebView.ContentSizeChangeListener;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageHeaderView;
@@ -210,6 +213,11 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     private BidiFormatter sBidiFormatter;
 
     /**
+     * Contains a mapping between inline image attachments and their local message id.
+     */
+    private Map<String, String> mUrlToMessageIdMap;
+
+    /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
     public ConversationViewFragment() {}
@@ -280,7 +288,14 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mSideMarginPx = resources.getDimensionPixelOffset(
                 R.dimen.conversation_message_content_margin_side);
 
-        mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(getActivity()));
+        mUrlToMessageIdMap = new ArrayMap<String, String>();
+        final InlineAttachmentViewIntentBuilderCreator creator =
+                InlineAttachmentViewIntentBuilderCreatorHolder.
+                getInlineAttachmentViewIntentCreator();
+        mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(getActivity(),
+                creator.createInlineAttachmentViewIntentBuilder(
+                mUrlToMessageIdMap, mAccount.getEmailAddress(),
+                mConversation != null ? mConversation.id : -1)));
 
         // set this up here instead of onCreateView to ensure the latest Account is loaded
         setupOverviewMode();
@@ -370,9 +385,15 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final WebChromeClient wcc = new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                LogUtils.i(LOG_TAG, "JS: %s (%s:%d) f=%s", consoleMessage.message(),
-                        consoleMessage.sourceId(), consoleMessage.lineNumber(),
-                        ConversationViewFragment.this);
+                if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
+                    LogUtils.wtf(LOG_TAG, "JS: %s (%s:%d) f=%s", consoleMessage.message(),
+                            consoleMessage.sourceId(), consoleMessage.lineNumber(),
+                            ConversationViewFragment.this);
+                } else {
+                    LogUtils.i(LOG_TAG, "JS: %s (%s:%d) f=%s", consoleMessage.message(),
+                            consoleMessage.sourceId(), consoleMessage.lineNumber(),
+                            ConversationViewFragment.this);
+                }
                 return true;
             }
         };
@@ -686,8 +707,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         int collapsedStart = -1;
         ConversationMessage prevCollapsedMsg = null;
 
-        final boolean alwaysShowImages = (mAccount != null) &&
-                (mAccount.settings.showImages == Settings.ShowImages.ALWAYS);
+        final boolean alwaysShowImages = shouldAlwaysShowImages();
 
         boolean prevSafeForImages = alwaysShowImages;
 
@@ -1141,17 +1161,14 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
      *
      */
     private class MailJsBridge {
-
-        @SuppressWarnings("unused")
         @JavascriptInterface
         public void onWebContentGeometryChange(final String[] overlayTopStrs,
                 final String[] overlayBottomStrs) {
-            getHandler().post(new FragmentRunnable("onWebContentGeometryChange",
-                    ConversationViewFragment.this) {
-
-                @Override
-                public void go() {
-                    try {
+            try {
+                getHandler().post(new FragmentRunnable("onWebContentGeometryChange",
+                        ConversationViewFragment.this) {
+                    @Override
+                    public void go() {
                         if (!mViewsCreated) {
                             LogUtils.d(LOG_TAG, "ignoring webContentGeometryChange because views"
                                     + " are gone, %s", ConversationViewFragment.this);
@@ -1167,14 +1184,13 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                             }
                             mDiff = 0;
                         }
-                    } catch (Throwable t) {
-                        LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onWebContentGeometryChange");
                     }
-                }
-            });
+                });
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onWebContentGeometryChange");
+            }
         }
 
-        @SuppressWarnings("unused")
         @JavascriptInterface
         public String getTempMessageBodies() {
             try {
@@ -1191,7 +1207,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             }
         }
 
-        @SuppressWarnings("unused")
         @JavascriptInterface
         public String getMessageBody(String domId) {
             try {
@@ -1216,7 +1231,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             }
         }
 
-        @SuppressWarnings("unused")
         @JavascriptInterface
         public String getMessageSender(String domId) {
             try {
@@ -1241,31 +1255,33 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             }
         }
 
-        @SuppressWarnings("unused")
         @JavascriptInterface
         public void onContentReady() {
-            getHandler().post(new FragmentRunnable("onContentReady",
-                    ConversationViewFragment.this) {
-                @Override
-                public void go() {
-                    try {
-                        if (mWebViewLoadStartMs != 0) {
-                            LogUtils.i(LOG_TAG, "IN CVF.onContentReady, f=%s vis=%s t=%sms",
-                                    ConversationViewFragment.this,
-                                    isUserVisible(),
-                                    (SystemClock.uptimeMillis() - mWebViewLoadStartMs));
+            try {
+                getHandler().post(new FragmentRunnable("onContentReady",
+                        ConversationViewFragment.this) {
+                    @Override
+                    public void go() {
+                        try {
+                            if (mWebViewLoadStartMs != 0) {
+                                LogUtils.i(LOG_TAG, "IN CVF.onContentReady, f=%s vis=%s t=%sms",
+                                        ConversationViewFragment.this,
+                                        isUserVisible(),
+                                        (SystemClock.uptimeMillis() - mWebViewLoadStartMs));
+                            }
+                            revealConversation();
+                        } catch (Throwable t) {
+                            LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onContentReady");
+                            // Still try to show the conversation.
+                            revealConversation();
                         }
-                        revealConversation();
-                    } catch (Throwable t) {
-                        LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onContentReady");
-                        // Still try to show the conversation.
-                        revealConversation();
                     }
-                }
-            });
+                });
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onContentReady");
+            }
         }
 
-        @SuppressWarnings("unused")
         @JavascriptInterface
         public float getScrollYPercent() {
             try {
@@ -1276,7 +1292,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             }
         }
 
-        @SuppressWarnings("unused")
         @JavascriptInterface
         public void onMessageTransform(String messageDomId, String transformText) {
             try {
@@ -1285,7 +1300,29 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 onConversationTransformed();
             } catch (Throwable t) {
                 LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onMessageTransform");
-                return;
+            }
+        }
+
+        @JavascriptInterface
+        public void onInlineAttachmentsParsed(final String[] urls, final String[] messageIds) {
+            try {
+                getHandler().post(new FragmentRunnable("onInlineAttachmentsParsed",
+                        ConversationViewFragment.this) {
+                    @Override
+                    public void go() {
+                        try {
+                            for (int i = 0, size = urls.length; i < size; i++) {
+                                mUrlToMessageIdMap.put(urls[i], messageIds[i]);
+                            }
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            LogUtils.e(LOG_TAG, e,
+                                    "Number of urls does not match number of message ids - %s:%s",
+                                    urls.length, messageIds.length);
+                        }
+                    }
+                });
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onInlineAttachmentsParsed");
             }
         }
     }
