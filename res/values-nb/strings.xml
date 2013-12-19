@@ -113,17 +113,14 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Lagre alle"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Del"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Del alle"</string>
-    <!-- no translation found for menu_photo_print (1751063711206436775) -->
-    <skip />
+    <string name="menu_photo_print" msgid="1751063711206436775">"Skriv ut"</string>
     <string name="saving" msgid="925514721138014677">"Lagrer ..."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Del på"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Åpne i nettleser"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopiér"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"Kopiér koblingsadresse"</string>
-    <!-- no translation found for contextmenu_view_image (8855189263365643422) -->
-    <skip />
-    <!-- no translation found for contextmenu_save_image (8060193290720783002) -->
-    <skip />
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"Vis bilde"</string>
+    <string name="contextmenu_save_image" msgid="8060193290720783002">"Lagre bilde"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Ring"</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"Send SMS"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Legg til kontakt"</string>
@@ -383,8 +380,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"Mappeikon"</string>
     <string name="add_account" msgid="2162808366829269770">"Legg til konto"</string>
     <string name="attached_message" msgid="4267189489654642035">"Vedlagt e-post"</string>
-    <!-- no translation found for date_message_received_yesterday (5690676561028193570) -->
-    <skip />
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"I går, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Avslå tips"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Automatisk synkronisering er slått av."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Trykk for å slå på."</string>
