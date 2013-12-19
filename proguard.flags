@@ -77,3 +77,5 @@
 # the widget "Tap to set up" intent builder references this class by name...
 -keep class com.android.mail.ui.MailboxSelectionActivity
 
+# not yet used in UnifiedEmail, but needed by UnifiedEmailTests
+-keep class com.android.mail.ui.MailAsyncTaskLoader
