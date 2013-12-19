@@ -380,7 +380,7 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"폴더 아이콘"</string>
     <string name="add_account" msgid="2162808366829269770">"계정 추가"</string>
     <string name="attached_message" msgid="4267189489654642035">"첨부된 메시지"</string>
-    <string name="date_message_received_yesterday" msgid="5690676561028193570">"어제 <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"어제, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"도움말 닫기"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"자동 동기화가 사용 중지되어 있습니다."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"사용하려면 터치합니다."</string>
