@@ -28,7 +28,6 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.util.Rfc822Tokenizer;
 
-import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.MailAppProvider;
@@ -43,9 +42,8 @@ import com.android.mail.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.lang.Deprecated;
-import java.lang.Throwable;
-import java.util.Arrays;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -98,7 +96,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 
 
     private Message getRefMessage(ContentResolver resolver) {
-        return getRefMessage(resolver, mAccount.folderListUri);
+        final Account account = getActivity().getFromAccount();
+        return getRefMessage(resolver, account.folderListUri);
     }
 
     public void setAccount(ComposeActivity activity, String accountName) {
@@ -727,6 +726,44 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 assertEquals(0, cc.length);
                 assertEquals(0, bcc.length);
                 assertEquals("account2@mockuiprovider.com", fromAccount.getEmailAddress());
+            }
+        });
+    }
+
+    private static String encodeMailtoParam(String s) throws UnsupportedEncodingException {
+        return URLEncoder.encode(s, "UTF-8").replace("+", "%20");
+    }
+
+    public void testMailto() throws Throwable {
+        final String to = "foo@bar.com";
+        final String cc = "baz@baf.com";
+        final String subject = "hello world";
+        final String body = "Dear foo,\nGoodbye.\n--me";
+
+        final String mailto = String.format("mailto:%s?cc=%s&subject=%s&body=%s",
+                encodeMailtoParam(to), encodeMailtoParam(cc), encodeMailtoParam(subject),
+                encodeMailtoParam(body));
+
+        final Intent mailtoIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(mailto));
+        setActivityIntent(mailtoIntent);
+
+        final ComposeActivity activity = getActivity();
+
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final String resultTo[] = activity.getToAddresses();
+                assertEquals(1, resultTo.length);
+                assertEquals(to, Rfc822Tokenizer.tokenize(resultTo[0])[0].getAddress());
+
+                final String resultCc[] = activity.getCcAddresses();
+                assertEquals(1, resultCc.length);
+                assertEquals(cc, Rfc822Tokenizer.tokenize(resultCc[0])[0].getAddress());
+
+                assertEquals(subject, activity.getSubject());
+// the result is HTML-wrapped in a way that's not trivial to test, so disabled for now
+//                assertEquals(body, activity.getBodyHtml());
             }
         });
     }

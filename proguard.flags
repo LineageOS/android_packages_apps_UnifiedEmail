@@ -10,6 +10,8 @@
 
 -keepclasseswithmembers class com.android.mail.compose.ComposeActivity {
   *** registerTestSendOrSaveCallback(...);
+  *** getSubject(...);
+  *** getBodyHtml(...);
 }
 
 -keepclasseswithmembers class com.android.mail.providers.protos.mock.MockUiProvider {

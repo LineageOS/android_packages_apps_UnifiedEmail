@@ -428,6 +428,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         launcher.startActivity(intent);
     }
 
+    public static void composeMailto(Context launcher, Account account, Uri mailto) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW, mailto, launcher,
+                ComposeActivity.class);
+        intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account);
+        launcher.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1157,6 +1165,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     protected TextView getBody() {
         return mBodyView;
+    }
+
+    @VisibleForTesting
+    public String getBodyHtml() {
+        return Html.toHtml(removeComposingSpans(mBodyView.getText()));
     }
 
     @VisibleForTesting
@@ -2718,6 +2731,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // after all the widget control is moved over.
     public boolean isSubjectEmpty() {
         return TextUtils.getTrimmedLength(mSubject.getText()) == 0;
+    }
+
+    @VisibleForTesting
+    public String getSubject() {
+        return mSubject.getText().toString();
     }
 
     /* package */
