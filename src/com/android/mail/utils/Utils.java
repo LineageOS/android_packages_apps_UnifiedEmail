@@ -1028,7 +1028,7 @@ public class Utils {
             final Account account) {
         final String scheme = normalizeUri(uri).getScheme();
         if (TextUtils.equals(MAILTO_SCHEME, scheme)) {
-            ComposeActivity.composeToAddress(context, account, uri.getSchemeSpecificPart());
+            ComposeActivity.composeMailto(context, account, uri);
             return true;
         }
         return false;
