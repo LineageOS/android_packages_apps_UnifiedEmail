@@ -375,6 +375,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(SettingsColumns.CONFIRM_DELETE, 1);
         accountMap.put(SettingsColumns.CONFIRM_ARCHIVE, 1);
         accountMap.put(SettingsColumns.CONFIRM_SEND, 1);
+        accountMap.put(SettingsColumns.ADD_ATTACHMENT, 1);
         accountMap.put(SettingsColumns.DEFAULT_INBOX, defaultInbox);
         accountMap.put(SettingsColumns.DEFAULT_INBOX_NAME, "Inbox");
         accountMap.put(SettingsColumns.FORCE_REPLY_FROM_DEFAULT, 1);

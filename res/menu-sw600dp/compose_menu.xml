@@ -27,6 +27,11 @@
         android:title="@string/save_draft"
         android:alphabeticShortcut="@string/trigger_save_char" />
 
+    <item android:id="@+id/add_file_attachment"
+        android:icon="@drawable/ic_attachment_holo_light"
+        android:title="@string/add_file_attachment"
+        android:showAsAction="never" />
+
     <item android:id="@+id/add_photo_attachment"
         android:icon="@drawable/ic_attachment_holo_light"
         android:title="@string/add_photo_attachment"
