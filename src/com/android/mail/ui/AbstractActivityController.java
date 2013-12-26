@@ -422,6 +422,7 @@ public abstract class AbstractActivityController implements ActivityController,
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
     private DestructiveAction mPendingDestruction;
     protected AsyncRefreshTask mFolderSyncTask;
+    protected AsyncRefreshTask mLoadMoreTask;
     private Folder mFolderListFolder;
     private boolean mIsDragHappening;
     private final int mShowUndoBarDelay;
@@ -1890,6 +1891,21 @@ public abstract class AbstractActivityController implements ActivityController,
                 // TODO: handle errors?
             }
         }.run(mResolver, msg.uri, values, null /* selection*/, null /* selectionArgs */);
+    }
+
+    @Override
+    public void loadMore(ConversationMessage msg) {
+        if (msg != null && msg.loadMoreUri != null) {
+            startLoadMoreTask(msg.loadMoreUri);
+        }
+    }
+
+    private void startLoadMoreTask(Uri uri) {
+        if (mLoadMoreTask != null) {
+            mLoadMoreTask.cancel(true);
+        }
+        mLoadMoreTask = new AsyncRefreshTask(mActivity.getActivityContext(), uri);
+        mLoadMoreTask.execute();
     }
 
     @Override

@@ -60,6 +60,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.MessageFlagLoaded;
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -127,6 +128,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private TextView mUpperDateView;
     private View mReplyButton;
     private View mReplyAllButton;
+    private View mLoadMoreButton;
     private View mAttachmentIcon;
     private final EmailCopyContextMenu mEmailCopyMenu;
 
@@ -276,6 +278,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mPhotoView = (QuickContactBadge) findViewById(R.id.photo);
         mReplyButton = findViewById(R.id.reply);
         mReplyAllButton = findViewById(R.id.reply_all);
+        mLoadMoreButton = findViewById(R.id.load_more);
         mForwardButton = findViewById(R.id.forward);
         mStarView = (ImageView) findViewById(R.id.star);
         mTitleContainerView = (ViewGroup) findViewById(R.id.title_container);
@@ -611,8 +614,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             setMessageDetailsVisibility(VISIBLE);
             setChildVisibility(GONE, mSnapHeaderBottomBorder);
 
-            setChildVisibility(GONE, mReplyButton, mReplyAllButton, mForwardButton,
-                    mOverflowButton, mDraftIcon, mEditDraftButton, mStarView,
+            setChildVisibility(GONE, mReplyButton, mReplyAllButton, mLoadMoreButton,
+                    mForwardButton, mOverflowButton, mDraftIcon, mEditDraftButton, mStarView,
                     mAttachmentIcon, mUpperDateView, mSnippetView);
             setChildVisibility(VISIBLE, mPhotoView, mSenderEmailView, mDateView);
 
@@ -632,6 +635,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             }
 
             setReplyOrReplyAllVisible();
+            setLoadMoreVisible();
+
             setChildVisibility(normalVis, mPhotoView, mForwardButton, mOverflowButton);
             setChildVisibility(draftVis, mDraftIcon, mEditDraftButton);
             setChildVisibility(VISIBLE, mSenderEmailView, mDateView);
@@ -647,7 +652,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             setChildVisibility(VISIBLE, mSnippetView, mUpperDateView);
 
             setChildVisibility(GONE, mEditDraftButton, mReplyButton, mReplyAllButton,
-                    mForwardButton, mOverflowButton, mSenderEmailView, mDateView);
+                    mLoadMoreButton, mForwardButton, mOverflowButton,
+                    mSenderEmailView, mDateView);
 
             setChildVisibility(mMessage.hasAttachments ? VISIBLE : GONE,
                     mAttachmentIcon);
@@ -691,6 +697,17 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 == UIProvider.DefaultReplyBehavior.REPLY_ALL : false;
         setChildVisibility(defaultReplyAll ? GONE : VISIBLE, mReplyButton);
         setChildVisibility(defaultReplyAll ? VISIBLE : GONE, mReplyAllButton);
+    }
+
+    private void setLoadMoreVisible() {
+        if (mMessage.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL_COMPLETE
+                && mOverflowButton == null) {
+            setChildVisibility(VISIBLE, mLoadMoreButton);
+            return;
+        } else {
+            setChildVisibility(GONE, mLoadMoreButton);
+            return;
+        }
     }
 
     private static void setChildMarginEnd(View childView, int marginEnd) {
@@ -893,6 +910,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mMessage.star(newValue);
         } else if (id == R.id.edit_draft) {
             ComposeActivity.editDraft(getContext(), getAccount(), mMessage);
+        } else if (id == R.id.load_more) {
+            mMessage.loadMore();
         } else if (id == R.id.overflow) {
             if (mPopup == null) {
                 mPopup = new PopupMenu(getContext(), v);
@@ -905,6 +924,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             final Menu m = mPopup.getMenu();
             m.findItem(R.id.reply).setVisible(defaultReplyAll);
             m.findItem(R.id.reply_all).setVisible(!defaultReplyAll);
+
+            // Update the load more menu visible value.
+            MenuItem fetch = m.findItem(R.id.load_more);
+            if (fetch != null) {
+                fetch.setVisible(mMessage.messageFlagLoaded
+                        == MessageFlagLoaded.FLAG_LOADED_PARTIAL_COMPLETE);
+            }
 
             final boolean reportRendering = ENABLE_REPORT_RENDERING_PROBLEM
                 && mCallbacks.supportsMessageTransforms();

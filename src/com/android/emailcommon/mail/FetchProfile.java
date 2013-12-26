@@ -82,4 +82,25 @@ public class FetchProfile extends ArrayList<Fetchable> {
         }
         return null;
     }
+
+    /**
+     * To save the allow sync size for this fetch action. And the default value is Entire mail
+     * as the {@link Integer#MAX_VALUE} which is defined in Utility;
+     */
+    private int mAllowSyncSize = Integer.MAX_VALUE;
+
+    public void setAllowSyncSize(int size) {
+        mAllowSyncSize = size;
+    }
+
+    public int getAllowSyncSize() {
+        return mAllowSyncSize;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        // Reset the mAllowSyncSize as default value.
+        mAllowSyncSize = Integer.MAX_VALUE;
+    }
 }

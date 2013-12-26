@@ -38,6 +38,7 @@ import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageScrollView;
 import com.android.mail.browse.MessageWebView;
 import com.android.mail.providers.Message;
+import com.android.mail.providers.UIProvider.MessageFlagLoaded;
 import com.android.mail.utils.ConversationViewUtils;
 
 /**
@@ -59,6 +60,7 @@ public class SecureConversationViewController implements
     private MessageFooterView mMessageFooterView;
     private ConversationMessage mMessage;
     private MessageScrollView mScrollView;
+    private ButteryProgressBar mFetchingProgressBar;
 
     private ConversationViewProgressController mProgressController;
     private FormattedDateBuilder mDateBuilder;
@@ -72,6 +74,7 @@ public class SecureConversationViewController implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.secure_conversation_view, container, false);
+        mFetchingProgressBar = (ButteryProgressBar) rootView.findViewById(R.id.fetching_progress);
         mScrollView = (MessageScrollView) rootView.findViewById(R.id.scroll_view);
         mConversationHeaderView = (ConversationViewHeader) rootView.findViewById(R.id.conv_header);
         mMessageHeaderView = (MessageHeaderView) rootView.findViewById(R.id.message_header);
@@ -166,6 +169,13 @@ public class SecureConversationViewController implements
         if (mMessage.hasAttachments) {
             mMessageFooterView.setVisibility(View.VISIBLE);
             mMessageFooterView.bind(item, mCallbacks.getAccountUri(), false);
+        }
+        if (mMessage.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL
+                || mMessage.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL_FETCHING) {
+            mFetchingProgressBar.setVisibility(View.VISIBLE);
+            mFetchingProgressBar.setAlpha(1f);
+        } else {
+            mFetchingProgressBar.setVisibility(View.GONE);
         }
     }
 

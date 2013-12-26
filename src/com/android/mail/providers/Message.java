@@ -195,6 +195,14 @@ public class Message implements Parcelable, HtmlMessage {
      * @see UIProvider.MessageColumns#IS_SENDING
      */
     public boolean isSending;
+    /**
+     * @see UIProvider.MessageColumns#MESSAGE_FLAG_LOADED
+     */
+    public int messageFlagLoaded;
+    /**
+     * @see UIProvider.MessageColumns#MESSAGE_LOAD_MORE_URI
+     */
+    public Uri loadMoreUri;
 
     private transient String[] mFromAddresses = null;
     private transient String[] mToAddresses = null;
@@ -253,6 +261,8 @@ public class Message implements Parcelable, HtmlMessage {
         dest.writeInt(spamLinkType);
         dest.writeString(viaDomain);
         dest.writeInt(isSending ? 1 : 0);
+        dest.writeInt(messageFlagLoaded);
+        dest.writeParcelable(loadMoreUri, 0);
     }
 
     private Message(Parcel in) {
@@ -287,6 +297,8 @@ public class Message implements Parcelable, HtmlMessage {
         spamLinkType = in.readInt();
         viaDomain = in.readString();
         isSending = in.readInt() != 0;
+        messageFlagLoaded = in.readInt();
+        loadMoreUri = in.readParcelable(null);
     }
 
     public Message() {
@@ -361,6 +373,9 @@ public class Message implements Parcelable, HtmlMessage {
             spamLinkType = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN);
             viaDomain = cursor.getString(UIProvider.MESSAGE_VIA_DOMAIN_COLUMN);
             isSending = cursor.getInt(UIProvider.MESSAGE_IS_SENDING_COLUMN) != 0;
+            messageFlagLoaded = cursor.getInt(UIProvider.MESSAGE_FLAG_LOADED_COLUMN);
+            loadMoreUri = Utils.getValidUri(
+                    cursor.getString(UIProvider.MESSAGE_LOAD_MORE_URI_COLUMN));
         }
     }
 

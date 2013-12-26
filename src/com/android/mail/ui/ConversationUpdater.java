@@ -117,6 +117,12 @@ public interface ConversationUpdater extends ConversationListCallbacks {
     void starMessage(ConversationMessage msg, boolean starred);
 
     /**
+     * Try to fetch the entire content of this message. This method requires a
+     * {@link ConversationMessage} to propagate the change to the owning {@link Conversation}.
+     */
+    void loadMore(ConversationMessage msg);
+
+    /**
      * Get a destructive action for selected conversations. The action corresponds to Menu item
      * identifiers, for example R.id.unread, or R.id.delete.
      * @param action
