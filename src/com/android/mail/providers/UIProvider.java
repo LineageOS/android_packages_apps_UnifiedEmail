@@ -1538,7 +1538,9 @@ public class UIProvider {
         MessageColumns.SPAM_WARNING_LEVEL,
         MessageColumns.SPAM_WARNING_LINK_TYPE,
         MessageColumns.VIA_DOMAIN,
-        MessageColumns.IS_SENDING
+        MessageColumns.IS_SENDING,
+        MessageColumns.MESSAGE_FLAG_LOADED,
+        MessageColumns.MESSAGE_LOAD_MORE_URI
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -1584,6 +1586,8 @@ public class UIProvider {
     public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 32;
     public static final int MESSAGE_VIA_DOMAIN_COLUMN = 33;
     public static final int MESSAGE_IS_SENDING_COLUMN = 34;
+    public static final int MESSAGE_FLAG_LOADED_COLUMN = 35;
+    public static final int MESSAGE_LOAD_MORE_URI_COLUMN = 36;
 
     public static final class CursorStatus {
         // The cursor is actively loading more data
@@ -1638,6 +1642,19 @@ public class UIProvider {
         public static final int REPLIED =           1 << 2;
         public static final int FORWARDED =         1 << 3;
         public static final int CALENDAR_INVITE =   1 << 4;
+    }
+
+    /**
+     * These values are also defined in the EmailContent.
+     */
+    public static final class MessageFlagLoaded {
+        public static final int FLAG_LOADED_UNLOADED = 0;
+        public static final int FLAG_LOADED_COMPLETE = 1;
+        public static final int FLAG_LOADED_PARTIAL = 2;
+        public static final int FLAG_LOADED_PARTIAL_COMPLETE = 3;
+        public static final int FLAG_LOADED_PARTIAL_FETCHING = 4;
+        public static final int FLAG_LOADED_DELETED = 5;
+        public static final int FLAG_LOADED_UNKNOWN = 6;
     }
 
     public static final class MessageColumns {
@@ -1796,6 +1813,17 @@ public class UIProvider {
          * of being sent (will be zero for incoming messages and messages that are already sent).
          */
         public static final String IS_SENDING = "isSending";
+
+        /**
+         * This integer column indicates the state of the message loaded
+         * and it defined in {@link MessageFlagLoaded}
+         */
+        public static final String MESSAGE_FLAG_LOADED = "messageFlagLoaded";
+
+        /**
+         * String with the content provider Uri used to request fetch entire content.
+         */
+        public static final String MESSAGE_LOAD_MORE_URI = "messageLoadMoreUri";
 
         private MessageColumns() {}
     }
