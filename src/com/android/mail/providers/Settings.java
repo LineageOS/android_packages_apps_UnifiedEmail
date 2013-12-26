@@ -74,6 +74,7 @@ public class Settings implements Parcelable {
     public final boolean confirmDelete;
     public final boolean confirmArchive;
     public final boolean confirmSend;
+    public final boolean addAttachment;
     public final int conversationViewMode;
     public final Uri defaultInbox;
     /**
@@ -116,6 +117,7 @@ public class Settings implements Parcelable {
         confirmDelete = false;
         confirmArchive = false;
         confirmSend = false;
+        addAttachment = true;
         defaultInbox = Uri.EMPTY;
         defaultInboxName = "";
         forceReplyFromDefault = false;
@@ -139,6 +141,7 @@ public class Settings implements Parcelable {
         confirmDelete = inParcel.readInt() != 0;
         confirmArchive = inParcel.readInt() != 0;
         confirmSend = inParcel.readInt() != 0;
+        addAttachment = inParcel.readInt() != 0;
         defaultInbox = Utils.getValidUri(inParcel.readString());
         defaultInboxName = inParcel.readString();
         forceReplyFromDefault = inParcel.readInt() != 0;
@@ -163,6 +166,7 @@ public class Settings implements Parcelable {
         confirmDelete = cursor.getInt(cursor.getColumnIndex(SettingsColumns.CONFIRM_DELETE)) != 0;
         confirmArchive = cursor.getInt(cursor.getColumnIndex(SettingsColumns.CONFIRM_ARCHIVE)) != 0;
         confirmSend = cursor.getInt(cursor.getColumnIndex(SettingsColumns.CONFIRM_SEND)) != 0;
+        addAttachment = cursor.getInt(cursor.getColumnIndex(SettingsColumns.ADD_ATTACHMENT)) != 0;
         defaultInbox = Utils.getValidUri(
                 cursor.getString(cursor.getColumnIndex(SettingsColumns.DEFAULT_INBOX)));
         defaultInboxName =
@@ -196,6 +200,7 @@ public class Settings implements Parcelable {
         confirmDelete = json.optBoolean(SettingsColumns.CONFIRM_DELETE, sDefault.confirmDelete);
         confirmArchive = json.optBoolean(SettingsColumns.CONFIRM_ARCHIVE, sDefault.confirmArchive);
         confirmSend = json.optBoolean(SettingsColumns.CONFIRM_SEND, sDefault.confirmSend);
+        addAttachment = json.optBoolean(SettingsColumns.ADD_ATTACHMENT, sDefault.addAttachment);
         defaultInbox = Utils.getValidUri( json.optString(SettingsColumns.DEFAULT_INBOX));
         defaultInboxName = json.optString(SettingsColumns.DEFAULT_INBOX_NAME,
                 sDefault.defaultInboxName);
@@ -243,6 +248,7 @@ public class Settings implements Parcelable {
             json.put(SettingsColumns.CONFIRM_DELETE, confirmDelete);
             json.put(SettingsColumns.CONFIRM_ARCHIVE, confirmArchive);
             json.put(SettingsColumns.CONFIRM_SEND, confirmSend);
+            json.put(SettingsColumns.ADD_ATTACHMENT, addAttachment);
             json.put(SettingsColumns.DEFAULT_INBOX,
                     getNonNull(defaultInbox, sDefault.defaultInbox));
             json.put(SettingsColumns.DEFAULT_INBOX_NAME,
@@ -283,6 +289,7 @@ public class Settings implements Parcelable {
         map.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE, confirmDelete ? 1 : 0);
         map.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, confirmArchive ? 1 : 0);
         map.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_SEND, confirmSend ? 1 : 0);
+        map.put(UIProvider.AccountColumns.SettingsColumns.ADD_ATTACHMENT, addAttachment ? 1 : 0);
         map.put(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX, defaultInbox);
         map.put(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, defaultInboxName);
         map.put(UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
@@ -331,8 +338,9 @@ public class Settings implements Parcelable {
         dest.writeInt(convListIcon);
         dest.writeInt(convListAttachmentPreviews ? 1 : 0);
         dest.writeInt(confirmDelete ? 1 : 0);
-        dest.writeInt(confirmArchive? 1 : 0);
-        dest.writeInt(confirmSend? 1 : 0);
+        dest.writeInt(confirmArchive ? 1 : 0);
+        dest.writeInt(confirmSend ? 1 : 0);
+        dest.writeInt(addAttachment ? 1 : 0);
         dest.writeString(getNonNull(defaultInbox, sDefault.defaultInbox).toString());
         dest.writeString((String) getNonNull(defaultInboxName, sDefault.defaultInboxName));
         dest.writeInt(forceReplyFromDefault ? 1 : 0);
@@ -442,6 +450,7 @@ public class Settings implements Parcelable {
                 && confirmDelete == that.confirmDelete
                 && confirmArchive == that.confirmArchive
                 && confirmSend == that.confirmSend
+                && addAttachment == that.addAttachment
                 && Objects.equal(defaultInbox, that.defaultInbox)
                 // Not checking default Inbox name, since is is identical to the URI check above.
                 && forceReplyFromDefault == that.forceReplyFromDefault
@@ -461,8 +470,8 @@ public class Settings implements Parcelable {
                     ^ Objects.hashCode(signature, mAutoAdvance, mTransientAutoAdvance,
                     messageTextSize, snapHeaders, replyBehavior, convListIcon,
                     convListAttachmentPreviews, confirmDelete, confirmArchive, confirmSend,
-                    defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
-                    priorityArrowsEnabled, setupIntentUri, conversationViewMode,
+                    addAttachment, defaultInbox, forceReplyFromDefault, maxAttachmentSize,
+                    swipe, priorityArrowsEnabled, setupIntentUri, conversationViewMode,
                     veiledAddressPattern, moveToInbox);
         }
         return mHashCode;
