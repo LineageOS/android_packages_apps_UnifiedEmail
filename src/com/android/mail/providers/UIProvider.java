@@ -168,6 +168,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)
             .put(AccountColumns.SettingsColumns.ADD_ATTACHMENT, Integer.class)
+            .put(AccountColumns.SettingsColumns.SELECT_RECIPIENTS, Integer.class)
             .put(AccountColumns.SettingsColumns.DEFAULT_INBOX, String.class)
             .put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, String.class)
             .put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT, Integer.class)
@@ -572,6 +573,13 @@ public class UIProvider {
              * and shown the menu to attach the file.
              */
             public static final String ADD_ATTACHMENT = "add_attachment";
+
+            /**
+             * Integer column containing the user's specified select recipients preference value.
+             * A non zero value indicates that the user has indicated that the select recipients
+             * button will be shown to let the user could pick the contacts from Contact.
+             */
+            public static final String SELECT_RECIPIENTS = "select_recipients";
 
             /**
              * String containing the URI for the default inbox for this account.
