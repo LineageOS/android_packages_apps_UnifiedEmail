@@ -71,7 +71,18 @@
                         <com.android.ex.chips.RecipientEditTextView
                             android:id="@+id/to"
                             style="@style/RecipientEditTextViewStyle"
+                            android:layout_width="0dip"
+                            android:layout_weight="1"
                             android:contentDescription="@string/to"/>
+
+                        <ImageButton android:id="@+id/to_pick_recipients"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="4dip"
+                            android:gravity="bottom"
+                            android:src="@drawable/ic_pick_recipients"
+                            android:background="@null" />
+
                     </LinearLayout>
 
                     <View style="@style/RecipientComposeFieldSpacer"/>

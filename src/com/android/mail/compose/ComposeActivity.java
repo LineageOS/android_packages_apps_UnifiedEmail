@@ -43,6 +43,7 @@ import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+import android.provider.ContactsContract.Contacts;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableString;
@@ -65,6 +66,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,6 +116,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -212,6 +215,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // Request numbers for activities we start
     private static final int RESULT_PICK_ATTACHMENT = 1;
     private static final int RESULT_CREATE_ACCOUNT = 2;
+    private static final int RESULT_PICK_CONTACT_TO = 3;
+    private static final int RESULT_PICK_CONTACT_CC = 4;
+    private static final int RESULT_PICK_CONTACT_BCC = 5;
+
+    // The action to pick recipients
+    private static final String ACTION_MULTI_PICK_EMAIL =
+            "com.android.contacts.action.MULTI_PICK_EMAIL";
+
     // TODO(mindyp) set mime-type for auto send?
     public static final String AUTO_SEND_ACTION = "com.android.mail.action.AUTO_SEND";
 
@@ -238,6 +249,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private RecipientEditTextView mTo;
     private RecipientEditTextView mCc;
     private RecipientEditTextView mBcc;
+    private ImageButton mToPickRecipients;
+    private ImageButton mCcPickRecipients;
+    private ImageButton mBccPickRecipients;
     private Button mCcBccButton;
     private CcBccView mCcBccView;
     private AttachmentsView mAttachmentsView;
@@ -257,6 +271,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private View mFromSpinnerWrapper;
     @VisibleForTesting
     protected FromAddressSpinner mFromSpinner;
+    private boolean mPickingRecipients;
     private boolean mAddingAttachment;
     private boolean mAttachmentsChanged;
     private boolean mTextChanged;
@@ -675,6 +690,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         initChangeListeners();
+        updateHideOrShowPickRecipients();
         updateHideOrShowCcBcc();
         updateHideOrShowQuotedText(mShowQuotedText);
 
@@ -799,6 +815,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
                 showWaitFragment(null);
             }
+        } else if (result == RESULT_OK && request == RESULT_PICK_CONTACT_TO) {
+            addAddressesToList(data, mTo);
+            mPickingRecipients = false;
+        } else if (result == RESULT_OK && request == RESULT_PICK_CONTACT_CC) {
+            addAddressesToList(data, mCc);
+            mPickingRecipients = false;
+        } else if (result == RESULT_OK && request == RESULT_PICK_CONTACT_BCC) {
+            addAddressesToList(data, mBcc);
+            mPickingRecipients = false;
         }
     }
 
@@ -1138,6 +1163,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mCc.setTokenizer(new Rfc822Tokenizer());
         mBcc = (RecipientEditTextView) findViewById(R.id.bcc);
         mBcc.setTokenizer(new Rfc822Tokenizer());
+        mToPickRecipients = (ImageButton) findViewById(R.id.to_pick_recipients);
+        mToPickRecipients.setOnClickListener(this);
+        mCcPickRecipients = (ImageButton) findViewById(R.id.cc_pick_recipients);
+        mCcPickRecipients.setOnClickListener(this);
+        mBccPickRecipients = (ImageButton) findViewById(R.id.bcc_pick_recipients);
+        mBccPickRecipients.setOnClickListener(this);
         // TODO: add special chips text change watchers before adding
         // this as a text changed watcher to the to, cc, bcc fields.
         mSubject = (TextView) findViewById(R.id.subject);
@@ -1650,6 +1681,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
+    private void updateHideOrShowPickRecipients() {
+        if (mAccount.settings.selectRecipients) {
+            mToPickRecipients.setVisibility(View.VISIBLE);
+            mCcPickRecipients.setVisibility(View.VISIBLE);
+            mBccPickRecipients.setVisibility(View.VISIBLE);
+        } else {
+            mToPickRecipients.setVisibility(View.GONE);
+            mCcPickRecipients.setVisibility(View.GONE);
+            mBccPickRecipients.setVisibility(View.GONE);
+        }
+    }
+
     private void updateHideOrShowCcBcc() {
         // Its possible there is a menu item OR a button.
         boolean ccVisible = mCcBccView.isCcVisible();
@@ -1812,6 +1855,25 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return tokenized;
     }
 
+    void addAddressesToList(Intent data, RecipientEditTextView list) {
+        if (data == null && list == null) return;
+
+        Bundle choiceSet = data.getExtras().getBundle("result");
+        Set<String> set = choiceSet.keySet();
+        Iterator<String> i = set.iterator();
+        while (i.hasNext()) {
+            String[] array = choiceSet.getStringArray(i.next());
+            // For this array, it store the contact's name by the index 0
+            // and store the contact's address by the index 1.
+            // Format the address as: <address>
+            addAddressToList("<" + array[1] + ">", list);
+        }
+
+        // Make the list will be displayed as parsed.
+        list.requestFocus();         // request the focus
+        focusBody();                 // focus to body view
+    }
+
     @VisibleForTesting
     void addAddressesToList(Collection<String> addresses, RecipientEditTextView list) {
         for (String address : addresses) {
@@ -1940,7 +2002,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onClick(View v) {
         final int id = v.getId();
-        if (id == R.id.add_cc_bcc) {
+        if (id == R.id.to_pick_recipients) {
+            pickRecipient(RESULT_PICK_CONTACT_TO);
+        } else if (id == R.id.cc_pick_recipients) {
+            pickRecipient(RESULT_PICK_CONTACT_CC);
+        } else if (id == R.id.bcc_pick_recipients) {
+            pickRecipient(RESULT_PICK_CONTACT_BCC);
+        } else if (id == R.id.add_cc_bcc) {
             // Verify that cc/ bcc aren't showing.
             // Animate in cc/bcc.
             showCcBccViews();
@@ -2962,6 +3030,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 RESULT_PICK_ATTACHMENT);
     }
 
+    private void pickRecipient(int requestCode) {
+        mPickingRecipients = true;
+
+        // Start the activity to pick the recipient.
+        Intent intent = new Intent(ACTION_MULTI_PICK_EMAIL);
+        intent.setType(Contacts.CONTENT_TYPE);
+        startActivityForResult(intent, requestCode);
+
+        // Set the focus to body view.
+        // And it will make the recipient view to parse the address.
+        focusBody();
+    }
+
     private void showCcBccViews() {
         mCcBccView.show(true, true, true);
         if (mCcBccButton != null) {
@@ -3263,7 +3344,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         if (shouldSave()) {
-            doSave(!mAddingAttachment /* show toast */);
+            doSave(!mAddingAttachment && !mPickingRecipients /* show toast */);
         }
     }
 
