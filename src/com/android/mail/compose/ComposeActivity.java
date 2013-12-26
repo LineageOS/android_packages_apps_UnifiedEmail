@@ -227,6 +227,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String TAG_WAIT = "wait-fragment";
     private static final String MIME_TYPE_PHOTO = "image/*";
     private static final String MIME_TYPE_VIDEO = "video/*";
+    private static final String MIME_TYPE_ALL = "*/*";
 
     private static final String KEY_INNER_SAVED_STATE = "compose_state";
 
@@ -1944,7 +1945,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Animate in cc/bcc.
             showCcBccViews();
         } else if (id == R.id.add_photo_attachment) {
-            doAttach(MIME_TYPE_PHOTO);
+            // On the 600dp, it will only display one attach button as add_photo_attachment.
+            // So if the user enable the "Add any file as attachment", we will let the user
+            // could select any file as attachment.
+            if (mAccount.settings.addAttachment) {
+                doAttach(MIME_TYPE_ALL);
+            } else {
+                doAttach(MIME_TYPE_PHOTO);
+            }
         } else if (id == R.id.add_video_attachment) {
             doAttach(MIME_TYPE_VIDEO);
         }
@@ -2013,6 +2021,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 ccBcc.setVisible(false);
             }
         }
+
+        MenuItem addFileAttachment = menu.findItem(R.id.add_file_attachment);
+        if (addFileAttachment != null) {
+            addFileAttachment.setVisible(mAccount.settings.addAttachment);
+        }
+
         return true;
     }
 
@@ -2023,7 +2037,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, id, null, 0);
 
         boolean handled = true;
-        if (id == R.id.add_photo_attachment) {
+        if (id == R.id.add_file_attachment) {
+            doAttach(MIME_TYPE_ALL);
+        } else if (id == R.id.add_photo_attachment) {
             doAttach(MIME_TYPE_PHOTO);
         } else if (id == R.id.add_video_attachment) {
             doAttach(MIME_TYPE_VIDEO);

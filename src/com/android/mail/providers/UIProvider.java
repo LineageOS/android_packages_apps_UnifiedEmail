@@ -167,6 +167,7 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.CONFIRM_DELETE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)
+            .put(AccountColumns.SettingsColumns.ADD_ATTACHMENT, Integer.class)
             .put(AccountColumns.SettingsColumns.DEFAULT_INBOX, String.class)
             .put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, String.class)
             .put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT, Integer.class)
@@ -564,6 +565,14 @@ public class UIProvider {
              * be shown when a send action is performed.
              */
             public static final String CONFIRM_SEND = "confirm_send";
+
+            /**
+             * Integer column containing the user's specified add attachment preference value.
+             * A non zero value indicates that the user could add any file as the attachment,
+             * and shown the menu to attach the file.
+             */
+            public static final String ADD_ATTACHMENT = "add_attachment";
+
             /**
              * String containing the URI for the default inbox for this account.
              */
