@@ -39,6 +39,11 @@
         android:src="@drawable/ic_reply_all_holo_light"
         android:contentDescription="@string/reply_all" />
     <ImageView
+        android:id="@+id/load_more"
+        style="@style/MessageHeaderActionButtonStyle"
+        android:src="@drawable/ic_load_more_holo_light"
+        android:contentDescription="@string/load_more" />
+    <ImageView
         android:id="@+id/overflow"
         android:layout_height="@dimen/message_header_action_button_height"
         android:layout_width="@dimen/message_header_action_button_width"

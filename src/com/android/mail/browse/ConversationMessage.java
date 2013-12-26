@@ -96,6 +96,13 @@ public final class ConversationMessage extends Message {
         }
     }
 
+    public void loadMore() {
+        final ConversationUpdater listController = mController.getListController();
+        if (listController != null) {
+            listController.loadMore(this);
+        }
+    }
+
     /**
      * Public object that knows how to construct Messages given Cursors.
      */

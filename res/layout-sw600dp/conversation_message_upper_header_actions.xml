@@ -38,6 +38,11 @@
         android:src="@drawable/ic_reply_all_holo_light"
         android:contentDescription="@string/reply_all" />
     <ImageView
+        android:id="@+id/load_more"
+        style="@style/MessageHeaderActionButtonStyle"
+        android:src="@drawable/ic_load_more_holo_light"
+        android:contentDescription="@string/load_more" />
+    <ImageView
         android:id="@+id/forward"
         style="@style/MessageHeaderActionButtonStyle"
         android:src="@drawable/ic_forward_holo_light"
