@@ -36,10 +36,21 @@
                 android:id="@+id/cc_label"
                 android:contentDescription="@string/cc"/>
 
-                <com.android.ex.chips.RecipientEditTextView
-                    android:id="@+id/cc"
-                    style="@style/RecipientEditTextViewStyle"
-                    android:contentDescription="@string/cc"/>
+            <com.android.ex.chips.RecipientEditTextView
+                android:id="@+id/cc"
+                style="@style/RecipientEditTextViewStyle"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:contentDescription="@string/cc"/>
+
+            <ImageButton android:id="@+id/cc_pick_recipients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dip"
+                android:gravity="bottom"
+                android:src="@drawable/ic_pick_recipients"
+                android:background="@null" />
+
         </LinearLayout>
 
         <View style="@style/RecipientComposeFieldSpacer"/>
@@ -64,7 +75,17 @@
             <com.android.ex.chips.RecipientEditTextView
                 android:id="@+id/bcc"
                 style="@style/RecipientEditTextViewStyle"
+                android:layout_width="0dip"
+                android:layout_weight="1"
                 android:contentDescription="@string/bcc"/>
+
+            <ImageButton android:id="@+id/bcc_pick_recipients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dip"
+                android:gravity="bottom"
+                android:src="@drawable/ic_pick_recipients"
+                android:background="@null" />
 
         </LinearLayout>
 
