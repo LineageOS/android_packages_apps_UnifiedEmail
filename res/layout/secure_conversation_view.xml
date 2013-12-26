@@ -15,14 +15,26 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:butterbar="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/conversation_view_border_color" >
+
+    <com.android.mail.ui.ButteryProgressBar
+        android:id="@+id/fetching_progress"
+        android:layout_width="match_parent"
+        android:layout_height="3dip"
+        android:layout_gravity="top"
+        butterbar:barColor="@android:color/holo_blue_dark"
+        butterbar:barHeight="2.5dp"
+        android:visibility="gone" />
 
     <com.android.mail.browse.MessageScrollView android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="0dip"
+        android:layout_weight="1" >
 
         <LinearLayout
             android:id="@+id/conversation_container"
@@ -106,4 +118,4 @@
 
     <include layout="@layout/conversation_load_spinner"/>
 
-</FrameLayout>
+</LinearLayout>
