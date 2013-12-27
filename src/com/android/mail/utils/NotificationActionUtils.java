@@ -32,6 +32,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
+import com.android.emailcommon.utility.NotifyIconUtilities;
 import com.android.mail.MailIntentService;
 import com.android.mail.NotificationActionIntentService;
 import com.android.mail.R;
@@ -523,7 +524,11 @@ public class NotificationActionUtils {
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
-        builder.setSmallIcon(R.drawable.stat_notify_email);
+        int iconResId = NotifyIconUtilities.findNotifyIconForAccountDomain(context,
+                R.xml.notify_icon_providers, notificationAction.getAccount().getEmailAddress(),
+                R.drawable.stat_notify_email);
+
+        builder.setSmallIcon(iconResId);
         builder.setWhen(notificationAction.getWhen());
 
         final RemoteViews undoView =
