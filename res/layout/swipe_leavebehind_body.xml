@@ -28,7 +28,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="@string/no_conversations"
-        android:textColor="@android:color/white"
+        android:textColor="@color/white"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:paddingLeft="16dip"
         android:clickable="true"
@@ -38,7 +38,7 @@
         android:id="@+id/undo_separator"
         android:layout_width="1dip"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
+        android:background="@color/white"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp" />
 
@@ -60,7 +60,7 @@
         android:text="@string/undo"
         android:textAllCaps="true"
         android:gravity="center_vertical"
-        android:textColor="@android:color/white"
+        android:textColor="@color/white"
         android:background="?android:attr/selectableItemBackground"
         android:duplicateParentState="true"/>
 </LinearLayout>

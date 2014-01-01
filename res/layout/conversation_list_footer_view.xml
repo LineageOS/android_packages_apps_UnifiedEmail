@@ -22,7 +22,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:background="@color/white">
 
     <LinearLayout android:id="@+id/network_error"
         android:layout_width="match_parent"
@@ -43,14 +43,14 @@
             android:textAppearance="?android:attr/textAppearanceLargeInverse"
             android:layout_marginBottom="1dip"
             android:paddingLeft="5dip"
-            android:textColor="@android:color/black"
+            android:textColor="@color/black"
             android:text="@string/network_error"/>
 
         <Button android:id="@+id/error_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="?android:attr/buttonStyleSmall"
-            android:textColor="@android:color/black"
+            android:textColor="@color/black"
             android:paddingTop="15dip"
             android:paddingBottom="15dip"
             android:paddingLeft="20dip"
@@ -85,7 +85,7 @@
             android:textAppearance="?android:attr/textAppearanceLargeInverse"
             android:layout_marginBottom="1dip"
             android:paddingLeft="5dip"
-            android:textColor="@android:color/black"
+            android:textColor="@color/black"
             android:text="@string/load_more"/>
 
     </LinearLayout>

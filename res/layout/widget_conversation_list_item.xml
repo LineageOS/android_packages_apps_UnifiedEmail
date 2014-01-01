@@ -97,7 +97,7 @@
             android:singleLine="true"
             android:ellipsize="end"
             android:textSize="@dimen/senders_font_size"
-            android:textColor="#58585b"
+            android:textColor="@color/widget_senders_text_color"
             android:includeFontPadding="false" />
         <TextView
             android:id="@+id/widget_subject"

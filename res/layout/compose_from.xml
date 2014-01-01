@@ -23,7 +23,7 @@
     <!-- From spinner -->
     <LinearLayout android:id="@+id/spinner_from_content"
         style="@style/RecipientComposeFieldLayout"
-        android:background="@android:color/transparent"
+        android:background="@color/transparent"
         android:layout_height="match_parent"
         android:visibility="gone">
 

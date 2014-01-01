@@ -20,7 +20,7 @@
     <item android:state_enabled="false"
         android:color="#ff999999"/>
     <item android:state_activated="true"
-        android:color="@android:color/white" />
+        android:color="@color/white" />
     <item
-        android:color="@android:color/black" />
+        android:color="@color/black" />
 </selector>
