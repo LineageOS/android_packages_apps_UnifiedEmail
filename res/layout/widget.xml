@@ -52,14 +52,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:freezesText="true"
-                android:includeFontPadding="false" />
+                android:includeFontPadding="false"
+                android:textColor="@color/widget_title_color" />
             <TextView
                 android:id="@+id/widget_account_noflip"
                 style="@style/WidgetSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:freezesText="true"
-                android:includeFontPadding="false"/>
+                android:includeFontPadding="false"
+                android:textColor="@color/widget_subtitle_color"/>
             <ViewFlipper
                 android:id="@+id/widget_account_unread_flipper"
                 android:layout_width="wrap_content"
@@ -81,7 +83,8 @@
                     style="@style/WidgetSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:includeFontPadding="false" />
+                    android:includeFontPadding="false"
+                    android:textColor="@color/widget_unread_color" />
             </ViewFlipper>
         </LinearLayout>
         <ImageButton
@@ -111,7 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tap_to_configure"
-            android:textColor="@android:color/black"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"/>
     </LinearLayout>
@@ -120,7 +123,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:cacheColorHint="#00000000"
+        android:cacheColorHint="@color/transparent"
         android:background="@drawable/gradient_bg_widget_holo"
         style="@style/ConversationListFade" />
     <TextView
@@ -130,7 +133,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/loading_conversations"
-        android:textColor="@android:color/black"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"
         android:background="@drawable/gradient_bg_widget_holo"
@@ -150,7 +153,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dip"
             android:text="@string/non_synced_folder_description"
-            android:textColor="@android:color/black"
+            android:textColor="@color/black"
             android:textSize="16sp" />
         <TextView
             android:layout_width="match_parent"
@@ -158,8 +161,8 @@
             android:paddingTop="8dip"
             android:paddingBottom="8dip"
             android:text="@string/tap_to_configure_folder_sync"
-            android:textColor="@android:color/black"
-            android:background="@android:color/darker_gray"
+            android:textColor="@color/black"
+            android:background="@color/darker_gray"
             android:gravity="center"
             android:textSize="16sp"
             android:textStyle="bold"/>

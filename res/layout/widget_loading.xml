@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_marginLeft="16dip"
         android:gravity="center"
-        android:textColor="@android:color/black"
+        android:textColor="@color/widget_loading_color"
         android:textSize="14sp"
         android:textStyle="bold" />
 </FrameLayout>

@@ -20,7 +20,7 @@
     <color name="dark_gray_text_color">#58585b</color>
     <color name="light_gray">#cccccc</color>
     <!-- if you want to make something blue, please try to use THIS blue -->
-    <color name="mail_app_blue">@android:color/holo_blue_light</color>
+    <color name="mail_app_blue">@color/holo_blue_light</color>
     <!-- Conversation List Item Colors -->
     <color name="subject_text_color_unread">@color/dark_gray_text_color</color>
     <color name="snippet_text_color_unread">#777777</color>
@@ -50,13 +50,13 @@
     <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>
     <color name="quoted_text_color">@color/gray_text_color</color>
-    <string name="quoted_text_background_color_string" translatable="false">@android:color/white</string>
+    <string name="quoted_text_background_color_string" translatable="false">@color/white</string>
     <!-- Must match the quoted_text_background_color_string -->
-    <color name="compose_background_color">@android:color/white</color>
+    <color name="compose_background_color">@color/white</color>
     <string name="quoted_text_font_color_string" translatable="false">@color/gray_text_color</string>
     <color name="quotedTextColor">@color/gray_text_color</color>
 
-    <color name="conv_header_add_label_text">@android:color/black</color>
+    <color name="conv_header_add_label_text">@color/black</color>
     <color name="conv_header_add_label_background">#eeeeee</color>
 
     <!-- Conversation message header colors -->
@@ -108,7 +108,7 @@
     <color name="swipe_to_refresh_text_color">#0099cc</color>
 
     <!-- The background color of the message header -->
-    <color name="message_header_background_color">@android:color/white</color>
+    <color name="message_header_background_color">@color/white</color>
     <color name="message_border_gradient_color">#ebebeb</color>
 
     <!-- The color of the icon background in the teaser -->
@@ -116,5 +116,22 @@
     <!-- The color of the senders text in the teaser -->
     <color name="folder_teaser_senders_text">#58585b</color>
     <!-- The color of the count text in the teaser -->
-    <color name="folder_teaser_count_text">@android:color/black</color>
+    <color name="folder_teaser_count_text">@color/black</color>
+
+    <!-- New Colors for Theme Chooser to be compatible -->
+    <color name="black">#ff000000</color>
+    <color name="compose_attachment_tile_subtitle_text_color">#ffffffff</color>
+    <color name="compose_attachment_tile_title_text_color">#ffffffff</color>
+    <color name="conversation_view_header_background_color">#ffffffff</color>
+    <color name="darker_gray">#aaa</color>
+    <color name="holo_blue_dark">#ff0099cc</color>
+    <color name="holo_blue_light">#ff33b5e5</color>
+    <color name="search_results_view_text_color">#777777</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="widget_loading_color">#ff000000</color>
+    <color name="widget_senders_text_color">#58585b</color>
+    <color name="widget_subtitle_color">#333333</color>
+    <color name="widget_title_color">#333333</color>
+    <color name="widget_unread_color">#777777</color>
 </resources>

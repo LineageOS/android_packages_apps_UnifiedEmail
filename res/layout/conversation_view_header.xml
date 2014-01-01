@@ -20,7 +20,7 @@
     android:id="@+id/conversation_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@color/conversation_view_header_background_color"
     android:orientation="vertical"
     style="@style/ConversationHeaderSideMarginStyle" >
 
