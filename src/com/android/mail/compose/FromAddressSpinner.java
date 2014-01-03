@@ -70,8 +70,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
     public ReplyFromAccount getMatchingReplyFromAccount(String accountString) {
         if (!TextUtils.isEmpty(accountString)) {
             for (ReplyFromAccount acct : mReplyFromAccounts) {
-                // TODO: Do not key off ReplyFromAccount.name b/11292541
-                if (accountString.equals(acct.name)) {
+                if (accountString.equals(acct.address)) {
                     return acct;
                 }
             }
@@ -148,8 +147,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         ReplyFromAccount selection = (ReplyFromAccount) getItemAtPosition(position);
-        // TODO: Do not key off ReplyFromAccount.name b/11292541
-        if (!selection.name.equals(mAccount.name)) {
+        if (!selection.address.equals(mAccount.address)) {
             mAccount = selection;
             mAccountChangedListener.onAccountChanged();
         }

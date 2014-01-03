@@ -948,10 +948,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.accountUri = null;
         final String email = selectedReplyFromAccount != null ? selectedReplyFromAccount.address
                 : mAccount != null ? mAccount.getEmailAddress() : null;
-        // TODO: this behavior is wrong. Pull the name from selectedReplyFromAccount.name
-        final String senderName = mAccount != null ? mAccount.getSenderName() : null;
+        final String senderName = selectedReplyFromAccount != null ? selectedReplyFromAccount.name
+                : mAccount != null ? mAccount.getSenderName() : null;
         final Address address = new Address(senderName, email);
-        message.setFrom(address.pack());
+        message.setFrom(address.toHeader());
         message.draftType = getDraftType(mode);
         return message;
     }
@@ -1100,18 +1100,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 return from;
             }
         }
-        return new ReplyFromAccount(account, account.uri, account.getEmailAddress(), account.name,
-                account.getEmailAddress(), true, false);
+        return new ReplyFromAccount(account, account.uri, account.getEmailAddress(),
+                account.getSenderName(), account.getEmailAddress(), true, false);
     }
 
-    private ReplyFromAccount getReplyFromAccountFromDraft(Account account, Message msg) {
-        String sender = msg.getFrom();
+    private ReplyFromAccount getReplyFromAccountFromDraft(final Account account,
+            final Message msg) {
+        final Address[] draftFroms = Address.parse(msg.getFrom());
+        final String sender = draftFroms.length > 0 ? draftFroms[0].getAddress() : "";
         ReplyFromAccount replyFromAccount = null;
         List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
         if (TextUtils.equals(account.getEmailAddress(), sender)) {
-            replyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri,
-                    mAccount.getEmailAddress(), mAccount.name, mAccount.getEmailAddress(),
-                    true, false);
+            replyFromAccount = getDefaultReplyFromAccount(account);
         } else {
             for (ReplyFromAccount fromAccount : replyFromAccounts) {
                 if (TextUtils.equals(fromAccount.address, sender)) {
