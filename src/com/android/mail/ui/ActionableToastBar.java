@@ -63,8 +63,6 @@ public class ActionableToastBar extends LinearLayout {
     private TextView mActionText;
     private ToastBarOperation mOperation;
 
-    private boolean mRtl;
-
     private ClipBoundsDrawable mButtonDrawable;
 
     public ActionableToastBar(Context context) {
@@ -102,8 +100,6 @@ public class ActionableToastBar extends LinearLayout {
         mActionText = (TextView) findViewById(R.id.action_text);
 
         if (Utils.isRunningKitkatOrLater()) {
-            mRtl = Utils.isLayoutRtl(this);
-
             // Wrap the drawable so we can clip the bounds (see explanation in onLayout).
             final Drawable buttonToastBackground = mActionButton.getBackground();
             mActionButton.setBackground(null);
@@ -120,9 +116,10 @@ public class ActionableToastBar extends LinearLayout {
         // on both the right edge. We clip the background before the divider to remove the
         // rounded edge there, creating a split-pill button effect.
         if (mButtonDrawable != null) {
+            final boolean isRtl = Utils.isLayoutRtl(this);
             mButtonDrawable.setClipBounds(
-                    (mRtl ? 0 : mDivider.getLeft()), 0,
-                    (mRtl ? mDivider.getRight() : mActionButton.getWidth()),
+                    (isRtl ? 0 : mDivider.getLeft()), 0,
+                    (isRtl ? mDivider.getRight() : mActionButton.getWidth()),
                     mActionButton.getHeight());
         }
     }

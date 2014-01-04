@@ -1173,7 +1173,9 @@ public class Utils {
     }
 
     /**
-     * Determines whether the given view has RTL layout.
+     * Determines whether the given view has RTL layout. NOTE: do not call this
+     * on a view until it has been measured. This value is not guaranteed to be
+     * accurate until then.
      */
     public static boolean isLayoutRtl(View view) {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
