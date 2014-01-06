@@ -43,6 +43,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
@@ -68,7 +69,6 @@ import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.Settings;
@@ -1345,8 +1345,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             } else {
                 final Address addr = getAddress(senderAddress);
                 return res.getString(R.string.new_incoming_messages_one,
-                        sBidiFormatter.unicodeWrap(TextUtils.isEmpty(addr.getName())
-                        ? addr.getAddress() : addr.getName()));
+                        sBidiFormatter.unicodeWrap(TextUtils.isEmpty(addr.getPersonal())
+                        ? addr.getAddress() : addr.getPersonal()));
             }
         }
     }

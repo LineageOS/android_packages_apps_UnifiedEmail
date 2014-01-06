@@ -77,3 +77,7 @@
 
 # not yet used in UnifiedEmail, but needed by UnifiedEmailTests
 -keep class com.android.mail.ui.MailAsyncTaskLoader
+
+-keepclasseswithmembers class com.android.emailcommon.mail.Address {
+  public <methods>;
+}

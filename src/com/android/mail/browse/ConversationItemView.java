@@ -71,7 +71,6 @@ import com.android.mail.bitmap.ContactCheckableGridDrawable;
 import com.android.mail.bitmap.ContactDrawable;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;

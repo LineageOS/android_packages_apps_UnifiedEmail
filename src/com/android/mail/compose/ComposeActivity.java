@@ -72,6 +72,7 @@ import android.widget.Toast;
 
 import com.android.common.Rfc822Validator;
 import com.android.common.contacts.DataUsageStatUpdater;
+import com.android.emailcommon.mail.Address;
 import com.android.ex.chips.RecipientEditTextView;
 import com.android.mail.MailIntentService;
 import com.android.mail.R;
@@ -82,7 +83,6 @@ import com.android.mail.compose.AttachmentsView.AttachmentFailureException;
 import com.android.mail.compose.FromAddressSpinner.OnAccountChangedListener;
 import com.android.mail.compose.QuotedTextView.RespondInlineListener;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
@@ -950,7 +950,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 : mAccount != null ? mAccount.getEmailAddress() : null;
         final String senderName = selectedReplyFromAccount != null ? selectedReplyFromAccount.name
                 : mAccount != null ? mAccount.getSenderName() : null;
-        final Address address = new Address(senderName, email);
+        final Address address = new Address(email, senderName);
         message.setFrom(address.toHeader());
         message.draftType = getDraftType(mode);
         return message;

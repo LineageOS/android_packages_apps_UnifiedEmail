@@ -44,6 +44,7 @@ import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.ContactInfo;
 import com.android.mail.ContactInfoSource;
 import com.android.mail.R;
@@ -55,7 +56,6 @@ import com.android.mail.perf.Timer;
 import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
@@ -562,7 +562,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         if (sender == null) {
             return "";
         }
-        final String displayName = sender.getName();
+        final String displayName = sender.getPersonal();
         return TextUtils.isEmpty(displayName) ? sender.getAddress() : displayName;
     }
 
@@ -753,7 +753,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
                 final String emailAddress = email.getAddress();
                 final String name;
                 if (mMatcher != null && mMatcher.isVeiledAddress(emailAddress)) {
-                    if (TextUtils.isEmpty(email.getName())) {
+                    if (TextUtils.isEmpty(email.getPersonal())) {
                         // Let's write something more readable.
                         name = mContext.getString(VeiledAddressMatcher.VEILED_SUMMARY_UNKNOWN);
                     } else {
@@ -809,7 +809,9 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         // and ensure either the contact URI or email is set so the click
         // handling works
         String contentDesc = getResources().getString(R.string.contact_info_string,
-                !TextUtils.isEmpty(mSender.getName()) ? mSender.getName() : mSender.getAddress());
+                !TextUtils.isEmpty(mSender.getPersonal())
+                        ? mSender.getPersonal()
+                        : mSender.getAddress());
         mPhotoView.setContentDescription(contentDesc);
         boolean photoSet = false;
         final String email = mSender.getAddress();
@@ -825,7 +827,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         }
 
         if (!photoSet) {
-            mPhotoView.setImageBitmap(makeLetterTile(mSender.getName(), email));
+            mPhotoView.setImageBitmap(makeLetterTile(mSender.getPersonal(), email));
         }
     }
 
@@ -1341,7 +1343,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         final String[] formattedEmails = new String[emails.length];
         for (int i = 0; i < emails.length; i++) {
             final Address email = Utils.getAddress(addressCache, emails[i]);
-            String name = email.getName();
+            String name = email.getPersonal();
             final String address = email.getAddress();
             // Check if the address here is a veiled address.  If it is, we need to display an
             // alternate layout

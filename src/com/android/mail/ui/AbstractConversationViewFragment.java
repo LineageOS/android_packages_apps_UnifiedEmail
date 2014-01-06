@@ -30,7 +30,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.android.mail.ContactInfoSource;
+import com.android.emailcommon.mail.Address;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationAccountController;
@@ -43,7 +43,6 @@ import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;

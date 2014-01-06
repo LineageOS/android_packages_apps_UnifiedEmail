@@ -26,11 +26,11 @@ import android.text.TextUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.MessageCursor;
 
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
@@ -160,7 +160,7 @@ public class PrintUtils {
         final long when = message.dateReceivedMs;
         final String date = dateBuilder.formatDateTimeForPrinting(when);
 
-        templates.appendMessage(fromAddress.getName(), fromAddress.getAddress(), date,
+        templates.appendMessage(fromAddress.getPersonal(), fromAddress.getAddress(), date,
                 renderRecipients(res, addressCache, message), message.getBodyAsHtml(),
                 renderAttachments(context, res, message));
     }
@@ -229,7 +229,7 @@ public class PrintUtils {
         final String[] formattedEmails = new String[emails.length];
         for (int i = 0; i < emails.length; i++) {
             final Address email = Utils.getAddress(addressCache, emails[i]);
-            final String name = email.getName();
+            final String name = email.getPersonal();
             final String address = email.getAddress();
 
             if (TextUtils.isEmpty(name)) {

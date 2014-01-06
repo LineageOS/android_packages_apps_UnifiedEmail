@@ -41,11 +41,11 @@ import android.text.style.TextAppearanceSpan;
 import android.util.Pair;
 import android.util.SparseArray;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.EmailAddress;
 import com.android.mail.MailIntentService;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
-import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.SendersView;
 import com.android.mail.photomanager.LetterTileProvider;
@@ -53,7 +53,6 @@ import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
@@ -1434,7 +1433,7 @@ public class NotificationUtils {
         String displayableSender = address.getName();
 
         if (!TextUtils.isEmpty(displayableSender)) {
-            return Address.decodeAddressName(displayableSender);
+            return Address.decodeAddressPersonal(displayableSender);
         }
 
         // If that fails, default to the sender address.

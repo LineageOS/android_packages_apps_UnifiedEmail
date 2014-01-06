@@ -32,9 +32,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Address;
 import com.android.mail.ui.AbstractConversationWebViewClient;
 import com.android.mail.ui.ContactLoaderCallbacks;
 import com.android.mail.ui.SecureConversationViewController;

@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.browse.ConversationAccountController;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationViewHeader;
@@ -33,7 +34,6 @@ import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;

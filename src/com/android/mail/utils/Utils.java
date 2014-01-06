@@ -16,12 +16,11 @@
 
 package com.android.mail.utils;
 
-import com.android.mail.providers.Address;
+import com.android.emailcommon.mail.Address;
 import com.google.android.mail.common.html.parser.HtmlDocument;
 import com.google.android.mail.common.html.parser.HtmlParser;
 import com.google.android.mail.common.html.parser.HtmlTree;
 import com.google.android.mail.common.html.parser.HtmlTreeBuilder;
-import com.google.common.collect.Maps;
 
 import android.app.ActivityManager;
 import android.app.Fragment;
@@ -44,7 +43,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextUtils.SimpleStringSplitter;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
@@ -204,25 +202,6 @@ public class Utils {
         if (realMax < 0)
             realMax = 0;
         return text.substring(0, realMax) + extension;
-    }
-
-    /**
-     * Ensures that the given string starts and ends with the double quote
-     * character. The string is not modified in any way except to add the double
-     * quote character to start and end if it's not already there. sample ->
-     * "sample" "sample" -> "sample" ""sample"" -> "sample"
-     * "sample"" -> "sample" sa"mp"le -> "sa"mp"le" "sa"mp"le" -> "sa"mp"le"
-     * (empty string) -> "" " -> ""
-     */
-    public static String ensureQuotedString(String s) {
-        if (s == null) {
-            return null;
-        }
-        if (!s.matches("^\".*\"$")) {
-            return "\"" + s + "\"";
-        } else {
-            return s;
-        }
     }
 
     private static int sMaxUnreadCount = -1;

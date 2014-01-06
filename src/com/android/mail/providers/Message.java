@@ -31,6 +31,7 @@ import android.text.util.Linkify;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
+import com.android.emailcommon.mail.Address;
 import com.android.emailcommon.internet.MimeMessage;
 import com.android.emailcommon.internet.MimeUtility;
 import com.android.emailcommon.mail.MessagingException;
@@ -368,14 +369,14 @@ public class Message implements Parcelable, HtmlMessage {
     public Message(Context context, MimeMessage mimeMessage, Uri emlFileUri)
             throws MessagingException {
         // Set message header values.
-        setFrom(com.android.emailcommon.mail.Address.pack(mimeMessage.getFrom()));
-        setTo(com.android.emailcommon.mail.Address.pack(mimeMessage.getRecipients(
+        setFrom(Address.pack(mimeMessage.getFrom()));
+        setTo(Address.pack(mimeMessage.getRecipients(
                 com.android.emailcommon.mail.Message.RecipientType.TO)));
-        setCc(com.android.emailcommon.mail.Address.pack(mimeMessage.getRecipients(
+        setCc(Address.pack(mimeMessage.getRecipients(
                 com.android.emailcommon.mail.Message.RecipientType.CC)));
-        setBcc(com.android.emailcommon.mail.Address.pack(mimeMessage.getRecipients(
+        setBcc(Address.pack(mimeMessage.getRecipients(
                 com.android.emailcommon.mail.Message.RecipientType.BCC)));
-        setReplyTo(com.android.emailcommon.mail.Address.pack(mimeMessage.getReplyTo()));
+        setReplyTo(Address.pack(mimeMessage.getReplyTo()));
         subject = mimeMessage.getSubject();
 
         final Date sentDate = mimeMessage.getSentDate();
