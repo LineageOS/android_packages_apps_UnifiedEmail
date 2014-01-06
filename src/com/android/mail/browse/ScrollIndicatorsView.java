@@ -62,7 +62,7 @@ public class ScrollIndicatorsView extends View implements ScrollListener {
     }
 
     @Override
-    public void onNotifierScroll(int left, int top) {
+    public void onNotifierScroll(int top) {
         awakenScrollBars();
     }
 }
