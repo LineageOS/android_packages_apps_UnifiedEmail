@@ -103,7 +103,7 @@
     <string name="preview_attachment" msgid="6934911143603455393">"Ukážka"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Uložiť"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Zrušiť"</string>
-    <string name="download_again" msgid="7418568915429156518">"Prevziať znova"</string>
+    <string name="download_again" msgid="7418568915429156518">"Stiahnuť znova"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informácie"</string>
     <string name="attachment_type_blocked" msgid="7878184764428642891">"Tento typ prílohy žiaľ nemôžete uložiť ani otvoriť."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Žiadna aplikácia nemôže otvoriť ani zobraziť túto prílohu."</string>
