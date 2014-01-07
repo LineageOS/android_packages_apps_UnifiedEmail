@@ -401,8 +401,9 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
         mMessage = mMessageHeaderItem.getMessage();
 
-        final boolean alwaysShowImages = (getAccount() != null) &&
-                (getAccount().settings.showImages == Settings.ShowImages.ALWAYS);
+        final Account account = getAccount();
+        final boolean alwaysShowImages = (account != null) &&
+                (account.settings.showImages == Settings.ShowImages.ALWAYS);
         mShowImagePrompt = mMessage.shouldShowImagePrompt() && !alwaysShowImages;
 
         setExpanded(mMessageHeaderItem.isExpanded());
@@ -430,7 +431,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         // the only possible fromAddress.
         String from = mMessage.getFrom();
         if (TextUtils.isEmpty(from)) {
-            from = getAccount().name;
+            from = (account != null) ? account.name : "";
         }
         mSender = getAddress(from);
 
@@ -486,7 +487,9 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
      * on the message header and attempts to copy/send email.
      */
     private void setAddressOnContextMenu() {
-        mEmailCopyMenu.setAddress(mSender.getAddress());
+        if (mSender != null) {
+            mEmailCopyMenu.setAddress(mSender.getAddress());
+        }
     }
 
     @Override
@@ -556,6 +559,9 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
      * Return the name, if known, or just the address.
      */
     private static CharSequence getSenderName(Address sender) {
+        if (sender == null) {
+            return "";
+        }
         final String displayName = sender.getName();
         return TextUtils.isEmpty(displayName) ? sender.getAddress() : displayName;
     }
@@ -564,7 +570,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
      * Return the address, if a name is present, or null if not.
      */
     private static CharSequence getSenderAddress(Address sender) {
-        return sender.getAddress();
+        return (sender != null) ? sender.getAddress() : "";
     }
 
     private static void setChildVisibility(int visibility, View... children) {
