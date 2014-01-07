@@ -81,7 +81,7 @@ public class ReplyFromAccount implements Serializable {
         try {
             Uri uri = Utils.getValidUri(json.getString(BASE_ACCOUNT_URI));
             String addressString = json.getString(ADDRESS_STRING);
-            String nameString = json.getString(NAME_STRING);
+            String nameString = json.optString(NAME_STRING, null);
             String replyTo = json.getString(REPLY_TO);
             boolean isDefault = json.getBoolean(IS_DEFAULT);
             boolean isCustomFrom = json.getBoolean(IS_CUSTOM_FROM);
