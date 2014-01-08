@@ -440,6 +440,10 @@ public class Attachment implements Parcelable {
         return state == AttachmentState.FAILED;
     }
 
+    public boolean isDownloadFinished() {
+        return state == AttachmentState.SAVED;
+    }
+
     public boolean isDownloadFinishedOrFailed() {
         return state == AttachmentState.FAILED || state == AttachmentState.SAVED;
     }
