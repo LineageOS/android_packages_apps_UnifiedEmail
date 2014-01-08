@@ -327,7 +327,8 @@ public final class MockUiProvider extends ContentProvider {
                         AccountCapabilities.SMART_REPLY |
                         AccountCapabilities.LOCAL_SEARCH |
                         AccountCapabilities.THREADED_CONVERSATIONS |
-                        AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV));
+                        AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV |
+                        AccountCapabilities.SMART_FORWARD));
         JSONArray replyFroms = new JSONArray();
         ArrayList<ReplyFromAccount> list = new ArrayList<ReplyFromAccount>();
         list.add(new ReplyFromAccount(null, Uri.parse(accountUri), "customAddress1@custom.com",
@@ -375,6 +376,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(SettingsColumns.CONFIRM_DELETE, 1);
         accountMap.put(SettingsColumns.CONFIRM_ARCHIVE, 1);
         accountMap.put(SettingsColumns.CONFIRM_SEND, 1);
+        accountMap.put(SettingsColumns.CONFIRM_FORWARD, 1);
         accountMap.put(SettingsColumns.ADD_ATTACHMENT, 1);
         accountMap.put(SettingsColumns.SELECT_RECIPIENTS, 1);
         accountMap.put(SettingsColumns.DEFAULT_INBOX, defaultInbox);
