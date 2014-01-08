@@ -132,7 +132,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public static final int REPLY = 0;
     public static final int REPLY_ALL = 1;
     public static final int FORWARD = 2;
-    public static final int EDIT_DRAFT = 3;
+    public static final int FORWARD_DROP_UNLOADED_ATTS = 3;
+    public static final int EDIT_DRAFT = 4;
 
     // Integer extra holding one of the above compose action
     protected static final String EXTRA_ACTION = "action";
@@ -407,6 +408,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         launch(launcher, account, message, FORWARD, null, null, null, null, null /* extraValues */);
     }
 
+    /**
+     * Can be called from a non-UI thread.
+     */
+    public static void forwardDropUnloadedAtts(Context launcher, Account account, Message message) {
+        launch(launcher, account, message, FORWARD_DROP_UNLOADED_ATTS,
+                null, null, null, null, null /* extraValues */);
+    }
+
     public static void reportRenderingFeedback(Context launcher, Account account, Message message,
             String body) {
         launch(launcher, account, message, FORWARD,
@@ -576,7 +585,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 getLoaderManager().initLoader(REFERENCE_MESSAGE_LOADER, null, this);
                 return;
             }
-        } else if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
+        } else if ((action == REPLY
+                || action == REPLY_ALL
+                || action == FORWARD
+                || action == FORWARD_DROP_UNLOADED_ATTS)) {
             if (mRefMessage != null) {
                 initFromRefMessage(action);
                 mShowQuotedText = true;
@@ -587,7 +599,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
         }
 
-        mComposeMode = action;
+        // As the action maybe drop unloaded attachments, so adjust the compose mode.
+        mComposeMode = action == FORWARD_DROP_UNLOADED_ATTS ? FORWARD : action;
         finishSetup(action, intent, savedState);
     }
 
@@ -728,6 +741,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         switch (action) {
             case FORWARD:
             case COMPOSE:
+            case FORWARD_DROP_UNLOADED_ATTS:
                 if (TextUtils.isEmpty(mTo.getText())) {
                     mTo.requestFocus();
                     break;
@@ -1259,6 +1273,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     actionBar.setSelectedNavigationItem(1);
                     break;
                 case ComposeActivity.FORWARD:
+                case ComposeActivity.FORWARD_DROP_UNLOADED_ATTS:
                     actionBar.setSelectedNavigationItem(2);
                     break;
             }
@@ -1301,13 +1316,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void setFieldsFromRefMessage(int action) {
         setSubject(mRefMessage, action);
         // Setup recipients
-        if (action == FORWARD) {
+        if (action == FORWARD || action == FORWARD_DROP_UNLOADED_ATTS) {
             mForward = true;
         }
         initRecipientsFromRefMessage(mRefMessage, action);
         initQuotedTextFromRefMessage(mRefMessage, action);
-        if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
-            initAttachments(mRefMessage);
+        if (action == ComposeActivity.FORWARD
+                || action == ComposeActivity.FORWARD_DROP_UNLOADED_ATTS
+                || mAttachmentsChanged) {
+            initAttachments(mRefMessage, action == ComposeActivity.FORWARD_DROP_UNLOADED_ATTS);
         }
     }
 
@@ -1547,15 +1564,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @VisibleForTesting
-    protected void initAttachments(Message refMessage) {
-        addAttachments(refMessage.getAttachments());
+    protected void initAttachments(Message refMessage, boolean dropUnloaded) {
+        addAttachments(refMessage.getAttachments(), dropUnloaded);
     }
 
-    public long addAttachments(List<Attachment> attachments) {
+    public long addAttachments(List<Attachment> attachments, boolean dropUnloaded) {
         long size = 0;
         AttachmentFailureException error = null;
         for (Attachment a : attachments) {
             try {
+                if (dropUnloaded && !a.isDownloadFinished()) {
+                    continue;
+                }
                 size += mAttachmentsView.addAttachment(mAccount, a);
             } catch (AttachmentFailureException e) {
                 error = e;
@@ -1641,7 +1661,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                                     (R.string.generic_attachment_problem, maxSize));
                         }
                     }
-                    totalSize += addAttachments(attachments);
+                    totalSize += addAttachments(attachments, false);
                 } else {
                     final Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
                     long size = 0;
@@ -1676,8 +1696,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initQuotedTextFromRefMessage(Message refMessage, int action) {
-        if (mRefMessage != null && (action == REPLY || action == REPLY_ALL || action == FORWARD)) {
-            mQuotedTextView.setQuotedText(action, refMessage, action != FORWARD);
+        if (mRefMessage != null
+                && (action == REPLY
+                        || action == REPLY_ALL
+                        || action == FORWARD
+                        || action == FORWARD_DROP_UNLOADED_ATTS)) {
+            mQuotedTextView.setQuotedText(action, refMessage,
+                    action != FORWARD || action != FORWARD_DROP_UNLOADED_ATTS);
         }
     }
 
@@ -1756,7 +1781,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     void initRecipientsFromRefMessage(Message refMessage, int action) {
         // Don't populate the address if this is a forward.
-        if (action == ComposeActivity.FORWARD) {
+        if (action == ComposeActivity.FORWARD
+                || action == ComposeActivity.FORWARD_DROP_UNLOADED_ATTS) {
             return;
         }
         initReplyRecipients(refMessage, action);
@@ -1957,7 +1983,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         String correctedSubject = null;
         if (action == ComposeActivity.COMPOSE) {
             prefix = "";
-        } else if (action == ComposeActivity.FORWARD) {
+        } else if (action == ComposeActivity.FORWARD
+                || action == ComposeActivity.FORWARD_DROP_UNLOADED_ATTS) {
             prefix = res.getString(R.string.forward_subject_label);
         } else {
             prefix = res.getString(R.string.reply_subject_label);
@@ -3064,6 +3091,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 break;
             case FORWARD:
                 msgType = "forward";
+                break;
+            case FORWARD_DROP_UNLOADED_ATTS:
+                msgType = "forward_drop_unloaded_atts";
                 break;
             default:
                 msgType = "unknown";

@@ -398,4 +398,9 @@
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"開啟"</string>
     <string name="show_n_more_folders" msgid="337747297817699776">"顯示另外 <xliff:g id="NUMBER">%1$s</xliff:g> 個資料夾"</string>
     <string name="hide_folders" msgid="7473552966537131652">"隱藏資料夾"</string>
+
+    <!-- Confirm forward message -->
+    <string name="confirm_forward_message">"若該訊息含有未下載的附件，如何轉寄該訊息？"</string>
+    <string name="confirm_forward_normal">"下載完成后發送"</string>
+    <string name="confirm_forward_drop_unloaded">"捨弃未完成的附件"</string>
 </resources>

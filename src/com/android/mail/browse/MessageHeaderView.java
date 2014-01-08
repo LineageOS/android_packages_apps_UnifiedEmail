@@ -16,15 +16,19 @@
 
 package com.android.mail.browse;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -60,6 +64,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.MessageFlagLoaded;
 import com.android.mail.ui.ImageCanvas;
 import com.android.mail.utils.LogTag;
@@ -895,7 +900,17 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         } else if (id == R.id.reply_all) {
             ComposeActivity.replyAll(getContext(), getAccount(), mMessage);
         } else if (id == R.id.forward) {
-            ComposeActivity.forward(getContext(), getAccount(), mMessage);
+            if (mMessage.hasAttachments && getAccount().settings.confirmForward
+                    && (getAccount().capabilities & AccountCapabilities.SMART_FORWARD) == 0) {
+                // Enabled the confirm before forward and do not support smart forward
+                // Prompt the confirm dialog first, then forward the message according
+                // to the user's selection.
+                ConfirmForwardDialogFragment dialog = ConfirmForwardDialogFragment.newInstance(
+                        getAccount(), mMessage);
+                dialog.displayDialog(mCallbacks.getFragmentManager());
+            } else {
+                ComposeActivity.forward(getContext(), getAccount(), mMessage);
+            }
         } else if (id == R.id.report_rendering_problem) {
             final String text = getContext().getString(R.string.report_rendering_problem_desc);
             ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
@@ -1541,6 +1556,44 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (!mPreMeasuring) {
             t.pause(MEASURE_TAG);
+        }
+    }
+
+    public static class ConfirmForwardDialogFragment extends ConfirmDialogFragment {
+        private static final String ACCOUNT = "account";
+        private static final String MESSAGE = "source-message";
+
+        public static ConfirmForwardDialogFragment newInstance(Account account, Message message) {
+            final ConfirmForwardDialogFragment f = new ConfirmForwardDialogFragment();
+            final Bundle args = new Bundle();
+            args.putParcelable(ACCOUNT, account);
+            args.putParcelable(MESSAGE, message);
+            f.setArguments(args);
+            return f;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedState) {
+            final Account account = getArguments().getParcelable(ACCOUNT);
+            final Message message = getArguments().getParcelable(MESSAGE);
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.confirm_forward_message)
+                   .setPositiveButton(R.string.confirm_forward_normal,
+                           new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           ComposeActivity.forward(getActivity(), account, message);
+                       }
+                   })
+                   .setNeutralButton(R.string.confirm_forward_drop_unloaded,
+                           new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           ComposeActivity.forwardDropUnloadedAtts(getActivity(), account, message);
+                       }
+                   });
+            return builder.create();
         }
     }
 }

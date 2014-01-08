@@ -398,4 +398,9 @@
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"开启"</string>
     <string name="show_n_more_folders" msgid="337747297817699776">"显示另外<xliff:g id="NUMBER">%1$s</xliff:g>个文件夹"</string>
     <string name="hide_folders" msgid="7473552966537131652">"隐藏文件夹"</string>
+
+    <!-- Confirm forward message -->
+    <string name="confirm_forward_message">"若该邮件含有未下载的附件，如何转发该邮件？"</string>
+    <string name="confirm_forward_normal">"下载完成后发送"</string>
+    <string name="confirm_forward_drop_unloaded">"舍弃未完成的附件"</string>
 </resources>

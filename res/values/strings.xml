@@ -939,4 +939,8 @@
     <!-- Provider name for widgets -->
     <string name="widget_provider" translatable="false">com.android.mail.widget.WidgetProvider</string>
 
+    <!-- Confirm forward message -->
+    <string name="confirm_forward_message">If this message has unloaded attachment(s), what do you want?</string>
+    <string name="confirm_forward_normal">Send after loaded</string>
+    <string name="confirm_forward_drop_unloaded">Drop unloaded atts</string>
 </resources>
