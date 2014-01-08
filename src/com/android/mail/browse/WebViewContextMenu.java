@@ -53,10 +53,11 @@ import java.nio.charset.Charset;
 public class WebViewContextMenu implements OnCreateContextMenuListener,
         MenuItem.OnMenuItemClickListener {
 
+    private final Activity mActivity;
+    private final InlineAttachmentViewIntentBuilder mIntentBuilder;
+
     private final boolean mSupportsDial;
     private final boolean mSupportsSms;
-
-    private Activity mActivity;
 
     protected static enum MenuType {
         OPEN_MENU,
@@ -72,8 +73,9 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         COPY_GEO_MENU,
     }
 
-    public WebViewContextMenu(Activity host) {
+    public WebViewContextMenu(Activity host, InlineAttachmentViewIntentBuilder builder) {
         mActivity = host;
+        mIntentBuilder = builder;
 
         // Query the package manager to see if the device
         // has an app that supports ACTION_DIAL or ACTION_SENDTO
@@ -187,8 +189,6 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         menu.setGroupVisible(R.id.GEO_MENU, type == WebView.HitTestResult.GEO_TYPE);
         menu.setGroupVisible(R.id.ANCHOR_MENU, type == WebView.HitTestResult.SRC_ANCHOR_TYPE
                 || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE);
-        menu.setGroupVisible(R.id.IMAGE_MENU, type == WebView.HitTestResult.IMAGE_TYPE
-                || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE);
 
         // Setup custom handling depending on the type
         switch (type) {
@@ -273,32 +273,65 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
                 break;
 
             case WebView.HitTestResult.SRC_ANCHOR_TYPE:
-            case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
-                menu.findItem(getMenuResIdForMenuType(MenuType.SHARE_LINK_MENU)).setVisible(
-                        showShareLinkMenuItem());
-
-                // The documentation for WebView indicates that if the HitTestResult is
-                // SRC_ANCHOR_TYPE or the url would be specified in the extra.  We don't need to
-                // call requestFocusNodeHref().  If we wanted to handle UNKNOWN HitTestResults, we
-                // would.  With this knowledge, we can just set the title
-                menu.setHeaderTitle(extra);
-
-                menu.findItem(getMenuResIdForMenuType(MenuType.COPY_LINK_MENU)).
-                        setOnMenuItemClickListener(new Copy(extra));
-
-                final MenuItem openLinkMenuItem =
-                        menu.findItem(getMenuResIdForMenuType(MenuType.OPEN_MENU));
-                // remove the on click listener
-                openLinkMenuItem.setOnMenuItemClickListener(null);
-                openLinkMenuItem.setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse(extra)));
-
-                menu.findItem(getMenuResIdForMenuType(MenuType.SHARE_LINK_MENU)).
-                        setOnMenuItemClickListener(new Share(extra));
+                setupAnchorMenu(extra, menu);
                 break;
+            case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
+                // Deliberately do not break because we want to fall through to image type.
+                setupAnchorMenu(extra, menu);
             case WebView.HitTestResult.IMAGE_TYPE:
+                // The image menu will be visible whenever the
+                // intent builder returns an intent. If it returns null,
+                // the image menu will not be shown.
+                menu.setGroupVisible(R.id.IMAGE_MENU, setupImageMenu(extra, menu));
+                break;
             default:
                 break;
         }
+    }
+
+    private void setupAnchorMenu(String extra, ContextMenu menu) {
+        menu.findItem(getMenuResIdForMenuType(MenuType.SHARE_LINK_MENU)).setVisible(
+                showShareLinkMenuItem());
+
+        // The documentation for WebView indicates that if the HitTestResult is
+        // SRC_ANCHOR_TYPE or the url would be specified in the extra.  We don't need to
+        // call requestFocusNodeHref().  If we wanted to handle UNKNOWN HitTestResults, we
+        // would.  With this knowledge, we can just set the title
+        menu.setHeaderTitle(extra);
+
+        menu.findItem(getMenuResIdForMenuType(MenuType.COPY_LINK_MENU)).
+                setOnMenuItemClickListener(new Copy(extra));
+
+        final MenuItem openLinkMenuItem =
+                menu.findItem(getMenuResIdForMenuType(MenuType.OPEN_MENU));
+        // remove the on click listener
+        openLinkMenuItem.setOnMenuItemClickListener(null);
+        openLinkMenuItem.setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse(extra)));
+
+        menu.findItem(getMenuResIdForMenuType(MenuType.SHARE_LINK_MENU)).
+                setOnMenuItemClickListener(new Share(extra));
+    }
+
+    /**
+     * Used to setup the image menu group if the {@link android.webkit.WebView.HitTestResult}
+     * is of type {@link android.webkit.WebView.HitTestResult#IMAGE_TYPE} or
+     * {@link android.webkit.WebView.HitTestResult#SRC_IMAGE_ANCHOR_TYPE}.
+     * @param url Url that was long pressed.
+     * @param menu The {@link android.view.ContextMenu} that is about to be shown.
+     * @return {@code true} if the view image menu item should be visible.
+     * {@code false}, otherwise.
+     */
+    protected boolean setupImageMenu(String url, ContextMenu menu) {
+        final Intent intent = mIntentBuilder.createInlineAttachmentViewIntent(mActivity, url);
+        if (intent == null) {
+            return false;
+        }
+
+        final MenuItem menuItem = menu.findItem(R.id.view_image_context_menu_id);
+        menuItem.setOnMenuItemClickListener(null);
+        menuItem.setIntent(intent);
+
+        return true;
     }
 
     @Override

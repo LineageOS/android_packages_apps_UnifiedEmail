@@ -47,6 +47,7 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.CursorStatus;
 import com.android.mail.utils.LogTag;
@@ -688,4 +689,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     protected abstract void printConversation();
+
+    public boolean shouldAlwaysShowImages() {
+        return (mAccount != null) && (mAccount.settings.showImages == Settings.ShowImages.ALWAYS);
+    }
 }

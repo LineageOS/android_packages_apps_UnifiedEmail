@@ -50,8 +50,6 @@
     <group android:id="@+id/IMAGE_MENU">
         <item android:id="@+id/view_image_context_menu_id"
               android:title="@string/contextmenu_view_image"/>
-        <item android:id="@+id/save_image_context_menu_id"
-              android:title="@string/contextmenu_save_image"/>
     </group>
 </menu>
 

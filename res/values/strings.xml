@@ -260,8 +260,6 @@
     <string name="contextmenu_copylink">Copy link URL</string>
     <!-- Menu item to view an image  [CHAR LIMIT=50]-->
     <string name="contextmenu_view_image">View image</string>
-    <!-- Menu item to save an image  [CHAR LIMIT=50]-->
-    <string name="contextmenu_save_image">Save image</string>
     <!-- Menu item to dial a number  [CHAR LIMIT=50]-->
     <string name="contextmenu_dial_dot">Dial\u2026</string>
     <!-- Menu item to send an SMS  [CHAR LIMIT=50]-->

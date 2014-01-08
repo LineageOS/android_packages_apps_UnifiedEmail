@@ -250,6 +250,11 @@ public class EmlMessageViewFragment extends Fragment
         return mAccountUri;
     }
 
+    @Override
+    public boolean shouldAlwaysShowImages() {
+        return false;
+    }
+
     // End SecureConversationViewControllerCallbacks
 
     private class MessageLoadCallbacks

@@ -46,4 +46,5 @@ public interface SecureConversationViewControllerCallbacks {
     public String getBaseUri();
     public boolean isViewOnlyMode();
     public Uri getAccountUri();
+    public boolean shouldAlwaysShowImages();
 }
