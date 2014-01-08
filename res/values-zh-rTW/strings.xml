@@ -120,7 +120,6 @@
     <string name="contextmenu_copy" msgid="4604170699444153037">"複製"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"複製連結網址"</string>
     <string name="contextmenu_view_image" msgid="8855189263365643422">"檢視圖片"</string>
-    <string name="contextmenu_save_image" msgid="8060193290720783002">"儲存圖片"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"撥號…"</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"傳送簡訊…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"新增聯絡人"</string>
