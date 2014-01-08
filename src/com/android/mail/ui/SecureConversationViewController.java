@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 
-import com.android.emailcommon.Logging;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.BorderView;
@@ -47,7 +46,6 @@ import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.utils.ConversationViewUtils;
-import com.android.mail.utils.LogUtils;
 
 /**
  * Controller to do most of the heavy lifting for
