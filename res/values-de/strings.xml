@@ -366,9 +366,9 @@
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Bild des Absenders"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Neben Namen in der Konversationsliste anzeigen"</string>
     <string name="empty_trash" msgid="652435297593538512">"Papierkorb leeren"</string>
-    <string name="empty_spam" msgid="6064497180615519589">"Spam-Ordner leeren"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"Spamordner leeren"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Papierkorb leeren?"</string>
-    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Spam-Ordner leeren?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Spamordner leeren?"</string>
   <plurals name="empty_folder_dialog_message">
     <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> Nachricht wird endgültig gelöscht."</item>
     <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> Nachrichten werden endgültig gelöscht."</item>

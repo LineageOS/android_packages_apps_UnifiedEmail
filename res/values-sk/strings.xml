@@ -381,7 +381,7 @@
     <string name="add_account" msgid="2162808366829269770">"Pridať účet"</string>
     <string name="attached_message" msgid="4267189489654642035">"Priložená správa"</string>
     <string name="date_message_received_yesterday" msgid="5690676561028193570">"Včera, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
-    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Zrušiť tip"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Zatvoriť tip"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Automatická synchronizácia je vypnutá."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Dotykom zapnete."</string>
     <string name="account_sync_off" msgid="5699548271856775808">"Synchronizácia účtu je vypnutá."</string>
