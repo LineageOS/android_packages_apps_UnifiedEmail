@@ -265,7 +265,8 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
             quotedText.append(htmlText);
             quotedText.append(BLOCKQUOTE_END);
             quotedText.append(QUOTE_END);
-        } else if (action == ComposeActivity.FORWARD) {
+        } else if (action == ComposeActivity.FORWARD
+                || action == ComposeActivity.FORWARD_DROP_UNLOADED_ATTS) {
             quotedText.append(sQuoteBegin);
             quotedText
                     .append(String.format(resources.getString(R.string.forward_attribution), Utils
