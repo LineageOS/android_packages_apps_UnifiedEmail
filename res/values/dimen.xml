@@ -153,4 +153,6 @@
 
     <dimen name="message_attachment_bar_padding">8dip</dimen>
 
+    <dimen name="compose_recipient_heading_margin_end">4dip</dimen>
+
 </resources>

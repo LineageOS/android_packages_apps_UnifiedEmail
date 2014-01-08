@@ -58,11 +58,14 @@
         <item name="android:layout_gravity">center_vertical</item>
      </style>
 
-    <style name="RecipientComposeHeading" parent="@style/ComposeHeading">
-        <item name="android:layout_marginRight">4dip</item>
+    <style name="AbstractRecipientComposeHeading" parent="@style/ComposeHeading">
         <item name="android:layout_marginTop">4dip</item>
         <item name="android:paddingLeft">0dip</item>
      </style>
+
+    <style name="RecipientComposeHeading" parent="@style/AbstractRecipientComposeHeading">
+        <item name="android:layout_marginRight">@dimen/compose_recipient_heading_margin_end</item>
+    </style>
 
     <style name="ComposeFieldLayout" parent="android:Widget.Holo.Light.EditText">
         <item name="android:addStatesFromChildren">true</item>
