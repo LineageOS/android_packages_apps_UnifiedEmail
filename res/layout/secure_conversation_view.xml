@@ -104,6 +104,14 @@
 
     </com.android.mail.browse.MessageScrollView>
 
+    <include layout="@layout/conversation_message_header"
+         android:id="@+id/snap_header"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         style="@style/ConversationViewSideMarginStyle"
+         android:layout_gravity="top"
+         android:visibility="gone"/>
+
     <include layout="@layout/conversation_load_spinner"/>
 
 </FrameLayout>

@@ -22,7 +22,11 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
 
+import com.android.mail.browse.ScrollNotifier.ScrollListener;
 import com.android.mail.utils.LogUtils;
+
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * A container that tries to play nice with an internally scrollable {@link Touchable} child view.
@@ -32,7 +36,7 @@ import com.android.mail.utils.LogUtils;
  * <p>
  * Touch events on any other child of this ScrollView are intercepted in the standard fashion.
  */
-public class MessageScrollView extends ScrollView {
+public class MessageScrollView extends ScrollView implements ScrollNotifier {
 
     /**
      * A View that reports whether onTouchEvent() was recently called.
@@ -57,6 +61,9 @@ public class MessageScrollView extends ScrollView {
      * while this parent will additionally handle the events to perform vertical scrolling.
      */
     private Touchable mTouchableChild;
+
+    private final Set<ScrollListener> mScrollListeners =
+            new CopyOnWriteArraySet<ScrollListener>();
 
     public static final String LOG_TAG = "MsgScroller";
 
@@ -119,4 +126,52 @@ public class MessageScrollView extends ScrollView {
         return handled;
     }
 
+    @Override
+    public void addScrollListener(ScrollListener l) {
+        mScrollListeners.add(l);
+    }
+
+    @Override
+    public void removeScrollListener(ScrollListener l) {
+        mScrollListeners.remove(l);
+    }
+
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        for (ScrollListener listener : mScrollListeners) {
+            listener.onNotifierScroll(t);
+        }
+    }
+
+
+    @Override
+    public int computeVerticalScrollRange() {
+        return super.computeVerticalScrollRange();
+    }
+
+    @Override
+    public int computeVerticalScrollOffset() {
+        return super.computeVerticalScrollOffset();
+    }
+
+    @Override
+    public int computeVerticalScrollExtent() {
+        return super.computeVerticalScrollExtent();
+    }
+
+    @Override
+    public int computeHorizontalScrollRange() {
+        return super.computeHorizontalScrollRange();
+    }
+
+    @Override
+    public int computeHorizontalScrollOffset() {
+        return super.computeHorizontalScrollOffset();
+    }
+
+    @Override
+    public int computeHorizontalScrollExtent() {
+        return super.computeHorizontalScrollExtent();
+    }
 }

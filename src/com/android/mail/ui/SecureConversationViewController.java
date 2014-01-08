@@ -20,12 +20,14 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 
+import com.android.emailcommon.Logging;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.BorderView;
@@ -39,21 +41,24 @@ import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageScrollView;
 import com.android.mail.browse.MessageWebView;
+import com.android.mail.browse.ScrollNotifier.ScrollListener;
 import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.utils.ConversationViewUtils;
+import com.android.mail.utils.LogUtils;
 
 /**
- * Controller to do most of the heavy lifting for {@link SecureConversationViewFragment}
- * and {@link com.android.mail.browse.EmlMessageViewFragment}. Currently that work is
- * pretty much the rendering logic.
+ * Controller to do most of the heavy lifting for
+ * {@link SecureConversationViewFragment} and
+ * {@link com.android.mail.browse.EmlMessageViewFragment}. Currently that work
+ * is pretty much the rendering logic.
  */
 public class SecureConversationViewController implements
-        MessageHeaderView.MessageHeaderViewCallbacks {
+        MessageHeaderView.MessageHeaderViewCallbacks, ScrollListener {
     private static final String BEGIN_HTML =
-            "<body style=\"margin: 0 %spx;\"><div style=\"margin: 16px 0; font-size: 80%%\">";
+                                           "<body style=\"margin: 0 %spx;\"><div style=\"margin: 16px 0; font-size: 80%%\">";
     private static final String END_HTML = "</div></body>";
 
     private final SecureConversationViewControllerCallbacks mCallbacks;
@@ -61,6 +66,7 @@ public class SecureConversationViewController implements
     private MessageWebView mWebView;
     private ConversationViewHeader mConversationHeaderView;
     private MessageHeaderView mMessageHeaderView;
+    private MessageHeaderView mSnapHeaderView;
     private MessageFooterView mMessageFooterView;
     private ConversationMessage mMessage;
     private MessageScrollView mScrollView;
@@ -80,7 +86,10 @@ public class SecureConversationViewController implements
         mScrollView = (MessageScrollView) rootView.findViewById(R.id.scroll_view);
         mConversationHeaderView = (ConversationViewHeader) rootView.findViewById(R.id.conv_header);
         mMessageHeaderView = (MessageHeaderView) rootView.findViewById(R.id.message_header);
+        mSnapHeaderView = (MessageHeaderView) rootView.findViewById(R.id.snap_header);
         mMessageFooterView = (MessageFooterView) rootView.findViewById(R.id.message_footer);
+
+        mScrollView.addScrollListener(this);
 
         // Add color backgrounds to the header and footer.
         // Otherwise the backgrounds are grey. They can't
@@ -89,6 +98,7 @@ public class SecureConversationViewController implements
         final int color = rootView.getResources().getColor(
                 R.color.message_header_background_color);
         mMessageHeaderView.setBackgroundColor(color);
+        mSnapHeaderView.setBackgroundColor(color);
         mMessageFooterView.setBackgroundColor(color);
 
         ((BorderView) rootView.findViewById(R.id.top_border)).disableCardBottomBorder();
@@ -102,7 +112,7 @@ public class SecureConversationViewController implements
         mWebView.setWebViewClient(mCallbacks.getWebViewClient());
         final InlineAttachmentViewIntentBuilderCreator creator =
                 InlineAttachmentViewIntentBuilderCreatorHolder.
-                getInlineAttachmentViewIntentCreator();
+                        getInlineAttachmentViewIntentCreator();
         mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(
                 mCallbacks.getFragment().getActivity(),
                 creator.createInlineAttachmentViewIntentBuilder(null, null, -1)));
@@ -136,7 +146,16 @@ public class SecureConversationViewController implements
         mMessageHeaderView.setExpandable(false);
         mMessageHeaderView.setViewOnlyMode(mCallbacks.isViewOnlyMode());
 
+        mSnapHeaderView.setSnappy();
+        mSnapHeaderView.initialize(
+                mCallbacks.getConversationAccountController(), mCallbacks.getAddressCache());
+        mSnapHeaderView.setContactInfoSource(mCallbacks.getContactInfoSource());
+        mSnapHeaderView.setCallbacks(this);
+        mSnapHeaderView.setExpandable(false);
+        mSnapHeaderView.setViewOnlyMode(mCallbacks.isViewOnlyMode());
+
         mCallbacks.setupMessageHeaderVeiledMatcher(mMessageHeaderView);
+        mCallbacks.setupMessageHeaderVeiledMatcher(mSnapHeaderView);
 
         mMessageFooterView.initialize(fragment.getLoaderManager(), fragment.getFragmentManager());
 
@@ -147,6 +166,23 @@ public class SecureConversationViewController implements
         final Resources r = mCallbacks.getFragment().getResources();
         mSideMarginInWebPx = (int) (r.getDimensionPixelOffset(
                 R.dimen.conversation_message_content_margin_side) / r.getDisplayMetrics().density);
+    }
+
+    @Override
+    public void onNotifierScroll(final int y) {
+        // We need to decide whether or not to display the snap header.
+        // Get the location of the moveable message header inside the scroll view.
+        Rect rect = new Rect();
+        mScrollView.offsetDescendantRectToMyCoords(mMessageHeaderView, rect);
+
+        // If we have scrolled further than the distance from the top of the scrollView to the top
+        // of the message header, then the message header is at least partially ofscreen. As soon
+        // as the message header goes partially offscreen we need to display the snap header.
+        if (y > rect.top) {
+            mSnapHeaderView.setVisibility(View.VISIBLE);
+        } else {
+            mSnapHeaderView.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -175,6 +211,10 @@ public class SecureConversationViewController implements
         // Clear out the old info from the header before (re)binding
         mMessageHeaderView.unbind();
         mMessageHeaderView.bind(item, false);
+
+        mSnapHeaderView.unbind();
+        mSnapHeaderView.bind(item, false);
+
         if (mMessage.hasAttachments) {
             mMessageFooterView.setVisibility(View.VISIBLE);
             mMessageFooterView.bind(item, mCallbacks.getAccountUri(), false);
