@@ -266,6 +266,18 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         return false;
     }
 
+    /**
+     * Users are expected to use the Print item in the Message overflow menu to print the single
+     * message.
+     *
+     * @return {@code false} because Print and Print All menu items are never shown in EMail.
+     */
+    @Override
+    protected boolean shouldShowPrintInOverflow() {
+        return false;
+    }
+
+    @Override
     protected void printConversation() {
         mViewController.printMessage();
     }

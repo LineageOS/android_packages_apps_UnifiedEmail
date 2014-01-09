@@ -1605,11 +1605,19 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     @Override
-    public void setMessageDetailsExpanded(MessageHeaderItem i, boolean expanded,
-            int heightBefore) {
+    public void setMessageDetailsExpanded(MessageHeaderItem i, boolean expanded, int heightBefore) {
         mDiff = (expanded ? 1 : -1) * Math.abs(i.getHeight() - heightBefore);
     }
 
+    /**
+     * @return {@code true} because either the Print or Print All menu item is shown in GMail
+     */
+    @Override
+    protected boolean shouldShowPrintInOverflow() {
+        return true;
+    }
+
+    @Override
     protected void printConversation() {
         PrintUtils.printConversation(mActivity.getActivityContext(), getMessageCursor(),
                 mAddressCache, mConversation.getBaseUri(mBaseUri), true /* useJavascript */);

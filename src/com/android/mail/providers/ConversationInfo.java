@@ -42,6 +42,7 @@ public class ConversationInfo implements Parcelable {
      */
     public ConversationInfo(int count) {
         messageInfos = new ArrayList<MessageInfo>(count);
+        messageCount = count;
     }
 
     public ConversationInfo(int count, int draft, String first, String firstUnread, String last) {
