@@ -20,7 +20,7 @@ package com.android.mail.browse;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.android.mail.providers.Address;
+import com.android.emailcommon.mail.Address;
 
 import java.util.HashMap;
 
