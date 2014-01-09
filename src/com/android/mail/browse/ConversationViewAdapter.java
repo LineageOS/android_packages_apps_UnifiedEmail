@@ -26,13 +26,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock.OnClickListener;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ControllableActivity;

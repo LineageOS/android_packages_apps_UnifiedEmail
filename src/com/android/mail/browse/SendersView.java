@@ -33,8 +33,8 @@ import android.text.style.TextAppearanceSpan;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.R;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.MessageInfo;
@@ -399,7 +399,7 @@ public class SendersView {
             final String[] namesOnly = new String[senders.length];
             String display;
             for (int i = 0; i < senders.length; i++) {
-                display = Address.decodeAddressName(senders[i].getName());
+                display = Address.decodeAddressPersonal(senders[i].getName());
                 if (TextUtils.isEmpty(display)) {
                     display = senders[i].getAddress();
                 }

@@ -20,9 +20,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.ContactInfoSource;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
-import com.android.mail.providers.Address;
 import com.android.mail.utils.VeiledAddressMatcher;
 
 import java.util.Map;

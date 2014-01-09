@@ -34,12 +34,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MessageInfo;
@@ -52,14 +52,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The teaser list item in the conversation list that shows nested folders.
@@ -556,7 +554,7 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
         final Address[] senderAddresses = Address.parse(unreadSenders);
 
         for (final Address senderAddress : senderAddresses) {
-            String sender = senderAddress.getName();
+            String sender = senderAddress.getPersonal();
             final String senderEmail = senderAddress.getAddress();
 
             if (!TextUtils.isEmpty(sender)) {
