@@ -120,7 +120,6 @@
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopēt"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"Kopēt saites URL"</string>
     <string name="contextmenu_view_image" msgid="8855189263365643422">"Skatīt attēlu"</string>
-    <string name="contextmenu_save_image" msgid="8060193290720783002">"Saglabāt attēlu"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Ievadīt numuru..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"Sūtīt īsziņu…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Pievienot kontaktpersonu"</string>

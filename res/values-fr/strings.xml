@@ -120,7 +120,6 @@
     <string name="contextmenu_copy" msgid="4604170699444153037">"Copier"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"Copier l\'URL du lien"</string>
     <string name="contextmenu_view_image" msgid="8855189263365643422">"Afficher l\'image"</string>
-    <string name="contextmenu_save_image" msgid="8060193290720783002">"Enregistrer l\'image"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Composer…"</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"Envoyer un SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Ajouter un contact"</string>
