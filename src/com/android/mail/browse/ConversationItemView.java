@@ -97,6 +97,7 @@ import com.android.mail.utils.ViewUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Iterator;
 
 public class ConversationItemView extends View
@@ -514,9 +515,8 @@ public class ConversationItemView extends View
             final boolean newlyBound = header.conversation.id != mHeader.conversation.id;
             // If this was previously bound to a different conversation, remove any contact photo
             // manager requests.
-            if (newlyBound || (mHeader.displayableSenderNames != null && !mHeader
-                    .displayableSenderNames.equals(
-                            header.displayableSenderNames))) {
+            if (newlyBound || (mHeader.displayableNames != null && !mHeader
+                    .displayableNames.equals(header.displayableNames))) {
                 for (int i = 0; i < mSendersImageView.getCount(); i++) {
                     mSendersImageView.getOrCreateDrawable(i).unbind();
                 }
@@ -807,7 +807,6 @@ public class ConversationItemView extends View
         updateBackground();
 
         mHeader.sendersDisplayText = new SpannableStringBuilder();
-        mHeader.styledSendersString = null;
 
         mHeader.hasDraftMessage = mHeader.conversation.numDrafts() > 0;
 
@@ -815,28 +814,28 @@ public class ConversationItemView extends View
         if (mHeader.preserveSendersText) {
             // This is a special view that doesn't need special sender formatting
             mHeader.sendersDisplayText = new SpannableStringBuilder(mHeader.sendersText);
-            loadSenderImages();
+            loadImages();
         } else if (mHeader.conversation.conversationInfo != null) {
             Context context = getContext();
             mHeader.messageInfoString = SendersView
                     .createMessageInfo(context, mHeader.conversation, true);
             int maxChars = ConversationItemViewCoordinates.getSendersLength(context,
                     mCoordinates.getMode(), mHeader.conversation.hasAttachments);
-            mHeader.displayableSenderEmails = new ArrayList<String>();
-            mHeader.displayableSenderNames = new ArrayList<String>();
-            mHeader.styledSenders = new ArrayList<SpannableString>();
-            SendersView.format(context, mHeader.conversation.conversationInfo,
-                    mHeader.messageInfoString.toString(), maxChars, mHeader.styledSenders,
-                    mHeader.displayableSenderNames, mHeader.displayableSenderEmails, mAccount,
-                    true);
+            mHeader.displayableEmails = new ArrayList<String>();
+            mHeader.displayableNames = new ArrayList<String>();
+            mHeader.styledNames = new ArrayList<SpannableString>();
 
-            if (mHeader.displayableSenderEmails.isEmpty() && mHeader.hasDraftMessage) {
-                mHeader.displayableSenderEmails.add(mAccount);
-                mHeader.displayableSenderNames.add(mAccount);
+            SendersView.format(context, mHeader.conversation.conversationInfo,
+                    mHeader.messageInfoString.toString(), maxChars, mHeader.styledNames,
+                    mHeader.displayableNames, mHeader.displayableEmails, mAccount, true);
+
+            if (mHeader.displayableEmails.isEmpty() && mHeader.hasDraftMessage) {
+                mHeader.displayableEmails.add(mAccount);
+                mHeader.displayableNames.add(mAccount);
             }
 
             // If we have displayable senders, load their thumbnails
-            loadSenderImages();
+            loadImages();
         } else {
             LogUtils.wtf(LOG_TAG, "Null conversationInfo");
         }
@@ -894,10 +893,10 @@ public class ConversationItemView extends View
 
     // FIXME(ath): maybe move this to bind(). the only dependency on layout is on tile W/H, which
     // is immutable.
-    private void loadSenderImages() {
+    private void loadImages() {
         if (mGadgetMode != ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
-                || mHeader.displayableSenderEmails == null
-                || mHeader.displayableSenderEmails.size() <= 0) {
+                || mHeader.displayableEmails == null
+                || mHeader.displayableEmails.isEmpty()) {
             return;
         }
         if (mCoordinates.contactImagesWidth <= 0 || mCoordinates.contactImagesHeight <= 0) {
@@ -909,7 +908,7 @@ public class ConversationItemView extends View
         }
 
         Utils.traceBeginSection("load sender images");
-        final int count = mHeader.displayableSenderEmails.size();
+        final int count = mHeader.displayableEmails.size();
 
         mSendersImageView.setCount(count);
         mSendersImageView
@@ -920,8 +919,8 @@ public class ConversationItemView extends View
             final ContactDrawable drawable = mSendersImageView.getOrCreateDrawable(i);
             drawable.setDecodeDimensions(mCoordinates.contactImagesWidth,
                     mCoordinates.contactImagesHeight);
-            drawable.bind(mHeader.displayableSenderNames.get(i),
-                    mHeader.displayableSenderEmails.get(i));
+            drawable.bind(mHeader.displayableNames.get(i),
+                    mHeader.displayableEmails.get(i));
             Utils.traceEndSection();
         }
         Utils.traceEndSection();
@@ -1014,13 +1013,13 @@ public class ConversationItemView extends View
         v.layout(0, 0, w, h);
     }
 
-    private void layoutSenders() {
-        if (mHeader.styledSendersString != null) {
+    private void layoutParticipantLine(SpannableStringBuilder topLine) {
+        if (topLine != null) {
             if (isActivated() && showActivatedText()) {
-                mHeader.styledSendersString.setSpan(sActivatedTextSpan, 0,
+                topLine.setSpan(sActivatedTextSpan, 0,
                         mHeader.styledMessageInfoStringOffset, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
-                mHeader.styledSendersString.removeSpan(sActivatedTextSpan);
+                topLine.removeSpan(sActivatedTextSpan);
             }
 
             final int w = mSendersWidth;
@@ -1030,7 +1029,7 @@ public class ConversationItemView extends View
             mSendersTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCoordinates.sendersFontSize);
             layoutViewExactly(mSendersTextView, w, h);
 
-            mSendersTextView.setText(mHeader.styledSendersString);
+            mSendersTextView.setText(topLine);
         }
     }
 
@@ -1212,9 +1211,9 @@ public class ConversationItemView extends View
         sPaint.setTextSize(mCoordinates.sendersFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
 
-        if (mHeader.styledSenders != null) {
-            ellipsizeStyledSenders();
-            layoutSenders();
+        if (mHeader.styledNames != null) {
+            final SpannableStringBuilder topLine = ellipsize(mHeader.styledNames);
+            layoutParticipantLine(topLine);
         } else {
             // First pass to calculate width of each fragment.
             if (mSendersWidth < 0) {
@@ -1236,7 +1235,7 @@ public class ConversationItemView extends View
     // 1) If there is message info (either a COUNT or DRAFT info to display), it MUST be shown
     // 2) If senders do not fit, ellipsize the last one that does fit, and stop
     // appending new senders
-    private int ellipsizeStyledSenders() {
+    private SpannableStringBuilder ellipsize(List<SpannableString> parts) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         float totalWidth = 0;
         boolean ellipsize = false;
@@ -1256,7 +1255,7 @@ public class ConversationItemView extends View
         }
        SpannableString prevSender = null;
        SpannableString ellipsizedText;
-        for (SpannableString sender : mHeader.styledSenders) {
+        for (SpannableString sender : parts) {
             // There may be null sender strings if there were dupes we had to remove.
             if (sender == null) {
                 continue;
@@ -1311,8 +1310,7 @@ public class ConversationItemView extends View
         }
         mHeader.styledMessageInfoStringOffset = builder.length();
         builder.append(messageInfoString);
-        mHeader.styledSendersString = builder;
-        return (int)totalWidth;
+        return builder;
     }
 
     private static SpannableString copyStyles(CharacterStyle[] spans, CharSequence newText) {

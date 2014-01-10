@@ -31,7 +31,7 @@ import android.util.Pair;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.MessageInfo;
+import com.android.mail.providers.ParticipantInfo;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.FolderUri;
 import com.google.common.annotations.VisibleForTesting;
@@ -116,10 +116,6 @@ public class ConversationItemViewModel {
 
     public boolean isInvite;
 
-    public ArrayList<SpannableString> styledSenders;
-
-    public SpannableStringBuilder styledSendersString;
-
     public SpannableStringBuilder messageInfoString;
 
     public int styledMessageInfoStringOffset;
@@ -127,16 +123,21 @@ public class ConversationItemViewModel {
     private String mContentDescription;
 
     /**
-     * Email address corresponding to the senders that will be displayed in the
-     * senders field.
+     * Email addresses corresponding to the senders/recipients that will be displayed on the top
+     * line; used to generate the conversation icon.
      */
-    public ArrayList<String> displayableSenderEmails;
+    public ArrayList<String> displayableEmails;
 
     /**
-     * Display names corresponding to the email address corresponding to the
-     * senders that will be displayed in the senders field.
+     * Display names corresponding to the email address for the senders/recipients that will be
+     * displayed on the top line.
      */
-    public ArrayList<String> displayableSenderNames;
+    public ArrayList<String> displayableNames;
+
+    /**
+     * A styled version of the {@link #displayableNames} to be displayed on the top line.
+     */
+    public ArrayList<SpannableString> styledNames;
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
@@ -290,32 +291,32 @@ public class ConversationItemViewModel {
             // If any are unread, get the first unread sender.
             // If all are unread, get the first sender.
             // If all are read, get the last sender.
-            String sender = "";
-            String lastSender = "";
-            int last = conversation.conversationInfo.messageInfos != null ?
-                    conversation.conversationInfo.messageInfos.size() - 1 : -1;
+            String participant = "";
+            String lastParticipant = "";
+            int last = conversation.conversationInfo.participantInfos != null ?
+                    conversation.conversationInfo.participantInfos.size() - 1 : -1;
             if (last != -1) {
-                lastSender = conversation.conversationInfo.messageInfos.get(last).sender;
+                lastParticipant = conversation.conversationInfo.participantInfos.get(last).name;
             }
             if (conversation.read) {
-                sender = TextUtils.isEmpty(lastSender) ?
-                        SendersView.getMe(context) : lastSender;
+                participant = TextUtils.isEmpty(lastParticipant) ?
+                        SendersView.getMe(context) : lastParticipant;
             } else {
-                MessageInfo firstUnread = null;
-                for (MessageInfo m : conversation.conversationInfo.messageInfos) {
-                    if (!m.read) {
-                        firstUnread = m;
+                ParticipantInfo firstUnread = null;
+                for (ParticipantInfo p : conversation.conversationInfo.participantInfos) {
+                    if (!p.readConversation) {
+                        firstUnread = p;
                         break;
                     }
                 }
                 if (firstUnread != null) {
-                    sender = TextUtils.isEmpty(firstUnread.sender) ?
-                            SendersView.getMe(context) : firstUnread.sender;
+                    participant = TextUtils.isEmpty(firstUnread.name) ?
+                            SendersView.getMe(context) : firstUnread.name;
                 }
             }
-            if (TextUtils.isEmpty(sender)) {
+            if (TextUtils.isEmpty(participant)) {
                 // Just take the last sender
-                sender = lastSender;
+                participant = lastParticipant;
             }
             boolean isToday = DateUtils.isToday(conversation.dateMs);
             String date = DateUtils.getRelativeTimeSpanString(context, conversation.dateMs)
@@ -323,7 +324,7 @@ public class ConversationItemViewModel {
             String readString = context.getString(
                     conversation.read ? R.string.read_string : R.string.unread_string);
             int res = isToday ? R.string.content_description_today : R.string.content_description;
-            mContentDescription = context.getString(res, sender,
+            mContentDescription = context.getString(res, participant,
                     conversation.subject, conversation.getSnippet(), date, readString);
         }
         return mContentDescription;

@@ -27,7 +27,7 @@ import android.text.Html;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderList;
-import com.android.mail.providers.MessageInfo;
+import com.android.mail.providers.ParticipantInfo;
 import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
@@ -232,14 +232,13 @@ public final class MockUiProvider extends ContentProvider {
                 "firstUnread", "last");
         for (int i = 0; i < messageCount; i++) {
             if (i % 2 == 0) {
-                info.addMessage(new MessageInfo(false, false,
-                        i + "Test <testsender@test.com>", -1, "testsender@test.com"));
+                info.addParticipant(new ParticipantInfo(i + "Test", "testsender@test.com", -1,
+                        false));
             } else if (i % 3 == 0) {
-                info.addMessage(new MessageInfo(true, false, i + "sender@test.com", -1,
-                        "sender@test.com"));
+                info.addParticipant(new ParticipantInfo(i + "sender@test.com", "sender@test.com",
+                        -1, false));
             } else {
-                info.addMessage(new MessageInfo(false, false, MessageInfo.SENDER_LIST_TOKEN_ELIDED,
-                        -1, null));
+                info.addParticipant(new ParticipantInfo(" .. ", null, -1, false));
             }
         }
         return info.toBlob();

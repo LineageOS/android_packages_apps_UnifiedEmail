@@ -81,3 +81,11 @@
 -keepclasseswithmembers class com.android.emailcommon.mail.Address {
   public <methods>;
 }
+
+-keepclasseswithmembers class com.android.mail.providers.ConversationInfo {
+  *** addParticipant(...);
+}
+
+-keepclasseswithmembers class com.android.mail.providers.ParticipantInfo {
+  public <methods>;
+}

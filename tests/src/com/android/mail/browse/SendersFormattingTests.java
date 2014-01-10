@@ -22,111 +22,94 @@ import android.test.suitebuilder.annotation.SmallTest;
 import android.text.SpannableString;
 
 import com.android.mail.providers.ConversationInfo;
-import com.android.mail.providers.MessageInfo;
+import com.android.mail.providers.ParticipantInfo;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 
 @SmallTest
 public class SendersFormattingTests extends AndroidTestCase {
 
-    private static ConversationInfo createConversationInfo(int count) {
-        int draftCount = 5;
-        String first = "snippet", firstUnread = first, last = first;
-        return new ConversationInfo(count, draftCount, first, firstUnread, last);
+    private static ConversationInfo createConversationInfo() {
+        return new ConversationInfo(0, 5, "snippet", "snippet", "snippet");
     }
 
-    public void testMe() {
-        // Blank sender == from "me"
-        ConversationInfo conv = createConversationInfo(1);
-        boolean read = false, starred = false;
-        MessageInfo info = new MessageInfo(read, starred, null, -1, null);
-        conv.addMessage(info);
-        ArrayList<SpannableString> strings = new ArrayList<SpannableString>();
-        ArrayList<String> emailDisplays = null;
-        SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
-                null, false);
-        assertEquals(1, strings.size());
-        assertEquals(strings.get(0).toString(), "me");
+    public void testMeFromNullName() {
+        final ConversationInfo conv = createConversationInfo();
+        conv.addParticipant(new ParticipantInfo(null, "something@somewhere.com", 0, false));
+        final ArrayList<SpannableString> strings = Lists.newArrayList();
+        assertEquals(0, strings.size());
 
-        ConversationInfo conv2 = createConversationInfo(1);
-        MessageInfo info2 = new MessageInfo(read, starred, "", -1, null);
-        strings.clear();
-        conv2.addMessage(info2);
-        SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
-                null, false);
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false);
         assertEquals(1, strings.size());
-        assertEquals(strings.get(0).toString(), "me");
-
-        ConversationInfo conv3 = createConversationInfo(2);
-        MessageInfo info3 = new MessageInfo(read, starred, "", -1, null);
-        conv3.addMessage(info3);
-        MessageInfo info4 = new MessageInfo(read, starred, "", -1, null);
-        conv3.addMessage(info4);
-        strings.clear();
-        SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
-                null, false);
-        assertEquals(1, strings.size());
-        assertEquals(strings.get(0).toString(), "me");
+        assertEquals("me", strings.get(0).toString());
     }
 
-    public void testDupes() {
-        // Duplicate sender; should only return 1
-        ArrayList<SpannableString> strings = new ArrayList<SpannableString>();
-        ArrayList<String> emailDisplays = null;
-        ConversationInfo conv = createConversationInfo(2);
-        boolean read = false, starred = false;
-        String sender = "sender@sender.com";
-        MessageInfo info = new MessageInfo(read, starred, sender, -1, null);
-        conv.addMessage(info);
-        MessageInfo info2 = new MessageInfo(read, starred, sender, -1, null);
-        conv.addMessage(info2);
-        SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
-                null, false);
-        // We actually don't remove the item, we just set it to null, so count
-        // just the non-null items.
-        int count = 0;
-        for (int i = 0; i < strings.size(); i++) {
-            if (strings.get(i) != null) {
-                count++;
-                assertEquals(strings.get(i).toString(), sender);
-            }
-        }
-        assertEquals(1, count);
+    public void testMeFromEmptyName() {
+        final ConversationInfo conv = createConversationInfo();
+        conv.addParticipant(new ParticipantInfo("", "something@somewhere.com", 0, false));
+        final ArrayList<SpannableString> strings = Lists.newArrayList();
+        assertEquals(0, strings.size());
+
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false);
+        assertEquals(1, strings.size());
+        assertEquals("me", strings.get(0).toString());
+    }
+
+    public void testMeFromDuplicateEmptyNames() {
+        final ConversationInfo conv = createConversationInfo();
+        conv.addParticipant(new ParticipantInfo("", "something@somewhere.com", 0, false));
+        conv.addParticipant(new ParticipantInfo("", "something@somewhere.com", 0, false));
+        final ArrayList<SpannableString> strings = Lists.newArrayList();
+        assertEquals(0, strings.size());
+
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false);
+        assertEquals(2, strings.size());
+        assertNull(strings.get(0));
+        assertEquals("me", strings.get(1).toString());
+    }
+
+    public void testDuplicates() {
+        final ConversationInfo conv = createConversationInfo();
+        conv.addParticipant(new ParticipantInfo("Something", "something@somewhere.com", 0, false));
+        conv.addParticipant(new ParticipantInfo("Something", "something@somewhere.com", 0, false));
+
+        final ArrayList<SpannableString> strings = Lists.newArrayList();
+        assertEquals(0, strings.size());
+
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false);
+        assertEquals(2, strings.size());
+        assertNull(strings.get(0));
+        assertEquals("Something", strings.get(1).toString());
     }
 
     public void testSenderNameBadInput() {
-        final ConversationInfo conv = createConversationInfo(1);
-        final MessageInfo msg = new MessageInfo(false, false, "****^****", 0, null);
-        conv.addMessage(msg);
+        final ConversationInfo before = createConversationInfo();
+        before.addParticipant(new ParticipantInfo("****^****", null, 0, false));
 
-        final byte[] serialized = conv.toBlob();
+        final byte[] serialized = before.toBlob();
 
-        ConversationInfo conv2 = ConversationInfo.fromBlob(serialized);
-        assertEquals(1, conv2.messageInfos.size());
-        assertEquals(msg.sender, conv2.messageInfos.get(0).sender);
+        final ConversationInfo after = ConversationInfo.fromBlob(serialized);
+        assertEquals(1, after.participantInfos.size());
+        assertEquals(before.participantInfos.get(0).name, after.participantInfos.get(0).name);
     }
 
     public void testConversationSnippetsBadInput() {
-        final String firstSnippet = "*^*";
-        final String firstUnreadSnippet = "*^*^*";
-        final String lastSnippet = "*^*^*^*";
+        final String first = "*^*";
+        final String firstUnread = "*^*^*";
+        final String last = "*^*^*^*";
 
-        final ConversationInfo conv = new ConversationInfo(42, 49, firstSnippet,
-                firstUnreadSnippet, lastSnippet);
-        final MessageInfo msg = new MessageInfo(false, false, "Foo Bar", 0, null);
-        conv.addMessage(msg);
+        final ConversationInfo before = new ConversationInfo(42, 49, first, firstUnread, last);
+        before.addParticipant(new ParticipantInfo("Foo Bar", "foo@bar.com", 0, false));
+        assertEquals(first, before.firstSnippet);
+        assertEquals(firstUnread, before.firstUnreadSnippet);
+        assertEquals(last, before.lastSnippet);
 
-        assertEquals(firstSnippet, conv.firstSnippet);
-        assertEquals(firstUnreadSnippet, conv.firstUnreadSnippet);
-        assertEquals(lastSnippet, conv.lastSnippet);
+        final byte[] serialized = before.toBlob();
 
-        final byte[] serialized = conv.toBlob();
-
-        ConversationInfo conv2 = ConversationInfo.fromBlob(serialized);
-
-        assertEquals(conv.firstSnippet, conv2.firstSnippet);
-        assertEquals(conv.firstUnreadSnippet, conv2.firstUnreadSnippet);
-        assertEquals(conv.lastSnippet, conv2.lastSnippet);
+        final ConversationInfo after = ConversationInfo.fromBlob(serialized);
+        assertEquals(before.firstSnippet, after.firstSnippet);
+        assertEquals(before.firstUnreadSnippet, after.firstUnreadSnippet);
+        assertEquals(before.lastSnippet, after.lastSnippet);
     }
-
 }

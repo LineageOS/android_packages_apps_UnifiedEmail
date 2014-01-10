@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class ConversationInfo implements Parcelable {
 
-    final public ArrayList<MessageInfo> messageInfos;
+    public final ArrayList<ParticipantInfo> participantInfos;
     public int messageCount;
     public int draftCount;
     public String firstSnippet;
@@ -33,21 +33,22 @@ public class ConversationInfo implements Parcelable {
     public String lastSnippet;
 
     public ConversationInfo() {
-        messageInfos = new ArrayList<MessageInfo>();
+        participantInfos = new ArrayList<ParticipantInfo>();
     }
 
-    /**
-     * Alternate constructor that allows clients to specify the intended number of messages to
-     * reduce garbage from resizing.
-     */
-    public ConversationInfo(int count) {
-        messageInfos = new ArrayList<MessageInfo>(count);
-        messageCount = count;
+    public ConversationInfo(int messageCount) {
+        this.messageCount = messageCount;
+        // message count is a decent approximation of participant count because for all incoming
+        // mailboxes we typically populate the participant list with the sender of each message
+        participantInfos = new ArrayList<ParticipantInfo>(messageCount);
     }
 
-    public ConversationInfo(int count, int draft, String first, String firstUnread, String last) {
-        messageInfos = new ArrayList<MessageInfo>(count);
-        set(count, draft, first, firstUnread, last);
+    public ConversationInfo(int messageCount, int draft, String first, String firstUnread,
+                            String last) {
+        // message count is a decent approximation of participant count because for all incoming
+        // mailboxes we typically populate the participant list with the sender of each message
+        participantInfos = new ArrayList<ParticipantInfo>(messageCount);
+        set(messageCount, draft, first, firstUnread, last);
     }
 
     private ConversationInfo(Parcel in) {
@@ -56,7 +57,7 @@ public class ConversationInfo implements Parcelable {
         firstSnippet = in.readString();
         firstUnreadSnippet = in.readString();
         lastSnippet = in.readString();
-        messageInfos = in.createTypedArrayList(MessageInfo.CREATOR);
+        participantInfos = in.createTypedArrayList(ParticipantInfo.CREATOR);
     }
 
     /**
@@ -64,8 +65,8 @@ public class ConversationInfo implements Parcelable {
      * @param orig ConversationInfo to copy
      */
     public void overwriteWith(ConversationInfo orig) {
-        messageInfos.clear();
-        messageInfos.addAll(orig.messageInfos);
+        participantInfos.clear();
+        participantInfos.addAll(orig.participantInfos);
         messageCount = orig.messageCount;
         draftCount = orig.draftCount;
         firstSnippet = orig.firstSnippet;
@@ -85,7 +86,7 @@ public class ConversationInfo implements Parcelable {
         dest.writeString(firstSnippet);
         dest.writeString(firstUnreadSnippet);
         dest.writeString(lastSnippet);
-        dest.writeTypedList(messageInfos);
+        dest.writeTypedList(participantInfos);
     }
 
     public static ConversationInfo fromBlob(byte[] blob) {
@@ -109,7 +110,7 @@ public class ConversationInfo implements Parcelable {
     }
 
     public void set(int count, int draft, String first, String firstUnread, String last) {
-        messageInfos.clear();
+        participantInfos.clear();
         messageCount = count;
         draftCount = draft;
         firstSnippet = first;
@@ -118,7 +119,7 @@ public class ConversationInfo implements Parcelable {
     }
 
     public void reset() {
-        messageInfos.clear();
+        participantInfos.clear();
         messageCount = 0;
         draftCount = 0;
         firstSnippet = null;
@@ -126,14 +127,14 @@ public class ConversationInfo implements Parcelable {
         lastSnippet = null;
     }
 
-    public void addMessage(MessageInfo info) {
-        messageInfos.add(info);
+    public void addParticipant(ParticipantInfo info) {
+        participantInfos.add(info);
     }
 
     public boolean markRead(boolean read) {
         boolean changed = false;
-        for (MessageInfo msg : messageInfos) {
-            changed |= msg.markRead(read);
+        for (ParticipantInfo pi : participantInfos) {
+            changed |= pi.markRead(read);
         }
         if (read) {
             firstSnippet = lastSnippet;
@@ -145,7 +146,7 @@ public class ConversationInfo implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(messageCount, draftCount, messageInfos, firstSnippet,
+        return Objects.hashCode(messageCount, draftCount, participantInfos, firstSnippet,
                 lastSnippet, firstUnreadSnippet);
     }
 
@@ -174,8 +175,8 @@ public class ConversationInfo implements Parcelable {
         builder.append(firstSnippet);
         builder.append(", firstUnreadSnippet = ");
         builder.append(firstUnreadSnippet);
-        builder.append(", messageInfos = ");
-        builder.append(messageInfos.toString());
+        builder.append(", participants = ");
+        builder.append(participantInfos.toString());
         builder.append("]");
         return builder.toString();
     }

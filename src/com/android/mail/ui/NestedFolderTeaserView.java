@@ -42,7 +42,7 @@ import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.MessageInfo;
+import com.android.mail.providers.ParticipantInfo;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
@@ -613,13 +613,13 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
                         String senderEmail = null;
                         int priority = Integer.MIN_VALUE;
 
-                        // Find the highest priority sender
-                        for (final MessageInfo messageInfo :
-                            conversation.conversationInfo.messageInfos) {
-                            if (sender == null || priority < messageInfo.priority) {
-                                sender = messageInfo.sender;
-                                senderEmail = messageInfo.senderEmail;
-                                priority = messageInfo.priority;
+                        // Find the highest priority participant
+                        for (final ParticipantInfo p :
+                                conversation.conversationInfo.participantInfos) {
+                            if (sender == null || priority < p.priority) {
+                                sender = p.name;
+                                senderEmail = p.email;
+                                priority = p.priority;
                             }
                         }
 

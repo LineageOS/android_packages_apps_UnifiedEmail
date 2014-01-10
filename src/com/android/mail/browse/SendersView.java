@@ -35,7 +35,7 @@ import com.android.emailcommon.mail.Address;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
-import com.android.mail.providers.MessageInfo;
+import com.android.mail.providers.ParticipantInfo;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.utils.ObjectCache;
@@ -141,8 +141,8 @@ public class SendersView {
             boolean hasSenders = false;
             // This covers the case where the sender is "me" and this is a draft
             // message, which means this will only run once most of the time.
-            for (MessageInfo m : conversationInfo.messageInfos) {
-                if (!TextUtils.isEmpty(m.sender)) {
+            for (ParticipantInfo p : conversationInfo.participantInfos) {
+                if (!TextUtils.isEmpty(p.name)) {
                     hasSenders = true;
                     break;
                 }
@@ -168,8 +168,8 @@ public class SendersView {
                 if (draftCount == 1) {
                     draftString.append(sDraftSingularString);
                 } else {
-                    draftString.append(sDraftPluralString
-                            + String.format(sDraftCountFormatString, draftCount));
+                    draftString.append(sDraftPluralString).append(
+                            String.format(sDraftCountFormatString, draftCount));
                 }
                 draftString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0,
                         draftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -252,8 +252,9 @@ public class SendersView {
         try {
             priorityToLength.clear();
             int senderLength;
-            for (MessageInfo info : conversationInfo.messageInfos) {
-                senderLength = !TextUtils.isEmpty(info.sender) ? info.sender.length() : 0;
+            for (ParticipantInfo info : conversationInfo.participantInfos) {
+                final String senderName = info.name;
+                senderLength = !TextUtils.isEmpty(senderName) ? senderName.length() : 0;
                 priorityToLength.put(info.priority, senderLength);
                 maxFoundPriority = Math.max(maxFoundPriority, info.priority);
             }
@@ -279,17 +280,19 @@ public class SendersView {
         // We want to include this entry if
         // 1) The onlyShowUnread flags is not set
         // 2) The above flag is set, and the message is unread
-        MessageInfo currentMessage;
+        ParticipantInfo currentParticipant;
         SpannableString spannableDisplay;
-        String nameString;
         CharacterStyle style;
         boolean appendedElided = false;
         Map<String, Integer> displayHash = Maps.newHashMap();
         String firstDisplayableSenderEmail = null;
         String firstDisplayableSender = null;
-        for (int i = 0; i < conversationInfo.messageInfos.size(); i++) {
-            currentMessage = conversationInfo.messageInfos.get(i);
-            nameString = !TextUtils.isEmpty(currentMessage.sender) ? currentMessage.sender : "";
+        for (int i = 0; i < conversationInfo.participantInfos.size(); i++) {
+            currentParticipant = conversationInfo.participantInfos.get(i);
+            final String currentEmail = currentParticipant.email;
+
+            final String currentName = currentParticipant.name;
+            String nameString = !TextUtils.isEmpty(currentName) ? currentName : "";
             if (nameString.length() == 0) {
                 nameString = getMe(context);
             }
@@ -297,30 +300,31 @@ public class SendersView {
                 nameString = nameString.substring(0,
                         Math.max(nameString.length() - numCharsToRemovePerWord, 0));
             }
-            final int priority = currentMessage.priority;
-            style = !currentMessage.read ? getWrappedStyleSpan(unreadStyleSpan)
-                    : getWrappedStyleSpan(readStyleSpan);
+
+            final int priority = currentParticipant.priority;
+            style = getWrappedStyleSpan(currentParticipant.readConversation ? readStyleSpan :
+                    unreadStyleSpan);
             if (priority <= maxPriorityToInclude) {
                 spannableDisplay = new SpannableString(sBidiFormatter.unicodeWrap(nameString));
                 // Don't duplicate senders; leave the first instance, unless the
                 // current instance is also unread.
-                int oldPos = displayHash.containsKey(currentMessage.sender) ? displayHash
-                        .get(currentMessage.sender) : DOES_NOT_EXIST;
+                int oldPos = displayHash.containsKey(currentName) ? displayHash
+                        .get(currentName) : DOES_NOT_EXIST;
                 // If this sender doesn't exist OR the current message is
                 // unread, add the sender.
-                if (oldPos == DOES_NOT_EXIST || !currentMessage.read) {
+                if (oldPos == DOES_NOT_EXIST || !currentParticipant.readConversation) {
                     // If the sender entry already existed, and is right next to the
                     // current sender, remove the old entry.
                     if (oldPos != DOES_NOT_EXIST && i > 0 && oldPos == i - 1
                             && oldPos < styledSenders.size()) {
                         // Remove the old one!
                         styledSenders.set(oldPos, null);
-                        if (shouldAddPhotos && !TextUtils.isEmpty(currentMessage.senderEmail)) {
-                            displayableSenderEmails.remove(currentMessage.senderEmail);
-                            displayableSenderNames.remove(currentMessage.sender);
+                        if (shouldAddPhotos && !TextUtils.isEmpty(currentEmail)) {
+                            displayableSenderEmails.remove(currentEmail);
+                            displayableSenderNames.remove(currentName);
                         }
                     }
-                    displayHash.put(currentMessage.sender, i);
+                    displayHash.put(currentName, i);
                     spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
                     styledSenders.add(spannableDisplay);
                 }
@@ -333,14 +337,13 @@ public class SendersView {
                 }
             }
             if (shouldAddPhotos) {
-                String senderEmail = TextUtils.isEmpty(currentMessage.sender) ?
+                String senderEmail = TextUtils.isEmpty(currentName) ?
                         account :
-                            TextUtils.isEmpty(currentMessage.senderEmail) ?
-                                    currentMessage.sender : currentMessage.senderEmail;
+                            TextUtils.isEmpty(currentEmail) ? currentName : currentEmail;
                 if (i == 0) {
                     // Always add the first sender!
                     firstDisplayableSenderEmail = senderEmail;
-                    firstDisplayableSender = currentMessage.sender;
+                    firstDisplayableSender = currentName;
                 } else {
                     if (!Objects.equal(firstDisplayableSenderEmail, senderEmail)) {
                         int indexOf = displayableSenderEmails.indexOf(senderEmail);
@@ -349,7 +352,7 @@ public class SendersView {
                             displayableSenderNames.remove(indexOf);
                         }
                         displayableSenderEmails.add(senderEmail);
-                        displayableSenderNames.add(currentMessage.sender);
+                        displayableSenderNames.add(currentName);
                         if (displayableSenderEmails.size() > DividedImageCanvas.MAX_DIVISIONS) {
                             displayableSenderEmails.remove(0);
                             displayableSenderNames.remove(0);
