@@ -36,6 +36,7 @@ import com.android.mail.R;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.ViewUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
@@ -268,23 +269,35 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
         boolean hasPositions = false;
         int convX = 0, listX = 0, foldersX = 0;
+        final boolean isRtl = ViewUtils.isViewRtl(this);
 
         switch (mCurrentMode) {
             case ViewMode.AD:
             case ViewMode.CONVERSATION:
             case ViewMode.SEARCH_RESULTS_CONVERSATION: {
                 final int foldersW = getPaneWidth(mFoldersView);
-                final int listW;
-                listW = getPaneWidth(mListView);
+                final int listW = getPaneWidth(mListView);
 
                 if (mListCollapsible) {
-                    convX = 0;
-                    listX = -listW;
-                    foldersX = listX - foldersW;
+                    if (isRtl) {
+                        convX = 0;
+                        listX = width;
+                        foldersX = width + listW;
+                    } else {
+                        convX = 0;
+                        listX = -listW;
+                        foldersX = listX - foldersW;
+                    }
                 } else {
-                    convX = listW;
-                    listX = 0;
-                    foldersX = -foldersW;
+                    if (isRtl) {
+                        convX = 0;
+                        listX = getPaneWidth(mConversationView);
+                        foldersX = width;
+                    } else {
+                        convX = listW;
+                        listX = 0;
+                        foldersX = -foldersW;
+                    }
                 }
                 hasPositions = true;
                 LogUtils.i(LOG_TAG, "conversation mode layout, x=%d/%d/%d", foldersX, listX, convX);
@@ -293,12 +306,19 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             case ViewMode.CONVERSATION_LIST:
             case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
             case ViewMode.SEARCH_RESULTS_LIST: {
-                convX = width;
-                listX = getPaneWidth(mFoldersView);
-                foldersX = 0;
+                if (isRtl) {
+                    convX = -getPaneWidth(mConversationView);
+                    listX = 0;
+                    foldersX = getPaneWidth(mListView);
+                } else {
+                    convX = width;
+                    listX = getPaneWidth(mFoldersView);
+                    foldersX = 0;
+                }
 
                 hasPositions = true;
-                LogUtils.i(LOG_TAG, "conv-list mode layout, x=%d/%d/%d", foldersX, listX, convX);
+                LogUtils.i(LOG_TAG, "conv-list mode layout, fX:%d/lX:%d/cX:%d",
+                        foldersX, listX, convX);
                 break;
             }
             default:
@@ -327,11 +347,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
     };
 
-    /**
-     * @param foldersX
-     * @param listX
-     * @param convX
-     */
     private void animatePanes(int foldersX, int listX, int convX) {
         // If positioning has not yet happened, we don't need to animate panes into place.
         // This happens on first layout, rotate, and when jumping straight to a conversation from

@@ -31,8 +31,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="32dp">
+        style="@style/ConversationListFrameStyle" >
 
         <!-- minHeight here is to ensure more consistent item heights across gadget choices -->
         <!-- and between 'normal' vs. 'wide' layouts (which is important during 2-pane -->
@@ -48,9 +47,9 @@
                 android:id="@+id/contact_image"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
-                android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                style="@style/ConversationListWideContactImageStyle" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -68,8 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-2dp"
-                    android:layout_marginRight="8dp"
-                    android:src="@drawable/ic_badge_reply_holo_light" />
+                    android:src="@drawable/ic_badge_reply_holo_light"
+                    style="@style/ConversationListReplyStateStyle" />
 
                 <TextView
                     android:id="@+id/senders"
@@ -91,9 +90,8 @@
                         android:id="@+id/personal_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_gravity="right"
-                        android:src="@drawable/ic_email_caret_single" />
+                        android:src="@drawable/ic_email_caret_single"
+                        style="@style/ConversationListWidePersonalIndicatorStyle" />
 
                 </FrameLayout>
 
@@ -114,26 +112,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-8dp"
-                    android:paddingLeft="6dp"
-                    android:src="@drawable/ic_attachment_holo_light" />
+                    android:src="@drawable/ic_attachment_holo_light"
+                    style="@style/ConversationListWidePaperclipStyle" />
 
                 <!-- The date should never appear truncated. -->
                 <TextView
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
                     android:textSize="12sp"
                     android:lines="1"
                     android:includeFontPadding="false"
-                    android:text="@string/date" />
+                    android:text="@string/date"
+                    style="@style/ConversationListWideDateStyle" />
 
                 <ImageView
                     android:id="@+id/info_icon"
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:layout_marginTop="-3dp"
-                    android:layout_marginLeft="4dp" />
+                    style="@style/ConversationListWideInfoIconStyle" />
 
                 <!-- align to bottom of subject text -->
                 <ImageView
@@ -141,8 +139,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:layout_marginLeft="32dp"
-                    android:src="@drawable/ic_btn_star_off" />
+                    android:src="@drawable/ic_btn_star_off"
+                    style="@style/ConversationListWideStarStyle"/>
 
             </LinearLayout>
 
@@ -153,8 +151,7 @@
         <View android:id="@+id/color_block"
             android:layout_width="@dimen/color_block_width"
             android:layout_height="@dimen/color_block_height"
-            android:layout_marginRight="64dp"
-            android:layout_gravity="top|right" />
+            style="@style/ConversationListWideColorBlockStyle" />
 
     </FrameLayout>
     <!-- There are 10dp bottom margins here for when there are no folders -->

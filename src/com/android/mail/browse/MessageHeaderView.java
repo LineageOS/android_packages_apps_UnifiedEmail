@@ -23,7 +23,6 @@ import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -686,7 +685,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
     private static void setChildMarginEnd(View childView, int marginEnd) {
         MarginLayoutParams mlp = (MarginLayoutParams) childView.getLayoutParams();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Utils.isRunningJBMR1OrLater()) {
             mlp.setMarginEnd(marginEnd);
         } else {
             mlp.rightMargin = marginEnd;

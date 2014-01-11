@@ -17,18 +17,17 @@
 
 package com.android.mail.ui;
 
-import com.android.mail.utils.FolderUri;
-import com.android.mail.utils.LogTag;
-import com.google.common.collect.Sets;
-
 import android.content.Context;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.FolderType;
+import com.android.mail.utils.FolderUri;
+import com.android.mail.utils.LogTag;
+import com.google.common.collect.Sets;
 
-import java.util.SortedSet;
+import java.util.NavigableSet;
 
 /**
  * Used to generate folder display information given a raw folders string.
@@ -38,7 +37,7 @@ import java.util.SortedSet;
 public class FolderDisplayer {
     public static final String LOG_TAG = LogTag.getLogTag();
     protected Context mContext;
-    protected final SortedSet<Folder> mFoldersSortedSet = Sets.newTreeSet();
+    protected final NavigableSet<Folder> mFoldersSortedSet = Sets.newTreeSet();
 
     protected final int mDefaultBgColor;
     protected final int mDefaultFgColor;

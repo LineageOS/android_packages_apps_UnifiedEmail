@@ -122,7 +122,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
         if (mLargeText && mSubjectView.getLineCount() > 2) {
             mSubjectView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCondensedTextSize);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (Utils.isRunningJBMR1OrLater()) {
                 // start, top, end, bottom
                 mSubjectView.setPaddingRelative(mSubjectView.getPaddingStart(),
                         mCondensedTopPadding, mSubjectView.getPaddingEnd(),

@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.ViewUtils;
 
 /**
  * A custom {@link View} that exposes an action to the user.
@@ -116,7 +117,7 @@ public class ActionableToastBar extends LinearLayout {
         // on both the right edge. We clip the background before the divider to remove the
         // rounded edge there, creating a split-pill button effect.
         if (mButtonDrawable != null) {
-            final boolean isRtl = Utils.isLayoutRtl(this);
+            final boolean isRtl = ViewUtils.isViewRtl(this);
             mButtonDrawable.setClipBounds(
                     (isRtl ? 0 : mDivider.getLeft()), 0,
                     (isRtl ? mDivider.getRight() : mActionButton.getWidth()),

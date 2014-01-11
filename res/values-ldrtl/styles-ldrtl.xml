@@ -276,4 +276,106 @@
     <style name="SearchCountStyle">
         <item name="android:paddingEnd">@dimen/search_results_padding</item>
     </style>
+
+    <!-- START Conversation list styles -->
+    <style name="ConversationListContactImageStyle">
+        <item name="android:layout_marginEnd">@dimen/conv_list_contact_image_padding_end</item>
+    </style>
+
+    <style name="ConversationListReplyStateStyle">
+        <item name="android:layout_marginEnd">@dimen/conv_list_reply_state_padding_end</item>
+    </style>
+
+    <style name="ConversationListPersonalIndicatorStyle">
+        <item name="android:layout_marginStart">
+            @dimen/conv_list_personal_indicator_padding_start</item>
+        <item name="android:layout_marginEnd">
+            @dimen/conv_list_personal_indicator_padding_end</item>
+    </style>
+
+    <style name="ConversationListSendersStyle">
+        <item name="android:layout_toEndOf">@id/senders_decoration</item>
+    </style>
+
+    <style name="ConversationListInfoIconStyle">
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginStart">@dimen/conv_list_info_icon_padding_start</item>
+    </style>
+
+    <style name="ConversationListDateStyle">
+        <item name="android:layout_toStartOf">@id/info_icon</item>
+        <item name="android:paddingStart">@dimen/conv_list_date_padding_start</item>
+    </style>
+
+    <style name="ConversationListPaperclipStyle">
+        <item name="android:layout_toStartOf">@id/date</item>
+        <item name="android:paddingStart">@dimen/conv_list_paperclip_padding_start</item>
+    </style>
+
+    <style name="ConversationListColorBlockStyle">
+        <item name="android:layout_alignParentEnd">true</item>
+    </style>
+
+    <style name="ConversationListStarStyle">
+        <item name="android:layout_marginEnd">@dimen/conv_list_star_padding_end</item>
+    </style>
+
+    <style name="AttachmentPreviewOverflowStyle">
+        <item name="android:layout_marginEnd">@dimen/ap_margin_side</item>
+    </style>
+
+    <style name="ConversationListFrameStyle">
+        <item name="android:layout_marginStart">@dimen/conv_list_frame_padding_start</item>
+        <item name="android:layout_marginEnd">@dimen/conv_list_frame_padding_end</item>
+    </style>
+
+    <style name="ConversationListWideContactImageStyle">
+        <item name="android:layout_marginEnd">
+            @dimen/conv_list_wide_contact_image_padding_end</item>
+    </style>
+
+    <style name="ConversationListWidePersonalIndicatorStyle">
+        <item name="android:layout_marginEnd">
+            @dimen/conv_list_wide_personal_indicator_padding_end</item>
+        <item name="android:layout_gravity">end</item>
+    </style>
+
+    <style name="ConversationListWidePaperclipStyle">
+        <item name="android:paddingStart">@dimen/conv_list_paperclip_padding_start</item>
+    </style>
+
+    <style name="ConversationListWideDateStyle">
+        <item name="android:paddingStart">@dimen/conv_list_date_padding_start</item>
+    </style>
+
+    <style name="ConversationListWideInfoIconStyle">
+        <item name="android:layout_marginStart">@dimen/conv_list_info_icon_padding_start</item>
+    </style>
+
+    <style name="ConversationListWideStarStyle">
+        <item name="android:layout_marginStart">@dimen/conv_list_wide_star_padding_start</item>
+    </style>
+
+    <style name="ConversationListWideColorBlockStyle">
+        <item name="android:layout_marginEnd">@dimen/conv_list_wide_color_block_padding_end</item>
+        <item name="android:layout_gravity">top|end</item>
+    </style>
+
+    <style name="ConversationListSpaciousLinearLayoutStyle">
+        <item name="android:layout_marginStart">
+            @dimen/conv_list_spacious_linearlayout_padding_start</item>
+        <item name="android:layout_marginEnd">
+            @dimen/conv_list_spacious_linearlayout_padding_end</item>
+    </style>
+
+    <style name="ConversationListSpaciousContactImageStyle">
+        <item name="android:layout_marginEnd">
+            @dimen/conv_list_spacious_contact_image_padding_end</item>
+    </style>
+
+    <style name="ConversationListSpaciousStarStyle">
+        <item name="android:layout_marginEnd">@dimen/conv_list_spacious_star_padding_end</item>
+    </style>
+    <!-- END Conversation list styles -->
+
 </resources>

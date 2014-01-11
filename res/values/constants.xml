@@ -131,4 +131,7 @@
     <integer name="vacation_responder_subject_length">500</integer>
     <!-- Number of characters allowed for a vacation responder body. -->
     <integer name="vacation_responder_body_length">1024000</integer>
+
+    <!-- Angle of the shadow that appears at the edge of the folder list. 180 is right to left. -->
+    <integer name="two_pane_folder_edge_gradient_angle">180</integer>
 </resources>

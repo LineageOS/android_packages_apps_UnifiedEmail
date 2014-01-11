@@ -35,6 +35,7 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewCompat;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -47,8 +48,6 @@ import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
-import android.text.util.Rfc822Token;
-import android.text.util.Rfc822Tokenizer;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -69,7 +68,6 @@ import com.android.mail.bitmap.AttachmentDrawable;
 import com.android.mail.bitmap.AttachmentGridDrawable;
 import com.android.mail.bitmap.ContactCheckableGridDrawable;
 import com.android.mail.bitmap.ContactDrawable;
-import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
@@ -94,9 +92,11 @@ import com.android.mail.utils.HardwareLayerEnabler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.ViewUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ConversationItemView extends View
         implements SwipeableItemView, ToggleableItem, InvalidateCallback, OnScrollListener,
@@ -161,7 +161,9 @@ public class ConversationItemView extends View
 
     private int mInfoIconX;
     private int mDateX;
+    private int mDateWidth;
     private int mPaperclipX;
+    private int mSendersX;
     private int mSendersWidth;
 
     /** Whether we are on a tablet device or not */
@@ -198,7 +200,7 @@ public class ConversationItemView extends View
     private boolean mParallaxSpeedAlternative;
     private boolean mParallaxDirectionAlternative;
 
-    private static int sFoldersLeftPadding;
+    private static int sFoldersStartPadding;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static ForegroundColorSpan sSnippetTextUnreadSpan;
@@ -273,7 +275,7 @@ public class ConversationItemView extends View
                 if (firstTime) {
                     firstTime = false;
                 } else {
-                    width += sFoldersLeftPadding;
+                    width += sFoldersStartPadding;
                 }
                 totalWidth += width;
                 if (totalWidth > availableSpace) {
@@ -284,21 +286,22 @@ public class ConversationItemView extends View
             return totalWidth;
         }
 
-        public void drawFolders(Canvas canvas, ConversationItemViewCoordinates coordinates) {
+        public void drawFolders(
+                Canvas canvas, ConversationItemViewCoordinates coordinates, boolean isRtl) {
             if (mFoldersCount == 0) {
                 return;
             }
-            final int xMinStart = coordinates.foldersX;
-            final int xEnd = coordinates.foldersXEnd;
+            final int left = coordinates.foldersLeft;
+            final int right = coordinates.foldersRight;
             final int y = coordinates.foldersY;
             final int height = coordinates.foldersHeight;
-            int textBottomPadding = coordinates.foldersTextBottomPadding;
+            final int textBottomPadding = coordinates.foldersTextBottomPadding;
 
             sFoldersPaint.setTextSize(coordinates.foldersFontSize);
             sFoldersPaint.setTypeface(coordinates.foldersTypeface);
 
             // Initialize space and cell size based on the current mode.
-            int availableSpace = xEnd - xMinStart;
+            int availableSpace = right - left;
             int maxFoldersCount = availableSpace / coordinates.getFolderMinimumWidth();
             int foldersCount = Math.min(mFoldersCount, maxFoldersCount);
             int averageWidth = availableSpace / foldersCount;
@@ -308,12 +311,15 @@ public class ConversationItemView extends View
             // Extra credit: maybe cache results across items as long as font size doesn't change.
 
             final int totalWidth = measureFolders(availableSpace, cellSize);
-            int xStart = xEnd - Math.min(availableSpace, totalWidth);
+            int xLeft = (isRtl) ? 0 : right - Math.min(availableSpace, totalWidth);
             final boolean overflow = totalWidth > availableSpace;
 
             // Second pass to draw folders.
             int i = 0;
-            for (Folder f : mFoldersSortedSet) {
+            for (Iterator<Folder> it = isRtl ?
+                    mFoldersSortedSet.descendingIterator() : mFoldersSortedSet.iterator();
+                    it.hasNext();) {
+                final Folder f = it.next();
                 if (availableSpace <= 0) {
                     break;
                 }
@@ -322,7 +328,7 @@ public class ConversationItemView extends View
                 final int bgColor = f.getBackgroundColor(mDefaultBgColor);
                 boolean labelTooLong = false;
                 final int textW = (int) sFoldersPaint.measureText(folderString);
-                int width = textW + cellSize + sFoldersLeftPadding;
+                int width = textW + cellSize + sFoldersStartPadding;
 
                 if (overflow && width > averageWidth) {
                     if (i < foldersCount - 1) {
@@ -330,20 +336,15 @@ public class ConversationItemView extends View
                     } else {
                         // allow the last label to take all remaining space
                         // (and don't let it make room for padding)
-                        width = availableSpace + sFoldersLeftPadding;
+                        width = availableSpace + sFoldersStartPadding;
                     }
                     labelTooLong = true;
                 }
 
-                // TODO (mindyp): how to we get this?
-                final boolean isMuted = false;
-                // labelValues.folderId ==
-                // sGmail.getFolderMap(mAccount).getFolderIdIgnored();
-
                 // Draw the box.
                 sFoldersPaint.setColor(bgColor);
                 sFoldersPaint.setStyle(Paint.Style.FILL);
-                canvas.drawRect(xStart, y, xStart + width - sFoldersLeftPadding,
+                canvas.drawRect(xLeft, y, xLeft + width - sFoldersStartPadding,
                         y + height, sFoldersPaint);
 
                 // Draw the text.
@@ -351,19 +352,20 @@ public class ConversationItemView extends View
                 sFoldersPaint.setColor(fgColor);
                 sFoldersPaint.setStyle(Paint.Style.FILL);
                 if (labelTooLong) {
-                    final int rightBorder = xStart + width - sFoldersLeftPadding - padding;
-                    final Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder,
-                            y, fgColor, Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
+                    // todo - take RTL into account for fade
+                    final int rightBorder = xLeft + width - sFoldersStartPadding - padding;
+                    final Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder, y,
+                            fgColor, Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
                     sFoldersPaint.setShader(shader);
                 }
-                canvas.drawText(folderString, xStart + padding, y + height - textBottomPadding,
+                canvas.drawText(folderString, xLeft + padding, y + height - textBottomPadding,
                         sFoldersPaint);
                 if (labelTooLong) {
                     sFoldersPaint.setShader(null);
                 }
 
                 availableSpace -= width;
-                xStart += width;
+                xLeft += width;
                 i++;
             }
         }
@@ -430,7 +432,7 @@ public class ConversationItemView extends View
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
-            sFoldersLeftPadding = res.getDimensionPixelOffset(R.dimen.folders_left_padding);
+            sFoldersStartPadding = res.getDimensionPixelOffset(R.dimen.folders_start_padding);
             sOverflowCountMax = res.getInteger(integer.ap_overflow_max_count);
             sCabAnimationDuration = res.getInteger(R.integer.conv_item_view_cab_anim_duration);
         }
@@ -695,7 +697,8 @@ public class ConversationItemView extends View
         }
         mHeader.viewWidth = mViewWidth;
 
-        mConfig.updateWidth(wSize).setViewMode(currentMode);
+        mConfig.updateWidth(wSize).setViewMode(currentMode)
+                .setLayoutDirection(ViewCompat.getLayoutDirection(this));
 
         Resources res = getResources();
         mHeader.standardScaledDimen = res.getDimensionPixelOffset(R.dimen.standard_scaled_dimen);
@@ -1066,38 +1069,64 @@ public class ConversationItemView extends View
         sPaint.setTextSize(mCoordinates.dateFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
 
+        final boolean isRtl = ViewUtils.isViewRtl(this);
+
+        mDateWidth = (int) sPaint.measureText(
+                mHeader.dateText != null ? mHeader.dateText.toString() : "");
         if (mHeader.infoIcon != null) {
-            mInfoIconX = mCoordinates.infoIconXEnd - mHeader.infoIcon.getWidth();
+            mInfoIconX = (isRtl) ? mCoordinates.infoIconX :
+                    mCoordinates.infoIconXRight - mHeader.infoIcon.getWidth();
 
             // If we have an info icon, we start drawing the date text:
             // At the end of the date TextView minus the width of the date text
-            mDateX = mCoordinates.dateXEnd - (int) sPaint.measureText(
-                    mHeader.dateText != null ? mHeader.dateText.toString() : "");
+            // In RTL mode, we just use dateX
+            mDateX = (isRtl) ? mCoordinates.dateX : mCoordinates.dateXRight - mDateWidth;
         } else {
             // If there is no info icon, we start drawing the date text:
             // At the end of the info icon ImageView minus the width of the date text
             // We use the info icon ImageView for positioning, since we want the date text to be
             // at the right, since there is no info icon
-            mDateX = mCoordinates.infoIconXEnd - (int) sPaint.measureText(
-                    mHeader.dateText != null ? mHeader.dateText.toString() : "");
+            // In RTL, we just use infoIconX
+            mDateX = (isRtl) ? mCoordinates.infoIconX :
+                    mCoordinates.infoIconXRight - mDateWidth;
         }
 
-        mPaperclipX = mDateX - ATTACHMENT.getWidth() - mCoordinates.datePaddingLeft;
+        // The paperclip is drawn starting at the start of the date text minus
+        // the width of the paperclip and the date padding.
+        // In RTL mode, it is at the end of the date (mDateX + mDateWidth) plus the
+        // start date padding.
+        mPaperclipX = (isRtl) ? mDateX + mDateWidth + mCoordinates.datePaddingStart :
+                mDateX - ATTACHMENT.getWidth() - mCoordinates.datePaddingStart;
 
         if (mCoordinates.isWide()) {
             // In wide mode, the end of the senders should align with
             // the start of the subject and is based on a max width.
             mSendersWidth = mCoordinates.sendersWidth;
+            mSendersX = mCoordinates.sendersX;
         } else {
-            // In normal mode, the width is based on where the date/attachment icon start.
+            // In normal mode, the senders x and width is based
+            // on where the date/attachment icon start.
             final int dateAttachmentStart;
             // Have this end near the paperclip or date, not the folders.
             if (mHeader.paperclip != null) {
-                dateAttachmentStart = mPaperclipX - mCoordinates.paperclipPaddingLeft;
+                // If there is a paperclip, the date/attachment start is at the start
+                // of the paperclip minus the paperclip padding.
+                // In RTL, it is at the end of the paperclip plus the paperclip padding.
+                dateAttachmentStart = (isRtl) ?
+                        mPaperclipX + ATTACHMENT.getWidth() + mCoordinates.paperclipPaddingStart
+                        : mPaperclipX - mCoordinates.paperclipPaddingStart;
             } else {
-                dateAttachmentStart = mDateX - mCoordinates.datePaddingLeft;
+                // If no paperclip, just use the start of the date minus the date padding start.
+                // In RTL mode, this is just the paperclipX.
+                dateAttachmentStart = (isRtl) ?
+                        mPaperclipX : mDateX - mCoordinates.datePaddingStart;
             }
-            mSendersWidth = dateAttachmentStart - mCoordinates.sendersX;
+            // Senders width is the dateAttachmentStart - sendersX.
+            // In RTL, it is sendersWidth + sendersX - dateAttachmentStart.
+            mSendersWidth = (isRtl) ?
+                    mCoordinates.sendersWidth + mCoordinates.sendersX - dateAttachmentStart
+                    : dateAttachmentStart - mCoordinates.sendersX;
+            mSendersX = (isRtl) ? dateAttachmentStart : mCoordinates.sendersX;
         }
 
         // Second pass to layout each fragment.
@@ -1109,25 +1138,10 @@ public class ConversationItemView extends View
             layoutSenders();
         } else {
             // First pass to calculate width of each fragment.
-            int totalWidth = 0;
-            int fixedWidth = 0;
-            for (SenderFragment senderFragment : mHeader.senderFragments) {
-                CharacterStyle style = senderFragment.style;
-                int start = senderFragment.start;
-                int end = senderFragment.end;
-                style.updateDrawState(sPaint);
-                senderFragment.width = (int) sPaint.measureText(mHeader.sendersText, start, end);
-                boolean isFixed = senderFragment.isFixed;
-                if (isFixed) {
-                    fixedWidth += senderFragment.width;
-                }
-                totalWidth += senderFragment.width;
-            }
-
             if (mSendersWidth < 0) {
                 mSendersWidth = 0;
             }
-            totalWidth = ellipsize(fixedWidth);
+
             mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
                     mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
         }
@@ -1230,79 +1244,6 @@ public class ConversationItemView extends View
         return s;
     }
 
-    private int ellipsize(int fixedWidth) {
-        int totalWidth = 0;
-        int currentLine = 1;
-        boolean ellipsize = false;
-        for (SenderFragment senderFragment : mHeader.senderFragments) {
-            CharacterStyle style = senderFragment.style;
-            int start = senderFragment.start;
-            int end = senderFragment.end;
-            int width = senderFragment.width;
-            boolean isFixed = senderFragment.isFixed;
-            style.updateDrawState(sPaint);
-
-            // No more width available, we'll only show fixed fragments.
-            if (ellipsize && !isFixed) {
-                senderFragment.shouldDisplay = false;
-                continue;
-            }
-
-            // New line and ellipsize text if needed.
-            senderFragment.ellipsizedText = null;
-            if (isFixed) {
-                fixedWidth -= width;
-            }
-            if (!canFitFragment(totalWidth + width, currentLine, fixedWidth)) {
-                // The text is too long, new line won't help. We have to
-                // ellipsize text.
-                if (totalWidth == 0) {
-                    ellipsize = true;
-                } else {
-                    // New line.
-                    if (currentLine < mCoordinates.sendersLineCount) {
-                        currentLine++;
-                        totalWidth = 0;
-                        // The text is still too long, we have to ellipsize
-                        // text.
-                        if (totalWidth + width > mSendersWidth) {
-                            ellipsize = true;
-                        }
-                    } else {
-                        ellipsize = true;
-                    }
-                }
-
-                if (ellipsize) {
-                    width = mSendersWidth - totalWidth;
-                    // No more new line, we have to reserve width for fixed
-                    // fragments.
-                    if (currentLine == mCoordinates.sendersLineCount) {
-                        width -= fixedWidth;
-                    }
-                    senderFragment.ellipsizedText = TextUtils.ellipsize(
-                            mHeader.sendersText.substring(start, end), sPaint, width,
-                            TruncateAt.END).toString();
-                    width = (int) sPaint.measureText(senderFragment.ellipsizedText);
-                }
-            }
-            senderFragment.shouldDisplay = true;
-            totalWidth += width;
-
-            final CharSequence fragmentDisplayText;
-            if (senderFragment.ellipsizedText != null) {
-                fragmentDisplayText = senderFragment.ellipsizedText;
-            } else {
-                fragmentDisplayText = mHeader.sendersText.substring(start, end);
-            }
-            final int spanStart = mHeader.sendersDisplayText.length();
-            mHeader.sendersDisplayText.append(fragmentDisplayText);
-            mHeader.sendersDisplayText.setSpan(senderFragment.style, spanStart,
-                    mHeader.sendersDisplayText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        return totalWidth;
-    }
-
     /**
      * If the subject contains the tag of a mailing-list (text surrounded with
      * []), return the subject with that tag ellipsized, e.g.
@@ -1361,7 +1302,7 @@ public class ConversationItemView extends View
             sPaint.setTextSize(mCoordinates.sendersFontSize);
             sPaint.setTypeface(SendersView.getTypeface(isUnread));
             sPaint.setColor(isUnread ? sSendersTextColorUnread : sSendersTextColorRead);
-            canvas.translate(mCoordinates.sendersX, mCoordinates.sendersY
+            canvas.translate(mSendersX, mCoordinates.sendersY
                     + mHeader.sendersDisplayLayout.getTopPadding());
             mHeader.sendersDisplayLayout.draw(canvas);
         } else {
@@ -1378,7 +1319,7 @@ public class ConversationItemView extends View
 
         // Folders.
         if (mConfig.areFoldersVisible()) {
-            mHeader.folderDisplayer.drawFolders(canvas, mCoordinates);
+            mHeader.folderDisplayer.drawFolders(canvas, mCoordinates, ViewUtils.isViewRtl(this));
         }
 
         // If this folder has a color (combined view/Email), show it here
@@ -1444,15 +1385,27 @@ public class ConversationItemView extends View
         // right-side edge effect when in tablet conversation mode and the list is not collapsed
         if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible,
                 mConfig.getViewMode())) {
-            RIGHT_EDGE_TABLET.setBounds(getWidth() - RIGHT_EDGE_TABLET.getIntrinsicWidth(), 0,
-                    getWidth(), getHeight());
+            final boolean isRtl = ViewUtils.isViewRtl(this);
+            RIGHT_EDGE_TABLET.setBounds(
+                    (isRtl) ? 0 : getWidth() - RIGHT_EDGE_TABLET.getIntrinsicWidth(), 0,
+                    (isRtl) ? RIGHT_EDGE_TABLET.getIntrinsicWidth() : getWidth(), getHeight());
             RIGHT_EDGE_TABLET.draw(canvas);
 
             if (isActivated()) {
-                // draw caret on the right, centered vertically
-                final int x = getWidth() - VISIBLE_CONVERSATION_CARET.getWidth();
+                // draw caret on the end, centered vertically
+                final int x = (isRtl) ? 0 : getWidth() - VISIBLE_CONVERSATION_CARET.getWidth();
                 final int y = (getHeight() - VISIBLE_CONVERSATION_CARET.getHeight()) / 2;
-                canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
+                if (isRtl) {
+                    // draw the bitmap mirrored in RTL mode
+                    canvas.save();
+                    canvas.scale(-1, 1,
+                            x + VISIBLE_CONVERSATION_CARET.getWidth()/2,
+                            y + VISIBLE_CONVERSATION_CARET.getHeight()/2);
+                    canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
+                    canvas.restore();
+                } else {
+                    canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
+                }
             }
         }
         Utils.traceEndSection();
@@ -1498,7 +1451,7 @@ public class ConversationItemView extends View
     }
 
     private void drawSenders(Canvas canvas) {
-        canvas.translate(mCoordinates.sendersX, mCoordinates.sendersY);
+        canvas.translate(mSendersX, mCoordinates.sendersY);
         mSendersTextView.draw(canvas);
     }
 
@@ -1618,9 +1571,11 @@ public class ConversationItemView extends View
     }
 
     private boolean isTouchInContactPhoto(float x, float y) {
-        // Everything before the right edge of contact photo
+        // Everything before the end edge of contact photo
 
-        final int threshold = mCoordinates.contactImagesX + mCoordinates.contactImagesWidth
+        final boolean isRtl = ViewUtils.isViewRtl(this);
+        final int threshold = (isRtl) ? mCoordinates.contactImagesX - sSenderImageTouchSlop :
+                mCoordinates.contactImagesX + mCoordinates.contactImagesWidth
                 + sSenderImageTouchSlop;
 
         // Allow touching a little right of the contact photo when we're already in selection mode
@@ -1633,7 +1588,7 @@ public class ConversationItemView extends View
         }
 
         return mHeader.gadgetMode == ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
-                && x < (threshold + extra)
+                && ((isRtl) ? x > (threshold - extra) : x < (threshold + extra))
                 && (!isAttachmentPreviewsEnabled() || y < mCoordinates.attachmentPreviewsY);
     }
 
@@ -1643,15 +1598,16 @@ public class ConversationItemView extends View
             return false;
         }
 
-        // Regardless of device, we always want to be right of the date's left touch slop
-        if (x < mDateX - sStarTouchSlop) {
+        final boolean isRtl = ViewUtils.isViewRtl(this);
+        // Regardless of device, we always want to be end of the date's start touch slop
+        if (((isRtl) ? x > mDateX + mDateWidth + sStarTouchSlop : x < mDateX - sStarTouchSlop)) {
             return false;
         }
 
         if (mStarEnabled) {
             if (mCoordinates.getMode() == ConversationItemViewCoordinates.WIDE_MODE) {
-                // Just check that we're left of the star's touch area
-                if (x >= mCoordinates.starX - sStarTouchSlop) {
+                // Just check that we're to start of the star's touch area
+                if (isTouchInStarTargetX(isRtl, x)) {
                     return false;
                 }
             } else {
@@ -1682,8 +1638,13 @@ public class ConversationItemView extends View
 
         // Everything after the star and include a touch slop.
         return mStarEnabled
-                && x > mCoordinates.starX - sStarTouchSlop
+                && isTouchInStarTargetX(ViewUtils.isViewRtl(this), x)
                 && (!isAttachmentPreviewsEnabled() || y < mCoordinates.attachmentPreviewsY);
+    }
+
+    private boolean isTouchInStarTargetX(boolean isRtl, float x) {
+        return (isRtl) ? x < mCoordinates.starX + mCoordinates.starWidth + sStarTouchSlop
+                : x >= mCoordinates.starX - sStarTouchSlop;
     }
 
     @Override

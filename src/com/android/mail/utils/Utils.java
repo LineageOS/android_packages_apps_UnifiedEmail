@@ -16,12 +16,6 @@
 
 package com.android.mail.utils;
 
-import com.android.emailcommon.mail.Address;
-import com.google.android.mail.common.html.parser.HtmlDocument;
-import com.google.android.mail.common.html.parser.HtmlParser;
-import com.google.android.mail.common.html.parser.HtmlTree;
-import com.google.android.mail.common.html.parser.HtmlTreeBuilder;
-
 import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.SearchManager;
@@ -57,6 +51,7 @@ import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.android.emailcommon.mail.Address;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.compose.ComposeActivity;
@@ -68,6 +63,10 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
 import com.android.mail.ui.FeedbackEnabledActivity;
 import com.android.mail.ui.ViewMode;
+import com.google.android.mail.common.html.parser.HtmlDocument;
+import com.google.android.mail.common.html.parser.HtmlParser;
+import com.google.android.mail.common.html.parser.HtmlTree;
+import com.google.android.mail.common.html.parser.HtmlTreeBuilder;
 
 import org.json.JSONObject;
 
@@ -133,6 +132,10 @@ public class Utils {
 
     public static boolean isRunningJellybeanOrLater() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    }
+
+    public static boolean isRunningJBMR1OrLater() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
     }
 
     public static boolean isRunningKitkatOrLater() {
@@ -1149,15 +1152,5 @@ public class Utils {
             // Doing this for other locales might really screw things up, so do US-version only
             return email.toLowerCase(Locale.US);
         }
-    }
-
-    /**
-     * Determines whether the given view has RTL layout. NOTE: do not call this
-     * on a view until it has been measured. This value is not guaranteed to be
-     * accurate until then.
-     */
-    public static boolean isLayoutRtl(View view) {
-        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
-                View.LAYOUT_DIRECTION_RTL == view.getLayoutDirection() : false;
     }
 }

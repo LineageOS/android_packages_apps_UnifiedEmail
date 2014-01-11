@@ -14,12 +14,12 @@
             android:id="@+id/ap_overflow"
             android:layout_width="@dimen/ap_overflow_count_diameter"
             android:layout_height="@dimen/ap_overflow_count_diameter"
-            android:layout_marginRight="@dimen/ap_margin_side"
             android:layout_marginBottom="@dimen/ap_margin_side"
             android:layout_gravity="bottom|right"
             android:includeFontPadding="false"
             android:textStyle="bold"
-            android:textSize="10dp"/>
+            android:textSize="10dp"
+            style="@style/AttachmentPreviewOverflowStyle" />
     <ImageView
             android:id="@+id/ap_placeholder"
             android:layout_width="wrap_content"

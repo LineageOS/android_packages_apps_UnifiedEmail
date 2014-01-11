@@ -36,7 +36,6 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.FolderUri;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,9 +82,6 @@ public class ConversationItemViewModel {
 
     // Senders
     public String sendersText;
-
-    // A list of all the fragments that cover sendersText
-    final ArrayList<SenderFragment> senderFragments;
 
     SpannableStringBuilder sendersDisplayText;
     StaticLayout sendersDisplayLayout;
@@ -179,7 +175,6 @@ public class ConversationItemViewModel {
      *
      * @param account the account contains this conversation
      * @param conversationId the Id of this conversation
-     * @param cursor the cursor to use in populating/ updating the model.
      * @return the view model for this conversation
      */
     static ConversationItemViewModel forConversationId(String account, long conversationId) {
@@ -193,23 +188,6 @@ public class ConversationItemViewModel {
             }
             return header;
         }
-    }
-
-    public ConversationItemViewModel() {
-        senderFragments = Lists.newArrayList();
-    }
-
-    /**
-     * Adds a sender fragment.
-     *
-     * @param start the start position of this fragment
-     * @param end the start position of this fragment
-     * @param style the style of this fragment
-     * @param isFixed whether this fragment is fixed or not
-     */
-    void addSenderFragment(int start, int end, CharacterStyle style, boolean isFixed) {
-        SenderFragment senderFragment = new SenderFragment(start, end, sendersText, style, isFixed);
-        senderFragments.add(senderFragment);
     }
 
     /**

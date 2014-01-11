@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2013 Google Inc.
+     Copyright (C) 2014 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,7 @@
      limitations under the License.
 -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:angle="@integer/two_pane_folder_edge_gradient_angle"
-        android:startColor="#22000000"
-        android:endColor="@android:color/transparent" />
-</shape>
+<resources>
+    <!-- Angle of the shadow that appears at the edge of the folder list. 0 is left to right. -->
+    <integer name="two_pane_folder_edge_gradient_angle">0</integer>
+</resources>

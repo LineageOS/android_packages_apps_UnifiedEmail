@@ -32,7 +32,7 @@
     <dimen name="sender_image_touch_slop">8dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">32dip</dimen>
-    <dimen name="folders_left_padding">8dip</dimen>
+    <dimen name="folders_start_padding">8dip</dimen>
     <dimen name="conversation_page_gutter">16dp</dimen>
     <dimen name="conversation_message_content_margin_side">10dp</dimen>
     <dimen name="conversation_view_margin_side">8dp</dimen>
@@ -158,4 +158,27 @@
     <dimen name="widget_senders_padding_end">16dip</dimen>
 
     <dimen name="search_results_padding">8dip</dimen>
+
+    <!-- conversation list dimensions -->
+    <dimen name="conv_list_contact_image_padding_end">12dip</dimen>
+    <dimen name="conv_list_reply_state_padding_end">8dip</dimen>
+    <dimen name="conv_list_personal_indicator_padding_start">-2dip</dimen>
+    <dimen name="conv_list_personal_indicator_padding_end">2dip</dimen>
+    <dimen name="conv_list_info_icon_padding_start">4dip</dimen>
+    <dimen name="conv_list_date_padding_start">8dip</dimen>
+    <dimen name="conv_list_paperclip_padding_start">6dip</dimen>
+    <dimen name="conv_list_star_padding_end">-9dip</dimen>
+
+    <dimen name="conv_list_frame_padding_start">20dip</dimen>
+    <dimen name="conv_list_frame_padding_end">32dip</dimen>
+    <dimen name="conv_list_wide_contact_image_padding_end">20dip</dimen>
+    <dimen name="conv_list_wide_personal_indicator_padding_end">8dip</dimen>
+    <dimen name="conv_list_wide_star_padding_start">32dip</dimen>
+    <dimen name="conv_list_wide_color_block_padding_end">64dip</dimen>
+
+    <dimen name="conv_list_spacious_linearlayout_padding_start">22dip</dimen>
+    <dimen name="conv_list_spacious_linearlayout_padding_end">16dip</dimen>
+    <dimen name="conv_list_spacious_contact_image_padding_end">16dip</dimen>
+    <dimen name="conv_list_spacious_star_padding_end">-8dip</dimen>
+
 </resources>

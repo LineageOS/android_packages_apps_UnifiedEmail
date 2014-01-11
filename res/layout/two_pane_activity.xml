@@ -21,6 +21,9 @@
     android:layout_height="match_parent">
 
     <!-- DrawerLayout current only supports one content view (b/8752191) -->
+    <!-- All of its children should have layout_gravity set to left.
+         RTL is handled internally in TwoPaneLayout but can get confused on rotation if the
+         gravity is start (which it is in RTL mode). -->
     <com.android.mail.ui.TwoPaneLayout
         android:id="@+id/two_pane_activity"
         android:layout_width="match_parent"
@@ -29,7 +32,8 @@
         <FrameLayout
             android:id="@+id/content_pane"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_gravity="left" >
             <fragment class="com.android.mail.ui.DrawerFragment"
                 android:id="@+id/drawer_pullout"
                 android:layout_width="match_parent"
@@ -38,13 +42,13 @@
             <FrameLayout android:id="@+id/folders_pane_edge"
                 android:layout_width="8dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="right"
+                android:layout_gravity="right|end"
                 android:background="@drawable/shadow_right">
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:layout_gravity="right"
+                    android:layout_gravity="right|end"
                     android:background="@color/light_gray" />
 
             </FrameLayout>
@@ -53,22 +57,26 @@
         <FrameLayout
             android:id="@+id/conversation_list_pane"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_gravity="left" />
 
         <com.android.mail.ui.ConversationListCopy
             android:id="@+id/conversation_list_copy"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_gravity="left" />
 
         <include layout="@layout/conversation_pager"
             android:id="@+id/conversation_pane"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_gravity="left"/>
 
         <FrameLayout
             android:id="@+id/miscellaneous_pane"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_gravity="left" />
 
         <com.android.mail.ui.ActionableToastBar
             android:id="@+id/toast_bar"

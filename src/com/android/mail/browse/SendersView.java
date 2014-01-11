@@ -30,8 +30,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
-import android.text.util.Rfc822Token;
-import android.text.util.Rfc822Tokenizer;
 
 import com.android.emailcommon.mail.Address;
 import com.android.mail.R;
@@ -47,7 +45,6 @@ import com.google.common.collect.Maps;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
-
 import java.util.regex.Pattern;
 
 public class SendersView {
@@ -385,39 +382,6 @@ public class SendersView {
             sMeStringLocale = locale;
         }
         return sMeString;
-    }
-
-    private static void formatDefault(ConversationItemViewModel header, String sendersString,
-            Context context, final CharacterStyle readStyleSpan,
-            final boolean resourceCachingRequired) {
-        try {
-            getSenderResources(context, resourceCachingRequired);
-            // Clear any existing sender fragments; we must re-make all of them.
-            header.senderFragments.clear();
-            // TODO: unify this with ConversationItemView.calculateTextsAndBitmaps's tokenization
-            final Rfc822Token[] senders = Rfc822Tokenizer.tokenize(sendersString);
-            final String[] namesOnly = new String[senders.length];
-            String display;
-            for (int i = 0; i < senders.length; i++) {
-                display = Address.decodeAddressPersonal(senders[i].getName());
-                if (TextUtils.isEmpty(display)) {
-                    display = senders[i].getAddress();
-                }
-                namesOnly[i] = display;
-            }
-            generateSenderFragments(header, namesOnly, readStyleSpan);
-        } finally {
-            if (!resourceCachingRequired) {
-                clearResourceCache();
-            }
-        }
-    }
-
-    private static void generateSenderFragments(ConversationItemViewModel header, String[] names,
-            final CharacterStyle readStyleSpan) {
-        header.sendersText = TextUtils.join(Address.ADDRESS_DELIMETER + " ", names);
-        header.addSenderFragment(0, header.sendersText.length(), getWrappedStyleSpan(readStyleSpan),
-                true);
     }
 
     private static void clearResourceCache() {

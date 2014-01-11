@@ -509,20 +509,20 @@ public final class TwoPaneController extends AbstractActivityController {
             case ViewMode.CONVERSATION_LIST:
                 params.width = mLayout.computeConversationListWidth() - params.leftMargin
                         - params.rightMargin;
-                params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+                params.gravity = Gravity.BOTTOM | Gravity.END;
                 mToastBar.setLayoutParams(params);
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
                 if (convModeShowInList && !mLayout.isConversationListCollapsed()) {
                     // Show undo bar in the conversation list.
-                    params.gravity = Gravity.BOTTOM | Gravity.LEFT;
+                    params.gravity = Gravity.BOTTOM | Gravity.START;
                     params.width = mLayout.computeConversationListWidth() - params.leftMargin
                             - params.rightMargin;
                     mToastBar.setLayoutParams(params);
                 } else {
                     // Show undo bar in the conversation.
-                    params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+                    params.gravity = Gravity.BOTTOM | Gravity.END;
                     params.width = mLayout.computeConversationWidth() - params.leftMargin
                             - params.rightMargin;
                     mToastBar.setLayoutParams(params);

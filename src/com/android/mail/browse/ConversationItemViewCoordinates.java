@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
+import android.support.v4.view.ViewCompat;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.android.mail.R.dimen;
 import com.android.mail.R.id;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.ViewUtils;
 import com.google.common.base.Objects;
 
 /**
@@ -68,14 +70,15 @@ public class ConversationItemViewCoordinates {
 
     /**
      * Simple holder class for an item's abstract configuration state. ListView binding creates an
-     * instance per item, and {@link #forConfig(Context, Config, SparseArray)} uses it to hide/show
-     * optional views and determine the correct coordinates for that item configuration.
+     * instance per item, and {@link #forConfig(Context, Config, CoordinatesCache)} uses it to
+     * hide/show optional views and determine the correct coordinates for that item configuration.
      */
     public static final class Config {
         private int mWidth;
         private int mViewMode = ViewMode.UNKNOWN;
         private int mGadgetMode = GADGET_NONE;
         private int mAttachmentPreviewMode = ATTACHMENT_PREVIEW_NONE;
+        private int mLayoutDirection = View.LAYOUT_DIRECTION_LTR;
         private boolean mShowFolders = false;
         private boolean mShowReplyState = false;
         private boolean mShowColorBlock = false;
@@ -159,6 +162,14 @@ public class ConversationItemViewCoordinates {
                     mShowFolders, mShowReplyState, mShowPersonalIndicator);
         }
 
+        public Config setLayoutDirection(int layoutDirection) {
+            mLayoutDirection = layoutDirection;
+            return this;
+        }
+
+        public int getLayoutDirection() {
+            return mLayoutDirection;
+        }
     }
 
     public static class CoordinatesCache {
@@ -213,8 +224,8 @@ public class ConversationItemViewCoordinates {
     final float subjectFontSize;
 
     // Folders.
-    final int foldersX;
-    final int foldersXEnd;
+    final int foldersLeft;
+    final int foldersRight;
     final int foldersY;
     final int foldersHeight;
     final Typeface foldersTypeface;
@@ -222,19 +233,21 @@ public class ConversationItemViewCoordinates {
     final int foldersTextBottomPadding;
 
     // Info icon
-    final int infoIconXEnd;
+    final int infoIconX;
+    final int infoIconXRight;
     final int infoIconY;
 
     // Date.
-    final int dateXEnd;
+    final int dateX;
+    final int dateXRight;
     final int dateY;
-    final int datePaddingLeft;
+    final int datePaddingStart;
     final float dateFontSize;
     final int dateYBaseline;
 
     // Paperclip.
     final int paperclipY;
-    final int paperclipPaddingLeft;
+    final int paperclipPaddingStart;
 
     // Color block.
     final int colorBlockX;
@@ -367,6 +380,7 @@ public class ConversationItemViewCoordinates {
                 config.isPersonalIndicatorVisible() ? View.VISIBLE : View.GONE);
 
         // Layout the appropriate view.
+        ViewCompat.setLayoutDirection(view, config.getLayoutDirection());
         final int widthSpec = MeasureSpec.makeMeasureSpec(config.getWidth(), MeasureSpec.EXACTLY);
         final int heightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
 
@@ -417,8 +431,9 @@ public class ConversationItemViewCoordinates {
 
         if (config.areFoldersVisible()) {
             // vertically align folders min left edge with subject
-            foldersX = subjectX;
-            foldersXEnd = getX(folders) + folders.getWidth();
+            final boolean isRtl = ViewUtils.isViewRtl(view);
+            foldersLeft = (isRtl) ? 0 : subjectX;
+            foldersRight = (isRtl) ? subjectX + subjectWidth : getX(folders) + folders.getWidth();
             if (isWide()) {
                 foldersY = getY(folders);
             } else {
@@ -430,8 +445,8 @@ public class ConversationItemViewCoordinates {
                     .getDimensionPixelSize(R.dimen.folders_text_bottom_padding);
             foldersFontSize = folders.getTextSize();
         } else {
-            foldersX = 0;
-            foldersXEnd = 0;
+            foldersLeft = 0;
+            foldersRight = 0;
             foldersY = 0;
             foldersHeight = 0;
             foldersTypeface = null;
@@ -464,19 +479,21 @@ public class ConversationItemViewCoordinates {
         }
 
         final View infoIcon = view.findViewById(R.id.info_icon);
-        infoIconXEnd = getX(infoIcon) + infoIcon.getWidth();
+        infoIconX = getX(infoIcon);
+        infoIconXRight = infoIconX + infoIcon.getWidth();
         infoIconY = getY(infoIcon);
 
         final TextView date = (TextView) view.findViewById(R.id.date);
-        dateXEnd = getX(date) + date.getWidth();
+        dateX = getX(date);
+        dateXRight =  dateX + date.getWidth();
         dateY = getY(date);
-        datePaddingLeft = date.getPaddingLeft();
+        datePaddingStart = ViewUtils.getPaddingStart(date);
         dateFontSize = date.getTextSize();
         dateYBaseline = dateY + getLatinTopAdjustment(date) + date.getBaseline();
 
         final View paperclip = view.findViewById(R.id.paperclip);
         paperclipY = getY(paperclip);
-        paperclipPaddingLeft = paperclip.getPaddingLeft();
+        paperclipPaddingStart = ViewUtils.getPaddingStart(paperclip);
 
         if (attachmentPreviews != null) {
             attachmentPreviewsX = subjectX;
