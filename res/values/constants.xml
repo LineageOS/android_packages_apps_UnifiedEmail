@@ -71,7 +71,7 @@
     <integer name="config_image_cache_max_bitmaps">24</integer>
 
     <!-- Whether to display folder colors in the widget -->
-    <bool name="display_folder_colors_in_widget">false</bool>
+    <bool name="display_folder_colors_in_widget">true</bool>
 
     <integer name="max_num_notification_digest_items">10</integer>
 

@@ -264,4 +264,8 @@
     <style name="RecipientComposeHeading" parent="@style/AbstractRecipientComposeHeading">
         <item name="android:layout_marginEnd">@dimen/compose_recipient_heading_margin_end</item>
     </style>
+
+    <style name="WidgetSendersStyle">
+        <item name="android:paddingEnd">@dimen/widget_senders_padding_end</item>
+    </style>
 </resources>

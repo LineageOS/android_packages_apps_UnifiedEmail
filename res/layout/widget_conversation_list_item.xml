@@ -35,76 +35,73 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/widget_conversation_read_selector" />
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="16dip"
-        android:paddingRight="16dip">
-        <RelativeLayout
-            android:id="@+id/labels"
-            android:layout_width="wrap_content"
+        android:orientation="vertical" >
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:gravity="right" >
-            <ImageView
-                android:id="@+id/widget_folder_0"
-                android:layout_width="32dip"
-                android:layout_height="6sp"
-                android:scaleType="fitXY" />
-            <ImageView
-                android:id="@+id/widget_folder_1"
-                android:layout_width="32dip"
-                android:layout_height="6sp"
-                android:layout_toRightOf="@id/widget_folder_0"
-                android:scaleType="fitXY" />
-            <ImageView
-                android:id="@+id/widget_folder_2"
-                android:layout_width="32dip"
-                android:layout_height="6sp"
-                android:layout_toRightOf="@id/widget_folder_1"
-                android:scaleType="fitXY" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/widget_attachment_and_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
             android:layout_marginTop="10sp"
+            android:layout_marginLeft="16dip"
+            android:layout_marginRight="16dip"
+            android:gravity="top"
             android:orientation="horizontal" >
+            <TextView
+                android:id="@+id/widget_senders"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textSize="@dimen/senders_font_size"
+                android:textColor="#58585b"
+                android:includeFontPadding="false"
+                style="@style/WidgetSendersStyle" />
             <!-- Use negative margins to align attachment icon with text -->
             <ImageView
                 android:id="@+id/widget_attachment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-4sp" />
+                android:layout_marginTop="-4sp"/>
             <TextView
                 android:id="@+id/widget_date"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/widget_attachment" />
-        </RelativeLayout>
-        <TextView
-            android:id="@+id/widget_senders"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/widget_attachment_and_date"
-            android:layout_marginTop="10sp"
-            android:paddingRight="16dip"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:textSize="@dimen/senders_font_size"
-            android:textColor="#58585b"
-            android:includeFontPadding="false" />
+                android:layout_height="match_parent"
+                android:gravity="top" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/widget_subject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/widget_senders"
+            android:layout_marginLeft="16dip"
+            android:layout_marginRight="16dip"
             android:maxLines="2"
             android:includeFontPadding="false" />
-    </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/labels"
+            android:layout_width="wrap_content"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:layout_gravity="right|end"
+            android:gravity="bottom" >
+            <ImageView
+                    android:id="@+id/widget_folder_0"
+                    android:layout_width="32dip"
+                    android:layout_height="6sp"
+                    android:scaleType="fitXY" />
+            <ImageView
+                    android:id="@+id/widget_folder_1"
+                    android:layout_width="32dip"
+                    android:layout_height="6sp"
+                    android:scaleType="fitXY" />
+            <ImageView
+                    android:id="@+id/widget_folder_2"
+                    android:layout_width="32dip"
+                    android:layout_height="6sp"
+                    android:scaleType="fitXY" />
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>

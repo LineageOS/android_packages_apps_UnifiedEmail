@@ -155,4 +155,6 @@
 
     <dimen name="compose_recipient_heading_margin_end">4dip</dimen>
 
+    <dimen name="widget_senders_padding_end">16dip</dimen>
+
 </resources>
