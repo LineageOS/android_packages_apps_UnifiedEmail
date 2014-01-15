@@ -268,4 +268,12 @@
     <style name="WidgetSendersStyle">
         <item name="android:paddingEnd">@dimen/widget_senders_padding_end</item>
     </style>
+
+    <style name="SearchStatusStyle">
+        <item name="android:paddingStart">@dimen/search_results_padding</item>
+    </style>
+
+    <style name="SearchCountStyle">
+        <item name="android:paddingEnd">@dimen/search_results_padding</item>
+    </style>
 </resources>

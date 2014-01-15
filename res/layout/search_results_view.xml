@@ -31,22 +31,22 @@
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:paddingLeft="8dip"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="18sp"
         android:textColor="#777777"
         android:text="@string/search_results_header"
-        android:layout_weight=".8"
+        android:layout_weight="8"
         android:ellipsize="marquee"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        style="@style/SearchStatusStyle" />
 
     <TextView android:id="@+id/search_result_count_view"
         android:layout_width="0dip"
         android:layout_height="match_parent"
-        android:gravity="center_vertical|right"
-        android:paddingRight="8dip"
+        android:gravity="center_vertical|right|end"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#777777"
-        android:layout_weight=".2"/>
+        android:layout_weight="2"
+        style="@style/SearchCountStyle" />
 
 </LinearLayout>

@@ -157,4 +157,5 @@
 
     <dimen name="widget_senders_padding_end">16dip</dimen>
 
+    <dimen name="search_results_padding">8dip</dimen>
 </resources>
