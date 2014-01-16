@@ -1011,13 +1011,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Otherwise, give the user the ability to choose which account to
             // send mail from / save drafts to.
             mFromStatic.setVisibility(View.GONE);
-            // TODO: do we want name or address here?
-            mFromStaticText.setText(mReplyFromAccount.name);
+            mFromStaticText.setText(mReplyFromAccount.address);
             mFromSpinnerWrapper.setVisibility(View.VISIBLE);
         } else {
             mFromStatic.setVisibility(View.VISIBLE);
-            // TODO: do we want name or address here?
-            mFromStaticText.setText(mReplyFromAccount.name);
+            mFromStaticText.setText(mReplyFromAccount.address);
             mFromSpinnerWrapper.setVisibility(View.GONE);
         }
     }

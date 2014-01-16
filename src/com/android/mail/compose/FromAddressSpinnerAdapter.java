@@ -49,7 +49,7 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
     private LayoutInflater mInflater;
 
     public FromAddressSpinnerAdapter(Context context) {
-        super(context, R.layout.from_item, R.id.spinner_account_name);
+        super(context, R.layout.from_item, R.id.spinner_account_address);
         sFormatString = getContext().getString(R.string.formatted_email_address);
     }
 
@@ -83,7 +83,7 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
             ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
                     .setText(formatAddress(fromItem.address));
         } else {
-            ((TextView) fromEntry.findViewById(R.id.spinner_account_name))
+            ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
                     .setText(fromItem.address);
         }
         return fromEntry;
@@ -101,7 +101,7 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
             ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
                     .setText(formatAddress(fromItem.address));
         } else {
-            ((TextView) fromEntry.findViewById(R.id.spinner_account_name))
+            ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
                     .setText(fromItem.address);
         }
         return fromEntry;
