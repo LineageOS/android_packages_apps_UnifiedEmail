@@ -19,7 +19,6 @@ package com.android.mail.browse;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -98,8 +97,9 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
                 resources.getDimensionPixelSize(R.dimen.conversation_header_font_size_condensed);
         mCondensedTopPadding = resources.getDimensionPixelSize(
                 R.dimen.conversation_header_vertical_padding_condensed);
-        mIsRtl =
-                TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == LAYOUT_DIRECTION_RTL;
+        mIsRtl = Utils.isRunningJBMR1OrLater() ?
+                TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == LAYOUT_DIRECTION_RTL
+                : false;
     }
 
     @Override
