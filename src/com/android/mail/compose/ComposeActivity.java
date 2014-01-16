@@ -1748,13 +1748,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         String[] sentToAddresses = refMessage.getToAddressesUnescaped();
         final Collection<String> toAddresses;
         final String[] replyToAddresses = refMessage.getReplyToAddressesUnescaped();
-        String replyToAddress = replyToAddresses.length > 0 ? replyToAddresses[0] : null;
         final String[] fromAddresses = refMessage.getFromAddressesUnescaped();
         final String fromAddress = fromAddresses.length > 0 ? fromAddresses[0] : null;
 
         // If there is no reply to address, the reply to address is the sender.
-        if (TextUtils.isEmpty(replyToAddress)) {
-            replyToAddress = fromAddress;
+        boolean hasReplyTo = false;
+        for (final String replyToAddress : replyToAddresses) {
+            if (!TextUtils.isEmpty(replyToAddress)) {
+                hasReplyTo = true;
+            }
+        }
+        if (!hasReplyTo) {
+            replyToAddresses[0] = fromAddress;
         }
 
         // If this is a reply, the Cc list is empty. If this is a reply-all, the
@@ -1762,11 +1767,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // message, excluding the current user's email address and any addresses
         // already on the To list.
         if (action == ComposeActivity.REPLY) {
-            toAddresses = initToRecipients(fromAddress, replyToAddress, sentToAddresses);
+            toAddresses = initToRecipients(fromAddress, replyToAddresses, sentToAddresses);
             addToAddresses(toAddresses);
         } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
-            toAddresses = initToRecipients(fromAddress, replyToAddress, sentToAddresses);
+            toAddresses = initToRecipients(fromAddress, replyToAddresses, sentToAddresses);
             addToAddresses(toAddresses);
             addRecipients(ccAddresses, sentToAddresses);
             addRecipients(ccAddresses, refMessage.getCcAddressesUnescaped());
@@ -1854,19 +1859,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     protected Collection<String> initToRecipients(final String fullSenderAddress,
-            final String replyToAddress, final String[] inToAddresses) {
+            final String[] replyToAddresses, final String[] inToAddresses) {
         // The To recipient is the reply-to address specified in the original
         // message, unless it is:
         // the current user OR a custom from of the current user, in which case
         // it's the To recipient list of the original message.
         // OR missing, in which case use the sender of the original message
         Set<String> toAddresses = Sets.newHashSet();
-        if (!TextUtils.isEmpty(replyToAddress) && !recipientMatchesThisAccount(replyToAddress)) {
-            toAddresses.add(replyToAddress);
-        } else {
+        for (final String replyToAddress : replyToAddresses) {
+            if (!TextUtils.isEmpty(replyToAddress)
+                    && !recipientMatchesThisAccount(replyToAddress)) {
+                toAddresses.add(replyToAddress);
+            }
+        }
+        if (toAddresses.size() == 0) {
             // In this case, the user is replying to a message in which their
-            // current account or one of their custom from addresses is the only
-            // recipient and they sent the original message.
+            // current account or some of their custom from addresses are the only
+            // recipients and they sent the original message.
             if (inToAddresses.length == 1 && recipientMatchesThisAccount(fullSenderAddress)
                     && recipientMatchesThisAccount(inToAddresses[0])) {
                 toAddresses.add(inToAddresses[0]);
