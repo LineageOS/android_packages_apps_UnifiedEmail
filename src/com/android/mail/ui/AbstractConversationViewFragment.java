@@ -58,7 +58,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public abstract class AbstractConversationViewFragment extends Fragment implements
         ConversationController, ConversationAccountController,
         ConversationViewHeaderCallbacks {
@@ -352,7 +351,19 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         // Only show option if we support message transforms and message has been transformed.
         Utils.setMenuItemVisibility(menu, R.id.show_original, supportsMessageTransforms() &&
                 mHasConversationBeenTransformed && !mHasConversationTransformBeenReverted);
-        Utils.setMenuItemVisibility(menu, R.id.print_all, Utils.isRunningKitkatOrLater());
+
+        final MenuItem printMenuItem = menu.findItem(R.id.print_all);
+        if (printMenuItem != null) {
+            // compute the visibility of the print menu item
+            printMenuItem.setVisible(Utils.isRunningKitkatOrLater() && shouldShowPrintInOverflow());
+
+            // compute the text displayed on the print menu item
+            if (mConversation.getNumMessages() == 1) {
+                printMenuItem.setTitle(R.string.print);
+            } else {
+                printMenuItem.setTitle(R.string.print_all);
+            }
+        }
     }
 
     abstract boolean supportsMessageTransforms();
@@ -687,6 +698,17 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                 !mHasConversationTransformBeenReverted;
     }
 
+    /**
+     * The Print item in the overflow menu of the Conversation view is shown based on the return
+     * from this method.
+     *
+     * @return {@code true} if the conversation can be printed; {@code false} otherwise.
+     */
+    protected abstract boolean shouldShowPrintInOverflow();
+
+    /**
+     * Prints all messages in the conversation.
+     */
     protected abstract void printConversation();
 
     public boolean shouldAlwaysShowImages() {
