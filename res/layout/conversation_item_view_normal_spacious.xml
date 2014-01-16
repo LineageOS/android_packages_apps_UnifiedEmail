@@ -29,10 +29,11 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/conversation_item_frame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        style="@style/ConversationListSpaciousLinearLayoutStyle" >
+        style="@style/ConversationListSpaciousStyle" >
 
         <View
             android:id="@+id/contact_image"

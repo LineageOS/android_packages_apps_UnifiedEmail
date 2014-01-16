@@ -17,6 +17,7 @@
 
 package com.android.mail.browse;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.Spannable;
@@ -113,6 +114,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
         mFolderDisplayer = new ConversationFolderDisplayer(getContext(), mFoldersView, mIsRtl);
     }
 
+    @SuppressLint("NewApi")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

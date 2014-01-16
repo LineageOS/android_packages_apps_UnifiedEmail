@@ -136,8 +136,7 @@ public class FolderSpan extends ReplacementSpan {
                 left = x + paddingBefore;
                 right = x + bgWidth + paddingBefore;
             }
-            canvas.drawRect(left, top + paddingAbove, right, bottom,
-                    mWorkPaint);
+            canvas.drawRect(left, top + paddingAbove, right, bottom, mWorkPaint);
 
             mWorkPaint.setColor(prevColor);
             mWorkPaint.setStyle(prevStyle);

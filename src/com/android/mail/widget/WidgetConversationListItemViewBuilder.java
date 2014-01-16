@@ -16,12 +16,6 @@
 
 package com.android.mail.widget;
 
-import com.android.mail.R;
-import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Folder;
-import com.android.mail.ui.FolderDisplayer;
-import com.android.mail.utils.FolderUri;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -34,6 +28,12 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import com.android.mail.R;
+import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
+import com.android.mail.ui.FolderDisplayer;
+import com.android.mail.utils.FolderUri;
 
 public class WidgetConversationListItemViewBuilder {
     // Static font sizes
@@ -160,7 +160,8 @@ public class WidgetConversationListItemViewBuilder {
         // Add style to subject
         final int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
         final SpannableStringBuilder subjectAndSnippet = new SpannableStringBuilder(
-                Conversation.getSubjectAndSnippetForDisplay(mContext, filteredSubject, snippet));
+                Conversation.getSubjectAndSnippetForDisplay(
+                        mContext, null /* badgeText */, filteredSubject, snippet));
         if (isUnread) {
             subjectAndSnippet.setSpan(new StyleSpan(Typeface.BOLD), 0, filteredSubject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

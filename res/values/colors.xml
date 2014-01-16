@@ -130,4 +130,6 @@
     <color name="swipe_refresh_color2">#ffdb4437</color>
     <color name="swipe_refresh_color3">#ff4285f4</color>
     <color name="swipe_refresh_color4">#fff4b400</color>
+
+    <color name="badge_background_color">#edb802</color>
 </resources>

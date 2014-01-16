@@ -35,6 +35,7 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.support.v4.view.ViewCompat;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
@@ -45,6 +46,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.text.format.DateUtils;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
@@ -61,8 +63,6 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.R.drawable;
-import com.android.mail.R.integer;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.bitmap.AttachmentDrawable;
 import com.android.mail.bitmap.AttachmentGridDrawable;
@@ -100,7 +100,7 @@ import java.util.Iterator;
 
 public class ConversationItemView extends View
         implements SwipeableItemView, ToggleableItem, InvalidateCallback, OnScrollListener,
-        ConversationSetObserver {
+        ConversationSetObserver, BadgeSpan.BadgeSpanDimensions {
 
     // Timer.
     private static int sLayoutCount = 0;
@@ -143,8 +143,9 @@ public class ConversationItemView extends View
     private static int sSenderImageTouchSlop;
     private static int sShrinkAnimationDuration;
     private static int sSlideAnimationDuration;
-    private static int sOverflowCountMax;
     private static int sCabAnimationDuration;
+    private static int sBadgePaddingExtraWidth;
+    private static int sBadgeRoundedCornerRadius;
 
     // Static paints.
     private static final TextPaint sPaint = new TextPaint();
@@ -195,6 +196,7 @@ public class ConversationItemView extends View
     private ControllableActivity mActivity;
     private final TextView mSubjectTextView;
     private final TextView mSendersTextView;
+    private final TextView mBadgeTextView;
     private int mGadgetMode;
     private boolean mAttachmentPreviewsEnabled;
     private boolean mParallaxSpeedAlternative;
@@ -203,6 +205,8 @@ public class ConversationItemView extends View
     private static int sFoldersStartPadding;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
+    private static TextAppearanceSpan sBadgeTextSpan;
+    private static BackgroundColorSpan sBadgeBackgroundSpan;
     private static ForegroundColorSpan sSnippetTextUnreadSpan;
     private static ForegroundColorSpan sSnippetTextReadSpan;
     private static int sScrollSlop;
@@ -354,8 +358,9 @@ public class ConversationItemView extends View
                 if (labelTooLong) {
                     // todo - take RTL into account for fade
                     final int rightBorder = xLeft + width - sFoldersStartPadding - padding;
-                    final Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder, y,
-                            fgColor, Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
+                    final Shader shader = new LinearGradient(rightBorder - padding, y,
+                            rightBorder, y, fgColor, Utils.getTransparentColor(fgColor),
+                            Shader.TileMode.CLAMP);
                     sFoldersPaint.setShader(shader);
                 }
                 canvas.drawText(folderString, xLeft + padding, y + height - textBottomPadding,
@@ -407,8 +412,8 @@ public class ConversationItemView extends View
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
             VISIBLE_CONVERSATION_CARET = BitmapFactory.decodeResource(res, R.drawable.caret_grey);
             RIGHT_EDGE_TABLET = res.getDrawable(R.drawable.list_edge_tablet);
-            PLACEHOLDER = res.getDrawable(drawable.ic_attachment_load);
-            PROGRESS_BAR = res.getDrawable(drawable.progress_holo);
+            PLACEHOLDER = res.getDrawable(R.drawable.ic_attachment_load);
+            PROGRESS_BAR = res.getDrawable(R.drawable.progress_holo);
 
             // Initialize colors.
             sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(
@@ -417,8 +422,11 @@ public class ConversationItemView extends View
             sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
             sSubjectTextUnreadSpan = new TextAppearanceSpan(mContext,
                     R.style.SubjectAppearanceUnreadStyle);
-            sSubjectTextReadSpan = new TextAppearanceSpan(mContext,
-                    R.style.SubjectAppearanceReadStyle);
+            sBadgeTextSpan = new TextAppearanceSpan(mContext, R.style.BadgeTextStyle);
+            sBadgeBackgroundSpan = new BackgroundColorSpan(
+                    res.getColor(R.color.badge_background_color));
+            sSubjectTextReadSpan = new TextAppearanceSpan(
+                    mContext, R.style.SubjectAppearanceReadStyle);
             sSnippetTextUnreadSpan =
                     new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_unread));
             sSnippetTextReadSpan =
@@ -433,8 +441,10 @@ public class ConversationItemView extends View
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
             sFoldersStartPadding = res.getDimensionPixelOffset(R.dimen.folders_start_padding);
-            sOverflowCountMax = res.getInteger(integer.ap_overflow_max_count);
             sCabAnimationDuration = res.getInteger(R.integer.conv_item_view_cab_anim_duration);
+            sBadgePaddingExtraWidth = res.getDimensionPixelSize(R.dimen.badge_padding_extra_width);
+            sBadgeRoundedCornerRadius =
+                    res.getDimensionPixelSize(R.dimen.badge_rounded_corner_radius);
         }
 
         mSendersTextView = new TextView(mContext);
@@ -443,6 +453,9 @@ public class ConversationItemView extends View
         mSubjectTextView = new TextView(mContext);
         mSubjectTextView.setEllipsize(TextUtils.TruncateAt.END);
         mSubjectTextView.setIncludeFontPadding(false);
+
+        mBadgeTextView = new TextView(mContext);
+        mBadgeTextView.setIncludeFontPadding(false);
 
         mAttachmentsView = new AttachmentGridDrawable(res, PLACEHOLDER, PROGRESS_BAR);
         mAttachmentsView.setCallback(this);
@@ -464,7 +477,8 @@ public class ConversationItemView extends View
                 null /* conversationItemAreaClickListener */,
                 set, folder, checkboxOrSenderImage, showAttachmentPreviews,
                 parallaxSpeedAlternative, parallaxDirectionAlternative, swipeEnabled,
-                priorityArrowEnabled, adapter, -1 /* backgroundOverrideResId */, null /* photoBitmap */);
+                priorityArrowEnabled, adapter, -1 /* backgroundOverrideResId */,
+                null /* photoBitmap */, false /* useFullMargins */);
         Utils.traceEndSection();
     }
 
@@ -478,7 +492,7 @@ public class ConversationItemView extends View
                 folder, checkboxOrSenderImage, false /* attachment previews */,
                 false /* parallax */, false /* parallax */, true /* swipeEnabled */,
                 false /* priorityArrowEnabled */,
-                adapter, backgroundOverrideResId, photoBitmap);
+                adapter, backgroundOverrideResId, photoBitmap, true /* useFullMargins */);
         Utils.traceEndSection();
     }
 
@@ -488,7 +502,8 @@ public class ConversationItemView extends View
             final int checkboxOrSenderImage, final boolean showAttachmentPreviews,
             final boolean parallaxSpeedAlternative, final boolean parallaxDirectionAlternative,
             boolean swipeEnabled, final boolean priorityArrowEnabled, final AnimatedAdapter adapter,
-            final int backgroundOverrideResId, final Bitmap photoBitmap) {
+            final int backgroundOverrideResId, final Bitmap photoBitmap,
+            final boolean useFullMargins) {
         mBackgroundOverrideResId = backgroundOverrideResId;
         mPhotoBitmap = photoBitmap;
         mConversationItemAreaClickListener = conversationItemAreaClickListener;
@@ -580,19 +595,20 @@ public class ConversationItemView extends View
                 mDisplayedFolder.folderUri, ignoreFolderType);
         Utils.traceEndSection();
 
-        if (mHeader.dateOverrideText == null) {
+        if (mHeader.showDateText) {
             Utils.traceBeginSection("relative time");
             mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
                     mHeader.conversation.dateMs);
             Utils.traceEndSection();
         } else {
-            mHeader.dateText = mHeader.dateOverrideText;
+            mHeader.dateText = "";
         }
 
         Utils.traceBeginSection("config setup");
         mConfig = new ConversationItemViewCoordinates.Config()
             .withGadget(mGadgetMode)
-            .withAttachmentPreviews(getAttachmentPreviewsMode());
+            .withAttachmentPreviews(getAttachmentPreviewsMode())
+            .setUseFullMargins(useFullMargins);
         if (header.folderDisplayer.hasVisibleFolders()) {
             mConfig.showFolders();
         }
@@ -736,6 +752,8 @@ public class ConversationItemView extends View
         Utils.traceBeginSection("subject");
         createSubject(mHeader.unread);
 
+        createBadge();
+
         if (!mHeader.isLayoutValid()) {
             setContentDescription();
         }
@@ -764,6 +782,10 @@ public class ConversationItemView extends View
         Drawable drawable = mBackgrounds.get(resourceId);
         if (drawable == null) {
             drawable = getResources().getDrawable(resourceId);
+            final int insetPadding = mHeader.insetPadding;
+            if (insetPadding > 0) {
+                drawable = new InsetDrawable(drawable, insetPadding);
+            }
             mBackgrounds.put(resourceId, drawable);
         }
         if (getBackground() != drawable) {
@@ -781,8 +803,7 @@ public class ConversationItemView extends View
         setSelected(mSelected);
         mHeader.gadgetMode = mGadgetMode;
 
-        final boolean isUnread = mHeader.unread;
-        updateBackground(isUnread);
+        updateBackground();
 
         mHeader.sendersDisplayText = new SpannableStringBuilder();
         mHeader.styledSendersString = null;
@@ -1013,18 +1034,25 @@ public class ConversationItemView extends View
     }
 
     private void createSubject(final boolean isUnread) {
+        // Need to check if we're in wide mode because the badge
+        // does not get added if we're in wide mode.
+        final String badgeText = mCoordinates.isWideMode() ? "" : mHeader.badgeText;
         final String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.getSnippet();
         final Spannable displayedStringBuilder = new SpannableString(
-                Conversation.getSubjectAndSnippetForDisplay(mContext, subject, snippet));
+                Conversation.getSubjectAndSnippetForDisplay(mContext, badgeText, subject, snippet));
 
         // since spans affect text metrics, add spans to the string before measure/layout or fancy
         // ellipsizing
-        final int subjectTextLength = (subject != null) ? subject.length() : 0;
+
+        final int badgeTextLength = formatBadgeText(displayedStringBuilder, badgeText);
+
+        final int subjectTextLength = badgeTextLength + ((subject != null) ? subject.length() : 0)
+                + ((badgeTextLength > 0) ? 1 : 0);
         if (!TextUtils.isEmpty(subject)) {
             displayedStringBuilder.setSpan(TextAppearanceSpan.wrap(
-                    isUnread ? sSubjectTextUnreadSpan : sSubjectTextReadSpan), 0, subjectTextLength,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    isUnread ? sSubjectTextUnreadSpan : sSubjectTextReadSpan),
+                    badgeTextLength, subjectTextLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (!TextUtils.isEmpty(snippet)) {
             final int startOffset = subjectTextLength;
@@ -1035,8 +1063,8 @@ public class ConversationItemView extends View
                     displayedStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (isActivated() && showActivatedText()) {
-            displayedStringBuilder.setSpan(sActivatedTextSpan, 0, displayedStringBuilder.length(),
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            displayedStringBuilder.setSpan(sActivatedTextSpan, badgeTextLength,
+                    displayedStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
         final int subjectWidth = mCoordinates.subjectWidth;
@@ -1048,6 +1076,53 @@ public class ConversationItemView extends View
 
         mSubjectTextView.setText(displayedStringBuilder);
     }
+
+    private void createBadge() {
+        // Do not create badge if in wide mode or badge text is empty.
+        final String badgeText = mHeader.badgeText;
+        if (!mCoordinates.isWideMode() || TextUtils.isEmpty(badgeText)) {
+            return;
+        }
+
+        final Spannable displayedBadgeString = new SpannableString(badgeText);
+        formatBadgeText(displayedBadgeString, badgeText);
+
+        final int badgeWidth = mCoordinates.badgeWidth;
+        final int badgeHeight = mCoordinates.badgeHeight;
+        mBadgeTextView.setLayoutParams(new ViewGroup.LayoutParams(badgeWidth, badgeHeight));
+        mBadgeTextView.setMaxLines(mCoordinates.badgeLineCount);
+        layoutViewExactly(mBadgeTextView, badgeWidth, badgeHeight);
+
+        mBadgeTextView.setText(displayedBadgeString);
+    }
+
+    private int formatBadgeText(Spannable displayedStringBuilder, String badgeText) {
+        final int badgeTextLength = (badgeText != null) ? badgeText.length() : 0;
+        if (!TextUtils.isEmpty(badgeText)) {
+            displayedStringBuilder.setSpan(TextAppearanceSpan.wrap(sBadgeTextSpan),
+                    0, badgeTextLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            displayedStringBuilder.setSpan(TextAppearanceSpan.wrap(sBadgeBackgroundSpan),
+                    0, badgeTextLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            displayedStringBuilder.setSpan(new BadgeSpan(displayedStringBuilder, this),
+                    0, badgeTextLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        return badgeTextLength;
+    }
+
+    // START BadgeSpan.BadgeSpanDimensions override
+
+    @Override
+    public int getHorizontalPadding() {
+        return sBadgePaddingExtraWidth;
+    }
+
+    @Override
+    public float getRoundedCornerRadius() {
+        return sBadgeRoundedCornerRadius;
+    }
+
+    // END BadgeSpan.BadgeSpanDimensions override
 
     private boolean showActivatedText() {
         // For activated elements in tablet in conversation mode, we show an activated color, since
@@ -1098,7 +1173,7 @@ public class ConversationItemView extends View
         mPaperclipX = (isRtl) ? mDateX + mDateWidth + mCoordinates.datePaddingStart :
                 mDateX - ATTACHMENT.getWidth() - mCoordinates.datePaddingStart;
 
-        if (mCoordinates.isWide()) {
+        if (mCoordinates.isWideMode()) {
             // In wide mode, the end of the senders should align with
             // the start of the subject and is based on a max width.
             mSendersWidth = mCoordinates.sendersWidth;
@@ -1317,6 +1392,12 @@ public class ConversationItemView extends View
         drawSubject(canvas);
         canvas.restore();
 
+        if (mCoordinates.isWideMode()) {
+            canvas.save();
+            drawBadge(canvas);
+            canvas.restore();
+        }
+
         // Folders.
         if (mConfig.areFoldersVisible()) {
             mHeader.folderDisplayer.drawFolders(canvas, mCoordinates, ViewUtils.isViewRtl(this));
@@ -1450,6 +1531,11 @@ public class ConversationItemView extends View
         mSubjectTextView.draw(canvas);
     }
 
+    private void drawBadge(Canvas canvas) {
+        canvas.translate(mCoordinates.badgeLeft, mCoordinates.badgeTop);
+        mBadgeTextView.draw(canvas);
+    }
+
     private void drawSenders(Canvas canvas) {
         canvas.translate(mSendersX, mCoordinates.sendersY);
         mSendersTextView.draw(canvas);
@@ -1469,13 +1555,12 @@ public class ConversationItemView extends View
      * 2. Tablet / Phone
      * 3. Checkbox checked / Unchecked (controls CAB color for item)
      * 4. Activated / Not activated (controls the blue highlight on tablet)
-     * @param isUnread
      */
-    private void updateBackground(boolean isUnread) {
+    private void updateBackground() {
         final int background;
         if (mBackgroundOverrideResId > 0) {
             background = mBackgroundOverrideResId;
-        } else if (isUnread) {
+        } else if (mHeader.unread) {
             background = R.drawable.conversation_unread_selector;
         } else {
             background = R.drawable.conversation_read_selector;
@@ -1605,7 +1690,7 @@ public class ConversationItemView extends View
         }
 
         if (mStarEnabled) {
-            if (mCoordinates.getMode() == ConversationItemViewCoordinates.WIDE_MODE) {
+            if (mCoordinates.isWideMode()) {
                 // Just check that we're to start of the star's touch area
                 if (isTouchInStarTargetX(isRtl, x)) {
                     return false;
@@ -1628,7 +1713,7 @@ public class ConversationItemView extends View
 
     private boolean isTouchInStar(float x, float y) {
         if (mHeader.infoIcon != null
-                && mCoordinates.getMode() != ConversationItemViewCoordinates.WIDE_MODE) {
+                && !mCoordinates.isWideMode()) {
             // We have an info icon, and it's above the star
             // We allow touches everywhere below the top of the subject text
             if (y < mCoordinates.subjectY) {

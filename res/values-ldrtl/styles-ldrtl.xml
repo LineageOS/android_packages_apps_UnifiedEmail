@@ -324,9 +324,9 @@
         <item name="android:layout_marginEnd">@dimen/ap_margin_side</item>
     </style>
 
-    <style name="ConversationListFrameStyle">
-        <item name="android:layout_marginStart">@dimen/conv_list_frame_padding_start</item>
-        <item name="android:layout_marginEnd">@dimen/conv_list_frame_padding_end</item>
+    <style name="ConversationListWideStyle">
+        <item name="android:layout_marginStart">@dimen/conv_list_wide_padding_start</item>
+        <item name="android:layout_marginEnd">@dimen/conv_list_wide_padding_end</item>
     </style>
 
     <style name="ConversationListWideContactImageStyle">
@@ -361,11 +361,9 @@
         <item name="android:layout_gravity">top|end</item>
     </style>
 
-    <style name="ConversationListSpaciousLinearLayoutStyle">
-        <item name="android:layout_marginStart">
-            @dimen/conv_list_spacious_linearlayout_padding_start</item>
-        <item name="android:layout_marginEnd">
-            @dimen/conv_list_spacious_linearlayout_padding_end</item>
+    <style name="ConversationListSpaciousStyle">
+        <item name="android:layout_marginStart">@dimen/conv_list_spacious_padding_start</item>
+        <item name="android:layout_marginEnd">@dimen/conv_list_spacious_padding_end</item>
     </style>
 
     <style name="ConversationListSpaciousContactImageStyle">

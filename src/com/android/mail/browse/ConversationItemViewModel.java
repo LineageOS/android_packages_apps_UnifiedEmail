@@ -67,12 +67,16 @@ public class ConversationItemViewModel {
 
     // Date
     CharSequence dateText;
-    public CharSequence dateOverrideText;
+    public boolean showDateText = true;
 
     // Personal level
     Bitmap personalLevelBitmap;
 
     public Bitmap infoIcon;
+
+    public String badgeText;
+
+    public int insetPadding = 0;
 
     // Paperclip
     Bitmap paperclip;

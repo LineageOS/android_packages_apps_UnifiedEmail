@@ -160,6 +160,9 @@
     <dimen name="search_results_padding">8dip</dimen>
 
     <!-- conversation list dimensions -->
+    <dimen name="conv_list_padding">16dip</dimen>
+    <dimen name="conv_list_card_border_padding">8dip</dimen>
+    <dimen name="conv_list_no_border_padding">0dip</dimen>
     <dimen name="conv_list_contact_image_padding_end">12dip</dimen>
     <dimen name="conv_list_reply_state_padding_end">8dip</dimen>
     <dimen name="conv_list_personal_indicator_padding_start">-2dip</dimen>
@@ -169,16 +172,19 @@
     <dimen name="conv_list_paperclip_padding_start">6dip</dimen>
     <dimen name="conv_list_star_padding_end">-9dip</dimen>
 
-    <dimen name="conv_list_frame_padding_start">20dip</dimen>
-    <dimen name="conv_list_frame_padding_end">32dip</dimen>
+    <dimen name="conv_list_wide_padding_start">20dip</dimen>
+    <dimen name="conv_list_wide_padding_end">32dip</dimen>
     <dimen name="conv_list_wide_contact_image_padding_end">20dip</dimen>
     <dimen name="conv_list_wide_personal_indicator_padding_end">8dip</dimen>
     <dimen name="conv_list_wide_star_padding_start">32dip</dimen>
     <dimen name="conv_list_wide_color_block_padding_end">64dip</dimen>
 
-    <dimen name="conv_list_spacious_linearlayout_padding_start">22dip</dimen>
-    <dimen name="conv_list_spacious_linearlayout_padding_end">16dip</dimen>
+    <dimen name="conv_list_spacious_padding_start">22dip</dimen>
+    <dimen name="conv_list_spacious_padding_end">16dip</dimen>
     <dimen name="conv_list_spacious_contact_image_padding_end">16dip</dimen>
     <dimen name="conv_list_spacious_star_padding_end">-8dip</dimen>
+
+    <dimen name="badge_padding_extra_width">6dip</dimen>
+    <dimen name="badge_rounded_corner_radius">2dip</dimen>
 
 </resources>

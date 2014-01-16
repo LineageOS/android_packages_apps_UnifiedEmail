@@ -29,9 +29,10 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/conversation_item_frame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/ConversationListFrameStyle" >
+        style="@style/ConversationListWideStyle" >
 
         <!-- minHeight here is to ensure more consistent item heights across gadget choices -->
         <!-- and between 'normal' vs. 'wide' layouts (which is important during 2-pane -->
@@ -70,15 +71,27 @@
                     android:src="@drawable/ic_badge_reply_holo_light"
                     style="@style/ConversationListReplyStateStyle" />
 
-                <TextView
-                    android:id="@+id/senders"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="18sp"
-                    android:lines="1"
-                    android:includeFontPadding="false"
-                    android:text="@string/long_string" />
+                    android:orientation="vertical" >
+                    <TextView
+                        android:id="@+id/senders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:lines="1"
+                        android:includeFontPadding="false"
+                        android:text="@string/long_string" />
+                    <TextView
+                        android:id="@+id/badge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lines="1"
+                        android:includeFontPadding="false"
+                        android:text="@string/long_string" />
+                </LinearLayout>
 
                 <FrameLayout
                     android:layout_width="54dp"

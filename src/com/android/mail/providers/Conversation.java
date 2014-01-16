@@ -176,6 +176,7 @@ public class Conversation implements Parcelable {
     private transient boolean viewed;
 
     private static String sSubjectAndSnippet;
+    private static String sBadgeSubjectAndSnippet;
 
     // Constituents of convFlags below
     // Flag indicating that the item has been deleted, but will continue being
@@ -851,13 +852,9 @@ public class Conversation implements Parcelable {
     /**
      * Get the properly formatted subject and snippet string for display a
      * conversation.
-     *
-     * @param context
-     * @param filteredSubject
-     * @param snippet
      */
     public static String getSubjectAndSnippetForDisplay(Context context,
-            String filteredSubject, String snippet) {
+            String badgeText, String filteredSubject, String snippet) {
         if (sSubjectAndSnippet == null) {
             sSubjectAndSnippet = context.getString(R.string.subject_and_snippet);
         }
@@ -867,6 +864,11 @@ public class Conversation implements Parcelable {
             return snippet;
         } else if (TextUtils.isEmpty(snippet)) {
             return filteredSubject;
+        } else if (!TextUtils.isEmpty(badgeText)) {
+            if (sBadgeSubjectAndSnippet == null) {
+                sBadgeSubjectAndSnippet = context.getString(R.string.badge_subject_and_snippet);
+            }
+            return String.format(sBadgeSubjectAndSnippet, badgeText, filteredSubject, snippet);
         }
 
         return String.format(sSubjectAndSnippet, filteredSubject, snippet);
