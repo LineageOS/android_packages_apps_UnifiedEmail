@@ -1747,20 +1747,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     void initReplyRecipients(final Message refMessage, final int action) {
         String[] sentToAddresses = refMessage.getToAddressesUnescaped();
         final Collection<String> toAddresses;
-        final String[] replyToAddresses = refMessage.getReplyToAddressesUnescaped();
         final String[] fromAddresses = refMessage.getFromAddressesUnescaped();
         final String fromAddress = fromAddresses.length > 0 ? fromAddresses[0] : null;
-
-        // If there is no reply to address, the reply to address is the sender.
-        boolean hasReplyTo = false;
-        for (final String replyToAddress : replyToAddresses) {
-            if (!TextUtils.isEmpty(replyToAddress)) {
-                hasReplyTo = true;
-            }
-        }
-        if (!hasReplyTo) {
-            replyToAddresses[0] = fromAddress;
-        }
+        final String[] replyToAddresses = getReplyToAddresses(
+                refMessage.getReplyToAddressesUnescaped(), fromAddress);
 
         // If this is a reply, the Cc list is empty. If this is a reply-all, the
         // Cc list is the union of the To and Cc recipients of the original
@@ -1777,6 +1767,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             addRecipients(ccAddresses, refMessage.getCcAddressesUnescaped());
             addCcAddresses(ccAddresses, toAddresses);
         }
+    }
+
+    // If there is no reply to address, the reply to address is the sender.
+    private static String[] getReplyToAddresses(String[] replyTo, String from) {
+        boolean hasReplyTo = false;
+        for (final String replyToAddress : replyTo) {
+            if (!TextUtils.isEmpty(replyToAddress)) {
+                hasReplyTo = true;
+            }
+        }
+        return hasReplyTo ? replyTo : new String[] {from};
     }
 
     private void addToAddresses(Collection<String> addresses) {
