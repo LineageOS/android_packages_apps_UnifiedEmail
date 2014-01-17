@@ -148,7 +148,7 @@ public class MockUiProviderTests extends AndroidTestCase {
                 }
             }
         }
-        assertEquals(count, 2);
+        assertEquals(2, count);
         count = 0;
         ArrayList<Uri> messageUris = new ArrayList<Uri>();
         for (Uri u : convUris) {
@@ -177,7 +177,7 @@ public class MockUiProviderTests extends AndroidTestCase {
                 }
             }
         }
-        assertEquals(count, 4);
+        assertEquals(102, count);
         count = 0;
         ArrayList<Uri> attachmentUris = new ArrayList<Uri>();
         for (Uri u : messageUris) {
@@ -209,7 +209,7 @@ public class MockUiProviderTests extends AndroidTestCase {
                 }
             }
         }
-        assertEquals(count, 2);
+        assertEquals(2, count);
         count = 0;
         for (Uri u : attachmentUris) {
             Cursor attachmentCursor = provider.query(u, UIProvider.ATTACHMENT_PROJECTION, null,
@@ -229,7 +229,7 @@ public class MockUiProviderTests extends AndroidTestCase {
                 }
             }
         }
-        assertEquals(count, 2);
+        assertEquals(2, count);
     }
 
     private void traverseUri(Uri uri) {
