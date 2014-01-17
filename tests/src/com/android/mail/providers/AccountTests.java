@@ -18,13 +18,18 @@ package com.android.mail.providers;
 import android.content.Intent;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.mail.utils.Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+@SmallTest
 public class AccountTests extends AndroidTestCase {
 
-    public void brokenTestSerializeDeSerialize() {
-        Parcel dest = Parcel.obtain();
+    public void testSerializeDeserialize() {
+        final Parcel dest = Parcel.obtain();
         dest.writeInt(0);
         dest.writeString("accountUri");
         dest.writeInt(12345);
@@ -35,17 +40,37 @@ public class AccountTests extends AndroidTestCase {
         dest.writeString("undoUri");
         dest.writeString("settingIntentUri");
         dest.writeInt(0);
-        Account account = new Account(dest, null);
-        Intent intent = new Intent();
-        intent.putExtra(Utils.EXTRA_ACCOUNT, account);
-        Account outAccount = (Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
-        assertEquals(outAccount.name, account.name);
-        assertEquals(outAccount.accountFromAddresses, account.accountFromAddresses);
-        assertEquals(outAccount.capabilities, account.capabilities);
-        assertEquals(outAccount.providerVersion, account.providerVersion);
-        assertEquals(outAccount.uri, account.uri);
-        assertEquals(outAccount.folderListUri, account.folderListUri);
-        assertEquals(outAccount.searchUri, account.searchUri);
-        assertEquals(outAccount.expungeMessageUri, account.expungeMessageUri);
+
+        final Account before = new Account(dest, null);
+        final Intent intent = new Intent();
+        intent.putExtra(Utils.EXTRA_ACCOUNT, before);
+
+        final Account after = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
+        assertNotNull(after);
+
+        assertEquals(before.name, after.name);
+        assertEquals(before.accountFromAddresses, after.accountFromAddresses);
+        assertEquals(before.capabilities, after.capabilities);
+        assertEquals(before.providerVersion, after.providerVersion);
+        assertEquals(before.uri, after.uri);
+        assertEquals(before.folderListUri, after.folderListUri);
+        assertEquals(before.searchUri, after.searchUri);
+        assertEquals(before.expungeMessageUri, after.expungeMessageUri);
+    }
+
+    public void testDeserializeNullSenderNameUsingJSON() throws JSONException {
+        final JSONObject json = new JSONObject();
+        // fields required by deserialization
+        json.put(UIProvider.AccountColumns.NAME, "name");
+        json.put(UIProvider.AccountColumns.TYPE, "type");
+        json.put(UIProvider.AccountColumns.PROVIDER_VERSION, 1);
+        json.put(UIProvider.AccountColumns.CAPABILITIES, 2);
+
+        // null sender name (same thing as not putting a sender name at all)
+        json.put(UIProvider.AccountColumns.SENDER_NAME, null);
+
+        final Account account = Account.newinstance(json.toString());
+        assertNotNull(account);
+        assertNull(account.getSenderName());
     }
 }

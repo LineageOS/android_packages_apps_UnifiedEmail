@@ -315,7 +315,7 @@ public class Account implements Parcelable {
     private Account(String acctName, String acctType, JSONObject json) throws JSONException {
         name = acctName;
         type = acctType;
-        senderName = json.optString(AccountColumns.SENDER_NAME);
+        senderName = json.optString(AccountColumns.SENDER_NAME, null);
         final String amName = json.optString(AccountColumns.ACCOUNT_MANAGER_NAME);
         // We need accountManagerName to be filled in, but we might be dealing with an old cache
         // entry which doesn't have it, so use the display name instead in that case as a fallback
