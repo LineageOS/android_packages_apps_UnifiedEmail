@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.test.AndroidTestCase;
+import android.text.SpannableStringBuilder;
 
 public class HierarchicalFolderTruncationTests extends AndroidTestCase {
 
@@ -30,24 +31,28 @@ public class HierarchicalFolderTruncationTests extends AndroidTestCase {
     }
 
     public void testEmpty() {
-        assertEquals("", mAdapter.truncateHierarchy(null));
+        assertNull(truncate(null));
     }
 
     public void testNoParents() {
-        assertEquals("name", mAdapter.truncateHierarchy("name"));
+        assertEquals("name", truncate("name"));
     }
 
     public void testSingleParent() {
-        assertEquals("parent\u2215folder", mAdapter.truncateHierarchy("parent/folder"));
+        assertEquals("parent\u2215folder", truncate("parent/folder"));
     }
 
     public void testDoubleParent() {
-        assertEquals("grandparent\u2215parent\u2215folder",
-                mAdapter.truncateHierarchy("grandparent/parent/folder"));
+        assertEquals("grandparent\u2215parent\u2215folder", truncate("grandparent/parent/folder"));
     }
 
     public void testEllipsizedDoubleParent() {
         assertEquals("grandparent\u2215\u2026\u2215parent\u2215folder",
-                mAdapter.truncateHierarchy("grandparent/stuff/stuff/stuff/stuff/parent/folder"));
+                truncate("grandparent/stuff/stuff/stuff/stuff/parent/folder"));
+    }
+
+    private String truncate(String hierarchy) {
+        final SpannableStringBuilder result = mAdapter.truncateHierarchy(hierarchy);
+        return result == null ? null : result.toString();
     }
 }
