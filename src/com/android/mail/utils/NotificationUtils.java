@@ -216,13 +216,15 @@ public class NotificationUtils {
             final Set<NotificationKey> keys = keySet();
             for (NotificationKey key : keys) {
                 final Pair<Integer, Integer> value = get(key);
-                final Integer unreadCount = value.first;
-                final Integer unseenCount = value.second;
-                if (unreadCount != null && unseenCount != null) {
-                    final String[] partValues = new String[] {
-                            key.account.uri.toString(), key.folder.folderUri.fullUri.toString(),
-                            unreadCount.toString(), unseenCount.toString()};
-                    notificationSet.add(TextUtils.join(NOTIFICATION_PART_SEPARATOR, partValues));
+                if (value != null) {
+                    final Integer unreadCount = value.first;
+                    final Integer unseenCount = value.second;
+                    if (unreadCount != null && unseenCount != null) {
+                        final String[] partValues = new String[] {
+                                key.account.uri.toString(), key.folder.folderUri.fullUri.toString(),
+                                unreadCount.toString(), unseenCount.toString()};
+                        notificationSet.add(TextUtils.join(NOTIFICATION_PART_SEPARATOR, partValues));
+                    }
                 }
             }
             final MailPrefs mailPrefs = MailPrefs.get(context);
