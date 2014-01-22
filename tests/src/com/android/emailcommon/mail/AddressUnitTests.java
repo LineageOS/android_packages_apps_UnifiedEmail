@@ -44,15 +44,14 @@ public class AddressUnitTests extends AndroidTestCase {
             ;
     private static final int MULTI_ADDRESSES_COUNT = 10;
 
-    private static final Address PACK_ADDR_1 = new Address("john@gmail.com", "John Doe");
-    private static final Address PACK_ADDR_2 = new Address("foo@bar.com", null);
-    private static final Address PACK_ADDR_3 = new Address(
-            "mar.y+test@gmail.com", "Mar-y, B; B*arr");
-    private static final Address[][] PACK_CASES = {
-            {PACK_ADDR_2}, {PACK_ADDR_1},
-            {PACK_ADDR_1, PACK_ADDR_2}, {PACK_ADDR_2, PACK_ADDR_1},
-            {PACK_ADDR_1, PACK_ADDR_3}, {PACK_ADDR_2, PACK_ADDR_2},
-            {PACK_ADDR_1, PACK_ADDR_2, PACK_ADDR_3}, {PACK_ADDR_3, PACK_ADDR_1, PACK_ADDR_2}
+    private static final Address ADDR_1 = new Address("john@gmail.com", "John Doe");
+    private static final Address ADDR_2 = new Address("foo@bar.com", null);
+    private static final Address ADDR_3 = new Address("mar.y+test@gmail.com", "Mar-y, B; B*arr");
+    private static final Address[][] TO_HEADER_CASES = {
+            {ADDR_2}, {ADDR_1},
+            {ADDR_1, ADDR_2}, {ADDR_2, ADDR_1},
+            {ADDR_1, ADDR_3}, {ADDR_2, ADDR_2},
+            {ADDR_1, ADDR_2, ADDR_3}, {ADDR_3, ADDR_1, ADDR_2}
     };
 
     Address mAddress1;
@@ -557,34 +556,34 @@ public class AddressUnitTests extends AndroidTestCase {
      * NOTE:  This is not a claim that these edge cases are "correct", only to maintain consistent
      * behavior while I am changing some of the code in the function under test.
      */
-    public void testEmptyPack() {
+    public void testEmptyToHeader() {
         String result;
 
         // null input => null string
-        result = Address.pack(null);
+        result = Address.toHeader(null);
         assertNull("packing null", result);
 
         // zero-length input => null string
-        result = Address.pack(new Address[] { });
+        result = Address.toHeader(new Address[] { });
         assertNull("packing empty array", result);
     }
 
     /**
-     * Simple quick checks of empty-input edge conditions for unpack()
+     * Simple quick checks of empty-input edge conditions for fromHeader()
      *
      * NOTE:  This is not a claim that these edge cases are "correct", only to maintain consistent
      * behavior while I am changing some of the code in the function under test.
      */
-    public void testEmptyUnpack() {
+    public void testEmptyFromHeader() {
         Address[] result;
 
         /*
         // null input => empty array
-        result = Address.unpack(null);
+        result = Address.fromHeader(null);
         assertTrue("unpacking null address", result != null && result.length == 0);
         */
         // empty string input => empty array
-        result = Address.unpack("");
+        result = Address.fromHeader("");
         assertTrue("unpacking zero-length", result != null && result.length == 0);
     }
 
@@ -613,60 +612,60 @@ public class AddressUnitTests extends AndroidTestCase {
         return true;
     }
 
-    public void testPackUnpack() {
-        for (Address[] list : PACK_CASES) {
-            String packed = Address.pack(list);
-            assertTrue(packed, addressArrayEquals(list, Address.unpack(packed)));
+    public void testToHeaderFromHeader() {
+        for (Address[] list : TO_HEADER_CASES) {
+            String packed = Address.toHeader(list);
+            assertTrue(packed, addressArrayEquals(list, Address.fromHeader(packed)));
         }
     }
 
     /**
-     * Tests that unpackToString() returns the same result as toString(unpack()).
+     * Tests that fromHeaderToString() returns the same result as toString(fromHeader()).
      */
-    public void testUnpackToString() {
-        assertNull(Address.unpackToString(null));
-        assertNull(Address.unpackToString(""));
+    public void testFromHeaderToString() {
+        assertNull(Address.fromHeaderToString(null));
+        assertNull(Address.fromHeaderToString(""));
 
-        for (Address[] list : PACK_CASES) {
-            String packed = Address.pack(list);
-            String s1 = Address.unpackToString(packed);
-            String s2 = Address.toString(Address.unpack(packed));
+        for (Address[] list : TO_HEADER_CASES) {
+            String packed = Address.toHeader(list);
+            String s1 = Address.fromHeaderToString(packed);
+            String s2 = Address.toString(Address.fromHeader(packed));
             assertEquals(s2, s2, s1);
         }
     }
 
     /**
-     * Tests that parseAndPack() returns the same result as pack(parse()).
+     * Tests that parseToHeader() returns the same result as toHeader(parse()).
      */
     public void testParseAndPack() {
-        String s1 = Address.parseAndPack(MULTI_ADDRESSES_LIST);
-        String s2 = Address.pack(Address.parse(MULTI_ADDRESSES_LIST));
+        String s1 = Address.parseToHeader(MULTI_ADDRESSES_LIST);
+        String s2 = Address.toHeader(Address.parse(MULTI_ADDRESSES_LIST));
         assertEquals(s2, s1);
     }
 
     public void testSinglePack() {
         Address[] addrArray = new Address[1];
-        for (Address address : new Address[]{PACK_ADDR_1, PACK_ADDR_2, PACK_ADDR_3}) {
-            String packed1 = address.pack();
+        for (Address address : new Address[]{ADDR_1, ADDR_2, ADDR_3}) {
+            String packed1 = address.toHeader();
             addrArray[0] = address;
-            String packed2 = Address.pack(addrArray);
+            String packed2 = Address.toHeader(addrArray);
             assertEquals(packed1, packed2);
         }
     }
 
     /**
      * Tests that:
-     * 1. unpackFirst() with empty list returns null.
-     * 2. unpackFirst() with non-empty returns the same as unpack()[0]
+     * 1. firstAddress() with empty list returns null.
+     * 2. firstAddress() with non-empty returns the same as fromHeader()[0]
      */
-    public void testUnpackFirst() {
-        assertNull(Address.unpackFirst(null));
-        assertNull(Address.unpackFirst(""));
+    public void testFirstAddress() {
+        assertNull(Address.firstAddress(null));
+        assertNull(Address.firstAddress(""));
 
-        for (Address[] list : PACK_CASES) {
-            String packed = Address.pack(list);
-            Address[] array = Address.unpack(packed);
-            Address first = Address.unpackFirst(packed);
+        for (Address[] list : TO_HEADER_CASES) {
+            String packed = Address.toHeader(list);
+            Address[] array = Address.fromHeader(packed);
+            Address first = Address.firstAddress(packed);
             assertTrue(packed, addressEquals(array[0], first));
         }
     }

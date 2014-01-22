@@ -370,14 +370,14 @@ public class Message implements Parcelable, HtmlMessage {
     public Message(Context context, MimeMessage mimeMessage, Uri emlFileUri)
             throws MessagingException {
         // Set message header values.
-        setFrom(Address.pack(mimeMessage.getFrom()));
-        setTo(Address.pack(mimeMessage.getRecipients(
+        setFrom(Address.toHeader(mimeMessage.getFrom()));
+        setTo(Address.toHeader(mimeMessage.getRecipients(
                 com.android.emailcommon.mail.Message.RecipientType.TO)));
-        setCc(Address.pack(mimeMessage.getRecipients(
+        setCc(Address.toHeader(mimeMessage.getRecipients(
                 com.android.emailcommon.mail.Message.RecipientType.CC)));
-        setBcc(Address.pack(mimeMessage.getRecipients(
+        setBcc(Address.toHeader(mimeMessage.getRecipients(
                 com.android.emailcommon.mail.Message.RecipientType.BCC)));
-        setReplyTo(Address.pack(mimeMessage.getReplyTo()));
+        setReplyTo(Address.toHeader(mimeMessage.getReplyTo()));
         subject = mimeMessage.getSubject();
 
         final Date sentDate = mimeMessage.getSentDate();
