@@ -294,11 +294,13 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
 
             // Add all folder views to the teaser
             int added = 0;
+            // If we're only over the limit by one, don't truncate the list.
+            boolean truncate = folderHolders.size() > sCollapsedFolderThreshold + 1;
             for (final FolderHolder folderHolder : folderHolders) {
                 mNestedFolderContainer.addView(folderHolder.getItemView());
                 added++;
 
-                if (added >= sCollapsedFolderThreshold && mCollapsed) {
+                if (truncate && added >= sCollapsedFolderThreshold && mCollapsed) {
                     // We will display the rest when "Show more" is clicked
                     break;
                 }
@@ -345,7 +347,7 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
             }
 
             mShowMoreFoldersCountTextView.setText(Integer.toString(unreadCount));
-        } else if (displayed > sCollapsedFolderThreshold) {
+        } else if (displayed > sCollapsedFolderThreshold + 1) {
             // We are expanded
             mShowMoreFoldersRow.setVisibility(VISIBLE);
             mShowMoreFoldersTextView.setText(R.string.hide_folders);
