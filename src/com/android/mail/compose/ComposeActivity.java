@@ -1055,7 +1055,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.setBcc(formatSenders(mBcc.getText().toString()));
         message.setReplyTo(null);
         message.dateReceivedMs = 0;
-        message.bodyHtml = Html.toHtml(removeComposingSpans(mBodyView.getText()));
+        message.bodyHtml = spannedBodyToHtml(mBodyView.getText());
         message.bodyText = mBodyView.getText().toString();
         message.embedsExternalResources = false;
         message.refMessageUri = mRefMessage != null ? mRefMessage.uri : null;
@@ -1098,7 +1098,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @VisibleForTesting
-    void setAccount(Account account) {
+    protected void setAccount(Account account) {
         if (account == null) {
             return;
         }
@@ -1300,13 +1300,41 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return false;
     }
 
+    /**
+     * Convert the body text (in {@link Spanned} form) to ready-to-send HTML format as a plain
+     * String.
+     *
+     * @param body the body text including fancy style spans
+     * @return HTML formatted body that's suitable for sending or saving
+     */
+    private String spannedBodyToHtml(Spanned body) {
+        final HtmlifyBeginResult r = onHtmlifyBegin(removeComposingSpans(body));
+        return onHtmlifyEnd(Html.toHtml(r.result), r.extras);
+    }
+
+    /**
+     * A hook for subclasses to convert custom spans in the body text prior to system HTML
+     * conversion. That HTML conversion is lossy, so anything above and beyond its capability
+     * has to be handled here.
+     *
+     * @param body
+     * @return a copy of the body text with custom spans replaced with HTML
+     */
+    protected HtmlifyBeginResult onHtmlifyBegin(Spanned body) {
+        return new HtmlifyBeginResult(body, null /* extras */);
+    }
+
+    protected String onHtmlifyEnd(String html, Object extras) {
+        return html;
+    }
+
     protected TextView getBody() {
         return mBodyView;
     }
 
     @VisibleForTesting
     public String getBodyHtml() {
-        return Html.toHtml(removeComposingSpans(mBodyView.getText()));
+        return spannedBodyToHtml(mBodyView.getText());
     }
 
     @VisibleForTesting
@@ -1737,6 +1765,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     final Uri uri = Uri.parse(uriString);
                     long size = 0;
                     try {
+                        if (handleSpecialAttachmentUri(uri)) {
+                            continue;
+                        }
+
                         final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
                         size = mAttachmentsView.addAttachment(mAccount, a);
 
@@ -1752,13 +1784,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
             if (extras.containsKey(Intent.EXTRA_STREAM)) {
                 if (Intent.ACTION_SEND_MULTIPLE.equals(action)) {
-                    ArrayList<Parcelable> uris = extras
+                    final ArrayList<Uri> uris = extras
                             .getParcelableArrayList(Intent.EXTRA_STREAM);
                     ArrayList<Attachment> attachments = new ArrayList<Attachment>();
-                    for (Parcelable uri : uris) {
+                    for (Uri uri : uris) {
                         try {
-                            final Attachment a = mAttachmentsView.generateLocalAttachment(
-                                    (Uri) uri);
+                            if (handleSpecialAttachmentUri(uri)) {
+                                continue;
+                            }
+
+                            final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
                             attachments.add(a);
 
                             Analytics.getInstance().sendEvent("send_intent_attachment",
@@ -1778,11 +1813,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     final Uri uri = extras.getParcelable(Intent.EXTRA_STREAM);
                     long size = 0;
                     try {
-                        final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
-                        size = mAttachmentsView.addAttachment(mAccount, a);
+                        if (!handleSpecialAttachmentUri(uri)) {
+                            final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
+                            size = mAttachmentsView.addAttachment(mAccount, a);
 
-                        Analytics.getInstance().sendEvent("send_intent_attachment",
-                                Utils.normalizeMimeType(a.getContentType()), null, size);
+                            Analytics.getInstance().sendEvent("send_intent_attachment",
+                                    Utils.normalizeMimeType(a.getContentType()), null, size);
+                        }
 
                     } catch (AttachmentFailureException e) {
                         LogUtils.e(LOG_TAG, e, "Error adding attachment");
@@ -1854,6 +1891,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return;
         }
         try {
+
+            if (handleSpecialAttachmentUri(contentUri)) {
+                return;
+            }
+
             addAttachmentAndUpdateView(mAttachmentsView.generateLocalAttachment(contentUri));
         } catch (AttachmentFailureException e) {
             LogUtils.e(LOG_TAG, e, "Error adding attachment");
@@ -1862,6 +1904,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     AttachmentUtils.convertToHumanReadableSize(
                             getApplicationContext(), mAccount.settings.getMaxAttachmentSize())));
         }
+    }
+
+    /**
+     * Allow subclasses to implement custom handling of attachments.
+     *
+     * @param contentUri a passed-in URI from a pick intent
+     * @return true iff handled
+     */
+    protected boolean handleSpecialAttachmentUri(final Uri contentUri) {
+        return false;
     }
 
     private void addAttachmentAndUpdateView(Attachment attachment) {
@@ -2935,8 +2987,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return mSubject.getText().toString();
     }
 
-    /* package */
-    static int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
+    private int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
             Message message, final Message refMessage, Spanned body, final CharSequence quotedText,
             SendOrSaveCallback callback, Handler handler, boolean save, int composeMode,
             ReplyFromAccount draftAccount, final ContentValues extraValues) {
@@ -2952,7 +3003,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         MessageModification.putSubject(values, message.subject);
 
         // Make sure to remove only the composing spans from the Spannable before saving.
-        final String htmlBody = Html.toHtml(removeComposingSpans(body));
+        final String htmlBody = spannedBodyToHtml(body);
         final String textBody = Utils.convertHtmlToPlainText(htmlBody);
         // fullbody will contain the actual body plus the quoted text.
         final String fullBody;

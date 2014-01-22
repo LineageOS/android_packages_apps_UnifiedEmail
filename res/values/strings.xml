@@ -45,6 +45,9 @@
     <string name="add_file_attachment">Attach file</string>
     <!--  Compose screen button. Add a photo attachment to this message [CHAR LIMIT=20] -->
     <string name="add_photo_attachment">Attach picture</string>
+    <!-- Stub string for attaching from a service. Sub-apps should override this. -->
+    <!-- The actual string value doesn't matter, it should never appear. -->
+    <string name="attach_from_service_stub1" translatable="false"></string>
     <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
     <string name="save_draft">Save draft</string>
     <!--  Button name: discard this message [CHAR LIMIT=15] -->
