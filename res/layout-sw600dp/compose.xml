@@ -38,12 +38,11 @@
             android:paddingTop="8dip"
             android:background="@android:color/white"
             android:layout_gravity="center_horizontal"
-            android:paddingLeft="@dimen/compose_area_left_padding"
             android:animateLayoutChanges="true">
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/compose_area_right_padding">
+                style="@style/ComposeRowStyle" >
                 <FrameLayout
                     style="@style/FillRowStyle">
                     <include layout="@layout/compose_from"/>
@@ -77,16 +76,17 @@
                     <View style="@style/RecipientComposeFieldSpacer"/>
                 </LinearLayout>
                 <RelativeLayout
-                    android:layout_width="@dimen/compose_area_right_padding"
+                    android:layout_width="@dimen/compose_area_end_padding"
                     android:layout_height="wrap_content"
                     android:layout_column="2"
-                    android:layout_gravity="bottom|left"
-                    android:gravity="bottom|left">
+                    android:layout_gravity="bottom|left|start"
+                    android:gravity="bottom|left|start">
                     <Button android:id="@+id/add_cc_bcc"
                         android:text="@string/add_cc_label"
                         style="@style/ComposeButton"
                         android:layout_marginBottom="6dip"
                         android:paddingLeft="8dip"
+                        android:paddingRight="8dip"
                         android:focusable="true"
                         android:clickable="true"/>
                 </RelativeLayout>
@@ -94,7 +94,7 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/compose_area_right_padding">
+                style="@style/ComposeRowStyle" >
                 <com.android.mail.compose.CcBccView
                     android:id="@+id/cc_bcc_wrapper"
                     style="@style/FillRowStyle"/>
@@ -108,7 +108,8 @@
                     android:layout_column="1"
                     android:layout_weight="1"
                     android:layout_width="0dip">
-                    <!-- Subject: localization cannot control what field pressing tab will bring the user to. This is controlled at runtime.  -->
+                    <!-- Subject: localization cannot control what field
+                         pressing tab will bring the user to. This is controlled at runtime.  -->
                     <com.android.mail.compose.EnterSubject android:id="@+id/subject"
                         style="@style/ComposeSubjectView" />
                 </RelativeLayout>
@@ -123,13 +124,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="4dip"
+                        android:paddingRight="4dip"
                         android:clickable="false"/>
                 </RelativeLayout>
             </TableRow>
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/compose_area_right_padding">
+                style="@style/ComposeRowStyle" >
                 <!-- Compose Area -->
                 <FrameLayout
                     android:id="@+id/compose_wrapper"
@@ -140,7 +142,7 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/compose_area_right_padding">
+                style="@style/ComposeRowStyle" >
                 <!--  Attachments -->
                 <com.android.mail.compose.AttachmentsView android:id="@+id/attachments"
                     android:orientation="vertical"
@@ -148,7 +150,6 @@
                     android:animateLayoutChanges="true"
                     android:paddingTop="2dip"
                     android:paddingBottom="0dip"
-                    android:paddingLeft="0dip"
                     android:visibility="gone"
                     style="@style/FillRowStyle">
                     <include layout="@layout/compose_attachments" />
@@ -157,7 +158,7 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/compose_area_right_padding">
+                style="@style/ComposeRowStyle" >
                 <!-- Quoted text -->
                 <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
                     android:layout_height="wrap_content"

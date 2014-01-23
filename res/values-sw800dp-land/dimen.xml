@@ -18,6 +18,6 @@
 <resources>
     <!--Manta b/7382467-->
     <dimen name="compose_scrollview_width">848dip</dimen>
-    <dimen name="compose_area_left_padding">104dip</dimen>
-    <dimen name="compose_area_right_padding">104dip</dimen>
+    <dimen name="compose_area_start_padding">104dip</dimen>
+    <dimen name="compose_area_end_padding">104dip</dimen>
 </resources>

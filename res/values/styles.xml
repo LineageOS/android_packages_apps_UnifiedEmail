@@ -60,10 +60,10 @@
 
     <style name="AbstractRecipientComposeHeading" parent="@style/ComposeHeading">
         <item name="android:layout_marginTop">4dip</item>
-        <item name="android:paddingLeft">0dip</item>
      </style>
 
     <style name="RecipientComposeHeading" parent="@style/AbstractRecipientComposeHeading">
+        <item name="android:paddingLeft">0dip</item>
         <item name="android:layout_marginRight">@dimen/compose_recipient_heading_margin_end</item>
     </style>
 
@@ -462,8 +462,8 @@
         <item name="android:layout_height">48dip</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
         <item name="android:addStatesFromChildren">true</item>
-        <item name="android:gravity">center|left</item>
-        <item name="android:layout_gravity">center|left</item>
+        <item name="android:gravity">center|left|start</item>
+        <item name="android:layout_gravity">center|left|start</item>
     </style>
 
     <style name="FillRowStyle">
@@ -924,4 +924,11 @@
         <item name="android:paddingLeft">@dimen/custom_from_inner_padding</item>
     </style>
 
+    <style name="AbstractComposeArea">
+        <item name="android:paddingLeft">@dimen/compose_area_start_padding</item>
+    </style>
+
+    <style name="ComposeRowStyle">
+        <item name="android:paddingRight">@dimen/compose_area_end_padding</item>
+    </style>
 </resources>

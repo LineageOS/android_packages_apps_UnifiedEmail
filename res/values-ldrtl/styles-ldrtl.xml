@@ -263,6 +263,7 @@
     </style>
 
     <style name="RecipientComposeHeading" parent="@style/AbstractRecipientComposeHeading">
+        <item name="android:paddingStart">0dip</item>
         <item name="android:layout_marginEnd">@dimen/compose_recipient_heading_margin_end</item>
     </style>
 
@@ -381,4 +382,11 @@
         <item name="android:paddingStart">@dimen/custom_from_inner_padding</item>
     </style>
 
+    <style name="AbstractComposeArea">
+        <item name="android:paddingStart">@dimen/compose_area_start_padding</item>
+    </style>
+
+    <style name="ComposeRowStyle">
+        <item name="android:paddingEnd">@dimen/compose_area_end_padding</item>
+    </style>
 </resources>

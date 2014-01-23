@@ -40,8 +40,8 @@
     <dimen name="attachment_tile_max_size">254dp</dimen>
     <dimen name="wait_padding">32dp</dimen>
 
-    <dimen name="compose_area_left_padding">80dip</dimen>
-    <dimen name="compose_area_right_padding">80dip</dimen>
+    <dimen name="compose_area_start_padding">80dip</dimen>
+    <dimen name="compose_area_end_padding">80dip</dimen>
     <dimen name="search_view_width">400dip</dimen>
     <dimen name="spinner_frame_width">170dp</dimen>
 </resources>
