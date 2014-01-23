@@ -60,7 +60,7 @@
     <string name="remove_folder" msgid="4906542720439865413">"Aus <xliff:g id="FOLDERNAME">%1$s</xliff:g> entfernen"</string>
     <string name="archive" msgid="847250094775910499">"Archivieren"</string>
     <string name="report_spam" msgid="6467567747975393907">"Spam melden"</string>
-    <string name="mark_not_spam" msgid="694891665407228160">"Nicht als Spam melden"</string>
+    <string name="mark_not_spam" msgid="694891665407228160">"Kein Spam"</string>
     <string name="report_phishing" msgid="5714205737453138338">"Phishing melden"</string>
     <string name="delete" msgid="844871204175957681">"Löschen"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Entwürfe löschen"</string>
@@ -140,6 +140,8 @@
     <string name="unread_string" msgid="588180203444398297">"Konversation ungelesen"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> – <xliff:g id="ID_2">%s</xliff:g>"</string>
+    <!-- no translation found for badge_subject_and_snippet (1261901365444812399) -->
+    <skip />
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"Entwurf"</item>
     <item quantity="other" msgid="6961049507579977505">"Entwürfe"</item>

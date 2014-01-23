@@ -26,7 +26,7 @@
     <string name="add_file_attachment" msgid="2203398371671979481">"إرفاق ملف"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"إرفاق صورة"</string>
     <string name="save_draft" msgid="5555744208032445632">"حفظ كمسودة"</string>
-    <string name="discard" msgid="1714960202994370243">"إلغاء"</string>
+    <string name="discard" msgid="1714960202994370243">"تجاهل"</string>
     <string name="compose" msgid="1473559896062432878">"إنشاء"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"رد"</item>
@@ -140,6 +140,8 @@
     <string name="unread_string" msgid="588180203444398297">"لم تتم قراءة المحادثة"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
+    <!-- no translation found for badge_subject_and_snippet (1261901365444812399) -->
+    <skip />
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"مسودة"</item>
     <item quantity="other" msgid="6961049507579977505">"مسودات"</item>
