@@ -16,6 +16,7 @@
 package com.android.mail.compose;
 
 import android.content.Context;
+import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.text.util.Rfc822Tokenizer;
 import android.view.LayoutInflater;
@@ -46,11 +47,14 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
 
     public static int ACCOUNT_ADDRESS = 1;
 
+    private final BidiFormatter mBidiFormatter;
+
     private LayoutInflater mInflater;
 
-    public FromAddressSpinnerAdapter(Context context) {
+    public FromAddressSpinnerAdapter(Context context, BidiFormatter bidiFormatter) {
         super(context, R.layout.from_item, R.id.spinner_account_address);
         sFormatString = getContext().getString(R.string.formatted_email_address);
+        mBidiFormatter = bidiFormatter;
     }
 
     protected LayoutInflater getInflater() {
@@ -78,13 +82,14 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
         int res = fromItem.isCustomFrom ? R.layout.custom_from_item : R.layout.from_item;
         View fromEntry = convertView == null ? getInflater().inflate(res, null) : convertView;
         if (fromItem.isCustomFrom) {
-            ((TextView) fromEntry.findViewById(R.id.spinner_account_name)).setText(fromItem.name);
+            ((TextView) fromEntry.findViewById(R.id.spinner_account_name)).setText(
+                    mBidiFormatter.unicodeWrap(fromItem.name));
 
             ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
                     .setText(formatAddress(fromItem.address));
         } else {
             ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
-                    .setText(fromItem.address);
+                    .setText(mBidiFormatter.unicodeWrap(fromItem.address));
         }
         return fromEntry;
     }
@@ -97,21 +102,22 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
         View fromEntry = getInflater().inflate(res, null);
         if (fromItem.isCustomFrom) {
             ((TextView) fromEntry.findViewById(R.id.spinner_account_name))
-                    .setText(fromItem.name);
+                    .setText(mBidiFormatter.unicodeWrap(fromItem.name));
             ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
                     .setText(formatAddress(fromItem.address));
         } else {
             ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
-                    .setText(fromItem.address);
+                    .setText(mBidiFormatter.unicodeWrap(fromItem.address));
         }
         return fromEntry;
     }
 
-    private static CharSequence formatAddress(String address) {
+    private CharSequence formatAddress(String address) {
         if (TextUtils.isEmpty(address)) {
             return "";
         }
-        return String.format(sFormatString, Rfc822Tokenizer.tokenize(address)[0].getAddress());
+        return String.format(sFormatString,
+                mBidiFormatter.unicodeWrap(Rfc822Tokenizer.tokenize(address)[0].getAddress()));
     }
 
     public void addAccounts(List<ReplyFromAccount> replyFromAccounts) {

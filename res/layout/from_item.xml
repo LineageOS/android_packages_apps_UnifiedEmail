@@ -23,4 +23,5 @@
     android:ellipsize="end"
     android:textAppearance="?android:attr/textAppearanceMedium"
     android:paddingLeft="8dip"
+    android:paddingRight="8dip"
     android:gravity="center_vertical"/>

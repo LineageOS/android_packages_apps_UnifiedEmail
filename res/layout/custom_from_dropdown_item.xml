@@ -21,6 +21,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:paddingLeft="24dip"
+    android:paddingRight="24dip"
     android:layout_gravity="center_vertical"
     android:paddingTop="10dip"
     android:paddingBottom="10dip">

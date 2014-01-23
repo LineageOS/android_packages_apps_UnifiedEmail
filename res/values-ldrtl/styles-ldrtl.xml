@@ -377,4 +377,8 @@
     </style>
     <!-- END Conversation list styles -->
 
+    <style name="SpinnerAccountAddressStyle">
+        <item name="android:paddingStart">@dimen/custom_from_inner_padding</item>
+    </style>
+
 </resources>

@@ -29,6 +29,7 @@
         android:layout_weight="1"
         android:ellipsize="end"
         android:paddingLeft="8dip"
+        android:paddingRight="8dip"
         android:gravity="center_vertical" />
 
 </LinearLayout>

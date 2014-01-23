@@ -920,4 +920,8 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="SpinnerAccountAddressStyle">
+        <item name="android:paddingLeft">@dimen/custom_from_inner_padding</item>
+    </style>
+
 </resources>

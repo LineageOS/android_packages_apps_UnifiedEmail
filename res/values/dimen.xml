@@ -187,4 +187,5 @@
     <dimen name="badge_padding_extra_width">6dip</dimen>
     <dimen name="badge_rounded_corner_radius">2dip</dimen>
 
+    <dimen name="custom_from_inner_padding">6dip</dimen>
 </resources>
