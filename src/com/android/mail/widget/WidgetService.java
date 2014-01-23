@@ -437,21 +437,6 @@ public class WidgetService extends RemoteViewsService {
             }
         }
 
-        private CharacterStyle getUnreadStyle() {
-            if (mUnreadStyle == null) {
-                mUnreadStyle = new TextAppearanceSpan(mContext,
-                        R.style.SendersUnreadTextAppearance);
-            }
-            return CharacterStyle.wrap(mUnreadStyle);
-        }
-
-        private CharacterStyle getReadStyle() {
-            if (mReadStyle == null) {
-                mReadStyle = new TextAppearanceSpan(mContext, R.style.SendersReadTextAppearance);
-            }
-            return CharacterStyle.wrap(mReadStyle);
-        }
-
         private SpannableStringBuilder ellipsizeStyledSenders(
                 ArrayList<SpannableString> styledSenders) {
             SpannableStringBuilder builder = new SpannableStringBuilder();

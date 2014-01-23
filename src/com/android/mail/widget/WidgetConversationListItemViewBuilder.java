@@ -21,8 +21,10 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.support.v4.text.BidiFormatter;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -49,6 +51,7 @@ public class WidgetConversationListItemViewBuilder {
     private static Bitmap ATTACHMENT;
 
     private final Context mContext;
+
     private WidgetFolderDisplayer mFolderDisplayer;
 
     /**
@@ -148,7 +151,7 @@ public class WidgetConversationListItemViewBuilder {
      */
     public RemoteViews getStyledView(final CharSequence date, final Conversation conversation,
             final FolderUri folderUri, final int ignoreFolderType,
-            final SpannableStringBuilder senders, final String filteredSubject) {
+            final SpannableStringBuilder senders, final String subject) {
 
         final boolean isUnread = !conversation.read;
         final String snippet = conversation.getSnippet();
@@ -159,9 +162,13 @@ public class WidgetConversationListItemViewBuilder {
 
         // Add style to subject
         final int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
+        final BidiFormatter bidiFormatter = BidiFormatter.getInstance();
+        final String filteredSubject =
+                TextUtils.isEmpty(subject) ? "" : bidiFormatter.unicodeWrap(subject);
         final SpannableStringBuilder subjectAndSnippet = new SpannableStringBuilder(
                 Conversation.getSubjectAndSnippetForDisplay(
-                        mContext, null /* badgeText */, filteredSubject, snippet));
+                        mContext, null /* badgeText */, filteredSubject,
+                        bidiFormatter.unicodeWrap(snippet)));
         if (isUnread) {
             subjectAndSnippet.setSpan(new StyleSpan(Typeface.BOLD), 0, filteredSubject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

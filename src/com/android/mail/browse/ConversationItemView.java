@@ -36,6 +36,7 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.support.v4.text.BidiFormatter;
 import android.support.v4.view.ViewCompat;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
@@ -1036,11 +1037,14 @@ public class ConversationItemView extends View
     private void createSubject(final boolean isUnread) {
         // Need to check if we're in wide mode because the badge
         // does not get added if we're in wide mode.
-        final String badgeText = mCoordinates.isWideMode() ? "" : mHeader.badgeText;
-        final String subject = filterTag(mHeader.conversation.subject);
-        final String snippet = mHeader.conversation.getSnippet();
+        final BidiFormatter bidiFormatter = mAdapter.getBidiFormatter();
+        final String badgeText = mCoordinates.isWideMode() || mHeader.badgeText == null ? "" :
+                bidiFormatter.unicodeWrap(mHeader.badgeText);
+        final String subject = bidiFormatter.unicodeWrap(filterTag(mHeader.conversation.subject));
+        final String snippet = bidiFormatter.unicodeWrap(mHeader.conversation.getSnippet());
         final Spannable displayedStringBuilder = new SpannableString(
-                Conversation.getSubjectAndSnippetForDisplay(mContext, badgeText, subject, snippet));
+                Conversation.getSubjectAndSnippetForDisplay(
+                        mContext, badgeText, subject, snippet));
 
         // since spans affect text metrics, add spans to the string before measure/layout or fancy
         // ellipsizing
