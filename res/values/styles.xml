@@ -578,6 +578,7 @@
     </style>
 
     <style name="FolderListIconStyle">
+        <item name="android:layout_marginLeft">@dimen/folder_list_item_start_margin</item>
         <item name="android:layout_alignParentLeft">true</item>
     </style>
 

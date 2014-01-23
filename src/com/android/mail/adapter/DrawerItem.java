@@ -346,7 +346,7 @@ public class DrawerItem {
             accountItemView =
                     (AccountItemView) mInflater.inflate(R.layout.account_item, parent, false);
         }
-        accountItemView.bind(mAccount, mIsSelected, mResource);
+        accountItemView.bind(mAccount, mIsSelected, mResource, mBidiFormatter);
         View v = accountItemView.findViewById(R.id.account_graphic);
         v.setBackgroundColor(mAccount.color);
         return accountItemView;
@@ -364,8 +364,7 @@ public class DrawerItem {
         if (convertView != null) {
             headerView = (TextView) convertView;
         } else {
-            headerView = (TextView) mInflater.inflate(
-                    R.layout.folder_list_header, parent, false);
+            headerView = (TextView) mInflater.inflate(R.layout.folder_list_header, parent, false);
         }
         headerView.setText(mResource);
         return headerView;

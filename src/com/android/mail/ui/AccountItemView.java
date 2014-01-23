@@ -15,19 +15,17 @@
  */
 package com.android.mail.ui;
 
-import com.android.mail.R;
-
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.android.mail.providers.Account;
-import com.android.mail.utils.Utils;
-
 import android.content.Context;
-
+import android.support.v4.text.BidiFormatter;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.android.mail.R;
+import com.android.mail.providers.Account;
+import com.android.mail.utils.Utils;
 
 /**
  * The view for each account in the folder list/drawer.
@@ -66,8 +64,9 @@ public class AccountItemView extends RelativeLayout {
      * @param isCurrentAccount true if the account is the one in use, false otherwise
      * @param count unread count
      */
-    public void bind(final Account account, final boolean isCurrentAccount, final int count) {
-        mAccountTextView.setText(account.name);
+    public void bind(final Account account, final boolean isCurrentAccount,
+            final int count, BidiFormatter bidiFormatter) {
+        mAccountTextView.setText(bidiFormatter.unicodeWrap(account.name));
         setUnreadCount(count);
         mUnreadCountTextView.setSelected(isCurrentAccount);
         mAccountTextView.setSelected(isCurrentAccount);

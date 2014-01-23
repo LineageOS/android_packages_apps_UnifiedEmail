@@ -18,7 +18,7 @@
 
 
 <!--Empty view shown in the drawer when we are waiting for folders to initialize. -->
-<RelativeLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
@@ -29,16 +29,15 @@
         android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"/>
+        android:layout_gravity="center_vertical" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/progress"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
         android:text="@string/wait_for_sync_title"
         android:textColor="@color/dark_gray_text_color"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
-</RelativeLayout>
+</LinearLayout>
 
 
