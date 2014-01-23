@@ -855,9 +855,6 @@ public class Conversation implements Parcelable {
      */
     public static String getSubjectAndSnippetForDisplay(Context context,
             String badgeText, String filteredSubject, String snippet) {
-        if (sSubjectAndSnippet == null) {
-            sSubjectAndSnippet = context.getString(R.string.subject_and_snippet);
-        }
         if (TextUtils.isEmpty(filteredSubject) && TextUtils.isEmpty(snippet)) {
             return "";
         } else if (TextUtils.isEmpty(filteredSubject)) {
@@ -869,6 +866,10 @@ public class Conversation implements Parcelable {
                 sBadgeSubjectAndSnippet = context.getString(R.string.badge_subject_and_snippet);
             }
             return String.format(sBadgeSubjectAndSnippet, badgeText, filteredSubject, snippet);
+        }
+
+        if (sSubjectAndSnippet == null) {
+            sSubjectAndSnippet = context.getString(R.string.subject_and_snippet);
         }
 
         return String.format(sSubjectAndSnippet, filteredSubject, snippet);

@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.text.BidiFormatter;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -195,6 +196,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
      * that have been added by the system.
      */
     private final List<ConversationSpecialItemView> mFleetingViews;
+
+    private final BidiFormatter mBidiFormatter = BidiFormatter.getInstance();
 
     /**
      * @return <code>true</code> if a relevant part of the account has changed, <code>false</code>
@@ -648,6 +651,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     public CoordinatesCache getCoordinatesCache() {
         return mCoordinatesCache;
+    }
+
+    public BidiFormatter getBidiFormatter() {
+        return mBidiFormatter;
     }
 
     public SwipeableListView getListView() {
