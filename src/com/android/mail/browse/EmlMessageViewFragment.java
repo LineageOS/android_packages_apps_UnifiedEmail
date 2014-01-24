@@ -17,6 +17,7 @@
 
 package com.android.mail.browse;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -31,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.android.emailcommon.mail.Address;
 import com.android.mail.R;
@@ -79,6 +81,8 @@ public class EmlMessageViewFragment extends Fragment
     private Uri mEmlFileUri;
     private Uri mAccountUri;
 
+    private boolean mMessageLoadFailed;
+
     /**
      * Cache of email address strings to parsed Address objects.
      * <p>
@@ -117,7 +121,7 @@ public class EmlMessageViewFragment extends Fragment
             callbacks.setSenders(emailAddresses);
             getLoaderManager().restartLoader(CONTACT_LOADER, Bundle.EMPTY, callbacks);
         }
-    };
+    }
 
     /**
      * Creates a new instance of {@link EmlMessageViewFragment},
@@ -162,6 +166,10 @@ public class EmlMessageViewFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (mMessageLoadFailed) {
+            bailOutOnLoadError();
+            return;
+        }
         mWebViewClient.setActivity(getActivity());
         mViewController.onActivityCreated(savedInstanceState);
     }
@@ -176,6 +184,12 @@ public class EmlMessageViewFragment extends Fragment
         }
 
         return true;
+    }
+
+    private void bailOutOnLoadError() {
+        final Activity activity = getActivity();
+        Toast.makeText(activity, R.string.eml_loader_error_toast, Toast.LENGTH_LONG).show();
+        activity.finish();
     }
 
     // Start SecureConversationViewControllerCallbacks
@@ -271,6 +285,15 @@ public class EmlMessageViewFragment extends Fragment
 
         @Override
         public void onLoadFinished(Loader<ConversationMessage> loader, ConversationMessage data) {
+            if (data == null) {
+                final Activity activity = getActivity();
+                if (activity != null) {
+                    bailOutOnLoadError();
+                } else {
+                    mMessageLoadFailed = true;
+                }
+                return;
+            }
             mViewController.setSubject(data.subject);
             mViewController.renderMessage(data);
         }

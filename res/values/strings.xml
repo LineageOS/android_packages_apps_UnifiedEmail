@@ -1020,4 +1020,7 @@
          for this button is overrridden similarly. -->
     <string name="attach_file_content_description" translatable="false">@string/add_photo_attachment</string>
 
+    <!-- Toast text for error loading an eml file -->
+    <string name="eml_loader_error_toast">Can\'t open this file</string>
+
 </resources>
