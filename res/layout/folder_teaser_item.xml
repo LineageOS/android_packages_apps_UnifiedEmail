@@ -16,11 +16,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/folder_teaser_item_background"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp" >
+    android:background="@drawable/folder_teaser_item_background" >
 
     <ImageView
         android:id="@+id/folder_imageView"
@@ -28,7 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:background="@color/folder_teaser_icon_background"
-        android:duplicateParentState="true" />
+        android:duplicateParentState="true"
+        style="@style/FolderTeaserMarginStartStyle" />
 
     <LinearLayout
         android:id="@+id/text_layout"
@@ -39,7 +36,8 @@
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:duplicateParentState="true"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        style="@style/FolderTeaserVerticalMarginStyle" >
 
         <TextView
             android:id="@+id/folder_textView"
@@ -77,6 +75,7 @@
         android:paddingRight="16dp"
         android:gravity="center"
         android:textColor="@color/folder_teaser_count_text"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        style="@style/FolderTeaserMarginEndStyle" />
 
 </LinearLayout>

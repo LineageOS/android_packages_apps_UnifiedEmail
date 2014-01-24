@@ -190,4 +190,9 @@
     <dimen name="custom_from_inner_padding">6dip</dimen>
 
     <dimen name="quoted_text_header_padding">8dip</dimen>
+
+    <dimen name="compose_attachment_tile_text_end_padding">4dip</dimen>
+
+    <dimen name="folder_teaser_vertical_padding">8dip</dimen>
+    <dimen name="folder_teaser_horizontal_padding">16dip</dimen>
 </resources>
