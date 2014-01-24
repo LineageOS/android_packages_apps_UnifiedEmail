@@ -188,4 +188,6 @@
     <dimen name="badge_rounded_corner_radius">2dip</dimen>
 
     <dimen name="custom_from_inner_padding">6dip</dimen>
+
+    <dimen name="quoted_text_header_padding">8dip</dimen>
 </resources>
