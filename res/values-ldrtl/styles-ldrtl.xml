@@ -389,4 +389,16 @@
     <style name="ComposeRowStyle">
         <item name="android:paddingEnd">@dimen/compose_area_end_padding</item>
     </style>
+
+    <style name="ComposeAttachmentTileTextEndStyle">
+        <item name="android:paddingEnd">@dimen/compose_attachment_tile_text_end_padding</item>
+    </style>
+
+    <style name="FolderTeaserMarginStartStyle" parent="FolderTeaserVerticalMarginStyle">
+        <item name="android:layout_marginStart">@dimen/folder_teaser_horizontal_padding</item>
+    </style>
+
+    <style name="FolderTeaserMarginEndStyle" parent="FolderTeaserVerticalMarginStyle">
+        <item name="android:layout_marginEnd">@dimen/folder_teaser_horizontal_padding</item>
+    </style>
 </resources>
