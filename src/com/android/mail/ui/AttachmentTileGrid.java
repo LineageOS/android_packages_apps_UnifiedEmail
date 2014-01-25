@@ -32,6 +32,7 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.ui.AttachmentTile.AttachmentPreviewCache;
 
+import com.android.mail.utils.ViewUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -162,9 +163,15 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
 
     private void onLayoutForTiles() {
         final int count = getChildCount();
-        int childLeft = 0;
-        int childTop = 0;
+        if (count == 0) {
+            return;
+        }
+
         boolean skipBeginningOfRowFirstTime = true;
+        final boolean isRtl = ViewUtils.isViewRtl(this);
+        final int width = getMeasuredWidth();
+        int childLeft = (isRtl) ? width - getChildAt(0).getMeasuredWidth() : 0;;
+        int childTop = 0;
 
         // Layout the grid.
         for (int i = 0; i < count; i++) {
@@ -178,7 +185,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
             // in the grid, reset childLeft to 0 and update childTop
             // to reflect the top of the new row.
             if (!skipBeginningOfRowFirstTime && i % mColumnCount == 0) {
-                childLeft = 0;
+                childLeft = (isRtl) ? width - childWidth : 0;
                 childTop += childHeight;
             } else {
                 skipBeginningOfRowFirstTime = false;
@@ -186,7 +193,12 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
 
             child.layout(childLeft, childTop,
                     childLeft + childWidth, childTop + childHeight);
-            childLeft += childWidth;
+
+            if (isRtl) {
+                childLeft -= childWidth;
+            } else {
+                childLeft += childWidth;
+            }
         }
     }
 
