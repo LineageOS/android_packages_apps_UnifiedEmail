@@ -15,6 +15,7 @@
  */
 package com.android.mail.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.text.BidiFormatter;
@@ -131,13 +132,21 @@ public class FolderItemView extends RelativeLayout {
      * Sets the icon, if any. If the image view's visibility is set to gone, the text view will
      * be moved over to account for the change.
      */
+    @SuppressLint("NewApi")
     public void setIcon(final Folder folder) {
         final ImageView folderIconView = (ImageView) findViewById(R.id.folder_icon);
         Folder.setIcon(folder, folderIconView);
         if (folderIconView.getVisibility() == View.GONE) {
-            mFolderTextView.setPadding(getContext()
-                    .getResources().getDimensionPixelSize(R.dimen.folder_list_item_left_offset),
-                    0, 0, 0 /* No top, right, bottom padding needed */);
+            final int paddingStart = getContext().getResources().getDimensionPixelSize(
+                    R.dimen.folder_list_item_left_offset);
+            if (Utils.isRunningJBMR1OrLater()) {
+                // start, top, end, bottom
+                mFolderTextView.setPaddingRelative(paddingStart, mFolderTextView.getPaddingTop(),
+                        mFolderTextView.getPaddingEnd(), mFolderTextView.getPaddingBottom());
+            } else {
+                mFolderTextView.setPadding(paddingStart, mFolderTextView.getPaddingTop(),
+                        mFolderTextView.getPaddingRight(), mFolderTextView.getPaddingBottom());
+            }
         } else {
             // View recycling case
             mFolderTextView.setPadding(0, 0, 0, 0);
