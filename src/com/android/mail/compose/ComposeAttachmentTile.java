@@ -18,6 +18,8 @@ public class ComposeAttachmentTile extends AttachmentTile implements AttachmentD
 
     public ComposeAttachmentTile(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        setAlwaysShowInfoText(true);
     }
 
     public static ComposeAttachmentTile inflate(LayoutInflater inflater, ViewGroup parent) {

@@ -59,6 +59,8 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     // considered skinny
     private static final float skinnyThresholdRatio = 0.5f;
 
+    private boolean mAlwaysShowInfoText;
+
 
     /**
      * Returns true if the attachment should be rendered as a tile. with a large image preview.
@@ -76,6 +78,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     public AttachmentTile(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDefaultThumbnailSet = true;
+        mAlwaysShowInfoText = false;
     }
 
     @Override
@@ -167,8 +170,10 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
 
         // We got a real thumbnail; hide the default thumbnail.
         mDefaultIcon.setVisibility(View.GONE);
-        mTitle.setVisibility(View.GONE);
-        mSubtitle.setVisibility(View.GONE);
+        if (!mAlwaysShowInfoText) {
+            mTitle.setVisibility(View.GONE);
+            mSubtitle.setVisibility(View.GONE);
+        }
 
         final int maxSize = getResources().getInteger(R.integer.attachment_preview_max_size);
         final int width = result.getWidth();
@@ -280,5 +285,9 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     @Override
     public void thumbnailLoadFailed() {
         setThumbnailToDefault();
+    }
+
+    protected void setAlwaysShowInfoText(boolean alwaysShowInfoText) {
+        mAlwaysShowInfoText = alwaysShowInfoText;
     }
 }
