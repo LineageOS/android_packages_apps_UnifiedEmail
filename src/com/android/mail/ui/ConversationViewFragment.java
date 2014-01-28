@@ -210,7 +210,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     private static final String BUNDLE_KEY_WEBVIEW_Y_PERCENT =
             ConversationViewFragment.class.getName() + "webview-y-percent";
 
-    private BidiFormatter sBidiFormatter;
+    private BidiFormatter mBidiFormatter;
 
     /**
      * Contains a mapping between inline image attachments and their local message id.
@@ -274,7 +274,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         mAdapter = new ConversationViewAdapter(mActivity, this,
                 getLoaderManager(), this, getContactInfoSource(), this,
-                this, mAddressCache, dateBuilder);
+                this, mAddressCache, dateBuilder, mBidiFormatter);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         // set up snap header (the adapter usually does this with the other ones)
@@ -335,9 +335,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             mWebViewYPercent = savedState.getFloat(BUNDLE_KEY_WEBVIEW_Y_PERCENT);
         }
 
-        if (sBidiFormatter == null) {
-            sBidiFormatter = BidiFormatter.getInstance();
-        }
+        mBidiFormatter = BidiFormatter.getInstance();
     }
 
     protected ConversationWebViewClient createConversationWebViewClient() {
@@ -1345,8 +1343,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             } else {
                 final Address addr = getAddress(senderAddress);
                 return res.getString(R.string.new_incoming_messages_one,
-                        sBidiFormatter.unicodeWrap(TextUtils.isEmpty(addr.getPersonal())
-                        ? addr.getAddress() : addr.getPersonal()));
+                        mBidiFormatter.unicodeWrap(TextUtils.isEmpty(addr.getPersonal())
+                                ? addr.getAddress() : addr.getPersonal()));
             }
         }
     }
@@ -1588,7 +1586,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mConversation = conv;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
-            headerView.setSubject(conv.subject);
+            headerView.setSubject(conv.subject, mBidiFormatter);
         }
     }
 

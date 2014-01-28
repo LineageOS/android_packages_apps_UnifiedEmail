@@ -23,6 +23,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -107,7 +108,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
      * repeatedly as status updates stream in, so only properties with new or changed values will
      * cause sub-views to update.
      */
-    public void render(Attachment attachment, Uri accountUri, boolean loaderResult) {
+    public void render(Attachment attachment, Uri accountUri,
+            boolean loaderResult, BidiFormatter bidiFormatter) {
         // get account uri for potential eml viewer usage
         mAccountUri = accountUri;
 
@@ -129,13 +131,14 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             mTitle.setText(R.string.load_attachment);
         } else if (prevAttachment == null
                 || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
-            mTitle.setText(attachment.getName());
+            mTitle.setText(bidiFormatter.unicodeWrap(attachment.getName()));
         }
 
         if (prevAttachment == null || attachment.size != prevAttachment.size) {
-            mAttachmentSizeText = AttachmentUtils.convertToHumanReadableSize(getContext(),
-                    attachment.size);
-            mDisplayType = AttachmentUtils.getDisplayType(getContext(), attachment);
+            mAttachmentSizeText = bidiFormatter.unicodeWrap(
+                    AttachmentUtils.convertToHumanReadableSize(getContext(), attachment.size));
+            mDisplayType = bidiFormatter.unicodeWrap(
+                    AttachmentUtils.getDisplayType(getContext(), attachment));
             updateSubtitleText();
         }
 

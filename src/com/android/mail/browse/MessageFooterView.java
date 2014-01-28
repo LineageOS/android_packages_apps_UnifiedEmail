@@ -210,7 +210,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 mAttachmentBarList.addView(barAttachmentView);
             }
 
-            barAttachmentView.render(attachment, mAccountUri, loaderResult);
+            barAttachmentView.render(attachment, mAccountUri, loaderResult,
+                    mMessageHeaderItem.getAdapter().getBidiFormatter());
         }
     }
 

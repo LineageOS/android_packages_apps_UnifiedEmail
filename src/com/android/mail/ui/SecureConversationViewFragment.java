@@ -143,7 +143,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     public void setupConversationHeaderView(ConversationViewHeader headerView) {
         headerView.setCallbacks(this, this);
         headerView.setFolders(mConversation);
-        headerView.setSubject(mConversation.subject);
+        headerView.setSubject(mConversation.subject, mViewController.getBidiFormatter());
     }
 
     @Override
@@ -256,7 +256,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         final ConversationViewHeader headerView = mViewController.getConversationHeaderView();
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
-            headerView.setSubject(conv.subject);
+            headerView.setSubject(conv.subject, mViewController.getBidiFormatter());
         }
     }
 

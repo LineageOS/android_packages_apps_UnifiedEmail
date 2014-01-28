@@ -20,6 +20,8 @@ package com.android.mail.browse;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.text.BidiFormatter;
+import android.support.v4.text.TextUtilsCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -98,9 +100,8 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
                 resources.getDimensionPixelSize(R.dimen.conversation_header_font_size_condensed);
         mCondensedTopPadding = resources.getDimensionPixelSize(
                 R.dimen.conversation_header_vertical_padding_condensed);
-        mIsRtl = Utils.isRunningJBMR1OrLater() ?
-                TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == LAYOUT_DIRECTION_RTL
-                : false;
+        mIsRtl = TextUtilsCompat.getLayoutDirectionFromLocale(
+                Locale.getDefault()) == LAYOUT_DIRECTION_RTL;
     }
 
     @Override
@@ -111,7 +112,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
         mFoldersView = (FolderSpanTextView) findViewById(R.id.folders);
 
         mFoldersView.setOnClickListener(this);
-        mFolderDisplayer = new ConversationFolderDisplayer(getContext(), mFoldersView, mIsRtl);
+        mFolderDisplayer = new ConversationFolderDisplayer(getContext(), mFoldersView);
     }
 
     @SuppressLint("NewApi")
@@ -145,11 +146,11 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
         mAccountController = accountController;
     }
 
-    public void setSubject(final String subject) {
+    public void setSubject(final String subject, final BidiFormatter bidiFormatter) {
         if (TextUtils.isEmpty(subject)) {
             mSubjectView.setText(R.string.no_subject);
         } else {
-            mSubjectView.setText(subject);
+            mSubjectView.setText(bidiFormatter.unicodeWrap(subject));
         }
     }
 
@@ -171,7 +172,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
 
         mFolderDisplayer.loadConversationFolders(conv, null /* ignoreFolder */,
                 -1 /* ignoreFolderType */);
-        mFolderDisplayer.appendFolderSpans(sb);
+        mFolderDisplayer.appendFolderSpans(sb, mIsRtl);
 
         mFoldersView.setText(sb);
     }
@@ -217,22 +218,19 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
 
     private static class ConversationFolderDisplayer extends FolderDisplayer {
 
-        private final boolean mIsRtl;
-
         private FolderSpanDimensions mDims;
 
         public ConversationFolderDisplayer(
-                Context context, FolderSpanDimensions dims, boolean isRtl) {
+                Context context, FolderSpanDimensions dims) {
             super(context);
             mDims = dims;
-            mIsRtl = isRtl;
         }
 
-        public void appendFolderSpans(SpannableStringBuilder sb) {
+        public void appendFolderSpans(SpannableStringBuilder sb, boolean isRtl) {
             for (final Folder f : mFoldersSortedSet) {
                 final int bgColor = f.getBackgroundColor(mDefaultBgColor);
                 final int fgColor = f.getForegroundColor(mDefaultFgColor);
-                addSpan(sb, f.name, bgColor, fgColor);
+                addSpan(sb, f.name, bgColor, fgColor, isRtl);
             }
 
             if (mFoldersSortedSet.isEmpty()) {
@@ -240,12 +238,12 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
                 final String name = r.getString(R.string.add_label);
                 final int bgColor = r.getColor(R.color.conv_header_add_label_background);
                 final int fgColor = r.getColor(R.color.conv_header_add_label_text);
-                addSpan(sb, name, bgColor, fgColor);
+                addSpan(sb, name, bgColor, fgColor, isRtl);
             }
         }
 
         private void addSpan(SpannableStringBuilder sb, String name, int bgColor,
-                             int fgColor) {
+                             int fgColor, boolean isRtl) {
             final int start = sb.length();
             sb.append(name);
             final int end = sb.length();
@@ -254,7 +252,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.setSpan(new ForegroundColorSpan(fgColor), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            sb.setSpan(new FolderSpan(sb, mDims, mIsRtl), start, end,
+            sb.setSpan(new FolderSpan(sb, mDims, isRtl), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
