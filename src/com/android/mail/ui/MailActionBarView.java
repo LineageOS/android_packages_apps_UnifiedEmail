@@ -424,10 +424,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 reorderMenu(getContext(), mAccount, menu, totalItems);
                 break;
             case ViewMode.CONVERSATION_LIST:
-                // Show compose and search based on the account
-                // The only option that needs to be disabled is search
-                Utils.setMenuItemVisibility(menu, R.id.search,
-                        mAccount.supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH));
+                // Show search if the account supports it
+                Utils.setMenuItemVisibility(menu, R.id.search, mAccount.supportsSearch());
                 break;
             case ViewMode.SEARCH_RESULTS_LIST:
                 // Hide compose and search
