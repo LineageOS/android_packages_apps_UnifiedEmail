@@ -30,6 +30,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Menu;
@@ -122,7 +123,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 subtitleText = null;
                 LogUtils.wtf(LOG_TAG, "MABV.handleMessage() has a null account!");
             }
-            setSubtitle(subtitleText);
+            setSubtitle(mBidiFormatter.unicodeWrap(subtitleText));
             super.handleMessage(message);
         }
     }
@@ -135,6 +136,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private static final int ACCOUNT_DELAY_MS = 5 * 1000;
     /** At what point do we stop showing the unread count: 999+ currently */
     private final int UNREAD_LIMIT;
+    /** BidiFormatter for title and subtitle. */
+    private final BidiFormatter mBidiFormatter;
 
     /** Updates the resolver and tells it the most recent account. */
     private final class UpdateProvider extends AsyncTask<Bundle, Void, Void> {
@@ -173,6 +176,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         final Resources r = getResources();
         mIsOnTablet = Utils.useTabletUI(r);
         UNREAD_LIMIT = r.getInteger(R.integer.maxUnreadCount);
+        mBidiFormatter = BidiFormatter.getInstance();
     }
 
     private void initializeTitleViews() {
@@ -550,7 +554,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
     }
 
-    private void setTitle(CharSequence title) {
+    private void setTitle(String title) {
+        title = mBidiFormatter.unicodeWrap(title);
         if (!TextUtils.equals(title, mActionBar.getTitle())) {
             mActionBar.setTitle(title);
         }
