@@ -482,6 +482,16 @@ public class Account implements Parcelable {
         return (capabilities & capability) != 0;
     }
 
+    /**
+     * @return <tt>true</tt> if this mail account can be searched in any way (locally on the device,
+     *      remotely on the server, or remotely on the server within the current folder)
+     */
+    public boolean supportsSearch() {
+        return supportsCapability(AccountCapabilities.LOCAL_SEARCH)
+                || supportsCapability(AccountCapabilities.SERVER_SEARCH)
+                || supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH);
+    }
+
     public boolean isAccountSyncRequired() {
         return (syncStatus & SyncStatus.INITIAL_SYNC_NEEDED) == SyncStatus.INITIAL_SYNC_NEEDED;
     }

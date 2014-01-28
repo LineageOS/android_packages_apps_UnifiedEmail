@@ -3144,8 +3144,7 @@ public abstract class AbstractActivityController implements ActivityController,
             LogUtils.d(LOG_TAG, "AbstractActivityController.startSearch(): null account");
             return;
         }
-        if (mAccount.supportsCapability(UIProvider.AccountCapabilities.LOCAL_SEARCH)
-                || mAccount.supportsCapability(UIProvider.AccountCapabilities.SERVER_SEARCH)) {
+        if (mAccount.supportsSearch()) {
             mActionBarView.expandSearch();
         } else {
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
