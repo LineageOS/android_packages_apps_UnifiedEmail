@@ -50,6 +50,8 @@ LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo:a
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
+LOCAL_EMMA_COVERAGE_FILTER := +com.android.mail.*
+
 include $(BUILD_PACKAGE)
 
 
