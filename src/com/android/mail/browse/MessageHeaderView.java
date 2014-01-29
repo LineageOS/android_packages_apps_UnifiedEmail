@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.support.v4.text.BidiFormatter;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -451,10 +452,11 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
         updateChildVisibility();
 
+        final BidiFormatter bidiFormatter = mMessageHeaderItem.getAdapter().getBidiFormatter();
         if (mIsDraft || mIsSending) {
-            mSnippet = makeSnippet(mMessage.snippet);
+            mSnippet = bidiFormatter.unicodeWrap(makeSnippet(mMessage.snippet));
         } else {
-            mSnippet = mMessage.snippet;
+            mSnippet = bidiFormatter.unicodeWrap(mMessage.snippet);
         }
 
         mSenderNameView.setText(getHeaderTitle());
@@ -529,7 +531,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         } else if (mIsSending) {
             title = getResources().getString(R.string.sending);
         } else {
-            title = getSenderName(mSender);
+            title = mMessageHeaderItem.getAdapter().getBidiFormatter().unicodeWrap(
+                    getSenderName(mSender));
         }
 
         return title;
@@ -557,7 +560,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     /**
      * Return the name, if known, or just the address.
      */
-    private static CharSequence getSenderName(Address sender) {
+    private static String getSenderName(Address sender) {
         if (sender == null) {
             return "";
         }
@@ -1295,7 +1298,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         if (!mExpandedDetailsValid) {
             renderExpandedDetails(getResources(), mExpandedDetailsView, mMessage.viaDomain,
                     mAddressCache, getAccount(), mVeiledMatcher, mFrom, mReplyTo, mTo, mCc, mBcc,
-                    mMessageHeaderItem.getTimestampFull());
+                    mMessageHeaderItem.getTimestampFull(),
+                    mMessageHeaderItem.getAdapter().getBidiFormatter());
 
             mExpandedDetailsValid = true;
         }
@@ -1310,17 +1314,18 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     public static void renderExpandedDetails(Resources res, View detailsView,
             String viaDomain, Map<String, Address> addressCache, Account account,
             VeiledAddressMatcher veiledMatcher, String[] from, String[] replyTo,
-            String[] to, String[] cc, String[] bcc, CharSequence receivedTimestamp) {
+            String[] to, String[] cc, String[] bcc, CharSequence receivedTimestamp,
+            BidiFormatter bidiFormatter) {
         renderEmailList(res, R.id.from_heading, R.id.from_details, from, viaDomain,
-                detailsView, addressCache, account, veiledMatcher);
+                detailsView, addressCache, account, veiledMatcher, bidiFormatter);
         renderEmailList(res, R.id.replyto_heading, R.id.replyto_details, replyTo, viaDomain,
-                detailsView, addressCache, account, veiledMatcher);
+                detailsView, addressCache, account, veiledMatcher, bidiFormatter);
         renderEmailList(res, R.id.to_heading, R.id.to_details, to, viaDomain,
-                detailsView, addressCache, account, veiledMatcher);
+                detailsView, addressCache, account, veiledMatcher, bidiFormatter);
         renderEmailList(res, R.id.cc_heading, R.id.cc_details, cc, viaDomain,
-                detailsView, addressCache, account, veiledMatcher);
+                detailsView, addressCache, account, veiledMatcher, bidiFormatter);
         renderEmailList(res, R.id.bcc_heading, R.id.bcc_details, bcc, viaDomain,
-                detailsView, addressCache, account, veiledMatcher);
+                detailsView, addressCache, account, veiledMatcher, bidiFormatter);
 
         // Render date
         detailsView.findViewById(R.id.date_heading).setVisibility(VISIBLE);
@@ -1335,7 +1340,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     private static void renderEmailList(Resources res, int headerId, int detailsId,
             String[] emails, String viaDomain, View rootView,
             Map<String, Address> addressCache, Account account,
-            VeiledAddressMatcher veiledMatcher) {
+            VeiledAddressMatcher veiledMatcher, BidiFormatter bidiFormatter) {
         if (emails == null || emails.length == 0) {
             return;
         }
@@ -1365,17 +1370,20 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
                 addressShown = address;
             }
             if (name == null || name.length() == 0) {
-                formattedEmails[i] = addressShown;
+                formattedEmails[i] = bidiFormatter.unicodeWrap(addressShown);
             } else {
                 // The one downside to having the showViaDomain here is that
                 // if the sender does not have a name, it will not show the via info
                 if (viaDomain != null) {
                     formattedEmails[i] = res.getString(
                             R.string.address_display_format_with_via_domain,
-                            name, addressShown, viaDomain);
+                            bidiFormatter.unicodeWrap(name),
+                            bidiFormatter.unicodeWrap(addressShown),
+                            bidiFormatter.unicodeWrap(viaDomain));
                 } else {
                     formattedEmails[i] = res.getString(R.string.address_display_format,
-                            name, addressShown);
+                            bidiFormatter.unicodeWrap(name),
+                            bidiFormatter.unicodeWrap(addressShown));
                 }
             }
         }

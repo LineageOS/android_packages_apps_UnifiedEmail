@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.Context;
+import android.support.v4.text.BidiFormatter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,6 +82,8 @@ public class ConversationViewAdapter extends BaseAdapter {
     public static final int VIEW_TYPE_AD_SENDER_HEADER = 6;
     public static final int VIEW_TYPE_COUNT = 7;
 
+    private final BidiFormatter mBidiFormatter;
+
     public class ConversationHeaderItem extends ConversationOverlayItem {
         public final Conversation mConversation;
 
@@ -99,7 +102,7 @@ public class ConversationViewAdapter extends BaseAdapter {
                     R.layout.conversation_view_header, parent, false);
             headerView.setCallbacks(mConversationCallbacks, mAccountController);
             headerView.bind(this);
-            headerView.setSubject(mConversation.subject);
+            headerView.setSubject(mConversation.subject, getBidiFormatter());
             if (mAccountController.getAccount().supportsCapability(
                     UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
                 headerView.setFolders(mConversation);
@@ -453,7 +456,7 @@ public class ConversationViewAdapter extends BaseAdapter {
             ContactInfoSource contactInfoSource,
             ConversationViewHeaderCallbacks convCallbacks,
             SuperCollapsedBlock.OnClickListener scbListener, Map<String, Address> addressCache,
-            FormattedDateBuilder dateBuilder) {
+            FormattedDateBuilder dateBuilder, BidiFormatter bidiFormatter) {
         mContext = controllableActivity.getActivityContext();
         mDateBuilder = dateBuilder;
         mAccountController = accountController;
@@ -468,6 +471,8 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         mItems = Lists.newArrayList();
         mMatcher = controllableActivity.getAccountController().getVeiledAddressMatcher();
+
+        mBidiFormatter = bidiFormatter;
     }
 
     @Override
@@ -595,5 +600,9 @@ public class ConversationViewAdapter extends BaseAdapter {
                 affectedPositions.add(i);
             }
         }
+    }
+
+    public BidiFormatter getBidiFormatter() {
+        return mBidiFormatter;
     }
 }

@@ -22,6 +22,7 @@ import android.app.FragmentManager;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.text.BidiFormatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,7 @@ public class SecureConversationViewController implements
     private static final String END_HTML = "</div></body>";
 
     private final SecureConversationViewControllerCallbacks mCallbacks;
+    private final BidiFormatter mBidiFormatter;
 
     private MessageWebView mWebView;
     private ConversationViewHeader mConversationHeaderView;
@@ -76,6 +78,7 @@ public class SecureConversationViewController implements
 
     public SecureConversationViewController(SecureConversationViewControllerCallbacks callbacks) {
         mCallbacks = callbacks;
+        mBidiFormatter = BidiFormatter.getInstance();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -232,7 +235,7 @@ public class SecureConversationViewController implements
     }
 
     public void setSubject(String subject) {
-        mConversationHeaderView.setSubject(subject);
+        mConversationHeaderView.setSubject(subject, mBidiFormatter);
     }
 
     public void printMessage() {
@@ -241,6 +244,10 @@ public class SecureConversationViewController implements
                 conversation != null ? conversation.subject : mMessage.subject,
                 mCallbacks.getAddressCache(), mCallbacks.getBaseUri(), false /* useJavascript */);
 
+    }
+
+    public BidiFormatter getBidiFormatter() {
+        return mBidiFormatter;
     }
 
     // Start MessageHeaderViewCallbacks implementations

@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.DataSetObserver;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.Gravity;
@@ -782,6 +783,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             // show and/or move overlay
             if (overlayView == null) {
                 overlayView = addOverlayView(adapterIndex, postAddView);
+                ViewCompat.setLayoutDirection(overlayView, ViewCompat.getLayoutDirection(this));
                 measureOverlayView(overlayView);
                 item.markMeasurementValid();
                 traceLayout("show/measure overlay %d", adapterIndex);
