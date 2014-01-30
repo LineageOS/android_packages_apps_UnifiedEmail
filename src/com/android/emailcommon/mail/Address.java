@@ -85,7 +85,7 @@ public class Address implements Parcelable {
 
     private static final Address[] EMPTY_ADDRESS_ARRAY = new Address[0];
 
-    // delimiters are chars that do not appear in an email address, used by pack/unpack
+    // delimiters are chars that do not appear in an email address, used by fromHeader
     private static final char LIST_DELIMITER_EMAIL = '\1';
     private static final char LIST_DELIMITER_PERSONAL = '\2';
 
@@ -423,45 +423,46 @@ public class Address implements Parcelable {
     }
 
     /**
-     * Returns exactly the same result as Address.toString(Address.unpack(packedList)).
+     * Returns exactly the same result as Address.toString(Address.fromHeader(addressList)).
      */
-    public static String unpackToString(String packedList) {
-        return toString(unpack(packedList));
+    public static String fromHeaderToString(String addressList) {
+        return toString(fromHeader(addressList));
     }
 
     /**
-     * Returns exactly the same result as Address.pack(Address.parse(textList)).
+     * Returns exactly the same result as Address.toHeader(Address.parse(addressList)).
      */
-    public static String parseAndPack(String textList) {
-        return Address.pack(Address.parse(textList));
+    public static String parseToHeader(String addressList) {
+        return Address.toHeader(Address.parse(addressList));
     }
 
     /**
-     * Returns null if the packedList has 0 addresses, otherwise returns the first address.
-     * The same as Address.unpack(packedList)[0] for non-empty list.
+     * Returns null if the addressList has 0 addresses, otherwise returns the first address.
+     * The same as Address.fromHeader(addressList)[0] for non-empty list.
      * This is an utility method that offers some performance optimization opportunities.
      */
-    public static Address unpackFirst(String packedList) {
-        Address[] array = unpack(packedList);
+    public static Address firstAddress(String addressList) {
+        Address[] array = fromHeader(addressList);
         return array.length > 0 ? array[0] : null;
     }
 
     /**
-     * Convert a packed list of addresses to a form suitable for use in an RFC822 header.
+     * This method exists to convert an address list formatted in a deprecated legacy format to the
+     * standard RFC822 header format. {@link #fromHeader(String)} is capable of reading the legacy
+     * format and the RFC822 format. {@link #toHeader()} always produces the RFC822 format.
+     *
      * This implementation is brute-force, and could be replaced with a more efficient version
      * if desired.
      */
-    public static String packedToHeader(String packedList) {
-        return toHeader(unpack(packedList));
+    public static String reformatToHeader(String addressList) {
+        return toHeader(fromHeader(addressList));
     }
 
     /**
-     * Unpacks an address list that is either CSV of RFC822 addresses OR (for backward
-     * compatibility) previously packed with pack()
-     * @param addressList string packed with pack() or CSV of RFC822 addresses
-     * @return array of addresses resulting from unpack
+     * @param addressList a CSV of RFC822 addresses or the deprecated legacy string format
+     * @return array of addresses parsed from <code>addressList</code>
      */
-    public static Address[] unpack(String addressList) {
+    public static Address[] fromHeader(String addressList) {
         if (addressList == null || addressList.length() == 0) {
             return EMPTY_ADDRESS_ARRAY;
         }
@@ -503,21 +504,6 @@ public class Address implements Parcelable {
             pairStartIndex = pairEndIndex + 1;
         }
         return addresses.toArray(new Address[addresses.size()]);
-    }
-
-    /**
-     * Generate a String containing RFC822 addresses separated by commas
-     * NOTE: We used to "pack" these addresses in an app-specific format, but no longer do so
-     */
-    public static String pack(Address[] addresses) {
-        return Address.toHeader(addresses);
-    }
-
-    /**
-     * Produces the same result as pack(array), but only packs one (this) address.
-     */
-    public String pack() {
-        return toHeader();
     }
 
     public static final Creator<Address> CREATOR = new Creator<Address>() {
