@@ -16,6 +16,7 @@
 
 package com.android.mail.browse;
 
+import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
@@ -208,6 +209,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
      */
     private boolean mIsSnappy;
 
+    private BidiFormatter mBidiFormatter;
+
 
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
@@ -388,6 +391,18 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         render(false);
     }
 
+    private BidiFormatter getBidiFormatter() {
+        if (mBidiFormatter == null) {
+            final ConversationViewAdapter adapter = mMessageHeaderItem != null ? mMessageHeaderItem.getAdapter() : null;
+            if (adapter == null) {
+                mBidiFormatter = BidiFormatter.getInstance();
+            } else {
+                mBidiFormatter = adapter.getBidiFormatter();
+            }
+        }
+        return mBidiFormatter;
+    }
+
     private void render(boolean measureOnly) {
         if (mMessageHeaderItem == null) {
             return;
@@ -452,7 +467,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
         updateChildVisibility();
 
-        final BidiFormatter bidiFormatter = mMessageHeaderItem.getAdapter().getBidiFormatter();
+        final BidiFormatter bidiFormatter = getBidiFormatter();
         if (mIsDraft || mIsSending) {
             mSnippet = bidiFormatter.unicodeWrap(makeSnippet(mMessage.snippet));
         } else {
@@ -531,7 +546,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         } else if (mIsSending) {
             title = getResources().getString(R.string.sending);
         } else {
-            title = mMessageHeaderItem.getAdapter().getBidiFormatter().unicodeWrap(
+            title = getBidiFormatter().unicodeWrap(
                     getSenderName(mSender));
         }
 
@@ -686,6 +701,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         setChildVisibility(defaultReplyAll ? VISIBLE : GONE, mReplyAllButton);
     }
 
+    @SuppressLint("NewApi")
     private static void setChildMarginEnd(View childView, int marginEnd) {
         MarginLayoutParams mlp = (MarginLayoutParams) childView.getLayoutParams();
         if (Utils.isRunningJBMR1OrLater()) {
@@ -1299,7 +1315,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             renderExpandedDetails(getResources(), mExpandedDetailsView, mMessage.viaDomain,
                     mAddressCache, getAccount(), mVeiledMatcher, mFrom, mReplyTo, mTo, mCc, mBcc,
                     mMessageHeaderItem.getTimestampFull(),
-                    mMessageHeaderItem.getAdapter().getBidiFormatter());
+                    getBidiFormatter());
 
             mExpandedDetailsValid = true;
         }
