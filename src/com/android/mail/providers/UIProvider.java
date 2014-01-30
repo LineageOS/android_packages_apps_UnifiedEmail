@@ -102,6 +102,8 @@ public class UIProvider {
         public static final int STORAGE_ERROR = 4;
         /** The sync wasn't completed due to an internal error/exception */
         public static final int INTERNAL_ERROR = 5;
+        /** The sync wasn't completed due to an error in the mail server */
+        public static final int SERVER_ERROR = 6;
     }
 
     // The actual content provider should define its own authority

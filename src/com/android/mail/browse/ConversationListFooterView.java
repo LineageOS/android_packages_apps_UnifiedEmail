@@ -132,6 +132,9 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
                 case UIProvider.LastSyncResult.CONNECTION_ERROR:
                     actionTextResourceId = R.string.retry;
                     break;
+                case UIProvider.LastSyncResult.SERVER_ERROR:
+                    actionTextResourceId = R.string.retry;
+                    break;
                 case UIProvider.LastSyncResult.AUTH_ERROR:
                     actionTextResourceId = R.string.signin;
                     break;

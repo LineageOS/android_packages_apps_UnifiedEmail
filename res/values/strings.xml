@@ -543,6 +543,7 @@
         <item>Security error.</item>
         <item>Couldn\'t sync.</item>
         <item>Internal Error</item>
+        <item>Server Error</item>
     </string-array>
 
     <!-- Widget strings -->
@@ -653,7 +654,7 @@
         <item>All Folders</item>
     </string-array>
 
-    <!-- Button text for the button to click to have the user sign in again. [CHAR LIMIT=20]-->
+    <!-- Button text for the button to click to have the user sign in again or adjust their credentials. [CHAR LIMIT=20]-->
     <string name="signin">Sign-in</string>
     <!-- Button text for the button to click for more information. [CHAR LIMIT=20]-->
     <string name="info">Info</string>
