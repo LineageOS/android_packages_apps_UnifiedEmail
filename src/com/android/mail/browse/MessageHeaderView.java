@@ -393,7 +393,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
     private BidiFormatter getBidiFormatter() {
         if (mBidiFormatter == null) {
-            final ConversationViewAdapter adapter = mMessageHeaderItem != null ? mMessageHeaderItem.getAdapter() : null;
+            final ConversationViewAdapter adapter = mMessageHeaderItem != null
+                    ? mMessageHeaderItem.getAdapter() : null;
             if (adapter == null) {
                 mBidiFormatter = BidiFormatter.getInstance();
             } else {
