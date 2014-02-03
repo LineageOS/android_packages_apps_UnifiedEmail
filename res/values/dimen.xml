@@ -195,4 +195,7 @@
 
     <dimen name="folder_teaser_vertical_padding">8dip</dimen>
     <dimen name="folder_teaser_horizontal_padding">16dip</dimen>
+
+    <dimen name="teaser_arrow_margin_start">16dip</dimen>
+    <dimen name="teaser_arrow_margin_end">12dip</dimen>
 </resources>

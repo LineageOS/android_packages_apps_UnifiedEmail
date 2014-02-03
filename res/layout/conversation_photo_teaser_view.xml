@@ -18,11 +18,10 @@
             android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="12dp"
             android:duplicateParentState="true"
             android:src="@drawable/ic_arrow"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            style="@style/ArrowStyle" />
 
         <TextView
             android:id="@+id/text"
@@ -45,7 +44,7 @@
             android:background="@color/teaser_main_text"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"/>
+            style="@style/DismissSeparatorStyle"/>
 
         <ImageButton
             android:id="@+id/dismiss_button"
