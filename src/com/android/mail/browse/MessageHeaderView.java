@@ -470,7 +470,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
         final BidiFormatter bidiFormatter = getBidiFormatter();
         if (mIsDraft || mIsSending) {
-            mSnippet = bidiFormatter.unicodeWrap(makeSnippet(mMessage.snippet));
+            final String snippet = makeSnippet(mMessage.snippet);
+            mSnippet = snippet == null ? null : bidiFormatter.unicodeWrap(snippet);
         } else {
             mSnippet = bidiFormatter.unicodeWrap(mMessage.snippet);
         }
