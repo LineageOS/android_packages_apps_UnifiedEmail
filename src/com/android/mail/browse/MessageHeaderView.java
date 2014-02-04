@@ -468,13 +468,13 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
         updateChildVisibility();
 
-        final BidiFormatter bidiFormatter = getBidiFormatter();
+        final String snippet;
         if (mIsDraft || mIsSending) {
-            final String snippet = makeSnippet(mMessage.snippet);
-            mSnippet = snippet == null ? null : bidiFormatter.unicodeWrap(snippet);
+            snippet = makeSnippet(mMessage.snippet);
         } else {
-            mSnippet = bidiFormatter.unicodeWrap(mMessage.snippet);
+            snippet = mMessage.snippet;
         }
+        mSnippet = snippet == null ? null : getBidiFormatter().unicodeWrap(snippet);
 
         mSenderNameView.setText(getHeaderTitle());
         mSenderEmailView.setText(getHeaderSubtitle());

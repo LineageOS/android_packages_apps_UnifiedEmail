@@ -24,6 +24,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.text.BidiFormatter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +65,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     private static final String LOG_TAG = LogTag.getLogTag();
 
     private Uri mAccountUri;
+
+    private BidiFormatter mBidiFormatter;
 
     public MessageFooterView(Context context) {
         this(context, null);
@@ -210,8 +213,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 mAttachmentBarList.addView(barAttachmentView);
             }
 
-            barAttachmentView.render(attachment, mAccountUri, loaderResult,
-                    mMessageHeaderItem.getAdapter().getBidiFormatter());
+            barAttachmentView.render(attachment, mAccountUri, loaderResult, getBidiFormatter());
         }
     }
 
@@ -249,5 +251,18 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAttachmentsCursor = null;
+    }
+
+    private BidiFormatter getBidiFormatter() {
+        if (mBidiFormatter == null) {
+            final ConversationViewAdapter adapter = mMessageHeaderItem != null
+                    ? mMessageHeaderItem.getAdapter() : null;
+            if (adapter == null) {
+                mBidiFormatter = BidiFormatter.getInstance();
+            } else {
+                mBidiFormatter = adapter.getBidiFormatter();
+            }
+        }
+        return mBidiFormatter;
     }
 }
