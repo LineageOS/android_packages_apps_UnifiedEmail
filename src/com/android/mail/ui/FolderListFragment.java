@@ -484,14 +484,9 @@ public class FolderListFragment extends ListFragment implements
                 // Account, so switch.
                 folder = null;
                 final Account account = drawerItem.mAccount;
-
-                if (account != null && account.settings.defaultInbox.equals(mSelectedFolderUri)) {
-                    // We're already in the default inbox for account, just re-check item ...
-                    final int defaultInboxPosition = position + 1;
-                    if (mListView.getChildAt(defaultInboxPosition) != null) {
-                        mListView.setItemChecked(defaultInboxPosition, true);
-                    }
-                    // ... and close the drawer (no new target folders/accounts)
+                if (account != null && mSelectedFolderUri.equals(account.settings.defaultInbox)) {
+                    // We're already in the default inbox for account,
+                    // just close the drawer (no new target folders/accounts)
                     mAccountController.closeDrawer(false, mNextAccount,
                             getDefaultInbox(mNextAccount));
                 } else {
