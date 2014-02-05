@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
-import android.widget.SpinnerAdapter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,25 +31,26 @@ import java.util.List;
  *
  * @param <T> the class of each constituent adapter
  */
-public class MergedAdapter<T extends MergedAdapter.ListSpinnerAdapter> extends BaseAdapter {
+public class MergedAdapter<T extends ListAdapter> extends BaseAdapter {
 
     private List<T> mAdapters;
     private final DataSetObserver mObserver;
 
-    /**
-     * A Mergeable adapter must implement both ListAdapter and SpinnerAdapter to be useful in lists
-     * and spinners.
-     */
-    public interface ListSpinnerAdapter extends ListAdapter, SpinnerAdapter {
-    }
-
-    public static class LocalAdapterPosition<T extends ListSpinnerAdapter> {
-        public final T mAdapter;
-        public final int mLocalPosition;
+    public static class LocalAdapterPosition<T extends ListAdapter> {
+        private final T mAdapter;
+        private final int mLocalPosition;
 
         public LocalAdapterPosition(T adapter, int offset) {
             mAdapter = adapter;
             mLocalPosition = offset;
+        }
+
+        public T getAdapter() {
+            return mAdapter;
+        }
+
+        public int getLocalPosition() {
+            return mLocalPosition;
         }
     }
 
@@ -166,12 +166,6 @@ public class MergedAdapter<T extends MergedAdapter.ListSpinnerAdapter> extends B
     public View getView(int position, View convertView, ViewGroup parent) {
         LocalAdapterPosition<T> result = getAdapterOffsetForItem(position);
         return result.mAdapter.getView(result.mLocalPosition, convertView, parent);
-    }
-
-    @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        LocalAdapterPosition<T> result = getAdapterOffsetForItem(position);
-        return result.mAdapter.getDropDownView(result.mLocalPosition, convertView, parent);
     }
 
     @Override

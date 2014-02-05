@@ -50,9 +50,9 @@ public class DrawerItem {
     private static final String LOG_TAG = LogTag.getLogTag();
     public final Folder mFolder;
     public final Account mAccount;
-    public final int mResource;
+    private final int mResource;
     /** True if the drawer item represents the current account, false otherwise */
-    public boolean mIsSelected;
+    private final boolean mIsSelected;
     /** Either {@link #VIEW_ACCOUNT}, {@link #VIEW_FOLDER} or {@link #VIEW_HEADER} */
     public final int mType;
     /** A normal folder, also a child, if a parent is specified. */

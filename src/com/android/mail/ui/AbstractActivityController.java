@@ -4185,10 +4185,6 @@ public abstract class AbstractActivityController implements ActivityController,
                     mHideMenuItems = true;
                     mActivity.invalidateOptionsMenu();
                     disableCabMode();
-                    final FolderListFragment folderListFragment = getFolderListFragment();
-                    if (folderListFragment != null) {
-                        folderListFragment.updateScroll();
-                    }
                 }
             } else {
                 if (mHideMenuItems && Float.compare(slideOffset, 0.f) == 0) {
@@ -4199,10 +4195,6 @@ public abstract class AbstractActivityController implements ActivityController,
                     mHideMenuItems = true;
                     mActivity.invalidateOptionsMenu();
                     disableCabMode();
-                    final FolderListFragment folderListFragment = getFolderListFragment();
-                    if (folderListFragment != null) {
-                        folderListFragment.updateScroll();
-                    }
                 }
             }
 
