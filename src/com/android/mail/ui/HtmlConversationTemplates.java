@@ -158,7 +158,7 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
         return MESSAGE_PREFIX + msg.getId();
     }
 
-    public void startConversation(int sideMargin, int conversationHeaderHeight) {
+    public void startConversation(int viewportWidth, int sideMargin, int conversationHeaderHeight) {
         if (mInProgress) {
             throw new IllegalStateException(
                     "Should not call start conversation until end conversation has been called");
@@ -167,13 +167,14 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
         reset();
         final String border = Utils.isRunningKitkatOrLater() ?
                 "img[blocked-src] { border: 1px solid #CCCCCC; }" : "";
-        append(sConversationUpper, border,  sideMargin, conversationHeaderHeight);
+        append(sConversationUpper, viewportWidth, border,  sideMargin, sideMargin,
+                conversationHeaderHeight);
         mInProgress = true;
     }
 
     public String endConversation(String docBaseUri, String conversationBaseUri,
-            int viewportWidth, boolean enableContentReadySignal, boolean normalizeMessageWidths,
-            boolean enableMungeTables, boolean enableMungeImages) {
+            int viewportWidth, int webviewWidth, boolean enableContentReadySignal,
+            boolean normalizeMessageWidths, boolean enableMungeTables, boolean enableMungeImages) {
         if (!mInProgress) {
             throw new IllegalStateException("must call startConversation first");
         }
@@ -182,7 +183,7 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
 
         append(sConversationLower, contentReadyClass, mContext.getString(R.string.hide_elided),
                 mContext.getString(R.string.show_elided), docBaseUri, conversationBaseUri,
-                viewportWidth, enableContentReadySignal, normalizeMessageWidths,
+                viewportWidth, webviewWidth, enableContentReadySignal, normalizeMessageWidths,
                 enableMungeTables, enableMungeImages);
 
         mInProgress = false;

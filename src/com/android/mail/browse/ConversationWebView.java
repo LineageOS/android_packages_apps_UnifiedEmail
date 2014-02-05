@@ -216,6 +216,10 @@ public class ConversationWebView extends MailWebView implements ScrollNotifier {
         return mViewportWidth;
     }
 
+    public int getWidthInDp() {
+        return (int) (getWidth() / mDensity);
+    }
+
     /**
      * Similar to {@link #getScale()}, except that it returns the initially expected scale, as
      * determined by the ratio of actual screen pixels to logical HTML pixels.
@@ -223,9 +227,15 @@ public class ConversationWebView extends MailWebView implements ScrollNotifier {
      * tag.
      */
     public float getInitialScale() {
-        // an HTML meta-viewport width of "device-width" and unspecified (medium) density means
-        // that the default scale is effectively the screen density.
-        return mDensity;
+        final float scale;
+        if (getSettings().getLoadWithOverviewMode()) {
+            // in overview mode (aka auto-fit mode), the base ratio is screen px : viewport px
+            scale = (float) getWidth() / getViewportWidth();
+        } else {
+            // in no-zoom mode, the base ratio is just screen px : mdpi css px (i.e. density)
+            scale = mDensity;
+        }
+        return scale;
     }
 
     public int screenPxToWebPx(int screenPx) {

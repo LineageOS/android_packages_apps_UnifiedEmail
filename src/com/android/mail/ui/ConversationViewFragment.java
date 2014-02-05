@@ -699,8 +699,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final int convHeaderPos = mAdapter.addConversationHeader(mConversation);
         final int convHeaderPx = measureOverlayHeight(convHeaderPos);
 
-        mTemplates.startConversation(mWebView.screenPxToWebPx(mSideMarginPx),
-                mWebView.screenPxToWebPx(convHeaderPx));
+        mTemplates.startConversation(mWebView.getViewportWidth(),
+                mWebView.screenPxToWebPx(mSideMarginPx), mWebView.screenPxToWebPx(convHeaderPx));
 
         int collapsedStart = -1;
         ConversationMessage prevCollapsedMsg = null;
@@ -795,8 +795,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri),
-                mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount),
-                applyTransforms, applyTransforms);
+                mWebView.getViewportWidth(), mWebView.getWidthInDp(), enableContentReadySignal,
+                isOverviewMode(mAccount), applyTransforms, applyTransforms);
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
@@ -1100,12 +1100,18 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         // gesture handling
         final boolean overviewMode = isOverviewMode(mAccount);
         final WebSettings settings = mWebView.getSettings();
+        final WebSettings.LayoutAlgorithm layout;
         settings.setUseWideViewPort(overviewMode);
         settings.setSupportZoom(overviewMode);
         settings.setBuiltInZoomControls(overviewMode);
+        settings.setLoadWithOverviewMode(overviewMode);
         if (overviewMode) {
             settings.setDisplayZoomControls(false);
+            layout = WebSettings.LayoutAlgorithm.NORMAL;
+        } else {
+            layout = WebSettings.LayoutAlgorithm.NARROW_COLUMNS;
         }
+        settings.setLayoutAlgorithm(layout);
     }
 
     public class ConversationWebViewClient extends AbstractConversationWebViewClient {

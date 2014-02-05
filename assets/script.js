@@ -175,9 +175,14 @@ function normalizeElementWidths(elements) {
     var i;
     var el;
     var documentWidth;
+    var goalWidth;
+    var origWidth;
     var newZoom, oldZoom;
+    var outerZoom;
+    var outerDiv;
 
     documentWidth = document.body.offsetWidth;
+    goalWidth = WEBVIEW_WIDTH - DOC_SIDE_MARGIN * 2;
 
     for (i = 0; i < elements.length; i++) {
         el = elements[i];
@@ -186,12 +191,21 @@ function normalizeElementWidths(elements) {
         if (oldZoom) {
             el.style.zoom = 1;
         }
+        origWidth = el.style.width;
+        el.style.width = goalWidth + "px";
         newZoom = documentWidth / el.scrollWidth;
-        transformContent(el, documentWidth, el.scrollWidth);
+        transformContent(el, goalWidth, el.scrollWidth);
         newZoom = documentWidth / el.scrollWidth;
         if (NORMALIZE_MESSAGE_WIDTHS) {
-            el.style.zoom = newZoom;
+            if (el.classList.contains("mail-message-content")) {
+                outerZoom = 1;
+            } else {
+                outerDiv = up(el, "mail-message-content");
+                outerZoom = outerDiv ? outerDiv.style.zoom : 1;
+            }
+            el.style.zoom = newZoom / outerZoom;
         }
+        el.style.width = origWidth;
     }
 }
 
