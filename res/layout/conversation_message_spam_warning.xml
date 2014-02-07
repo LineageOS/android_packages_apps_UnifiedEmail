@@ -19,7 +19,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/spam_warning"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spam_warning_view_list_padding"
+    android:layout_marginRight="@dimen/spam_warning_view_list_padding" >
 
     <ImageView
         android:id="@+id/spam_warning_icon"
@@ -58,8 +60,7 @@
     <View
         android:id="@+id/spam_warning_bottom_border"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/message_border_height"
-        android:layout_alignParentBottom="true"
-        android:background="@color/conversation_view_border_color" />
+        android:layout_height="10dp"
+        android:layout_alignParentBottom="true" />
 
 </com.android.mail.browse.SpamWarningView>
