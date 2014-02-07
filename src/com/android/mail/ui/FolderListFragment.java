@@ -140,7 +140,7 @@ public class FolderListFragment extends ListFragment implements
     /** Adapter used by the list that wraps both the folder adapter and the accounts adapter. */
     private MergedAdapter<ListAdapter> mMergedAdapter;
     /** Adapter containing the list of accounts. */
-    private AccountsAdapter mAccountsAdapter;
+    protected AccountsAdapter mAccountsAdapter;
     /** Adapter containing the list of folders and, optionally, headers and the wait view. */
     private FolderListFragmentCursorAdapter mFolderAdapter;
     /** Observer to wait for changes to the current folder so we can change the selected folder */
@@ -158,7 +158,7 @@ public class FolderListFragment extends ListFragment implements
      */
     private int mSelectedFolderType = DrawerItem.UNSET;
     /** The current account according to the controller */
-    private Account mCurrentAccount;
+    protected Account mCurrentAccount;
     /** The account we will change to once the drawer (if any) is closed */
     private Account mNextAccount = null;
     /** The folder we will change to once the drawer (if any) is closed */
@@ -282,7 +282,7 @@ public class FolderListFragment extends ListFragment implements
             selectedFolder = currentFolder;
         }
 
-        mAccountsAdapter = new AccountsAdapter();
+        mAccountsAdapter = newAccountsAdapter();
 
         // Is the selected folder fresher than the one we have restored from a bundle?
         if (selectedFolder != null
@@ -458,6 +458,13 @@ public class FolderListFragment extends ListFragment implements
         return mFolderWatcher.getDefaultInbox(account);
     }
 
+    protected int getUnreadCount(Account account) {
+        if (account == null || mFolderWatcher == null) {
+            return 0;
+        }
+        return mFolderWatcher.getUnreadCount(account);
+    }
+
     private void changeAccount(final Account account) {
         // Switching accounts takes you to the default inbox for that account.
         mSelectedFolderType = DrawerItem.FOLDER_INBOX;
@@ -470,7 +477,7 @@ public class FolderListFragment extends ListFragment implements
      * Display the conversation list from the folder at the position given.
      * @param position a zero indexed position into the list.
      */
-    private void viewFolderOrChangeAccount(int position) {
+    protected void viewFolderOrChangeAccount(int position) {
         final Object item = getListAdapter().getItem(position);
         LogUtils.d(LOG_TAG, "viewFolderOrChangeAccount(%d): %s", position, item);
         final Folder folder;
@@ -483,15 +490,7 @@ public class FolderListFragment extends ListFragment implements
             if (itemType == DrawerItem.VIEW_ACCOUNT) {
                 // Account, so switch.
                 folder = null;
-                final Account account = drawerItem.mAccount;
-                if (account != null && mSelectedFolderUri.equals(account.settings.defaultInbox)) {
-                    // We're already in the default inbox for account,
-                    // just close the drawer (no new target folders/accounts)
-                    mAccountController.closeDrawer(false, mNextAccount,
-                            getDefaultInbox(mNextAccount));
-                } else {
-                    changeAccount(account);
-                }
+                onAccountSelected(drawerItem.mAccount);
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
                 folder = drawerItem.mFolder;
@@ -527,6 +526,17 @@ public class FolderListFragment extends ListFragment implements
                 // Clicked on same folder, just close drawer
                 mAccountController.closeDrawer(false, nextAccount, folder);
             }
+        }
+    }
+
+    protected void onAccountSelected(Account account) {
+        if (account != null && mSelectedFolderUri.equals(account.settings.defaultInbox)) {
+            // We're already in the default inbox for account,
+            // just close the drawer (no new target folders/accounts)
+            mAccountController.closeDrawer(false, mNextAccount,
+                    getDefaultInbox(mNextAccount));
+        } else {
+            changeAccount(account);
         }
     }
 
@@ -579,11 +589,15 @@ public class FolderListFragment extends ListFragment implements
      *  frequency of use.
      * @return a list of accounts, sorted by frequency of use
      */
-    private Account[] getAllAccounts() {
+    protected Account[] getAllAccounts() {
         if (mAllAccountsObserver != null) {
             return mAllAccountsObserver.getAllAccounts();
         }
         return new Account[0];
+    }
+
+    protected AccountsAdapter newAccountsAdapter() {
+        return new AccountsAdapter();
     }
 
     /**
@@ -986,7 +1000,7 @@ public class FolderListFragment extends ListFragment implements
         }
     }
 
-    private class AccountsAdapter extends BaseAdapter {
+    protected class AccountsAdapter extends BaseAdapter {
 
         private List<DrawerItem> mAccounts;
 
@@ -1002,15 +1016,15 @@ public class FolderListFragment extends ListFragment implements
         }
 
         /**
-         * Builds the accounts adapter.
+         * Builds the list of accounts.
          */
-        private List<DrawerItem> buildAccountList() {
+        protected List<DrawerItem> buildAccountList() {
             final List<DrawerItem> accountList = new ArrayList<DrawerItem>();
             final Account[] allAccounts = getAllAccounts();
             // Add all accounts and then the current account
             final Uri currentAccountUri = getCurrentAccountUri();
             for (final Account account : allAccounts) {
-                final int unreadCount = mFolderWatcher.getUnreadCount(account);
+                final int unreadCount = getUnreadCount(account);
                 accountList.add(DrawerItem.ofAccount(mActivity, account, unreadCount,
                         currentAccountUri.equals(account.uri), mBidiFormatter));
             }
@@ -1020,7 +1034,7 @@ public class FolderListFragment extends ListFragment implements
             return accountList;
         }
 
-        private Uri getCurrentAccountUri() {
+        protected Uri getCurrentAccountUri() {
             return mCurrentAccount == null ? Uri.EMPTY : mCurrentAccount.uri;
         }
 

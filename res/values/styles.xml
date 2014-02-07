@@ -136,7 +136,6 @@
     <style name="UnreadCount">
         <item name="android:layout_width">44dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
         <item name="android:gravity">center</item>
         <item name="android:singleLine">true</item>
         <item name="android:includeFontPadding">true</item>
@@ -144,6 +143,10 @@
         <item name="android:textColor">@color/folder_item_text_color</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="UnreadCountRelativeLayout" parent="UnreadCount">
+        <item name="android:layout_centerVertical">true</item>
     </style>
 
     <style name="UnseenCount">
@@ -626,7 +629,7 @@
         <item name="android:layout_marginLeft">@android:dimen/notification_large_icon_width</item>
     </style>
 
-    <style name="UnreadCountWithMarginEndStyle" parent="UnreadCount">
+    <style name="UnreadCountWithMarginEndStyle" parent="UnreadCountRelativeLayout">
         <item name="android:layout_marginRight">@dimen/folder_list_item_end_margin</item>
         <item name="android:layout_alignParentRight">true</item>
     </style>
@@ -669,7 +672,7 @@
         <item name="android:layout_marginLeft">@dimen/account_item_margin_start</item>
     </style>
 
-    <style name="AccountUnreadCountStyle" parent="UnreadCount">
+    <style name="AccountUnreadCountStyle" parent="UnreadCountRelativeLayout">
         <item name="android:layout_marginRight">@dimen/account_item_margin_end</item>
         <item name="android:layout_alignParentRight">true</item>
     </style>

@@ -47,7 +47,7 @@
         <TextView
             android:id="@+id/unread"
             android:duplicateParentState="true"
-            style="@style/UnreadCount" />
+            style="@style/UnreadCountRelativeLayout" />
 
         <TextView
             android:id="@+id/unseen"
