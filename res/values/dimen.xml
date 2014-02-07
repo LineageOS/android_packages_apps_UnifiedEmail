@@ -198,4 +198,6 @@
 
     <dimen name="teaser_arrow_margin_start">16dip</dimen>
     <dimen name="teaser_arrow_margin_end">12dip</dimen>
+
+    <dimen name="spam_warning_view_list_padding">16dip</dimen>
 </resources>

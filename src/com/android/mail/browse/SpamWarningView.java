@@ -20,6 +20,8 @@ public class SpamWarningView extends RelativeLayout implements OnClickListener {
     private TextView mSpamWarningLink;
     private final int mHighWarningColor;
     private final int mLowWarningColor;
+    private final int mHighWarningBackgroundColor;
+    private final int mLowWarningBackgroundColor;
 
     public SpamWarningView(Context context) {
         this(context, null);
@@ -27,9 +29,12 @@ public class SpamWarningView extends RelativeLayout implements OnClickListener {
 
     public SpamWarningView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         mHighWarningColor = getResources().getColor(R.color.high_spam_color);
-        mLowWarningColor = getResources().getColor(R.color.conv_header_text_light);
+        mHighWarningBackgroundColor = getResources().getColor(
+            R.color.high_spam_warning_background_color);
+        mLowWarningColor = getResources().getColor(R.color.low_spam_color);
+        mLowWarningBackgroundColor = getResources().getColor(
+            R.color.low_spam_warning_background_color);
     }
 
     @Override
@@ -66,11 +71,13 @@ public class SpamWarningView extends RelativeLayout implements OnClickListener {
                 message.spamWarningString, senderAddress, senderDomain)));
 
         if (message.spamWarningLevel == UIProvider.SpamWarningLevel.HIGH_WARNING) {
+            setBackgroundColor(mHighWarningBackgroundColor);
             mSpamWarningText.setTextColor(mHighWarningColor);
-            mSpamWarningIcon.setImageResource(R.drawable.ic_alert_red);
-        } else {
-            mSpamWarningText.setTextColor(mLowWarningColor);
             mSpamWarningIcon.setImageResource(R.drawable.ic_alert_grey);
+        } else {
+            setBackgroundColor(mLowWarningBackgroundColor);
+            mSpamWarningText.setTextColor(mLowWarningColor);
+            mSpamWarningIcon.setImageResource(R.drawable.ic_alert_red);
         }
 
         // Sets the link to the appropriate text

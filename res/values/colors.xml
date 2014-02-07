@@ -77,7 +77,11 @@
     <!-- Color of the parent folders and dividers for hierarchical folder descriptions in the move to folder -->
     <color name="hierarchical_folder_parent_color">@color/gray_text_color</color>
 
-    <color name="high_spam_color">#CC0000</color>
+    <!-- Spam warning text and background colors -->
+    <color name="high_spam_color">@android:color/white</color>
+    <color name="high_spam_warning_background_color">#CC0000</color>
+    <color name="low_spam_color">#CC0000</color>
+    <color name="low_spam_warning_background_color">#ebebeb</color>
 
     <color name="notification_template_icon_low_bg">#0cffffff</color>
 
