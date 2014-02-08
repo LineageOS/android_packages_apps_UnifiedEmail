@@ -17,50 +17,10 @@
 -->
 <com.android.mail.browse.SpamWarningView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/spam_warning"
+    android:id="@+id/spam_warning_text"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/spam_warning_view_list_padding"
-    android:layout_marginRight="@dimen/spam_warning_view_list_padding" >
-
-    <ImageView
-        android:id="@+id/spam_warning_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/message_details_header_padding_start"
-        android:paddingTop="8dp" />
-
-    <TextView
-        android:id="@+id/spam_warning_text"
-        style="@style/MessageHeaderSmallStyle"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="14dp"
-        android:layout_toRightOf="@id/spam_warning_icon"
-        android:gravity="center_vertical"
-        android:paddingRight="@dimen/message_details_header_padding_end"
-        android:paddingTop="8dp" />
-
-    <TextView
-        android:id="@+id/spam_warning_link"
-        style="@style/MessageHeaderSmallStyle"
-        android:layout_below="@id/spam_warning_text"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="14dp"
-        android:layout_toRightOf="@id/spam_warning_icon"
-        android:background="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:paddingRight="@dimen/message_details_header_padding_end"
-        android:textColor="@android:color/holo_blue_light" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="8dip"
-        android:layout_below="@id/spam_warning_link" />
-
-    <View
-        android:id="@+id/spam_warning_bottom_border"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_alignParentBottom="true" />
-
-</com.android.mail.browse.SpamWarningView>
+    android:padding="8dp"
+    style="@style/MessageHeaderSmallStyle"
+    android:layout_marginLeft="@dimen/conversation_message_content_margin_side"
+    android:layout_marginRight="@dimen/conversation_message_content_margin_side" />

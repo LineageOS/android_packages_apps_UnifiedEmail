@@ -78,10 +78,10 @@
     <color name="hierarchical_folder_parent_color">@color/gray_text_color</color>
 
     <!-- Spam warning text and background colors -->
-    <color name="high_spam_color">@android:color/white</color>
-    <color name="high_spam_warning_background_color">#CC0000</color>
-    <color name="low_spam_color">#CC0000</color>
-    <color name="low_spam_warning_background_color">#ebebeb</color>
+    <color name="high_spam_color">#FFFFFF</color>
+    <color name="high_spam_warning_background_color">#DD4B39</color>
+    <color name="low_spam_color">#333333</color>
+    <color name="low_spam_warning_background_color">#FFF1A8</color>
 
     <color name="notification_template_icon_low_bg">#0cffffff</color>
 
