@@ -32,7 +32,6 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
@@ -60,6 +59,7 @@ import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
 import com.android.mail.ui.SwipeableListView.ListItemSwipedListener;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
+import com.android.mail.ui.SwipeableListView.SwipeListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -73,7 +73,8 @@ import java.util.List;
  * The conversation list UI component.
  */
 public final class ConversationListFragment extends ListFragment implements
-        OnItemLongClickListener, ModeChangeListener, ListItemSwipedListener, OnRefreshListener {
+        OnItemLongClickListener, ModeChangeListener, ListItemSwipedListener, OnRefreshListener,
+        SwipeListener {
     /** Key used to pass data to {@link ConversationListFragment}. */
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     /** Key used to keep track of the scroll state of the list. */
@@ -163,6 +164,16 @@ public final class ConversationListFragment extends ListFragment implements
      */
     public ConversationListFragment() {
         super();
+    }
+
+    @Override
+    public void onBeginSwipe() {
+        mSwipeRefreshWidget.setEnabled(false);
+    }
+
+    @Override
+    public void onEndSwipe() {
+        mSwipeRefreshWidget.setEnabled(true);
     }
 
     private class ConversationCursorObserver extends DataSetObserver {
@@ -420,7 +431,8 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
-        mListView.setSwipedListener(this);
+        mListView.setListItemSwipedListener(this);
+        mListView.setSwipeListener(this);
 
         if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
@@ -436,7 +448,6 @@ public final class ConversationListFragment extends ListFragment implements
 
     /**
      * Sets the choice mode of the list view
-     * @param choiceMode ListView#
      */
     private final void setChoiceMode(int choiceMode) {
         mListView.setChoiceMode(choiceMode);

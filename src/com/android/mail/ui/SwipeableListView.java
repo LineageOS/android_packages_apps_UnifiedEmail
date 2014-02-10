@@ -23,16 +23,15 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
-import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SwipeableConversationItemView;
@@ -139,7 +138,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         mSwipeAction = action;
     }
 
-    public void setSwipedListener(ListItemSwipedListener listener) {
+    public void setListItemSwipedListener(ListItemSwipedListener listener) {
         mSwipedListener = listener;
     }
 
@@ -226,6 +225,11 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     public void dismissChild(final ConversationItemView target) {
+        // Notifies the SwipeListener that a swipe has ended.
+        if (mSwipeListener != null) {
+            mSwipeListener.onEndSwipe();
+        }
+
         final ToastBarOperation undoOp;
 
         undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO, false /* batch */,
@@ -286,9 +290,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         requestDisallowInterceptTouchEvent(true);
         cancelDismissCounter();
 
-        // Notifies {@link ConversationListView} to disable pull to refresh since once
-        // an item in the list view has been picked up, we don't want any vertical movement
-        // to also trigger refresh.
+        // Notifies the SwipeListener that a swipe has begun.
         if (mSwipeListener != null) {
             mSwipeListener.onBeginSwipe();
         }
@@ -300,6 +302,11 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         if (adapter != null) {
             adapter.startDismissCounter();
             adapter.cancelFadeOutLastLeaveBehindItemText();
+        }
+
+        // Notifies the SwipeListener that a swipe has ended.
+        if (mSwipeListener != null) {
+            mSwipeListener.onEndSwipe();
         }
     }
 
@@ -449,5 +456,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     public interface SwipeListener {
         public void onBeginSwipe();
+        public void onEndSwipe();
     }
 }
