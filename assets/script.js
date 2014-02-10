@@ -182,7 +182,7 @@ function normalizeElementWidths(elements) {
     var outerDiv;
 
     documentWidth = document.body.offsetWidth;
-    goalWidth = WEBVIEW_WIDTH - DOC_SIDE_MARGIN * 2;
+    goalWidth = WEBVIEW_WIDTH;
 
     for (i = 0; i < elements.length; i++) {
         el = elements[i];
@@ -193,7 +193,6 @@ function normalizeElementWidths(elements) {
         }
         origWidth = el.style.width;
         el.style.width = goalWidth + "px";
-        newZoom = documentWidth / el.scrollWidth;
         transformContent(el, goalWidth, el.scrollWidth);
         newZoom = documentWidth / el.scrollWidth;
         if (NORMALIZE_MESSAGE_WIDTHS) {

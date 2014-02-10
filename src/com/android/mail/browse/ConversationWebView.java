@@ -216,8 +216,16 @@ public class ConversationWebView extends MailWebView implements ScrollNotifier {
         return mViewportWidth;
     }
 
-    public int getWidthInDp() {
-        return (int) (getWidth() / mDensity);
+    /**
+     * Returns the effective width available for HTML content in DP units. This width takes into
+     * account the given margin (in screen px) by excluding it. This is not the same as DOM width,
+     * since the document is rendered at CSS px={@link #mViewportWidth}.
+     *
+     * @param sideMarginPx HTML body margin, if any (in screen px)
+     * @return width available for HTML content (in dp)
+     */
+    public int getWidthInDp(int sideMarginPx) {
+        return (int) ((getWidth() - sideMarginPx * 2) / mDensity);
     }
 
     /**
