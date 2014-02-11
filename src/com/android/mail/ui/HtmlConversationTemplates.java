@@ -167,8 +167,7 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
         reset();
         final String border = Utils.isRunningKitkatOrLater() ?
                 "img[blocked-src] { border: 1px solid #CCCCCC; }" : "";
-        append(sConversationUpper, viewportWidth, border,  sideMargin, sideMargin,
-                conversationHeaderHeight);
+        append(sConversationUpper, viewportWidth, border, sideMargin, conversationHeaderHeight);
         mInProgress = true;
     }
 

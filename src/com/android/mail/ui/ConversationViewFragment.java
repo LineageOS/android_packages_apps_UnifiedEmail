@@ -795,8 +795,9 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
         return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri),
-                mWebView.getViewportWidth(), mWebView.getWidthInDp(), enableContentReadySignal,
-                isOverviewMode(mAccount), applyTransforms, applyTransforms);
+                mWebView.getViewportWidth(), mWebView.getWidthInDp(mSideMarginPx),
+                enableContentReadySignal, isOverviewMode(mAccount), applyTransforms,
+                applyTransforms);
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
