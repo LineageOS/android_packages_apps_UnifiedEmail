@@ -15,8 +15,6 @@
  */
 package com.android.mail.utils;
 
-import com.google.common.collect.ImmutableMap;
-
 import android.app.DownloadManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -28,13 +26,14 @@ import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Attachment;
+import com.google.common.collect.ImmutableMap;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.File;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -88,7 +87,7 @@ public class AttachmentUtils {
     public static String getDisplayType(final Context context, final Attachment attachment) {
         if ((attachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
             // This is a dummy attachment, display blank for type.
-            return null;
+            return "";
         }
 
         // try to get a friendly name for the exact mime type
