@@ -80,6 +80,7 @@ public class AbstractConversationWebViewClient extends WebViewClient {
         } else {
             intent = new Intent(Intent.ACTION_VIEW, uri);
             intent.putExtra(Browser.EXTRA_APPLICATION_ID, mActivity.getPackageName());
+            intent.putExtra(Browser.EXTRA_CREATE_NEW_TAB, true);
         }
 
         boolean result = false;
