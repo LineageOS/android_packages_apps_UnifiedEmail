@@ -129,7 +129,7 @@
         <item name="android:layout_marginStart">@android:dimen/notification_large_icon_width</item>
     </style>
 
-    <style name="UnreadCountWithMarginEndStyle" parent="UnreadCount">
+    <style name="UnreadCountWithMarginEndStyle" parent="UnreadCountRelativeLayout">
         <item name="android:layout_marginEnd">@dimen/folder_list_item_end_margin</item>
         <item name="android:layout_alignParentEnd">true</item>
     </style>
@@ -176,7 +176,7 @@
         <item name="android:layout_marginStart">@dimen/account_item_margin_start</item>
     </style>
 
-    <style name="AccountUnreadCountStyle" parent="UnreadCount">
+    <style name="AccountUnreadCountStyle" parent="UnreadCountRelativeLayout">
         <item name="android:layout_marginEnd">@dimen/account_item_margin_end</item>
         <item name="android:layout_alignParentEnd">true</item>
     </style>
