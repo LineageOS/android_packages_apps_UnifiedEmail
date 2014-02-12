@@ -252,13 +252,18 @@ public class PrintUtils {
             return "";
         }
 
-        final List<Attachment> attachments = message.getAttachments();
+        final int numAttachments = message.getAttachmentCount(false /* includeInline */);
+
+        // if we have no attachments after filtering out inline attachments, return.
+        if (numAttachments == 0) {
+            return "";
+        }
+
         final StringBuilder sb = new StringBuilder("<br clear=all>"
                 + "<div style=\"width:50%;border-top:2px #AAAAAA solid\"></div>"
                 + "<table class=att cellspacing=0 cellpadding=5 border=0>");
 
         // If the message has more than one attachment, list the number of attachments.
-        final int numAttachments = attachments.size();
         if (numAttachments > 1) {
             sb.append("<tr><td colspan=2><b style=\"padding-left:3\">")
                     .append(resources.getQuantityString(
@@ -266,7 +271,13 @@ public class PrintUtils {
                     .append("</b></td></tr>");
         }
 
-        for (final Attachment attachment : attachments) {
+        final List<Attachment> attachments = message.getAttachments();
+        for (int i = 0, size = attachments.size(); i < size; i++) {
+            final Attachment attachment = attachments.get(i);
+            // skip inline attachments
+            if (attachment.isInlineAttachment()) {
+                continue;
+            }
             sb.append("<tr><td><table cellspacing=\"0\" cellpadding=\"0\"><tr>");
 
             // TODO - thumbnail previews of images
