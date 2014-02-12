@@ -579,6 +579,32 @@ public class Message implements Parcelable, HtmlMessage {
     }
 
     /**
+     * Returns the number of attachments in the message.
+     * @param includeInline If {@code true}, includes inline attachments in the count.
+     *                      {@code false}, otherwise.
+     * @return the number of attachments in the message.
+     */
+    public int getAttachmentCount(boolean includeInline) {
+        // If include inline, just return the full list count.
+        if (includeInline) {
+            return mAttachments.size();
+        }
+
+        // Otherwise, iterate through the attachment list,
+        // skipping inline attachments.
+        int numAttachments = 0;
+        final List<Attachment> attachments = getAttachments();
+        for (int i = 0, size = attachments.size(); i < size; i++) {
+            if (attachments.get(i).isInlineAttachment()) {
+                continue;
+            }
+            numAttachments++;
+        }
+
+        return numAttachments;
+    }
+
+    /**
      * Returns whether a "Show Pictures" button should initially appear for this message. If the
      * button is shown, the message must also block all non-local images in the body. Inversely, if
      * the button is not shown, the message must show all images within (or else the user would be
