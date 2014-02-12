@@ -24,28 +24,33 @@
 
     <include layout="@layout/search_results_view"/>
 
-    <!-- Note: intentionally not called "empty" because we call
-             setEmptyView programmatically-->
-    <!-- Offset by height of undo bar and action bar -->
-    <com.android.mail.ui.EmptyConversationListView
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/no_conversations"
-        android:layout_marginTop="@dimen/empty_view_top_padding"
-        android:visibility="gone" />
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.android.mail.ui.SwipeableListView android:id="@android:id/list"
-            style="@style/ConversationListFade"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fadingEdge="none"
-            android:layout_alignParentTop="true"/>
+            android:clickable="true">
+            <!-- Note: intentionally not called "empty" because we call
+             setEmptyView programmatically-->
+            <!-- Offset by height of undo bar and action bar -->
+            <com.android.mail.ui.EmptyConversationListView
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/empty_view_top_padding"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/no_conversations"
+                android:visibility="gone"/>
+            <com.android.mail.ui.SwipeableListView
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:fadingEdge="none"
+                style="@style/ConversationListFade" />
+        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
