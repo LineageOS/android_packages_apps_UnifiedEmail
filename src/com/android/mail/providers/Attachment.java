@@ -38,7 +38,6 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
-import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.io.IOUtils;
@@ -515,6 +514,15 @@ public class Attachment implements Parcelable {
         if (state == AttachmentState.FAILED || state == AttachmentState.NOT_SAVED) {
             this.downloadedSize = 0;
         }
+    }
+
+    /**
+     * @return {@code true} if the attachment is an inline attachment
+     * that appears in the body of the message content (including possibly
+     * quoted text).
+     */
+    public boolean isInlineAttachment() {
+        return type != UIProvider.AttachmentType.STANDARD;
     }
 
     @Override

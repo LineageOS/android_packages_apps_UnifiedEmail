@@ -1688,7 +1688,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Add attachment and update the compose area appropriately.
      * @param data
      */
-    public void addAttachmentAndUpdateView(Intent data) {
+    private void addAttachmentAndUpdateView(Intent data) {
         if (data == null) {
             return;
         }
@@ -1706,7 +1706,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         addAttachmentAndUpdateView(data.getData());
     }
 
-    public void addAttachmentAndUpdateView(Uri contentUri) {
+    private void addAttachmentAndUpdateView(Uri contentUri) {
         if (contentUri == null) {
             return;
         }
@@ -1721,7 +1721,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    public void addAttachmentAndUpdateView(Attachment attachment) {
+    private void addAttachmentAndUpdateView(Attachment attachment) {
         try {
             long size = mAttachmentsView.addAttachment(mAccount, attachment);
             if (size > 0) {

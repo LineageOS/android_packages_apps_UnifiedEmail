@@ -37,12 +37,10 @@ import com.android.mail.browse.ConversationContainer.DetachListener;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -167,7 +165,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         final List<Attachment> barAttachments = new ArrayList<Attachment>(maxSize);
 
         for (Attachment attachment : attachments) {
-            if (attachment.type != UIProvider.AttachmentType.STANDARD) {
+            if (attachment.isInlineAttachment()) {
                 // skip non-standard (aka inline) attachments
                 continue;
             } else if (AttachmentTile.isTiledAttachment(attachment)) {

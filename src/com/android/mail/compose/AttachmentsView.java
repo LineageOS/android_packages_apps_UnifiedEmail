@@ -33,11 +33,10 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.ui.AttachmentTile;
-import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
+import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
@@ -86,22 +85,26 @@ class AttachmentsView extends LinearLayout {
 
     /**
      * Set a listener for changes to the attachments.
-     * @param listener
      */
     public void setAttachmentChangesListener(AttachmentAddedOrDeletedListener listener) {
         mChangeListener = listener;
     }
 
     /**
-     * Add an attachment and update the ui accordingly.
-     * @param attachment
+     * Adds an attachment and updates the ui accordingly.
      */
-    public void addAttachment(final Attachment attachment) {
+    private void addAttachment(final Attachment attachment) {
+        mAttachments.add(attachment);
+
+        // If the attachment is inline do not display this attachment.
+        if (attachment.isInlineAttachment()) {
+            return;
+        }
+
         if (!isShown()) {
             setVisibility(View.VISIBLE);
         }
 
-        mAttachments.add(attachment);
         expandView();
 
         // If we have an attachment that should be shown in a tiled look,
@@ -184,7 +187,7 @@ class AttachmentsView extends LinearLayout {
     /**
      * Get the total size of all attachments currently in this view.
      */
-    public long getTotalAttachmentsSize() {
+    private long getTotalAttachmentsSize() {
         long totalSize = 0;
         for (Attachment attachment : mAttachments) {
             totalSize += attachment.size;
@@ -288,19 +291,6 @@ class AttachmentsView extends LinearLayout {
 
         attachment.setContentType(contentType);
         return attachment;
-    }
-
-    /**
-     * Adds a local attachment by file path.
-     * @param account
-     * @param contentUri the uri of the local file path
-     *
-     * @return size of the attachment added.
-     * @throws AttachmentFailureException if an error occurs adding the attachment.
-     */
-    public long addAttachment(Account account, Uri contentUri)
-            throws AttachmentFailureException {
-        return addAttachment(account, generateLocalAttachment(contentUri));
     }
 
     /**
