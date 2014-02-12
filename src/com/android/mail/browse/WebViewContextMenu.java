@@ -189,6 +189,8 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         menu.setGroupVisible(R.id.GEO_MENU, type == WebView.HitTestResult.GEO_TYPE);
         menu.setGroupVisible(R.id.ANCHOR_MENU, type == WebView.HitTestResult.SRC_ANCHOR_TYPE
                 || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE);
+        menu.setGroupVisible(R.id.IMAGE_MENU, type == WebView.HitTestResult.IMAGE_TYPE
+                || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE);
 
         // Setup custom handling depending on the type
         switch (type) {
