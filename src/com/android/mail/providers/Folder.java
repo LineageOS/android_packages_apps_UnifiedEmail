@@ -21,7 +21,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
-import android.net.Uri.Builder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -703,22 +702,39 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return (typeMask & folderType) != 0;
     }
 
+    /**
+     * Returns {@code true} if this folder is an inbox folder.
+     */
     public boolean isInbox() {
-        return isType(UIProvider.FolderType.INBOX);
+        return isType(FolderType.INBOX);
+    }
+
+    /**
+     * Returns {@code true} if this folder is a search folder.
+     */
+    public boolean isSearch() {
+        return isType(FolderType.SEARCH);
+    }
+
+    /**
+     * Returns {@code true} if this folder is the spam folder.
+     */
+    public boolean isSpam() {
+        return isType(FolderType.SPAM);
     }
 
     /**
      * Return if this is the trash folder.
      */
     public boolean isTrash() {
-        return isType(UIProvider.FolderType.TRASH);
+        return isType(FolderType.TRASH);
     }
 
     /**
      * Return if this is a draft folder.
      */
     public boolean isDraft() {
-        return isType(UIProvider.FolderType.DRAFT);
+        return isType(FolderType.DRAFT);
     }
 
     /**
@@ -733,7 +749,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Whether this is the special folder just used to display all mail for an account.
      */
     public boolean isViewAll() {
-        return isType(UIProvider.FolderType.ALL_MAIL);
+        return isType(FolderType.ALL_MAIL);
     }
 
     /**

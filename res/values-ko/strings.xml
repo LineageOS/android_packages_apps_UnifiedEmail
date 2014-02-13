@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"메시지를 삭제하시겠습니까?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"로드 중…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"대화가 없습니다."</string>
+    <string name="empty_folder" msgid="35400008890372241">"대화가 없습니다."</string>
     <string name="undo" msgid="6070869718469782251">"실행취소"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개의 별표를 제거하는 중 입니다."</item>

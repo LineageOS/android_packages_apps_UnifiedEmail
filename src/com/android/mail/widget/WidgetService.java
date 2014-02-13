@@ -585,7 +585,7 @@ public class WidgetService extends RemoteViewsService {
 
                 if (mConversationCursor == null || mConversationCursor.getCount() == 0) {
                     remoteViews.setTextViewText(R.id.empty_conversation_list,
-                            mContext.getString(R.string.no_conversations));
+                            mContext.getString(R.string.empty_folder));
                     appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
                 }
             } else if (loader == mAccountLoader) {

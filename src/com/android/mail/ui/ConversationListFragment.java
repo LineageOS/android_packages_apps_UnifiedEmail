@@ -128,7 +128,7 @@ public final class ConversationListFragment extends ListFragment implements
     private AnimatedAdapter mListAdapter;
 
     private ConversationListFooterView mFooterView;
-    private View mEmptyView;
+    private ConversationListEmptyView mEmptyView;
     private ErrorListener mErrorListener;
     private FolderObserver mFolderObserver;
     private DataSetObserver mConversationCursorObserver;
@@ -425,7 +425,7 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
-        mEmptyView = rootView.findViewById(R.id.empty_view);
+        mEmptyView = (ConversationListEmptyView) rootView.findViewById(R.id.empty_view);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);
@@ -849,6 +849,8 @@ public final class ConversationListFragment extends ListFragment implements
                 || cursorStatus == UIProvider.CursorStatus.COMPLETE) || folderCount > 0) {
             updateSearchResultHeader(folderCount);
             if (folderCount == 0) {
+                mEmptyView.setupEmptyView(
+                        mFolder, mViewContext.searchQuery, mListAdapter.getBidiFormatter());
                 mListView.setEmptyView(mEmptyView);
             }
         }

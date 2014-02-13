@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Buang pesan ini?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Memuat…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"Tidak ada percakapan."</string>
+    <string name="empty_folder" msgid="35400008890372241">"Tidak ada percakapan."</string>
     <string name="undo" msgid="6070869718469782251">"Urungkan"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Meredupkan bintang <xliff:g id="COUNT">%1$d</xliff:g> percakapan."</item>

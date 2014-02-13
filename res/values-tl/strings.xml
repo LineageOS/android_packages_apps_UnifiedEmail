@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"I-discard ang mensaheng ito?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Naglo-load…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"Walang mga pag-uusap."</string>
+    <string name="empty_folder" msgid="35400008890372241">"Walang mga pag-uusap."</string>
     <string name="undo" msgid="6070869718469782251">"I-undo"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Inaalisan ng star ang <xliff:g id="COUNT">%1$d</xliff:g> (na) pag-uusap."</item>

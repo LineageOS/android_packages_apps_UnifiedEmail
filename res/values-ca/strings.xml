@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Vols descartar aquest missatge?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"S\'està carregant…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"No hi ha cap conversa."</string>
+    <string name="empty_folder" msgid="35400008890372241">"No hi ha cap conversa."</string>
     <string name="undo" msgid="6070869718469782251">"Desfés"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"S\'està anul·lant <xliff:g id="COUNT">%1$d</xliff:g> conversa destacada."</item>

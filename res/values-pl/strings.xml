@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Odrzucić tę wiadomość?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Wczytuję…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"Brak wątków."</string>
+    <string name="empty_folder" msgid="35400008890372241">"Brak wątków."</string>
     <string name="undo" msgid="6070869718469782251">"Cofnij"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Cofanie oznaczenia gwiazdką <xliff:g id="COUNT">%1$d</xliff:g> wątku."</item>

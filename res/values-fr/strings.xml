@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Supprimer ce message ?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Chargement en cours…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"Aucune conversation"</string>
+    <string name="empty_folder" msgid="35400008890372241">"Aucune conversation"</string>
     <string name="undo" msgid="6070869718469782251">"Annuler"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Désactivation du suivi de <xliff:g id="COUNT">%1$d</xliff:g> conversation en cours…"</item>

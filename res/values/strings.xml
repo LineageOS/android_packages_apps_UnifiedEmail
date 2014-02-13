@@ -348,8 +348,16 @@
     <!-- Conversation list shared between the Activity and Widget -->
     <!-- Displayed in the middle of the screen when conversations are being loaded [CHAR LIMIT 100]-->
     <string name="loading_conversations">Loading\u2026</string>
-    <!-- Displayed in the middle of the screen when the inbox is empty [CHAR LIMIT 100]-->
-    <string name="no_conversations">No conversations.</string>
+    <!-- Displayed in the middle of the screen when an inbox is empty [CHAR LIMIT 100]-->
+    <string name="empty_inbox">You\'re all done! Please enjoy your day.</string>
+    <!-- Displayed in the middle of the screen when a search returns no results [CHAR LIMIT 100]-->
+    <string name="empty_search">Whoops! We didn\'t find anything for \"<xliff:g id="search_query">%1$s</xliff:g>\".</string>
+    <!-- Displayed in the middle of the screen when the spam folder is empty [CHAR LIMIT 100]-->
+    <string name="empty_spam_folder">Hooray, no spam here!</string>
+    <!-- Displayed in the middle of the screen when the trash folder is empty [CHAR LIMIT 100]-->
+    <string name="empty_trash_folder">No trash here. Thanks for recycling!</string>
+    <!-- Displayed in the middle of the screen when a folder is empty [CHAR LIMIT 100]-->
+    <string name="empty_folder">There is no mail here.</string>
 
     <!-- Undo bar strings -->
     <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
