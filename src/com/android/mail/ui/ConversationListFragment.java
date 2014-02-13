@@ -26,7 +26,6 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -156,7 +155,7 @@ public final class ConversationListFragment extends ListFragment implements
      * from when we were last on this conversation list.
      */
     private boolean mScrollPositionRestored = false;
-    private SwipeRefreshLayout mSwipeRefreshWidget;
+    private MailSwipeRefreshLayout mSwipeRefreshWidget;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity
@@ -437,11 +436,13 @@ public final class ConversationListFragment extends ListFragment implements
         if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
         }
-        mSwipeRefreshWidget = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_widget);
+        mSwipeRefreshWidget =
+                (MailSwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_widget);
         mSwipeRefreshWidget.setColorScheme(R.color.swipe_refresh_color1,
                 R.color.swipe_refresh_color2,
                 R.color.swipe_refresh_color3, R.color.swipe_refresh_color4);
         mSwipeRefreshWidget.setOnRefreshListener(this);
+        mSwipeRefreshWidget.setScrollableChild(mListView);
 
         return rootView;
     }

@@ -24,7 +24,7 @@
 
     <include layout="@layout/search_results_view"/>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.android.mail.ui.MailSwipeRefreshLayout
         android:id="@+id/swipe_refresh_widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -52,5 +52,5 @@
                 android:fadingEdge="none"
                 style="@style/ConversationListFade" />
         </FrameLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.android.mail.ui.MailSwipeRefreshLayout>
 </RelativeLayout>
