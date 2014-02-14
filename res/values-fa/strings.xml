@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"از این پیام صرفنظر شود؟"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"در حال بارگیری…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"مکالمه‌ای موجود نیست."</string>
+    <string name="empty_folder" msgid="35400008890372241">"مکالمه‌ای موجود نیست."</string>
     <string name="undo" msgid="6070869718469782251">"لغو"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"در حال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>

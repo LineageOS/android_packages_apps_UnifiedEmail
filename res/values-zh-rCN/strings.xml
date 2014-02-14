@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"要舍弃此邮件吗？"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"正在加载…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"无会话。"</string>
+    <string name="empty_folder" msgid="35400008890372241">"无会话。"</string>
     <string name="undo" msgid="6070869718469782251">"撤消"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"正在取消 <xliff:g id="COUNT">%1$d</xliff:g> 个会话的星标。"</item>

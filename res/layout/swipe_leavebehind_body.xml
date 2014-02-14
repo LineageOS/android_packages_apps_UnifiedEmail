@@ -27,7 +27,6 @@
         android:layout_weight="1"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="@string/no_conversations"
         android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:paddingLeft="16dip"

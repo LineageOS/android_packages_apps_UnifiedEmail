@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Να απορριφθεί αυτό το μήνυμα;"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Γίνεται φόρτωση…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"Δεν υπάρχουν συνομιλίες."</string>
+    <string name="empty_folder" msgid="35400008890372241">"Δεν υπάρχουν συνομιλίες."</string>
     <string name="undo" msgid="6070869718469782251">"Αναίρεση"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Κατάργηση αστεριού για <xliff:g id="COUNT">%1$d</xliff:g> συνομιλία."</item>

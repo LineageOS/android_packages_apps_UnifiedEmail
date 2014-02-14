@@ -164,7 +164,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Odbaciti ovu poruku?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Učitavanje…"</string>
-    <string name="no_conversations" msgid="35400008890372241">"Nema razgovora."</string>
+    <string name="empty_folder" msgid="35400008890372241">"Nema razgovora."</string>
     <string name="undo" msgid="6070869718469782251">"Poništi"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Uklanjanje zvjezdice s <xliff:g id="COUNT">%1$d</xliff:g> razgovora."</item>
