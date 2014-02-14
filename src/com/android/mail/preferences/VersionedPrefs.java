@@ -29,6 +29,7 @@ import com.android.mail.MailIntentService;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,8 +61,9 @@ public abstract class VersionedPrefs {
      */
     protected VersionedPrefs(final Context context, final String sharedPrefsName) {
         mContext = context.getApplicationContext();
-        mSharedPreferencesName = sharedPrefsName;
-        mSharedPreferences = context.getSharedPreferences(sharedPrefsName, Context.MODE_PRIVATE);
+        mSharedPreferencesName = sanitizeSharedPrefsName(sharedPrefsName);
+        mSharedPreferences = context.getSharedPreferences(
+                mSharedPreferencesName, Context.MODE_PRIVATE);
         mEditor = mSharedPreferences.edit();
 
         final int oldVersion = getCurrentVersion();
@@ -258,5 +260,16 @@ public abstract class VersionedPrefs {
      */
     protected void notifyBackupPreferenceChanged() {
         MailIntentService.broadcastBackupDataChanged(getContext());
+    }
+
+    private static String sanitizeSharedPrefsName(String prefName) {
+        // Versions prior to 4.4 allowed a account name with / separator as part. This wasn't
+        // a problem because they store all its data in a database. Now in 4.4 account settings
+        // are implemented as SharedPreferences, and ContextImpl#makeFilename(File, String)
+        // doesn't allow to create / as part of the setting name.
+        // So we need to sanitize the name prior to create the preference file
+        // New accounts created with 4.4+ doesn't allow to be create with / character, so this
+        // only happens in migration processes
+        return prefName.replaceAll(File.separator, "_");
     }
 }
