@@ -125,25 +125,67 @@ public class NotificationUtils {
      * Class representing the existing notifications, and the number of unread and
      * unseen conversations that triggered each.
      */
-    private static class NotificationMap
-            extends ConcurrentHashMap<NotificationKey, Pair<Integer, Integer>> {
+    private static final class NotificationMap {
 
         private static final String NOTIFICATION_PART_SEPARATOR = " ";
         private static final int NUM_NOTIFICATION_PARTS= 4;
+        private final ConcurrentHashMap<NotificationKey, Pair<Integer, Integer>> mMap =
+            new ConcurrentHashMap<NotificationKey, Pair<Integer, Integer>>();
 
         /**
-         * Retuns the unread count for the given NotificationKey.
+         * Returns the number of key values pairs in the inner map.
+         */
+        public int size() {
+            return mMap.size();
+        }
+
+        /**
+         * Returns a set of key values.
+         */
+        public Set<NotificationKey> keySet() {
+            return mMap.keySet();
+        }
+
+        /**
+         * Remove the key from the inner map and return its value.
+         *
+         * @param key The key {@link NotificationKey} to be removed.
+         * @return The value associated with this key.
+         */
+        public Pair<Integer, Integer> remove(NotificationKey key) {
+            return mMap.remove(key);
+        }
+
+        /**
+         * Clear all key-value pairs in the map.
+         */
+        public void clear() {
+            mMap.clear();
+        }
+
+        /**
+         * Discover if a key-value pair with this key exists.
+         *
+         * @param key The key {@link NotificationKey} to be checked.
+         * @return If a key-value pair with this key exists in the map.
+         */
+        public boolean containsKey(NotificationKey key) {
+            return mMap.containsKey(key);
+        }
+
+        /**
+         * Returns the unread count for the given NotificationKey.
          */
         public Integer getUnread(NotificationKey key) {
-            final Pair<Integer, Integer> value = get(key);
+            final Pair<Integer, Integer> value = mMap.get(key);
             return value != null ? value.first : null;
         }
 
         /**
-         * Retuns the unread unseen count for the given NotificationKey.
+         * Returns the unread unseen count for the given NotificationKey.
          */
         public Integer getUnseen(NotificationKey key) {
-            final Pair<Integer, Integer> value = get(key);
+            final Pair<Integer, Integer> value = mMap.get(key);
             return value != null ? value.second : null;
         }
 
@@ -153,7 +195,7 @@ public class NotificationUtils {
         public void put(NotificationKey key, int unread, int unseen) {
             final Pair<Integer, Integer> value =
                     new Pair<Integer, Integer>(Integer.valueOf(unread), Integer.valueOf(unseen));
-            put(key, value);
+            mMap.put(key, value);
         }
 
         /**
@@ -199,9 +241,7 @@ public class NotificationUtils {
                         final NotificationKey key = new NotificationKey(account, folder);
                         final Integer unreadValue = Integer.valueOf(notificationParts[2]);
                         final Integer unseenValue = Integer.valueOf(notificationParts[3]);
-                        final Pair<Integer, Integer> unreadUnseenValue =
-                                new Pair<Integer, Integer>(unreadValue, unseenValue);
-                        put(key, unreadUnseenValue);
+                        put(key, unreadValue, unseenValue);
                     }
                 }
             }
@@ -212,9 +252,9 @@ public class NotificationUtils {
          */
         public synchronized void saveNotificationMap(Context context) {
             final Set<String> notificationSet = Sets.newHashSet();
-            final Set<NotificationKey> keys = keySet();
+            final Set<NotificationKey> keys = mMap.keySet();
             for (NotificationKey key : keys) {
-                final Pair<Integer, Integer> value = get(key);
+                final Pair<Integer, Integer> value = mMap.get(key);
                 final Integer unreadCount = value.first;
                 final Integer unseenCount = value.second;
                 if (unreadCount != null && unseenCount != null) {
