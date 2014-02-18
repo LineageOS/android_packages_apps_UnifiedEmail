@@ -164,7 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"यह संदेश छोड़ें?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"लोड हो रहा है…"</string>
-    <string name="empty_folder" msgid="35400008890372241">"कोई बातचीत नहीं."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"आपने पूर्ण कर लिया है! कृपया अपने दिन का आनंद लें."</string>
+    <string name="empty_search" msgid="7123710829748939105">"ओह! हमें \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" के लिए कुछ भी नहीं मिला."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"हुर्रे, कोई स्पैम नहीं है!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"कोई ट्रैश नहीं है. रिसाइकलिंग के लिए धन्यवाद!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"कोई मेल नहीं है."</string>
     <string name="undo" msgid="6070869718469782251">"पूर्ववत करें"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"<xliff:g id="COUNT">%1$d</xliff:g> बातचीत के तारांकन हटाए जा रहे हैं."</item>

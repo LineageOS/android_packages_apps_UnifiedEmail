@@ -164,7 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"האם למחוק הודעה זו?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"טוען…"</string>
-    <string name="empty_folder" msgid="35400008890372241">"אין שיחות."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"סיימת! שיהיה לך יום נהדר."</string>
+    <string name="empty_search" msgid="7123710829748939105">"אופס! לא מצאנו כלום עבור \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\"."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"הידד, אין כאן דואר זבל!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"אין כאן אשפה. תודה שמחזרת!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"אין כאן דואר."</string>
     <string name="undo" msgid="6070869718469782251">"בטל"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"מסיר כוכב משיחה <xliff:g id="COUNT">%1$d</xliff:g>."</item>

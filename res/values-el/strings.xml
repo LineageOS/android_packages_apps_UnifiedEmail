@@ -164,7 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Να απορριφθεί αυτό το μήνυμα;"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Γίνεται φόρτωση…"</string>
-    <string name="empty_folder" msgid="35400008890372241">"Δεν υπάρχουν συνομιλίες."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"Τελειώσατε! Απολαύσετε τη μέρα σας."</string>
+    <string name="empty_search" msgid="7123710829748939105">"Ωχ! Δεν βρέθηκε τίποτα για \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\"."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"Τέλεια, δεν υπάρχουν ανεπιθύμητα!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Δεν υπάρχουν μηνύματα στον κάδο απορριμάτων. Ευχαριστούμε που κάνετε ανακύκλωση!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"Δεν υπάρχει κανένα μήνυμα εδώ."</string>
     <string name="undo" msgid="6070869718469782251">"Αναίρεση"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Κατάργηση αστεριού για <xliff:g id="COUNT">%1$d</xliff:g> συνομιλία."</item>

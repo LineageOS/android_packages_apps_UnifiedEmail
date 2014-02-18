@@ -164,7 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Rejeitar esta mensagem?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"A carregar…"</string>
-    <string name="empty_folder" msgid="35400008890372241">"Sem conversas."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"Está tudo concluído! Desfrute do seu dia."</string>
+    <string name="empty_search" msgid="7123710829748939105">"Ups! Nenhum resultado encontrado para \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\"."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"Viva! Não há spam aqui!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Não há lixo aqui. Obrigado por reciclar!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"Não existe correio aqui."</string>
     <string name="undo" msgid="6070869718469782251">"Anular"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"A remover a estrela de <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>

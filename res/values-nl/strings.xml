@@ -164,7 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Dit bericht weggooien?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Laden…"</string>
-    <string name="empty_folder" msgid="35400008890372241">"Geen conversaties."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"U bent klaar. Nog een fijne dag gewenst."</string>
+    <string name="empty_search" msgid="7123710829748939105">"Oeps! We hebben geen resultaten gevonden voor \'<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\'."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"Hoera, geen spam te zien!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"De prullenbak is leeg. Hartelijk dank voor het recyclen."</string>
+    <string name="empty_folder" msgid="107806583742395757">"Deze map bevat geen e-mail."</string>
     <string name="undo" msgid="6070869718469782251">"Ongedaan maken"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Ster verwijderen uit <xliff:g id="COUNT">%1$d</xliff:g> conversatie."</item>

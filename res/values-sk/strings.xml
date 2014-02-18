@@ -164,7 +164,16 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Zahodiť túto správu?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Načítavanie…"</string>
-    <string name="empty_folder" msgid="35400008890372241">"Žiadne konverzácie."</string>
+    <!-- no translation found for empty_inbox (7623182658180140245) -->
+    <skip />
+    <!-- no translation found for empty_search (7123710829748939105) -->
+    <skip />
+    <!-- no translation found for empty_spam_folder (7915096608607243274) -->
+    <skip />
+    <!-- no translation found for empty_trash_folder (2205589798674653912) -->
+    <skip />
+    <!-- no translation found for empty_folder (107806583742395757) -->
+    <skip />
     <string name="undo" msgid="6070869718469782251">"Späť"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Zrušenie označenia hviezdičkou (počet konverzácií: <xliff:g id="COUNT">%1$d</xliff:g>)."</item>

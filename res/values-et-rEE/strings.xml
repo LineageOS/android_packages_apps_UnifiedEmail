@@ -164,7 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Kas soovite sellest sõnumist loobuda?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Laadimine …"</string>
-    <string name="empty_folder" msgid="35400008890372241">"Meilivestlusi pole."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"Kõik on tehtud. Head päeva!"</string>
+    <string name="empty_search" msgid="7123710829748939105">"Vabandust! Otsingupäringule „<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>” ei leitud ühtegi vastet."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"Hurraa, siin ei ole rämpsposti!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Siin pole mingit prügi. Täname jäätmekäitluse eest!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"Siin pole ühtegi meili."</string>
     <string name="undo" msgid="6070869718469782251">"Võta tagasi"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Tärnid eemaldatakse <xliff:g id="COUNT">%1$d</xliff:g> meilivestluselt."</item>

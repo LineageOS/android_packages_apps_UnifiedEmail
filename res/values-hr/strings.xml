@@ -164,7 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Odbaciti ovu poruku?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Učitavanje…"</string>
-    <string name="empty_folder" msgid="35400008890372241">"Nema razgovora."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"Sa svime ste gotovi! Želimo vam ugodan dan."</string>
+    <string name="empty_search" msgid="7123710829748939105">"Ups! Nismo pronašli nijedan rezultat za vaš upit \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\"."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"Jupi, ovdje nema neželjenih poruka!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Ovdje nema otpada. Hvala što reciklirate!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"Ovdje nema pošte."</string>
     <string name="undo" msgid="6070869718469782251">"Poništi"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Uklanjanje zvjezdice s <xliff:g id="COUNT">%1$d</xliff:g> razgovora."</item>
