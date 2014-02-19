@@ -742,10 +742,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /**
      * Focus the body of the message.
      */
-    public void focusBody() {
+    private void focusBody() {
         mBodyView.requestFocus();
-        int length = mBodyView.getText().length();
+        resetBodySelection();
+    }
 
+    private void resetBodySelection() {
+        int length = mBodyView.getText().length();
         int signatureStartPos = getSignatureStartPosition(
                 mSignature, mBodyView.getText().toString());
         if (signatureStartPos > -1) {
@@ -3171,9 +3174,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void appendSignature() {
-        String newSignature = mCachedSettings != null ? mCachedSettings.signature : null;
-        boolean hasFocus = mBodyView.hasFocus();
-        int signaturePos = getSignatureStartPosition(mSignature, mBodyView.getText().toString());
+        final String newSignature = mCachedSettings != null ? mCachedSettings.signature : null;
+        final int signaturePos = getSignatureStartPosition(mSignature, mBodyView.getText().toString());
         if (!TextUtils.equals(newSignature, mSignature) || signaturePos < 0) {
             mSignature = newSignature;
             if (!TextUtils.isEmpty(mSignature)) {
@@ -3182,9 +3184,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 mBodyView.append(convertToPrintableSignature(mSignature));
                 mBodyView.addTextChangedListener(this);
             }
-            if (hasFocus) {
-                focusBody();
-            }
+            resetBodySelection();
         }
     }
 
