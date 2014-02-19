@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -30,6 +31,7 @@ import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
@@ -159,9 +161,38 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
+    public void switchToDefaultInboxOrChangeAccount(Account account) {
+        if (mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST ||
+                mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+            // We are in an activity on top of the main navigation activity.
+            // We need to return to it with a result code that indicates it should navigate to
+            // a different folder.
+            final Intent intent = new Intent();
+            intent.putExtra(AbstractActivityController.EXTRA_ACCOUNT, account);
+            mActivity.setResult(Activity.RESULT_OK, intent);
+            mActivity.finish();
+            return;
+        }
+        if (mViewMode.getMode() != ViewMode.CONVERSATION_LIST) {
+            mViewMode.enterConversationListMode();
+        }
+        super.switchToDefaultInboxOrChangeAccount(account);
+    }
+
+    @Override
     public void onFolderSelected(Folder folder) {
         // It's possible that we are not in conversation list mode
-        if (mViewMode.getMode() != ViewMode.CONVERSATION_LIST) {
+        if (mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST ||
+                mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+            // We are in an activity on top of the main navigation activity.
+            // We need to return to it with a result code that indicates it should navigate to
+            // a different folder.
+            final Intent intent = new Intent();
+            intent.putExtra(AbstractActivityController.EXTRA_FOLDER, folder);
+            mActivity.setResult(Activity.RESULT_OK, intent);
+            mActivity.finish();
+            return;
+        } else if (mViewMode.getMode() != ViewMode.CONVERSATION_LIST) {
             mViewMode.enterConversationListMode();
         }
 

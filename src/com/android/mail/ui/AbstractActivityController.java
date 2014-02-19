@@ -418,6 +418,12 @@ public abstract class AbstractActivityController implements ActivityController,
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
     /** Code returned when the user has to enter the new password on an existing account. */
     private static final int REAUTHENTICATE_REQUEST_CODE = 2;
+    /** Code returned when the previous activity needs to navigate to a different folder
+     *  or account */
+    private static final int CHANGE_NAVIGATION_REQUEST_CODE = 3;
+
+    public static final String EXTRA_FOLDER = "extra-folder";
+    public static final String EXTRA_ACCOUNT = "extra-account";
 
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
     private DestructiveAction mPendingDestruction;
@@ -654,6 +660,17 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void switchToDefaultInboxOrChangeAccount(Account account) {
         LogUtils.d(LOG_TAG, "AAC.switchToDefaultAccount(%s)", account);
+        if (mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST ||
+                mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+            // We are in an activity on top of the main navigation activity.
+            // We need to return to it with a result code that indicates it should navigate to
+            // a different folder.
+            final Intent intent = new Intent();
+            intent.putExtra(AbstractActivityController.EXTRA_ACCOUNT, account);
+            mActivity.setResult(Activity.RESULT_OK, intent);
+            mActivity.finish();
+            return;
+        }
         final boolean firstLoad = mAccount == null;
         final boolean switchToDefaultInbox = !firstLoad && account.uri.equals(mAccount.uri);
         // If the active account has been clicked in the drawer, go to default inbox
@@ -846,8 +863,7 @@ public abstract class AbstractActivityController implements ActivityController,
         final int mode = mViewMode.getMode();
         mDrawerToggle.setDrawerIndicatorEnabled(
                 getShouldShowDrawerIndicator(mode, isTopLevel));
-        mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(mode)
-                ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
         mDrawerContainer.closeDrawers();
 
@@ -1074,6 +1090,22 @@ public abstract class AbstractActivityController implements ActivityController,
                     final Uri refreshUri = mFolder != null ? mFolder.refreshUri : null;
                     if (refreshUri != null) {
                         startAsyncRefreshTask(refreshUri);
+                    }
+                }
+                break;
+            case CHANGE_NAVIGATION_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    // We have have received a result that indicates we need to navigate to a
+                    // different folder or account. This happens if someone navigates using the
+                    // drawer on the search results activity.
+                    final Folder folder = data.getParcelableExtra(EXTRA_FOLDER);
+                    final Account account = data.getParcelableExtra(EXTRA_ACCOUNT);
+                    if (folder != null) {
+                        onFolderSelected(folder);
+                        mViewMode.enterConversationListMode();
+                    } else if (account != null) {
+                        switchToDefaultInboxOrChangeAccount(account);
+                        mViewMode.enterConversationListMode();
                     }
                 }
                 break;
@@ -2071,7 +2103,9 @@ public abstract class AbstractActivityController implements ActivityController,
         intent.putExtra(Utils.EXTRA_ACCOUNT, mAccount);
         intent.setComponent(mActivity.getComponentName());
         mActionBarView.collapseSearch();
-        mActivity.startActivity(intent);
+        // Call startActivityForResult here so we can tell if we have navigated to a different folder
+        // or account from search results.
+        mActivity.startActivityForResult(intent, CHANGE_NAVIGATION_REQUEST_CODE);
     }
 
     @Override
@@ -2126,8 +2160,7 @@ public abstract class AbstractActivityController implements ActivityController,
             final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
             mDrawerToggle.setDrawerIndicatorEnabled(
                     getShouldShowDrawerIndicator(newMode, isTopLevel));
-            mDrawerContainer.setDrawerLockMode(getShouldAllowDrawerPull(newMode)
-                    ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             closeDrawerIfOpen();
         }
     }
@@ -2144,21 +2177,6 @@ public abstract class AbstractActivityController implements ActivityController,
         // Indicator is enabled either in conversation list or folder list mode.
         return isDrawerEnabled() && !ViewMode.isSearchMode(viewMode)
             && (viewMode == ViewMode.CONVERSATION_LIST  && isTopLevel);
-    }
-
-    /**
-     * Returns true if the left-screen swipe action (or Home icon tap) should pull a drawer out.
-     * @param viewMode the current view mode.
-     * @return whether the drawer can be opened using a swipe action or action bar tap.
-     */
-    private static boolean getShouldAllowDrawerPull(final int viewMode) {
-        // if search list/conv mode, disable drawer pull
-        // allow drawer pull everywhere except conversation mode where the list is hidden
-        return !ViewMode.isSearchMode(viewMode) && !ViewMode.isConversationMode(viewMode) &&
-                !ViewMode.isAdMode(viewMode);
-
-        // TODO(ath): get this to work to allow drawer pull in 2-pane conv mode.
-    /* && !isConversationListVisible() */
     }
 
     public void disablePagerUpdates() {
@@ -4211,8 +4229,13 @@ public abstract class AbstractActivityController implements ActivityController,
          */
         @Override
         public void onDrawerStateChanged(int newState) {
+            LogUtils.d(LOG_TAG, "AAC onDrawerStateChanged %d", newState);
             mDrawerState = newState;
             mDrawerToggle.onDrawerStateChanged(mDrawerState);
+            if (mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST ||
+                    mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+                return;
+            }
             if (mDrawerState == DrawerLayout.STATE_IDLE) {
                 if (mHasNewAccountOrFolder) {
                     refreshDrawer();
@@ -4257,7 +4280,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public boolean isDrawerPullEnabled() {
-        return getShouldAllowDrawerPull(mViewMode.getMode());
+        return true;
     }
 
     @Override
