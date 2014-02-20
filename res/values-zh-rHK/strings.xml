@@ -164,16 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"要丟棄這封郵件嗎？"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"正在載入..."</string>
-    <!-- no translation found for empty_inbox (7623182658180140245) -->
-    <skip />
-    <!-- no translation found for empty_search (7123710829748939105) -->
-    <skip />
-    <!-- no translation found for empty_spam_folder (7915096608607243274) -->
-    <skip />
-    <!-- no translation found for empty_trash_folder (2205589798674653912) -->
-    <skip />
-    <!-- no translation found for empty_folder (107806583742395757) -->
-    <skip />
+    <string name="empty_inbox" msgid="7623182658180140245">"您已讀過所有來信！祝一切安好。"</string>
+    <string name="empty_search" msgid="7123710829748939105">"很抱歉，找不到任何與「<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>」相符的搜尋結果。"</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"太好了！此處沒有垃圾郵件！"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"垃圾桶內沒有任何郵件。多謝您妥善回收郵件！"</string>
+    <string name="empty_folder" msgid="107806583742395757">"這裡沒有任何郵件。"</string>
     <string name="undo" msgid="6070869718469782251">"撤銷"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"正在移除 <xliff:g id="COUNT">%1$d</xliff:g> 個對話群組的星號。"</item>

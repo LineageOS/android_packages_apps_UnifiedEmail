@@ -164,16 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Bu ileti silinsin mi?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Yükleniyor…"</string>
-    <!-- no translation found for empty_inbox (7623182658180140245) -->
-    <skip />
-    <!-- no translation found for empty_search (7123710829748939105) -->
-    <skip />
-    <!-- no translation found for empty_spam_folder (7915096608607243274) -->
-    <skip />
-    <!-- no translation found for empty_trash_folder (2205589798674653912) -->
-    <skip />
-    <!-- no translation found for empty_folder (107806583742395757) -->
-    <skip />
+    <string name="empty_inbox" msgid="7623182658180140245">"Hepsini tamamladınız! Gününüzün keyfini çıkarın."</string>
+    <string name="empty_search" msgid="7123710829748939105">"Maalesef \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" için herhangi bir şey bulamadık."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"Yaşasın, burada hiç spam yok!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Çöp kutusu boş. Geri dönüşüm için teşekkür ederiz!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"Burada posta yok."</string>
     <string name="undo" msgid="6070869718469782251">"Geri Al"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"<xliff:g id="COUNT">%1$d</xliff:g> ileti dizisinin yıldızı kaldırılıyor."</item>
