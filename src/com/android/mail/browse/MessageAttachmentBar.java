@@ -127,11 +127,13 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
                 attachment.getContentType(), attachment.flags);
 
+        final String attachmentName = attachment.getName();
         if ((attachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
             mTitle.setText(R.string.load_attachment);
         } else if (prevAttachment == null
-                || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
-            mTitle.setText(bidiFormatter.unicodeWrap(attachment.getName()));
+                || !TextUtils.equals(attachmentName, prevAttachment.getName())) {
+            mTitle.setText(
+                    attachmentName != null ? bidiFormatter.unicodeWrap(attachmentName) : null);
         }
 
         if (prevAttachment == null || attachment.size != prevAttachment.size) {
