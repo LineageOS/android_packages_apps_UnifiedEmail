@@ -17,10 +17,12 @@
 package com.android.mail.utils;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.mail.utils.NotificationUtils.MailMessagePlainTextConverter;
 import com.google.android.mail.common.html.parser.HtmlTree;
 
+@SmallTest
 public class NotificationUtilsTest extends AndroidTestCase {
     /**
      * Verifies that we strip out <style /> tags.

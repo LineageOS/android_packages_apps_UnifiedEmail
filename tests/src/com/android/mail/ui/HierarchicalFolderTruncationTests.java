@@ -19,7 +19,9 @@ package com.android.mail.ui;
 
 import android.test.AndroidTestCase;
 import android.text.SpannableStringBuilder;
+import android.test.suitebuilder.annotation.SmallTest;
 
+@SmallTest
 public class HierarchicalFolderTruncationTests extends AndroidTestCase {
 
     private HierarchicalFolderSelectorAdapter mAdapter;
