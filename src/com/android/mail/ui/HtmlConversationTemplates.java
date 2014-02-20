@@ -115,6 +115,18 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
         return sAbsoluteImgUrlPattern.matcher(html).replaceAll(IMG_URL_REPLACEMENT);
     }
 
+    /**
+     * Wrap a given message body string to prevent its contents from flowing out of the current DOM
+     * block context.
+     *
+     */
+    public static String wrapMessageBody(String msgBody) {
+        final StringBuilder sb = new StringBuilder("<div style=\"display: table-cell;\">");
+        sb.append(msgBody);
+        sb.append("</div>");
+        return sb.toString();
+    }
+
     public void appendMessageHtml(HtmlMessage message, boolean isExpanded,
             boolean safeForImages, int headerHeight, int footerHeight) {
 
@@ -148,7 +160,7 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
                 headerHeight,
                 showImagesClass,
                 bodyDisplay,
-                body,
+                wrapMessageBody(body),
                 bodyDisplay,
                 footerHeight
         );

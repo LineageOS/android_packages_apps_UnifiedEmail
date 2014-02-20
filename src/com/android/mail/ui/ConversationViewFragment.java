@@ -1224,7 +1224,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 while (cursor.moveToPosition(++pos)) {
                     final ConversationMessage msg = cursor.getMessage();
                     if (TextUtils.equals(domId, mTemplates.getMessageDomId(msg))) {
-                        return msg.getBodyAsHtml();
+                        return HtmlConversationTemplates.wrapMessageBody(msg.getBodyAsHtml());
                     }
                 }
 
