@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
-import android.net.Uri;
 import android.os.Handler;
 
 import com.android.emailcommon.mail.Address;
@@ -45,6 +44,5 @@ public interface SecureConversationViewControllerCallbacks {
     public void startMessageLoader();
     public String getBaseUri();
     public boolean isViewOnlyMode();
-    public Uri getAccountUri();
     public boolean shouldAlwaysShowImages();
 }

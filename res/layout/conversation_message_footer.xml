@@ -22,6 +22,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     style="@style/ConversationViewSideMarginStyle" >
+
+    <TextView
+        android:id="@+id/view_entire_message_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingLeft="@dimen/conversation_message_content_margin_side"
+        android:paddingRight="@dimen/conversation_message_content_margin_side"
+        android:text="@string/view_entire_message"
+        android:textColor="@color/conv_header_text_link_blue"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/attachments_header_text"
         android:layout_width="wrap_content"
@@ -37,6 +52,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         style="@style/AttachmentMarginStyle" />
+
     <LinearLayout
         android:id="@+id/attachment_bar_list"
         android:layout_width="match_parent"

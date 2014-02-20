@@ -22,7 +22,6 @@ import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -42,9 +41,11 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
+import com.android.mail.ui.AccountFeedbackActivity;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -71,7 +72,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
     private final AttachmentActionHandler mActionHandler;
     private boolean mSaveClicked;
-    private Uri mAccountUri;
+    private Account mAccount;
 
     private final Runnable mUpdateRunnable = new Runnable() {
             @Override
@@ -108,10 +109,10 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
      * repeatedly as status updates stream in, so only properties with new or changed values will
      * cause sub-views to update.
      */
-    public void render(Attachment attachment, Uri accountUri,
+    public void render(Attachment attachment, Account account,
             boolean loaderResult, BidiFormatter bidiFormatter) {
         // get account uri for potential eml viewer usage
-        mAccountUri = accountUri;
+        mAccount = account;
 
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
@@ -132,8 +133,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             mTitle.setText(R.string.load_attachment);
         } else if (prevAttachment == null
                 || !TextUtils.equals(attachmentName, prevAttachment.getName())) {
-            mTitle.setText(
-                    attachmentName != null ? bidiFormatter.unicodeWrap(attachmentName) : null);
+            mTitle.setText(attachmentName);
         }
 
         if (prevAttachment == null || attachment.size != prevAttachment.size) {
@@ -323,8 +323,9 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         // For EML files, we want to open our dedicated
         // viewer rather than let any activity open it.
         if (MimeType.isEmlMimeType(contentType)) {
-            intent.setClass(getContext(), EmlViewerActivity.class);
-            intent.putExtra(EmlViewerActivity.EXTRA_ACCOUNT_URI, mAccountUri);
+            intent.setClass(getContext().getApplicationContext(), EmlViewerActivity.class);
+            intent.putExtra(AccountFeedbackActivity.EXTRA_ACCOUNT_URI,
+                    mAccount != null ? mAccount.uri : null);
         }
 
         try {

@@ -28,6 +28,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,7 @@ import com.android.mail.ui.SecureConversationViewController;
 import com.android.mail.ui.SecureConversationViewControllerCallbacks;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 
@@ -60,7 +63,6 @@ import java.util.Set;
 public class EmlMessageViewFragment extends Fragment
         implements SecureConversationViewControllerCallbacks {
     private static final String ARG_EML_FILE_URI = "eml_file_uri";
-    private static final String ARG_ACCOUNT_URI = "account_uri";
     private static final String BASE_URI = "x-thread://message/rfc822/";
 
     private static final int MESSAGE_LOADER = 0;
@@ -79,7 +81,6 @@ public class EmlMessageViewFragment extends Fragment
     private final FilenameLoadCallbacks mFilenameLoadCallbacks = new FilenameLoadCallbacks();
 
     private Uri mEmlFileUri;
-    private Uri mAccountUri;
 
     private boolean mMessageLoadFailed;
 
@@ -129,9 +130,8 @@ public class EmlMessageViewFragment extends Fragment
      */
     public static EmlMessageViewFragment newInstance(Uri emlFileUri, Uri accountUri) {
         EmlMessageViewFragment f = new EmlMessageViewFragment();
-        Bundle args = new Bundle();
+        Bundle args = new Bundle(1);
         args.putParcelable(ARG_EML_FILE_URI, emlFileUri);
-        args.putParcelable(ARG_ACCOUNT_URI, accountUri);
         f.setArguments(args);
         return f;
     }
@@ -148,7 +148,6 @@ public class EmlMessageViewFragment extends Fragment
 
         Bundle args = getArguments();
         mEmlFileUri = args.getParcelable(ARG_EML_FILE_URI);
-        mAccountUri = args.getParcelable(ARG_ACCOUNT_URI);
 
         mWebViewClient = new EmlWebViewClient(null);
         mViewController = new SecureConversationViewController(this);
@@ -172,6 +171,13 @@ public class EmlMessageViewFragment extends Fragment
         }
         mWebViewClient.setActivity(getActivity());
         mViewController.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (Utils.isRunningKitkatOrLater()) {
+            inflater.inflate(R.menu.eml_fragment_menu, menu);
+        }
     }
 
     @Override
@@ -257,11 +263,6 @@ public class EmlMessageViewFragment extends Fragment
     @Override
     public boolean isViewOnlyMode() {
         return true;
-    }
-
-    @Override
-    public Uri getAccountUri() {
-        return mAccountUri;
     }
 
     @Override

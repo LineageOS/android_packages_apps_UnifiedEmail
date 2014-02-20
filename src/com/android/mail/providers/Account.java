@@ -197,7 +197,7 @@ public class Account implements Parcelable {
      * URI for querying for the account cookies to be used when displaying inline content in a
      * conversation
      */
-    public final Uri accoutCookieQueryUri;
+    public final Uri accountCookieQueryUri;
 
     /**
      * URI to be used with an update() ContentResolver call with a {@link ContentValues} object
@@ -260,7 +260,7 @@ public class Account implements Parcelable {
             json.put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI, defaultRecentFolderListUri);
             json.put(AccountColumns.MANUAL_SYNC_URI, manualSyncUri);
             json.put(AccountColumns.VIEW_INTENT_PROXY_URI, viewIntentProxyUri);
-            json.put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
+            json.put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accountCookieQueryUri);
             json.put(AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
             json.put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
             json.put(AccountColumns.SYNC_AUTHORITY, syncAuthority);
@@ -352,7 +352,7 @@ public class Account implements Parcelable {
                 .getValidUri(json.optString(AccountColumns.MANUAL_SYNC_URI));
         viewIntentProxyUri = Utils
                 .getValidUri(json.optString(AccountColumns.VIEW_INTENT_PROXY_URI));
-        accoutCookieQueryUri = Utils.getValidUri(
+        accountCookieQueryUri = Utils.getValidUri(
                 json.optString(AccountColumns.ACCOUNT_COOKIE_QUERY_URI));
         updateSettingsUri = Utils.getValidUri(
                 json.optString(AccountColumns.UPDATE_SETTINGS_URI));
@@ -423,7 +423,7 @@ public class Account implements Parcelable {
                 cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.MANUAL_SYNC_URI)));
         viewIntentProxyUri = Utils.getValidUri(cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI)));
-        accoutCookieQueryUri = Utils.getValidUri(cursor.getString(
+        accountCookieQueryUri = Utils.getValidUri(cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI)));
         updateSettingsUri = Utils.getValidUri(cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.UPDATE_SETTINGS_URI)));
@@ -530,7 +530,7 @@ public class Account implements Parcelable {
         defaultRecentFolderListUri = in.readParcelable(null);
         manualSyncUri = in.readParcelable(null);
         viewIntentProxyUri = in.readParcelable(null);
-        accoutCookieQueryUri = in.readParcelable(null);
+        accountCookieQueryUri = in.readParcelable(null);
         updateSettingsUri = in.readParcelable(null);
         enableMessageTransforms = in.readInt();
         syncAuthority = in.readString();
@@ -575,7 +575,7 @@ public class Account implements Parcelable {
         dest.writeParcelable(defaultRecentFolderListUri, 0);
         dest.writeParcelable(manualSyncUri, 0);
         dest.writeParcelable(viewIntentProxyUri, 0);
-        dest.writeParcelable(accoutCookieQueryUri, 0);
+        dest.writeParcelable(accountCookieQueryUri, 0);
         dest.writeParcelable(updateSettingsUri, 0);
         dest.writeInt(enableMessageTransforms);
         dest.writeString(syncAuthority);
@@ -636,7 +636,7 @@ public class Account implements Parcelable {
                 color == other.color &&
                 Objects.equal(defaultRecentFolderListUri, other.defaultRecentFolderListUri) &&
                 Objects.equal(viewIntentProxyUri, other.viewIntentProxyUri) &&
-                Objects.equal(accoutCookieQueryUri, other.accoutCookieQueryUri) &&
+                Objects.equal(accountCookieQueryUri, other.accountCookieQueryUri) &&
                 Objects.equal(updateSettingsUri, other.updateSettingsUri) &&
                 Objects.equal(enableMessageTransforms, other.enableMessageTransforms) &&
                 Objects.equal(syncAuthority, other.syncAuthority) &&
@@ -689,7 +689,7 @@ public class Account implements Parcelable {
                 color,
                 defaultRecentFolderListUri,
                 viewIntentProxyUri,
-                accoutCookieQueryUri,
+                accountCookieQueryUri,
                 updateSettingsUri,
                 enableMessageTransforms,
                 syncAuthority,
@@ -839,7 +839,7 @@ public class Account implements Parcelable {
         map.put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI, defaultRecentFolderListUri);
         map.put(AccountColumns.MANUAL_SYNC_URI, manualSyncUri);
         map.put(AccountColumns.VIEW_INTENT_PROXY_URI, viewIntentProxyUri);
-        map.put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
+        map.put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accountCookieQueryUri);
         map.put(AccountColumns.COLOR, color);
         map.put(AccountColumns.UPDATE_SETTINGS_URI, updateSettingsUri);
         map.put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);

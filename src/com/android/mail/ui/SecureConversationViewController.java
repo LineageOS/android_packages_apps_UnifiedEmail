@@ -158,7 +158,8 @@ public class SecureConversationViewController implements
         mCallbacks.setupMessageHeaderVeiledMatcher(mMessageHeaderView);
         mCallbacks.setupMessageHeaderVeiledMatcher(mSnapHeaderView);
 
-        mMessageFooterView.initialize(fragment.getLoaderManager(), fragment.getFragmentManager());
+        mMessageFooterView.initialize(fragment.getLoaderManager(), fragment.getFragmentManager(),
+                mCallbacks.getConversationAccountController());
 
         mCallbacks.startMessageLoader();
 
@@ -218,7 +219,7 @@ public class SecureConversationViewController implements
 
         if (mMessage.hasAttachments) {
             mMessageFooterView.setVisibility(View.VISIBLE);
-            mMessageFooterView.bind(item, mCallbacks.getAccountUri(), false);
+            mMessageFooterView.bind(item, false);
         }
     }
 

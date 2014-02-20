@@ -969,7 +969,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         // Secure conversation view does not use a conversation view adapter
         // so it's safe to test for existence as a signal to use javascript or not.
         final boolean useJavascript = mMessageHeaderItem.getAdapter() != null;
-        final Account account = mAccountController.getAccount();
+        final Account account = getAccount();
         final Conversation conversation = mMessage.getConversation();
         final String baseUri =
                 AbstractConversationViewFragment.buildBaseUri(account, conversation);

@@ -17,19 +17,18 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/print_message"
-          android:title="@string/print"
-          android:showAsAction="never" />
 
     <!-- Always available -->
     <item android:id="@+id/settings"
           android:title="@string/menu_settings"
+          android:menuCategory="secondary"
           android:showAsAction="never" />
 
     <!-- Always available -->
     <item
             android:id="@+id/feedback_menu_item"
             android:icon="@android:drawable/ic_menu_send"
+            android:menuCategory="secondary"
             android:showAsAction="never"
             android:title="@string/feedback" />
 
@@ -37,6 +36,7 @@
     <item
             android:id="@+id/help_info_menu_item"
             android:icon="@android:drawable/ic_menu_help"
+            android:menuCategory="secondary"
             android:showAsAction="never"
             android:title="@string/help_and_info" />
 </menu>

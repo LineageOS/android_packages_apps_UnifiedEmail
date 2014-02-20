@@ -16,6 +16,8 @@
 
 package com.android.mail.utils;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Fragment;
@@ -147,6 +149,7 @@ public class Utils {
      * @return Whether we are running on a low memory device.  This is used to disable certain
      * memory intensive features in the app.
      */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public static boolean isLowRamDevice(Context context) {
         if (isRunningKitkatOrLater()) {
             final ActivityManager am = (ActivityManager) context.getSystemService(
