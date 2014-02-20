@@ -60,7 +60,7 @@
     <string name="remove_folder" msgid="4906542720439865413">"Aus <xliff:g id="FOLDERNAME">%1$s</xliff:g> entfernen"</string>
     <string name="archive" msgid="847250094775910499">"Archivieren"</string>
     <string name="report_spam" msgid="6467567747975393907">"Spam melden"</string>
-    <string name="mark_not_spam" msgid="694891665407228160">"Nicht als Spam melden"</string>
+    <string name="mark_not_spam" msgid="694891665407228160">"Kein Spam"</string>
     <string name="report_phishing" msgid="5714205737453138338">"Phishing melden"</string>
     <string name="delete" msgid="844871204175957681">"Löschen"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Entwürfe löschen"</string>
