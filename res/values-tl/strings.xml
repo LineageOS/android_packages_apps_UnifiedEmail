@@ -164,16 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"I-discard ang mensaheng ito?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Naglo-load…"</string>
-    <!-- no translation found for empty_inbox (7623182658180140245) -->
-    <skip />
-    <!-- no translation found for empty_search (7123710829748939105) -->
-    <skip />
-    <!-- no translation found for empty_spam_folder (7915096608607243274) -->
-    <skip />
-    <!-- no translation found for empty_trash_folder (2205589798674653912) -->
-    <skip />
-    <!-- no translation found for empty_folder (107806583742395757) -->
-    <skip />
+    <string name="empty_inbox" msgid="7623182658180140245">"Tapos ka na! Magandang araw sa iyo."</string>
+    <string name="empty_search" msgid="7123710829748939105">"Whoops! Wala kaming nahanap para sa \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\"."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"Yehey, walang spam dito!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Walang basura dito. Salamat sa pagre-recycle!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"Walang mail dito."</string>
     <string name="undo" msgid="6070869718469782251">"I-undo"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Inaalisan ng star ang <xliff:g id="COUNT">%1$d</xliff:g> (na) pag-uusap."</item>

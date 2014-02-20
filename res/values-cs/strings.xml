@@ -167,7 +167,7 @@
     <string name="empty_inbox" msgid="7623182658180140245">"Nic zde není. Nenechte se rušit."</string>
     <string name="empty_search" msgid="7123710829748939105">"Ouha, pro dotaz <xliff:g id="SEARCH_QUERY">%1$s</xliff:g> jsme nic nenašli."</string>
     <string name="empty_spam_folder" msgid="7915096608607243274">"Hurá, nemáte žádný spam!"</string>
-    <string name="empty_trash_folder" msgid="2205589798674653912">"Koš je prázdný. Děkujeme, že recyklujete!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Koš je prázdný. Děkujeme, že třídíte odpad!"</string>
     <string name="empty_folder" msgid="107806583742395757">"Není zde žádná pošta."</string>
     <string name="undo" msgid="6070869718469782251">"Vrátit zpět"</string>
   <plurals name="conversation_unstarred">

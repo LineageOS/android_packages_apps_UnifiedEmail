@@ -164,16 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"ປິດການຂຽນອິເມວນີ້ບໍ່?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"ກຳລັງໂຫລດ..."</string>
-    <!-- no translation found for empty_inbox (7623182658180140245) -->
-    <skip />
-    <!-- no translation found for empty_search (7123710829748939105) -->
-    <skip />
-    <!-- no translation found for empty_spam_folder (7915096608607243274) -->
-    <skip />
-    <!-- no translation found for empty_trash_folder (2205589798674653912) -->
-    <skip />
-    <!-- no translation found for empty_folder (107806583742395757) -->
-    <skip />
+    <string name="empty_inbox" msgid="7623182658180140245">"ທ່ານອ່ານອີເມວໝົດແລ້ວ! ຂໍໃຫ້ມີຄວາມສຸກກັບມື້​ນີ້​ຂອງ​ທ່ານ."</string>
+    <string name="empty_search" msgid="7123710829748939105">"ອຸຍ! ພວກ​ເຮົາ​ບໍ່​ສາ​ມາດ​ຊອກ​ຫາຂໍ້​ມູນ​ກ່ຽວ​ກັ​ບ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" ໄດ້."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"ໂອເຢ່, ບໍ່ມີສະແປມຢູ່ບ່ອນນີ້!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"ບໍ່​ມີ​​ອີ​ເມວຂີ້​ເຫ​ຍື້ອ​ຢູ່​ນີ້. ຂອບ​ໃຈ​ທີ່​ຣີ​ໄຊ​ເຄີນ!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"ບໍ່​ມີ​ອີ​ເມວ​ຢູ່​ນີ້​ເລີຍ."</string>
     <string name="undo" msgid="6070869718469782251">"ແກ້ໄຂຄືນ"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"ກຳລັງຖອດດາວ <xliff:g id="COUNT">%1$d</xliff:g> ການສົນທະນາ."</item>

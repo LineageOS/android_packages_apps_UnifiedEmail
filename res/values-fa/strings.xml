@@ -164,16 +164,11 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"از این پیام صرفنظر شود؟"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"در حال بارگیری…"</string>
-    <!-- no translation found for empty_inbox (7623182658180140245) -->
-    <skip />
-    <!-- no translation found for empty_search (7123710829748939105) -->
-    <skip />
-    <!-- no translation found for empty_spam_folder (7915096608607243274) -->
-    <skip />
-    <!-- no translation found for empty_trash_folder (2205589798674653912) -->
-    <skip />
-    <!-- no translation found for empty_folder (107806583742395757) -->
-    <skip />
+    <string name="empty_inbox" msgid="7623182658180140245">"کار شما انجام شد! روز خوبی داشته باشید."</string>
+    <string name="empty_search" msgid="7123710829748939105">"اوووه! نتیجه‌ای برای «<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>» پیدا نکردیم."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"هـــــورا، هرزنامه‌ای اینجا نیست!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"مورد حذف‌شده‌ای اینجا نیست. از بازیافت متشکریم!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"ایمیلی در اینجا موجود نیست."</string>
     <string name="undo" msgid="6070869718469782251">"لغو"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"در حال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>

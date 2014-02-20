@@ -108,7 +108,7 @@
     <string name="fetching_attachment" msgid="2599763030649526179">"Recupero allegato"</string>
     <string name="please_wait" msgid="8797634225088247121">"Attendi…"</string>
     <string name="saved" msgid="6660844285730790469">"Salvato, <xliff:g id="SIZE">%s</xliff:g>"</string>
-    <string name="download_failed" msgid="442019281547315527">"Download non riuscito. Toccca per riprovare."</string>
+    <string name="download_failed" msgid="442019281547315527">"Download non riuscito. Tocca per riprovare."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Allegati"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Salva tutti"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Condividi"</string>
@@ -165,9 +165,9 @@
     <string name="confirm_discard_text" msgid="1149834186404614612">"Eliminare questo messaggio?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Caricamento…"</string>
     <string name="empty_inbox" msgid="7623182658180140245">"Hai finito! Buona giornata."</string>
-    <string name="empty_search" msgid="7123710829748939105">"Spiacenti. Nessun risultato trovato per \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\"."</string>
+    <string name="empty_search" msgid="7123710829748939105">"Nessun risultato trovato per \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\"."</string>
     <string name="empty_spam_folder" msgid="7915096608607243274">"Evviva, non c\'è spam!"</string>
-    <string name="empty_trash_folder" msgid="2205589798674653912">"Il Cestino è vuoto. Grazie per il riciclo!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Il cestino è vuoto. Grazie per avere tenuto tutto pulito!"</string>
     <string name="empty_folder" msgid="107806583742395757">"Non sono presenti email."</string>
     <string name="undo" msgid="6070869718469782251">"Annulla"</string>
   <plurals name="conversation_unstarred">

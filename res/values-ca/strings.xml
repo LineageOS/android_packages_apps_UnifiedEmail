@@ -164,10 +164,10 @@
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Vols descartar aquest missatge?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"S\'està carregant…"</string>
-    <string name="empty_inbox" msgid="7623182658180140245">"Ja has acabat. Et desitgem que tinguis un bon dia."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"Ja has acabat. Que tinguis un bon dia."</string>
     <string name="empty_search" msgid="7123710829748939105">"Vaja! No hem trobat cap resultat per a \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\"."</string>
     <string name="empty_spam_folder" msgid="7915096608607243274">"Visca, no hi ha correu brossa!"</string>
-    <string name="empty_trash_folder" msgid="2205589798674653912">"No hi ha correu a la paperera. Gràcies per reciclar."</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"No hi ha res a la paperera. Gràcies per reciclar."</string>
     <string name="empty_folder" msgid="107806583742395757">"Aquí no hi ha cap correu."</string>
     <string name="undo" msgid="6070869718469782251">"Desfés"</string>
   <plurals name="conversation_unstarred">
