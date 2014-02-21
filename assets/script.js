@@ -734,6 +734,14 @@ function replaceSuperCollapsedBlock(startIndex) {
     measurePositions();
 }
 
+function processNewMessageBody(msgContentDiv) {
+    processQuotedText(msgContentDiv, true /* showElided */);
+    hideUnsafeImages([msgContentDiv]);
+    if (up(msgContentDiv, "mail-message").classList.contains("expanded")) {
+        normalizeElementWidths([msgContentDiv]);
+    }
+}
+
 function replaceMessageBodies(messageIds) {
     var i;
     var id;
@@ -743,8 +751,7 @@ function replaceMessageBodies(messageIds) {
         id = messageIds[i];
         msgContentDiv = document.querySelector("#" + id + " > .mail-message-content");
         msgContentDiv.innerHTML = window.mail.getMessageBody(id);
-        processQuotedText(msgContentDiv, true /* showElided */);
-        hideUnsafeImages([msgContentDiv]);
+        processNewMessageBody(msgContentDiv);
     }
     measurePositions();
 }
@@ -757,8 +764,7 @@ function appendMessageHtml() {
     var border = msg.children[1]; // get the border spacer as well
     document.body.appendChild(body);
     document.body.appendChild(border);
-    processQuotedText(msg, true /* showElided */);
-    hideUnsafeImages(msg.getElementsByClassName("mail-message-content"));
+    processNewMessageBody(body.querySelector(".mail-message-content"));
     measurePositions();
 }
 
