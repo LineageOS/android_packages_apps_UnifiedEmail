@@ -167,7 +167,7 @@
     <string name="empty_inbox" msgid="7623182658180140245">"Itt nincs semmi teendője. További szép napot!"</string>
     <string name="empty_search" msgid="7123710829748939105">"Hoppá! Nincs találat a következőre: „<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>”."</string>
     <string name="empty_spam_folder" msgid="7915096608607243274">"Hurrá, itt nincs spam!"</string>
-    <string name="empty_trash_folder" msgid="2205589798674653912">"Nincs levél a kukában. Köszönjük, hogy újrahasznosította őket!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Nincs levél a kukában. Köszönjük, hogy újrahasznosította!"</string>
     <string name="empty_folder" msgid="107806583742395757">"Itt nincs levél."</string>
     <string name="undo" msgid="6070869718469782251">"Visszavonás"</string>
   <plurals name="conversation_unstarred">

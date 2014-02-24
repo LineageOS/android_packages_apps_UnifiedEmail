@@ -165,9 +165,9 @@
     <string name="confirm_discard_text" msgid="1149834186404614612">"გაუქმდეს ეს შეტყობინება?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"იტვირთება..."</string>
     <string name="empty_inbox" msgid="7623182658180140245">"თქვენ უკვე ყველაფერი გააკეთეთ! ისიამოვნეთ დღით."</string>
-    <string name="empty_search" msgid="7123710829748939105">"უი! ჩვენ ვერეაფერი ვიპოვნეთ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\"-ის ძიებისას."</string>
+    <string name="empty_search" msgid="7123710829748939105">"უკაცრავად! „<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>“-ის ძიებისას ვერეაფერი მოიძებნა."</string>
     <string name="empty_spam_folder" msgid="7915096608607243274">"გილოცავთ, სპამი აღარ გაქვთ!"</string>
-    <string name="empty_trash_folder" msgid="2205589798674653912">"აქ ნაგავი არაა. მადლობა გასუფთავებისთვის!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"აქ ნაგავი არაა. მადლობას გიხდით გასუფთავებისთვის!"</string>
     <string name="empty_folder" msgid="107806583742395757">"აქ შეტყობინებები არ არის."</string>
     <string name="undo" msgid="6070869718469782251">"დაბრუნება"</string>
   <plurals name="conversation_unstarred">
