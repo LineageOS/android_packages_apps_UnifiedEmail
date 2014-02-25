@@ -465,7 +465,7 @@ public class FolderListFragment extends ListFragment implements
         return mFolderWatcher.getUnreadCount(account);
     }
 
-    private void changeAccount(final Account account) {
+    protected void changeAccount(final Account account) {
         // Switching accounts takes you to the default inbox for that account.
         mSelectedFolderType = DrawerItem.FOLDER_INBOX;
         mNextAccount = account;
