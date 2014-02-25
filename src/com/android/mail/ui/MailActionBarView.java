@@ -471,7 +471,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
 
         int actionItems = 0;
-
+        MenuItem lastActionCandidate = null;
+        int totalVisibleItems = 0;
         for (int i = 0; i < menu.size(); i++) {
             final MenuItem menuItem = menu.getItem(i);
             final int itemId = menuItem.getItemId();
@@ -529,9 +530,20 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                     if (actionItems < maxItems) {
                         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                         actionItems++;
+                    } else {
+                        lastActionCandidate = menuItem;
                     }
                 }
+                if (menuItem.isVisible()) {
+                    totalVisibleItems++;
+                }
             }
+        }
+        if ((totalVisibleItems - actionItems == 1) && lastActionCandidate != null) {
+            // We have exactly one item that we haven't promoted to display in the actionBar.
+            // There's no reason to put it in the overflow, because it will fit in the actionBar
+            // if we just don't display the overflow.
+            lastActionCandidate.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
     }
 
