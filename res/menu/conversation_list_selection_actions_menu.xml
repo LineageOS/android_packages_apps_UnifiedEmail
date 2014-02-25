@@ -85,11 +85,13 @@
 
     <item android:id="@+id/star"
         android:title="@string/add_star"
-        android:showAsAction="never" />
+        android:icon="@drawable/ic_menu_starred_holo_light"
+        android:showAsAction="ifRoom" />
 
     <item android:id="@+id/remove_star"
         android:title="@string/remove_star"
-        android:showAsAction="never" />
+        android:icon="@drawable/ic_menu_unstarred_holo_light"
+        android:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/mark_important"
