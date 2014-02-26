@@ -958,7 +958,7 @@ public abstract class AbstractActivityController implements ActivityController,
             }
         }
         if (!handled) {
-            LogUtils.w(LOG_TAG, "Starting a LOADER_ACCOUNT_INBOX for %s", mAccount);
+            LogUtils.d(LOG_TAG, "Starting a LOADER_ACCOUNT_INBOX for %s", mAccount);
             restartOptionalLoader(LOADER_ACCOUNT_INBOX, mFolderCallbacks, Bundle.EMPTY);
         }
         final int mode = mViewMode.getMode();
