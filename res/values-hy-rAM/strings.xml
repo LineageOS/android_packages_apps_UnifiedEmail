@@ -102,6 +102,9 @@
     <string name="preview_attachment" msgid="6934911143603455393">"Նախադիտում"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Պահել"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Չեղարկել"</string>
+    <!-- no translation found for open_attachment (975940478986626705) -->
+    <skip />
+    <string name="install_attachment" msgid="2803531650273683382">"Տեղադրել"</string>
     <string name="download_again" msgid="7418568915429156518">"Ներբեռնել կրկին"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Տեղեկություններ"</string>
     <string name="no_application_found" msgid="1945184804521392093">"Ոչ մի հավելված չի կարող բացել այս կցորդը դիտման համար:"</string>

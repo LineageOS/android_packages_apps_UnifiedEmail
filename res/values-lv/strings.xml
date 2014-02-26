@@ -102,6 +102,9 @@
     <string name="preview_attachment" msgid="6934911143603455393">"Priekšsk."</string>
     <string name="save_attachment" msgid="5360128849867863132">"Saglabāt"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Atcelt"</string>
+    <!-- no translation found for open_attachment (975940478986626705) -->
+    <skip />
+    <string name="install_attachment" msgid="2803531650273683382">"Instalēt"</string>
     <string name="download_again" msgid="7418568915429156518">"Lejupielādēt vēlreiz"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informācija"</string>
     <string name="no_application_found" msgid="1945184804521392093">"Nevienā lietotnē nevar atvērt šo pielikumu, lai to skatītu."</string>
