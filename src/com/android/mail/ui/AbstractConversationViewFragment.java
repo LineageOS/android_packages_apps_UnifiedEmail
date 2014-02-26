@@ -67,6 +67,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private static final String LOG_TAG = LogTag.getLogTag();
     protected static final int MESSAGE_LOADER = 0;
     protected static final int CONTACT_LOADER = 1;
+    public static final int ATTACHMENT_OPTION1_LOADER = 2;
     protected ControllableActivity mActivity;
     private final MessageLoaderCallbacks mMessageLoaderCallbacks = new MessageLoaderCallbacks();
     private ContactLoaderCallbacks mContactLoaderCallbacks;

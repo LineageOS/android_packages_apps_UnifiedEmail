@@ -25,6 +25,7 @@ import com.android.emailcommon.internet.MimeMessage;
 import com.android.emailcommon.mail.MessagingException;
 import com.android.mail.browse.MessageCursor.ConversationController;
 import com.android.mail.content.CursorCreator;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
@@ -63,6 +64,10 @@ public final class ConversationMessage extends Message {
 
     public Conversation getConversation() {
         return mController != null ? mController.getConversation() : null;
+    }
+
+    public Account getAccount() {
+        return mController != null ? mController.getAccount() : null;
     }
 
     /**

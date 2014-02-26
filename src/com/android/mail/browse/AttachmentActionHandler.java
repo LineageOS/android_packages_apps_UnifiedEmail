@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentContentValueKeys;
@@ -45,6 +46,8 @@ import java.util.ArrayList;
 public class AttachmentActionHandler {
     private static final String PROGRESS_FRAGMENT_TAG = "attachment-progress";
 
+    private String mAccount;
+    private Message mMessage;
     private Attachment mAttachment;
 
     private final AttachmentCommandHandler mCommandHandler;
@@ -56,6 +59,8 @@ public class AttachmentActionHandler {
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
+    private static OptionHandler sOptionHandler = new OptionHandler();
+
     public AttachmentActionHandler(Context context, AttachmentViewInterface view) {
         mCommandHandler = new AttachmentCommandHandler(context);
         mView = view;
@@ -66,6 +71,14 @@ public class AttachmentActionHandler {
 
     public void initialize(FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
+    }
+
+    public void setAccount(String account) {
+        mAccount = account;
+    }
+
+    public void setMessage(Message message) {
+        mMessage = message;
     }
 
     public void setAttachment(Attachment attachment) {
@@ -236,4 +249,41 @@ public class AttachmentActionHandler {
             LogUtils.e(LOG_TAG, "Couldn't find Activity for intent", e);
         }
     }
+
+    public static void setOptionHandler(OptionHandler handler) {
+        sOptionHandler = handler;
+    }
+
+    public boolean shouldShowExtraOption1() {
+        return (sOptionHandler != null) && sOptionHandler.shouldShowExtraOption1();
+    }
+
+    public void handleOption1() {
+        if (sOptionHandler == null) {
+            return;
+        }
+        sOptionHandler.handleOption1(mContext, mAccount, mMessage, mAttachment, mFragmentManager);
+    }
+
+    /**
+     * A default, no-op option class. Override this and set it globally with
+     * {@link AttachmentActionHandler#setOptionHandler(OptionHandler)}.<br>
+     * <br>
+     * Subclasses of this type will live pretty much forever, so really, really try to avoid
+     * keeping any state as member variables in them.
+     */
+    public static class OptionHandler {
+
+        public boolean shouldShowExtraOption1() {
+            return false;
+        }
+
+        @SuppressWarnings("unused")
+        public void handleOption1(Context context, String account, Message message,
+                Attachment attachment, FragmentManager fm) {
+            // no-op
+        }
+
+    }
+
 }

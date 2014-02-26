@@ -1742,7 +1742,10 @@ public class UIProvider {
         public static final String HAS_ATTACHMENTS = "hasAttachments";
         /**
          * This string column contains the content provider URI for the list of
-         * attachments associated with this message.
+         * attachments associated with this message.<br>
+         * <br>
+         * The resulting cursor MUST have the columns as defined in
+         * {@link com.android.ex.photo.provider.PhotoContract.PhotoViewColumns}.
          */
         public static final String ATTACHMENT_LIST_URI = "attachmentListUri";
         /**

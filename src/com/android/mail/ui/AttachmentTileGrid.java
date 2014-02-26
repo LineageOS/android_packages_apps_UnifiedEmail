@@ -19,19 +19,21 @@ package com.android.mail.ui;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.MessageAttachmentTile;
 import com.android.mail.compose.ComposeAttachmentTile;
+import com.android.mail.photo.MailPhotoViewActivity;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Message;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.ui.AttachmentTile.AttachmentPreviewCache;
-
 import com.android.mail.utils.ViewUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -43,14 +45,16 @@ import java.util.List;
 /**
  * Acts as a grid composed of {@link AttachmentTile}s.
  */
-public class AttachmentTileGrid extends FrameLayout implements AttachmentPreviewCache {
+public class AttachmentTileGrid extends FrameLayout implements AttachmentPreviewCache,
+        MessageAttachmentTile.PhotoViewHandler {
     private final LayoutInflater mInflater;
-    private Uri mAttachmentsListUri;
     private final int mTileMinSize;
     private int mColumnCount;
     private List<Attachment> mAttachments;
     private final HashMap<String, AttachmentPreview> mAttachmentPreviews;
     private FragmentManager mFragmentManager;
+    private Account mAccount;
+    private Message mMessage;
 
     public AttachmentTileGrid(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -63,10 +67,12 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
     /**
      * Configures the grid to add {@link Attachment}s information to the views.
      */
-    public void configureGrid(FragmentManager fragmentManager, Uri attachmentsListUri,
-            List<Attachment> list, boolean loaderResult) {
+    public void configureGrid(FragmentManager fragmentManager, Account account,
+            ConversationMessage message, List<Attachment> list, boolean loaderResult) {
+
         mFragmentManager = fragmentManager;
-        mAttachmentsListUri = attachmentsListUri;
+        mAccount = account;
+        mMessage = message;
         mAttachments = list;
         // Adding tiles to grid and filling in attachment information
         int index = 0;
@@ -82,12 +88,13 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
         if (getChildCount() <= index) {
             attachmentTile = MessageAttachmentTile.inflate(mInflater, this);
             attachmentTile.initialize(mFragmentManager);
+            attachmentTile.setPhotoViewHandler(this);
             addView(attachmentTile);
         } else {
             attachmentTile = (MessageAttachmentTile) getChildAt(index);
         }
 
-        attachmentTile.render(attachment, mAttachmentsListUri, index, this, loaderResult);
+        attachmentTile.render(attachment, index, this, loaderResult);
     }
 
     public ComposeAttachmentTile addComposeTileFromAttachment(Attachment attachment) {
@@ -95,9 +102,17 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
                 ComposeAttachmentTile.inflate(mInflater, this);
 
         addView(attachmentTile);
-        attachmentTile.render(attachment, null, -1, this, false);
+        attachmentTile.render(attachment, this);
 
         return attachmentTile;
+    }
+
+    @Override
+    public void viewPhoto(MessageAttachmentTile source) {
+        final int photoIndex = indexOfChild(source);
+
+        MailPhotoViewActivity.startMailPhotoViewActivity(getContext(), mAccount.getEmailAddress(),
+                mMessage, photoIndex);
     }
 
     @Override

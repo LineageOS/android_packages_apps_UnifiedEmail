@@ -22,7 +22,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +32,6 @@ import android.view.ViewParent;
 import com.android.ex.photo.util.ImageUtils;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
-import com.android.mail.photo.MailPhotoViewActivity;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
@@ -57,12 +55,21 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         AttachmentViewInterface {
 
     private int mPhotoIndex;
-    private Uri mAttachmentsListUri;
     private View mTextContainer;
 
     private final AttachmentActionHandler mActionHandler;
 
+    private PhotoViewHandler mPhotoViewHandler;
+
     private static final String LOG_TAG = LogTag.getLogTag();
+
+    /**
+     * Let someone else do this work, since it typically requires broader visibility of context,
+     * like what other photos to also show alongside this one.
+     */
+    public interface PhotoViewHandler {
+        void viewPhoto(MessageAttachmentTile source);
+    }
 
     public MessageAttachmentTile(Context context) {
         this(context, null);
@@ -78,17 +85,19 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         mActionHandler.initialize(fragmentManager);
     }
 
+    public void setPhotoViewHandler(PhotoViewHandler pvh) {
+        mPhotoViewHandler = pvh;
+    }
+
     /**
      * Render or update an attachment's view. This happens immediately upon instantiation, and
      * repeatedly as status updates stream in, so only properties with new or changed values will
      * cause sub-views to update.
      */
-    @Override
-    public void render(Attachment attachment, Uri attachmentsListUri, int index,
+    public void render(Attachment attachment, int index,
             AttachmentPreviewCache attachmentPreviewCache, boolean loaderResult) {
-        super.render(attachment, attachmentsListUri, index, attachmentPreviewCache, loaderResult);
+        render(attachment, attachmentPreviewCache);
 
-        mAttachmentsListUri = attachmentsListUri;
         mPhotoIndex = index;
 
         mActionHandler.setAttachment(mAttachment);
@@ -122,6 +131,8 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
     }
 
     private void showAndDownloadAttachments() {
+        // TODO: clean this up, it seems like it should live in AttachmentTileGrid since it keeps
+        // inappropriately touching this view's peers
         AttachmentTileGrid tileGrid = ((AttachmentTileGrid) getParent());
         int childCount = tileGrid.getChildCount();
 
@@ -158,8 +169,11 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
                 .sendEvent("view_attachment", mime, "attachment_tile", mAttachment.size);
 
         if (ImageUtils.isImageMimeType(mime)) {
-            MailPhotoViewActivity
-                    .startMailPhotoViewActivity(getContext(), mAttachmentsListUri, mPhotoIndex);
+            if (mPhotoViewHandler != null) {
+                mPhotoViewHandler.viewPhoto(this);
+            } else {
+                LogUtils.e(LOG_TAG, "unable to view image attachment b/c handler is null");
+            }
             return;
         }
 
