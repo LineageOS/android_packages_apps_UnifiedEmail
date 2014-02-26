@@ -21,7 +21,6 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.print.PrintHelper;
@@ -42,6 +41,7 @@ import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
@@ -73,54 +73,59 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      * retry button.
      */
     private MenuItem mDownloadAgainItem;
-    private AttachmentActionHandler mActionHandler;
+    private MenuItem mExtraOption1Item;
+    protected AttachmentActionHandler mActionHandler;
     private Menu mMenu;
+
+    private static final String EXTRA_ACCOUNT = MailPhotoViewActivity.class.getName() + "-acct";
+    private static final String EXTRA_MESSAGE = MailPhotoViewActivity.class.getName() + "-msg";
 
     /**
      * Start a new MailPhotoViewActivity to view the given images.
      *
-     * @param imageListUri The uri to query for the images that you want to view. The resulting
-     *                     cursor must have the columns as defined in
-     *                     {@link com.android.ex.photo.provider.PhotoContract.PhotoViewColumns}.
      * @param photoIndex The index of the photo to show first.
      */
-    public static void startMailPhotoViewActivity(final Context context, final Uri imageListUri,
-            final int photoIndex) {
+    public static void startMailPhotoViewActivity(final Context context, final String account,
+            final Message msg, final int photoIndex) {
         final Intents.PhotoViewIntentBuilder builder =
                 Intents.newPhotoViewIntentBuilder(context,
                         "com.android.mail.photo.MailPhotoViewActivity");
         builder
-                .setPhotosUri(imageListUri.toString())
+                .setPhotosUri(msg.attachmentListUri.toString())
                 .setProjection(UIProvider.ATTACHMENT_PROJECTION)
                 .setPhotoIndex(photoIndex);
 
-        context.startActivity(builder.build());
+        context.startActivity(wrapIntent(builder.build(), account, msg));
     }
 
     /**
      * Start a new MailPhotoViewActivity to view the given images.
      *
-     * @param imageListUri The uri to query for the images that you want to view. The resulting
-     *                     cursor must have the columns as defined in
-     *                     {@link com.android.ex.photo.provider.PhotoContract.PhotoViewColumns}.
      * @param initialPhotoUri The uri of the photo to show first.
      */
-    public static void startMailPhotoViewActivity(final Context context, final Uri imageListUri,
-            final String initialPhotoUri) {
+    public static void startMailPhotoViewActivity(final Context context, final String account,
+            final Message msg, final String initialPhotoUri) {
         context.startActivity(
-                buildMailPhotoViewActivityIntent(context, imageListUri, initialPhotoUri));
+                buildMailPhotoViewActivityIntent(context, account, msg, initialPhotoUri));
     }
 
     public static Intent buildMailPhotoViewActivityIntent(
-            final Context context, final Uri imageListUri, final String initialPhotoUri) {
+            final Context context, final String account, final Message msg,
+            final String initialPhotoUri) {
         final Intents.PhotoViewIntentBuilder builder = Intents.newPhotoViewIntentBuilder(
                 context, "com.android.mail.photo.MailPhotoViewActivity");
 
-        builder.setPhotosUri(imageListUri.toString())
+        builder.setPhotosUri(msg.attachmentListUri.toString())
                 .setProjection(UIProvider.ATTACHMENT_PROJECTION)
                 .setInitialPhotoUri(initialPhotoUri);
 
-        return builder.build();
+        return wrapIntent(builder.build(), account, msg);
+    }
+
+    private static Intent wrapIntent(final Intent intent, final String account, final Message msg) {
+        intent.putExtra(EXTRA_MESSAGE, msg);
+        intent.putExtra(EXTRA_ACCOUNT, account);
+        return intent;
     }
 
     @Override
@@ -130,6 +135,12 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
         mActionHandler = new AttachmentActionHandler(this, null);
         mActionHandler.initialize(getFragmentManager());
+
+        final Intent intent = getIntent();
+        final String account = intent.getStringExtra(EXTRA_ACCOUNT);
+        final Message msg = intent.getParcelableExtra(EXTRA_MESSAGE);
+        mActionHandler.setAccount(account);
+        mActionHandler.setMessage(msg);
     }
 
     @Override
@@ -145,6 +156,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         mShareAllItem = mMenu.findItem(R.id.menu_share_all);
         mPrintItem = mMenu.findItem(R.id.menu_print);
         mDownloadAgainItem = mMenu.findItem(R.id.menu_download_again);
+        mExtraOption1Item = mMenu.findItem(R.id.attachment_extra_option1);
 
         return true;
     }
@@ -171,6 +183,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             mShareItem.setEnabled(canShare);
             mPrintItem.setEnabled(canShare);
             mDownloadAgainItem.setEnabled(attachment.canSave() && attachment.isDownloading());
+            mExtraOption1Item.setEnabled(mActionHandler.shouldShowExtraOption1());
         } else {
             if (mMenu != null) {
                 mMenu.setGroupEnabled(R.id.photo_view_menu_group, false);
@@ -223,28 +236,25 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         if (itemId == android.R.id.home) {
             // app icon in action bar clicked; go back to conversation
             finish();
-            return true;
         } else if (itemId == R.id.menu_save) { // save the current photo
             saveAttachment();
-            return true;
         } else if (itemId == R.id.menu_save_all) { // save all of the photos
             saveAllAttachments();
-            return true;
         } else if (itemId == R.id.menu_share) { // share the current photo
             shareAttachment();
-            return true;
         } else if (itemId == R.id.menu_share_all) { // share all of the photos
             shareAllAttachments();
-            return true;
         } else if (itemId == R.id.menu_print) { // print the current photo
             printAttachment();
-            return true;
         } else if (itemId == R.id.menu_download_again) { // redownload the current photo
             redownloadAttachment();
-            return true;
+        } else if (itemId == R.id.attachment_extra_option1) {
+            mActionHandler.setAttachment(getCurrentAttachment());
+            mActionHandler.handleOption1();
         } else {
             return super.onOptionsItemSelected(item);
         }
+        return true;
     }
 
     /**

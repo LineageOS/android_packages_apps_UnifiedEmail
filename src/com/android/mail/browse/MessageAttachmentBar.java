@@ -109,13 +109,14 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
      * repeatedly as status updates stream in, so only properties with new or changed values will
      * cause sub-views to update.
      */
-    public void render(Attachment attachment, Account account,
+    public void render(Attachment attachment, Account account, ConversationMessage message,
             boolean loaderResult, BidiFormatter bidiFormatter) {
         // get account uri for potential eml viewer usage
         mAccount = account;
 
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
+        mActionHandler.setMessage(message);
         mActionHandler.setAttachment(mAttachment);
 
         // reset mSaveClicked if we are not currently downloading
@@ -202,6 +203,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             Analytics.getInstance().sendEvent(
                     "cancel_attachment", Utils.normalizeMimeType(mAttachment.getContentType()),
                     "attachment_bar", mAttachment.size);
+        } else if (res == R.id.attachment_extra_option1) {
+            mActionHandler.handleOption1();
         } else if (res == R.id.overflow) {
             // If no overflow items are visible, just bail out.
             // We shouldn't be able to get here anyhow since the overflow
@@ -218,6 +221,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 menu.findItem(R.id.preview_attachment).setVisible(shouldShowPreview());
                 menu.findItem(R.id.save_attachment).setVisible(shouldShowSave());
                 menu.findItem(R.id.download_again).setVisible(shouldShowDownloadAgain());
+                menu.findItem(R.id.attachment_extra_option1).setVisible(shouldShowExtraOption1());
 
                 mPopup.show();
             }
@@ -296,9 +300,13 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         return mAttachment.supportsDownloadAgain() && mAttachment.isDownloadFinishedOrFailed();
     }
 
+    private boolean shouldShowExtraOption1() {
+        return mActionHandler.shouldShowExtraOption1();
+    }
+
     private boolean shouldShowOverflow() {
-        return (shouldShowPreview() || shouldShowSave() || shouldShowDownloadAgain())
-                && !shouldShowCancel();
+        return (shouldShowPreview() || shouldShowSave() || shouldShowDownloadAgain()
+                || shouldShowExtraOption1()) && !shouldShowCancel();
     }
 
     private boolean shouldShowCancel() {

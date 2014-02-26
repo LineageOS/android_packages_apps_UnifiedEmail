@@ -205,8 +205,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mAttachmentGrid.setVisibility(View.VISIBLE);
 
         // Setup the tiles.
-        mAttachmentGrid.configureGrid(mFragmentManager,
-                mMessageHeaderItem.getMessage().attachmentListUri, tiledAttachments, loaderResult);
+        mAttachmentGrid.configureGrid(mFragmentManager, getAccount(),
+                mMessageHeaderItem.getMessage(), tiledAttachments, loaderResult);
     }
 
     private void renderBarAttachments(List<Attachment> barAttachments, boolean loaderResult) {
@@ -225,7 +225,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 mAttachmentBarList.addView(barAttachmentView);
             }
 
-            barAttachmentView.render(attachment, account, loaderResult, getBidiFormatter());
+            barAttachmentView.render(attachment, account, mMessageHeaderItem.getMessage(),
+                    loaderResult, getBidiFormatter());
         }
     }
 
