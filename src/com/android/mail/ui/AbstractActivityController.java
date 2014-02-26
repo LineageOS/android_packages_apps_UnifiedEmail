@@ -660,8 +660,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void switchToDefaultInboxOrChangeAccount(Account account) {
         LogUtils.d(LOG_TAG, "AAC.switchToDefaultAccount(%s)", account);
-        if (mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST ||
-                mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+        if (mViewMode.isSearchMode()) {
             // We are in an activity on top of the main navigation activity.
             // We need to return to it with a result code that indicates it should navigate to
             // a different folder.
@@ -4232,8 +4231,7 @@ public abstract class AbstractActivityController implements ActivityController,
             LogUtils.d(LOG_TAG, "AAC onDrawerStateChanged %d", newState);
             mDrawerState = newState;
             mDrawerToggle.onDrawerStateChanged(mDrawerState);
-            if (mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST ||
-                    mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+            if (mViewMode.isSearchMode()) {
                 return;
             }
             if (mDrawerState == DrawerLayout.STATE_IDLE) {

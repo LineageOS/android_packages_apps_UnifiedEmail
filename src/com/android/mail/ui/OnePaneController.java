@@ -340,8 +340,7 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void onFolderSelected(Folder folder) {
-        if (mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST ||
-                mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+        if (mViewMode.isSearchMode()) {
             // We are in an activity on top of the main navigation activity.
             // We need to return to it with a result code that indicates it should navigate to
             // a different folder.

@@ -202,6 +202,10 @@ public class ViewMode {
         return mode == CONVERSATION || mode == SEARCH_RESULTS_CONVERSATION;
     }
 
+    public boolean isSearchMode() {
+        return isSearchMode(mMode);
+    }
+
     public static boolean isSearchMode(final int mode) {
         return mode == SEARCH_RESULTS_LIST || mode == SEARCH_RESULTS_CONVERSATION;
     }
