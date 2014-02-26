@@ -221,6 +221,10 @@
     <string name="save_attachment">Save</string>
     <!-- Read email screen, button name. Cancel a downloading attachment. [CHAR LIMIT=10] -->
     <string name="cancel_attachment">Cancel</string>
+    <!-- Read email screen, button name. Open an attachment. [CHAR LIMIT=10] -->
+    <string name="open_attachment">Open</string>
+    <!-- Read email screen, button name. Install an attachment. [CHAR LIMIT=10] -->
+    <string name="install_attachment">Install</string>
     <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
     <string name="download_again">Download again</string>
     <!-- Dialog box title [CHAR LIMIT=30] -->
