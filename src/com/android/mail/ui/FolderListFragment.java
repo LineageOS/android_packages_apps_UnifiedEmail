@@ -135,6 +135,7 @@ public class FolderListFragment extends ListFragment implements
 
     private static final String BUNDLE_LIST_STATE = "flf-list-state";
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
+    private static final String BUNDLE_SELECTED_ITEM_TYPE = "flf-selected-item-type";
     private static final String BUNDLE_SELECTED_TYPE = "flf-selected-type";
 
     /** Adapter used by the list that wraps both the folder adapter and the accounts adapter. */
@@ -156,7 +157,10 @@ public class FolderListFragment extends ListFragment implements
      * {@link DrawerItem#FOLDER_RECENT} or {@link DrawerItem#FOLDER_OTHER}.
      * Set as {@link DrawerItem#UNSET} to begin with, as there is nothing selected yet.
      */
-    private int mSelectedFolderType = DrawerItem.UNSET;
+    private int mSelectedDrawerItemType = DrawerItem.UNSET;
+
+    /** The FolderType of the selected folder {@link FolderType} */
+    private int mSelectedFolderType = FolderType.INBOX;
     /** The current account according to the controller */
     protected Account mCurrentAccount;
     /** The account we will change to once the drawer (if any) is closed */
@@ -384,6 +388,7 @@ public class FolderListFragment extends ListFragment implements
         if (savedState != null && savedState.containsKey(BUNDLE_SELECTED_FOLDER)) {
             mSelectedFolderUri =
                     new FolderUri(Uri.parse(savedState.getString(BUNDLE_SELECTED_FOLDER)));
+            mSelectedDrawerItemType = savedState.getInt(BUNDLE_SELECTED_ITEM_TYPE);
             mSelectedFolderType = savedState.getInt(BUNDLE_SELECTED_TYPE);
         } else if (mParentFolder != null) {
             mSelectedFolderUri = mParentFolder.folderUri;
@@ -417,6 +422,7 @@ public class FolderListFragment extends ListFragment implements
         if (mSelectedFolderUri != null) {
             outState.putString(BUNDLE_SELECTED_FOLDER, mSelectedFolderUri.toString());
         }
+        outState.putInt(BUNDLE_SELECTED_ITEM_TYPE, mSelectedDrawerItemType);
         outState.putInt(BUNDLE_SELECTED_TYPE, mSelectedFolderType);
     }
 
@@ -467,7 +473,8 @@ public class FolderListFragment extends ListFragment implements
 
     protected void changeAccount(final Account account) {
         // Switching accounts takes you to the default inbox for that account.
-        mSelectedFolderType = DrawerItem.FOLDER_INBOX;
+        mSelectedDrawerItemType = DrawerItem.FOLDER_INBOX;
+        mSelectedFolderType = FolderType.INBOX;
         mNextAccount = account;
         mAccountController.closeDrawer(true, mNextAccount, getDefaultInbox(mNextAccount));
         Analytics.getInstance().sendEvent("switch_account", "drawer_account_switch", null, 0);
@@ -494,9 +501,10 @@ public class FolderListFragment extends ListFragment implements
             } else if (itemType == DrawerItem.VIEW_FOLDER) {
                 // Folder type, so change folders only.
                 folder = drawerItem.mFolder;
-                mSelectedFolderType = folderType = drawerItem.mFolderType;
+                mSelectedDrawerItemType = folderType = drawerItem.mFolderType;
+                mSelectedFolderType = folder.type;
                 LogUtils.d(LOG_TAG, "FLF.viewFolderOrChangeAccount folder=%s, type=%d",
-                        folder, mSelectedFolderType);
+                        folder, mSelectedDrawerItemType);
             } else {
                 // Do nothing.
                 LogUtils.d(LOG_TAG, "FolderListFragment: viewFolderOrChangeAccount():"
@@ -663,7 +671,7 @@ public class FolderListFragment extends ListFragment implements
             final DrawerItem item = (DrawerItem) getItem(position);
             final View view = item.getView(convertView, parent);
             final int type = item.mType;
-            final boolean isSelected = item.isHighlighted(mSelectedFolderUri, mSelectedFolderType);
+            final boolean isSelected = item.isHighlighted(mSelectedFolderUri, mSelectedDrawerItemType);
             if (type == DrawerItem.VIEW_FOLDER) {
                 mListView.setItemChecked(mAccountsAdapter.getCount() + position, isSelected);
             }
@@ -801,7 +809,10 @@ public class FolderListFragment extends ListFragment implements
                     } while (!currentFolderFound && mAllFolderListCursor.moveToNext());
                 }
 
-                if (!currentFolderFound && mSelectedFolderUri != FolderUri.EMPTY
+                // The search folder will not be found here because it is excluded from the drawer.
+                // Don't switch off from the current folder if it's search.
+                if (!currentFolderFound && !Folder.isType(FolderType.SEARCH, mSelectedFolderType)
+                        && mSelectedFolderUri != FolderUri.EMPTY
                         && mCurrentAccount != null && mAccountController != null
                         && mAccountController.isDrawerPullEnabled()) {
                     LogUtils.d(LOG_TAG, "Current folder (%1$s) has disappeared for %2$s",
@@ -1087,10 +1098,11 @@ public class FolderListFragment extends ListFragment implements
         //    any folder will take you to the default inbox for that account. (If you are in the
         //    default inbox already, back exits the app.)
         // In both these cases, the selected folder type is not set, and must be set.
-        if (mSelectedFolderType == DrawerItem.UNSET || (mCurrentAccount != null
+        if (mSelectedDrawerItemType == DrawerItem.UNSET || (mCurrentAccount != null
                 && folder.folderUri.equals(mCurrentAccount.settings.defaultInbox))) {
-            mSelectedFolderType =
+            mSelectedDrawerItemType =
                     folder.isInbox() ? DrawerItem.FOLDER_INBOX : DrawerItem.FOLDER_OTHER;
+            mSelectedFolderType = folder.type;
         }
 
         mCurrentFolderForUnreadCheck = folder;
