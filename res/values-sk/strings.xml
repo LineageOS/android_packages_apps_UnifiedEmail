@@ -102,6 +102,9 @@
     <string name="preview_attachment" msgid="6934911143603455393">"Ukážka"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Uložiť"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Zrušiť"</string>
+    <!-- no translation found for open_attachment (975940478986626705) -->
+    <skip />
+    <string name="install_attachment" msgid="2803531650273683382">"Inštalovať"</string>
     <string name="download_again" msgid="7418568915429156518">"Stiahnuť znova"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informácie"</string>
     <string name="no_application_found" msgid="1945184804521392093">"Žiadna aplikácia nemôže otvoriť ani zobraziť túto prílohu."</string>
@@ -308,7 +311,7 @@
     <string name="report" msgid="5417082746232614958">"Prehľad"</string>
     <string name="sync_error" msgid="7368819509040597851">"Nepodarilo sa synchronizovať."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Vaše zariadenie nemá dostatočný ukladací priestor potrebný na synchronizáciu."</string>
-    <string name="storage" msgid="3262760336059073446">"Ukladací priestor"</string>
+    <string name="storage" msgid="3262760336059073446">"Úložisko"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Všetky priečinky"</string>
