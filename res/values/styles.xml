@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Compose Styles -->
     <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextView">
         <item name="android:minHeight">42dip</item>
@@ -224,35 +224,31 @@
         <item name="android:layout_marginTop">@dimen/message_header_presence_top_margin</item>
     </style>
 
-    <style name="AbstractMessageSenderNameStyle">
+    <style name="MessageSenderNameStyle">
         <item name="android:singleLine">true</item>
+        <item name="android:textAlignment" tools:ignore="NewApi">viewStart</item>
+        <item name="android:textColor">@color/conv_header_text_dark</item>
         <item name="android:textSize">@dimen/message_sender_name_text_size</item>
-        <item name="android:textColor">@color/conv_header_text_dark</item>
     </style>
 
-    <style name="MessageSenderNameStyle" parent="AbstractMessageSenderNameStyle">
-        <item name="android:layout_alignParentLeft">true</item>
-    </style>
-
-    <style name="AbstractMessageHeaderSubtitleStyle">
+    <style name="MessageHeaderSubtitleStyle">
         <item name="android:singleLine">true</item>
-        <item name="android:textSize">@dimen/message_header_subtitle_text_size</item>
+        <item name="android:textAlignment" tools:ignore="NewApi">viewStart</item>
         <item name="android:textColor">@color/conv_header_text_dark</item>
-    </style>
-
-    <style name="MessageHeaderSubtitleStyle" parent="AbstractMessageHeaderSubtitleStyle">
-        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:textSize">@dimen/message_header_subtitle_text_size</item>
     </style>
 
     <style name="MessageHeaderSnippetStyle">
         <item name="android:lines">2</item>
-        <item name="android:textSize">@dimen/message_header_subtitle_text_size</item>
+        <item name="android:textAlignment" tools:ignore="NewApi">viewStart</item>
         <item name="android:textColor">@color/conv_header_text_light</item>
+        <item name="android:textSize">@dimen/message_header_subtitle_text_size</item>
     </style>
 
     <style name="MessageHeaderSmallStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
+        <item name="android:textAlignment" tools:ignore="NewApi">viewStart</item>
         <item name="android:textColor">@color/conv_header_text_dark</item>
         <item name="android:textSize">@dimen/message_header_subtitle_text_size</item>
     </style>
@@ -266,18 +262,9 @@
     </style>
 
     <style name="MessageHeaderShowPicsStyle" parent="AbstractMessageHeaderShowPicsStyle">
-        <item name="android:paddingLeft">@dimen/message_details_header_padding_start_collapsed
-        </item>
+        <item name="android:paddingLeft">@dimen/message_details_extra_content_padding_start</item>
         <item name="android:paddingRight">@dimen/message_show_pics_header_padding_end</item>
         <item name="android:drawableLeft">@drawable/ic_show_images_holo_light</item>
-    </style>
-
-    <style name="AbstractMessageHeaderUpperDateStyle" parent="MessageHeaderSmallStyle">
-        <item name="android:minHeight">24dp</item>
-    </style>
-
-    <style name="MessageHeaderUpperDateStyle" parent="AbstractMessageHeaderUpperDateStyle">
-        <item name="android:layout_alignParentRight">true</item>
     </style>
 
     <style name="AbstractMessageAttachmentsHeaderStyle" parent="MessageHeaderSmallStyle">
@@ -286,7 +273,7 @@
     </style>
 
     <style name="MessageAttachmentsHeaderStyle" parent="AbstractMessageAttachmentsHeaderStyle">
-        <item name="android:paddingLeft">@dimen/message_details_header_padding_start</item>
+        <item name="android:paddingLeft">@dimen/message_attachment_header_padding_start</item>
     </style>
 
     <style name="MessageDetailsValueStyle" parent="MessageHeaderSmallStyle">
@@ -538,9 +525,9 @@
     </style>
 
     <style name="MessageDetailsHeaderStyle">
-        <item name="android:paddingLeft">@dimen/message_details_header_padding_start_collapsed
-        </item>
-        <item name="android:paddingRight">@dimen/message_details_header_padding_end</item>
+        <item name="android:layout_marginLeft">@dimen/message_details_header_margin_start</item>
+        <item name="android:paddingLeft">@dimen/message_details_header_padding_start</item>
+        <item name="android:layout_marginRight">@dimen/message_details_header_padding_end</item>
     </style>
 
     <style name="MessageUpperHeaderTextStyle">
@@ -603,10 +590,6 @@
         <item name="android:layout_marginLeft">@dimen/teaser_text_padding</item>
     </style>
 
-    <style name="DetailsExpanderStyle">
-        <item name="android:layout_marginLeft">@dimen/message_header_inner_side_padding</item>
-    </style>
-
     <style name="AttachmentMarginStyle">
         <item name="android:layout_marginLeft">@dimen/attachment_margin_side</item>
         <item name="android:layout_marginRight">@dimen/attachment_margin_side</item>
@@ -614,10 +597,6 @@
 
     <style name="MessageHeaderContactImageStyle">
         <item name="android:layout_marginLeft">@dimen/message_header_padding_start</item>
-    </style>
-
-    <style name="AttachmentIconStyle">
-        <item name="android:layout_marginLeft">@dimen/attachment_icon_padding</item>
     </style>
 
     <style name="ConversationHeaderSideMarginStyle">
@@ -636,10 +615,6 @@
 
     <style name="UnseenCountWithMarginEndStyle" parent="UnseenCount">
         <item name="android:layout_marginRight">@dimen/folder_list_item_end_margin</item>
-    </style>
-
-    <style name="RecipientSummaryStyle" parent="MessageHeaderSmallStyle">
-        <item name="android:layout_marginRight">@dimen/recipient_summary_margin</item>
     </style>
 
     <style name="ToastBarDescriptionIconStyle">

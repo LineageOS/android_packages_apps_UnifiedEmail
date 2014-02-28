@@ -459,10 +459,12 @@
     </plurals>
 
     <!-- Conversation message header strings -->
-    <!--  Icon name for expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
-    <string name="expand_recipient_details">Expand recipient details</string>
-    <!--  Icon name for collapsing recipient details in a message when viewing it. [CHAR LIMIT=40] -->
-    <string name="collapse_recipient_details">Collapse recipient details</string>
+    <!--  Text for expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
+    <string name="details">Details</string>
+    <!--  Text for collapsing recipient details in a message when viewing it. [CHAR LIMIT=40] -->
+    <string name="hide_details">Hide details</string>
+    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="to_message_header">to <xliff:g id="recipients">%1$s</xliff:g></string>
     <!--  Icon name for showing sender contact information. [CHAR LIMIT=100] -->
     <string name="contact_info_string">Show contact information for <xliff:g id="name">%1$s</xliff:g></string>
     <!--  Icon name for showing sender contact information when we cannot get sender info. [CHAR LIMIT=100] -->
@@ -482,7 +484,7 @@
     <string name="cc_heading">Cc:\u0020</string>
     <!-- Shown to display the bcc recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="bcc_heading">Bcc:\u0020</string>
-    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <!-- Shown to display the date of the message [CHAR LIMIT=10] -->
     <string name="date_heading">Date:\u0020</string>
     <!-- Displayed above an HTML message to show the images in that message [CHAR LIMIT=40] -->
     <string name="show_images">Show pictures</string>

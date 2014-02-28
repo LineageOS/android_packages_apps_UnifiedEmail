@@ -25,7 +25,6 @@
         android:id="@+id/photo"
         android:layout_width="@dimen/message_header_contact_photo_width"
         android:layout_height="@dimen/message_header_contact_photo_height"
-        android:layout_gravity="center_vertical"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:scaleType="centerCrop"
@@ -36,14 +35,25 @@
         android:id="@+id/draft"
         android:layout_width="@dimen/message_header_contact_photo_width"
         android:layout_height="@dimen/message_header_contact_photo_height"
-        android:layout_gravity="center_vertical"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:visibility="gone"
         android:scaleType="center"
         android:src="@drawable/ic_draft"
         style="@style/MessageHeaderContactImageStyle" />
-    <include layout="@layout/conversation_message_upper_header_text" />
-    <include layout="@layout/conversation_message_upper_header_actions" />
+    <LinearLayout
+        android:id="@+id/actions_and_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include layout="@layout/conversation_message_upper_header_text" />
+            <include layout="@layout/conversation_message_upper_header_actions" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

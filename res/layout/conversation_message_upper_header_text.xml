@@ -19,52 +19,48 @@
 <!-- NOTE: Be careful when setting title_container's marginEnd.
      The value is updated in code. See uses of
      MessageHeaderView.mCollapsedTitleContainerMarginEnd -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/title_container"
-    android:layout_width="0dip"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:layout_marginTop="12dp"
+    android:layout_marginTop="8dp"
+    android:orientation="vertical"
     style="@style/MessageUpperHeaderTextStyle" >
 
-    <TextView
-        android:id="@+id/upper_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:lines="1"
-        style="@style/MessageHeaderUpperDateStyle" />
-    <ImageView
-        android:id="@+id/attachment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/upper_date"
-        android:layout_toLeftOf="@id/upper_date"
-        android:src="@drawable/ic_attachment_holo_light"
-        style="@style/AttachmentIconStyle" />
-    <TextView
-        android:id="@+id/sender_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/attachment"
-        android:layout_toLeftOf="@id/attachment"
-        style="@style/MessageSenderNameStyle" />
-    <TextView
-        android:id="@+id/sender_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/sender_name"
-        style="@style/MessageHeaderSubtitleStyle" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/sender_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/MessageSenderNameStyle" />
+        <ImageView
+            android:id="@+id/attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/attachment_icon_padding"
+            android:paddingRight="@dimen/attachment_icon_padding"
+            android:src="@drawable/ic_attachment_holo_light"/>
+        <TextView
+            android:id="@+id/upper_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/upper_date_margin"
+            android:singleLine="true"
+            style="@style/MessageHeaderSmallStyle" />
+    </LinearLayout>
     <TextView
         android:id="@+id/send_date"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sender_email"
         style="@style/MessageHeaderSubtitleStyle" />
     <TextView
         android:id="@+id/email_snippet"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sender_name"
         style="@style/MessageHeaderSnippetStyle" />
-</RelativeLayout>
+</LinearLayout>
