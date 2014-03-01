@@ -358,7 +358,7 @@ public abstract class MailAppProvider extends ContentProvider
                     addAccountImpl(account.uri, accountEntry);
                 } else {
                     LogUtils.e(LOG_TAG, "Dropping account without provider: %s",
-                            account.name);
+                            account.getEmailAddress());
                 }
 
             } catch (Exception e) {
@@ -500,7 +500,7 @@ public abstract class MailAppProvider extends ContentProvider
         }
 
         public AccountCacheEntry(JSONObject o) throws JSONException {
-            mAccount = Account.newinstance(o.getString(KEY_ACCOUNT));
+            mAccount = Account.newInstance(o.getString(KEY_ACCOUNT));
             if (mAccount == null) {
                 throw new IllegalArgumentException("AccountCacheEntry de-serializing failed. "
                         + "Account object could not be created from the JSONObject: "

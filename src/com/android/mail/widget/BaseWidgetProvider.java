@@ -127,7 +127,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         final String action = intent.getAction();
         if (ACTION_UPDATE_WIDGET.equals(action)) {
             final int widgetId = intent.getIntExtra(EXTRA_WIDGET_ID, -1);
-            final Account account = Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT));
+            final Account account = Account.newInstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT));
             final int folderType = intent.getIntExtra(EXTRA_FOLDER_TYPE, FolderType.DEFAULT);
             final Uri folderUri = intent.getParcelableExtra(EXTRA_FOLDER_URI);
             final Uri folderConversationListUri =

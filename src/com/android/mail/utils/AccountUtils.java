@@ -31,7 +31,7 @@ public class AccountUtils {
     /**
      * Merge two lists of accounts into one list of accounts without duplicates.
      *
-     * @param existingList List of accounts.
+     * @param inList List of accounts.
      * @param accounts Accounts to merge in.
      * @param prioritizeAccountList Boolean indicating whether this method
      *            should prioritize the list of Account objects when merging the
@@ -45,14 +45,14 @@ public class AccountUtils {
         List<String> existingList = new ArrayList<String>();
         if (inList != null) {
             for (Account account : inList) {
-                existingList.add(account.name);
+                existingList.add(account.getEmailAddress());
             }
         }
         // Make sure the accounts are actually synchronized
         // (we won't be able to save/send for accounts that
         // have never been synchronized)
         for (int i = 0; i < accounts.length; i++) {
-            final String accountName = accounts[i].name;
+            final String accountName = accounts[i].getEmailAddress();
             // If the account is in the cached list or the caller requested
             // that we prioritize the list of Account objects, put it in the new list
             if (prioritizeAccountList || existingList.contains(accountName)) {

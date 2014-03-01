@@ -117,7 +117,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     private Account getAccountForName(Context context, String accountName) {
         Account[] results = getAccounts(context);
         for (Account account : results) {
-            if (account.name.equals(accountName)) {
+            if (account.getEmailAddress().equals(accountName)) {
                 return account;
             }
         }
@@ -146,7 +146,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         array.put(a.serialize());
         mAccount.accountFromAddresses = array.toString();
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
-                mAccount.name, mAccount.name, customFrom, true, false);
+                mAccount.getEmailAddress(), mAccount.getEmailAddress(), customFrom, true, false);
         activity.mFromSpinner.setCurrentAccount(currentAccount);
 
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
@@ -180,7 +180,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         final Account account = mAccount;
         activity.mFromSpinner = new FromAddressSpinner(activity);
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
-                mAccount.name, mAccount.name, mAccount.name, true, false);
+                mAccount.getEmailAddress(), mAccount.getEmailAddress(), mAccount.getEmailAddress(),
+                true, false);
         activity.mFromSpinner.setCurrentAccount(currentAccount);
 
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
@@ -219,7 +220,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         array.put(a.serialize());
         mAccount.accountFromAddresses = array.toString();
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
-                mAccount.name, mAccount.name, customFrom, true, false);
+                mAccount.getEmailAddress(), mAccount.getEmailAddress(), customFrom, true, false);
         activity.mFromSpinner.setCurrentAccount(currentAccount);
 
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
@@ -548,7 +549,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         array.put(a.serialize());
         mAccount.accountFromAddresses = array.toString();
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
-                mAccount.name, mAccount.name, mAccount.name, true, false);
+                mAccount.getEmailAddress(), mAccount.getEmailAddress(), mAccount.getEmailAddress(),
+                true, false);
         activity.mFromSpinner.setCurrentAccount(currentAccount);
         activity.mFromSpinner.initialize(ComposeActivity.REPLY, currentAccount.account,
                 EMPTY_ACCOUNT_LIST, null, BidiFormatter.getInstance());
@@ -588,7 +590,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         array.put(a.serialize());
         mAccount.accountFromAddresses = array.toString();
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
-                mAccount.name, mAccount.name, mAccount.name, true, false);
+                mAccount.getEmailAddress(), mAccount.getEmailAddress(), mAccount.getEmailAddress(),
+                true, false);
         activity.mFromSpinner.setCurrentAccount(currentAccount);
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
                 currentAccount.account, EMPTY_ACCOUNT_LIST, null, BidiFormatter.getInstance());
@@ -630,7 +633,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         array.put(a.serialize());
         mAccount.accountFromAddresses = array.toString();
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
-                mAccount.name, mAccount.name, mAccount.name, true, false);
+                mAccount.getEmailAddress(), mAccount.getEmailAddress(), mAccount.getEmailAddress(),
+                true, false);
         activity.mFromSpinner.setCurrentAccount(currentAccount);
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
                 currentAccount.account, EMPTY_ACCOUNT_LIST, null, BidiFormatter.getInstance());

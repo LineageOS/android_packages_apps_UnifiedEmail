@@ -816,7 +816,7 @@ public class FolderListFragment extends ListFragment implements
                         && mCurrentAccount != null && mAccountController != null
                         && mAccountController.isDrawerPullEnabled()) {
                     LogUtils.d(LOG_TAG, "Current folder (%1$s) has disappeared for %2$s",
-                            folderName, mCurrentAccount.name);
+                            folderName, mCurrentAccount.getEmailAddress());
                     changeAccount(mCurrentAccount);
                 }
             }

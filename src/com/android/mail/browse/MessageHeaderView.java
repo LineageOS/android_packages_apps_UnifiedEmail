@@ -447,7 +447,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         // the only possible fromAddress.
         String from = mMessage.getFrom();
         if (TextUtils.isEmpty(from)) {
-            from = (account != null) ? account.name : "";
+            from = (account != null) ? account.getEmailAddress() : "";
         }
         mSender = getAddress(from);
 
@@ -1278,7 +1278,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         if (!mCollapsedDetailsValid) {
             if (mMessageHeaderItem.recipientSummaryText == null) {
                 final Account account = getAccount();
-                final String name = (account != null) ? account.name : "";
+                final String name = (account != null) ? account.getEmailAddress() : "";
                 mMessageHeaderItem.recipientSummaryText = getRecipientSummaryText(getContext(),
                         name, mMyName, mTo, mCc, mBcc, mAddressCache, mVeiledMatcher);
             }

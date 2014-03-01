@@ -2308,7 +2308,7 @@ public abstract class AbstractActivityController implements ActivityController,
         LogUtils.d(LOG_TAG, "IN AAC.handleIntent. action=%s", intent.getAction());
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
-                setAccount(Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT)));
+                setAccount(Account.newInstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT)));
             }
             if (mAccount == null) {
                 return;
@@ -3489,7 +3489,7 @@ public abstract class AbstractActivityController implements ActivityController,
                         mFolderObservable.notifyChanged();
                     } else {
                         LogUtils.d(LOG_TAG, "Unable to get the folder %s",
-                                mFolder != null ? mAccount.name : "");
+                                mFolder != null ? mFolder.name : "");
                     }
                     break;
                 case LOADER_RECENT_FOLDERS:
@@ -3532,7 +3532,7 @@ public abstract class AbstractActivityController implements ActivityController,
                         mActivity.getLoaderManager().destroyLoader(LOADER_ACCOUNT_INBOX);
                     } else {
                         LogUtils.d(LOG_TAG, "Unable to get the account inbox for account %s",
-                                mAccount != null ? mAccount.name : "");
+                                mAccount != null ? mAccount.getEmailAddress() : "");
                     }
                     break;
                 case LOADER_SEARCH:

@@ -117,8 +117,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             assert (message.what == EMAIL);
             final String subtitleText;
             if (mAccount != null) {
-                // Display the account name (email address).
-                subtitleText = mAccount.name;
+                // Display the account name (usually email address).
+                subtitleText = mAccount.getDisplayName();
             } else {
                 subtitleText = null;
                 LogUtils.wtf(LOG_TAG, "MABV.handleMessage() has a null account!");

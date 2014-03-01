@@ -179,7 +179,7 @@ public final class RecentFolderList {
             final Folder folder = c.getModel();
             final RecentFolderListEntry entry = new RecentFolderListEntry(folder);
             mFolderCache.putElement(folder.folderUri.fullUri.toString(), entry);
-            LogUtils.v(TAG, "Account %s, Recent: %s", mAccount.name, folder.name);
+            LogUtils.v(TAG, "Account %s, Recent: %s", mAccount.getEmailAddress(), folder.name);
         } while (c.moveToPrevious());
     }
 

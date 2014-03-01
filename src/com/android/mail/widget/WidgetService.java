@@ -88,19 +88,19 @@ public class WidgetService extends RemoteViewsService {
         // had been saved previously.  Since the launcher will save the state of the remote views
         // we should rely on the fact that valid data has been saved.  But we should still log this,
         // as it shouldn't happen
-        if (TextUtils.isEmpty(folderDisplayName) || TextUtils.isEmpty(account.name)) {
+        if (TextUtils.isEmpty(folderDisplayName) || TextUtils.isEmpty(account.getDisplayName())) {
             LogUtils.e(LOG_TAG, new Error(),
                     "Empty folder or account name.  account: %s, folder: %s",
-                    account.name, folderDisplayName);
+                    account.getEmailAddress(), folderDisplayName);
         }
         if (!TextUtils.isEmpty(folderDisplayName)) {
             remoteViews.setTextViewText(R.id.widget_folder, folderDisplayName);
         }
         remoteViews.setViewVisibility(R.id.widget_account_noflip, View.VISIBLE);
 
-        if (!TextUtils.isEmpty(account.name)) {
-            remoteViews.setTextViewText(R.id.widget_account_noflip, account.name);
-            remoteViews.setTextViewText(R.id.widget_account, account.name);
+        if (!TextUtils.isEmpty(account.getDisplayName())) {
+            remoteViews.setTextViewText(R.id.widget_account_noflip, account.getDisplayName());
+            remoteViews.setTextViewText(R.id.widget_account, account.getDisplayName());
         }
         remoteViews.setViewVisibility(R.id.widget_account_unread_flipper, View.GONE);
         remoteViews.setViewVisibility(R.id.widget_compose, View.VISIBLE);
@@ -230,7 +230,7 @@ public class WidgetService extends RemoteViewsService {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            mAccount = Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT));
+            mAccount = Account.newInstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT));
             mFolderType = intent.getIntExtra(WidgetProvider.EXTRA_FOLDER_TYPE, FolderType.DEFAULT);
             mFolderDisplayName = intent.getStringExtra(WidgetProvider.EXTRA_FOLDER_DISPLAY_NAME);
 
@@ -409,7 +409,7 @@ public class WidgetService extends RemoteViewsService {
 
                 ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
                 SendersView.format(mContext, conversation.conversationInfo, "",
-                        MAX_SENDERS_LENGTH, senders, null, null, mAccount.name, true);
+                        MAX_SENDERS_LENGTH, senders, null, null, mAccount.getEmailAddress(), true);
                 senderBuilder = ellipsizeStyledSenders(senders);
 
                 // Get styled date.
@@ -531,7 +531,7 @@ public class WidgetService extends RemoteViewsService {
                 mFolderCount = data.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
 
                 if (!mFolderInformationShown && !TextUtils.isEmpty(folderName) &&
-                        !TextUtils.isEmpty(mAccount.name)) {
+                        !TextUtils.isEmpty(mAccount.getDisplayName())) {
                     // We want to do a full update to the widget at least once, as the widget
                     // manager doesn't cache the state of the remote views when doing a partial
                     // widget update. This causes the folder name to be shown as blank if the state
@@ -550,9 +550,10 @@ public class WidgetService extends RemoteViewsService {
                 } else {
                     LogUtils.e(LOG_TAG, "Empty folder name");
                 }
-                if (!TextUtils.isEmpty(mAccount.name)) {
-                    remoteViews.setTextViewText(R.id.widget_account_noflip, mAccount.name);
-                    remoteViews.setTextViewText(R.id.widget_account, mAccount.name);
+                if (!TextUtils.isEmpty(mAccount.getDisplayName())) {
+                    remoteViews.setTextViewText(R.id.widget_account_noflip,
+                            mAccount.getDisplayName());
+                    remoteViews.setTextViewText(R.id.widget_account, mAccount.getDisplayName());
                 }
 
                 final CharSequence unreadCountString = Utils

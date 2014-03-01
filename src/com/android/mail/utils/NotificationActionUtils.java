@@ -754,7 +754,7 @@ public class NotificationActionUtils {
     public static void resendNotifications(final Context context, final Account account,
             final Folder folder) {
         LogUtils.i(LOG_TAG, "resendNotifications account: %s, folder: %s",
-                LogUtils.sanitizeName(LOG_TAG, account.name),
+                LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()),
                 LogUtils.sanitizeName(LOG_TAG, folder.name));
 
         final Intent intent = new Intent(MailIntentService.ACTION_RESEND_NOTIFICATIONS);

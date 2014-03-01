@@ -66,7 +66,7 @@ public class AccountItemView extends RelativeLayout {
      */
     public void bind(final Account account, final boolean isCurrentAccount,
             final int count, BidiFormatter bidiFormatter) {
-        mAccountTextView.setText(bidiFormatter.unicodeWrap(account.name));
+        mAccountTextView.setText(bidiFormatter.unicodeWrap(account.getDisplayName()));
         setUnreadCount(count);
         mUnreadCountTextView.setSelected(isCurrentAccount);
         mAccountTextView.setSelected(isCurrentAccount);

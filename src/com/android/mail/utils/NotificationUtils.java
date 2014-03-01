@@ -423,7 +423,7 @@ public class NotificationUtils {
                 final int notificationId =
                         getNotificationId(notification.account.getAccountManagerAccount(), folder);
                 LogUtils.d(LOG_TAG, "validateAccountNotifications - cancelling %s / %s",
-                        notification.account.name, folder.persistentId);
+                        notification.account.getEmailAddress(), folder.persistentId);
                 nm.cancel(notificationId);
                 notificationMap.remove(notification);
                 NotificationActionUtils.sUndoNotifications.remove(notificationId);
@@ -440,8 +440,8 @@ public class NotificationUtils {
             final int unseenCount, final Account account, final Folder folder,
             final boolean getAttention) {
         LogUtils.d(LOG_TAG, "setNewEmailIndicator unreadCount = %d, unseenCount = %d, account = %s,"
-                + " folder = %s, getAttention = %b", unreadCount, unseenCount, account.name,
-                folder.folderUri, getAttention);
+                + " folder = %s, getAttention = %b", unreadCount, unseenCount,
+                account.getEmailAddress(), folder.folderUri, getAttention);
 
         boolean ignoreUnobtrusiveSetting = false;
 
@@ -451,14 +451,14 @@ public class NotificationUtils {
         final NotificationMap notificationMap = getNotificationMap(context);
         final NotificationKey key = new NotificationKey(account, folder);
         if (unreadCount == 0) {
-            LogUtils.d(LOG_TAG, "setNewEmailIndicator - cancelling %s / %s", account.name,
-                    folder.persistentId);
+            LogUtils.d(LOG_TAG, "setNewEmailIndicator - cancelling %s / %s",
+                    account.getEmailAddress(), folder.persistentId);
             notificationMap.remove(key);
             ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
                     .cancel(notificationId);
         } else {
             LogUtils.d(LOG_TAG, "setNewEmailIndicator - update count for: %s / %s " +
-                    "to: unread: %d unseen %d", account.name, folder.persistentId,
+                    "to: unread: %d unseen %d", account.getEmailAddress(), folder.persistentId,
                     unreadCount, unseenCount);
             if (!notificationMap.containsKey(key)) {
                 // This account previously didn't have any unread mail; ignore the "unobtrusive
@@ -552,7 +552,7 @@ public class NotificationUtils {
 
             if (unseenCount == 0) {
                 LogUtils.i(LOG_TAG, "validateNotifications - cancelling account %s / folder %s",
-                        LogUtils.sanitizeName(LOG_TAG, account.name),
+                        LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()),
                         LogUtils.sanitizeName(LOG_TAG, folder.persistentId));
                 nm.cancel(notificationId);
                 return;
@@ -563,7 +563,7 @@ public class NotificationUtils {
 
             NotificationCompat.Builder notification = new NotificationCompat.Builder(context);
             notification.setSmallIcon(R.drawable.stat_notify_email);
-            notification.setTicker(account.name);
+            notification.setTicker(account.getDisplayName());
 
             final long when;
 
@@ -670,7 +670,7 @@ public class NotificationUtils {
             }
 
             LogUtils.i(LOG_TAG, "Account: %s vibrate: %s",
-                    LogUtils.sanitizeName(LOG_TAG, account.name),
+                    LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()),
                     Boolean.toString(folderPreferences.isNotificationVibrateEnabled()));
 
             int defaults = 0;
@@ -690,7 +690,8 @@ public class NotificationUtils {
                     notification.setSound(TextUtils.isEmpty(ringtoneUri) ? null
                             : Uri.parse(ringtoneUri));
                     LogUtils.i(LOG_TAG, "New email in %s vibrateWhen: %s, playing notification: %s",
-                            LogUtils.sanitizeName(LOG_TAG, account.name), vibrate, ringtoneUri);
+                            LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()), vibrate,
+                            ringtoneUri);
                 }
             }
 
@@ -783,7 +784,8 @@ public class NotificationUtils {
             final int unreadCount, final int unseenCount,
             final Folder folder, final long when) {
         final Resources res = context.getResources();
-        final String notificationAccount = account.name;
+        final String notificationAccountDisplayName = account.getDisplayName();
+        final String notificationAccountEmail = account.getEmailAddress();
 
         LogUtils.i(LOG_TAG, "Showing notification with unreadCount of %d and unseenCount of %d",
                 unreadCount, unseenCount);
@@ -817,7 +819,8 @@ public class NotificationUtils {
                         R.integer.max_num_notification_digest_items);
 
                 // The body of the notification is the account name, or the label name.
-                notification.setSubText(isInbox ? notificationAccount : notificationLabelName);
+                notification.setSubText(
+                        isInbox ? notificationAccountDisplayName : notificationLabelName);
 
                 final NotificationCompat.InboxStyle digest =
                         new NotificationCompat.InboxStyle(notification);
@@ -864,7 +867,7 @@ public class NotificationUtils {
                                         res.getInteger(R.integer.swipe_senders_length);
 
                                 sendersBuilder = getStyledSenders(context, conversationCursor,
-                                        sendersLength, notificationAccount);
+                                        sendersLength, notificationAccountEmail);
                             } else {
                                 sendersBuilder =
                                         new SpannableStringBuilder(getWrappedFromString(from));
@@ -888,7 +891,7 @@ public class NotificationUtils {
             } else {
                 // The body of the notification is the account name, or the label name.
                 notification.setContentText(
-                        isInbox ? notificationAccount : notificationLabelName);
+                        isInbox ? notificationAccountDisplayName : notificationLabelName);
             }
         } else {
             // For notifications for a single new conversation, we want to get the information from
@@ -944,7 +947,8 @@ public class NotificationUtils {
                         int sendersLength = res.getInteger(R.integer.swipe_senders_length);
 
                         final SpannableStringBuilder sendersBuilder = getStyledSenders(
-                                context, conversationCursor, sendersLength, notificationAccount);
+                                context, conversationCursor, sendersLength,
+                                notificationAccountEmail);
 
                         notification.setContentTitle(sendersBuilder);
                         // For a single new conversation, the ticker is based on the sender's name.
@@ -964,7 +968,8 @@ public class NotificationUtils {
                     // The notification subtext will be the subject of the conversation for inbox
                     // notifications, or will based on the the label name for user label
                     // notifications.
-                    notification.setSubText(isInbox ? notificationAccount : notificationLabelName);
+                    notification.setSubText(isInbox ?
+                            notificationAccountDisplayName : notificationLabelName);
 
                     if (multipleUnseenThread) {
                         notification.setLargeIcon(
@@ -1007,7 +1012,7 @@ public class NotificationUtils {
                     // notifications, or will based on the the label name for user label
                     // notifications.
                     notification.setContentText(
-                            isInbox ? notificationAccount : notificationLabelName);
+                            isInbox ? notificationAccountDisplayName : notificationLabelName);
 
                     // For a single new conversation, the ticker is based on the sender's name.
                     notificationTicker = from;
@@ -1297,7 +1302,8 @@ public class NotificationUtils {
      */
     public static void clearFolderNotification(Context context, Account account, Folder folder,
             final boolean markSeen) {
-        LogUtils.v(LOG_TAG, "Clearing all notifications for %s/%s", account.name, folder.name);
+        LogUtils.v(LOG_TAG, "Clearing all notifications for %s/%s", account.getEmailAddress(),
+                folder.name);
         final NotificationMap notificationMap = getNotificationMap(context);
         final NotificationKey key = new NotificationKey(account, folder);
         notificationMap.remove(key);
@@ -1529,7 +1535,7 @@ public class NotificationUtils {
 
         @Override
         public String toString() {
-            return account.name + " " + folder.name;
+            return account.getDisplayName() + " " + folder.name;
         }
 
         @Override
