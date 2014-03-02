@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bae84128_b11ddf68",
+        "filename": "res/values-es-rXA/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2597
+      },
+      "writtenOn": "2014-03-02T13:25:38Z",
+      "side": 1,
+      "message": "Please convert all \u0027...\u0027 to \\u2026",
+      "revId": "410e312b6f5de7f37a26d3576233017749a88c0a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bae84128_911a5b6d",
+        "filename": "res/values-es-rXA/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 2597
+      },
+      "writtenOn": "2014-03-02T13:25:38Z",
+      "side": 1,
+      "message": "Whitespace error",
+      "revId": "410e312b6f5de7f37a26d3576233017749a88c0a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bae84128_7113575d",
+        "filename": "res/values-es-rXA/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 2597
+      },
+      "writtenOn": "2014-03-02T13:25:38Z",
+      "side": 1,
+      "message": "I think the double quotes can be safely removed here",
+      "revId": "410e312b6f5de7f37a26d3576233017749a88c0a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
