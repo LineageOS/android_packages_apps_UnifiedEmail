@@ -102,8 +102,7 @@
     <string name="preview_attachment" msgid="6934911143603455393">"មើល​ជាមុន"</string>
     <string name="save_attachment" msgid="5360128849867863132">"រក្សាទុក"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"បោះ​បង់"</string>
-    <!-- no translation found for open_attachment (975940478986626705) -->
-    <skip />
+    <string name="open_attachment" msgid="975940478986626705">"បើក"</string>
     <string name="install_attachment" msgid="2803531650273683382">"ដំឡើង"</string>
     <string name="download_again" msgid="7418568915429156518">"ទាញ​យក​ម្ដងទៀត"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"ព័ត៌មាន"</string>

@@ -102,8 +102,7 @@
     <string name="preview_attachment" msgid="6934911143603455393">"पूर्वावलोकन"</string>
     <string name="save_attachment" msgid="5360128849867863132">"सहेजें"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"रद्द करें"</string>
-    <!-- no translation found for open_attachment (975940478986626705) -->
-    <skip />
+    <string name="open_attachment" msgid="975940478986626705">"खोलें"</string>
     <string name="install_attachment" msgid="2803531650273683382">"इंस्‍टॉल"</string>
     <string name="download_again" msgid="7418568915429156518">"पुनः डाउनलोड करें"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"जानकारी"</string>
