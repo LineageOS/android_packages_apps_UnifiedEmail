@@ -23,9 +23,7 @@ import android.content.SharedPreferences;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 import com.android.mail.widget.BaseWidgetProvider;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
