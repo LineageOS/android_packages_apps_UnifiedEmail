@@ -48,7 +48,8 @@ public class AccountTests extends AndroidTestCase {
         final Account after = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
         assertNotNull(after);
 
-        assertEquals(before.name, after.name);
+        assertEquals(before.getEmailAddress(), after.getEmailAddress());
+        assertEquals(before.getDisplayName(), after.getDisplayName());
         assertEquals(before.accountFromAddresses, after.accountFromAddresses);
         assertEquals(before.capabilities, after.capabilities);
         assertEquals(before.providerVersion, after.providerVersion);
@@ -69,7 +70,7 @@ public class AccountTests extends AndroidTestCase {
         // null sender name (same thing as not putting a sender name at all)
         json.put(UIProvider.AccountColumns.SENDER_NAME, null);
 
-        final Account account = Account.newinstance(json.toString());
+        final Account account = Account.newInstance(json.toString());
         assertNotNull(account);
         assertNull(account.getSenderName());
     }

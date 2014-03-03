@@ -259,7 +259,8 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View v = super.getView(position, convertView, parent);
                     TextView accountView = (TextView) v.findViewById(R.id.mailbox_name);
-                    accountView.setText(new Account((Cursor) getItem(position)).name);
+                    final Account account = new Account((Cursor) getItem(position));
+                    accountView.setText(account.getDisplayName());
                     return v;
                 }
             };

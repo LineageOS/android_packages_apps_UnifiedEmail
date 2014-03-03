@@ -51,8 +51,7 @@ public class Account implements Parcelable {
      * Human readable account name. Not guaranteed to be the account's email address, nor to match
      * the system account manager.
      */
-    // TODO: Make this private and add getDisplayName() accessor
-    public final String name;
+    private final String displayName;
 
     /**
      * The real name associated with the account, e.g. "John Doe"
@@ -235,7 +234,7 @@ public class Account implements Parcelable {
     public synchronized String serialize() {
         JSONObject json = new JSONObject();
         try {
-            json.put(AccountColumns.NAME, name);
+            json.put(AccountColumns.NAME, displayName);
             json.put(AccountColumns.TYPE, type);
             json.put(AccountColumns.SENDER_NAME, senderName);
             json.put(AccountColumns.ACCOUNT_MANAGER_NAME, accountManagerName);
@@ -270,7 +269,8 @@ public class Account implements Parcelable {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
         } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with name %s", name);
+            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with name %s",
+                    displayName);
         }
         return json.toString();
     }
@@ -283,15 +283,13 @@ public class Account implements Parcelable {
      * @param serializedAccount JSON encoded account object
      * @return Account object
      */
-    public static Account newinstance(String serializedAccount) {
+    public static Account newInstance(String serializedAccount) {
         // The heavy lifting is done by Account(name, type, json). This method
         // is a wrapper to check for errors and exceptions and return back a null in cases
         // something breaks.
         try {
             final JSONObject json = new JSONObject(serializedAccount);
-            final String name = (String) json.get(UIProvider.AccountColumns.NAME);
-            final String type = (String) json.get(UIProvider.AccountColumns.TYPE);
-            return new Account(name, type, json);
+            return new Account(json);
         } catch (JSONException e) {
             LogUtils.w(LOG_TAG, e, "Could not create an account from this input: \"%s\"",
                     serializedAccount);
@@ -300,27 +298,23 @@ public class Account implements Parcelable {
     }
 
     /**
-     * Construct a new Account instance from a previously serialized string. This calls
-     * {@link android.accounts.Account#Account(String, String)} with name and type given as the
-     * first two arguments.
+     * Construct a new Account instance from a previously serialized string.
      *
      * <p>
-     * This is private. Public uses should go through the safe {@link #newinstance(String)} method.
+     * This is private. Public uses should go through the safe {@link #newInstance(String)} method.
      * </p>
-     * @param acctName name of account in {@link android.accounts.Account}
-     * @param acctType type of account in {@link android.accounts.Account}
-     * @param {@link JSONObject} representing a valid account.
+     * @param json {@link JSONObject} representing a valid account.
      * @throws JSONException
      */
-    private Account(String acctName, String acctType, JSONObject json) throws JSONException {
-        name = acctName;
-        type = acctType;
+    private Account(JSONObject json) throws JSONException {
+        displayName = (String) json.get(UIProvider.AccountColumns.NAME);
+        type = (String) json.get(UIProvider.AccountColumns.TYPE);
         senderName = json.optString(AccountColumns.SENDER_NAME, null);
         final String amName = json.optString(AccountColumns.ACCOUNT_MANAGER_NAME);
         // We need accountManagerName to be filled in, but we might be dealing with an old cache
         // entry which doesn't have it, so use the display name instead in that case as a fallback
         if (TextUtils.isEmpty(amName)) {
-            accountManagerName = name;
+            accountManagerName = displayName;
         } else {
             accountManagerName = amName;
         }
@@ -377,7 +371,7 @@ public class Account implements Parcelable {
     }
 
     public Account(Cursor cursor) {
-        name = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.NAME));
+        displayName = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.NAME));
         senderName = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.SENDER_NAME));
         type = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.TYPE));
         accountManagerName = cursor.getString(
@@ -510,7 +504,7 @@ public class Account implements Parcelable {
     }
 
     public Account(Parcel in, ClassLoader loader) {
-        name = in.readString();
+        displayName = in.readString();
         senderName = in.readString();
         type = in.readString();
         accountManagerName = in.readString();
@@ -555,7 +549,7 @@ public class Account implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
+        dest.writeString(displayName);
         dest.writeString(senderName);
         dest.writeString(type);
         dest.writeString(accountManagerName);
@@ -617,7 +611,7 @@ public class Account implements Parcelable {
         }
 
         final Account other = (Account) o;
-        return TextUtils.equals(name, other.name) &&
+        return TextUtils.equals(displayName, other.displayName) &&
                 TextUtils.equals(senderName, other.senderName) &&
                 TextUtils.equals(accountManagerName, other.accountManagerName) &&
                 TextUtils.equals(type, other.type) &&
@@ -670,7 +664,7 @@ public class Account implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name,
+        return Objects.hashCode(displayName,
                 senderName,
                 accountManagerName,
                 type,
@@ -738,7 +732,8 @@ public class Account implements Parcelable {
                     }
 
                 } catch (JSONException e) {
-                    LogUtils.e(LOG_TAG, e, "Unable to parse accountFromAddresses. name=%s", name);
+                    LogUtils.e(LOG_TAG, e, "Unable to parse accountFromAddresses. name=%s",
+                            displayName);
                 }
             }
         }
@@ -760,6 +755,25 @@ public class Account implements Parcelable {
         return false;
     }
 
+    /**
+     * The display name of the account is the alias the user has chosen to rename the account to.
+     * By default it is the email address of the account, but could also be user-entered values like
+     * "Work Account" or "Old ISP POP3 account".
+     *
+     * Account renaming only applies to Email, so a Gmail account should always return the primary
+     * email address of the account.
+     *
+     * @return Account display name
+     */
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
+     * The primary email address associated with this account, which is also used as the account
+     * manager account name.
+     * @return email address
+     */
     public String getEmailAddress() {
         return accountManagerName;
     }
@@ -800,7 +814,7 @@ public class Account implements Parcelable {
         final Map<String, Object> map = new HashMap<String, Object>();
 
         map.put(AccountColumns._ID, 0);
-        map.put(AccountColumns.NAME, name);
+        map.put(AccountColumns.NAME, displayName);
         map.put(AccountColumns.SENDER_NAME, senderName);
         map.put(AccountColumns.TYPE, type);
         map.put(AccountColumns.ACCOUNT_MANAGER_NAME, accountManagerName);
