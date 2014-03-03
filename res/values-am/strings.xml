@@ -368,7 +368,7 @@
     <string name="checking_for_mail" msgid="2301797903350897130">"መልዕክት በማየት ላይ"</string>
     <string name="empty_trash" msgid="652435297593538512">"መጣያውን አጽዳ"</string>
     <string name="empty_spam" msgid="6064497180615519589">"አይፈለጌ መልዕክትን አጽዳ"</string>
-    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"መጣያውን ይጽዳ?"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"መጣያው ይጽዳ?"</string>
     <string name="empty_spam_dialog_title" msgid="8091014690336479280">"አይፈለጌ መልዕክት ይጽዳ?"</string>
   <plurals name="empty_folder_dialog_message">
     <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> መልዕክት እስከመጨረሻው ይሰረዛል።"</item>
