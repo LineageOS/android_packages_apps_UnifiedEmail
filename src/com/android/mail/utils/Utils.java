@@ -16,6 +16,7 @@
 
 package com.android.mail.utils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.SearchManager;
@@ -61,7 +62,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
-import com.android.mail.ui.FeedbackEnabledActivity;
+import com.android.mail.ui.HelpActivity;
 import com.android.mail.ui.ViewMode;
 import com.google.android.mail.common.html.parser.HtmlDocument;
 import com.google.android.mail.common.html.parser.HtmlParser;
@@ -445,27 +446,51 @@ public class Utils {
     }
 
     /**
-     * Helper method to show context-aware Gmail help.
+     * Helper method to show context-aware help.
      *
      * @param context Context to be used to open the help.
-     * @param fromWhere Information about the activity the user was in
-     * when they requested help.
+     * @param account Account from which the help URI is extracted
+     * @param helpTopic Information about the activity the user was in
+     *      when they requested help which specifies the help topic to display
      */
-    public static void showHelp(Context context, Account account, String fromWhere) {
-        final String urlString = (account != null && account.helpIntentUri != null) ?
+    public static void showHelp(Context context, Account account, String helpTopic) {
+        final String urlString = account.helpIntentUri != null ?
                 account.helpIntentUri.toString() : null;
-        if (TextUtils.isEmpty(urlString) ) {
+        if (TextUtils.isEmpty(urlString)) {
             LogUtils.e(LOG_TAG, "unable to show help for account: %s", account);
             return;
         }
-        final Uri uri = addParamsToUrl(context, urlString);
-        Uri.Builder builder = uri.buildUpon();
-        // Add the activity specific information parameter.
-        if (!TextUtils.isEmpty(fromWhere)) {
-            builder = builder.appendQueryParameter(SMART_HELP_LINK_PARAMETER_NAME, fromWhere);
+        showHelp(context, account.helpIntentUri, helpTopic);
+    }
+
+    /**
+     * Helper method to show context-aware help.
+     *
+     * @param context Context to be used to open the help.
+     * @param helpIntentUri URI of the help content to display
+     * @param helpTopic Information about the activity the user was in
+     *      when they requested help which specifies the help topic to display
+     */
+    public static void showHelp(Context context, Uri helpIntentUri, String helpTopic) {
+        final String urlString = helpIntentUri == null ? null : helpIntentUri.toString();
+        if (TextUtils.isEmpty(urlString)) {
+            LogUtils.e(LOG_TAG, "unable to show help for help URI: %s", helpIntentUri);
+            return;
         }
 
-        openUrl(context, builder.build(), null);
+        // generate the full URL to the requested help section
+        final Uri helpUrl = HelpUrl.getHelpUrl(context, helpIntentUri, helpTopic);
+
+        final boolean useBrowser = context.getResources().getBoolean(R.bool.openHelpWithBrowser);
+        if (useBrowser) {
+            // open a browser with the full help URL
+            openUrl(context, helpUrl, null);
+        } else {
+            // start the help activity with the full help URL
+            final Intent intent = new Intent(context, HelpActivity.class);
+            intent.putExtra(HelpActivity.PARAM_HELP_URL, helpUrl);
+            context.startActivity(intent);
+        }
     }
 
     /**
@@ -488,54 +513,6 @@ public class Utils {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
         context.startActivity(intent);
-    }
-
-
-    private static Uri addParamsToUrl(Context context, String url) {
-        url = replaceLocale(url);
-        Uri.Builder builder = Uri.parse(url).buildUpon();
-        final int versionCode = getVersionCode(context);
-        if (versionCode != -1) {
-            builder = builder.appendQueryParameter(SMART_LINK_APP_VERSION,
-                    String.valueOf(versionCode));
-        }
-
-        return builder.build();
-    }
-
-    /**
-     * Replaces the language/country of the device into the given string.  The pattern "%locale%"
-     * will be replaced with the <language_code>_<country_code> value.
-     *
-     * @param str the string to replace the language/country within
-     *
-     * @return the string with replacement
-     */
-    private static String replaceLocale(String str) {
-        // Substitute locale if present in string
-        if (str.contains("%locale%")) {
-            Locale locale = Locale.getDefault();
-            String tmp = locale.getLanguage() + "_" + locale.getCountry().toLowerCase();
-            str = str.replace("%locale%", tmp);
-        }
-        return str;
-    }
-
-    /**
-     * Returns the version code for the package, or -1 if it cannot be retrieved.
-     */
-    public static int getVersionCode(Context context) {
-        if (sVersionCode == -1) {
-            try {
-                sVersionCode =
-                        context.getPackageManager().getPackageInfo(context.getPackageName(),
-                                0 /* flags */).versionCode;
-            } catch (NameNotFoundException e) {
-                LogUtils.e(Utils.LOG_TAG, "Error finding package %s",
-                        context.getApplicationInfo().packageName);
-            }
-        }
-        return sVersionCode;
     }
 
     /**
@@ -604,29 +581,27 @@ public class Utils {
     /**
      * Show the feedback screen for the supplied account.
      */
-    public static void sendFeedback(FeedbackEnabledActivity activity, Account account,
-                                    boolean reportingProblem) {
+    public static void sendFeedback(Activity activity, Account account, boolean reportingProblem) {
         if (activity != null && account != null) {
             sendFeedback(activity, account.sendFeedbackIntentUri, reportingProblem);
         }
     }
-    public static void sendFeedback(FeedbackEnabledActivity activity, Uri feedbackIntentUri,
+    public static void sendFeedback(Activity activity, Uri feedbackIntentUri,
             boolean reportingProblem) {
         if (activity != null &&  !isEmpty(feedbackIntentUri)) {
             final Bundle optionalExtras = new Bundle(2);
             optionalExtras.putBoolean(
                     UIProvider.SendFeedbackExtras.EXTRA_REPORTING_PROBLEM, reportingProblem);
-            final Bitmap screenBitmap =  getReducedSizeBitmap(activity);
+            final Bitmap screenBitmap = getReducedSizeBitmap(activity);
             if (screenBitmap != null) {
                 optionalExtras.putParcelable(
                         UIProvider.SendFeedbackExtras.EXTRA_SCREEN_SHOT, screenBitmap);
             }
-            openUrl(activity.getActivityContext(), feedbackIntentUri, optionalExtras);
+            openUrl(activity, feedbackIntentUri, optionalExtras);
         }
     }
 
-
-    public static Bitmap getReducedSizeBitmap(FeedbackEnabledActivity activity) {
+    private static Bitmap getReducedSizeBitmap(Activity activity) {
         final Window activityWindow = activity.getWindow();
         final View currentView = activityWindow != null ? activityWindow.getDecorView() : null;
         final View rootView = currentView != null ? currentView.getRootView() : null;

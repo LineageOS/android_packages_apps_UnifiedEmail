@@ -577,6 +577,10 @@
         <item name="android:layout_marginRight">@dimen/folder_list_item_end_margin</item>
     </style>
 
+    <style name="DrawerFooterListItemStyle">
+        <item name="android:paddingLeft">@dimen/drawer_footer_item_padding</item>
+    </style>
+
     <style name="DismissSeparatorStyle">
         <item name="android:layout_marginLeft">@dimen/dismiss_separator_padding</item>
     </style>

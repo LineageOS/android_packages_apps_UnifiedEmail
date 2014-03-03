@@ -90,6 +90,10 @@
         <item name="android:layout_alignParentEnd">true</item>
     </style>
 
+    <style name="DrawerFooterListItemStyle">
+        <item name="android:paddingStart">@dimen/drawer_footer_item_padding</item>
+    </style>
+
     <style name="DismissSeparatorStyle">
         <item name="android:layout_marginStart">@dimen/dismiss_separator_padding</item>
     </style>

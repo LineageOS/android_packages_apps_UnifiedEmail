@@ -15,8 +15,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-          class="com.android.mail.ui.DrawerFragment"
-          android:tag="@string/drawer_pullout_tag"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent" />
+
+<WebView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/webview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none" />
