@@ -20,9 +20,12 @@ package com.android.mail.browse;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipData.Item;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -153,6 +156,8 @@ public class ConversationItemView extends View
     private static final TextPaint sPaint = new TextPaint();
     private static final TextPaint sFoldersPaint = new TextPaint();
     private static final Paint sCheckBackgroundPaint = new Paint();
+
+    private static BroadcastReceiver sConfigurationChangedReceiver;
 
     // Backgrounds for different states.
     private final SparseArray<Drawable> mBackgrounds = new SparseArray<Drawable>();
@@ -391,7 +396,41 @@ public class ConversationItemView extends View
         mListCollapsible = res.getBoolean(R.bool.list_collapsible);
         mAccount = account;
 
+        getItemViewResources(mContext);
+
+        mSendersTextView = new TextView(mContext);
+        mSendersTextView.setIncludeFontPadding(false);
+
+        mSubjectTextView = new TextView(mContext);
+        mSubjectTextView.setEllipsize(TextUtils.TruncateAt.END);
+        mSubjectTextView.setIncludeFontPadding(false);
+
+        mBadgeTextView = new TextView(mContext);
+        mBadgeTextView.setIncludeFontPadding(false);
+
+        mAttachmentsView = new AttachmentGridDrawable(res, PLACEHOLDER, PROGRESS_BAR);
+        mAttachmentsView.setCallback(this);
+
+        mSendersImageView = new ContactCheckableGridDrawable(res, sCabAnimationDuration);
+        mSendersImageView.setCallback(this);
+
+        Utils.traceEndSection();
+    }
+
+    private static synchronized void getItemViewResources(Context context) {
+        if (sConfigurationChangedReceiver == null) {
+            sConfigurationChangedReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    STAR_OFF = null;
+                    getItemViewResources(context);
+                }
+            };
+            context.registerReceiver(sConfigurationChangedReceiver, new IntentFilter(
+                    Intent.ACTION_CONFIGURATION_CHANGED));
+        }
         if (STAR_OFF == null) {
+            final Resources res = context.getResources();
             // Initialize static bitmaps.
             STAR_OFF = BitmapFactory.decodeResource(res, R.drawable.ic_btn_star_off);
             STAR_ON = BitmapFactory.decodeResource(res, R.drawable.ic_btn_star_on);
@@ -422,13 +461,13 @@ public class ConversationItemView extends View
                     res.getColor(R.color.senders_text_color_read)));
             sSendersTextColorRead = res.getColor(R.color.senders_text_color_read);
             sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
-            sSubjectTextUnreadSpan = new TextAppearanceSpan(mContext,
+            sSubjectTextUnreadSpan = new TextAppearanceSpan(context,
                     R.style.SubjectAppearanceUnreadStyle);
-            sBadgeTextSpan = new TextAppearanceSpan(mContext, R.style.BadgeTextStyle);
+            sBadgeTextSpan = new TextAppearanceSpan(context, R.style.BadgeTextStyle);
             sBadgeBackgroundSpan = new BackgroundColorSpan(
                     res.getColor(R.color.badge_background_color));
             sSubjectTextReadSpan = new TextAppearanceSpan(
-                    mContext, R.style.SubjectAppearanceReadStyle);
+                    context, R.style.SubjectAppearanceReadStyle);
             sSnippetTextUnreadSpan =
                     new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_unread));
             sSnippetTextReadSpan =
@@ -448,24 +487,6 @@ public class ConversationItemView extends View
             sBadgeRoundedCornerRadius =
                     res.getDimensionPixelSize(R.dimen.badge_rounded_corner_radius);
         }
-
-        mSendersTextView = new TextView(mContext);
-        mSendersTextView.setIncludeFontPadding(false);
-
-        mSubjectTextView = new TextView(mContext);
-        mSubjectTextView.setEllipsize(TextUtils.TruncateAt.END);
-        mSubjectTextView.setIncludeFontPadding(false);
-
-        mBadgeTextView = new TextView(mContext);
-        mBadgeTextView.setIncludeFontPadding(false);
-
-        mAttachmentsView = new AttachmentGridDrawable(res, PLACEHOLDER, PROGRESS_BAR);
-        mAttachmentsView.setCallback(this);
-
-        mSendersImageView = new ContactCheckableGridDrawable(res, sCabAnimationDuration);
-        mSendersImageView.setCallback(this);
-
-        Utils.traceEndSection();
     }
 
     public void bind(final Conversation conversation, final ControllableActivity activity,

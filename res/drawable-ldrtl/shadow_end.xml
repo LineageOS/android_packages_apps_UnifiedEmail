@@ -16,7 +16,9 @@
      limitations under the License.
 -->
 
-<resources>
-    <!-- Angle of the shadow that appears at the edge of the folder list. 0 is left to right. -->
-    <integer name="two_pane_folder_edge_gradient_angle">0</integer>
-</resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="0"
+        android:startColor="#22000000"
+        android:endColor="@android:color/transparent" />
+</shape>
