@@ -17,7 +17,6 @@ package com.android.mail.preferences;
 
 import android.content.Context;
 
-import com.android.mail.R;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
@@ -53,6 +52,8 @@ public class AccountPreferences extends VersionedPrefs {
          * The count reported last time the "X unseen in Outbox" tip was displayed.
          */
         public static final String LAST_SEEN_OUTBOX_COUNT = "last-seen-outbox-count";
+
+        public static final String OPT_LIMIT = "opt-limit";
 
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
@@ -142,5 +143,13 @@ public class AccountPreferences extends VersionedPrefs {
 
     public void setLastSeenOutboxCount(final int count) {
         getEditor().putInt(PreferenceKeys.LAST_SEEN_OUTBOX_COUNT, count).apply();
+    }
+
+    public void setOptLimit(long limit) {
+        getEditor().putLong(PreferenceKeys.OPT_LIMIT, limit).apply();
+    }
+
+    public long getOptLimit(long defaultValue) {
+        return getSharedPreferences().getLong(PreferenceKeys.OPT_LIMIT, defaultValue);
     }
 }
