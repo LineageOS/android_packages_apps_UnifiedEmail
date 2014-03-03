@@ -35,7 +35,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="left" >
             <include layout="@layout/drawer_fragment"
-                android:id="@+id/drawer_pullout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

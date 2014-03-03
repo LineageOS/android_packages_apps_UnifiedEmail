@@ -423,4 +423,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public FragmentLauncher getFragmentLauncher() {
         return mController;
     }
+
+    @Override
+    public String getHelpContext() {
+        return mController.getHelpContext();
+    }
 }

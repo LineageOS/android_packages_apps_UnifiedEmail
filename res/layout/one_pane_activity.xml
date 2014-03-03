@@ -40,7 +40,6 @@
 
     <!--A drawer for phones: a pull-out that gives the list of folders. -->
     <include layout="@layout/drawer_fragment"
-             android:id="@+id/drawer_pullout"
              android:layout_width="@dimen/drawer_width"
              android:layout_height="match_parent"
              android:layout_gravity="start|left" />
