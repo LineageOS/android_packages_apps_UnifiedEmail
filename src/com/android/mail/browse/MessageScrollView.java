@@ -20,9 +20,9 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.widget.ScrollView;
 
-import com.android.mail.browse.ScrollNotifier.ScrollListener;
 import com.android.mail.utils.LogUtils;
 
 import java.util.Set;
@@ -36,7 +36,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * <p>
  * Touch events on any other child of this ScrollView are intercepted in the standard fashion.
  */
-public class MessageScrollView extends ScrollView implements ScrollNotifier {
+public class MessageScrollView extends ScrollView implements ScrollNotifier,
+        ScaleGestureDetector.OnScaleGestureListener {
 
     /**
      * A View that reports whether onTouchEvent() was recently called.
@@ -62,6 +63,17 @@ public class MessageScrollView extends ScrollView implements ScrollNotifier {
      */
     private Touchable mTouchableChild;
 
+    /**
+     * We want to detect the scale gesture so that we don't try to scroll instead, but we don't
+     * care about actually interpreting it because the webview does that by itself when it handles
+     * the touch events.
+     *
+     * This might lead to really weird interactions if the two gesture detectors' implementations
+     * drift...
+     */
+    private ScaleGestureDetector mScaleDetector;
+    private boolean mInScaleGesture;
+
     private final Set<ScrollListener> mScrollListeners =
             new CopyOnWriteArraySet<ScrollListener>();
 
@@ -73,6 +85,7 @@ public class MessageScrollView extends ScrollView implements ScrollNotifier {
 
     public MessageScrollView(Context c, AttributeSet attrs) {
         super(c, attrs);
+        mScaleDetector = new ScaleGestureDetector(c, this);
     }
 
     public void setInnerScrollableView(Touchable child) {
@@ -107,10 +120,13 @@ public class MessageScrollView extends ScrollView implements ScrollNotifier {
         if (mTouchableChild != null) {
             mTouchableChild.clearTouched();
         }
+
+        mScaleDetector.onTouchEvent(ev);
+
         final boolean handled = super.dispatchTouchEvent(ev);
         LogUtils.d(LOG_TAG, "OUT ScrollView.dispatchTouch, handled=%s ev=%s", handled, ev);
 
-        if (mWantToIntercept) {
+        if (mWantToIntercept && !mInScaleGesture) {
             final boolean touchedChild = (mTouchableChild != null && mTouchableChild.wasTouched());
             if (touchedChild) {
                 // also give the event to this scroll view if the WebView got the event
@@ -124,6 +140,24 @@ public class MessageScrollView extends ScrollView implements ScrollNotifier {
         }
 
         return handled;
+    }
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+        return true;
+    }
+
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+        LogUtils.d(LOG_TAG, "Begin scale gesture");
+        mInScaleGesture = true;
+        return true;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        LogUtils.d(LOG_TAG, "End scale gesture");
+        mInScaleGesture = false;
     }
 
     @Override
