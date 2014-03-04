@@ -41,12 +41,13 @@
 
         <TextView android:id="@+id/from_account_name"
             android:layout_width="match_parent"
-            android:paddingLeft="8dip"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:singleLine="true"
             android:ellipsize="end"
+            android:textAlignment="viewStart"
             android:textSize="18sp"
-            android:background="@android:color/transparent"
-            android:layout_height="match_parent" />
+            android:background="@android:color/transparent" />
 
     </LinearLayout>
 

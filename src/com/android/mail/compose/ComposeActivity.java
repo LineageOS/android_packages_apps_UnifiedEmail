@@ -46,7 +46,6 @@ import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import android.support.v4.text.BidiFormatter;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableString;
@@ -295,8 +294,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Account[] mAccounts;
     private boolean mRespondedInline;
     private boolean mPerformedSendOrDiscard = false;
-
-    private final BidiFormatter mBidiFormatter = BidiFormatter.getInstance();
 
     /**
      * Can be called from a non-UI thread.
@@ -780,7 +777,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Update the from spinner as other accounts
         // may now be available.
         if (mFromSpinner != null && mAccount != null) {
-            mFromSpinner.initialize(mComposeMode, mAccount, mAccounts, mRefMessage, mBidiFormatter);
+            mFromSpinner.initialize(mComposeMode, mAccount, mAccounts, mRefMessage);
         }
     }
 
@@ -990,7 +987,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (action == EDIT_DRAFT && mDraft.draftType == UIProvider.DraftType.COMPOSE) {
             action = COMPOSE;
         }
-        mFromSpinner.initialize(action, mAccount, mAccounts, mRefMessage, mBidiFormatter);
+        mFromSpinner.initialize(action, mAccount, mAccounts, mRefMessage);
 
         if (bundle != null) {
             if (bundle.containsKey(EXTRA_SELECTED_REPLY_FROM_ACCOUNT)) {
