@@ -15,22 +15,19 @@
  */
 package com.android.mail;
 
-import android.net.Uri;
-
-import com.android.mail.utils.StorageLowState;
-
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 import com.android.mail.analytics.Analytics;
-import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationUtils;
+import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
 
 /**
@@ -65,7 +62,7 @@ public class MailIntentService extends IntentService {
         final String action = intent.getAction();
 
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
-            NotificationUtils.cancelAndResendNotifications(this);
+            NotificationUtils.cancelAndResendNotificationsOnLocaleChange(this);
         } else if (ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS.equals(action)) {
             final Account account = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
             final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);

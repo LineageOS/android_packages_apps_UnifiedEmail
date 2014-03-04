@@ -96,7 +96,7 @@ public class NotificationUtils {
                 }
             };
 
-    private static final BidiFormatter BIDI_FORMATTER = BidiFormatter.getInstance();
+    private static BidiFormatter sBidiFormatter = BidiFormatter.getInstance();
 
     /**
      * Clears all notifications in response to the user tapping "Clear" in the status bar.
@@ -311,8 +311,9 @@ public class NotificationUtils {
      * Get all notifications for all accounts, cancel them, and repost.
      * This happens when locale changes.
      **/
-    public static void cancelAndResendNotifications(Context context) {
-        LogUtils.d(LOG_TAG, "cancelAndResendNotifications");
+    public static void cancelAndResendNotificationsOnLocaleChange(Context context) {
+        LogUtils.d(LOG_TAG, "cancelAndResendNotificationsOnLocaleChange");
+        sBidiFormatter = BidiFormatter.getInstance();
         resendNotifications(context, true, null, null);
     }
 
@@ -1052,7 +1053,7 @@ public class NotificationUtils {
             LogUtils.e(LOG_TAG, "null from string in getWrappedFromString");
             from = "";
         }
-        from = BIDI_FORMATTER.unicodeWrap(from);
+        from = sBidiFormatter.unicodeWrap(from);
         return from;
     }
 
@@ -1172,7 +1173,7 @@ public class NotificationUtils {
             // senders is already individually unicode wrapped so it does not need to be done here
             final String instantiatedString = String.format(formatString,
                     senders,
-                    BIDI_FORMATTER.unicodeWrap(subjectSnippet));
+                    sBidiFormatter.unicodeWrap(subjectSnippet));
 
             final SpannableString spannableString = new SpannableString(instantiatedString);
 
