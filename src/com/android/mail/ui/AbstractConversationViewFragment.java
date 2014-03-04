@@ -326,7 +326,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             LogUtils.e(LOG_TAG,
                     "ACVF ignoring onOptionsItemSelected b/c userVisibleHint is false. f=%s", this);
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
-                LogUtils.e(LOG_TAG, Utils.dumpFragment(this));  // the dump has '%' chars in it...
+                LogUtils.e(LOG_TAG, "%s", Utils.dumpFragment(this));
             }
             return false;
         }
