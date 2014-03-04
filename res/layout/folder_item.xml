@@ -79,6 +79,7 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:textColor="@color/folder_item_text_color"
+        android:textAlignment="viewStart"
         android:textAppearance="?android:attr/textAppearanceMedium"
         style="@style/FolderListItemStyle" />
 

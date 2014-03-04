@@ -17,7 +17,6 @@
 
 package com.android.mail.adapter;
 
-import android.support.v4.text.BidiFormatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +39,8 @@ import com.android.mail.utils.LogUtils;
  * or a header (a resource string). A {@link DrawerItem} can only be one type and can never
  * switch types. Items are created using methods like
  * {@link DrawerItem#ofAccount(com.android.mail.ui.ControllableActivity,
- com.android.mail.providers.Account, int, boolean, BidiFormatter)},
- * {@link DrawerItem#ofWaitView(com.android.mail.ui.ControllableActivity, BidiFormatter)}, etc.
+ com.android.mail.providers.Account, int, boolean)},
+ * {@link DrawerItem#ofWaitView(com.android.mail.ui.ControllableActivity)}, etc.
  *
  * Once created, the item can create a view using
  * {@link #getView(android.view.View, android.view.ViewGroup)}.
@@ -71,7 +70,6 @@ public class DrawerItem {
     /** The parent activity */
     private final ControllableActivity mActivity;
     private final LayoutInflater mInflater;
-    private final BidiFormatter mBidiFormatter;
 
     // TODO(viki): Put all these constants in an interface.
     /**
@@ -128,7 +126,7 @@ public class DrawerItem {
      * @param isCurrentAccount true if this item is the current account
      */
     private DrawerItem(int type, ControllableActivity activity, Folder folder, int folderType,
-            Account account, int resource, boolean isCurrentAccount, BidiFormatter bidiFormatter) {
+            Account account, int resource, boolean isCurrentAccount) {
         mActivity = activity;
         mFolder = folder;
         mFolderType = folderType;
@@ -138,7 +136,6 @@ public class DrawerItem {
         mInflater = LayoutInflater.from(activity.getActivityContext());
         mType = type;
         mIsEnabled = calculateEnabled();
-        mBidiFormatter = bidiFormatter;
     }
 
     /**
@@ -151,9 +148,8 @@ public class DrawerItem {
      * @return a drawer item for the folder.
      */
     public static DrawerItem ofFolder(ControllableActivity activity, Folder folder,
-            int folderType, BidiFormatter bidiFormatter) {
-        return new DrawerItem(VIEW_FOLDER, activity, folder,  folderType, null, -1, false,
-                bidiFormatter);
+            int folderType) {
+        return new DrawerItem(VIEW_FOLDER, activity, folder,  folderType, null, -1, false);
     }
 
     private String folderToString() {
@@ -176,9 +172,9 @@ public class DrawerItem {
      * @return a drawer item for the account.
      */
     public static DrawerItem ofAccount(ControllableActivity activity, Account account,
-            int unreadCount, boolean isCurrentAccount, BidiFormatter bidiFormatter) {
+            int unreadCount, boolean isCurrentAccount) {
         return new DrawerItem(VIEW_ACCOUNT, activity, null, ACCOUNT, account, unreadCount,
-                isCurrentAccount, bidiFormatter);
+                isCurrentAccount);
     }
 
     private String accountToString() {
@@ -197,10 +193,8 @@ public class DrawerItem {
      * @param resource the string resource: R.string.all_folders_heading
      * @return a drawer item for the header.
      */
-    public static DrawerItem ofHeader(ControllableActivity activity, int resource,
-            BidiFormatter bidiFormatter) {
-        return new DrawerItem(VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false,
-                bidiFormatter);
+    public static DrawerItem ofHeader(ControllableActivity activity, int resource) {
+        return new DrawerItem(VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false);
     }
 
     private String headerToString() {
@@ -218,10 +212,8 @@ public class DrawerItem {
      * @param activity the underlying activity
      * @return a drawer item with an indeterminate progress indicator.
      */
-    public static DrawerItem ofWaitView(ControllableActivity activity,
-            BidiFormatter bidiFormatter) {
-        return new DrawerItem(VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false,
-                bidiFormatter);
+    public static DrawerItem ofWaitView(ControllableActivity activity) {
+        return new DrawerItem(VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false);
     }
 
     private static String waitToString() {
@@ -346,7 +338,7 @@ public class DrawerItem {
             accountItemView =
                     (AccountItemView) mInflater.inflate(R.layout.account_item, parent, false);
         }
-        accountItemView.bind(mAccount, mIsSelected, mResource, mBidiFormatter);
+        accountItemView.bind(mAccount, mIsSelected, mResource);
         View v = accountItemView.findViewById(R.id.account_graphic);
         v.setBackgroundColor(mAccount.color);
         return accountItemView;
@@ -385,7 +377,7 @@ public class DrawerItem {
             folderItemView =
                     (FolderItemView) mInflater.inflate(R.layout.folder_item, parent, false);
         }
-        folderItemView.bind(mFolder, mActivity, mBidiFormatter);
+        folderItemView.bind(mFolder, mActivity);
         Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
         folderItemView.setIcon(mFolder);
         return folderItemView;

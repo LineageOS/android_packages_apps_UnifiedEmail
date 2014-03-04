@@ -16,7 +16,6 @@
 package com.android.mail.ui;
 
 import android.content.Context;
-import android.support.v4.text.BidiFormatter;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -64,9 +63,8 @@ public class AccountItemView extends RelativeLayout {
      * @param isCurrentAccount true if the account is the one in use, false otherwise
      * @param count unread count
      */
-    public void bind(final Account account, final boolean isCurrentAccount,
-            final int count, BidiFormatter bidiFormatter) {
-        mAccountTextView.setText(bidiFormatter.unicodeWrap(account.getDisplayName()));
+    public void bind(final Account account, final boolean isCurrentAccount, final int count) {
+        mAccountTextView.setText(account.getDisplayName());
         setUnreadCount(count);
         mUnreadCountTextView.setSelected(isCurrentAccount);
         mAccountTextView.setSelected(isCurrentAccount);

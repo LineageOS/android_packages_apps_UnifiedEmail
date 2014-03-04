@@ -77,6 +77,7 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:textColor="@color/folder_name_color_primary_invertible"
+            android:textAlignment="viewStart"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
