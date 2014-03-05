@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import android.support.v4.text.BidiFormatter;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.text.Html;
@@ -36,7 +35,6 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.AccountUtils;
-import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MatrixCursorWithCachedColumns;
 import com.android.mail.utils.Utils;
 
@@ -150,7 +148,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         activity.mFromSpinner.setCurrentAccount(currentAccount);
 
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, EMPTY_ACCOUNT_LIST, null, BidiFormatter.getInstance());
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         runTestOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -185,7 +183,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         activity.mFromSpinner.setCurrentAccount(currentAccount);
 
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, EMPTY_ACCOUNT_LIST, null, BidiFormatter.getInstance());
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         runTestOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -224,7 +222,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         activity.mFromSpinner.setCurrentAccount(currentAccount);
 
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, EMPTY_ACCOUNT_LIST, null, BidiFormatter.getInstance());
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         runTestOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -553,7 +551,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 true, false);
         activity.mFromSpinner.setCurrentAccount(currentAccount);
         activity.mFromSpinner.initialize(ComposeActivity.REPLY, currentAccount.account,
-                EMPTY_ACCOUNT_LIST, null, BidiFormatter.getInstance());
+                EMPTY_ACCOUNT_LIST, null);
 
         runTestOnUiThread(new Runnable() {
             @Override
@@ -594,7 +592,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 true, false);
         activity.mFromSpinner.setCurrentAccount(currentAccount);
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, EMPTY_ACCOUNT_LIST, null, BidiFormatter.getInstance());
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         runTestOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -637,7 +635,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 true, false);
         activity.mFromSpinner.setCurrentAccount(currentAccount);
         activity.mFromSpinner.initialize(ComposeActivity.REPLY_ALL,
-                currentAccount.account, EMPTY_ACCOUNT_LIST, null, BidiFormatter.getInstance());
+                currentAccount.account, EMPTY_ACCOUNT_LIST, null);
         runTestOnUiThread(new Runnable() {
             @Override
             public void run() {

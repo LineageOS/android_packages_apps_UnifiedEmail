@@ -16,7 +16,6 @@
 package com.android.mail.compose;
 
 import android.content.Context;
-import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -91,7 +90,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
      * @param syncingAccounts
      */
     public void initialize(int action, Account currentAccount, Account[] syncingAccounts,
-                Message refMessage, BidiFormatter bidiFormatter) {
+                Message refMessage) {
         final List<Account> accounts = AccountUtils.mergeAccountLists(mAccounts,
                 syncingAccounts, true /* prioritizeAccountList */);
         if (action == ComposeActivity.COMPOSE) {
@@ -112,11 +111,11 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
             }
             mAccounts = ImmutableList.of(replyAccount);
         }
-        initFromSpinner(bidiFormatter);
+        initFromSpinner();
     }
 
     @VisibleForTesting
-    protected void initFromSpinner(BidiFormatter bidiFormatter) {
+    protected void initFromSpinner() {
         // If there are not yet any accounts in the cached synced accounts
         // because this is the first time mail was opened, and it was opened
         // directly to the compose activity, don't bother populating the reply
@@ -125,7 +124,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
             return;
         }
         FromAddressSpinnerAdapter adapter =
-                new FromAddressSpinnerAdapter(getContext(), bidiFormatter);
+                new FromAddressSpinnerAdapter(getContext());
 
         mReplyFromAccounts.clear();
         for (Account account : mAccounts) {
