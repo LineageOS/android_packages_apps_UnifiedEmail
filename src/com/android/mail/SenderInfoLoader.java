@@ -30,6 +30,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build.VERSION;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Contacts.Photo;
@@ -135,10 +136,14 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
         query.append(')');
         Trace.endSection();
 
+        // Contacts that are designed to be visible outside of search will be returned last.
+        // Therefore, these contacts will be given precedence below, if possible.
+        final String sortOrder = contactInfoSortOrder();
+
         try {
             Trace.beginSection("query 1");
             cursor = resolver.query(Data.CONTENT_URI, DATA_COLS,
-                    query.toString(), toStringArray(emailsList), null /* sortOrder */);
+                    query.toString(), toStringArray(emailsList), sortOrder);
             Trace.endSection();
 
             if (cursor == null) {
@@ -196,7 +201,7 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
 
             Trace.beginSection("query 2");
             cursor = resolver.query(Data.CONTENT_URI, PHOTO_COLS,
-                    query.toString(), toStringArray(photoIdsAsStrings), null /* sortOrder */);
+                    query.toString(), toStringArray(photoIdsAsStrings), sortOrder);
             Trace.endSection();
 
             if (cursor == null) {
@@ -239,6 +244,17 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
 
         Trace.endSection();
         return ImmutableMap.copyOf(results);
+    }
+
+    private static String contactInfoSortOrder() {
+        // The ContactsContract.IN_DEFAULT_DIRECTORY does not exist prior to android L. There is
+        // no VERSION.SDK_INT value assigned for android L yet. Therefore, we must gate the
+        // following logic on the development codename.
+        // TODO: use VERSION.SDK_INT once VERSION.SDK_INT is increased for L.
+        if (VERSION.CODENAME.startsWith("L")) {
+            return "in_default_directory ASC, " + Data._ID;
+        }
+        return null;
     }
 
     static ArrayList<String> getTruncatedQueryParams(Collection<String> params) {
