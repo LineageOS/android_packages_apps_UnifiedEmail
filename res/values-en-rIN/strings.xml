@@ -220,8 +220,12 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Show <xliff:g id="COUNT">%1$d</xliff:g> new messages."</item>
   </plurals>
-    <string name="expand_recipient_details" msgid="2266544827446346880">"Expand recipient details"</string>
-    <string name="collapse_recipient_details" msgid="3608892454869745927">"Collapse recipient details"</string>
+    <!-- no translation found for details (5065930681696657503) -->
+    <skip />
+    <!-- no translation found for hide_details (7022374044607095589) -->
+    <skip />
+    <!-- no translation found for to_message_header (7406436821725529743) -->
+    <skip />
     <string name="contact_info_string" msgid="6911322458329265644">"Show contact information for <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Show contact information"</string>
   <plurals name="show_messages_read">
