@@ -99,7 +99,7 @@ public class SecureConversationViewController implements
         final int color = rootView.getResources().getColor(
                 R.color.message_header_background_color);
         mMessageHeaderView.setBackgroundColor(color);
-        mSnapHeaderView.setBackgroundColor(color);
+        mSnapHeaderView.findViewById(R.id.upper_header).setBackgroundColor(color);
         mMessageFooterView.setBackgroundColor(color);
 
         ((BorderView) rootView.findViewById(R.id.top_border)).disableCardBottomBorder();

@@ -113,13 +113,11 @@
                     android:text="@string/long_string"
                     style="@style/ConversationListDateStyle" />
 
-                <!-- top margin should be 16dp, but the asset has 8dp built-in padding -->
-                <!-- left padding should be 8dp, but the asset has 2dp built-in padding -->
                 <ImageView
                     android:id="@+id/paperclip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="17dp"
                     android:src="@drawable/ic_attachment_holo_light"
                     style="@style/ConversationListPaperclipStyle" />
 

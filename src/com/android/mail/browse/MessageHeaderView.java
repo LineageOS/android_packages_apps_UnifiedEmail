@@ -23,13 +23,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.support.v4.text.BidiFormatter;
 import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -103,18 +100,19 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
     private MessageHeaderViewCallbacks mCallbacks;
 
-    private ViewGroup mUpperHeaderView;
     private View mSnapHeaderBottomBorder;
     private TextView mSenderNameView;
-    private TextView mSenderEmailView;
     private TextView mDateView;
     private TextView mSnippetView;
     private QuickContactBadge mPhotoView;
     private ImageView mStarView;
     private ViewGroup mTitleContainerView;
+    private ViewGroup mActionsAndDetailsView;
     private ViewGroup mExtraContentView;
-    private ViewGroup mCollapsedDetailsView;
-    private ViewGroup mExpandedDetailsView;
+    private View mCollapsedDetailsView;
+    private TextView mCollapsedRecipientSummary;
+    private View mExpandedDetailsView;
+    private TextView mExpandedRecipientSummary;
     private SpamWarningView mSpamWarningView;
     private TextView mImagePromptView;
     private MessageInviteView mInviteView;
@@ -161,6 +159,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
      */
     private boolean mCollapsedStarVisible;
     private boolean mStarShown;
+    private int mStarHeight;
+    private int mStarHeightCollapsed;
 
     /**
      * End margin of the text when collapsed. When expanded, the margin is 0.
@@ -172,7 +172,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     private MessageHeaderItem mMessageHeaderItem;
     private ConversationMessage mMessage;
 
-    private boolean mCollapsedDetailsValid;
+    private boolean mRecipientSummaryValid;
     private boolean mExpandedDetailsValid;
 
     private final LayoutInflater mInflater;
@@ -258,10 +258,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mUpperHeaderView = (ViewGroup) findViewById(R.id.upper_header);
         mSnapHeaderBottomBorder = findViewById(R.id.snap_header_bottom_border);
         mSenderNameView = (TextView) findViewById(R.id.sender_name);
-        mSenderEmailView = (TextView) findViewById(R.id.sender_email);
         mDateView = (TextView) findViewById(R.id.send_date);
         mSnippetView = (TextView) findViewById(R.id.email_snippet);
         mPhotoView = (QuickContactBadge) findViewById(R.id.photo);
@@ -270,6 +268,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         mForwardButton = findViewById(R.id.forward);
         mStarView = (ImageView) findViewById(R.id.star);
         mTitleContainerView = (ViewGroup) findViewById(R.id.title_container);
+        mActionsAndDetailsView = (ViewGroup) findViewById(R.id.actions_and_details);
         mOverflowButton = findViewById(R.id.overflow);
         mDraftIcon = findViewById(R.id.draft);
         mEditDraftButton = findViewById(R.id.edit_draft);
@@ -281,20 +280,22 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         final Resources resources = getResources();
         mTitleContainerCollapsedMarginEnd = resources.getDimensionPixelSize(
                 R.dimen.message_header_title_container_margin_end_collapsed);
+        mStarHeight = resources.getDimensionPixelSize(R.dimen.message_header_action_button_height);
+        mStarHeightCollapsed = resources.getDimensionPixelSize(
+                R.dimen.message_header_action_button_height_condensed);
 
         setExpanded(true);
 
-        registerMessageClickTargets(R.id.reply, R.id.reply_all, R.id.forward, R.id.star,
-                R.id.edit_draft, R.id.overflow, R.id.upper_header);
+        registerMessageClickTargets(mReplyButton, mReplyAllButton, mForwardButton, mStarView,
+                mEditDraftButton, mOverflowButton, mTitleContainerView);
 
-        mUpperHeaderView.setOnCreateContextMenuListener(mEmailCopyMenu);
+        mTitleContainerView.setOnCreateContextMenuListener(mEmailCopyMenu);
     }
 
-    private void registerMessageClickTargets(int... ids) {
-        for (int id : ids) {
-            View v = findViewById(id);
-            if (v != null) {
-                v.setOnClickListener(this);
+    private void registerMessageClickTargets(View... views) {
+        for (View view : views) {
+            if (view != null) {
+                view.setOnClickListener(this);
             }
         }
     }
@@ -412,7 +413,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
 
-        mCollapsedDetailsValid = false;
+        mRecipientSummaryValid = false;
         mExpandedDetailsValid = false;
 
         mMessage = mMessageHeaderItem.getMessage();
@@ -445,11 +446,11 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         // 2. the account has no custom froms, fromAddress will be empty, and we
         // can safely fall back and show the account name as sender since it's
         // the only possible fromAddress.
-        String from = mMessage.getFrom();
-        if (TextUtils.isEmpty(from)) {
-            from = (account != null) ? account.getEmailAddress() : "";
+        String fromAddress = mMessage.getFrom();
+        if (TextUtils.isEmpty(fromAddress)) {
+            fromAddress = (account != null) ? account.getEmailAddress() : "";
         }
-        mSender = getAddress(from);
+        mSender = getAddress(fromAddress);
 
         mStarView.setSelected(mMessage.starred);
         mStarView.setContentDescription(getResources().getString(
@@ -468,16 +469,13 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
         updateChildVisibility();
 
-        final String snippet;
         if (mIsDraft || mIsSending) {
-            snippet = makeSnippet(mMessage.snippet);
+            mSnippet = makeSnippet(mMessage.snippet);
         } else {
-            snippet = mMessage.snippet;
+            mSnippet = mMessage.snippet;
         }
-        mSnippet = snippet == null ? null : getBidiFormatter().unicodeWrap(snippet);
 
         mSenderNameView.setText(getHeaderTitle());
-        mSenderEmailView.setText(getHeaderSubtitle());
         mDateView.setText(mMessageHeaderItem.getTimestampLong());
         mSnippetView.setText(mSnippet);
         setAddressOnContextMenu();
@@ -548,30 +546,10 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         } else if (mIsSending) {
             title = getResources().getString(R.string.sending);
         } else {
-            title = getBidiFormatter().unicodeWrap(
-                    getSenderName(mSender));
+            title = getSenderName(mSender);
         }
 
         return title;
-    }
-
-    private CharSequence getHeaderSubtitle() {
-        CharSequence sub;
-        if (mIsSending) {
-            sub = null;
-        } else {
-            if (isExpanded()) {
-                if (mMessage.viaDomain != null) {
-                    sub = getResources().getString(
-                            R.string.via_domain, mMessage.viaDomain);
-                } else {
-                    sub = getSenderAddress(mSender);
-                }
-            } else {
-                sub = mSnippet;
-            }
-        }
-        return sub;
     }
 
     /**
@@ -613,25 +591,23 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
      * Update the visibility of the many child views based on expanded/collapsed
      * and draft/normal state.
      */
+    @SuppressLint("NewApi")
     private void updateChildVisibility() {
         // Too bad this can't be done with an XML state list...
 
         if (mIsViewOnlyMode) {
-            setMessageDetailsVisibility(VISIBLE);
-            setChildVisibility(GONE, mSnapHeaderBottomBorder);
+            updateChildVisibilityForSnappyViews();
 
             setChildVisibility(GONE, mReplyButton, mReplyAllButton, mForwardButton,
-                    mOverflowButton, mDraftIcon, mEditDraftButton, mStarView,
-                    mAttachmentIcon, mUpperDateView, mSnippetView);
-            setChildVisibility(VISIBLE, mPhotoView, mSenderEmailView, mDateView);
+                    mOverflowButton, mDraftIcon, mEditDraftButton,
+                    mStarView, mUpperDateView, mSnippetView);
+            setChildVisibility(VISIBLE, mPhotoView, mDateView);
 
             setChildMarginEnd(mTitleContainerView, 0);
         } else if (isExpanded()) {
             int normalVis, draftVis;
 
-            final boolean isSnappy = isSnappy();
-            setMessageDetailsVisibility((isSnappy) ? GONE : VISIBLE);
-            setChildVisibility(isSnappy ? VISIBLE : GONE, mSnapHeaderBottomBorder);
+            updateChildVisibilityForSnappyViews();
 
             if (mIsDraft) {
                 normalVis = GONE;
@@ -644,9 +620,13 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             setReplyOrReplyAllVisible();
             setChildVisibility(normalVis, mPhotoView, mForwardButton, mOverflowButton);
             setChildVisibility(draftVis, mDraftIcon, mEditDraftButton);
-            setChildVisibility(VISIBLE, mSenderEmailView, mDateView);
+            setChildVisibility(VISIBLE, mDateView);
             setChildVisibility(GONE, mAttachmentIcon, mUpperDateView, mSnippetView);
+
             setChildVisibility(mStarShown ? VISIBLE : GONE, mStarView);
+            if (mStarShown) {
+                setChildHeight(mStarHeight, mStarView);
+            }
 
             setChildMarginEnd(mTitleContainerView, 0);
 
@@ -657,12 +637,15 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             setChildVisibility(VISIBLE, mSnippetView, mUpperDateView);
 
             setChildVisibility(GONE, mEditDraftButton, mReplyButton, mReplyAllButton,
-                    mForwardButton, mOverflowButton, mSenderEmailView, mDateView);
+                    mForwardButton, mOverflowButton, mDateView);
 
-            setChildVisibility(mMessage.hasAttachments ? VISIBLE : GONE,
-                    mAttachmentIcon);
+            setChildVisibility(mMessage.hasAttachments ? VISIBLE : GONE, mAttachmentIcon);
 
-            setChildVisibility(mCollapsedStarVisible && mStarShown ? VISIBLE : GONE, mStarView);
+            final boolean showStar = mCollapsedStarVisible && mStarShown;
+            setChildVisibility(showStar ? VISIBLE : GONE, mStarView);
+            if (showStar) {
+                setChildHeight(mStarHeightCollapsed, mStarView);
+            }
 
             setChildMarginEnd(mTitleContainerView, mTitleContainerCollapsedMarginEnd);
 
@@ -678,6 +661,29 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
             }
         }
+    }
+
+    private static void setChildHeight(int height, View view) {
+        final ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = height;
+        view.setLayoutParams(params);
+    }
+
+    /**
+     * Uses the snappy state of the view to appropriately
+     * enable/disable some of the details views.
+     * Specifically, if snappy, {@link #setMessageDetailsVisibleForSnapHeader()}
+     * is called instead of {@link #setMessageDetailsVisibility(int)}.
+     * Also controls visibility of the snap header border gradient.
+     */
+    private void updateChildVisibilityForSnappyViews() {
+        final boolean isSnappy = isSnappy();
+        if (isSnappy) {
+            setMessageDetailsVisibleForSnapHeader();
+        } else {
+            setMessageDetailsVisibility(VISIBLE);
+        }
+        setChildVisibility(isSnappy ? VISIBLE : GONE, mSnapHeaderBottomBorder);
     }
 
     /**
@@ -719,55 +725,52 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
      */
     private static class RecipientListsBuilder {
         private final Context mContext;
-        private final String mMe;
+        private final String mMeEmailAddress;
         private final String mMyName;
-        private final SpannableStringBuilder mBuilder = new SpannableStringBuilder();
+        private final StringBuilder mBuilder = new StringBuilder();
         private final CharSequence mComma;
         private final Map<String, Address> mAddressCache;
         private final VeiledAddressMatcher mMatcher;
+        private final BidiFormatter mBidiFormatter;
 
         int mRecipientCount = 0;
         boolean mFirst = true;
 
-        public RecipientListsBuilder(Context context, String me, String myName,
-                Map<String, Address> addressCache, VeiledAddressMatcher matcher) {
+        public RecipientListsBuilder(Context context, String meEmailAddress, String myName,
+                Map<String, Address> addressCache, VeiledAddressMatcher matcher,
+                BidiFormatter bidiFormatter) {
             mContext = context;
-            mMe = me;
+            mMeEmailAddress = meEmailAddress;
             mMyName = myName;
             mComma = mContext.getText(R.string.enumeration_comma);
             mAddressCache = addressCache;
             mMatcher = matcher;
+            mBidiFormatter = bidiFormatter;
         }
 
-        public void append(String[] recipients, int headingRes) {
-            int addLimit = SUMMARY_MAX_RECIPIENTS - mRecipientCount;
-            CharSequence recipientList = getSummaryTextForHeading(headingRes, recipients, addLimit);
-            if (recipientList != null) {
-                // duplicate TextUtils.join() logic to minimize temporary
-                // allocations, and because we need to support spans
-                if (mFirst) {
-                    mFirst = false;
-                } else {
-                    mBuilder.append(RECIPIENT_HEADING_DELIMITER);
-                }
-                mBuilder.append(recipientList);
+        public void append(String[] recipients) {
+            final int addLimit = SUMMARY_MAX_RECIPIENTS - mRecipientCount;
+            final boolean hasRecipients = appendRecipients(recipients, addLimit);
+            if (hasRecipients) {
                 mRecipientCount += Math.min(addLimit, recipients.length);
             }
         }
 
-        private CharSequence getSummaryTextForHeading(int headingStrRes, String[] rawAddrs,
+        /**
+         * Appends formatted recipients of the message to the recipient list,
+         * as long as there are recipients left to append and the maximum number
+         * of addresses limit has not been reached.
+         * @param rawAddrs The addresses to append.
+         * @param maxToCopy The maximum number of addresses to append.
+         * @return {@code true} if a recipient has been appended. {@code false}, otherwise.
+         */
+        private boolean appendRecipients(String[] rawAddrs,
                 int maxToCopy) {
             if (rawAddrs == null || rawAddrs.length == 0 || maxToCopy == 0) {
-                return null;
+                return false;
             }
 
-            SpannableStringBuilder ssb = new SpannableStringBuilder(
-                    mContext.getString(headingStrRes));
-            ssb.setSpan(new StyleSpan(Typeface.NORMAL), 0, ssb.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
             final int len = Math.min(maxToCopy, rawAddrs.length);
-            boolean first = true;
             for (int i = 0; i < len; i++) {
                 final Address email = Utils.getAddress(mAddressCache, rawAddrs[i]);
                 final String emailAddress = email.getAddress();
@@ -781,38 +784,53 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
                     }
                 } else {
                     // Not a veiled address, show first part of email, or "me".
-                    name = mMe.equals(emailAddress) ? mMyName : email.getSimplifiedName();
+                    name = mMeEmailAddress.equals(emailAddress) ?
+                            mMyName : email.getSimplifiedName();
                 }
 
-                // duplicate TextUtils.join() logic to minimize temporary
-                // allocations, and because we need to support spans
-                if (first) {
-                    first = false;
+                // duplicate TextUtils.join() logic to minimize temporary allocations
+                if (mFirst) {
+                    mFirst = false;
                 } else {
-                    ssb.append(mComma);
+                    mBuilder.append(mComma);
                 }
-                ssb.append(name);
+                mBuilder.append(mBidiFormatter.unicodeWrap(name));
             }
 
-            return ssb;
+            return true;
         }
 
         public CharSequence build() {
-            return mBuilder;
+            return mContext.getString(R.string.to_message_header, mBuilder);
         }
     }
 
-    @VisibleForTesting
-    static CharSequence getRecipientSummaryText(Context context, String me, String myName,
-            String[] to, String[] cc, String[] bcc, Map<String, Address> addressCache,
-            VeiledAddressMatcher matcher) {
+    private CharSequence getRecipientSummary() {
+        if (!mRecipientSummaryValid) {
+            if (mMessageHeaderItem == null) {
+                return "";
+            }
 
-        final RecipientListsBuilder builder =
-                new RecipientListsBuilder(context, me, myName, addressCache, matcher);
+            if (mMessageHeaderItem.recipientSummaryText == null) {
+                final Account account = getAccount();
+                final String meEmailAddress = (account != null) ? account.getEmailAddress() : "";
+                mMessageHeaderItem.recipientSummaryText =
+                        getRecipientSummaryText(getContext(), meEmailAddress);
+            }
 
-        builder.append(to, R.string.to_heading);
-        builder.append(cc, R.string.cc_heading);
-        builder.append(bcc, R.string.bcc_heading);
+            mRecipientSummaryValid = true;
+        }
+
+        return mMessageHeaderItem.recipientSummaryText;
+    }
+
+    private CharSequence getRecipientSummaryText(Context context, String meEmailAddress) {
+        final RecipientListsBuilder builder = new RecipientListsBuilder(context,
+                meEmailAddress, mMyName, mAddressCache, mVeiledMatcher, getBidiFormatter());
+
+        builder.append(mTo);
+        builder.append(mCc);
+        builder.append(mBcc);
 
         return builder.build();
     }
@@ -928,10 +946,9 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             m.findItem(R.id.report_rendering_problem).setVisible(reportRendering);
 
             mPopup.show();
-        } else if (id == R.id.details_collapsed_content
-                || id == R.id.details_expanded_content) {
-            toggleMessageDetails(v);
-        } else if (id == R.id.upper_header) {
+        } else if (id == R.id.details_collapsed_content || id == R.id.details_expanded_content) {
+            toggleMessageDetails();
+        } else if (id == R.id.title_container) {
             toggleExpanded();
         } else if (id == R.id.show_pictures_text) {
             handleShowImagePromptClick(v);
@@ -983,7 +1000,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         // The snappy header will disappear; no reason to update text.
         if (!isSnappy()) {
             mSenderNameView.setText(getHeaderTitle());
-            mSenderEmailView.setText(getHeaderSubtitle());
             mDateView.setText(mMessageHeaderItem.getTimestampLong());
             mSnippetView.setText(mSnippet);
         }
@@ -1001,6 +1017,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             mCallbacks.setMessageExpanded(mMessageHeaderItem, h,
                     borderHeights.topHeight, borderHeights.bottomHeight);
         }
+
+        requestLayout();
     }
 
     /**
@@ -1070,16 +1088,16 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     @Override
     public void setSnappy() {
         mIsSnappy = true;
-        hideMessageDetails();
+        setMessageDetailsVisibleForSnapHeader();
     }
 
     private boolean isSnappy() {
         return mIsSnappy;
     }
 
-    private void toggleMessageDetails(View visibleDetailsView) {
+    private void toggleMessageDetails() {
         int heightBefore = measureHeight();
-        final boolean detailsExpanded = (visibleDetailsView == mCollapsedDetailsView);
+        final boolean detailsExpanded = !mMessageHeaderItem.detailsExpanded;
         setMessageDetailsExpanded(detailsExpanded);
         updateSpacerHeight();
         if (mCallbacks != null) {
@@ -1101,14 +1119,28 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         }
     }
 
-    public void setMessageDetailsVisibility(int vis) {
+    /**
+     * Sets the visibility of the various message details when in snap header mode.
+     * Hides all of the views except for part of the collapsed details.
+     * The collapsed details shows its recipient summary in snap header mode.
+     */
+    private void setMessageDetailsVisibleForSnapHeader() {
+        showCollapsedDetails(true /* isSnappy */);
+        hideExpandedDetails();
+        hideSpamWarning();
+        hideShowImagePrompt();
+        hideInvite();
+        mTitleContainerView.setOnCreateContextMenuListener(null);
+    }
+
+    private void setMessageDetailsVisibility(int vis) {
         if (vis == GONE) {
             hideCollapsedDetails();
             hideExpandedDetails();
             hideSpamWarning();
             hideShowImagePrompt();
             hideInvite();
-            mUpperHeaderView.setOnCreateContextMenuListener(null);
+            mTitleContainerView.setOnCreateContextMenuListener(null);
         } else {
             setMessageDetailsExpanded(mMessageHeaderItem.detailsExpanded);
             if (mMessage.spamWarningString == null) {
@@ -1130,12 +1162,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             } else {
                 hideInvite();
             }
-            mUpperHeaderView.setOnCreateContextMenuListener(mEmailCopyMenu);
+            mTitleContainerView.setOnCreateContextMenuListener(mEmailCopyMenu);
         }
-    }
-
-    private void hideMessageDetails() {
-        setMessageDetailsVisibility(GONE);
     }
 
     private void hideCollapsedDetails() {
@@ -1267,27 +1295,36 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     /**
      * Makes collapsed details visible. If necessary, will inflate details
      * layout and render using saved-off state (senders, timestamp, etc).
+     * Note: this method assumes that the collapsed details is being shown for
+     * non-snap headers.
      */
     private void showCollapsedDetails() {
-        if (mCollapsedDetailsView == null) {
-            mCollapsedDetailsView = (ViewGroup) mInflater.inflate(
-                    R.layout.conversation_message_details_header, this, false);
-            mExtraContentView.addView(mCollapsedDetailsView, 0);
-            mCollapsedDetailsView.setOnClickListener(this);
-        }
-        if (!mCollapsedDetailsValid) {
-            if (mMessageHeaderItem.recipientSummaryText == null) {
-                final Account account = getAccount();
-                final String name = (account != null) ? account.getEmailAddress() : "";
-                mMessageHeaderItem.recipientSummaryText = getRecipientSummaryText(getContext(),
-                        name, mMyName, mTo, mCc, mBcc, mAddressCache, mVeiledMatcher);
-            }
-            ((TextView) findViewById(R.id.recipients_summary))
-                    .setText(mMessageHeaderItem.recipientSummaryText);
+        showCollapsedDetails(false /* isSnapHeader */);
+    }
 
-            mCollapsedDetailsValid = true;
+    /**
+     * Makes collapsed details visible. If necessary, will inflate details
+     * layout and render using saved-off state (senders, timestamp, etc).
+     * @param isSnapHeader If {@code true}, hides the "Details" text. If {@code false},
+     *                     shows the "Details" text and sets an onClickListener.
+     */
+    private void showCollapsedDetails(boolean isSnapHeader) {
+        if (mCollapsedDetailsView == null) {
+            mCollapsedDetailsView = mInflater.inflate(
+                    R.layout.conversation_message_details_header, mActionsAndDetailsView, false);
+            mCollapsedRecipientSummary = (TextView)
+                    mCollapsedDetailsView.findViewById(R.id.recipients_summary_collapsed);
+            mActionsAndDetailsView.addView(mCollapsedDetailsView);
+            if (!isSnapHeader) {
+                mCollapsedDetailsView.setOnClickListener(this);
+            }
         }
+
+        mCollapsedRecipientSummary.setText(getRecipientSummary());
         mCollapsedDetailsView.setVisibility(VISIBLE);
+        if (isSnapHeader) {
+            mCollapsedDetailsView.findViewById(R.id.details_text).setVisibility(GONE);
+        }
     }
 
     /**
@@ -1299,18 +1336,22 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         // lazily create expanded details view
         final boolean expandedViewCreated = ensureExpandedDetailsView();
         if (expandedViewCreated) {
-            mExtraContentView.addView(mExpandedDetailsView, 0);
+            mActionsAndDetailsView.addView(mExpandedDetailsView);
+            mExpandedRecipientSummary =
+                    (TextView) mExpandedDetailsView.findViewById(R.id.recipients_summary_expanded);
+            mExpandedDetailsView.setOnClickListener(this);
         }
+
+        mExpandedRecipientSummary.setText(getRecipientSummary());
         mExpandedDetailsView.setVisibility(VISIBLE);
     }
 
     private boolean ensureExpandedDetailsView() {
         boolean viewCreated = false;
         if (mExpandedDetailsView == null) {
-            View v = inflateExpandedDetails(mInflater);
-            v.setOnClickListener(this);
-
-            mExpandedDetailsView = (ViewGroup) v;
+            mExpandedDetailsView = mInflater.inflate(
+                    R.layout.conversation_message_details_header_expanded,
+                    mActionsAndDetailsView, false);
             viewCreated = true;
         }
         if (!mExpandedDetailsValid) {
@@ -1322,11 +1363,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             mExpandedDetailsValid = true;
         }
         return viewCreated;
-    }
-
-    public static View inflateExpandedDetails(LayoutInflater inflater) {
-        return inflater.inflate(R.layout.conversation_message_details_header_expanded, null,
-                false);
     }
 
     public static void renderExpandedDetails(Resources res, View detailsView,
