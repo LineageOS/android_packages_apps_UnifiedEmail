@@ -39,6 +39,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -102,6 +103,7 @@ import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -172,6 +174,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // List of all the fields
     static final String[] ALL_EXTRAS = { EXTRA_SUBJECT, EXTRA_BODY, EXTRA_TO, EXTRA_CC, EXTRA_BCC,
             EXTRA_QUOTED_TEXT };
+
+    private static final String WEAR_EXTRA = "com.google.android.wearable.extras";
 
     private static SendOrSaveCallback sTestSendOrSaveCallback = null;
     // Map containing information about requests to create new messages, and the id of the
@@ -517,6 +521,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mRefMessageUri != null) {
             mShowQuotedText = true;
             mComposeMode = action;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                // TODO: Use the wrapper api to get the clip data.
+                ClipData clipData = intent.getClipData();
+                if (clipData != null
+                        && WEAR_EXTRA.equals(clipData.getDescription().getLabel())) {
+                    Bundle extras = clipData.getItemAt(0).getIntent().getExtras();
+                    if (extras != null) {
+                        String wearReply =
+                                extras.getString(NotificationActionUtils.WEAR_REPLY_INPUT);
+                        createWearReplyTask(this, mRefMessageUri, UIProvider.MESSAGE_PROJECTION,
+                                mComposeMode, wearReply).execute();
+                        finish();
+                        return;
+                    }
+                }
+            }
+
             getLoaderManager().initLoader(INIT_DRAFT_USING_REFERENCE_MESSAGE, null, this);
             return;
         } else if (message != null && action != EDIT_DRAFT) {
@@ -583,6 +605,48 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         mComposeMode = action;
         finishSetup(action, intent, savedState);
+    }
+
+    private static AsyncTask<Void, Void, Message> createWearReplyTask(
+            final ComposeActivity composeActivity,
+            final Uri refMessageUri, final String[] projection, final int action,
+            final String wearReply) {
+        return new AsyncTask<Void, Void, Message>() {
+            private Intent mEmptyServiceIntent = new Intent(composeActivity, EmptyService.class);
+
+            @Override
+            protected void onPreExecute() {
+                // Start service so we won't be killed if this app is put in the background.
+                composeActivity.startService(mEmptyServiceIntent);
+            }
+
+            @Override
+            protected Message doInBackground(Void... params) {
+                Cursor cursor = composeActivity.getContentResolver()
+                        .query(refMessageUri, projection, null, null, null, null);
+                if (cursor != null) {
+                    try {
+                        cursor.moveToFirst();
+                        return new Message(cursor);
+                    } finally {
+                        cursor.close();
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Message message) {
+                composeActivity.stopService(mEmptyServiceIntent);
+
+                composeActivity.mRefMessage = message;
+                composeActivity.initFromRefMessage(action);
+                composeActivity.setBody(wearReply, false);
+                composeActivity.finishSetup(action, composeActivity.getIntent(), null);
+                composeActivity.sendOrSaveWithSanityChecks(false /* save */, true /* show  toast */,
+                        false /* orientationChanged */, true /* autoSend */);
+            }
+        };
     }
 
     private void checkValidAccounts() {

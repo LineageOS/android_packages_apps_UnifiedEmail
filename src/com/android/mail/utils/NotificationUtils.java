@@ -28,6 +28,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.preview.support.v4.app.NotificationManagerCompat;
+import android.preview.support.wearable.notifications.WearableNotifications;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts.Photo;
@@ -38,6 +40,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
+import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.SparseArray;
 
@@ -72,7 +75,10 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -97,6 +103,9 @@ public class NotificationUtils {
             };
 
     private static BidiFormatter sBidiFormatter = BidiFormatter.getInstance();
+
+    private static Map<NotificationKey, Set<Integer>> sChildNotificationsMap =
+            new HashMap<NotificationKey, Set<Integer>>();
 
     /**
      * Clears all notifications in response to the user tapping "Clear" in the status bar.
@@ -301,8 +310,7 @@ public class NotificationUtils {
      **/
     public static void cancelAllNotifications(Context context) {
         LogUtils.d(LOG_TAG, "cancelAllNotifications - cancelling all");
-        NotificationManager nm = (NotificationManager) context.getSystemService(
-                Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
         nm.cancelAll();
         clearAllNotfications(context);
     }
@@ -338,8 +346,7 @@ public class NotificationUtils {
 
         if (cancelExisting) {
             LogUtils.d(LOG_TAG, "resendNotifications - cancelling all");
-            NotificationManager nm =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManagerCompat nm = NotificationManagerCompat.from(context);
             nm.cancelAll();
         }
         // Re-validate the notifications.
@@ -491,8 +498,7 @@ public class NotificationUtils {
             final Account account, boolean getAttention, boolean ignoreUnobtrusiveSetting,
             NotificationKey key) {
 
-        NotificationManager nm = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
 
         final NotificationMap notificationMap = getNotificationMap(context);
         if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
@@ -551,11 +557,15 @@ public class NotificationUtils {
             final int notificationId =
                     getNotificationId(account.getAccountManagerAccount(), folder);
 
+            NotificationKey notificationKey = new NotificationKey(account, folder);
+
             if (unseenCount == 0) {
                 LogUtils.i(LOG_TAG, "validateNotifications - cancelling account %s / folder %s",
                         LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()),
                         LogUtils.sanitizeName(LOG_TAG, folder.persistentId));
                 nm.cancel(notificationId);
+                cancelChildNotifications(notificationKey, nm);
+
                 return;
             }
 
@@ -563,6 +573,10 @@ public class NotificationUtils {
             PendingIntent clickIntent;
 
             NotificationCompat.Builder notification = new NotificationCompat.Builder(context);
+            WearableNotifications.Builder wearableNotification =
+                    new WearableNotifications.Builder(notification);
+            Map<Integer, WearableNotifications.Builder> msgNotifications =
+                    new ArrayMap<Integer, WearableNotifications.Builder>();
             notification.setSmallIcon(R.drawable.stat_notify_email);
             notification.setTicker(account.getDisplayName());
 
@@ -652,8 +666,9 @@ public class NotificationUtils {
                     notificationIntent.removeExtra(Utils.EXTRA_FROM_NOTIFICATION);
 
                     configureLatestEventInfoFromConversation(context, account, folderPreferences,
-                            notification, cursor, clickIntent, notificationIntent,
-                            unreadCount, unseenCount, folder, when);
+                            notification, wearableNotification, msgNotifications, notificationId,
+                            cursor, clickIntent, notificationIntent, unreadCount, unseenCount,
+                            folder, when);
                     eventInfoConfigured = true;
                 }
             }
@@ -676,11 +691,30 @@ public class NotificationUtils {
 
             int defaults = 0;
 
+            // Check if any current child notifications exist previously.  Only notify if one of
+            // them is new.
+            boolean hasNewChildNotification;
+            Set<Integer> prevChildNotifications = sChildNotificationsMap.get(notificationKey);
+            if (prevChildNotifications != null) {
+                hasNewChildNotification = false;
+                for (Integer currentNotificationId : msgNotifications.keySet()) {
+                    if (!prevChildNotifications.contains(currentNotificationId)) {
+                        hasNewChildNotification = true;
+                        break;
+                    }
+                }
+            } else {
+                hasNewChildNotification = true;
+            }
+
+            LogUtils.d(LOG_TAG, "getAttention=%s,oldWhen=%s,hasNewChildNotification=%s",
+                    getAttention, oldWhen, hasNewChildNotification);
+
             /*
              * We do not want to notify if this is coming back from an Undo notification, hence the
              * oldWhen check.
              */
-            if (getAttention && oldWhen == 0) {
+            if (getAttention && oldWhen == 0 && hasNewChildNotification) {
                 final AccountPreferences accountPreferences =
                         new AccountPreferences(context, account.getEmailAddress());
                 if (accountPreferences.areNotificationsEnabled()) {
@@ -707,7 +741,28 @@ public class NotificationUtils {
                     notification.setTicker(null);
                 }
 
-                nm.notify(notificationId, notification.build());
+                nm.notify(notificationId, wearableNotification.build());
+
+                if (prevChildNotifications != null) {
+                    Set<Integer> currentNotificationIds = msgNotifications.keySet();
+                    for (Integer prevChildNotificationId : prevChildNotifications) {
+                        if (!currentNotificationIds.contains(prevChildNotificationId)) {
+                            nm.cancel(prevChildNotificationId);
+                            LogUtils.d(LOG_TAG, "canceling child notification %s",
+                                    prevChildNotificationId);
+                        }
+                    }
+                }
+
+                for (Map.Entry<Integer, WearableNotifications.Builder> entry
+                        : msgNotifications.entrySet()) {
+                    nm.notify(entry.getKey(), entry.getValue().build());
+                    LogUtils.d(LOG_TAG, "notifying child notification %s", entry.getKey());
+                }
+
+                Set<Integer> childNotificationIds = new HashSet<Integer>();
+                childNotificationIds.addAll(msgNotifications.keySet());
+                sChildNotificationsMap.put(notificationKey, childNotificationIds);
             } else {
                 LogUtils.i(LOG_TAG, "event info not configured - not notifying");
             }
@@ -780,7 +835,10 @@ public class NotificationUtils {
 
     private static void configureLatestEventInfoFromConversation(final Context context,
             final Account account, final FolderPreferences folderPreferences,
-            final NotificationCompat.Builder notification, final Cursor conversationCursor,
+            final NotificationCompat.Builder notification,
+            final WearableNotifications.Builder summaryWearNotif,
+            final Map<Integer, WearableNotifications.Builder> msgNotifications,
+            final int summaryNotificationId, final Cursor conversationCursor,
             final PendingIntent clickIntent, final Intent notificationIntent,
             final int unreadCount, final int unseenCount,
             final Folder folder, final long when) {
@@ -825,6 +883,12 @@ public class NotificationUtils {
 
                 final NotificationCompat.InboxStyle digest =
                         new NotificationCompat.InboxStyle(notification);
+
+                // Group by account.
+                String notificationGroupKey =
+                        account.uri.toString() + "/" + folder.folderUri.fullUri;
+                summaryWearNotif.setGroup(notificationGroupKey,
+                        WearableNotifications.GROUP_ORDER_SUMMARY);
 
                 int numDigestItems = 0;
                 do {
@@ -879,6 +943,25 @@ public class NotificationUtils {
                                     conversation.getSnippet());
                             digest.addLine(digestLine);
                             numDigestItems++;
+
+                            // Adding child notification for Wear.
+                            NotificationCompat.Builder childNotif =
+                                    new NotificationCompat.Builder(context);
+                            childNotif.setSmallIcon(R.drawable.stat_notify_email);
+                            childNotif.setContentText(digestLine);
+
+                            WearableNotifications.Builder childWearNotif =
+                                    new WearableNotifications.Builder(childNotif).setGroup(
+                                            notificationGroupKey, numDigestItems);
+                            int childNotificationId = getNotificationId(summaryNotificationId,
+                                    conversation.hashCode());
+
+                            configureNotifForOneConversation(context, account, folderPreferences,
+                                    childNotif, childWearNotif, conversationCursor,
+                                    notificationIntent, folder, when, res,
+                                    notificationAccountDisplayName, notificationAccountEmail,
+                                    isInbox, notificationLabelName, childNotificationId);
+                            msgNotifications.put(childNotificationId, childWearNotif);
                         } finally {
                             if (messageCursor != null) {
                                 messageCursor.close();
@@ -895,137 +978,17 @@ public class NotificationUtils {
                         isInbox ? notificationAccountDisplayName : notificationLabelName);
             }
         } else {
-            // For notifications for a single new conversation, we want to get the information from
-            // the conversation
+            // For notifications for a single new conversation, we want to get the information
+            // from the conversation
 
             // Move the cursor to the most recent unread conversation
             seekToLatestUnreadConversation(conversationCursor);
 
-            final Conversation conversation = new Conversation(conversationCursor);
-
-            Cursor cursor = null;
-            MessageCursor messageCursor = null;
-            boolean multipleUnseenThread = false;
-            String from = null;
-            try {
-                final Uri uri = conversation.messageListUri.buildUpon().appendQueryParameter(
-                        UIProvider.LABEL_QUERY_PARAMETER, folder.persistentId).build();
-                cursor = context.getContentResolver().query(uri, UIProvider.MESSAGE_PROJECTION,
-                        null, null, null);
-                messageCursor = new MessageCursor(cursor);
-                // Use the information from the last sender in the conversation that triggered
-                // this notification.
-
-                String fromAddress = "";
-                if (messageCursor.moveToPosition(messageCursor.getCount() - 1)) {
-                    final Message message = messageCursor.getMessage();
-                    fromAddress = message.getFrom();
-                    from = getDisplayableSender(fromAddress);
-                    notification.setLargeIcon(
-                            getContactIcon(context, from, getSenderAddress(fromAddress), folder));
-                }
-
-                // Assume that the last message in this conversation is unread
-                int firstUnseenMessagePos = messageCursor.getPosition();
-                while (messageCursor.moveToPosition(messageCursor.getPosition() - 1)) {
-                    final Message message = messageCursor.getMessage();
-                    final boolean unseen = !message.seen;
-                    if (unseen) {
-                        firstUnseenMessagePos = messageCursor.getPosition();
-                        if (!multipleUnseenThread
-                                && !fromAddress.contentEquals(message.getFrom())) {
-                            multipleUnseenThread = true;
-                        }
-                    }
-                }
-
-                // TODO(skennedy) Can we remove this check?
-                if (Utils.isRunningJellybeanOrLater()) {
-                    // For a new-style notification
-
-                    if (multipleUnseenThread) {
-                        // The title of a single conversation is the list of senders.
-                        int sendersLength = res.getInteger(R.integer.swipe_senders_length);
-
-                        final SpannableStringBuilder sendersBuilder = getStyledSenders(
-                                context, conversationCursor, sendersLength,
-                                notificationAccountEmail);
-
-                        notification.setContentTitle(sendersBuilder);
-                        // For a single new conversation, the ticker is based on the sender's name.
-                        notificationTicker = sendersBuilder.toString();
-                    } else {
-                        from = getWrappedFromString(from);
-                        // The title of a single message the sender.
-                        notification.setContentTitle(from);
-                        // For a single new conversation, the ticker is based on the sender's name.
-                        notificationTicker = from;
-                    }
-
-                    // The notification content will be the subject of the conversation.
-                    notification.setContentText(
-                            getSingleMessageLittleText(context, conversation.subject));
-
-                    // The notification subtext will be the subject of the conversation for inbox
-                    // notifications, or will based on the the label name for user label
-                    // notifications.
-                    notification.setSubText(isInbox ?
-                            notificationAccountDisplayName : notificationLabelName);
-
-                    if (multipleUnseenThread) {
-                        notification.setLargeIcon(
-                                getDefaultNotificationIcon(context, folder, true));
-                    }
-                    final NotificationCompat.BigTextStyle bigText =
-                            new NotificationCompat.BigTextStyle(notification);
-
-                    // Seek the message cursor to the first unread message
-                    final Message message;
-                    if (messageCursor.moveToPosition(firstUnseenMessagePos)) {
-                        message = messageCursor.getMessage();
-                        bigText.bigText(getSingleMessageBigText(context,
-                                conversation.subject, message));
-                    } else {
-                        LogUtils.e(LOG_TAG, "Failed to load message");
-                        message = null;
-                    }
-
-                    if (message != null) {
-                        final Set<String> notificationActions =
-                                folderPreferences.getNotificationActions(account);
-
-                        final int notificationId = getNotificationId(
-                                account.getAccountManagerAccount(), folder);
-
-                        NotificationActionUtils.addNotificationActions(context, notificationIntent,
-                                notification, account, conversation, message, folder,
-                                notificationId, when, notificationActions);
-                    }
-                } else {
-                    // For an old-style notification
-
-                    // The title of a single conversation notification is built from both the sender
-                    // and subject of the new message.
-                    notification.setContentTitle(getSingleMessageNotificationTitle(context,
-                            from, conversation.subject));
-
-                    // The notification content will be the subject of the conversation for inbox
-                    // notifications, or will based on the the label name for user label
-                    // notifications.
-                    notification.setContentText(
-                            isInbox ? notificationAccountDisplayName : notificationLabelName);
-
-                    // For a single new conversation, the ticker is based on the sender's name.
-                    notificationTicker = from;
-                }
-            } finally {
-                if (messageCursor != null) {
-                    messageCursor.close();
-                }
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
+            notificationTicker = configureNotifForOneConversation(context, account,
+                    folderPreferences, notification, summaryWearNotif, conversationCursor,
+                    notificationIntent, folder, when, res, notificationAccountDisplayName,
+                    notificationAccountEmail, isInbox, notificationLabelName,
+                    summaryNotificationId);
         }
 
         // Build the notification ticker
@@ -1046,6 +1009,144 @@ public class NotificationUtils {
         }
 
         notification.setContentIntent(clickIntent);
+    }
+
+    /**
+     * Configure the notification for one conversation.  When there are multiple conversations,
+     * this method is used to configure bundled notification for Android Wear.
+     */
+    private static String configureNotifForOneConversation(Context context, Account account,
+            FolderPreferences folderPreferences, NotificationCompat.Builder notification,
+            WearableNotifications.Builder summaryWearNotif, Cursor conversationCursor,
+            Intent notificationIntent, Folder folder, long when, Resources res,
+            String notificationAccountDisplayName, String notificationAccountEmail, boolean isInbox,
+            String notificationLabelName, int notificationId) {
+
+        String notificationTicker;
+
+        final Conversation conversation = new Conversation(conversationCursor);
+
+        Cursor cursor = null;
+        MessageCursor messageCursor = null;
+        boolean multipleUnseenThread = false;
+        String from = null;
+        try {
+            final Uri uri = conversation.messageListUri.buildUpon().appendQueryParameter(
+                    UIProvider.LABEL_QUERY_PARAMETER, folder.persistentId).build();
+            cursor = context.getContentResolver().query(uri, UIProvider.MESSAGE_PROJECTION,
+                    null, null, null);
+            messageCursor = new MessageCursor(cursor);
+            // Use the information from the last sender in the conversation that triggered
+            // this notification.
+
+            String fromAddress = "";
+            if (messageCursor.moveToPosition(messageCursor.getCount() - 1)) {
+                final Message message = messageCursor.getMessage();
+                fromAddress = message.getFrom();
+                from = getDisplayableSender(fromAddress);
+                notification.setLargeIcon(
+                        getContactIcon(context, from, getSenderAddress(fromAddress), folder));
+            }
+
+            // Assume that the last message in this conversation is unread
+            int firstUnseenMessagePos = messageCursor.getPosition();
+            while (messageCursor.moveToPosition(messageCursor.getPosition() - 1)) {
+                final Message message = messageCursor.getMessage();
+                final boolean unseen = !message.seen;
+                if (unseen) {
+                    firstUnseenMessagePos = messageCursor.getPosition();
+                    if (!multipleUnseenThread
+                            && !fromAddress.contentEquals(message.getFrom())) {
+                        multipleUnseenThread = true;
+                    }
+                }
+            }
+
+            // TODO(skennedy) Can we remove this check?
+            if (Utils.isRunningJellybeanOrLater()) {
+                // For a new-style notification
+
+                if (multipleUnseenThread) {
+                    // The title of a single conversation is the list of senders.
+                    int sendersLength = res.getInteger(R.integer.swipe_senders_length);
+
+                    final SpannableStringBuilder sendersBuilder = getStyledSenders(
+                            context, conversationCursor, sendersLength,
+                            notificationAccountEmail);
+
+                    notification.setContentTitle(sendersBuilder);
+                    // For a single new conversation, the ticker is based on the sender's name.
+                    notificationTicker = sendersBuilder.toString();
+                } else {
+                    from = getWrappedFromString(from);
+                    // The title of a single message the sender.
+                    notification.setContentTitle(from);
+                    // For a single new conversation, the ticker is based on the sender's name.
+                    notificationTicker = from;
+                }
+
+                // The notification content will be the subject of the conversation.
+                notification.setContentText(
+                        getSingleMessageLittleText(context, conversation.subject));
+
+                // The notification subtext will be the subject of the conversation for inbox
+                // notifications, or will based on the the label name for user label
+                // notifications.
+                notification.setSubText(isInbox ?
+                        notificationAccountDisplayName : notificationLabelName);
+
+                if (multipleUnseenThread) {
+                    notification.setLargeIcon(
+                            getDefaultNotificationIcon(context, folder, true));
+                }
+                final NotificationCompat.BigTextStyle bigText =
+                        new NotificationCompat.BigTextStyle(notification);
+
+                // Seek the message cursor to the first unread message
+                final Message message;
+                if (messageCursor.moveToPosition(firstUnseenMessagePos)) {
+                    message = messageCursor.getMessage();
+                    bigText.bigText(getSingleMessageBigText(context,
+                            conversation.subject, message));
+                } else {
+                    LogUtils.e(LOG_TAG, "Failed to load message");
+                    message = null;
+                }
+
+                if (message != null) {
+                    final Set<String> notificationActions =
+                            folderPreferences.getNotificationActions(account);
+
+                    NotificationActionUtils.addNotificationActions(context, notificationIntent,
+                            notification, summaryWearNotif, account, conversation, message,
+                            folder, notificationId, when, notificationActions);
+                }
+            } else {
+                // For an old-style notification
+
+                // The title of a single conversation notification is built from both the sender
+                // and subject of the new message.
+                notification.setContentTitle(getSingleMessageNotificationTitle(context,
+                        from, conversation.subject));
+
+                // The notification content will be the subject of the conversation for inbox
+                // notifications, or will based on the the label name for user label
+                // notifications.
+                notification.setContentText(
+                        isInbox ? notificationAccountDisplayName : notificationLabelName);
+
+                // For a single new conversation, the ticker is based on the sender's name.
+                notificationTicker = from;
+            }
+        } finally {
+            if (messageCursor != null) {
+                messageCursor.close();
+            }
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return notificationTicker;
     }
 
     private static String getWrappedFromString(String from) {
@@ -1311,9 +1412,11 @@ public class NotificationUtils {
         notificationMap.remove(key);
         notificationMap.saveNotificationMap(context);
 
-        final NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(context);
         notificationManager.cancel(getNotificationId(account.getAccountManagerAccount(), folder));
+
+        cancelChildNotifications(key, notificationManager);
 
         if (markSeen) {
             markSeen(context, folder);
@@ -1339,16 +1442,29 @@ public class NotificationUtils {
 
         final List<NotificationKey> notificationKeys = keyBuilder.build();
 
-        final NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(context);
 
         for (final NotificationKey notificationKey : notificationKeys) {
             final Folder folder = notificationKey.folder;
             notificationManager.cancel(getNotificationId(account, folder));
             notificationMap.remove(notificationKey);
+
+            cancelChildNotifications(notificationKey, notificationManager);
         }
 
         notificationMap.saveNotificationMap(context);
+    }
+
+    private static void cancelChildNotifications(NotificationKey key,
+            NotificationManagerCompat nm) {
+        Set<Integer> childNotifications = sChildNotificationsMap.get(key);
+        if (childNotifications != null) {
+            for (Integer childNotification : childNotifications) {
+                nm.cancel(childNotification);
+            }
+            sChildNotificationsMap.remove(key);
+        }
     }
 
     private static ArrayList<Long> findContacts(Context context, Collection<String> addresses) {
@@ -1514,6 +1630,10 @@ public class NotificationUtils {
     public static int getNotificationId(final android.accounts.Account account,
             final Folder folder) {
         return 1 ^ account.hashCode() ^ folder.hashCode();
+    }
+
+    private static int getNotificationId(int summaryNotificationId, int childHashCode) {
+        return summaryNotificationId ^ childHashCode;
     }
 
     private static class NotificationKey {

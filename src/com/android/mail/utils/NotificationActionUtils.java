@@ -28,6 +28,8 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
+import android.preview.support.wearable.notifications.RemoteInput;
+import android.preview.support.wearable.notifications.WearableNotifications;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
@@ -53,6 +55,8 @@ import java.util.Set;
 
 public class NotificationActionUtils {
     private static final String LOG_TAG = "NotifActionUtils";
+
+    public static final String WEAR_REPLY_INPUT = "wear_reply";
 
     private static long sUndoTimeoutMillis = -1;
 
@@ -194,18 +198,33 @@ public class NotificationActionUtils {
      */
     public static void addNotificationActions(final Context context,
             final Intent notificationIntent, final NotificationCompat.Builder notification,
-            final Account account, final Conversation conversation, final Message message,
+            WearableNotifications.Builder wearableNotification, final Account account,
+            final Conversation conversation, final Message message,
             final Folder folder, final int notificationId, final long when,
             final Set<String> notificationActions) {
         final List<NotificationActionType> sortedActions =
                 getSortedNotificationActions(folder, notificationActions);
 
         for (final NotificationActionType notificationAction : sortedActions) {
-            notification.addAction(notificationAction.getActionIconResId(
-                    folder, conversation, message), context.getString(notificationAction
-                    .getDisplayStringResId(folder, conversation, message)),
-                    getNotificationActionPendingIntent(context, account, conversation, message,
-                            folder, notificationIntent, notificationAction, notificationId, when));
+            PendingIntent pendingIntent = getNotificationActionPendingIntent(
+                    context, account, conversation, message,
+                    folder, notificationIntent, notificationAction, notificationId, when);
+            int actionIconResId = notificationAction.getActionIconResId(folder, conversation,
+                    message);
+            String title = context.getString(notificationAction.getDisplayStringResId(
+                    folder, conversation, message));
+
+            if (notificationAction == NotificationActionType.REPLY
+                    || notificationAction == NotificationActionType.REPLY_ALL) {
+                wearableNotification.addAction(new WearableNotifications.Action.Builder(
+                        actionIconResId, title, pendingIntent)
+                        .addRemoteInput(new RemoteInput.Builder(WEAR_REPLY_INPUT)
+                                .setLabel(title).build())
+                        .build());
+                LogUtils.d(LOG_TAG, "Adding wearable action!!");
+            } else {
+                notification.addAction(actionIconResId, title, pendingIntent);
+            }
         }
     }
 
