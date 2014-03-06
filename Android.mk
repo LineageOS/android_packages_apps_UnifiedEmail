@@ -23,6 +23,14 @@ gridlayout_dir := ../../../frameworks/support/v7/gridlayout/res
 datetimepicker_dir := ../../../frameworks/opt/datetimepicker/res
 res_dirs := res $(chips_dir) $(photo_dir) $(gridlayout_dir) $(datetimepicker_dir)
 
+##################################################
+include $(CLEAR_VARS)
+
+# STOPSHIP: Use the real support jar before ship.
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
+    wearable-preview-support:libs/wearable-preview-support.jar
+
+include $(BUILD_MULTI_PREBUILT)
 
 ##################################################
 # Build APK
@@ -39,6 +47,7 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-gridlayout
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 LOCAL_STATIC_JAVA_LIBRARIES += android-opt-datetimepicker
+LOCAL_STATIC_JAVA_LIBRARIES += wearable-preview-support
 
 LOCAL_SDK_VERSION := current
 
@@ -53,7 +62,6 @@ LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 LOCAL_EMMA_COVERAGE_FILTER := +com.android.mail.*, +com.android.emailcommon.*, +com.google.android.mail.*
 
 include $(BUILD_PACKAGE)
-
 
 ##################################################
 # Build all sub-directories
