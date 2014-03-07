@@ -380,7 +380,8 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(SettingsColumns.FORCE_REPLY_FROM_DEFAULT, 1);
         accountMap.put(SettingsColumns.MAX_ATTACHMENT_SIZE, 25 * 1024 * 1024);
         accountMap.put(SettingsColumns.SWIPE, 1);
-        accountMap.put(SettingsColumns.PRIORITY_ARROWS_ENABLED, 1);
+        accountMap.put(SettingsColumns.IMPORTANCE_MARKERS_ENABLED, 1);
+        accountMap.put(SettingsColumns.SHOW_CHEVRONS_ENABLED, 0);
         accountMap.put(SettingsColumns.SETUP_INTENT_URI, Uri.EMPTY);
         accountMap.put(SettingsColumns.CONVERSATION_VIEW_MODE, 1);
         accountMap.put(SettingsColumns.VEILED_ADDRESS_PATTERN, null);

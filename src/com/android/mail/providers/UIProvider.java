@@ -172,7 +172,8 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT, Integer.class)
             .put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE, Integer.class)
             .put(AccountColumns.SettingsColumns.SWIPE, Integer.class)
-            .put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED, Integer.class)
+            .put(AccountColumns.SettingsColumns.IMPORTANCE_MARKERS_ENABLED, Integer.class)
+            .put(AccountColumns.SettingsColumns.SHOW_CHEVRONS_ENABLED, Integer.class)
             .put(AccountColumns.SettingsColumns.SETUP_INTENT_URI, String.class)
             .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE, Integer.class)
             .put(AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN, String.class)
@@ -587,9 +588,16 @@ public class UIProvider {
              */
             public static final String SWIPE = "swipe";
             /**
-             * Integer column containing whether priority inbox arrows are enabled.
+             * Integer column containing whether importance markers are enabled.
              */
-            public static final String PRIORITY_ARROWS_ENABLED = "priority_inbox_arrows_enabled";
+            public static final String IMPORTANCE_MARKERS_ENABLED = "importance_markers_enabled";
+            /**
+             * Integer column containing whether chevrons should be shown.
+             * Chevrons are personal level indicators:
+             * an arrow ( › ) by messages sent to my address (not a mailing list),
+             * and a double arrow ( » ) by messages sent only to me.
+             */
+            public static final String SHOW_CHEVRONS_ENABLED = "show_chevrons_enabled";
             /**
              * Uri for EDIT intent that will cause account-specific setup UI to be shown. If not
              * null, this intent should be used when an account is "entered" (i.e. viewing a folder

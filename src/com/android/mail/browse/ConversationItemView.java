@@ -127,7 +127,7 @@ public class ConversationItemView extends View
     private static Bitmap TO_ME_AND_OTHERS;
     private static Bitmap IMPORTANT_ONLY_TO_ME;
     private static Bitmap IMPORTANT_TO_ME_AND_OTHERS;
-    private static Bitmap IMPORTANT_TO_OTHERS;
+    private static Bitmap IMPORTANT;
     private static Bitmap STATE_REPLIED;
     private static Bitmap STATE_FORWARDED;
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
@@ -441,7 +441,7 @@ public class ConversationItemView extends View
                     R.drawable.ic_email_caret_double_important_unread);
             IMPORTANT_TO_ME_AND_OTHERS = BitmapFactory.decodeResource(res,
                     R.drawable.ic_email_caret_single_important_unread);
-            IMPORTANT_TO_OTHERS = BitmapFactory.decodeResource(res,
+            IMPORTANT = BitmapFactory.decodeResource(res,
                     R.drawable.ic_email_caret_none_important_unread);
             STATE_REPLIED =
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_holo_light);
@@ -493,15 +493,16 @@ public class ConversationItemView extends View
             final ConversationSelectionSet set, final Folder folder,
             final int checkboxOrSenderImage, final boolean showAttachmentPreviews,
             final boolean parallaxSpeedAlternative, final boolean parallaxDirectionAlternative,
-            final boolean swipeEnabled, final boolean priorityArrowEnabled,
-            final AnimatedAdapter adapter) {
+            final boolean swipeEnabled, final boolean importanceMarkersEnabled,
+            final boolean showChevronsEnabled, final AnimatedAdapter adapter) {
         Utils.traceBeginSection("CIVC.bind");
         bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity,
                 null /* conversationItemAreaClickListener */,
                 set, folder, checkboxOrSenderImage, showAttachmentPreviews,
                 parallaxSpeedAlternative, parallaxDirectionAlternative, swipeEnabled,
-                priorityArrowEnabled, adapter, -1 /* backgroundOverrideResId */,
-                null /* photoBitmap */, false /* useFullMargins */);
+                importanceMarkersEnabled, showChevronsEnabled,
+                adapter, -1 /* backgroundOverrideResId */, null /* photoBitmap */,
+                false /* useFullMargins */);
         Utils.traceEndSection();
     }
 
@@ -514,7 +515,7 @@ public class ConversationItemView extends View
         bind(conversationItemViewModel, activity, conversationItemAreaClickListener, null /* set */,
                 folder, checkboxOrSenderImage, false /* attachment previews */,
                 false /* parallax */, false /* parallax */, true /* swipeEnabled */,
-                false /* priorityArrowEnabled */,
+                false /* importanceMarkersEnabled */, false /* showChevronsEnabled */,
                 adapter, backgroundOverrideResId, photoBitmap, true /* useFullMargins */);
         Utils.traceEndSection();
     }
@@ -524,7 +525,8 @@ public class ConversationItemView extends View
             final ConversationSelectionSet set, final Folder folder,
             final int checkboxOrSenderImage, final boolean showAttachmentPreviews,
             final boolean parallaxSpeedAlternative, final boolean parallaxDirectionAlternative,
-            boolean swipeEnabled, final boolean priorityArrowEnabled, final AnimatedAdapter adapter,
+            boolean swipeEnabled, final boolean importanceMarkersEnabled,
+            final boolean showChevronsEnabled, final AnimatedAdapter adapter,
             final int backgroundOverrideResId, final Bitmap photoBitmap,
             final boolean useFullMargins) {
         mBackgroundOverrideResId = backgroundOverrideResId;
@@ -641,23 +643,22 @@ public class ConversationItemView extends View
             mConfig.showColorBlock();
         }
 
-        // Personal level.
+        // Importance markers and chevrons (personal level indicators).
         mHeader.personalLevelBitmap = null;
-        if (true) { // TODO: hook this up to a setting
-            final int personalLevel = mHeader.conversation.personalLevel;
-            final boolean isImportant =
-                    mHeader.conversation.priority == UIProvider.ConversationPriority.IMPORTANT;
-            final boolean useImportantMarkers = isImportant && priorityArrowEnabled;
-
-            if (personalLevel == UIProvider.ConversationPersonalLevel.ONLY_TO_ME) {
-                mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_ONLY_TO_ME
-                        : ONLY_TO_ME;
-            } else if (personalLevel == UIProvider.ConversationPersonalLevel.TO_ME_AND_OTHERS) {
-                mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_TO_ME_AND_OTHERS
-                        : TO_ME_AND_OTHERS;
-            } else if (useImportantMarkers) {
-                mHeader.personalLevelBitmap = IMPORTANT_TO_OTHERS;
-            }
+        final int personalLevel = mHeader.conversation.personalLevel;
+        final boolean isImportant =
+                mHeader.conversation.priority == UIProvider.ConversationPriority.IMPORTANT;
+        final boolean useImportantMarkers = isImportant && importanceMarkersEnabled;
+        if (showChevronsEnabled &&
+                personalLevel == UIProvider.ConversationPersonalLevel.ONLY_TO_ME) {
+            mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_ONLY_TO_ME
+                    : ONLY_TO_ME;
+        } else if (showChevronsEnabled &&
+                personalLevel == UIProvider.ConversationPersonalLevel.TO_ME_AND_OTHERS) {
+            mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_TO_ME_AND_OTHERS
+                    : TO_ME_AND_OTHERS;
+        } else if (useImportantMarkers) {
+            mHeader.personalLevelBitmap = IMPORTANT;
         }
         if (mHeader.personalLevelBitmap != null) {
             mConfig.showPersonalIndicator();
