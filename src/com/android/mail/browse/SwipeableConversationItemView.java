@@ -58,11 +58,11 @@ public class SwipeableConversationItemView extends FrameLayout
             final ConversationSelectionSet set, final Folder folder,
             final int checkboxOrSenderImage, final boolean showAttachmentPreviews,
             final boolean parallaxSpeedAlternative, final boolean parallaxDirectionAlternative,
-            final boolean swipeEnabled, final boolean priorityArrowsEnabled,
-            final AnimatedAdapter animatedAdapter) {
+            final boolean swipeEnabled, final boolean importanceMarkersEnabled,
+            final boolean showChevronsEnabled, final AnimatedAdapter animatedAdapter) {
         mConversationItemView.bind(conversation, activity, set, folder, checkboxOrSenderImage,
                 showAttachmentPreviews, parallaxSpeedAlternative, parallaxDirectionAlternative,
-                swipeEnabled, priorityArrowsEnabled, animatedAdapter);
+                swipeEnabled, importanceMarkersEnabled, showChevronsEnabled, animatedAdapter);
     }
 
     public void startUndoAnimation(AnimatorListener listener, boolean swipe) {

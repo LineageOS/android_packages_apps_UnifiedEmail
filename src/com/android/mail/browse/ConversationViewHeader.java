@@ -162,7 +162,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
         setFoldersVisible(true);
         SpannableStringBuilder sb = new SpannableStringBuilder();
         final Settings settings = mAccountController.getAccount().settings;
-        if (settings.priorityArrowsEnabled && conv.isImportant()) {
+        if (settings.importanceMarkersEnabled && conv.isImportant()) {
             sb.append('.');
             sb.setSpan(new PriorityIndicatorSpan(getContext(),
                     R.drawable.ic_email_caret_none_important_unread, mFoldersView.getPadding(), 0,

@@ -170,8 +170,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private final SwipeableListView mListView;
     private boolean mSwipeEnabled;
     private final HashMap<Long, LeaveBehindItem> mLeaveBehindItems = Maps.newHashMap();
-    /** True if priority inbox markers are enabled, false otherwise. */
-    private boolean mPriorityMarkersEnabled;
+    /** True if importance markers are enabled, false otherwise. */
+    private boolean mImportanceMarkersEnabled;
+    /**
+     * True if chevrons (personal level indicators) should be shown:
+     * an arrow ( › ) by messages sent to my address (not a mailing list),
+     * and a double arrow ( » ) by messages sent only to me.
+     */
+    private boolean mShowChevronsEnabled;
     private final ControllableActivity mActivity;
     private final AccountObserver mAccountListener = new AccountObserver() {
         @Override
@@ -206,8 +212,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private boolean setAccount(Account newAccount) {
         final boolean accountChanged;
         if (mAccount != null && mAccount.uri.equals(newAccount.uri)
-                && mAccount.settings.priorityArrowsEnabled ==
-                        newAccount.settings.priorityArrowsEnabled
+                && mAccount.settings.importanceMarkersEnabled ==
+                        newAccount.settings.importanceMarkersEnabled
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO) ==
                         newAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)
                 && mAccount.settings.convListIcon == newAccount.settings.convListIcon
@@ -219,7 +225,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
 
         mAccount = newAccount;
-        mPriorityMarkersEnabled = mAccount.settings.priorityArrowsEnabled;
+        mImportanceMarkersEnabled = mAccount.settings.importanceMarkersEnabled;
+        mShowChevronsEnabled = mAccount.settings.showChevronsEnabled;
         mSwipeEnabled = mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO);
 
         Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_SENDER_IMAGES_ENABLED, Boolean
@@ -386,8 +393,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
         view.bind(conv, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
                 getAttachmentPreviewsSetting(), getParallaxSpeedAlternativeSetting(),
-                getParallaxDirectionAlternativeSetting(), mSwipeEnabled, mPriorityMarkersEnabled,
-                this);
+                getParallaxDirectionAlternativeSetting(), mSwipeEnabled, mImportanceMarkersEnabled,
+                mShowChevronsEnabled, this);
         return view;
     }
 
@@ -787,8 +794,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         view.reset();
         view.bind(conversation, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
                 getAttachmentPreviewsSetting(), getParallaxSpeedAlternativeSetting(),
-                getParallaxDirectionAlternativeSetting(), mSwipeEnabled, mPriorityMarkersEnabled,
-                this);
+                getParallaxDirectionAlternativeSetting(), mSwipeEnabled, mImportanceMarkersEnabled,
+                mShowChevronsEnabled, this);
         mAnimatingViews.put(conversation.id, view);
         return view;
     }
