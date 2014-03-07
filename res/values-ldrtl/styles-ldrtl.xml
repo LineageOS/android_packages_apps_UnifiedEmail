@@ -24,8 +24,8 @@
 
     <style name="MessageDetailsHeaderStyle">
         <item name="android:layout_marginStart">@dimen/message_details_header_margin_start</item>
-        <item name="android:paddingStart">@dimen/message_details_header_padding_start</item>
-        <item name="android:layout_marginEnd">@dimen/message_details_header_padding_end</item>
+        <item name="android:paddingStart">@dimen/message_details_header_padding</item>
+        <item name="android:layout_marginEnd">@dimen/message_details_header_margin_end</item>
     </style>
 
     <style name="MessageAttachmentsHeaderStyle" parent="AbstractMessageAttachmentsHeaderStyle">

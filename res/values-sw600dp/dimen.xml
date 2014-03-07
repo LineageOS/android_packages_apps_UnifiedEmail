@@ -28,7 +28,9 @@
     <dimen name="message_border_height">16dp</dimen>
     <dimen name="message_header_inner_side_padding">16dp</dimen>
     <dimen name="message_details_header_margin_start">10dp</dimen>
-    <dimen name="message_details_header_padding_start">6dp</dimen>
+    <dimen name="message_details_header_margin_end">@dimen/message_header_action_button_width
+    </dimen>
+    <dimen name="message_details_header_padding">6dp</dimen>
     <dimen name="message_details_header_margin_top">0dp</dimen>
     <dimen name="message_details_header_padding_bottom">4dp</dimen>
     <dimen name="message_header_contact_photo_width">64dp</dimen>
