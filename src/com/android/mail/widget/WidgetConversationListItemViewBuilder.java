@@ -17,16 +17,12 @@
 package com.android.mail.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.v4.text.BidiFormatter;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -38,17 +34,6 @@ import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.utils.FolderUri;
 
 public class WidgetConversationListItemViewBuilder {
-    // Static font sizes
-    private static int DATE_FONT_SIZE;
-    private static int SUBJECT_FONT_SIZE;
-
-    // Static colors
-    private static int SUBJECT_TEXT_COLOR_READ;
-    private static int SUBJECT_TEXT_COLOR_UNREAD;
-    private static int DATE_TEXT_COLOR;
-
-    // Static bitmap
-    private static Bitmap ATTACHMENT;
 
     private final Context mContext;
 
@@ -117,33 +102,6 @@ public class WidgetConversationListItemViewBuilder {
      */
     public WidgetConversationListItemViewBuilder(Context context) {
         mContext = context;
-        Resources res = context.getResources();
-
-        // Initialize font sizes
-        DATE_FONT_SIZE = res.getDimensionPixelSize(R.dimen.widget_date_font_size);
-        SUBJECT_FONT_SIZE = res.getDimensionPixelSize(R.dimen.widget_subject_font_size);
-
-        // Initialize colors
-        SUBJECT_TEXT_COLOR_READ = res.getColor(R.color.subject_text_color_read);
-        SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
-        DATE_TEXT_COLOR = res.getColor(R.color.date_text_color);
-
-        // Initialize Bitmap
-        ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
-    }
-
-    /*
-     * Add size, color and style to a given text
-     */
-    private static CharSequence addStyle(CharSequence text, int size, int color) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(text);
-        builder.setSpan(
-                new AbsoluteSizeSpan(size), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        if (color != 0) {
-            builder.setSpan(new ForegroundColorSpan(color), 0, text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        return builder;
     }
 
     /*
@@ -157,11 +115,7 @@ public class WidgetConversationListItemViewBuilder {
         final String snippet = conversation.getSnippet();
         final boolean hasAttachments = conversation.hasAttachments;
 
-        // Add style to date
-        final CharSequence styledDate = addStyle(date, DATE_FONT_SIZE, DATE_TEXT_COLOR);
-
         // Add style to subject
-        final int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
         final BidiFormatter bidiFormatter = BidiFormatter.getInstance();
         final String filteredSubject =
                 TextUtils.isEmpty(subject) ? "" : bidiFormatter.unicodeWrap(subject);
@@ -173,28 +127,15 @@ public class WidgetConversationListItemViewBuilder {
             subjectAndSnippet.setSpan(new StyleSpan(Typeface.BOLD), 0, filteredSubject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        subjectAndSnippet.setSpan(new ForegroundColorSpan(subjectColor), 0, subjectAndSnippet
-                .length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        final CharSequence styledSubject = addStyle(subjectAndSnippet, SUBJECT_FONT_SIZE, 0);
-
-        // Paper clip for attachment
-        Bitmap paperclipBitmap = null;
-        if (hasAttachments) {
-            paperclipBitmap = ATTACHMENT;
-        }
 
         // Inflate and fill out the remote view
         final RemoteViews remoteViews = new RemoteViews(
                 mContext.getPackageName(), R.layout.widget_conversation_list_item);
         remoteViews.setTextViewText(R.id.widget_senders, senders);
-        remoteViews.setTextViewText(R.id.widget_date, styledDate);
-        remoteViews.setTextViewText(R.id.widget_subject, styledSubject);
-        if (paperclipBitmap != null) {
-            remoteViews.setViewVisibility(R.id.widget_attachment, View.VISIBLE);
-            remoteViews.setImageViewBitmap(R.id.widget_attachment, paperclipBitmap);
-        } else {
-            remoteViews.setViewVisibility(R.id.widget_attachment, View.GONE);
-        }
+        remoteViews.setTextViewText(R.id.widget_date, date);
+        remoteViews.setTextViewText(R.id.widget_subject, subjectAndSnippet);
+        remoteViews.setViewVisibility(R.id.widget_attachment,
+                hasAttachments ? View.VISIBLE : View.GONE);
         if (isUnread) {
             remoteViews.setViewVisibility(R.id.widget_unread_background, View.VISIBLE);
             remoteViews.setViewVisibility(R.id.widget_read_background, View.GONE);

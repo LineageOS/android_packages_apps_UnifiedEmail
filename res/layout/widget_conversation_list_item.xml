@@ -55,8 +55,9 @@
                 android:layout_weight="1"
                 android:singleLine="true"
                 android:ellipsize="end"
+                android:textAlignment="viewStart"
+                android:textColor="@color/dark_gray_text_color"
                 android:textSize="@dimen/senders_font_size"
-                android:textColor="#58585b"
                 android:includeFontPadding="false"
                 style="@style/WidgetSendersStyle" />
             <!-- Use negative margins to align attachment icon with text -->
@@ -64,12 +65,17 @@
                 android:id="@+id/widget_attachment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-4sp"/>
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:src="@drawable/ic_attachment_holo_light" />
             <TextView
                 android:id="@+id/widget_date"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="top" />
+                android:gravity="top"
+                android:textColor="@color/date_text_color"
+                android:textSize="@dimen/widget_date_font_size" />
         </LinearLayout>
 
         <TextView
@@ -79,7 +85,10 @@
             android:layout_marginLeft="16dip"
             android:layout_marginRight="16dip"
             android:maxLines="2"
-            android:includeFontPadding="false" />
+            android:includeFontPadding="false"
+            android:textAlignment="viewStart"
+            android:textColor="@color/dark_gray_text_color"
+            android:textSize="@dimen/widget_subject_font_size" />
         <LinearLayout
             android:id="@+id/labels"
             android:layout_width="wrap_content"

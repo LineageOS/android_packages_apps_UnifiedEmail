@@ -54,7 +54,7 @@ class AttachmentComposeView extends LinearLayout implements AttachmentDeletionIn
 
         LayoutInflater factory = LayoutInflater.from(getContext());
 
-        factory.inflate(R.layout.attachment, this);
+        factory.inflate(R.layout.compose_attachment_bar, this);
         populateAttachmentData(c);
     }
 
