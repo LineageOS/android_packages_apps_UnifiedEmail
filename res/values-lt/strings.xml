@@ -220,12 +220,9 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Rodyti naujų pranešimų: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
-    <!-- no translation found for details (5065930681696657503) -->
-    <skip />
-    <!-- no translation found for hide_details (7022374044607095589) -->
-    <skip />
-    <!-- no translation found for to_message_header (7406436821725529743) -->
-    <skip />
+    <string name="details" msgid="5065930681696657503">"Išsami informacija"</string>
+    <string name="hide_details" msgid="7022374044607095589">"Slėpti išsamią informaciją"</string>
+    <string name="to_message_header" msgid="7406436821725529743">"kam: <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Rodyti <xliff:g id="NAME">%1$s</xliff:g> kontaktinę informaciją"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Rodyti kontaktinę informaciją"</string>
   <plurals name="show_messages_read">
@@ -260,14 +257,7 @@
     <string name="done" msgid="3079981801778027540">"Atlikta"</string>
     <string name="cancel" msgid="8762981157252199115">"Atšaukti"</string>
     <string name="clear" msgid="3184687982186479442">"Išvalyti"</string>
-  <string-array name="sync_status">
-    <item msgid="2446076619901049026">"Sėkmingai"</item>
-    <item msgid="7109065688039971961">"Nėra ryšio."</item>
-    <item msgid="8437496123716232060">"Nepavyko prisijungti."</item>
-    <item msgid="1651266301325684887">"Saugos klaida."</item>
-    <item msgid="1461520171154288533">"Nepavyko sinchronizuoti."</item>
-    <item msgid="4779810016424303449">"Vidinė klaida"</item>
-  </string-array>
+    <!-- no translation found for sync_status:6 (600403120960920559) -->
     <string name="tap_to_configure" msgid="1181356242354390930">"Jei norite nustatyti, palieskite"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Jei norite perž. pok., sinchr. apl."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sinchronizuoti aplanką"</string>
@@ -438,4 +428,5 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"Įjungta nuo <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Įjungta nuo <xliff:g id="START_DATE">%1$s</xliff:g> iki <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Pridėkite temą arba pranešimą"</string>
+    <string name="eml_loader_error_toast" msgid="2107905951183729575">"Nepavyksta atidaryti failo"</string>
 </resources>

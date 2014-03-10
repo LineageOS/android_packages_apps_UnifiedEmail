@@ -399,6 +399,7 @@
     <!-- no translation found for sync_status:3 (1651266301325684887) -->
     <!-- no translation found for sync_status:4 (1461520171154288533) -->
     <!-- no translation found for sync_status:5 (4779810016424303449) -->
+    <!-- no translation found for sync_status:6 (600403120960920559) -->
     <!-- no translation found for tap_to_configure (1181356242354390930) -->
     <skip />
     <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
@@ -672,5 +673,7 @@
     <!-- no translation found for vacation_responder_on_with_end_date (8198920866703798811) -->
     <skip />
     <!-- no translation found for vacation_responder_empty_subject_and_body_warning (2344675863430827845) -->
+    <skip />
+    <!-- no translation found for eml_loader_error_toast (2107905951183729575) -->
     <skip />
 </resources>

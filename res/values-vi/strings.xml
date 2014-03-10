@@ -220,12 +220,9 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Hiển thị <xliff:g id="COUNT">%1$d</xliff:g> tin nhắn mới."</item>
   </plurals>
-    <!-- no translation found for details (5065930681696657503) -->
-    <skip />
-    <!-- no translation found for hide_details (7022374044607095589) -->
-    <skip />
-    <!-- no translation found for to_message_header (7406436821725529743) -->
-    <skip />
+    <string name="details" msgid="5065930681696657503">"Chi tiết"</string>
+    <string name="hide_details" msgid="7022374044607095589">"Ẩn chi tiết"</string>
+    <string name="to_message_header" msgid="7406436821725529743">"tới <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Hiển thị thông tin liên hệ cho <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Hiển thị thông tin liên hệ"</string>
   <plurals name="show_messages_read">
@@ -260,14 +257,7 @@
     <string name="done" msgid="3079981801778027540">"Hoàn tất"</string>
     <string name="cancel" msgid="8762981157252199115">"Hủy"</string>
     <string name="clear" msgid="3184687982186479442">"Xóa"</string>
-  <string-array name="sync_status">
-    <item msgid="2446076619901049026">"Thành công"</item>
-    <item msgid="7109065688039971961">"Không có kết nối."</item>
-    <item msgid="8437496123716232060">"Không thể đăng nhập."</item>
-    <item msgid="1651266301325684887">"Lỗi bảo mật."</item>
-    <item msgid="1461520171154288533">"Không thể đồng bộ hóa."</item>
-    <item msgid="4779810016424303449">"Lỗi nội bộ"</item>
-  </string-array>
+    <!-- no translation found for sync_status:6 (600403120960920559) -->
     <string name="tap_to_configure" msgid="1181356242354390930">"Chạm để thiết lập"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Để xem các cuộc hội thoại, hãy đồng bộ hóa thư mục này."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Đồng bộ hóa thư mục"</string>
@@ -438,4 +428,5 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"Bật, từ <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Bật, từ <xliff:g id="START_DATE">%1$s</xliff:g> đến <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Thêm chủ đề hoặc thư"</string>
+    <string name="eml_loader_error_toast" msgid="2107905951183729575">"Không thể mở tệp này"</string>
 </resources>
