@@ -257,7 +257,15 @@
     <string name="done" msgid="3079981801778027540">"בוצע"</string>
     <string name="cancel" msgid="8762981157252199115">"בטל"</string>
     <string name="clear" msgid="3184687982186479442">"נקה"</string>
-    <!-- no translation found for sync_status:6 (600403120960920559) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"בוצע בהצלחה"</item>
+    <item msgid="7109065688039971961">"אין חיבור."</item>
+    <item msgid="8437496123716232060">"הכניסה נכשלה."</item>
+    <item msgid="1651266301325684887">"שגיאת אבטחה."</item>
+    <item msgid="1461520171154288533">"הסנכרון נכשל."</item>
+    <item msgid="4779810016424303449">"שגיאה פנימית"</item>
+    <item msgid="600403120960920559">"שגיאת שרת"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"גע כדי להגדיר"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"כדי להציג שיחות, סנכרן תיקיה זו."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"סנכרן תיקיה"</string>

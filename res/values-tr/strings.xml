@@ -220,12 +220,9 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"<xliff:g id="COUNT">%1$d</xliff:g> yeni mesajı göster."</item>
   </plurals>
-    <!-- no translation found for details (5065930681696657503) -->
-    <skip />
-    <!-- no translation found for hide_details (7022374044607095589) -->
-    <skip />
-    <!-- no translation found for to_message_header (7406436821725529743) -->
-    <skip />
+    <string name="details" msgid="5065930681696657503">"Ayrıntılar"</string>
+    <string name="hide_details" msgid="7022374044607095589">"Ayrıntıları gizle"</string>
+    <string name="to_message_header" msgid="7406436821725529743">"Alıcılar: <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g> iletişim bilgilerini göster"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"İletişim bilgilerini göster"</string>
   <plurals name="show_messages_read">
@@ -431,6 +428,5 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"<xliff:g id="DATE">%1$s</xliff:g> tarihinden itibaren"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"<xliff:g id="START_DATE">%1$s</xliff:g> ile <xliff:g id="END_DATE">%2$s</xliff:g> tarihleri arasında"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Konu veya mesaj ekleyin"</string>
-    <!-- no translation found for eml_loader_error_toast (2107905951183729575) -->
-    <skip />
+    <string name="eml_loader_error_toast" msgid="2107905951183729575">"Bu dosya açılamıyor"</string>
 </resources>
