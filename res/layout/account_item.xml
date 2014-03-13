@@ -21,7 +21,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:minHeight="@dimen/account_item_minimum_height"
-    android:background="@drawable/nonfolder_item">
+    android:background="@drawable/account_item">
 
     <ImageView
         android:id="@+id/account_graphic"

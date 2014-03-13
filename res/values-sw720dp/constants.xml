@@ -18,9 +18,6 @@
 <resources>
     <bool name="use_expansive_tablet_ui">true</bool>
 
-    <!-- Indicates whether the help and feedback items should be displayed in the drawer. -->
-    <bool name="show_help_and_feedback_in_drawer">false</bool>
-
     <!-- Search results in portrait mode on 10" tablets should still show wide conversation
          list items.
          Note: this this value should be set with the same qualifiers where

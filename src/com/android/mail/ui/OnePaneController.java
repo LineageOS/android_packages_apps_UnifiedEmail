@@ -129,8 +129,7 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean onCreate(Bundle savedInstanceState) {
         mActivity.setContentView(R.layout.one_pane_activity);
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
-        final String drawerPulloutTag = mActivity.getString(R.string.drawer_pullout_tag);
-        mDrawerPullout = mDrawerContainer.findViewWithTag(drawerPulloutTag);
+        mDrawerPullout = mDrawerContainer.findViewById(R.id.drawer_pullout);
         mDrawerPullout.setBackgroundResource(R.color.list_background_color);
 
         // The parent class sets the correct viewmode and starts the application off.

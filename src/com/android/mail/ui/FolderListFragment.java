@@ -31,7 +31,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.adapter.DrawerItem;
@@ -52,8 +51,6 @@ import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
-import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -68,11 +65,9 @@ import java.util.List;
  * <ul>
  *     <li>
  *         Show a list of accounts and a divided list of folders. In this case, the list shows
- *         Accounts, Inboxes, Recent Folders, All folders, Help, and Feedback.
+ *         Accounts, Inboxes, Recent Folders, All folders.
  *         Tapping on Accounts takes the user to the default Inbox for that account. Tapping on
- *         folders switches folders. Tapping on Help takes the user to HTML help pages. Tapping on
- *         Feedback takes the user to a screen for submitting text and a screenshot of the
- *         application to a feedback system.
+ *         folders switches folders.
  *         This is created through XML resources as a {@link DrawerFragment}. Since it is created
  *         through resources, it receives all arguments through callbacks.
  *     </li>
@@ -147,8 +142,6 @@ public class FolderListFragment extends ListFragment implements
     protected AccountsAdapter mAccountsAdapter;
     /** Adapter containing the list of folders and, optionally, headers and the wait view. */
     private FolderListFragmentCursorAdapter mFolderAdapter;
-    /** Adapter containing the Help and Feedback views */
-    private FooterAdapter mFooterAdapter;
     /** Observer to wait for changes to the current folder so we can change the selected folder */
     private FolderObserver mFolderObserver = null;
     /** Listen for account changes. */
@@ -279,7 +272,7 @@ public class FolderListFragment extends ListFragment implements
             currentFolder = null;
         }
 
-        // Initialize adapter for folder/hierarchical list.  Note this relies on
+        // Initialize adapter for folder/heirarchical list.  Note this relies on
         // mActivity being initialized.
         final Folder selectedFolder;
         if (mParentFolder != null) {
@@ -291,7 +284,6 @@ public class FolderListFragment extends ListFragment implements
         }
 
         mAccountsAdapter = newAccountsAdapter();
-        mFooterAdapter = new FooterAdapter();
 
         // Is the selected folder fresher than the one we have restored from a bundle?
         if (selectedFolder != null
@@ -354,7 +346,7 @@ public class FolderListFragment extends ListFragment implements
         mListView.setChoiceMode(getListViewChoiceMode());
 
         mMergedAdapter = new MergedAdapter<ListAdapter>();
-        mMergedAdapter.setAdapters(mAccountsAdapter, mFolderAdapter, mFooterAdapter);
+        mMergedAdapter.setAdapters(mAccountsAdapter, mFolderAdapter);
 
         mFolderWatcher = new FolderWatcher(mActivity, mAccountsAdapter);
         mFolderWatcher.updateAccountList(getAllAccounts());
@@ -518,21 +510,18 @@ public class FolderListFragment extends ListFragment implements
             }
         } else if (item instanceof Folder) {
             folder = (Folder) item;
-        } else if (item instanceof FooterItem) {
-            folder = null;
-            ((FooterItem) item).onFolderItemClicked();
         } else {
             // Don't know how we got here.
             LogUtils.wtf(LOG_TAG, "viewFolderOrChangeAccount(): invalid item");
             folder = null;
         }
         if (folder != null) {
+            // Not changing the account.
+            final Account nextAccount = null;
             // Go to the conversation list for this folder.
             if (!folder.folderUri.equals(mSelectedFolderUri)) {
                 mNextFolder = folder;
-                mAccountController.closeDrawer(true /** hasNewFolderOrAccount */,
-                        null /** nextAccount */,
-                        folder /** nextFolder */);
+                mAccountController.closeDrawer(true, nextAccount, folder);
 
                 final String label = (folderType == DrawerItem.FOLDER_RECENT) ? "recent" : "normal";
                 Analytics.getInstance().sendEvent("switch_folder", folder.getTypeDescription(),
@@ -540,9 +529,7 @@ public class FolderListFragment extends ListFragment implements
 
             } else {
                 // Clicked on same folder, just close drawer
-                mAccountController.closeDrawer(false /** hasNewFolderOrAccount */,
-                        null /** nextAccount */,
-                        folder /** nextFolder */);
+                mAccountController.closeDrawer(false, nextAccount, folder);
             }
         }
     }
@@ -1035,9 +1022,9 @@ public class FolderListFragment extends ListFragment implements
         /**
          * Builds the list of accounts.
          */
-        private List<DrawerItem> buildAccountList() {
+        protected List<DrawerItem> buildAccountList() {
+            final List<DrawerItem> accountList = new ArrayList<DrawerItem>();
             final Account[] allAccounts = getAllAccounts();
-            final List<DrawerItem> accountList = new ArrayList<DrawerItem>(allAccounts.length);
             // Add all accounts and then the current account
             final Uri currentAccountUri = getCurrentAccountUri();
             for (final Account account : allAccounts) {
@@ -1079,86 +1066,6 @@ public class FolderListFragment extends ListFragment implements
         public View getView(int position, View convertView, ViewGroup parent) {
             final DrawerItem item = (DrawerItem) getItem(position);
             return item.getView(convertView, parent);
-        }
-    }
-
-    private class FooterAdapter extends BaseAdapter {
-
-        private final List<FooterItem> mFooterItems = Lists.newArrayList();
-
-        private FooterAdapter() {
-            update();
-        }
-
-        @Override
-        public int getCount() {
-            return mFooterItems.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mFooterItems.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        /**
-         * @param convertView a view, possibly null, to be recycled.
-         * @param parent the parent hosting this view.
-         * @return a view for the footer item displaying the given text and image.
-         */
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final ViewGroup footerItemView;
-            if (convertView != null) {
-                footerItemView = (ViewGroup) convertView;
-            } else {
-                footerItemView = (ViewGroup) getActivity().getLayoutInflater().
-                        inflate(R.layout.drawer_footer_item, parent, false);
-            }
-
-            final FooterItem item = (FooterItem) getItem(position);
-
-            // adjust the text of the footer item
-            final TextView textView = (TextView) footerItemView.
-                    findViewById(R.id.drawer_footer_text);
-            textView.setText(item.getTextResourceID());
-
-            // adjust the icon of the footer item
-            final ImageView imageView = (ImageView) footerItemView.
-                    findViewById(R.id.drawer_footer_image);
-            imageView.setImageResource(item.getImageResourceID());
-            return footerItemView;
-        }
-
-        /**
-         * Recomputes the footer drawer items depending on whether the current account
-         * is populated with URIs that navigate to appropriate destinations.
-         */
-        private void update() {
-            mFooterItems.clear();
-
-            final boolean showHelpAndFeedback = getResources()
-                    .getBoolean(R.bool.show_help_and_feedback_in_drawer);
-
-            // if the parent activity shows a drawer, these items should participate in that drawer
-            // (if it shows a *pane* they should *not* participate in that pane)
-            if (showHelpAndFeedback) {
-                if (mCurrentAccount != null && !Utils.isEmpty(mCurrentAccount.helpIntentUri)) {
-                    mFooterItems.add(new HelpFooterItem());
-                }
-
-                // if a feedback Uri exists, show the Feedback drawer item
-                if (mCurrentAccount != null &&
-                        !Utils.isEmpty(mCurrentAccount.sendFeedbackIntentUri)) {
-                    mFooterItems.add(new FeedbackFooterItem());
-                }
-            }
-
-            notifyDataSetChanged();
         }
     }
 
@@ -1207,8 +1114,6 @@ public class FolderListFragment extends ListFragment implements
                 || !mCurrentAccount.uri.equals(account.uri));
         mCurrentAccount = account;
         if (changed) {
-            // Verify that the new account supports sending application feedback
-            mFooterAdapter.update();
             // We no longer have proper folder objects. Let the new ones come in
             mFolderAdapter.setCursor(null);
             // If currentAccount is different from the one we set, restart the loader. Look at the
@@ -1256,59 +1161,5 @@ public class FolderListFragment extends ListFragment implements
      */
     protected int getListViewChoiceMode() {
         return mAccountController.getFolderListViewChoiceMode();
-    }
-
-    /**
-     * The base class of all footer items. Subclasses must fill in the logic of
-     * {@link #onFolderItemClicked()} which contains the behavior when the item is selected.
-     */
-    private abstract class FooterItem {
-
-        private final int mImageResourceID;
-        private final int mTextResourceID;
-
-        private FooterItem(final int imageResourceID, final int textResourceID) {
-            mImageResourceID = imageResourceID;
-            mTextResourceID = textResourceID;
-        }
-
-        private int getImageResourceID() {
-            return mImageResourceID;
-        }
-
-        private int getTextResourceID() {
-            return mTextResourceID;
-        }
-
-        /**
-         * Executes the behavior associated with this footer item.
-         */
-        abstract void onFolderItemClicked();
-    }
-
-    /**
-     * The 'Help" footer item.
-     */
-    private class HelpFooterItem extends FooterItem {
-        protected HelpFooterItem() {
-            super(R.drawable.ic_drawer_help, R.string.help_and_info);
-        }
-
-        void onFolderItemClicked() {
-            Utils.showHelp(getActivity(), mCurrentAccount, mActivity.getHelpContext());
-        }
-    }
-
-    /**
-     * The 'Send Feedback" footer item.
-     */
-    private class FeedbackFooterItem extends FooterItem {
-        protected FeedbackFooterItem() {
-            super(R.drawable.ic_drawer_feedback, R.string.feedback);
-        }
-
-        void onFolderItemClicked() {
-            Utils.sendFeedback(getActivity(), mCurrentAccount, false);
-        }
     }
 }

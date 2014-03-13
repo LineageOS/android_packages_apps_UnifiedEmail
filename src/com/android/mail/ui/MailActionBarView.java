@@ -371,17 +371,12 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // that are possible.
         LogUtils.d(LOG_TAG, "ActionBarView.onPrepareOptionsMenu().");
 
-        final boolean showHelpandFeedback = !getResources()
-                .getBoolean(R.bool.show_help_and_feedback_in_drawer);
-
         if (mHelpItem != null) {
-            mHelpItem.setVisible(showHelpandFeedback
-                    && mAccount != null
+            mHelpItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
         }
         if (mSendFeedbackItem != null) {
-            mSendFeedbackItem.setVisible(showHelpandFeedback
-                    && mAccount != null
+            mSendFeedbackItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.SEND_FEEDBACK));
         }
         if (mController.shouldHideMenuItems()) {
