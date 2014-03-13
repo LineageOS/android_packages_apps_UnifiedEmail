@@ -21,7 +21,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
@@ -36,14 +35,12 @@ import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.FeedbackEnabledActivity;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
 
-public class EmlViewerActivity extends Activity implements FeedbackEnabledActivity,
-        ConversationAccountController {
+public class EmlViewerActivity extends Activity implements ConversationAccountController {
     public static final String EXTRA_ACCOUNT_URI = "extra-account-uri";
 
     private static final String LOG_TAG = LogTag.getLogTag();
@@ -145,11 +142,6 @@ public class EmlViewerActivity extends Activity implements FeedbackEnabledActivi
         }
 
         return true;
-    }
-
-    @Override
-    public Context getActivityContext() {
-        return this;
     }
 
     @Override

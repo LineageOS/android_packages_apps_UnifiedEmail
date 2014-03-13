@@ -183,7 +183,7 @@ public abstract class AbstractActivityController implements ActivityController,
     /** True when {@link #mFolder} is first shown to the user. */
     private boolean mFolderChanged = false;
     protected MailActionBarView mActionBarView;
-    protected final ControllableActivity mActivity;
+    protected final MailActivity mActivity;
     protected final Context mContext;
     private final FragmentManager mFragmentManager;
     protected final RecentFolderList mRecentFolderList;
@@ -576,7 +576,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * the controller and perform the task immediately on {@link Fragment#onActivityCreated(Bundle)}
      */
     protected FolderListFragment getFolderListFragment() {
-        final Fragment fragment = mFragmentManager.findFragmentById(R.id.drawer_pullout);
+        final String drawerPulloutTag = mActivity.getString(R.string.drawer_pullout_tag);
+        final Fragment fragment = mFragmentManager.findFragmentByTag(drawerPulloutTag);
         if (isValidFragment(fragment)) {
             return (FolderListFragment) fragment;
         }
