@@ -102,7 +102,7 @@ public class ConversationViewAdapter extends BaseAdapter {
                     R.layout.conversation_view_header, parent, false);
             headerView.setCallbacks(mConversationCallbacks, mAccountController);
             headerView.bind(this);
-            headerView.setSubject(mConversation.subject, getBidiFormatter());
+            headerView.setSubject(mConversation.subject);
             if (mAccountController.getAccount().supportsCapability(
                     UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
                 headerView.setFolders(mConversation);

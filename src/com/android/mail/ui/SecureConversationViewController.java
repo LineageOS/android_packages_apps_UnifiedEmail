@@ -235,7 +235,7 @@ public class SecureConversationViewController implements
     }
 
     public void setSubject(String subject) {
-        mConversationHeaderView.setSubject(subject, mBidiFormatter);
+        mConversationHeaderView.setSubject(subject);
     }
 
     public void printMessage() {

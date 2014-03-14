@@ -1593,7 +1593,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mConversation = conv;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
-            headerView.setSubject(conv.subject, mBidiFormatter);
+            headerView.setSubject(conv.subject);
         }
     }
 
