@@ -100,31 +100,30 @@ public final class HelpFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home: {
-                final Activity activity = getActivity();
-                if (activity != null) {
-                    activity.finish();
-                }
-                return true;
-            } case R.id.view_app_url: {
-                showAppUrl();
-                return true;
-            } case R.id.print_dialog: {
-                print();
-                return true;
-            } case R.id.copyright_information: {
-                showCopyrightInformation();
-                return true;
-            } case R.id.open_source_licenses: {
-                showOpenSourceLicenses();
-                return true;
-            } case R.id.privacy_policy: {
-                showPrivacyPolicy();
-                return true;
+        final int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            final Activity activity = getActivity();
+            if (activity != null) {
+                activity.finish();
             }
-            default: return super.onOptionsItemSelected(item);
+            return true;
+        } else if (itemId == R.id.view_app_url) {
+            showAppUrl();
+            return true;
+        } else if (itemId == R.id.print_dialog) {
+            print();
+            return true;
+        } else if (itemId == R.id.copyright_information) {
+            showCopyrightInformation();
+            return true;
+        } else if (itemId == R.id.open_source_licenses) {
+            showOpenSourceLicenses();
+            return true;
+        } else if (itemId == R.id.privacy_policy) {
+            showPrivacyPolicy();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @TargetApi(19)
