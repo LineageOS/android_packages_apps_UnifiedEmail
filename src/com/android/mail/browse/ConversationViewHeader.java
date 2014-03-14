@@ -20,7 +20,6 @@ package com.android.mail.browse;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.v4.text.BidiFormatter;
 import android.support.v4.text.TextUtilsCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -146,11 +145,11 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
         mAccountController = accountController;
     }
 
-    public void setSubject(final String subject, final BidiFormatter bidiFormatter) {
+    public void setSubject(final String subject) {
         if (TextUtils.isEmpty(subject)) {
             mSubjectView.setText(R.string.no_subject);
         } else {
-            mSubjectView.setText(bidiFormatter.unicodeWrap(subject));
+            mSubjectView.setText(subject);
         }
     }
 

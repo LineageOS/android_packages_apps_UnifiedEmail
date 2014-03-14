@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/conversation_header_vertical_padding"
         android:includeFontPadding="false"
+        android:textAlignment="viewStart"
         style="@style/ConversationSubjectStyle" />
 
     <com.android.mail.browse.FolderSpanTextView
