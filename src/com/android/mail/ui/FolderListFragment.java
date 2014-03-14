@@ -39,9 +39,12 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.bitmap.AltBitmapCache;
+import com.android.bitmap.BitmapCache;
 import com.android.mail.R;
 import com.android.mail.adapter.DrawerItem;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.MergedAdapter;
 import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.content.ObjectCursor;
@@ -149,6 +152,17 @@ public class FolderListFragment extends ListFragment implements
     private static final String BUNDLE_SELECTED_ITEM_TYPE = "flf-selected-item-type";
     private static final String BUNDLE_SELECTED_TYPE = "flf-selected-type";
 
+    /** Number of avatars to we whould like to fit in the avatar cache */
+    private static final int IMAGE_CACHE_COUNT = 10;
+    /**
+     * This is the fractional portion of the total cache size above that's dedicated to non-pooled
+     * bitmaps. (This is basically the portion of cache dedicated to GIFs.)
+     */
+    private static final float AVATAR_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION = 0f;
+    /** Each string has upper estimate of 50 bytes, so this cache would be 5KB. */
+    private static final int AVATAR_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY = 100;
+
+
     /** Adapter used by the list that wraps both the folder adapter and the accounts adapter. */
     private MergedAdapter<ListAdapter> mMergedAdapter;
     /** Adapter containing the list of accounts. */
@@ -192,6 +206,9 @@ public class FolderListFragment extends ListFragment implements
 
     private static final Interpolator INTERPOLATOR_SHOW_FLOATY = new DecelerateInterpolator(2.0f);
     private static final Interpolator INTERPOLATOR_HIDE_FLOATY = new DecelerateInterpolator();
+
+    private BitmapCache mImagesCache;
+    private ContactResolver mContactResolver;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -383,6 +400,16 @@ public class FolderListFragment extends ListFragment implements
         mFolderWatcher.updateAccountList(getAllAccounts());
 
         setListAdapter(mMergedAdapter);
+
+        final int avatarSize = getActivity().getResources().getDimensionPixelSize(
+                R.dimen.account_avatar_dimension);
+
+        mImagesCache = new AltBitmapCache(Utils.isLowRamDevice(getActivity()) ?
+                0 : avatarSize * avatarSize * IMAGE_CACHE_COUNT,
+                AVATAR_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION,
+                AVATAR_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY);
+        mContactResolver = new ContactResolver(getActivity().getContentResolver(),
+                mImagesCache);
     }
 
     /**
@@ -1124,7 +1151,7 @@ public class FolderListFragment extends ListFragment implements
             for (final Account account : allAccounts) {
                 final int unreadCount = getUnreadCount(account);
                 accountList.add(DrawerItem.ofAccount(mActivity, account, unreadCount,
-                        currentAccountUri.equals(account.uri)));
+                        currentAccountUri.equals(account.uri), mImagesCache, mContactResolver));
             }
             if (mCurrentAccount == null) {
                 LogUtils.wtf(LOG_TAG, "buildAccountList() with null current account.");
