@@ -18,14 +18,19 @@
 package com.android.mail.providers;
 
 import android.database.DataSetObserver;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
 
 import com.android.mail.ui.AccountController;
+import com.android.mail.ui.DrawerController;
 import com.android.mail.ui.RecentFolderController;
 
 /**
  * Observes when the drawer is closed for the purpose of computing after the drawer is,
  * potentially, off-screen.
+ *
+ * @deprecated TODO: switch this over to {@link DrawerController} and regular {@link DrawerListener}
  */
+@Deprecated
 public abstract class DrawerClosedObserver extends DataSetObserver {
     private AccountController mController;
 

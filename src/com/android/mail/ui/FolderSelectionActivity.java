@@ -39,7 +39,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Observable;
+import com.android.mail.utils.MailObservable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
 import com.android.mail.widget.WidgetProvider;
@@ -67,7 +67,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private int mMode = -1;
     /** Empty placeholder for communicating to the consumer of the drawer observer. */
-    private final DataSetObservable mDrawerObservers = new Observable("Drawer");
+    private final DataSetObservable mDrawerObservers = new MailObservable("Drawer");
 
     private final AccountController mAccountController = new AccountController() {
         @Override
@@ -446,6 +446,12 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     @Override
     public UpOrBackController getUpOrBackController() {
+        // Unsupported
+        return null;
+    }
+
+    @Override
+    public DrawerController getDrawerController() {
         // Unsupported
         return null;
     }

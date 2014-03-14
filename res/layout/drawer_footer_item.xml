@@ -17,30 +17,43 @@
 -->
 
 <!-- Item in the drawer that launches the Help or Feedback activities. -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_footer_view"
-    android:layout_height="wrap_content"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingLeft="@dimen/drawer_footer_item_padding"
-    android:paddingRight="@dimen/drawer_footer_item_padding"
-    android:minHeight="@dimen/drawer_footer_item_minimum_height"
-    android:gravity="center_vertical"
-    android:background="@drawable/nonfolder_item">
+    android:layout_height="wrap_content"
+    android:background="@color/footer_background_color">
 
-    <ImageView
-        android:id="@+id/drawer_footer_image"
-        android:layout_width="wrap_content"
+    <LinearLayout
         android:layout_height="wrap_content"
-        android:duplicateParentState="true"/>
+        android:layout_width="match_parent"
+        android:paddingLeft="@dimen/drawer_footer_item_padding"
+        android:paddingRight="@dimen/drawer_footer_item_padding"
+        android:minHeight="@dimen/drawer_footer_item_minimum_height"
+        android:gravity="center_vertical"
+        android:background="@drawable/nonfolder_item">
 
-    <TextView
-        android:id="@+id/drawer_footer_text"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:ellipsize="end"
-        android:textColor="@color/dark_gray_text_color"
-        android:textAllCaps="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        style="@style/DrawerFooterListItemStyle"/>
-</LinearLayout>
+        <ImageView
+            android:id="@+id/drawer_footer_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/drawer_footer_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:ellipsize="end"
+            android:textColor="@color/dark_gray_text_color"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            style="@style/DrawerFooterListItemStyle"/>
+    </LinearLayout>
+
+    <!-- This top "border" is deliberately inset into the item to prevent it from interfering    -->
+    <!-- visually with its floaty counterpart. This is also why it isn't just its own list item. -->
+    <View
+        android:id="@+id/top_border"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/separator_color"
+        android:visibility="gone" />
+
+</FrameLayout>

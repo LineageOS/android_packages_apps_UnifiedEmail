@@ -91,7 +91,7 @@
     </style>
 
     <style name="DrawerFooterListItemStyle">
-        <item name="android:paddingStart">@dimen/drawer_footer_item_padding</item>
+        <item name="android:paddingStart">@dimen/drawer_footer_text_padding_start</item>
     </style>
 
     <style name="DismissSeparatorStyle">

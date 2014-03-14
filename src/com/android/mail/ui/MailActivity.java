@@ -385,6 +385,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    public DrawerController getDrawerController() {
+        return mController.getDrawerController();
+    }
+
+    @Override
     public void onFooterViewErrorActionClick(Folder folder, int errorStatus) {
         mController.onFooterViewErrorActionClick(folder, errorStatus);
     }

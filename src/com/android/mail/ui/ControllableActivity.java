@@ -96,6 +96,8 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
 
     UpOrBackController getUpOrBackController();
 
+    DrawerController getDrawerController();
+
     void startDragMode();
 
     void stopDragMode();

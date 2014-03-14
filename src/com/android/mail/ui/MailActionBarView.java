@@ -89,6 +89,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private Folder mFolder;
 
     private SearchView mSearchWidget;
+    private MenuItem mSettingsItem;
     private MenuItem mHelpItem;
     private MenuItem mSendFeedbackItem;
     private MenuItem mFolderSettingsItem;
@@ -241,6 +242,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 mSearchWidget.setIconifiedByDefault(true);
             }
         }
+        mSettingsItem = menu.findItem(R.id.settings);
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
         mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
         mFolderSettingsItem = menu.findItem(R.id.folder_options);
@@ -374,6 +376,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         final boolean showHelpandFeedback = !getResources()
                 .getBoolean(R.bool.show_help_and_feedback_in_drawer);
 
+        if (mSettingsItem != null) {
+            mSettingsItem.setVisible(showHelpandFeedback);
+        }
         if (mHelpItem != null) {
             mHelpItem.setVisible(showHelpandFeedback
                     && mAccount != null

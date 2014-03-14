@@ -23,11 +23,11 @@ import android.database.DataSetObserver;
  * A Utility class to register observers and return logging and counts for the number of registered
  * observers.
  */
-public class Observable extends DataSetObservable {
+public class MailObservable extends DataSetObservable {
     protected static final String LOG_TAG = LogTag.getLogTag();
     private final String mName;
 
-    public Observable(String name) {
+    public MailObservable(String name) {
         mName = name;
     }
 

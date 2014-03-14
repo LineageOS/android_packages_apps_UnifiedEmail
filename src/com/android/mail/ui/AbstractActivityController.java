@@ -41,6 +41,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
+import android.database.Observable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -100,8 +101,8 @@ import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.DrawIdler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.MailObservable;
 import com.android.mail.utils.NotificationActionUtils;
-import com.android.mail.utils.Observable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
 import com.google.common.base.Objects;
@@ -230,7 +231,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected ConversationCursor mConversationListCursor;
-    private final DataSetObservable mConversationListObservable = new Observable("List");
+    private final DataSetObservable mConversationListObservable = new MailObservable("List");
 
     /** Runnable that checks the logging level to enable/disable the logging service. */
     private Runnable mLogServiceChecker = null;
@@ -255,15 +256,15 @@ public abstract class AbstractActivityController implements ActivityController,
     private RefreshTimerTask mConversationListRefreshTask;
 
     /** Listeners that are interested in changes to the current account. */
-    private final DataSetObservable mAccountObservers = new Observable("Account");
+    private final DataSetObservable mAccountObservers = new MailObservable("Account");
     /** Listeners that are interested in changes to the recent folders. */
-    private final DataSetObservable mRecentFolderObservers = new Observable("RecentFolder");
+    private final DataSetObservable mRecentFolderObservers = new MailObservable("RecentFolder");
     /** Listeners that are interested in changes to the list of all accounts. */
-    private final DataSetObservable mAllAccountObservers = new Observable("AllAccounts");
+    private final DataSetObservable mAllAccountObservers = new MailObservable("AllAccounts");
     /** Listeners that are interested in changes to the current folder. */
-    private final DataSetObservable mFolderObservable = new Observable("CurrentFolder");
+    private final DataSetObservable mFolderObservable = new MailObservable("CurrentFolder");
     /** Listeners that are interested in changes to the drawer state. */
-    private final DataSetObservable mDrawerObservers = new Observable("Drawer");
+    private final DataSetObservable mDrawerObservers = new MailObservable("Drawer");
 
     /**
      * Selected conversations, if any.
@@ -470,7 +471,7 @@ public abstract class AbstractActivityController implements ActivityController,
     protected ListView mListViewForAnimating;
     protected boolean mHasNewAccountOrFolder;
     private boolean mConversationListLoadFinishedIgnored;
-    protected MailDrawerListener mDrawerListener;
+    private final MailDrawerListener mDrawerListener = new MailDrawerListener();
     private boolean mHideMenuItems;
 
     private final DrawIdler mDrawIdler = new DrawIdler();
@@ -1255,7 +1256,6 @@ public abstract class AbstractActivityController implements ActivityController,
 
         mDrawerToggle = new ActionBarDrawerToggle((Activity) mActivity, mDrawerContainer,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
-        mDrawerListener = new MailDrawerListener();
         mDrawerContainer.setDrawerListener(mDrawerListener);
         mDrawerContainer.setDrawerShadow(
                 mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.START);
@@ -4144,7 +4144,13 @@ public abstract class AbstractActivityController implements ActivityController,
         mDetachedConvUri = null;
     }
 
-    private class MailDrawerListener implements DrawerLayout.DrawerListener {
+    @Override
+    public DrawerController getDrawerController() {
+        return mDrawerListener;
+    }
+
+    private class MailDrawerListener extends Observable<DrawerLayout.DrawerListener>
+            implements DrawerLayout.DrawerListener, DrawerController {
         private int mDrawerState;
         private float mOldSlideOffset;
 
@@ -4154,8 +4160,32 @@ public abstract class AbstractActivityController implements ActivityController,
         }
 
         @Override
+        public void registerDrawerListener(DrawerLayout.DrawerListener l) {
+            registerObserver(l);
+        }
+
+        @Override
+        public void unregisterDrawerListener(DrawerLayout.DrawerListener l) {
+            unregisterObserver(l);
+        }
+
+        @Override
+        public boolean isDrawerOpen() {
+            return isDrawerEnabled() && mDrawerContainer.isDrawerOpen(mDrawerPullout);
+        }
+
+        @Override
+        public boolean isDrawerVisible() {
+            return isDrawerEnabled() && mDrawerContainer.isDrawerVisible(mDrawerPullout);
+        }
+
+        @Override
         public void onDrawerOpened(View drawerView) {
             mDrawerToggle.onDrawerOpened(drawerView);
+
+            for (DrawerLayout.DrawerListener l : mObservers) {
+                l.onDrawerOpened(drawerView);
+            }
         }
 
         @Override
@@ -4169,6 +4199,10 @@ public abstract class AbstractActivityController implements ActivityController,
             final int mode = mViewMode.getMode();
             final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
             mDrawerToggle.setDrawerIndicatorEnabled(getShouldShowDrawerIndicator(mode, isTopLevel));
+
+            for (DrawerLayout.DrawerListener l : mObservers) {
+                l.onDrawerClosed(drawerView);
+            }
         }
 
         /**
@@ -4220,6 +4254,10 @@ public abstract class AbstractActivityController implements ActivityController,
 
             // If we're sliding, we always want to show the burger
             mDrawerToggle.setDrawerIndicatorEnabled(true /* enable */);
+
+            for (DrawerLayout.DrawerListener l : mObservers) {
+                l.onDrawerSlide(drawerView, slideOffset);
+            }
         }
 
         /**
@@ -4232,6 +4270,11 @@ public abstract class AbstractActivityController implements ActivityController,
             LogUtils.d(LOG_TAG, "AAC onDrawerStateChanged %d", newState);
             mDrawerState = newState;
             mDrawerToggle.onDrawerStateChanged(mDrawerState);
+
+            for (DrawerLayout.DrawerListener l : mObservers) {
+                l.onDrawerStateChanged(newState);
+            }
+
             if (mViewMode.isSearchMode()) {
                 return;
             }

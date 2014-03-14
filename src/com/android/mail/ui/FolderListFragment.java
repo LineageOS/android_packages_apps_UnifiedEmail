@@ -17,15 +17,21 @@
 
 package com.android.mail.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -37,6 +43,7 @@ import com.android.mail.R;
 import com.android.mail.adapter.DrawerItem;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.MergedAdapter;
+import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
@@ -97,6 +104,7 @@ public class FolderListFragment extends ListFragment implements
     private ControllableActivity mActivity;
     /** The underlying list view */
     private ListView mListView;
+    private ViewGroup mFloatyFooter;
     /** URI that points to the list of folders for the current account. */
     private Uri mFolderListUri;
     /**
@@ -175,6 +183,15 @@ public class FolderListFragment extends ListFragment implements
     /** Watcher for tracking and receiving unread counts for mail */
     private FolderWatcher mFolderWatcher = null;
     private boolean mRegistered = false;
+
+    private final DrawerStateListener mDrawerListener = new DrawerStateListener();
+
+    private boolean mShowFooter;
+
+    private boolean mFooterIsAnimating = false;
+
+    private static final Interpolator INTERPOLATOR_SHOW_FLOATY = new DecelerateInterpolator(2.0f);
+    private static final Interpolator INTERPOLATOR_HIDE_FLOATY = new DecelerateInterpolator();
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -256,7 +273,7 @@ public class FolderListFragment extends ListFragment implements
         // activity is creating ConversationListFragments. This activity must be of type
         // ControllableActivity.
         final Activity activity = getActivity();
-        if (! (activity instanceof ControllableActivity)){
+        if (!(activity instanceof ControllableActivity)) {
             LogUtils.wtf(LOG_TAG, "FolderListFragment expects only a ControllableActivity to" +
                     "create it. Cannot proceed.");
             return;
@@ -292,6 +309,7 @@ public class FolderListFragment extends ListFragment implements
 
         mAccountsAdapter = newAccountsAdapter();
         mFooterAdapter = new FooterAdapter();
+        updateFloatyFooter();
 
         // Is the selected folder fresher than the one we have restored from a bundle?
         if (selectedFolder != null
@@ -344,6 +362,8 @@ public class FolderListFragment extends ListFragment implements
                 }
             };
             mDrawerObserver.initialize(accountController);
+
+            mActivity.getDrawerController().registerDrawerListener(mDrawerListener);
         }
 
         if (mActivity.isFinishing()) {
@@ -384,7 +404,9 @@ public class FolderListFragment extends ListFragment implements
         setInstanceFromBundle(getArguments());
 
         final View rootView = inflater.inflate(R.layout.folder_list, null);
-        mListView = (ListView) rootView.findViewById(android.R.id.list);
+        final ScrollNotifyingListView lv = (ScrollNotifyingListView) rootView.findViewById(
+                android.R.id.list);
+        mListView = lv;
         mListView.setEmptyView(null);
         mListView.setDivider(null);
         if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
@@ -399,6 +421,49 @@ public class FolderListFragment extends ListFragment implements
             mSelectedFolderUri = mParentFolder.folderUri;
             // No selected folder type required for hierarchical lists.
         }
+
+        mShowFooter = getResources().getBoolean(R.bool.show_help_and_feedback_in_drawer);
+
+        final boolean floatyFooterEnabled = mShowFooter && getResources().getBoolean(
+                R.bool.show_drawer_floaty_footer);
+        final ViewGroup ff = (ViewGroup) rootView.findViewById(R.id.floaty_footer);
+        ff.setVisibility(floatyFooterEnabled ? View.VISIBLE : View.GONE);
+        if (floatyFooterEnabled) {
+            mFloatyFooter = ff;
+        }
+
+        final ScrollIndicatorsView scrollbars =
+                (ScrollIndicatorsView) rootView.findViewById(R.id.scroll_indicators);
+        scrollbars.setSourceView(lv);
+
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            private int mLastState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                mLastState = scrollState;
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                    int totalItemCount) {
+                // have the floaty footer react only after some non-zero scroll movement
+                if (mLastState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    // ignore onScrolls that are generated as the list data is updated
+                    return;
+                }
+
+                if (mListView.canScrollVertically(-1)) {
+                    // typically we want scroll motion to hide the floaty footer
+                    hideFloatyFooter();
+                } else {
+                    // except at the top, when we should show it
+                    showFloatyFooter(false /* onlyWhenClosed */);
+                }
+            }
+
+        });
 
         return rootView;
     }
@@ -455,6 +520,10 @@ public class FolderListFragment extends ListFragment implements
             mDrawerObserver = null;
         }
         super.onDestroyView();
+
+        if (mActivity != null) {
+            mActivity.getDrawerController().unregisterDrawerListener(mDrawerListener);
+        }
     }
 
     @Override
@@ -520,7 +589,7 @@ public class FolderListFragment extends ListFragment implements
             folder = (Folder) item;
         } else if (item instanceof FooterItem) {
             folder = null;
-            ((FooterItem) item).onFolderItemClicked();
+            ((FooterItem) item).onClick(null /* unused */);
         } else {
             // Don't know how we got here.
             LogUtils.wtf(LOG_TAG, "viewFolderOrChangeAccount(): invalid item");
@@ -588,6 +657,9 @@ public class FolderListFragment extends ListFragment implements
             } else if (loader.getId() == ALL_FOLDER_LIST_LOADER_ID) {
                 mFolderAdapter.setAllFolderListCursor(data);
             }
+            // new data means drawer list length may have changed, and the floaty footer visibility
+            // may need to be updated
+            showFloatyFooter(true /* onlyWhenClosed */);
         }
     }
 
@@ -1122,6 +1194,9 @@ public class FolderListFragment extends ListFragment implements
 
             final FooterItem item = (FooterItem) getItem(position);
 
+            footerItemView.findViewById(R.id.top_border).setVisibility(
+                    item.shouldShowTopBorder() ? View.VISIBLE : View.GONE);
+
             // adjust the text of the footer item
             final TextView textView = (TextView) footerItemView.
                     findViewById(R.id.drawer_footer_text);
@@ -1139,23 +1214,30 @@ public class FolderListFragment extends ListFragment implements
          * is populated with URIs that navigate to appropriate destinations.
          */
         private void update() {
-            mFooterItems.clear();
-
-            final boolean showHelpAndFeedback = getResources()
-                    .getBoolean(R.bool.show_help_and_feedback_in_drawer);
-
             // if the parent activity shows a drawer, these items should participate in that drawer
             // (if it shows a *pane* they should *not* participate in that pane)
-            if (showHelpAndFeedback) {
-                if (mCurrentAccount != null && !Utils.isEmpty(mCurrentAccount.helpIntentUri)) {
-                    mFooterItems.add(new HelpFooterItem());
-                }
+            if (!mShowFooter) {
+                return;
+            }
 
-                // if a feedback Uri exists, show the Feedback drawer item
-                if (mCurrentAccount != null &&
-                        !Utils.isEmpty(mCurrentAccount.sendFeedbackIntentUri)) {
-                    mFooterItems.add(new FeedbackFooterItem());
-                }
+            mFooterItems.clear();
+
+            if (mCurrentAccount != null) {
+                mFooterItems.add(new SettingsItem());
+            }
+
+            if (mCurrentAccount != null && !Utils.isEmpty(mCurrentAccount.helpIntentUri)) {
+                mFooterItems.add(new HelpItem());
+            }
+
+            // if a feedback Uri exists, show the Feedback drawer item
+            if (mCurrentAccount != null &&
+                    !Utils.isEmpty(mCurrentAccount.sendFeedbackIntentUri)) {
+                mFooterItems.add(new FeedbackItem());
+            }
+
+            if (!mFooterItems.isEmpty()) {
+                mFooterItems.get(0).setShowTopBorder(true);
             }
 
             notifyDataSetChanged();
@@ -1202,13 +1284,13 @@ public class FolderListFragment extends ListFragment implements
      * Sets the current account to the one provided here.
      * @param account the current account to set to.
      */
-    private void setSelectedAccount(Account account){
+    private void setSelectedAccount(Account account) {
         final boolean changed = (account != null) && (mCurrentAccount == null
                 || !mCurrentAccount.uri.equals(account.uri));
         mCurrentAccount = account;
         if (changed) {
             // Verify that the new account supports sending application feedback
-            mFooterAdapter.update();
+            updateFooterItems();
             // We no longer have proper folder objects. Let the new ones come in
             mFolderAdapter.setCursor(null);
             // If currentAccount is different from the one we set, restart the loader. Look at the
@@ -1231,6 +1313,33 @@ public class FolderListFragment extends ListFragment implements
             final LoaderManager manager = getLoaderManager();
             manager.destroyLoader(FOLDER_LIST_LOADER_ID);
             manager.destroyLoader(ALL_FOLDER_LIST_LOADER_ID);
+        }
+    }
+
+    private void updateFooterItems() {
+        mFooterAdapter.update();
+        updateFloatyFooter();
+    }
+
+    private void updateFloatyFooter() {
+        if (mFloatyFooter == null) {
+            return;
+        }
+
+        // assuming this isn't often (the caller is debounced), just remake the floaty footer
+        // from scratch
+        final ViewGroup container = (ViewGroup) mFloatyFooter.findViewById(
+                R.id.floaty_footer_items);
+        container.removeAllViews();
+
+        for (int i = 0; i < mFooterAdapter.getCount(); i++) {
+            final View v = mFooterAdapter.getView(i, null /* convertView */, mFloatyFooter);
+            // the floaty version has its own top border, so remove the list version's border
+            if (i == 0) {
+                v.findViewById(R.id.top_border).setVisibility(View.GONE);
+            }
+            v.setOnClickListener((FooterItem) mFooterAdapter.getItem(i));
+            container.addView(v);
         }
     }
 
@@ -1258,14 +1367,71 @@ public class FolderListFragment extends ListFragment implements
         return mAccountController.getFolderListViewChoiceMode();
     }
 
+    private void showFloatyFooter(boolean onlyWhenClosed) {
+        // don't ever show if the footer is disabled (in onCreateView)
+        if (mFloatyFooter == null) {
+            return;
+        }
+
+        // don't show when onLoadFinished is the reason to show it, and the drawer is open
+        // (minimize user-visible changes; that case is basically only relevant when closed)
+        final boolean drawerIsOpen = mActivity.getDrawerController().isDrawerOpen();
+        if (onlyWhenClosed && drawerIsOpen) {
+            return;
+        }
+
+        // show the footer, unless if we're already at the very bottom
+        final int vis = getListView().canScrollVertically(+1) ? View.VISIBLE : View.GONE;
+
+        mFloatyFooter.animate().cancel();
+        if (drawerIsOpen && vis == View.VISIBLE) {
+            mFloatyFooter.animate()
+                .translationY(0f)
+                .setDuration(150)
+                .setInterpolator(INTERPOLATOR_SHOW_FLOATY)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        mFloatyFooter.setVisibility(vis);
+                    }
+                });
+        } else {
+            mFloatyFooter.setTranslationY(0f);
+            mFloatyFooter.setVisibility(vis);
+        }
+
+    }
+
+    private void hideFloatyFooter() {
+        if (mFloatyFooter == null || mFloatyFooter.getVisibility() == View.GONE
+                || mFooterIsAnimating) {
+            return;
+        }
+        mFooterIsAnimating = true;
+        mFloatyFooter.animate().cancel();
+        mFloatyFooter.animate()
+            .translationY(mFloatyFooter.getHeight())
+            .setDuration(200)
+            .setInterpolator(INTERPOLATOR_HIDE_FLOATY)
+            .setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mFooterIsAnimating = false;
+                    mFloatyFooter.setVisibility(View.GONE);
+                }
+            });
+    }
+
     /**
      * The base class of all footer items. Subclasses must fill in the logic of
-     * {@link #onFolderItemClicked()} which contains the behavior when the item is selected.
+     * {@link #doFooterAction()} which contains the behavior when the item is selected.
      */
-    private abstract class FooterItem {
+    private abstract class FooterItem implements View.OnClickListener {
 
         private final int mImageResourceID;
         private final int mTextResourceID;
+
+        private boolean mShowTopBorder;
 
         private FooterItem(final int imageResourceID, final int textResourceID) {
             mImageResourceID = imageResourceID;
@@ -1281,34 +1447,94 @@ public class FolderListFragment extends ListFragment implements
         }
 
         /**
-         * Executes the behavior associated with this footer item.
+         * Executes the behavior associated with this footer item.<br>
+         * <br>
+         * WARNING: you probably don't want to call this directly; use
+         * {@link #onClick(View)} instead. This method actually performs the action, and its
+         * execution is deferred from when the 'click' happens so we can smoothly close the drawer
+         * beforehand.
          */
-        abstract void onFolderItemClicked();
-    }
+        abstract void doFooterAction();
 
-    /**
-     * The 'Help" footer item.
-     */
-    private class HelpFooterItem extends FooterItem {
-        protected HelpFooterItem() {
-            super(R.drawable.ic_drawer_help, R.string.help_and_info);
+        @Override
+        public final void onClick(View v) {
+            // close the drawer and defer handling the click until onDrawerClosed
+            mAccountController.closeDrawer(false /* hasNewFolderOrAccount */,
+                    null /* nextAccount */, null /* nextFolder */);
+            mDrawerListener.setPendingFooterClick(this);
         }
 
-        void onFolderItemClicked() {
+        public boolean shouldShowTopBorder() {
+            return mShowTopBorder;
+        }
+
+        public void setShowTopBorder(boolean show) {
+            mShowTopBorder = show;
+        }
+
+    }
+
+    private class HelpItem extends FooterItem {
+        protected HelpItem() {
+            super(R.drawable.ic_menu_help, R.string.help_and_info);
+        }
+
+        @Override
+        void doFooterAction() {
             Utils.showHelp(getActivity(), mCurrentAccount, mActivity.getHelpContext());
         }
     }
 
-    /**
-     * The 'Send Feedback" footer item.
-     */
-    private class FeedbackFooterItem extends FooterItem {
-        protected FeedbackFooterItem() {
-            super(R.drawable.ic_drawer_feedback, R.string.feedback);
+    private class FeedbackItem extends FooterItem {
+        protected FeedbackItem() {
+            super(R.drawable.ic_menu_feedback, R.string.feedback);
         }
 
-        void onFolderItemClicked() {
+        @Override
+        void doFooterAction() {
             Utils.sendFeedback(getActivity(), mCurrentAccount, false);
         }
+    }
+
+    private class SettingsItem extends FooterItem {
+        protected SettingsItem() {
+            super(R.drawable.ic_menu_settings, R.string.menu_settings);
+        }
+
+        @Override
+        void doFooterAction() {
+            Utils.showSettings(mActivity.getActivityContext(), mCurrentAccount);
+        }
+    }
+
+    /**
+     * Drawer listener for footer functionality to react to drawer state.
+     */
+    private class DrawerStateListener implements DrawerLayout.DrawerListener {
+
+        private FooterItem mPendingFooterClick;
+
+        public void setPendingFooterClick(FooterItem itemClicked) {
+            mPendingFooterClick = itemClicked;
+        }
+
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {}
+
+        @Override
+        public void onDrawerOpened(View drawerView) {}
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            showFloatyFooter(false /* onlyWhenClosed */);
+            if (mPendingFooterClick != null) {
+                mPendingFooterClick.doFooterAction();
+                mPendingFooterClick = null;
+            }
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {}
+
     }
 }

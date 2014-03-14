@@ -326,4 +326,6 @@ public interface ActivityController extends LayoutListener,
      * items that are not applicable while the drawer is open.
      */
     public boolean shouldHideMenuItems();
+
+    DrawerController getDrawerController();
 }
