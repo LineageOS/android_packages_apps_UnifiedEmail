@@ -25,6 +25,7 @@ import android.os.Handler;
 import com.android.bitmap.BitmapCache;
 import com.android.bitmap.DecodeTask;
 import com.android.bitmap.ReusableBitmap;
+import com.android.bitmap.DecodeTask.Request;
 import com.android.ex.photo.util.Trace;
 import com.android.mail.ContactInfo;
 import com.android.mail.SenderInfoLoader;
@@ -63,6 +64,10 @@ public class ContactResolver implements Runnable {
             1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private static final Executor EXECUTOR = SMALL_POOL_EXECUTOR;
 
+    public interface ContactDrawableInterface {
+        public void onDecodeComplete(final Request key, final ReusableBitmap result);
+    }
+
     public ContactResolver(final ContentResolver resolver, final BitmapCache cache) {
         mResolver = resolver;
         mCache = cache;
@@ -96,12 +101,12 @@ public class ContactResolver implements Runnable {
         Trace.endSection();
     }
 
-    public void add(final ContactRequest request, final ContactDrawable drawable) {
+    public void add(final ContactRequest request, final ContactDrawableInterface drawable) {
         mBatch.add(new ContactRequestHolder(request, drawable));
         notifyBatchReady();
     }
 
-    public void remove(final ContactRequest request, final ContactDrawable drawable) {
+    public void remove(final ContactRequest request, final ContactDrawableInterface drawable) {
         mBatch.remove(new ContactRequestHolder(request, drawable));
     }
 

@@ -31,6 +31,7 @@ import com.android.bitmap.BitmapCache;
 import com.android.bitmap.DecodeTask.Request;
 import com.android.bitmap.ReusableBitmap;
 import com.android.mail.R;
+import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
 
 /**
  * A drawable that encapsulates all the functionality needed to display a contact image,
@@ -40,7 +41,7 @@ import com.android.mail.R;
  * <p/>
  * The actual contact resolving and decoding is handled by {@link ContactResolver}.
  */
-public class ContactDrawable extends Drawable {
+public class ContactDrawable extends Drawable implements ContactDrawableInterface {
 
     private final BitmapCache mCache;
     private final ContactResolver mContactResolver;
@@ -110,7 +111,7 @@ public class ContactDrawable extends Drawable {
     private void drawBitmap(final Bitmap bitmap, final int width, final int height,
             final Canvas canvas) {
         final Rect bounds = getBounds();
-        
+
         if (mScale != ContactGridDrawable.SCALE_TYPE_HALF) {
             sRect.set(0, 0, width, height);
         } else {
