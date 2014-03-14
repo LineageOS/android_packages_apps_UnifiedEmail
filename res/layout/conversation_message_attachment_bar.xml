@@ -48,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
+                android:textAlignment="viewStart"
                 android:textColor="#333333"
                 android:textSize="14sp"
                 style="@style/MessageAttachmentBarMarginEndStyle" />
@@ -59,6 +60,7 @@
                 android:layout_below="@id/attachment_title"
                 android:ellipsize="end"
                 android:singleLine="true"
+                android:textAlignment="viewStart"
                 android:textColor="#aaaaaa"
                 android:textSize="12sp"
                 style="@style/MessageAttachmentBarMarginEndStyle" />

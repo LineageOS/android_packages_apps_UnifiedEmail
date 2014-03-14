@@ -318,10 +318,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         });
 
         if (mConversation != null && mConversation.conversationBaseUri != null &&
-                !Utils.isEmpty(mAccount.accoutCookieQueryUri)) {
+                !Utils.isEmpty(mAccount.accountCookieQueryUri)) {
             // Set the cookie for this base url
-            new SetCookieTask(getContext(), mConversation.conversationBaseUri,
-                    mAccount.accoutCookieQueryUri).execute();
+            new SetCookieTask(getContext(), mConversation.conversationBaseUri.toString(),
+                    mAccount.accountCookieQueryUri).execute();
         }
     }
 
@@ -1544,20 +1544,22 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mWebView.loadUrl("javascript:appendMessageHtml();");
     }
 
-    private class SetCookieTask extends AsyncTask<Void, Void, Void> {
-        final String mUri;
-        final Uri mAccountCookieQueryUri;
-        final ContentResolver mResolver;
+    private static class SetCookieTask extends AsyncTask<Void, Void, Void> {
+        private final Context mContext;
+        private final String mUri;
+        private final Uri mAccountCookieQueryUri;
+        private final ContentResolver mResolver;
 
-        SetCookieTask(Context context, Uri baseUri, Uri accountCookieQueryUri) {
-            mUri = baseUri.toString();
+        /* package */ SetCookieTask(Context context, String baseUri, Uri accountCookieQueryUri) {
+            mContext = context;
+            mUri = baseUri;
             mAccountCookieQueryUri = accountCookieQueryUri;
             mResolver = context.getContentResolver();
         }
 
         @Override
         public Void doInBackground(Void... args) {
-            // First query for the coookie string from the UI provider
+            // First query for the cookie string from the UI provider
             final Cursor cookieCursor = mResolver.query(mAccountCookieQueryUri,
                     UIProvider.ACCOUNT_COOKIE_PROJECTION, null, null, null);
             if (cookieCursor == null) {
@@ -1571,7 +1573,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
                     if (cookie != null) {
                         final CookieSyncManager csm =
-                            CookieSyncManager.createInstance(getContext());
+                                CookieSyncManager.createInstance(mContext);
                         CookieManager.getInstance().setCookie(mUri, cookie);
                         csm.sync();
                     }

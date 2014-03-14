@@ -303,11 +303,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     @Override
-    public AccountPreferences getAccountPreferences() {
-        return AccountPreferences.get(getContext(), mAccount.getEmailAddress());
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         mChangeFoldersMenuItem = menu.findItem(R.id.change_folders);

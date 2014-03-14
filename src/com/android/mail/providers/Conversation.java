@@ -157,6 +157,10 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#REMOTE
      */
     public final boolean isRemote;
+    /**
+     * @see UIProvider.ConversationColumns#PERMALINK
+     */
+    public final String permalink;
 
     /**
      * Used within the UI to indicate the adapter position of this conversation
@@ -220,6 +224,7 @@ public class Conversation implements Parcelable {
         dest.writeString(attachmentPreviewUri1);
         dest.writeInt(attachmentPreviewStates);
         dest.writeInt(attachmentPreviewsCount);
+        dest.writeString(permalink);
     }
 
     private Conversation(Parcel in, ClassLoader loader) {
@@ -252,6 +257,7 @@ public class Conversation implements Parcelable {
         attachmentPreviewUri1 = in.readString();
         attachmentPreviewStates = in.readInt();
         attachmentPreviewsCount = in.readInt();
+        permalink = in.readString();
     }
 
     @Override
@@ -345,6 +351,7 @@ public class Conversation implements Parcelable {
                 UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN);
         attachmentPreviewsCount = cursor.getInt(
                 UIProvider.CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN);
+        permalink = cursor.getString(UIProvider.CONVERSATION_PERMALINK_COLUMN);
     }
 
     public Conversation(Conversation other) {
@@ -383,16 +390,17 @@ public class Conversation implements Parcelable {
         attachmentPreviewUri1 = other.attachmentPreviewUri1;
         attachmentPreviewStates = other.attachmentPreviewStates;
         attachmentPreviewsCount = other.attachmentPreviewsCount;
+        permalink = other.permalink;
     }
 
-    public Conversation(long id, Uri uri, String subject, long dateMs,
+    private Conversation(long id, Uri uri, String subject, long dateMs,
             boolean hasAttachment, Uri messageListUri,
             int sendingState, int priority, boolean read,
             boolean seen, boolean starred, FolderList rawFolders, int convFlags, int personalLevel,
             boolean spam, boolean phishing, boolean muted, Uri accountUri,
             ConversationInfo conversationInfo, Uri conversationBase, boolean isRemote,
             String attachmentPreviewUri0, String attachmentPreviewUri1, int attachmentPreviewStates,
-            int attachmentPreviewsCount) {
+            int attachmentPreviewsCount, String permalink) {
         if (conversationInfo == null) {
             throw new IllegalArgumentException("Null conversationInfo");
         }
@@ -423,6 +431,7 @@ public class Conversation implements Parcelable {
         this.attachmentPreviewUri1 = attachmentPreviewUri1;
         this.attachmentPreviewStates = attachmentPreviewStates;
         this.attachmentPreviewsCount = attachmentPreviewsCount;
+        this.permalink = permalink;
     }
 
     public static class Builder {
@@ -451,6 +460,7 @@ public class Conversation implements Parcelable {
         private String mAttachmentPreviewUri1;
         private int mAttachmentPreviewStates;
         private int mAttachmentPreviewsCount;
+        private String mPermalink;
 
         public Builder setId(long id) {
             mId = id;
@@ -580,6 +590,11 @@ public class Conversation implements Parcelable {
             return this;
         }
 
+        public Builder setPermalink(String permalink) {
+            mPermalink = permalink;
+            return this;
+        }
+
         public Builder() {}
 
         public Conversation build() {
@@ -591,7 +606,7 @@ public class Conversation implements Parcelable {
                     mSendingState, mPriority, mRead, mSeen, mStarred, mRawFolders, mConvFlags,
                     mPersonalLevel, mSpam, mPhishing, mMuted, mAccountUri, mConversationInfo,
                     mConversationBaseUri, mIsRemote, mAttachmentPreviewUri0, mAttachmentPreviewUri1,
-                    mAttachmentPreviewStates, mAttachmentPreviewsCount);
+                    mAttachmentPreviewStates, mAttachmentPreviewsCount, mPermalink);
         }
     }
 

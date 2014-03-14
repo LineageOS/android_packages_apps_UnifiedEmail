@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Google Inc.
+ * Copyright (C) 2014 Google Inc.
  * Licensed to The Android Open Source Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,20 @@
 
 package com.android.mail.browse;
 
-import com.android.mail.providers.Account;
+/**
+ * Contract class for sending extras when desiring to view the entire
+ * message in the case where messages can be clipped.
+ */
+public final class FullMessageContract {
 
-public interface ConversationAccountController {
-    Account getAccount();
+    private FullMessageContract() {}
+
+    /**
+     * String extra used to pass in the url to load the full message.
+     */
+    public static final String EXTRA_PERMALINK = "permalink";
+    /**
+     * String extra for the account to which the message belongs.
+     */
+    public static final String EXTRA_ACCOUNT_NAME = "account-name";
 }

@@ -183,11 +183,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         return false;
     }
 
-    @Override
-    public Uri getAccountUri() {
-        return mAccount.uri;
-    }
-
     // End implementations of SecureConversationViewControllerCallbacks
 
     @Override

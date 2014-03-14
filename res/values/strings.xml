@@ -1019,6 +1019,9 @@
          for this button is overridden similarly. -->
     <string name="attach_file_content_description" translatable="false">@string/add_photo_attachment</string>
 
+    <!-- Displayed below a message that has been truncated to show the full message. [CHAR LIMIT=50] -->
+    <string name="view_entire_message">View entire message</string>
+
     <!-- Toast text for error loading an eml file -->
     <string name="eml_loader_error_toast">Can\'t open this file</string>
 
@@ -1060,4 +1063,9 @@
 
     <!-- Menu item: open source licenses [CHAR LIMIT=25] -->
     <string name="open_source_licenses">Open source licenses</string>
+
+    <!-- Activity class name for showing a full message url.
+         Empty by default since this should be overridden by implementing apps. -->
+    <string name="full_message_activity" translatable="false"></string>
+
 </resources>

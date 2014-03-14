@@ -20,11 +20,13 @@ package com.android.mail.browse;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.text.BidiFormatter;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,8 +37,11 @@ import com.android.mail.R;
 import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.browse.ConversationContainer.DetachListener;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
+import com.android.mail.ui.AccountFeedbackActivity;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.utils.LogTag;
@@ -48,12 +53,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageFooterView extends LinearLayout implements DetachListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     private MessageHeaderItem mMessageHeaderItem;
     private LoaderManager mLoaderManager;
     private FragmentManager mFragmentManager;
     private AttachmentCursor mAttachmentsCursor;
+    private View mViewEntireMessagePrompt;
     private TextView mTitleText;
     private AttachmentTileGrid mAttachmentGrid;
     private LinearLayout mAttachmentBarList;
@@ -62,7 +68,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
-    private Uri mAccountUri;
+    private ConversationAccountController mAccountController;
 
     private BidiFormatter mBidiFormatter;
 
@@ -80,19 +86,22 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        mViewEntireMessagePrompt = findViewById(R.id.view_entire_message_prompt);
         mTitleText = (TextView) findViewById(R.id.attachments_header_text);
         mAttachmentGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
         mAttachmentBarList = (LinearLayout) findViewById(R.id.attachment_bar_list);
+
+        mViewEntireMessagePrompt.setOnClickListener(this);
     }
 
-    public void initialize(LoaderManager loaderManager, FragmentManager fragmentManager) {
+    public void initialize(LoaderManager loaderManager, FragmentManager fragmentManager,
+            ConversationAccountController accountController) {
         mLoaderManager = loaderManager;
         mFragmentManager = fragmentManager;
+        mAccountController = accountController;
     }
 
-    public void bind(MessageHeaderItem headerItem, Uri accountUri, boolean measureOnly) {
-        mAccountUri = accountUri;
-
+    public void bind(MessageHeaderItem headerItem, boolean measureOnly) {
         // Resets the footer view. This step is only done if the
         // attachmentsListUri changes so that we don't
         // repeat the work of layout and measure when
@@ -104,6 +113,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 headerItem.getMessage().attachmentListUri)) {
             mAttachmentGrid.removeAllViewsInLayout();
             mAttachmentBarList.removeAllViewsInLayout();
+            mViewEntireMessagePrompt.setVisibility(View.GONE);
             mTitleText.setVisibility(View.GONE);
             mAttachmentGrid.setVisibility(View.GONE);
             mAttachmentBarList.setVisibility(View.GONE);
@@ -135,6 +145,9 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 mAttachmentBarList.getChildCount() == 0) {
             renderAttachments(false);
         }
+
+        mViewEntireMessagePrompt.setVisibility(
+                mMessageHeaderItem.getMessage().clipped ? VISIBLE : GONE);
         setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
     }
 
@@ -199,6 +212,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     private void renderBarAttachments(List<Attachment> barAttachments, boolean loaderResult) {
         mAttachmentBarList.setVisibility(View.VISIBLE);
 
+        final Account account = getAccount();
         for (Attachment attachment : barAttachments) {
             final Uri id = attachment.getIdentifierUri();
             MessageAttachmentBar barAttachmentView =
@@ -211,7 +225,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 mAttachmentBarList.addView(barAttachmentView);
             }
 
-            barAttachmentView.render(attachment, mAccountUri, loaderResult, getBidiFormatter());
+            barAttachmentView.render(attachment, account, loaderResult, getBidiFormatter());
         }
     }
 
@@ -262,5 +276,34 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             }
         }
         return mBidiFormatter;
+    }
+
+    @Override
+    public void onClick(View v) {
+        viewEntireMessage();
+    }
+
+    private void viewEntireMessage() {
+        final Context context = getContext();
+        final Intent intent = new Intent();
+        final String activityName =
+                context.getResources().getString(R.string.full_message_activity);
+        if (TextUtils.isEmpty(activityName)) {
+            LogUtils.wtf(LOG_TAG, "Trying to open clipped message with no activity defined");
+            return;
+        }
+        intent.setClassName(context, activityName);
+        final Account account = getAccount();
+        if (account != null) {
+            final Conversation conv = mMessageHeaderItem.getMessage().getConversation();
+            intent.putExtra(AccountFeedbackActivity.EXTRA_ACCOUNT_URI, account.uri);
+            intent.putExtra(FullMessageContract.EXTRA_PERMALINK, conv.permalink);
+            intent.putExtra(FullMessageContract.EXTRA_ACCOUNT_NAME, account.getEmailAddress());
+            context.startActivity(intent);
+        }
+    }
+
+    private Account getAccount() {
+        return mAccountController != null ? mAccountController.getAccount() : null;
     }
 }

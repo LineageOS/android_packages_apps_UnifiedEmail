@@ -286,14 +286,14 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageFooterView v = (MessageFooterView) inflater.inflate(
                     R.layout.conversation_message_footer, parent, false);
-            v.initialize(mLoaderManager, mFragmentManager);
+            v.initialize(mLoaderManager, mFragmentManager, mAccountController);
             return v;
         }
 
         @Override
         public void bindView(View v, boolean measureOnly) {
             final MessageFooterView attachmentsView = (MessageFooterView) v;
-            attachmentsView.bind(mHeaderitem, mAccountController.getAccount().uri, measureOnly);
+            attachmentsView.bind(mHeaderitem, measureOnly);
         }
 
         @Override

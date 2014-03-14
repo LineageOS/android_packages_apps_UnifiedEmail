@@ -82,7 +82,7 @@ public class ConversationViewProgressController {
         mHandler.postDelayed(mDelayedShow, sMinDelay);
     }
 
-    protected void dismissLoadingStatus() {
+    public void dismissLoadingStatus() {
         dismissLoadingStatus(null);
     }
 
@@ -92,7 +92,7 @@ public class ConversationViewProgressController {
      *
      * @param doAfter an optional Runnable action to execute after the animation completes
      */
-    protected void dismissLoadingStatus(final Runnable doAfter) {
+    public void dismissLoadingStatus(final Runnable doAfter) {
         if (mLoadingShownTime == -1) {
             // The runnable hasn't run yet, so just remove it.
             mHandler.removeCallbacks(mDelayedShow);

@@ -199,6 +199,11 @@ public class Message implements Parcelable, HtmlMessage {
      */
     public boolean isSending;
 
+    /**
+     * @see UIProvider.MessageColumns#CLIPPED
+     */
+    public boolean clipped;
+
     private transient String[] mFromAddresses = null;
     private transient String[] mToAddresses = null;
     private transient String[] mCcAddresses = null;
@@ -256,6 +261,7 @@ public class Message implements Parcelable, HtmlMessage {
         dest.writeInt(spamLinkType);
         dest.writeString(viaDomain);
         dest.writeInt(isSending ? 1 : 0);
+        dest.writeInt(clipped ? 1 : 0);
     }
 
     private Message(Parcel in) {
@@ -290,6 +296,7 @@ public class Message implements Parcelable, HtmlMessage {
         spamLinkType = in.readInt();
         viaDomain = in.readString();
         isSending = in.readInt() != 0;
+        clipped = in.readInt() != 0;
     }
 
     public Message() {
@@ -364,6 +371,7 @@ public class Message implements Parcelable, HtmlMessage {
             spamLinkType = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN);
             viaDomain = cursor.getString(UIProvider.MESSAGE_VIA_DOMAIN_COLUMN);
             isSending = cursor.getInt(UIProvider.MESSAGE_IS_SENDING_COLUMN) != 0;
+            clipped = cursor.getInt(UIProvider.MESSAGE_CLIPPED_COLUMN) != 0;
         }
     }
 
@@ -398,6 +406,7 @@ public class Message implements Parcelable, HtmlMessage {
         starred = false;
         spamWarningString = null;
         messageFlags = 0;
+        clipped = false;
         hasAttachments = false;
 
         // body values (snippet/bodyText/bodyHtml)
