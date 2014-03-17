@@ -82,8 +82,6 @@
     <string name="mark_not_important" msgid="4550967327747977068">"Pažymėti kaip nesvarbų"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Pridėti Cc / Bcc"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Pridėti Bcc"</string>
-    <string name="feedback" msgid="79365993169715049">"Siųsti atsiliepimus"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"Pagalba"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Įtraukti cituojamą tekstą"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Cituojamas tekstas"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Tiesiogiai atsakyti"</string>
@@ -436,5 +434,15 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"Įjungta nuo <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Įjungta nuo <xliff:g id="START_DATE">%1$s</xliff:g> iki <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Pridėkite temą arba pranešimą"</string>
+    <string name="view_entire_message" msgid="1553882732296911563">"Peržiūrėti visą pranešimą"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Nepavyksta atidaryti failo"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"Pagalba"</string>
+    <string name="feedback" msgid="79365993169715049">"Siųsti atsiliepimus"</string>
+    <string name="copyright" msgid="8707923211554475583">"© „Google Inc.“, <xliff:g id="YEAR">%1$d</xliff:g> m."</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="VERSION">%2$s</xliff:g> „<xliff:g id="APP_NAME">%1$s</xliff:g>“ versija"</string>
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <string name="print_dialog" msgid="8754985880654139587">"Spausdinti…"</string>
+    <string name="copyright_information" msgid="1673715390305905781">"Autorių teisių inform."</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"Privatumo politika"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"Atvirojo šaltinio licenc."</string>
 </resources>

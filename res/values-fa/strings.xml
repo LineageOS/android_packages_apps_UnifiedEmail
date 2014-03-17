@@ -82,8 +82,6 @@
     <string name="mark_not_important" msgid="4550967327747977068">"علامت‌گذاری به‌عنوان غیرمهم"</string>
     <string name="add_cc_label" msgid="504861315425773180">"افزودن گیرندهٔ کپی/گیرنده مخفی"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"افزودن گیرنده مخفی"</string>
-    <string name="feedback" msgid="79365993169715049">"ارسال بازخورد"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"راهنمایی"</string>
     <string name="quoted_text" msgid="7250749398672037355">"شامل نوشتار نقل قول"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"نوشتار نقل قول شده"</string>
     <string name="respond_inline" msgid="6797117334768201180">"پاسخگویی درون برنامه"</string>
@@ -257,7 +255,15 @@
     <string name="done" msgid="3079981801778027540">"انجام شد"</string>
     <string name="cancel" msgid="8762981157252199115">"لغو"</string>
     <string name="clear" msgid="3184687982186479442">"پاک کردن"</string>
-    <!-- no translation found for sync_status:6 (600403120960920559) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"موفقیت‌آمیز"</item>
+    <item msgid="7109065688039971961">"اتصال برقرار نیست."</item>
+    <item msgid="8437496123716232060">"ورود به برنامه انجام نشد."</item>
+    <item msgid="1651266301325684887">"خطای امنیتی."</item>
+    <item msgid="1461520171154288533">"همگام‌سازی انجام نشد."</item>
+    <item msgid="4779810016424303449">"خطای داخلی"</item>
+    <item msgid="600403120960920559">"خطای سرور"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"برای راه‌اندازی لمس کنید"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"برای مشاهده مکالمات، این پوشه همگام شود."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"همگام‌سازی پوشه"</string>
@@ -428,5 +434,15 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"روشن، از تاریخ <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"روشن، از تاریخ <xliff:g id="START_DATE">%1$s</xliff:g> تا <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"افزودن موضوع یا پیام"</string>
+    <string name="view_entire_message" msgid="1553882732296911563">"نمایش کل پیام"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"این فایل باز نمی‌شود"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"راهنمایی"</string>
+    <string name="feedback" msgid="79365993169715049">"ارسال بازخورد"</string>
+    <string name="copyright" msgid="8707923211554475583">"‎©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc.‎"</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> نسخه <xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <string name="print_dialog" msgid="8754985880654139587">"چاپ..."</string>
+    <string name="copyright_information" msgid="1673715390305905781">"اطلاعات حق نسخه‌برداری"</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"خط‌مشی رازداری"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"مجوزهای منبع باز"</string>
 </resources>

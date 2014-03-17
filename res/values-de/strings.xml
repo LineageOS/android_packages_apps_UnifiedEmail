@@ -82,8 +82,6 @@
     <string name="mark_not_important" msgid="4550967327747977068">"Als nicht wichtig markieren"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Cc/Bcc hinzufügen"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Bcc hinzufügen"</string>
-    <string name="feedback" msgid="79365993169715049">"Feedback geben"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"Hilfe"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Zitierten Text einfügen"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Zitierter Text"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Inline antworten"</string>
@@ -149,7 +147,7 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Senden..."</string>
     <string name="send_failed" msgid="750908595144529579">"Nicht gesendet"</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"ich"</string>
+    <string name="me_object_pronun" msgid="7668994569594901571">"mich"</string>
     <string name="me_subject_pronun" msgid="1088657349831581116">"ich"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Posteingang"</string>
   <plurals name="confirm_delete_conversation">
@@ -436,5 +434,15 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"An ab <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"An von <xliff:g id="START_DATE">%1$s</xliff:g> bis <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Betreff oder Nachricht hinzufügen"</string>
+    <string name="view_entire_message" msgid="1553882732296911563">"Vollständige Nachricht ansehen"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Diese Datei kann nicht geöffnet werden."</string>
+    <string name="help_and_info" msgid="7873089811705257882">"Hilfe"</string>
+    <string name="feedback" msgid="79365993169715049">"Feedback geben"</string>
+    <string name="copyright" msgid="8707923211554475583">"© <xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> Version <xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <string name="print_dialog" msgid="8754985880654139587">"Drucken…"</string>
+    <string name="copyright_information" msgid="1673715390305905781">"Copyrightinformationen"</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"Datenschutzerklärung"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"Open-Source-Lizenzen"</string>
 </resources>

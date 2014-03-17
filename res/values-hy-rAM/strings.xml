@@ -82,8 +82,6 @@
     <string name="mark_not_important" msgid="4550967327747977068">"Նշել որպես ոչ կարևոր"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Ավելացնել Պտճ/Ծածկպտճ"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Ավելացնել Ծածկպտճ"</string>
-    <string name="feedback" msgid="79365993169715049">"Ուղարկել կարծիք"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"Օգնություն"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Ներառել մեջբերված տեքստը"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Մեջբերել տեքստ"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Պատասխանել մեջտեղում"</string>
@@ -257,7 +255,15 @@
     <string name="done" msgid="3079981801778027540">"Կատարված է"</string>
     <string name="cancel" msgid="8762981157252199115">"Չեղարկել"</string>
     <string name="clear" msgid="3184687982186479442">"Մաքրել"</string>
-    <!-- no translation found for sync_status:6 (600403120960920559) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Հաջողվել է"</item>
+    <item msgid="7109065688039971961">"Կապ չկա:"</item>
+    <item msgid="8437496123716232060">"Չհաջողվեց մուտք գործել:"</item>
+    <item msgid="1651266301325684887">"Անվտանգության սխալ:"</item>
+    <item msgid="1461520171154288533">"Հնարավոր չէ համաժամեցնել:"</item>
+    <item msgid="4779810016424303449">"Ներքին սխալ"</item>
+    <item msgid="600403120960920559">"Սերվերի սխալ"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Հպեք՝ կարգավորելու համար"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Զրույցները դիտելու համար համաժամեցրել այս թղթապանակը:"</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Համաժամեցնել թղթապանակը"</string>
@@ -428,5 +434,22 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"Միացված է <xliff:g id="DATE">%1$s</xliff:g>-ից"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Միացված է <xliff:g id="START_DATE">%1$s</xliff:g>-ից <xliff:g id="END_DATE">%2$s</xliff:g>-ը"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Ավելացնել վերնագիր կամ հաղորդագրություն"</string>
+    <!-- no translation found for view_entire_message (1553882732296911563) -->
+    <skip />
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Հնարավոր չէ բացել այս ֆայլը"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"Օգնություն"</string>
+    <string name="feedback" msgid="79365993169715049">"Ուղարկել կարծիք"</string>
+    <!-- no translation found for copyright (8707923211554475583) -->
+    <skip />
+    <!-- no translation found for version (5053508951230261148) -->
+    <skip />
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <!-- no translation found for print_dialog (8754985880654139587) -->
+    <skip />
+    <!-- no translation found for copyright_information (1673715390305905781) -->
+    <skip />
+    <!-- no translation found for privacy_policy (2072093492013385609) -->
+    <skip />
+    <!-- no translation found for open_source_licenses (6831573769505612579) -->
+    <skip />
 </resources>

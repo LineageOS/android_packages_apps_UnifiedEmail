@@ -82,8 +82,6 @@
     <string name="mark_not_important" msgid="4550967327747977068">"Marquer comme non important"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Ajouter Cc/Cci"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Ajouter au champ Cci"</string>
-    <string name="feedback" msgid="79365993169715049">"Envoyer un commentaire"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"Aide"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Inclure le texte des messages précédents"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Texte messages précédents"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Répondre dans le courriel"</string>
@@ -257,7 +255,15 @@
     <string name="done" msgid="3079981801778027540">"Terminé"</string>
     <string name="cancel" msgid="8762981157252199115">"Annuler"</string>
     <string name="clear" msgid="3184687982186479442">"Effacer"</string>
-    <!-- no translation found for sync_status:6 (600403120960920559) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Réussite"</item>
+    <item msgid="7109065688039971961">"Aucune connexion"</item>
+    <item msgid="8437496123716232060">"Connexion impossible."</item>
+    <item msgid="1651266301325684887">"Erreur de sécurité."</item>
+    <item msgid="1461520171154288533">"Synchronisation impossible."</item>
+    <item msgid="4779810016424303449">"Erreur interne"</item>
+    <item msgid="600403120960920559">"Erreur du serveur"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Pour configurer le widget, appuyez ici."</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Pour afficher les conversations, synchronisez ce dossier."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synchroniser le dossier"</string>
@@ -428,5 +434,16 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"Activé, à partir du <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Activé, du <xliff:g id="START_DATE">%1$s</xliff:g> au <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Ajouter un sujet ou un message"</string>
+    <!-- no translation found for view_entire_message (1553882732296911563) -->
+    <skip />
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Impossible d\'ouvrir ce fichier."</string>
+    <string name="help_and_info" msgid="7873089811705257882">"Aide"</string>
+    <string name="feedback" msgid="79365993169715049">"Envoyer un commentaire"</string>
+    <string name="copyright" msgid="8707923211554475583">"© <xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> version <xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <string name="print_dialog" msgid="8754985880654139587">"Impression en cours…"</string>
+    <string name="copyright_information" msgid="1673715390305905781">"Droits d\'auteur"</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"Politique confidentialité"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"Licences logiciel libre"</string>
 </resources>

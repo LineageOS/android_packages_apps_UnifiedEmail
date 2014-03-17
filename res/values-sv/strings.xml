@@ -82,8 +82,6 @@
     <string name="mark_not_important" msgid="4550967327747977068">"Markera som inte viktigt"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Lägg till kopia/hemlig kopia"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Lägg t. hemlig kopia"</string>
-    <string name="feedback" msgid="79365993169715049">"Skicka feedback"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"Hjälp"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Inkludera citerad text"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Citerad text"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Svara inbäddade"</string>
@@ -436,5 +434,22 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"På från <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"På från <xliff:g id="START_DATE">%1$s</xliff:g> till <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Lägg till ett ämne eller ett meddelande"</string>
+    <!-- no translation found for view_entire_message (1553882732296911563) -->
+    <skip />
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Det går inte att öppna den här filen."</string>
+    <string name="help_and_info" msgid="7873089811705257882">"Hjälp"</string>
+    <string name="feedback" msgid="79365993169715049">"Skicka feedback"</string>
+    <!-- no translation found for copyright (8707923211554475583) -->
+    <skip />
+    <!-- no translation found for version (5053508951230261148) -->
+    <skip />
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <!-- no translation found for print_dialog (8754985880654139587) -->
+    <skip />
+    <!-- no translation found for copyright_information (1673715390305905781) -->
+    <skip />
+    <!-- no translation found for privacy_policy (2072093492013385609) -->
+    <skip />
+    <!-- no translation found for open_source_licenses (6831573769505612579) -->
+    <skip />
 </resources>

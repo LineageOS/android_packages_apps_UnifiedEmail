@@ -82,8 +82,6 @@
     <string name="mark_not_important" msgid="4550967327747977068">"አስፈላጊ አይደለም የሚል ምልክት አድርግ"</string>
     <string name="add_cc_label" msgid="504861315425773180">"ካርቦን ቅጂ/ስውር ቅጂ አክል"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"ስውር ቅጂ አክል"</string>
-    <string name="feedback" msgid="79365993169715049">"ግብረ-መልስ ላክ"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"እገዛ"</string>
     <string name="quoted_text" msgid="7250749398672037355">"የተጠቀሰ ጽሁፍ አካትት"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"ጽሑፍ ላይ ትዕምርተ ጥቅስ አድርግ"</string>
     <string name="respond_inline" msgid="6797117334768201180">"ቀጥታ መልስ"</string>
@@ -101,7 +99,7 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> ፋይል"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"ቅድመ-ዕይታ"</string>
     <string name="save_attachment" msgid="5360128849867863132">"አስቀምጥ"</string>
-    <string name="cancel_attachment" msgid="4651201258272223650">"ሰርዝ"</string>
+    <string name="cancel_attachment" msgid="4651201258272223650">"ይቅር"</string>
     <string name="open_attachment" msgid="975940478986626705">"ክፈት"</string>
     <string name="install_attachment" msgid="2803531650273683382">"ጫን"</string>
     <string name="download_again" msgid="7418568915429156518">"እንደገና አውርድ"</string>
@@ -255,7 +253,7 @@
     <string name="no" msgid="427548507197604096">"የለም"</string>
     <string name="ok" msgid="8339355733816891026">"እሺ"</string>
     <string name="done" msgid="3079981801778027540">"ተከናውኗል"</string>
-    <string name="cancel" msgid="8762981157252199115">"ሰርዝ"</string>
+    <string name="cancel" msgid="8762981157252199115">"ይቅር"</string>
     <string name="clear" msgid="3184687982186479442">"አጽዳ"</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"ተሳክቷል"</item>
@@ -436,5 +434,16 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"በርቷል፣ ከ<xliff:g id="DATE">%1$s</xliff:g> ጀምሮ"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"በርቷል፣ ከ<xliff:g id="START_DATE">%1$s</xliff:g> ጀምሮ እስከ <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"ርዕሰ ጉዳይ ወይም መልዕክት ያክሉ"</string>
+    <!-- no translation found for view_entire_message (1553882732296911563) -->
+    <skip />
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"ይህን ፋይል መክፈት አይቻልም"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"እገዛ"</string>
+    <string name="feedback" msgid="79365993169715049">"ግብረ-መልስ ላክ"</string>
+    <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> ስሪት <xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <string name="print_dialog" msgid="8754985880654139587">"አትም…"</string>
+    <string name="copyright_information" msgid="1673715390305905781">"የቅጂ መብት መረጃ"</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"የግላዊነት መመሪያ"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"የክፍት ምንጭ ፈቃዶች"</string>
 </resources>

@@ -82,8 +82,6 @@
     <string name="mark_not_important" msgid="4550967327747977068">"重要マークを外す"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Cc/Bccを追加"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Bccを追加"</string>
-    <string name="feedback" msgid="79365993169715049">"ご意見、ご感想"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"ヘルプ"</string>
     <string name="quoted_text" msgid="7250749398672037355">"元のメッセージを挿入"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"元のメッセージ"</string>
     <string name="respond_inline" msgid="6797117334768201180">"引用返信"</string>
@@ -257,7 +255,15 @@
     <string name="done" msgid="3079981801778027540">"完了"</string>
     <string name="cancel" msgid="8762981157252199115">"キャンセル"</string>
     <string name="clear" msgid="3184687982186479442">"消去"</string>
-    <!-- no translation found for sync_status:6 (600403120960920559) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"完了"</item>
+    <item msgid="7109065688039971961">"接続できません。"</item>
+    <item msgid="8437496123716232060">"ログインできませんでした。"</item>
+    <item msgid="1651266301325684887">"セキュリティエラー"</item>
+    <item msgid="1461520171154288533">"同期できませんでした。"</item>
+    <item msgid="4779810016424303449">"内部エラー"</item>
+    <item msgid="600403120960920559">"サーバーエラー"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"タップしてセットアップ"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"スレッドを表示するには、このフォルダを同期します。"</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"フォルダを同期"</string>
@@ -428,5 +434,16 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"ON（<xliff:g id="DATE">%1$s</xliff:g>から）"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"ON（<xliff:g id="START_DATE">%1$s</xliff:g>から<xliff:g id="END_DATE">%2$s</xliff:g>まで）"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"件名やメッセージを追加してください"</string>
+    <!-- no translation found for view_entire_message (1553882732296911563) -->
+    <skip />
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"このファイルを開けません"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"ヘルプ"</string>
+    <string name="feedback" msgid="79365993169715049">"ご意見、ご感想"</string>
+    <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g>、バージョン<xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <string name="print_dialog" msgid="8754985880654139587">"印刷…"</string>
+    <string name="copyright_information" msgid="1673715390305905781">"著作権情報"</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"プライバシーポリシー"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"オープンソースライセンス"</string>
 </resources>

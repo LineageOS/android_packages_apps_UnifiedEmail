@@ -139,10 +139,6 @@
     <skip />
     <!-- no translation found for add_bcc_label (7432027645493843336) -->
     <skip />
-    <!-- no translation found for feedback (79365993169715049) -->
-    <skip />
-    <!-- no translation found for help_and_info (7873089811705257882) -->
-    <skip />
     <!-- no translation found for quoted_text (7250749398672037355) -->
     <skip />
     <!-- no translation found for quoted_text_label (541007446961960617) -->
@@ -674,6 +670,25 @@
     <skip />
     <!-- no translation found for vacation_responder_empty_subject_and_body_warning (2344675863430827845) -->
     <skip />
+    <!-- no translation found for view_entire_message (1553882732296911563) -->
+    <skip />
     <!-- no translation found for eml_loader_error_toast (2107905951183729575) -->
+    <skip />
+    <!-- no translation found for help_and_info (7873089811705257882) -->
+    <skip />
+    <!-- no translation found for feedback (79365993169715049) -->
+    <skip />
+    <!-- no translation found for copyright (8707923211554475583) -->
+    <skip />
+    <!-- no translation found for version (5053508951230261148) -->
+    <skip />
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <!-- no translation found for print_dialog (8754985880654139587) -->
+    <skip />
+    <!-- no translation found for copyright_information (1673715390305905781) -->
+    <skip />
+    <!-- no translation found for privacy_policy (2072093492013385609) -->
+    <skip />
+    <!-- no translation found for open_source_licenses (6831573769505612579) -->
     <skip />
 </resources>
