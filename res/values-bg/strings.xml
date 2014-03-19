@@ -434,8 +434,7 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"Включено от <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Включено от <xliff:g id="START_DATE">%1$s</xliff:g> до <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Добавете тема или съобщение"</string>
-    <!-- no translation found for view_entire_message (1553882732296911563) -->
-    <skip />
+    <string name="view_entire_message" msgid="1553882732296911563">"Вижте цялото съобщение"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Този файл не може да се отвори"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Помощ"</string>
     <string name="feedback" msgid="79365993169715049">"Изпращане на отзиви"</string>

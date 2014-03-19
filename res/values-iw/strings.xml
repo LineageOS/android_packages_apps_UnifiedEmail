@@ -84,7 +84,7 @@
     <string name="add_bcc_label" msgid="7432027645493843336">"הוסף עותק מוסתר"</string>
     <string name="quoted_text" msgid="7250749398672037355">"כלול טקסט מצוטט"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"צטט טקסט"</string>
-    <string name="respond_inline" msgid="6797117334768201180">"השב בתוך שורה"</string>
+    <string name="respond_inline" msgid="6797117334768201180">"השב בתוך הטקסט"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -434,8 +434,7 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"פועל, מ-<xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"פועל, מ-<xliff:g id="START_DATE">%1$s</xliff:g> עד <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"הוסף נושא או הודעה"</string>
-    <!-- no translation found for view_entire_message (1553882732296911563) -->
-    <skip />
+    <string name="view_entire_message" msgid="1553882732296911563">"הצג את ההודעה כולה"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"לא ניתן לפתוח את הקובץ הזה"</string>
     <string name="help_and_info" msgid="7873089811705257882">"עזרה"</string>
     <string name="feedback" msgid="79365993169715049">"שלח משוב"</string>

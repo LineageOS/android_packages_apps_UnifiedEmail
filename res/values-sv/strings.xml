@@ -434,22 +434,15 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"På från <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"På från <xliff:g id="START_DATE">%1$s</xliff:g> till <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Lägg till ett ämne eller ett meddelande"</string>
-    <!-- no translation found for view_entire_message (1553882732296911563) -->
-    <skip />
+    <string name="view_entire_message" msgid="1553882732296911563">"Visa hela meddelandet"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Det går inte att öppna den här filen."</string>
     <string name="help_and_info" msgid="7873089811705257882">"Hjälp"</string>
     <string name="feedback" msgid="79365993169715049">"Skicka feedback"</string>
-    <!-- no translation found for copyright (8707923211554475583) -->
-    <skip />
-    <!-- no translation found for version (5053508951230261148) -->
-    <skip />
+    <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> version <xliff:g id="VERSION">%2$s</xliff:g>"</string>
     <string name="view_app_page" msgid="5320196120982618014"></string>
-    <!-- no translation found for print_dialog (8754985880654139587) -->
-    <skip />
-    <!-- no translation found for copyright_information (1673715390305905781) -->
-    <skip />
-    <!-- no translation found for privacy_policy (2072093492013385609) -->
-    <skip />
-    <!-- no translation found for open_source_licenses (6831573769505612579) -->
-    <skip />
+    <string name="print_dialog" msgid="8754985880654139587">"Skriv ut …"</string>
+    <string name="copyright_information" msgid="1673715390305905781">"Upphovsrättsinformation"</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"Sekretesspolicy"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"Licenser, öppen källkod"</string>
 </resources>

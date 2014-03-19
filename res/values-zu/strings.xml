@@ -434,8 +434,7 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"Vuliwe, kusuka ngomhla ka-<xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Vuliwe, kusukela ngomhla ka-<xliff:g id="START_DATE">%1$s</xliff:g> kuya ngomhla ka-<xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Engeza isihloko noma umlayezo"</string>
-    <!-- no translation found for view_entire_message (1553882732296911563) -->
-    <skip />
+    <string name="view_entire_message" msgid="1553882732296911563">"Buka wonke umlayezo"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Ayikwazi ukuvula leli fayela"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Usizo"</string>
     <string name="feedback" msgid="79365993169715049">"Thumela impendulo"</string>

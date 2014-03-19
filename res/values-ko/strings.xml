@@ -434,8 +434,7 @@
     <string name="vacation_responder_on" msgid="5242690599331655563">"<xliff:g id="DATE">%1$s</xliff:g>부터 사용"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"사용(<xliff:g id="START_DATE">%1$s</xliff:g> - <xliff:g id="END_DATE">%2$s</xliff:g>)"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"제목 또는 메시지 추가"</string>
-    <!-- no translation found for view_entire_message (1553882732296911563) -->
-    <skip />
+    <string name="view_entire_message" msgid="1553882732296911563">"전체 메일 보기"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"파일을 열 수 없습니다."</string>
     <string name="help_and_info" msgid="7873089811705257882">"도움말"</string>
     <string name="feedback" msgid="79365993169715049">"의견 보내기"</string>
