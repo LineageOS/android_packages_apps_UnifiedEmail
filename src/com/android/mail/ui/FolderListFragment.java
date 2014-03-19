@@ -363,7 +363,10 @@ public class FolderListFragment extends ListFragment implements
             };
             mDrawerObserver.initialize(accountController);
 
-            mActivity.getDrawerController().registerDrawerListener(mDrawerListener);
+            final DrawerController dc = mActivity.getDrawerController();
+            if (dc != null) {
+                dc.registerDrawerListener(mDrawerListener);
+            }
         }
 
         if (mActivity.isFinishing()) {
@@ -422,7 +425,10 @@ public class FolderListFragment extends ListFragment implements
             // No selected folder type required for hierarchical lists.
         }
 
-        mShowFooter = getResources().getBoolean(R.bool.show_help_and_feedback_in_drawer);
+        // only show the footer on drawered layouts, and definitely not in the folder selection
+        // activity
+        mShowFooter = !mHideAccounts
+                && getResources().getBoolean(R.bool.show_help_and_feedback_in_drawer);
 
         final boolean floatyFooterEnabled = mShowFooter && getResources().getBoolean(
                 R.bool.show_drawer_floaty_footer);
@@ -522,7 +528,10 @@ public class FolderListFragment extends ListFragment implements
         super.onDestroyView();
 
         if (mActivity != null) {
-            mActivity.getDrawerController().unregisterDrawerListener(mDrawerListener);
+            final DrawerController dc = mActivity.getDrawerController();
+            if (dc != null) {
+                dc.unregisterDrawerListener(mDrawerListener);
+            }
         }
     }
 
