@@ -115,6 +115,7 @@ function processQuotedText(elt, showElided) {
         toggleElement = document.createElement("div");
         toggleElement.className = "mail-elided-text";
         toggleElement.innerHTML = MSG_SHOW_ELIDED;
+        toggleElement.setAttribute("dir", "auto");
         toggleElement.onclick = onToggleClick;
         elidedElement.style.display = 'none';
         elidedElement.parentNode.insertBefore(toggleElement, elidedElement);
