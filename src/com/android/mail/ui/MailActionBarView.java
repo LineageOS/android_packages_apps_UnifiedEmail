@@ -224,11 +224,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        // If the mode is valid, then set the initial menu
-        if (getMode() == ViewMode.UNKNOWN) {
-            return false;
-        }
+        mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
+        mFolderSettingsItem = menu.findItem(R.id.folder_options);
+        mHelpItem = menu.findItem(R.id.help_info_menu_item);
+        mEmptyTrashItem = menu.findItem(R.id.empty_trash);
+        mEmptySpamItem = menu.findItem(R.id.empty_spam);
+        mSettingsItem = menu.findItem(R.id.settings);
         mSearch = menu.findItem(R.id.search);
+
         if (mSearch != null) {
             mSearchWidget = (SearchView) mSearch.getActionView();
             mSearch.setOnActionExpandListener(this);
@@ -242,13 +245,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 mSearchWidget.setIconifiedByDefault(true);
             }
         }
-        mSettingsItem = menu.findItem(R.id.settings);
-        mHelpItem = menu.findItem(R.id.help_info_menu_item);
-        mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
-        mFolderSettingsItem = menu.findItem(R.id.folder_options);
-        mEmptyTrashItem = menu.findItem(R.id.empty_trash);
-        mEmptySpamItem = menu.findItem(R.id.empty_spam);
-        return true;
+
+        // the menu should be displayed if the mode is known
+        return getMode() != ViewMode.UNKNOWN;
     }
 
     public int getOptionsMenuId() {
