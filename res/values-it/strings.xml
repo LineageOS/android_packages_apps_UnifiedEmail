@@ -442,7 +442,7 @@
     <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> versione <xliff:g id="VERSION">%2$s</xliff:g>"</string>
     <string name="view_app_page" msgid="5320196120982618014"></string>
     <string name="print_dialog" msgid="8754985880654139587">"Stampa..."</string>
-    <string name="copyright_information" msgid="1673715390305905781">"Informazioni sul copyright"</string>
+    <string name="copyright_information" msgid="1673715390305905781">"Informazioni su copyright"</string>
     <string name="privacy_policy" msgid="2072093492013385609">"Norme sulla privacy"</string>
     <string name="open_source_licenses" msgid="6831573769505612579">"Licenze open source"</string>
 </resources>
