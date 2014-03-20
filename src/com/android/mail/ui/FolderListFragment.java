@@ -1481,6 +1481,14 @@ public class FolderListFragment extends ListFragment implements
             mShowTopBorder = show;
         }
 
+        // for analytics
+        String getEventLabel() {
+            final StringBuilder sb = new StringBuilder("drawer_footer");
+            sb.append("/");
+            sb.append(mActivity.getViewMode().getModeString());
+            return sb.toString();
+        }
+
     }
 
     private class HelpItem extends FooterItem {
@@ -1490,6 +1498,8 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         void doFooterAction() {
+            Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
+                    R.id.help_info_menu_item, getEventLabel(), 0);
             Utils.showHelp(getActivity(), mCurrentAccount, mActivity.getHelpContext());
         }
     }
@@ -1501,6 +1511,8 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         void doFooterAction() {
+            Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
+                    R.id.feedback_menu_item, getEventLabel(), 0);
             Utils.sendFeedback(getActivity(), mCurrentAccount, false);
         }
     }
@@ -1512,6 +1524,8 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         void doFooterAction() {
+            Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
+                    R.id.settings, getEventLabel(), 0);
             Utils.showSettings(mActivity.getActivityContext(), mCurrentAccount);
         }
     }

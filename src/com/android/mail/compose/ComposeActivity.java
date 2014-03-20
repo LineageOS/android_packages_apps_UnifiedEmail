@@ -2058,7 +2058,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
 
-        Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, id, null, 0);
+        Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, id,
+                "compose", 0);
 
         boolean handled = true;
         if (id == R.id.add_file_attachment) {
