@@ -18,6 +18,8 @@
 package com.android.mail.ui;
 
 import android.content.Context;
+import android.support.v4.text.TextUtilsCompat;
+import android.support.v4.view.ViewCompat;
 
 import com.android.mail.R;
 import com.android.mail.utils.LogTag;
@@ -25,6 +27,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -71,6 +74,9 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
      * something inert and not left unset to minimize interactions with existing JS.
      */
     private static final String IMG_URL_REPLACEMENT = "$1src='data:' blocked-src$2";
+
+    private static final String LEFT_TO_RIGHT_TRIANGLE = "\u25B6 ";
+    private static final String RIGHT_TO_LEFT_TRIANGLE = "\u25C0 ";
 
     private static boolean sLoadedTemplates;
     private static String sSuperCollapsed;
@@ -192,9 +198,13 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
 
         final String contentReadyClass = enableContentReadySignal ? "initial-load" : "";
 
+        final boolean isRtl = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault())
+                == ViewCompat.LAYOUT_DIRECTION_RTL;
+        final String showElided = (isRtl ? RIGHT_TO_LEFT_TRIANGLE : LEFT_TO_RIGHT_TRIANGLE) +
+                mContext.getString(R.string.show_elided);
         append(sConversationLower, contentReadyClass, mContext.getString(R.string.hide_elided),
-                mContext.getString(R.string.show_elided), docBaseUri, conversationBaseUri,
-                viewportWidth, webviewWidth, enableContentReadySignal, normalizeMessageWidths,
+                showElided, docBaseUri, conversationBaseUri, viewportWidth, webviewWidth,
+                enableContentReadySignal, normalizeMessageWidths,
                 enableMungeTables, enableMungeImages);
 
         mInProgress = false;
