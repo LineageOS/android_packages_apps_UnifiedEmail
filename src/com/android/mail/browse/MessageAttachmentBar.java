@@ -175,7 +175,6 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         } else if (res == R.id.save_attachment) {
             if (mAttachment.canSave()) {
                 mActionHandler.startDownloadingAttachment(AttachmentDestination.EXTERNAL);
-                mSaveClicked = true;
 
                 Analytics.getInstance().sendEvent(
                         "save_attachment", Utils.normalizeMimeType(mAttachment.getContentType()),
