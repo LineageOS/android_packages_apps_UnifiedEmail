@@ -1891,7 +1891,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      */
     public static String buildFormattedSubject(Resources res, String subject, int action) {
         String prefix;
-        String correctedSubject = null;
         if (action == ComposeActivity.COMPOSE) {
             prefix = "";
         } else if (action == ComposeActivity.FORWARD) {
@@ -1900,13 +1899,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             prefix = res.getString(R.string.reply_subject_label);
         }
 
-        // Don't duplicate the prefix
-        if (!TextUtils.isEmpty(subject)
-                && subject.toLowerCase().startsWith(prefix.toLowerCase())) {
-            correctedSubject = subject;
-        } else {
+        // Don't duplicate the prefix and ensure that subject is not null
+        String correctedSubject = subject;
+        if (correctedSubject == null) {
+            correctedSubject = "";
+        }
+        if (!correctedSubject.toLowerCase().startsWith(prefix.toLowerCase())) {
             correctedSubject = String.format(
-                    res.getString(R.string.formatted_subject), prefix, subject);
+                    res.getString(R.string.formatted_subject), prefix, correctedSubject);
         }
 
         return correctedSubject;
