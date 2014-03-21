@@ -15,7 +15,7 @@
 LOCAL_PATH:= $(call my-dir)
 
 # Include res dir from chips
-chips_dir := ../../../frameworks/ex/chips/res
+chips_dir := ../../../frameworks/opt/chips/res
 
 #Include res dir from photoviewer
 photo_dir := ../../../frameworks/opt/photoviewer/res ../../../frameworks/opt/photoviewer/activity/res
@@ -31,7 +31,7 @@ include $(CLEAR_VARS)
 src_dirs := src unified_src
 LOCAL_PACKAGE_NAME := UnifiedEmail
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-common-chips
+LOCAL_STATIC_JAVA_LIBRARIES := libchips
 LOCAL_STATIC_JAVA_LIBRARIES += libphotoviewer
 LOCAL_STATIC_JAVA_LIBRARIES += guava
 LOCAL_STATIC_JAVA_LIBRARIES += android-common
