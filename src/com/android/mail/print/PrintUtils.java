@@ -240,7 +240,7 @@ public class PrintUtils {
             }
         }
 
-        return TextUtils.join(", ", formattedEmails);
+        return TextUtils.join(resources.getString(R.string.enumeration_comma), formattedEmails);
     }
 
     /**

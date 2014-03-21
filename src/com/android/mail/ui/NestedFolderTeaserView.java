@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -364,7 +365,9 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
         final String unreadText = Utils.getUnreadCountString(getContext(), folder.unreadCount);
         folderHolder.getCountTextView().setText(unreadText.isEmpty() ? "0" : unreadText);
 
-        final String sendersText = TextUtils.join(", ", folderHolder.getUnreadSenders());
+        final String sendersText = TextUtils.join(
+                getResources().getString(R.string.enumeration_comma),
+                folderHolder.getUnreadSenders());
         folderHolder.getSendersTextView().setText(sendersText);
     }
 
@@ -555,8 +558,10 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
 
         final Address[] senderAddresses = Address.parse(unreadSenders);
 
+        final BidiFormatter bidiFormatter = mAdapter.getBidiFormatter();
         for (final Address senderAddress : senderAddresses) {
             String sender = senderAddress.getPersonal();
+            sender = (sender != null) ? bidiFormatter.unicodeWrap(sender) : null;
             final String senderEmail = senderAddress.getAddress();
 
             if (!TextUtils.isEmpty(sender)) {
