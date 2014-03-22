@@ -126,9 +126,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
     protected ConversationWebView mWebView;
 
-    private ScrollIndicatorsView mScrollIndicators;
-
-    private ConversationViewProgressController mProgressController;
+  private ConversationViewProgressController mProgressController;
 
     private Button mNewMessageBar;
 
@@ -399,8 +397,9 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         final WebSettings settings = mWebView.getSettings();
 
-        mScrollIndicators = (ScrollIndicatorsView) rootView.findViewById(R.id.scroll_indicators);
-        mScrollIndicators.setSourceView(mWebView);
+        final ScrollIndicatorsView scrollIndicators =
+            (ScrollIndicatorsView) rootView.findViewById(R.id.scroll_indicators);
+        scrollIndicators.setSourceView(mWebView);
 
         settings.setJavaScriptEnabled(true);
 
