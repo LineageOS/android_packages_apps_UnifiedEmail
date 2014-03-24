@@ -36,6 +36,7 @@
              setEmptyView programmatically-->
             <!-- Offset by height of undo bar and action bar -->
             <include layout="@layout/conversation_list_empty_view" />
+            <include layout="@layout/conversation_list_loading_view" />
             <com.android.mail.ui.SwipeableListView
                 android:id="@android:id/list"
                 android:layout_width="match_parent"
