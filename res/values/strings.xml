@@ -358,6 +358,8 @@
     <string name="empty_trash_folder">No trash here. Thanks for recycling!</string>
     <!-- Displayed in the middle of the screen when a folder is empty [CHAR LIMIT 100]-->
     <string name="empty_folder">There is no mail here.</string>
+    <!-- Displayed in the middle of the screen when a folder is loading [CHAR LIMIT 100]-->
+    <string name="getting_messages">Getting your messages</string>
 
     <!-- Undo bar strings -->
     <!-- Menu item: undo latest action [CHAR LIMIT=12]-->

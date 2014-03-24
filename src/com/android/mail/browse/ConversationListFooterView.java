@@ -100,10 +100,10 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
      */
     public boolean updateStatus(final ConversationCursor cursor) {
         if (cursor == null) {
-            mLoading.setVisibility(View.VISIBLE);
+            mLoading.setVisibility(View.GONE);
             mNetworkError.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.GONE);
-            return true;
+            return false;
         }
         boolean showFooter = true;
         final Bundle extras = cursor.getExtras();
@@ -112,11 +112,21 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
                 extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
                 : UIProvider.LastSyncResult.SUCCESS;
         final int totalCount = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_TOTAL_COUNT);
+
         if (UIProvider.CursorStatus.isWaitingForResults(cursorStatus)) {
-            mLoading.setVisibility(View.VISIBLE);
-            mNetworkError.setVisibility(View.GONE);
-            mLoadMore.setVisibility(View.GONE);
+            if (cursor.getCount() != 0) {
+                // When loading more, show the spinner in the footer.
+                mLoading.setVisibility(View.VISIBLE);
+                mNetworkError.setVisibility(View.GONE);
+                mLoadMore.setVisibility(View.GONE);
+            } else {
+                // We're currently loading, but we have no messages at all. We don't need to show
+                // the footer, because we should be displaying the loading state on the
+                // conversation list itself.
+                showFooter = false;
+            }
         } else if (mErrorStatus != UIProvider.LastSyncResult.SUCCESS) {
+            // We are in some error state, show the footer with an error message.
             mNetworkError.setVisibility(View.VISIBLE);
             mErrorText.setText(Utils.getSyncStatusText(getContext(), mErrorStatus));
             mLoading.setVisibility(View.GONE);
@@ -156,6 +166,8 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
             mErrorActionButton.setText(actionTextResourceId);
 
         } else if (mLoadMoreUri != null && cursor.getCount() < totalCount) {
+            // We know that there are more messages on the server than we have locally, so we
+            // need to show the footer with the "load more" button.
             mLoading.setVisibility(View.GONE);
             mNetworkError.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.VISIBLE);
