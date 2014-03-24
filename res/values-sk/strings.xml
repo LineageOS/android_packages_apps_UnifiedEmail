@@ -103,7 +103,7 @@
     <string name="preview_attachment" msgid="6934911143603455393">"Ukážka"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Uložiť"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Zrušiť"</string>
-    <string name="download_again" msgid="7418568915429156518">"Prevziať znova"</string>
+    <string name="download_again" msgid="7418568915429156518">"Stiahnuť znova"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informácie"</string>
     <string name="attachment_type_blocked" msgid="7878184764428642891">"Tento typ prílohy žiaľ nemôžete uložiť ani otvoriť."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Žiadna aplikácia nemôže otvoriť ani zobraziť túto prílohu."</string>
@@ -303,7 +303,7 @@
     <string name="report" msgid="5417082746232614958">"Prehľad"</string>
     <string name="sync_error" msgid="7368819509040597851">"Nepodarilo sa synchronizovať."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Vaše zariadenie nemá dostatočný ukladací priestor potrebný na synchronizáciu."</string>
-    <string name="storage" msgid="3262760336059073446">"Ukladací priestor"</string>
+    <string name="storage" msgid="3262760336059073446">"Úložisko"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Všetky priečinky"</string>
@@ -384,7 +384,7 @@
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> o <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Dnes o <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Včera o <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Zrušiť tip"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Zatvoriť tip"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Automatická synchronizácia je vypnutá."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Dotykom zapnete."</string>
     <string name="account_sync_off" msgid="5699548271856775808">"Synchronizácia účtu je vypnutá."</string>
