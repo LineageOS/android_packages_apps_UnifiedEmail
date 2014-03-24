@@ -29,7 +29,7 @@ public class MimeHeader {
      * Application specific header that contains Store specific information about an attachment.
      * In IMAP this contains the IMAP BODYSTRUCTURE part id so that the ImapStore can later
      * retrieve the attachment at will from the server.
-     * The info is recorded from this header on LocalStore.appendMessages and is put back
+     * The info is recorded from this header on LocalStore.appendMessage and is put back
      * into the MIME data by LocalStore.fetch.
      */
     public static final String HEADER_ANDROID_ATTACHMENT_STORE_DATA = "X-Android-Attachment-StoreData";
