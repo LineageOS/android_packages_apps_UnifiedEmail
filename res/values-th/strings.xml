@@ -240,7 +240,8 @@
     <string name="message_saved" msgid="7073947895562277576">"บันทึกข้อความเป็นร่างจดหมาย"</string>
     <string name="sending_message" msgid="1498583163419122128">"กำลังส่งข้อความ…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"ที่อยู่ <xliff:g id="WRONGEMAIL">%s</xliff:g> ไม่ถูกต้อง"</string>
-    <string name="show_elided" msgid="5255917904110437886">"▶ แสดงข้อความที่ยกมา"</string>
+    <!-- no translation found for show_elided (6693371179492345444) -->
+    <skip />
     <string name="hide_elided" msgid="8907305605854960737">"▼ ซ่อนข้อความที่ยกมา"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"คำเชิญในปฏิทิน"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"ดูในปฏิทิน"</string>
