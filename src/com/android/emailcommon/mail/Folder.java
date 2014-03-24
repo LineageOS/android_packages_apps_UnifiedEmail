@@ -16,6 +16,8 @@
 
 package com.android.emailcommon.mail;
 
+import android.content.Context;
+
 import com.android.emailcommon.service.SearchParams;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -144,7 +146,8 @@ public abstract class Folder {
         throw new MessagingException("Not implemented");
     }
 
-    public abstract void appendMessages(Message[] messages) throws MessagingException;
+    public abstract void appendMessage(Context context, Message message, final boolean noTimeout)
+            throws MessagingException;
 
     /**
      * Copies the given messages to the destination folder.
