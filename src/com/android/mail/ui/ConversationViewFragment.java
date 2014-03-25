@@ -93,7 +93,7 @@ import java.util.Set;
  */
 public class ConversationViewFragment extends AbstractConversationViewFragment implements
         SuperCollapsedBlock.OnClickListener, OnLayoutChangeListener,
-        MessageHeaderView.MessageHeaderViewCallbacks {
+        MessageHeaderView.MessageHeaderViewCallbacks, WebViewContextMenu.Callbacks {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -290,10 +290,11 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final InlineAttachmentViewIntentBuilderCreator creator =
                 InlineAttachmentViewIntentBuilderCreatorHolder.
                 getInlineAttachmentViewIntentCreator();
-        mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(getActivity(),
-                creator.createInlineAttachmentViewIntentBuilder(
-                mUrlToMessageIdMap, mAccount.getEmailAddress(),
-                mConversation != null ? mConversation.id : -1)));
+        final WebViewContextMenu contextMenu = new WebViewContextMenu(getActivity(),
+                creator.createInlineAttachmentViewIntentBuilder(mAccount.getEmailAddress(),
+                mConversation != null ? mConversation.id : -1));
+        contextMenu.setCallbacks(this);
+        mWebView.setOnCreateContextMenuListener(contextMenu);
 
         // set this up here instead of onCreateView to ensure the latest Account is loaded
         setupOverviewMode();
@@ -1112,6 +1113,16 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             layout = WebSettings.LayoutAlgorithm.NARROW_COLUMNS;
         }
         settings.setLayoutAlgorithm(layout);
+    }
+
+    @Override
+    public Message getMessageForClickedUrl(String url) {
+        final String domMessageId = mUrlToMessageIdMap.get(url);
+        if (domMessageId == null) {
+            return null;
+        }
+        final String messageId = mTemplates.getMessageIdForDomId(domMessageId);
+        return getMessageCursor().getMessageForId(Long.parseLong(messageId));
     }
 
     public class ConversationWebViewClient extends AbstractConversationWebViewClient {
