@@ -1978,6 +1978,23 @@ public abstract class AbstractActivityController implements ActivityController,
 
         if (!showNextConversation(target, operation)) {
             // This method will be called again if the user selects an autoadvance option
+
+            // HACKFIX around b/9904716. We were not properly performing the last
+            // DestructiveAction. A proper fix probably involves rewriting
+            // the logic for animating changes in the list as well as undo
+            // and probably batch DestructiveActions. The change is limited to
+            // tablets where the issue occurs.
+            final ConversationListFragment convListFragment = getConversationListFragment();
+            if (mIsTablet && convListFragment != null) {
+                convListFragment.getAnimatedAdapter().setNextAction(
+                        new SwipeableListView.ListItemsRemovedListener() {
+                            @Override
+                            public void onListItemsRemoved() {
+                                action.performAction();
+                            }
+                        }
+                );
+            }
             return;
         }
         // If the conversation is in the selected set, remove it from the set.
