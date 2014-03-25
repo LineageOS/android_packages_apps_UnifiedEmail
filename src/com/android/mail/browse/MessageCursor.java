@@ -105,6 +105,21 @@ public class MessageCursor extends ObjectCursor<ConversationMessage> {
         }
     }
 
+    public ConversationMessage getMessageForId(long id) {
+        if (isClosed()) {
+            return null;
+        }
+
+        int pos = -1;
+        while (moveToPosition(++pos)) {
+            final ConversationMessage m = getMessage();
+            if (id == m.id) {
+                return m;
+            }
+        }
+        return null;
+    }
+
     public int getStateHashCode() {
         return getStateHashCode(0);
     }

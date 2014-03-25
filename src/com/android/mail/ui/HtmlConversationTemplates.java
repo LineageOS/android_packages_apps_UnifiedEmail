@@ -176,6 +176,10 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
         return MESSAGE_PREFIX + msg.getId();
     }
 
+    public String getMessageIdForDomId(String domMessageId) {
+        return domMessageId.substring(MESSAGE_PREFIX_LENGTH);
+    }
+
     public void startConversation(int viewportWidth, int sideMargin, int conversationHeaderHeight) {
         if (mInProgress) {
             throw new IllegalStateException(
