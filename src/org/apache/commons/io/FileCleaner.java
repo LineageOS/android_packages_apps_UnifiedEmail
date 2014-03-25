@@ -37,6 +37,7 @@ import java.io.File;
  * @version $Id: FileCleaner.java 553012 2007-07-03 23:01:07Z ggregory $
  * @deprecated Use {@link FileCleaningTracker}
  */
+@Deprecated
 public class FileCleaner {
     /**
      * The instance to use for the deprecated, static methods.
@@ -54,6 +55,7 @@ public class FileCleaner {
      * @throws NullPointerException if the file is null
      * @deprecated Use {@link FileCleaningTracker#track(File, Object)}.
      */
+    @Deprecated
     public static void track(File file, Object marker) {
         theInstance.track(file, marker);
     }
@@ -69,6 +71,7 @@ public class FileCleaner {
      * @throws NullPointerException if the file is null
      * @deprecated Use {@link FileCleaningTracker#track(File, Object, FileDeleteStrategy)}.
      */
+    @Deprecated
     public static void track(File file, Object marker, FileDeleteStrategy deleteStrategy) {
         theInstance.track(file, marker, deleteStrategy);
     }
@@ -83,6 +86,7 @@ public class FileCleaner {
      * @throws NullPointerException if the path is null
      * @deprecated Use {@link FileCleaningTracker#track(String, Object)}.
      */
+    @Deprecated
     public static void track(String path, Object marker) {
         theInstance.track(path, marker);
     }
@@ -98,6 +102,7 @@ public class FileCleaner {
      * @throws NullPointerException if the path is null
      * @deprecated Use {@link FileCleaningTracker#track(String, Object, FileDeleteStrategy)}.
      */
+    @Deprecated
     public static void track(String path, Object marker, FileDeleteStrategy deleteStrategy) {
         theInstance.track(path, marker, deleteStrategy);
     }
@@ -110,6 +115,7 @@ public class FileCleaner {
      * @return the number of files being tracked
      * @deprecated Use {@link FileCleaningTracker#getTrackCount()}.
      */
+    @Deprecated
     public static int getTrackCount() {
         return theInstance.getTrackCount();
     }
@@ -136,6 +142,7 @@ public class FileCleaner {
      * One called, no new objects can be tracked by the file cleaner.
      * @deprecated Use {@link FileCleaningTracker#exitWhenFinished()}.
      */
+    @Deprecated
     public static synchronized void exitWhenFinished() {
         theInstance.exitWhenFinished();
     }
