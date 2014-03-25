@@ -240,7 +240,7 @@
     <string name="message_saved" msgid="7073947895562277576">"Boodskap as konsep gestoor."</string>
     <string name="sending_message" msgid="1498583163419122128">"Stuur tans boodskap…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Die adres <xliff:g id="WRONGEMAIL">%s</xliff:g> is ongeldig."</string>
-    <string name="show_elided" msgid="5255917904110437886">"▶ Wys aangehaalde teks"</string>
+    <string name="show_elided" msgid="6693371179492345444">"Wys aangehaalde teks"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Versteek aangehaalde teks"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Kalender-uitnodiging"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"Sien in kalender"</string>

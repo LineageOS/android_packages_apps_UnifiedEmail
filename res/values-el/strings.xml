@@ -240,7 +240,7 @@
     <string name="message_saved" msgid="7073947895562277576">"Το μήνυμα αποθηκεύτηκε ως πρόχειρο."</string>
     <string name="sending_message" msgid="1498583163419122128">"Αποστολή μηνύματος..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Η διεύθυνση <xliff:g id="WRONGEMAIL">%s</xliff:g> δεν είναι έγκυρη."</string>
-    <string name="show_elided" msgid="5255917904110437886">"▶ Εμφάνιση αναφερόμενου κειμένου"</string>
+    <string name="show_elided" msgid="6693371179492345444">"Προβολή αναφερόμενου κειμένου"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Απόκρυψη αναφερόμενου κειμένου"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Πρόσκληση ημερολογίου"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"Προβολή στο Ημερολόγιο"</string>
