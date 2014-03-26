@@ -240,7 +240,7 @@
     <string name="message_saved" msgid="7073947895562277576">"Missatge desat com a esborrany."</string>
     <string name="sending_message" msgid="1498583163419122128">"S\'està enviant el missatge…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"L\'adreça <xliff:g id="WRONGEMAIL">%s</xliff:g> no és vàlida."</string>
-    <string name="show_elided" msgid="5255917904110437886">"▶ Mostra el text citat"</string>
+    <string name="show_elided" msgid="6693371179492345444">"Mostra el text citat"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Amaga el text citat"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Invitació del calendari"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"Mostra-ho al calendari"</string>
@@ -258,7 +258,7 @@
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Correcte"</item>
     <item msgid="7109065688039971961">"Sense connexió."</item>
-    <item msgid="8437496123716232060">"No s\'ha pogut iniciar la sessió."</item>
+    <item msgid="8437496123716232060">"No s\'ha pogut iniciar la sessió"</item>
     <item msgid="1651266301325684887">"Error de seguretat."</item>
     <item msgid="1461520171154288533">"No s\'ha pogut sincronitzar."</item>
     <item msgid="4779810016424303449">"Error intern"</item>

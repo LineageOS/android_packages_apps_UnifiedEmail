@@ -240,7 +240,7 @@
     <string name="message_saved" msgid="7073947895562277576">"ההודעה נשמרה כטיוטה."</string>
     <string name="sending_message" msgid="1498583163419122128">"שולח הודעה…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"הכתובת <xliff:g id="WRONGEMAIL">%s</xliff:g> אינה חוקית."</string>
-    <string name="show_elided" msgid="5255917904110437886">"▶ הצג טקסט מצוטט"</string>
+    <string name="show_elided" msgid="6693371179492345444">"הצג טקסט מצוטט"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ הסתר טקסט מצוטט"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"הזמנה בלוח השנה"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"הצג בלוח השנה"</string>
