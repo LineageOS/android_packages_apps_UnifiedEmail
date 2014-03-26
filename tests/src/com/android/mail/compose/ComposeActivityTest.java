@@ -1035,4 +1035,57 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
             }
         });
     }
+
+    // Test existence of % signs and basic functionality (to, cc, bcc, subject)
+    public void testInitFromMailTo0() throws Throwable {
+        final ComposeActivity activity = getActivity();
+        final String input = "mailto:Test1@Test1.com?cc=Test2@Test2.com" +
+                "&bcc=Test3@Test3.com&subject=Hello&body=Bye%25Bye";
+
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.initFromMailTo(input);
+                assertEquals(1, activity.getToAddresses().length);
+                assertTrue(activity.getToAddresses()[0].contains("Test1@Test1.com"));
+                assertEquals(1, activity.getCcAddresses().length);
+                assertTrue(activity.getCcAddresses()[0].contains("Test2@Test2.com"));
+                assertEquals(1, activity.getBccAddresses().length);
+                assertTrue(activity.getBccAddresses()[0].contains("Test3@Test3.com"));
+                assertEquals("Hello", activity.getSubject());
+                assertEquals("%25 should be decoded into %",
+                        "Bye%Bye", activity.getBody().getText().toString());
+            }
+        });
+    }
+
+    // Test existence of + and space in addition to %
+    public void testInitFromMailTo1() throws Throwable {
+        final ComposeActivity activity = getActivity();
+        final String query = "Bye+Bye %";
+        final Uri uri = Uri.parse("mailto:test@test.com?body=" + encodeMailtoParam(query));
+
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.initFromMailTo(uri.toString());
+                assertEquals(query, activity.getBody().getText().toString());
+            }
+        });
+    }
+
+    // Test existence of random set of url encoded characters
+    public void testInitFromMailTo2() throws Throwable {
+        final ComposeActivity activity = getActivity();
+        final String query = "I'm TESTING @#$%^&*\"";
+        final Uri uri = Uri.parse("mailto:test@test.com?body=" + encodeMailtoParam(query));
+
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.initFromMailTo(uri.toString());
+                assertEquals(query, activity.getBody().getText().toString());
+            }
+        });
+    }
 }
