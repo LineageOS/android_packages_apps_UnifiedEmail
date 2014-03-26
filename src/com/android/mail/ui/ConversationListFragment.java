@@ -865,16 +865,18 @@ public final class ConversationListFragment extends ListFragment implements
         } else {
             final int action;
             mListView.enableSwipe(true);
-            if (ConversationListContext.isSearchResult(mViewContext)
-                    || (mFolder != null && mFolder.isType(FolderType.SPAM))) {
-                action = R.id.delete;
-            } else if (mFolder == null) {
+            if (mFolder == null) {
                 action = R.id.remove_folder;
             } else {
-                // We have enough information to respect user settings.
                 switch (swipeSetting) {
+                    // Try to respect user's setting as best as we can and default to doing nothing
+                    case Swipe.DELETE:
+                        action = R.id.delete;
+                        break;
                     case Swipe.ARCHIVE:
-                        if (mAccount.supportsCapability(AccountCapabilities.ARCHIVE)) {
+                        // Special case spam since it shouldn't remove spam folder label on swipe
+                        if (mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
+                                && !mFolder.isSpam()) {
                             if (mFolder.supportsCapability(FolderCapabilities.ARCHIVE)) {
                                 action = R.id.archive;
                                 break;
@@ -887,12 +889,11 @@ public final class ConversationListFragment extends ListFragment implements
 
                         /*
                          * If we get here, we don't support archive, on either the account or the
-                         * folder, so we want to fall through into the delete case.
+                         * folder, so we want to fall through into the default doing nothing case
                          */
                         //$FALL-THROUGH$
-                    case Swipe.DELETE:
                     default:
-                        action = R.id.delete;
+                        action = R.id.swipe_action_do_nothing;
                         break;
                 }
             }

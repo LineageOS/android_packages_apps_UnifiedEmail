@@ -205,7 +205,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     @Override
     public boolean canChildBeDismissed(SwipeableItemView v) {
-        return v.canChildBeDismissed();
+        return mSwipeAction != R.id.swipe_action_do_nothing && v.canChildBeDismissed();
     }
 
     @Override
