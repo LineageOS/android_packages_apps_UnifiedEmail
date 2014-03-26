@@ -19,6 +19,7 @@ import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
 
 import com.android.bitmap.DecodeTask;
+import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -112,10 +113,10 @@ public class ContactRequest implements DecodeTask.Request {
     public static class ContactRequestHolder {
 
         public final ContactRequest contactRequest;
-        public final ContactDrawable destination;
+        public final ContactDrawableInterface destination;
 
         public ContactRequestHolder(final ContactRequest contactRequest,
-                final ContactDrawable destination) {
+                final ContactDrawableInterface destination) {
             this.contactRequest = contactRequest;
             this.destination = destination;
         }

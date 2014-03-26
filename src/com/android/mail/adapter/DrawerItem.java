@@ -22,7 +22,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.bitmap.BitmapCache;
 import com.android.mail.R;
+import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.AccountItemView;
@@ -31,6 +33,7 @@ import com.android.mail.ui.FolderItemView;
 import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+
 
 /**
  * An element that is shown in the {@link com.android.mail.ui.FolderListFragment}. This class is
@@ -94,6 +97,9 @@ public class DrawerItem {
     /** True if this view is enabled, false otherwise. */
     private final boolean mIsEnabled;
 
+    private BitmapCache mImagesCache;
+    private ContactResolver mContactResolver;
+
     @Override
     public String toString() {
         switch(mType) {
@@ -126,7 +132,8 @@ public class DrawerItem {
      * @param isCurrentAccount true if this item is the current account
      */
     private DrawerItem(int type, ControllableActivity activity, Folder folder, int folderType,
-            Account account, int resource, boolean isCurrentAccount) {
+            Account account, int resource, boolean isCurrentAccount, BitmapCache cache,
+            ContactResolver contactResolver) {
         mActivity = activity;
         mFolder = folder;
         mFolderType = folderType;
@@ -136,6 +143,8 @@ public class DrawerItem {
         mInflater = LayoutInflater.from(activity.getActivityContext());
         mType = type;
         mIsEnabled = calculateEnabled();
+        mImagesCache = cache;
+        mContactResolver = contactResolver;
     }
 
     /**
@@ -149,7 +158,8 @@ public class DrawerItem {
      */
     public static DrawerItem ofFolder(ControllableActivity activity, Folder folder,
             int folderType) {
-        return new DrawerItem(VIEW_FOLDER, activity, folder,  folderType, null, -1, false);
+        return new DrawerItem(VIEW_FOLDER, activity, folder,  folderType, null, -1, false,
+                null, null);
     }
 
     private String folderToString() {
@@ -172,9 +182,10 @@ public class DrawerItem {
      * @return a drawer item for the account.
      */
     public static DrawerItem ofAccount(ControllableActivity activity, Account account,
-            int unreadCount, boolean isCurrentAccount) {
+            int unreadCount, boolean isCurrentAccount, BitmapCache cache,
+            ContactResolver contactResolver) {
         return new DrawerItem(VIEW_ACCOUNT, activity, null, ACCOUNT, account, unreadCount,
-                isCurrentAccount);
+                isCurrentAccount, cache, contactResolver);
     }
 
     private String accountToString() {
@@ -194,7 +205,8 @@ public class DrawerItem {
      * @return a drawer item for the header.
      */
     public static DrawerItem ofHeader(ControllableActivity activity, int resource) {
-        return new DrawerItem(VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false);
+        return new DrawerItem(VIEW_HEADER, activity, null, INERT_HEADER, null, resource, false,
+                null, null);
     }
 
     private String headerToString() {
@@ -213,7 +225,8 @@ public class DrawerItem {
      * @return a drawer item with an indeterminate progress indicator.
      */
     public static DrawerItem ofWaitView(ControllableActivity activity) {
-        return new DrawerItem(VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false);
+        return new DrawerItem(VIEW_WAITING_FOR_SYNC, activity, null, INERT_HEADER, null, -1, false,
+                null, null);
     }
 
     private static String waitToString() {
@@ -338,9 +351,8 @@ public class DrawerItem {
             accountItemView =
                     (AccountItemView) mInflater.inflate(R.layout.account_item, parent, false);
         }
-        accountItemView.bind(mAccount, mIsSelected, mResource);
-        View v = accountItemView.findViewById(R.id.account_graphic);
-        v.setBackgroundColor(mAccount.color);
+        accountItemView.bind(mActivity.getActivityContext(), mAccount, mIsSelected, mImagesCache,
+                mContactResolver);
         return accountItemView;
     }
 
