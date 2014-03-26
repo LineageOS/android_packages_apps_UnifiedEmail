@@ -240,8 +240,7 @@
     <string name="message_saved" msgid="7073947895562277576">"შეტყობინება შენახულია, როგორც მონახაზი."</string>
     <string name="sending_message" msgid="1498583163419122128">"შეტყობინების გაგზავნა..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"მისამართი <xliff:g id="WRONGEMAIL">%s</xliff:g> არასწორია."</string>
-    <!-- no translation found for show_elided (6693371179492345444) -->
-    <skip />
+    <string name="show_elided" msgid="6693371179492345444">"ციტირებული ტექსტის ჩვენება"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ ციტირებული ტექსტის დამალვა"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"კალენდრის მოსაწვევი"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"კალენდარში ნახვა"</string>
