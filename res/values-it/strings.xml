@@ -240,7 +240,7 @@
     <string name="message_saved" msgid="7073947895562277576">"Messaggio salvato come bozza."</string>
     <string name="sending_message" msgid="1498583163419122128">"Invio messaggio..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"L\'indirizzo <xliff:g id="WRONGEMAIL">%s</xliff:g> non è valido."</string>
-    <string name="show_elided" msgid="5255917904110437886">"▶ Mostra testo citato"</string>
+    <string name="show_elided" msgid="6693371179492345444">"Mostra testo citato"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Nascondi testo citato"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Invito di calendario"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"Visualizza in Calendario"</string>

@@ -214,9 +214,9 @@
     <string name="search_unsupported" msgid="4654227193354052607">"Utafutaji hauauniwi kwenye akaunti hii."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Inatafuta…"</string>
     <string name="add_label" msgid="6060201715848652940">"Ongeza folda"</string>
-    <string name="new_incoming_messages_one" msgid="827152289636155810">"Onyesha ujumbe mpya kutoka kwa <xliff:g id="SENDER">%s</xliff:g>."</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"Onyesha barua pepe mpya kutoka kwa <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="1018949581192786598">"Onyesha ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya."</item>
+    <item quantity="other" msgid="1018949581192786598">"Onyesha barua pepe <xliff:g id="COUNT">%1$d</xliff:g> mpya."</item>
   </plurals>
     <string name="details" msgid="5065930681696657503">"Maelezo"</string>
     <string name="hide_details" msgid="7022374044607095589">"Ficha maelezo"</string>
@@ -240,7 +240,7 @@
     <string name="message_saved" msgid="7073947895562277576">"Ujumbe umehifadhiwa kama rasimu."</string>
     <string name="sending_message" msgid="1498583163419122128">"Inatuma ujumbe…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Anwani <xliff:g id="WRONGEMAIL">%s</xliff:g> ni batili."</string>
-    <string name="show_elided" msgid="5255917904110437886">"▶ Onyesha maandishi yaliyonukuliwa"</string>
+    <string name="show_elided" msgid="6693371179492345444">"Onyesha maandishi yaliyonukuliwa"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Ficha maandishi yaliyonukuliwa"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Mwaliko wa kalenda"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"Ona katika Kalenda"</string>
@@ -269,9 +269,9 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sawazisha Folda"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> ambazo hazijasomwa"</item>
+    <item quantity="other" msgid="6210217540181960613">"Hujasoma barua pepe <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Zaidi ya <xliff:g id="COUNT">%1$d</xliff:g> ambazo hazijasomwa"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Hujasoma zaidi ya barua pepe <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ona mazungumzo zaidi"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Inapakia…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Chagua akaunti"</string>

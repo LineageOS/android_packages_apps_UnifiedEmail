@@ -240,7 +240,7 @@
     <string name="message_saved" msgid="7073947895562277576">"Черновик сообщения сохранен."</string>
     <string name="sending_message" msgid="1498583163419122128">"Отправка сообщения…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Недействительный адрес: <xliff:g id="WRONGEMAIL">%s</xliff:g>."</string>
-    <string name="show_elided" msgid="5255917904110437886">"▶ Показать цитируемый текст"</string>
+    <string name="show_elided" msgid="6693371179492345444">"Показать цитируемый текст"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Скрыть цитируемый текст"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Приглашение в Календаре"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"Посмотреть в Календаре"</string>
