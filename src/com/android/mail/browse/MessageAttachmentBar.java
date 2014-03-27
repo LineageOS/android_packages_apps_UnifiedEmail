@@ -116,6 +116,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
+        mActionHandler.setAccount(mAccount.getEmailAddress());
         mActionHandler.setMessage(message);
         mActionHandler.setAttachment(mAttachment);
 
