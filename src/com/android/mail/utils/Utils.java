@@ -1054,6 +1054,26 @@ public class Utils {
     }
 
     /**
+     * Given a value and a set of upper-bounds to use as buckets, return the smallest upper-bound
+     * that is greater than the value.<br>
+     * <br>
+     * Useful for turning a continuous value into one of a set of discrete ones.
+     *
+     * @param value a value to bucketize
+     * @param upperBounds list of upper-bound buckets to clamp to, sorted from smallest-greatest
+     * @return the smallest upper-bound larger than the value, or -1 if the value is larger than
+     * all upper-bounds
+     */
+    public static long getUpperBound(long value, long[] upperBounds) {
+        for (long ub : upperBounds) {
+            if (value < ub) {
+                return ub;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Get the background color of Gmail's action bar.
      */
     public static int getActionBarBackgroundResource(final Context context) {
