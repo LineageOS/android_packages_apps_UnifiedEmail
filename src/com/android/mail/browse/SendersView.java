@@ -31,7 +31,6 @@ import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
 
-import com.android.emailcommon.mail.Address;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
@@ -43,20 +42,14 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class SendersView {
-    public static final int DEFAULT_FORMATTING = 0;
-    public static final int MERGED_FORMATTING = 1;
     private static final Integer DOES_NOT_EXIST = -5;
     // FIXME(ath): make all of these statics instance variables, and have callers hold onto this
     // instance as long as appropriate (e.g. activity lifetime).
     // no need to listen for configuration changes.
     private static String sSendersSplitToken;
-    public static String SENDERS_VERSION_SEPARATOR = "^**^";
-    public static Pattern SENDERS_VERSION_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
     private static CharSequence sSendingString;
@@ -65,8 +58,9 @@ public class SendersView {
     private static CharacterStyle sSendingStyleSpan;
     private static TextAppearanceSpan sUnreadStyleSpan;
     private static CharacterStyle sReadStyleSpan;
-    private static String sMeString;
-    private static Locale sMeStringLocale;
+    private static String sMeSubjectString;
+    private static String sMeObjectString;
+    private static String sToHeaderString;
     private static String sMessageCountSpacerString;
     public static CharSequence sElidedString;
     private static BroadcastReceiver sConfigurationChangedReceiver;
@@ -117,6 +111,9 @@ public class SendersView {
             sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
             sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
             sDraftCountFormatString = res.getString(R.string.draft_count_format);
+            sMeSubjectString = res.getString(R.string.me_subject_pronoun);
+            sMeObjectString = res.getString(R.string.me_object_pronoun);
+            sToHeaderString = res.getString(R.string.to_heading);
             sMessageInfoUnreadStyleSpan = new TextAppearanceSpan(context,
                     R.style.MessageInfoUnreadTextAppearance);
             sMessageInfoReadStyleSpan = new TextAppearanceSpan(context,
@@ -202,12 +199,12 @@ public class SendersView {
     public static void format(Context context, ConversationInfo conversationInfo,
             String messageInfo, int maxChars, ArrayList<SpannableString> styledSenders,
             ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
-            String account, final boolean resourceCachingRequired) {
+            String account, final boolean showToHeader, final boolean resourceCachingRequired) {
         try {
             getSenderResources(context, resourceCachingRequired);
             format(context, conversationInfo, messageInfo, maxChars, styledSenders,
                     displayableSenderNames, displayableSenderEmails, account,
-                    sUnreadStyleSpan, sReadStyleSpan, resourceCachingRequired);
+                    sUnreadStyleSpan, sReadStyleSpan, showToHeader, resourceCachingRequired);
         } finally {
             if (!resourceCachingRequired) {
                 clearResourceCache();
@@ -219,12 +216,13 @@ public class SendersView {
             String messageInfo, int maxChars, ArrayList<SpannableString> styledSenders,
             ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
             String account, final TextAppearanceSpan notificationUnreadStyleSpan,
-            final CharacterStyle notificationReadStyleSpan, final boolean resourceCachingRequired) {
+            final CharacterStyle notificationReadStyleSpan, final boolean showToHeader,
+            final boolean resourceCachingRequired) {
         try {
             getSenderResources(context, resourceCachingRequired);
-            handlePriority(context, maxChars, messageInfo, conversationInfo, styledSenders,
+            handlePriority(maxChars, messageInfo, conversationInfo, styledSenders,
                     displayableSenderNames, displayableSenderEmails, account,
-                    notificationUnreadStyleSpan, notificationReadStyleSpan);
+                    notificationUnreadStyleSpan, notificationReadStyleSpan, showToHeader);
         } finally {
             if (!resourceCachingRequired) {
                 clearResourceCache();
@@ -232,11 +230,11 @@ public class SendersView {
         }
     }
 
-    public static void handlePriority(Context context, int maxChars, String messageInfoString,
+    private static void handlePriority(int maxChars, String messageInfoString,
             ConversationInfo conversationInfo, ArrayList<SpannableString> styledSenders,
             ArrayList<String> displayableSenderNames, ArrayList<String> displayableSenderEmails,
             String account, final TextAppearanceSpan unreadStyleSpan,
-            final CharacterStyle readStyleSpan) {
+            final CharacterStyle readStyleSpan, final boolean showToHeader) {
         boolean shouldAddPhotos = displayableSenderEmails != null;
         int maxPriorityToInclude = -1; // inclusive
         int numCharsUsed = messageInfoString.length(); // draft, number drafts,
@@ -294,7 +292,8 @@ public class SendersView {
             final String currentName = currentParticipant.name;
             String nameString = !TextUtils.isEmpty(currentName) ? currentName : "";
             if (nameString.length() == 0) {
-                nameString = getMe(context);
+                // if we're showing the To: header, show the object version of me.
+                nameString = getMe(showToHeader /* useObjectMe */);
             }
             if (numCharsToRemovePerWord != 0) {
                 nameString = nameString.substring(0,
@@ -302,7 +301,7 @@ public class SendersView {
             }
 
             final int priority = currentParticipant.priority;
-            style = getWrappedStyleSpan(currentParticipant.readConversation ? readStyleSpan :
+            style = CharacterStyle.wrap(currentParticipant.readConversation ? readStyleSpan :
                     unreadStyleSpan);
             if (priority <= maxPriorityToInclude) {
                 spannableDisplay = new SpannableString(sBidiFormatter.unicodeWrap(nameString));
@@ -372,19 +371,15 @@ public class SendersView {
         }
     }
 
-    private static CharacterStyle getWrappedStyleSpan(final CharacterStyle characterStyle) {
-        return CharacterStyle.wrap(characterStyle);
+    static String getMe(boolean useObjectMe) {
+        return useObjectMe ? sMeObjectString : sMeSubjectString;
     }
 
-    static String getMe(Context context) {
-        final Resources resources = context.getResources();
-        final Locale locale = resources.getConfiguration().locale;
-
-        if (sMeString == null || !locale.equals(sMeStringLocale)) {
-            sMeString = resources.getString(R.string.me_subject_pronun);
-            sMeStringLocale = locale;
-        }
-        return sMeString;
+    public static SpannableString getFormattedToHeader() {
+        final SpannableString formattedToHeader = new SpannableString(sToHeaderString);
+        final CharacterStyle readStyle = CharacterStyle.wrap(sReadStyleSpan);
+        formattedToHeader.setSpan(readStyle, 0, formattedToHeader.length(), 0);
+        return formattedToHeader;
     }
 
     private static void clearResourceCache() {

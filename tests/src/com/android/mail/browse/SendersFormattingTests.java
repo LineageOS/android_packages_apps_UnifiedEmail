@@ -40,7 +40,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ArrayList<SpannableString> strings = Lists.newArrayList();
         assertEquals(0, strings.size());
 
-        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false);
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false, false);
         assertEquals(1, strings.size());
         assertEquals("me", strings.get(0).toString());
     }
@@ -51,7 +51,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ArrayList<SpannableString> strings = Lists.newArrayList();
         assertEquals(0, strings.size());
 
-        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false);
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false, false);
         assertEquals(1, strings.size());
         assertEquals("me", strings.get(0).toString());
     }
@@ -63,7 +63,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ArrayList<SpannableString> strings = Lists.newArrayList();
         assertEquals(0, strings.size());
 
-        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false);
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false, false);
         assertEquals(2, strings.size());
         assertNull(strings.get(0));
         assertEquals("me", strings.get(1).toString());
@@ -77,7 +77,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ArrayList<SpannableString> strings = Lists.newArrayList();
         assertEquals(0, strings.size());
 
-        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false);
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false, false);
         assertEquals(2, strings.size());
         assertNull(strings.get(0));
         assertEquals("Something", strings.get(1).toString());

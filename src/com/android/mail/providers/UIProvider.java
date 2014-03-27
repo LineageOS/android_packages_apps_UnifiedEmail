@@ -857,6 +857,12 @@ public class UIProvider {
          * inbox.
          */
         public static final int ALLOWS_MOVE_TO_INBOX = 0x10000;
+
+        /**
+         * For folders that typically represent outgoing mail, this indicates the client should
+         * display recipients rather than the standard list of senders.
+         */
+        public static final int SHOW_RECIPIENTS = 0x20000;
     }
 
     public static final class FolderColumns implements BaseColumns {

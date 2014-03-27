@@ -100,8 +100,8 @@ import com.android.mail.utils.ViewUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 public class ConversationItemView extends View
         implements SwipeableItemView, ToggleableItem, InvalidateCallback, OnScrollListener,
@@ -795,7 +795,8 @@ public class ConversationItemView extends View
     private void setContentDescription() {
         if (mActivity.isAccessibilityEnabled()) {
             mHeader.resetContentDescription();
-            setContentDescription(mHeader.getContentDescription(mContext));
+            setContentDescription(
+                    mHeader.getContentDescription(mContext, mDisplayedFolder.shouldShowRecipients()));
         }
     }
 
@@ -849,7 +850,8 @@ public class ConversationItemView extends View
 
             SendersView.format(context, mHeader.conversation.conversationInfo,
                     mHeader.messageInfoString.toString(), maxChars, mHeader.styledNames,
-                    mHeader.displayableNames, mHeader.displayableEmails, mAccount, true);
+                    mHeader.displayableNames, mHeader.displayableEmails, mAccount,
+                    mDisplayedFolder.shouldShowRecipients(), true);
 
             if (mHeader.displayableEmails.isEmpty() && mHeader.hasDraftMessage) {
                 mHeader.displayableEmails.add(mAccount);
@@ -1035,13 +1037,13 @@ public class ConversationItemView extends View
         v.layout(0, 0, w, h);
     }
 
-    private void layoutParticipantLine(SpannableStringBuilder topLine) {
-        if (topLine != null) {
+    private void layoutParticipantText(SpannableStringBuilder participantText) {
+        if (participantText != null) {
             if (isActivated() && showActivatedText()) {
-                topLine.setSpan(sActivatedTextSpan, 0,
+                participantText.setSpan(sActivatedTextSpan, 0,
                         mHeader.styledMessageInfoStringOffset, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
-                topLine.removeSpan(sActivatedTextSpan);
+                participantText.removeSpan(sActivatedTextSpan);
             }
 
             final int w = mSendersWidth;
@@ -1051,7 +1053,7 @@ public class ConversationItemView extends View
             mSendersTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCoordinates.sendersFontSize);
             layoutViewExactly(mSendersTextView, w, h);
 
-            mSendersTextView.setText(topLine);
+            mSendersTextView.setText(participantText);
         }
     }
 
@@ -1234,8 +1236,8 @@ public class ConversationItemView extends View
         sPaint.setTypeface(Typeface.DEFAULT);
 
         if (mHeader.styledNames != null) {
-            final SpannableStringBuilder topLine = ellipsize(mHeader.styledNames);
-            layoutParticipantLine(topLine);
+            final SpannableStringBuilder participantText = elideParticipants(mHeader.styledNames);
+            layoutParticipantText(participantText);
         } else {
             // First pass to calculate width of each fragment.
             if (mSendersWidth < 0) {
@@ -1253,16 +1255,33 @@ public class ConversationItemView extends View
         pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
     }
 
-    // The rules for displaying ellipsized senders are as follows:
+    // The rules for displaying elided participants are as follows:
     // 1) If there is message info (either a COUNT or DRAFT info to display), it MUST be shown
     // 2) If senders do not fit, ellipsize the last one that does fit, and stop
     // appending new senders
-    private SpannableStringBuilder ellipsize(List<SpannableString> parts) {
-        SpannableStringBuilder builder = new SpannableStringBuilder();
+    SpannableStringBuilder elideParticipants(List<SpannableString> parts) {
+        final SpannableStringBuilder builder = new SpannableStringBuilder();
         float totalWidth = 0;
         boolean ellipsize = false;
         float width;
-        SpannableStringBuilder messageInfoString =  mHeader.messageInfoString;
+        boolean skipToHeader = false;
+
+        // start with "To: " if we're showing recipients
+        if (mDisplayedFolder.shouldShowRecipients() && !parts.isEmpty()) {
+            final SpannableString toHeader = SendersView.getFormattedToHeader();
+            CharacterStyle[] spans = toHeader.getSpans(0, toHeader.length(),
+                    CharacterStyle.class);
+            // There is only 1 character style span; make sure we apply all the
+            // styles to the paint object before measuring.
+            if (spans.length > 0) {
+                spans[0].updateDrawState(sPaint);
+            }
+            totalWidth += sPaint.measureText(toHeader.toString());
+            builder.append(toHeader);
+            skipToHeader = true;
+        }
+
+        final SpannableStringBuilder messageInfoString = mHeader.messageInfoString;
         if (messageInfoString.length() > 0) {
             CharacterStyle[] spans = messageInfoString.getSpans(0, messageInfoString.length(),
                     CharacterStyle.class);
@@ -1296,13 +1315,14 @@ public class ConversationItemView extends View
             if (SendersView.sElidedString.equals(sender.toString())) {
                 prevSender = sender;
                 sender = copyStyles(spans, sElidedPaddingToken + sender + sElidedPaddingToken);
-            } else if (builder.length() > 0
+            } else if (!skipToHeader && builder.length() > 0
                     && (prevSender == null || !SendersView.sElidedString.equals(prevSender
                             .toString()))) {
                 prevSender = sender;
                 sender = copyStyles(spans, sSendersSplitToken + sender);
             } else {
                 prevSender = sender;
+                skipToHeader = false;
             }
             if (spans.length > 0) {
                 spans[0].updateDrawState(sPaint);
