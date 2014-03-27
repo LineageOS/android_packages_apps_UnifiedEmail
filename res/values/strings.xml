@@ -336,10 +336,10 @@
         <item quantity="other">Archive these <xliff:g id="count">%1$d</xliff:g> conversations?</item>
     </plurals>
     <plurals name="confirm_discard_drafts_conversation">
-        <!-- Dialog message to confirm discarding drafts from one conversation [CHAR LIMIT=50] -->
-        <item quantity="one">Discard drafts from this conversation?</item>
-        <!-- Dialog message to confirm discarding drafts from several conversations [CHAR LIMIT=50] -->
-        <item quantity="other">Discard drafts from these <xliff:g id="count">%1$d</xliff:g> conversations?</item>
+        <!-- Dialog message to confirm discarding a single draft message [CHAR LIMIT=50] -->
+        <item quantity="one">Discard this message?</item>
+        <!-- Dialog message to confirm discarding many draft messages [CHAR LIMIT=50] -->
+        <item quantity="other">Discard these <xliff:g id="count">%1$d</xliff:g> messages?</item>
     </plurals>
 
     <!-- Dialog text: confirm discard -->
