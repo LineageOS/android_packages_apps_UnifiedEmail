@@ -18,7 +18,7 @@ package com.android.mail.bitmap;
 import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
 
-import com.android.bitmap.DecodeTask;
+import com.android.oldbitmap.DecodeTask;
 import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
 
 import java.io.ByteArrayInputStream;

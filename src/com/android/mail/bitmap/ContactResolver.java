@@ -22,10 +22,10 @@ import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Handler;
 
-import com.android.bitmap.BitmapCache;
-import com.android.bitmap.DecodeTask;
-import com.android.bitmap.ReusableBitmap;
-import com.android.bitmap.DecodeTask.Request;
+import com.android.oldbitmap.BitmapCache;
+import com.android.oldbitmap.DecodeTask;
+import com.android.oldbitmap.ReusableBitmap;
+import com.android.oldbitmap.DecodeTask.Request;
 import com.android.ex.photo.util.Trace;
 import com.android.mail.ContactInfo;
 import com.android.mail.SenderInfoLoader;

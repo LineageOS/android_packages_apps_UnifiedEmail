@@ -22,7 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.bitmap.BitmapCache;
+import com.android.oldbitmap.BitmapCache;
 import com.android.mail.R;
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.providers.Account;

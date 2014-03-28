@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.bitmap;
+package com.android.oldbitmap;
 
-public interface BitmapCache extends PooledCache<DecodeTask.Request, ReusableBitmap> {
-
-    void setBlocking(boolean blocking);
-    void setPoolDimensions(int decodeWidth, int decodeHeight);
-    int getDecodeWidth();
-    int getDecodeHeight();
+public interface Poolable {
+    void acquireReference();
+    void releaseReference();
+    int getRefCount();
+    boolean isEligibleForPooling();
 }

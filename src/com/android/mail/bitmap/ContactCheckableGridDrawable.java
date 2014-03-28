@@ -28,7 +28,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import com.android.bitmap.BitmapCache;
+import com.android.oldbitmap.BitmapCache;
 import com.android.mail.R.color;
 import com.android.mail.R.drawable;
 

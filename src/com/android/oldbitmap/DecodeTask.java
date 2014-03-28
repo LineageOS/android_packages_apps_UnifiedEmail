@@ -1,4 +1,4 @@
-package com.android.bitmap;
+package com.android.oldbitmap;
 
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;

@@ -36,9 +36,9 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.SimpleCursorAdapter;
 
-import com.android.bitmap.AltBitmapCache;
-import com.android.bitmap.BitmapCache;
-import com.android.bitmap.DecodeAggregator;
+import com.android.oldbitmap.AltBitmapCache;
+import com.android.oldbitmap.BitmapCache;
+import com.android.oldbitmap.DecodeAggregator;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.bitmap.ContactResolver;

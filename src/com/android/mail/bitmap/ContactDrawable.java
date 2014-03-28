@@ -27,9 +27,9 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 
-import com.android.bitmap.BitmapCache;
-import com.android.bitmap.DecodeTask.Request;
-import com.android.bitmap.ReusableBitmap;
+import com.android.oldbitmap.BitmapCache;
+import com.android.oldbitmap.DecodeTask.Request;
+import com.android.oldbitmap.ReusableBitmap;
 import com.android.mail.R;
 import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
 
