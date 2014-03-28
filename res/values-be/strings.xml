@@ -25,7 +25,6 @@
     <string name="body_hint" msgid="4279864165439577668">"Скласцi ліст"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Далучыць файл"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Далучыць здымак"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"Далучыць відэа"</string>
     <string name="save_draft" msgid="5555744208032445632">"Захаваць чарнавік"</string>
     <string name="discard" msgid="1714960202994370243">"Скасаваць"</string>
     <string name="compose" msgid="1473559896062432878">"Напісаць"</string>
@@ -216,7 +215,6 @@
     <skip />
     <!-- no translation found for new_incoming_messages_many:other (1018949581192786598) -->
     <string name="expand_recipient_details" msgid="2266544827446346880">"Разгарнуць звесткi пра атрымальніка"</string>
-    <string name="collapse_recipient_details" msgid="3608892454869745927">"Згарнуць дадзеныя пра атрымальніка"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Паказаць кантактную інфармацыю карыстальнiка <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Паказаць кантактную інфармацыю"</string>
     <!-- no translation found for show_messages_read:other (7439716291751085801) -->
@@ -373,8 +371,6 @@
     <string name="preference_swipe_description" msgid="5132683510510041028">"У спісе гутарак"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Выява адпраўнiка"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"Паказваць побач з імем у спісе размоў"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Правядзіце ўніз, каб абнавіць"</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"Праверка пошты"</string>
     <string name="empty_trash" msgid="652435297593538512">"Ачысціць кошык"</string>
     <string name="empty_spam" msgid="6064497180615519589">"Выдаліць спам"</string>
     <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Ачысціць кошык?"</string>
