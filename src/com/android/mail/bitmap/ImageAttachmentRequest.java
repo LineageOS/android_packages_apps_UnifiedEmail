@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.android.bitmap.DecodeTask;
+import com.android.oldbitmap.DecodeTask;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.bitmap;
+package com.android.oldbitmap;
 
 public interface PooledCache<K, V> {
 

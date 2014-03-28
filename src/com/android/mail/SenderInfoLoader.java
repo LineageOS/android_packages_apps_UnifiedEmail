@@ -17,7 +17,7 @@
 
 package com.android.mail;
 
-import com.android.bitmap.Trace;
+import com.android.oldbitmap.Trace;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 

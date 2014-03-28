@@ -39,8 +39,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.bitmap.AltBitmapCache;
-import com.android.bitmap.BitmapCache;
+import com.android.oldbitmap.AltBitmapCache;
+import com.android.oldbitmap.BitmapCache;
 import com.android.mail.R;
 import com.android.mail.adapter.DrawerItem;
 import com.android.mail.analytics.Analytics;

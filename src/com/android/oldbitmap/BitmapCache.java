@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.bitmap;
+package com.android.oldbitmap;
 
-import com.android.bitmap.DecodeTask.Request;
+public interface BitmapCache extends PooledCache<DecodeTask.Request, ReusableBitmap> {
 
-public class DecodeAggregator extends ContiguousFIFOAggregator<Request> {
-
-    public interface Callback extends ContiguousFIFOAggregator.Callback<Request> {
-
-    }
+    void setBlocking(boolean blocking);
+    void setPoolDimensions(int decodeWidth, int decodeHeight);
+    int getDecodeWidth();
+    int getDecodeHeight();
 }

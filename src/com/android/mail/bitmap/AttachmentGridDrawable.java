@@ -8,8 +8,8 @@ import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import com.android.bitmap.BitmapCache;
-import com.android.bitmap.DecodeAggregator;
+import com.android.oldbitmap.BitmapCache;
+import com.android.oldbitmap.DecodeAggregator;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewCoordinates;
 

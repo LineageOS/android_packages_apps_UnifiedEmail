@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.android.bitmap;
+package com.android.oldbitmap;
 
-import com.android.bitmap.DecodeTask.Request;
-import com.android.bitmap.ReusableBitmap.NullReusableBitmap;
+import com.android.oldbitmap.DecodeTask.Request;
+import com.android.oldbitmap.ReusableBitmap.NullReusableBitmap;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.LruCache;

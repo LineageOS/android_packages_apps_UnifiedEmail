@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.bitmap;
+package com.android.oldbitmap;
 
-public interface Poolable {
-    void acquireReference();
-    void releaseReference();
-    int getRefCount();
-    boolean isEligibleForPooling();
+import com.android.oldbitmap.DecodeTask.Request;
+
+public class DecodeAggregator extends ContiguousFIFOAggregator<Request> {
+
+    public interface Callback extends ContiguousFIFOAggregator.Callback<Request> {
+
+    }
 }

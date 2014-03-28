@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.bitmap;
+package com.android.oldbitmap;
 
 import android.util.SparseArray;
 
