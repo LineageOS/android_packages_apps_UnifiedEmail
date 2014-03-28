@@ -19,10 +19,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/preview_attachment"
           android:title="@string/preview_attachment" />
+    <item android:id="@+id/attachment_extra_option1"
+          android:title="@string/attachment_extra_option1" />
     <item android:id="@+id/save_attachment"
           android:title="@string/save_attachment" />
     <item android:id="@+id/download_again"
           android:title="@string/download_again" />
-    <item android:id="@+id/attachment_extra_option1"
-          android:title="@string/attachment_extra_option1" />
 </menu>
