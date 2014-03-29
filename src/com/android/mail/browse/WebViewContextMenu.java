@@ -35,6 +35,7 @@ import android.view.View.OnCreateContextMenuListener;
 import android.webkit.WebView;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.providers.Message;
 
 import java.io.UnsupportedEncodingException;
@@ -61,6 +62,11 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
     private final boolean mSupportsSms;
 
     private Callbacks mCallbacks;
+
+    // Strings used for analytics.
+    private static final String CATEGORY_WEB_CONTEXT_MENU = "web_context_menu";
+    private static final String ACTION_LONG_PRESS = "long_press";
+    private static final String ACTION_CLICK = "menu_clicked";
 
     protected static enum MenuType {
         OPEN_MENU,
@@ -107,33 +113,84 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         mCallbacks = cb;
     }
 
+    /**
+     * Abstract base class that automates sending an analytics event
+     * when the menu item is clicked.
+     */
+    private abstract class AnalyticsClick implements MenuItem.OnMenuItemClickListener {
+        private final String mAnalyticsLabel;
+
+        public AnalyticsClick(String analyticsLabel) {
+            mAnalyticsLabel = analyticsLabel;
+        }
+
+        @Override
+        public final boolean onMenuItemClick(MenuItem item) {
+            Analytics.getInstance().sendEvent(
+                    CATEGORY_WEB_CONTEXT_MENU, ACTION_CLICK, mAnalyticsLabel, 0);
+            return onClick();
+        }
+
+        public abstract boolean onClick();
+    }
+
     // For our copy menu items.
-    private class Copy implements MenuItem.OnMenuItemClickListener {
+    private class Copy extends AnalyticsClick {
         private final CharSequence mText;
 
-        public Copy(CharSequence text) {
+        public Copy(CharSequence text, String analyticsLabel) {
+            super(analyticsLabel);
             mText = text;
         }
 
         @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            copy(mText);
+        public boolean onClick() {
+            ClipboardManager clipboard =
+                    (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setPrimaryClip(ClipData.newPlainText(null, mText));
+            return true;
+        }
+    }
+
+    /**
+     * Sends an intent and reports the analytics event.
+     */
+    private class SendIntent extends AnalyticsClick {
+        private Intent mIntent;
+
+        public SendIntent(String analyticsLabel) {
+            super(analyticsLabel);
+        }
+
+        public SendIntent(Intent intent, String analyticsLabel) {
+            super(analyticsLabel);
+            setIntent(intent);
+        }
+
+        void setIntent(Intent intent) {
+            mIntent = intent;
+        }
+
+        @Override
+        public final boolean onClick() {
+            try {
+                mActivity.startActivity(mIntent);
+            } catch(android.content.ActivityNotFoundException ex) {
+                // if no app handles it, do nothing
+            }
             return true;
         }
     }
 
     // For our share menu items.
-    private class Share implements MenuItem.OnMenuItemClickListener {
-        private final String mUri;
-
-        public Share(String text) {
-            mUri = text;
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            shareLink(mUri);
-            return true;
+    private class Share extends SendIntent {
+        public Share(String url, String analyticsLabel) {
+            super(analyticsLabel);
+            final Intent send = new Intent(Intent.ACTION_SEND);
+            send.setType("text/plain");
+            send.putExtra(Intent.EXTRA_TEXT, url);
+            setIntent(Intent.createChooser(send, mActivity.getText(
+                    getChooserTitleStringResIdForMenuType(MenuType.SHARE_LINK_MENU))));
         }
     }
 
@@ -143,25 +200,6 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         send.setType("text/plain");
         ResolveInfo ri = pm.resolveActivity(send, PackageManager.MATCH_DEFAULT_ONLY);
         return ri != null;
-    }
-
-    private void shareLink(String url) {
-        Intent send = new Intent(Intent.ACTION_SEND);
-        send.setType("text/plain");
-        send.putExtra(Intent.EXTRA_TEXT, url);
-
-        try {
-            mActivity.startActivity(Intent.createChooser(send, mActivity.getText(
-                    getChooserTitleStringResIdForMenuType(MenuType.SHARE_LINK_MENU))));
-        } catch(android.content.ActivityNotFoundException ex) {
-            // if no app handles it, do nothing
-        }
-    }
-
-    private void copy(CharSequence text) {
-        ClipboardManager clipboard =
-                (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-        clipboard.setPrimaryClip(ClipData.newPlainText(null, text));
     }
 
     @Override
@@ -178,7 +216,12 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         int type = result.getType();
         switch (type) {
             case WebView.HitTestResult.UNKNOWN_TYPE:
+                Analytics.getInstance().sendEvent(
+                        CATEGORY_WEB_CONTEXT_MENU, ACTION_LONG_PRESS, "unknown", 0);
+                return;
             case WebView.HitTestResult.EDIT_TEXT_TYPE:
+                Analytics.getInstance().sendEvent(
+                        CATEGORY_WEB_CONTEXT_MENU, ACTION_LONG_PRESS, "edit_text", 0);
                 return;
             default:
                 break;
@@ -213,11 +256,12 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         // Setup custom handling depending on the type
         switch (type) {
             case WebView.HitTestResult.PHONE_TYPE:
+                Analytics.getInstance().sendEvent(
+                        CATEGORY_WEB_CONTEXT_MENU, ACTION_LONG_PRESS, "phone", 0);
                 String decodedPhoneExtra;
                 try {
                     decodedPhoneExtra = URLDecoder.decode(extra, Charset.defaultCharset().name());
-                }
-                catch (UnsupportedEncodingException ignore) {
+                } catch (UnsupportedEncodingException ignore) {
                     // Should never happen; default charset is UTF-8
                     decodedPhoneExtra = extra;
                 }
@@ -228,10 +272,9 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
                         menu.findItem(getMenuResIdForMenuType(MenuType.DIAL_MENU));
 
                 if (mSupportsDial) {
-                    // remove the on click listener
-                    dialMenuItem.setOnMenuItemClickListener(null);
-                    dialMenuItem.setIntent(new Intent(Intent.ACTION_DIAL,
-                            Uri.parse(WebView.SCHEME_TEL + extra)));
+                    final Intent intent = new Intent(Intent.ACTION_DIAL,
+                            Uri.parse(WebView.SCHEME_TEL + extra));
+                    dialMenuItem.setOnMenuItemClickListener(new SendIntent(intent, "dial"));
                 } else {
                     dialMenuItem.setVisible(false);
                 }
@@ -240,10 +283,9 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
                 final MenuItem sendSmsMenuItem =
                         menu.findItem(getMenuResIdForMenuType(MenuType.SMS_MENU));
                 if (mSupportsSms) {
-                    // remove the on click listener
-                    sendSmsMenuItem.setOnMenuItemClickListener(null);
-                    sendSmsMenuItem.setIntent(new Intent(Intent.ACTION_SENDTO,
-                            Uri.parse("smsto:" + extra)));
+                    final Intent intent =
+                            new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + extra));
+                    sendSmsMenuItem.setOnMenuItemClickListener(new SendIntent(intent, "sms"));
                 } else {
                     sendSmsMenuItem.setVisible(false);
                 }
@@ -255,54 +297,58 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
                 addIntent.putExtra(ContactsContract.Intents.Insert.PHONE, decodedPhoneExtra);
                 final MenuItem addToContactsMenuItem =
                         menu.findItem(getMenuResIdForMenuType(MenuType.ADD_CONTACT_MENU));
-                // remove the on click listener
-                addToContactsMenuItem.setOnMenuItemClickListener(null);
-                addToContactsMenuItem.setIntent(addIntent);
+                addToContactsMenuItem.setOnMenuItemClickListener(
+                        new SendIntent(addIntent, "add_contact"));
 
                 // Copy
                 menu.findItem(getMenuResIdForMenuType(MenuType.COPY_PHONE_MENU)).
-                        setOnMenuItemClickListener(new Copy(extra));
+                        setOnMenuItemClickListener(new Copy(extra, "copy_phone"));
                 break;
-
             case WebView.HitTestResult.EMAIL_TYPE:
+                Analytics.getInstance().sendEvent(
+                        CATEGORY_WEB_CONTEXT_MENU, ACTION_LONG_PRESS, "email", 0);
                 menu.setHeaderTitle(extra);
-                menu.findItem(getMenuResIdForMenuType(MenuType.EMAIL_CONTACT_MENU)).setIntent(
-                        new Intent(Intent.ACTION_VIEW, Uri
-                                .parse(WebView.SCHEME_MAILTO + extra)));
+                final Intent mailtoIntent =
+                        new Intent(Intent.ACTION_VIEW, Uri.parse(WebView.SCHEME_MAILTO + extra));
+                menu.findItem(getMenuResIdForMenuType(MenuType.EMAIL_CONTACT_MENU))
+                        .setOnMenuItemClickListener(new SendIntent(mailtoIntent, "send_email"));
                 menu.findItem(getMenuResIdForMenuType(MenuType.COPY_MAIL_MENU)).
-                        setOnMenuItemClickListener(new Copy(extra));
+                        setOnMenuItemClickListener(new Copy(extra, "copy_email"));
                 break;
-
             case WebView.HitTestResult.GEO_TYPE:
+                Analytics.getInstance().sendEvent(
+                        CATEGORY_WEB_CONTEXT_MENU, ACTION_LONG_PRESS, "geo", 0);
                 menu.setHeaderTitle(extra);
                 String geoExtra = "";
                 try {
                     geoExtra = URLEncoder.encode(extra, Charset.defaultCharset().name());
-                }
-                catch (UnsupportedEncodingException ignore) {
+                } catch (UnsupportedEncodingException ignore) {
                     // Should never happen; default charset is UTF-8
                 }
                 final MenuItem viewMapMenuItem =
                         menu.findItem(getMenuResIdForMenuType(MenuType.MAP_MENU));
-                // remove the on click listener
-                viewMapMenuItem.setOnMenuItemClickListener(null);
-                viewMapMenuItem.setIntent(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(WebView.SCHEME_GEO + geoExtra)));
-                menu.findItem(getMenuResIdForMenuType(MenuType.COPY_GEO_MENU)).
-                        setOnMenuItemClickListener(new Copy(extra));
-                break;
 
+                final Intent viewMap =
+                        new Intent(Intent.ACTION_VIEW, Uri.parse(WebView.SCHEME_GEO + geoExtra));
+                viewMapMenuItem.setOnMenuItemClickListener(new SendIntent(viewMap, "view_map"));
+                menu.findItem(getMenuResIdForMenuType(MenuType.COPY_GEO_MENU)).
+                        setOnMenuItemClickListener(new Copy(extra, "copy_geo"));
+                break;
             case WebView.HitTestResult.SRC_ANCHOR_TYPE:
+                Analytics.getInstance().sendEvent(
+                        CATEGORY_WEB_CONTEXT_MENU, ACTION_LONG_PRESS, "src_anchor", 0);
                 setupAnchorMenu(extra, menu);
                 break;
             case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
-                // Deliberately do not break because we want to fall through to image type.
+                Analytics.getInstance().sendEvent(
+                        CATEGORY_WEB_CONTEXT_MENU, ACTION_LONG_PRESS, "src_image_anchor", 0);
                 setupAnchorMenu(extra, menu);
+                setupImageMenu(extra, menu);
+                break;
             case WebView.HitTestResult.IMAGE_TYPE:
-                // The image menu will be visible whenever the
-                // intent builder returns an intent. If it returns null,
-                // the image menu will not be shown.
-                menu.setGroupVisible(R.id.IMAGE_MENU, setupImageMenu(extra, menu));
+                Analytics.getInstance().sendEvent(
+                        CATEGORY_WEB_CONTEXT_MENU, ACTION_LONG_PRESS, "image", 0);
+                setupImageMenu(extra, menu);
                 break;
             default:
                 break;
@@ -320,16 +366,15 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         menu.setHeaderTitle(extra);
 
         menu.findItem(getMenuResIdForMenuType(MenuType.COPY_LINK_MENU)).
-                setOnMenuItemClickListener(new Copy(extra));
+                setOnMenuItemClickListener(new Copy(extra, "copy_link"));
 
         final MenuItem openLinkMenuItem =
                 menu.findItem(getMenuResIdForMenuType(MenuType.OPEN_MENU));
-        // remove the on click listener
-        openLinkMenuItem.setOnMenuItemClickListener(null);
-        openLinkMenuItem.setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse(extra)));
+        openLinkMenuItem.setOnMenuItemClickListener(
+                new SendIntent(new Intent(Intent.ACTION_VIEW, Uri.parse(extra)), "open_link"));
 
         menu.findItem(getMenuResIdForMenuType(MenuType.SHARE_LINK_MENU)).
-                setOnMenuItemClickListener(new Share(extra));
+                setOnMenuItemClickListener(new Share(extra, "share_link"));
     }
 
     /**
@@ -338,24 +383,24 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
      * {@link android.webkit.WebView.HitTestResult#SRC_IMAGE_ANCHOR_TYPE}.
      * @param url Url that was long pressed.
      * @param menu The {@link android.view.ContextMenu} that is about to be shown.
-     * @return {@code true} if the view image menu item should be visible.
-     * {@code false}, otherwise.
      */
-    protected boolean setupImageMenu(String url, ContextMenu menu) {
+    private void setupImageMenu(String url, ContextMenu menu) {
         final Message msg = (mCallbacks != null) ? mCallbacks.getMessageForClickedUrl(url) : null;
         if (msg == null) {
-            return false;
+            menu.setGroupVisible(R.id.IMAGE_MENU, false);
+            return;
         }
+
         final Intent intent = mIntentBuilder.createInlineAttachmentViewIntent(mActivity, url, msg);
         if (intent == null) {
-            return false;
+            menu.setGroupVisible(R.id.IMAGE_MENU, false);
+            return;
         }
 
         final MenuItem menuItem = menu.findItem(R.id.view_image_context_menu_id);
-        menuItem.setOnMenuItemClickListener(null);
-        menuItem.setIntent(intent);
+        menuItem.setOnMenuItemClickListener(new SendIntent(intent, "view_image"));
 
-        return true;
+        menu.setGroupVisible(R.id.IMAGE_MENU, true);
     }
 
     @Override
