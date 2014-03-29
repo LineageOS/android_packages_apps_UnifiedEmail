@@ -746,6 +746,13 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
+     * Return if this is the sent folder.
+     */
+    public boolean isSent() {
+        return isType(FolderType.SENT);
+    }
+
+    /**
      * Whether this is the special folder just used to display all mail for an account.
      */
     public boolean isViewAll() {
