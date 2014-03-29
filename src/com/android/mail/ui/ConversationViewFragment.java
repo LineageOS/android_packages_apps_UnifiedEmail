@@ -126,7 +126,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
     protected ConversationWebView mWebView;
 
-  private ConversationViewProgressController mProgressController;
+    private ConversationViewProgressController mProgressController;
 
     private Button mNewMessageBar;
 
