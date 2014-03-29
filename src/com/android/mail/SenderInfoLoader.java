@@ -45,7 +45,6 @@ import java.util.Set;
 /**
  * A {@link Loader} to look up presence, contact URI, and photo data for a set of email
  * addresses.
- *
  */
 public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, ContactInfo>> {
 
