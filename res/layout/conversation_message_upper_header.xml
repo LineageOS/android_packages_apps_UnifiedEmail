@@ -21,7 +21,7 @@
     android:background="@color/message_header_background_color"
     android:duplicateParentState="true" >
 
-    <QuickContactBadge
+    <com.android.mail.browse.MessageHeaderContactBadge
         android:id="@+id/photo"
         android:layout_width="@dimen/message_header_contact_photo_width"
         android:layout_height="@dimen/message_header_contact_photo_height"
