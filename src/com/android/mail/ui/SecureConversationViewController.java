@@ -57,11 +57,10 @@ import com.android.mail.utils.ConversationViewUtils;
 public class SecureConversationViewController implements
         MessageHeaderView.MessageHeaderViewCallbacks, ScrollListener {
     private static final String BEGIN_HTML =
-                                           "<body style=\"margin: 0 %spx;\"><div style=\"margin: 16px 0; font-size: 80%%\">";
+            "<body style=\"margin: 0 %spx;\"><div style=\"margin: 16px 0; font-size: 80%%\">";
     private static final String END_HTML = "</div></body>";
 
     private final SecureConversationViewControllerCallbacks mCallbacks;
-    private final BidiFormatter mBidiFormatter;
 
     private MessageWebView mWebView;
     private ConversationViewHeader mConversationHeaderView;
@@ -78,7 +77,6 @@ public class SecureConversationViewController implements
 
     public SecureConversationViewController(SecureConversationViewControllerCallbacks callbacks) {
         mCallbacks = callbacks;
-        mBidiFormatter = BidiFormatter.getInstance();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -245,10 +243,6 @@ public class SecureConversationViewController implements
                 conversation != null ? conversation.subject : mMessage.subject,
                 mCallbacks.getAddressCache(), mCallbacks.getBaseUri(), false /* useJavascript */);
 
-    }
-
-    public BidiFormatter getBidiFormatter() {
-        return mBidiFormatter;
     }
 
     // Start MessageHeaderViewCallbacks implementations
