@@ -1529,6 +1529,31 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     /**
+     * Replaces all occurrences of '%' with "%25", to prevent URLDecode.decode from
+     * crashing on decoded '%' symbols
+     *
+     * @param toReplace Input string
+     * @return The string with all "%" characters replaced with "%25"
+     */
+    private static String replacePercent(String toReplace) {
+        return toReplace.replace("%", "%25");
+    }
+
+    /**
+     * Helper function to encapsulate encoding/decoding string from Uri.getQueryParameters
+     * @param content Input string
+     * @return The string that's properly escaped to be shown in mail subject/content
+     */
+    private static String decodeContentFromQueryParam(String content) {
+        try {
+            return URLDecoder.decode(replacePlus(replacePercent(content)), UTF8_ENCODING_NAME);
+        } catch (UnsupportedEncodingException e) {
+            LogUtils.e(LOG_TAG, "%s while decoding '%s'", e.getMessage(), content);
+            return "";  // Default to empty string so setText/setBody has same behavior as before.
+        }
+    }
+
+    /**
      * Initialize the compose view from a String representing a mailTo uri.
      * @param mailToString The uri as a string.
      */
@@ -1566,25 +1591,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         List<String> bcc = uri.getQueryParameters("bcc");
         addBccAddresses(Arrays.asList(bcc.toArray(new String[bcc.size()])));
 
+        // NOTE: Uri.getQueryParameters already decodes % encoded characters
         List<String> subject = uri.getQueryParameters("subject");
         if (subject.size() > 0) {
-            try {
-                mSubject.setText(URLDecoder.decode(replacePlus(subject.get(0)),
-                        UTF8_ENCODING_NAME));
-            } catch (UnsupportedEncodingException e) {
-                LogUtils.e(LOG_TAG, "%s while decoding subject '%s'",
-                        e.getMessage(), subject);
-            }
+            mSubject.setText(decodeContentFromQueryParam(subject.get(0)));
         }
 
         List<String> body = uri.getQueryParameters("body");
         if (body.size() > 0) {
-            try {
-                setBody(URLDecoder.decode(replacePlus(body.get(0)), UTF8_ENCODING_NAME),
-                        true /* with signature */);
-            } catch (UnsupportedEncodingException e) {
-                LogUtils.e(LOG_TAG, "%s while decoding body '%s'", e.getMessage(), body);
-            }
+            setBody(decodeContentFromQueryParam(body.get(0)), true /* with signature */);
         }
     }
 
