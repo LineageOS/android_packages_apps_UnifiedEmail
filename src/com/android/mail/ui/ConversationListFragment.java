@@ -889,11 +889,12 @@ public final class ConversationListFragment extends ListFragment implements
 
                         /*
                          * If we get here, we don't support archive, on either the account or the
-                         * folder, so we want to fall through into the default doing nothing case
+                         * folder, so we want to fall through to swipe doing nothing
                          */
                         //$FALL-THROUGH$
                     default:
-                        action = R.id.swipe_action_do_nothing;
+                        mListView.enableSwipe(false);
+                        action = 0; // Use default value so setSwipeAction essentially has no effect
                         break;
                 }
             }

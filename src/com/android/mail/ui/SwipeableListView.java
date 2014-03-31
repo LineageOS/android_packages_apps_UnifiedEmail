@@ -165,7 +165,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mScrolling || !mEnableSwipe) {
+        if (mScrolling) {
             return super.onInterceptTouchEvent(ev);
         } else {
             return mSwipeHelper.onInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev);
@@ -174,11 +174,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mEnableSwipe) {
-            return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
-        } else {
-            return super.onTouchEvent(ev);
-        }
+        return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
     }
 
     @Override
@@ -205,7 +201,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     @Override
     public boolean canChildBeDismissed(SwipeableItemView v) {
-        return mSwipeAction != R.id.swipe_action_do_nothing && v.canChildBeDismissed();
+        return mEnableSwipe && v.canChildBeDismissed();
     }
 
     @Override
