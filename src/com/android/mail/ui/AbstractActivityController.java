@@ -177,6 +177,13 @@ public abstract class AbstractActivityController implements ActivityController,
     private final String BUNDLE_ACCOUNT_KEY = "account";
     /** Key to store a folder in a bundle */
     private final String BUNDLE_FOLDER_KEY = "folder";
+    /**
+     * Key to set a flag for the ConversationCursorLoader to ignore any
+     * initial load limit that may be set by the Account. Instead,
+     * perform a full load instead of the full-stage load.
+     */
+    private final String BUNDLE_IGNORE_INITIAL_CONVERSATION_LIMIT_KEY =
+            "ignore-initial-conversation-limit";
 
     protected Account mAccount;
     protected Folder mFolder;
@@ -239,6 +246,8 @@ public abstract class AbstractActivityController implements ActivityController,
     private Account[] mAllAccounts = new Account[0];
 
     private FolderWatcher mFolderWatcher;
+
+    private boolean mIgnoreInitialConversationLimit;
 
     /**
      * Interface for actions that are deferred until after a load completes. This is for handling
@@ -1042,6 +1051,9 @@ public abstract class AbstractActivityController implements ActivityController,
         final Bundle args = new Bundle(2);
         args.putParcelable(BUNDLE_ACCOUNT_KEY, mAccount);
         args.putParcelable(BUNDLE_FOLDER_KEY, mFolder);
+        args.putBoolean(BUNDLE_IGNORE_INITIAL_CONVERSATION_LIMIT_KEY,
+                mIgnoreInitialConversationLimit);
+        mIgnoreInitialConversationLimit = false;
         lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
     }
 
@@ -2350,7 +2362,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
             final Uri folderUri;
             if (intent.hasExtra(Utils.EXTRA_FOLDER_URI)) {
-                folderUri = (Uri) intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
+                folderUri = intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
             } else if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
                 final Folder folder =
                         Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER));
@@ -2361,6 +2373,11 @@ public abstract class AbstractActivityController implements ActivityController,
                         extras == null ? "null" : extras.toString());
                 folderUri = mAccount.settings.defaultInbox;
             }
+
+            // Check if we should load all conversations instead of using
+            // the default behavior which loads an initial subset.
+            mIgnoreInitialConversationLimit =
+                    intent.getBooleanExtra(Utils.EXTRA_IGNORE_INITIAL_CONVERSATION_LIMIT, false);
 
             args.putParcelable(Utils.EXTRA_FOLDER_URI, folderUri);
             args.putParcelable(Utils.EXTRA_CONVERSATION,
@@ -3379,11 +3396,13 @@ public abstract class AbstractActivityController implements ActivityController,
         public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
             final Account account = args.getParcelable(BUNDLE_ACCOUNT_KEY);
             final Folder folder = args.getParcelable(BUNDLE_FOLDER_KEY);
+            final boolean ignoreInitialConversationLimit =
+                    args.getBoolean(BUNDLE_IGNORE_INITIAL_CONVERSATION_LIMIT_KEY, false);
             if (account == null || folder == null) {
                 return null;
             }
-            return new ConversationCursorLoader((Activity) mActivity, account,
-                    folder.conversationListUri, folder.name);
+            return new ConversationCursorLoader(mActivity, account,
+                    folder.conversationListUri, folder.name, ignoreInitialConversationLimit);
         }
 
         @Override

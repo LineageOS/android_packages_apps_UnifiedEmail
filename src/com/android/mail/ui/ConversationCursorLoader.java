@@ -31,7 +31,6 @@ import java.util.ArrayList;
 public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor> {
     private static final String TAG = "ConversationCursorLoader";
     private final Uri mUri;
-    private boolean mInitialConversationLimit;
     private final ConversationCursor mConversationCursor;
     private boolean mInit = false;
     private boolean mClosed = false;
@@ -44,15 +43,16 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
     private static final ArrayList<ConversationCursorLoader> sLoaders =
             new ArrayList<ConversationCursorLoader>();
 
-    public ConversationCursorLoader(Activity activity, Account account, Uri uri, String name) {
+    public ConversationCursorLoader(Activity activity, Account account,
+            Uri uri, String name, boolean ignoreInitialConversationLimit) {
         super(activity);
         mUri = uri;
         mName = name;
-        mInitialConversationLimit =
+        final boolean useInitialConversationLimit = ignoreInitialConversationLimit ? false :
                 account.supportsCapability(AccountCapabilities.INITIAL_CONVERSATION_LIMIT);
         // Initialize the state of the conversation cursor
         mConversationCursor = new ConversationCursor(
-                activity, mUri, mInitialConversationLimit, name);
+                activity, mUri, useInitialConversationLimit, name);
         addLoader();
     }
 

@@ -130,7 +130,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     /** Set when we've sent refreshRequired() to listeners */
     private boolean mRefreshRequired = false;
     /** Whether our first query on this cursor should include a limit */
-    private boolean mInitialConversationLimit = false;
+    private boolean mUseInitialConversationLimit = false;
     /** A list of mostly-dead items */
     private final List<Conversation> mMostlyDead = Lists.newArrayList();
     /** A list of items pending removal from a notification action. These may be undone later.
@@ -187,9 +187,9 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         handleNotificationActions();
     }
 
-    public ConversationCursor(Activity activity, Uri uri, boolean initialConversationLimit,
+    public ConversationCursor(Activity activity, Uri uri, boolean useInitialConversationLimit,
             String name) {
-        mInitialConversationLimit = initialConversationLimit;
+        mUseInitialConversationLimit = useInitialConversationLimit;
         mResolver = activity.getApplicationContext().getContentResolver();
         qUri = uri;
         mName = name;
@@ -208,11 +208,11 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             try {
                 // Create new ConversationCursor
                 LogUtils.d(LOG_TAG, "Create: initial creation");
-                setCursor(doQuery(mInitialConversationLimit));
+                setCursor(doQuery(mUseInitialConversationLimit));
             } finally {
                 // If we used a limit, queue up a query without limit
-                if (mInitialConversationLimit) {
-                    mInitialConversationLimit = false;
+                if (mUseInitialConversationLimit) {
+                    mUseInitialConversationLimit = false;
                     // We want to notify about this change to allow the UI to requery.  We don't
                     // want to directly call refresh() here as this will start an AyncTask which
                     // is normally only run after the cursor is in the "refresh required"
