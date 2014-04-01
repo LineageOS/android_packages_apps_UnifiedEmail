@@ -228,6 +228,25 @@ public class Message implements Parcelable, HtmlMessage {
         return uri == null ? 0 : uri.hashCode();
     }
 
+    /**
+     * Helper equality function to check if the two Message objects are equal in terms of
+     * the fields that the user can input from ComposeActivity. This is primarily used to
+     * ensure draft preview/composition are synced.
+     * @param o the Message being compared to
+     * @return True if they are equal in fields, false otherwise
+     */
+    public boolean isEqual(Message o) {
+        return TextUtils.equals(this.getFrom(), o.getFrom()) &&
+                this.isSending == o.isSending &&
+                TextUtils.equals(this.getTo(), o.getTo()) &&
+                TextUtils.equals(this.getCc(), o.getCc()) &&
+                TextUtils.equals(this.getBcc(), o.getBcc()) &&
+                TextUtils.equals(this.subject, o.subject) &&
+                TextUtils.equals(this.bodyHtml, o.bodyHtml) &&
+                TextUtils.equals(this.bodyText, o.bodyText) &&
+                Objects.equal(this.attachmentListUri, o.attachmentListUri);
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);

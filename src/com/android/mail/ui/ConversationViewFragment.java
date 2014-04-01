@@ -1485,10 +1485,12 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             final ConversationMessage newMsg = newCursor.getMessage();
             final ConversationMessage oldMsg = oldCursor.getMessage();
 
-            if (!TextUtils.equals(newMsg.getFrom(), oldMsg.getFrom()) ||
-                    newMsg.isSending != oldMsg.isSending) {
+            // We are going to update the data in the adapter whenever any input fields change.
+            // This ensures that the Message object that ComposeActivity uses will be correctly
+            // aligned with the most up-to-date data.
+            if (!newMsg.isEqual(oldMsg)) {
                 mAdapter.updateItemsForMessage(newMsg, changedOverlayPositions);
-                LogUtils.i(LOG_TAG, "msg #%d (%d): detected from/sending change. isSending=%s",
+                LogUtils.i(LOG_TAG, "msg #%d (%d): detected field(s) change. isSending=%s",
                         pos, newMsg.id, newMsg.isSending);
             }
 
