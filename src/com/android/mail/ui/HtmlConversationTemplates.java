@@ -127,10 +127,14 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
      *
      */
     public static String wrapMessageBody(String msgBody) {
-        final StringBuilder sb = new StringBuilder("<div style=\"display: table-cell;\">");
-        sb.append(msgBody);
-        sb.append("</div>");
-        return sb.toString();
+        // FIXME: this breaks RTL for an as-yet undetermined reason. b/13678928
+        // no-op for now.
+        return msgBody;
+
+//        final StringBuilder sb = new StringBuilder("<div style=\"display: table-cell;\">");
+//        sb.append(msgBody);
+//        sb.append("</div>");
+//        return sb.toString();
     }
 
     public void appendMessageHtml(HtmlMessage message, boolean isExpanded,
