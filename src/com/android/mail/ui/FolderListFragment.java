@@ -457,8 +457,9 @@ public class FolderListFragment extends ListFragment implements
         mShowFooter = !mHideAccounts
                 && getResources().getBoolean(R.bool.show_help_and_feedback_in_drawer);
 
-        final boolean floatyFooterEnabled = mShowFooter && getResources().getBoolean(
-                R.bool.show_drawer_floaty_footer);
+        // TODO: clean this up when things are more certain
+        final boolean floatyFooterEnabled = false;
+                // mShowFooter && getResources().getBoolean(R.bool.show_drawer_floaty_footer);
         final ViewGroup ff = (ViewGroup) rootView.findViewById(R.id.floaty_footer);
         ff.setVisibility(floatyFooterEnabled ? View.VISIBLE : View.GONE);
         if (floatyFooterEnabled) {
