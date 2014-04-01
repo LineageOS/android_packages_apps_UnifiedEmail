@@ -1423,7 +1423,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             } else {
                 addressShown = address;
             }
-            if (name == null || name.length() == 0) {
+            if (name == null || name.length() == 0 || name.equalsIgnoreCase(addressShown)) {
                 formattedEmails[i] = bidiFormatter.unicodeWrap(addressShown);
             } else {
                 // The one downside to having the showViaDomain here is that
