@@ -86,6 +86,9 @@ public final class ConversationListFragment extends ListFragment implements
     // True if we are on a tablet device
     private static boolean mTabletDevice;
 
+    // Delay before displaying the loading view.
+    private static final int LOADING_DELAY_MS = 500;
+
     /**
      * Frequency of update of timestamps. Initialized in
      * {@link #onCreate(Bundle)} and final afterwards.
@@ -129,6 +132,7 @@ public final class ConversationListFragment extends ListFragment implements
 
     private ConversationListFooterView mFooterView;
     private ConversationListEmptyView mEmptyView;
+    private View mLoadingView;
     private ErrorListener mErrorListener;
     private FolderObserver mFolderObserver;
     private DataSetObserver mConversationCursorObserver;
@@ -149,6 +153,19 @@ public final class ConversationListFragment extends ListFragment implements
     private static long sSelectionModeAnimationDuration = -1;
     /** The time at which we last exited CAB mode. */
     private long mSelectionModeExitedTimestamp = -1;
+
+    final private Runnable mLoadingViewRunnable = new FragmentRunnable("LoadingRunnable", this) {
+        @Override
+        public void go() {
+            if (isLoadingAndEmpty()) {
+                mLoadingView.setVisibility(View.VISIBLE);
+                mEmptyView.setVisibility(View.GONE);
+            }
+            mLoadingViewPending = false;
+        }
+    };
+
+    private boolean mLoadingViewPending;
 
     /**
      * If <code>true</code>, we have restored (or attempted to restore) the list's scroll position
@@ -256,7 +273,7 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onActivityCreated(Bundle savedState) {
         super.onActivityCreated(savedState);
-
+        mLoadingViewPending = false;
         if (sSelectionModeAnimationDuration < 0) {
             sSelectionModeAnimationDuration = getResources().getInteger(
                     R.integer.conv_item_view_cab_anim_duration);
@@ -426,6 +443,7 @@ public final class ConversationListFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = (ConversationListEmptyView) rootView.findViewById(R.id.empty_view);
+        mLoadingView = rootView.findViewById(R.id.loading_view);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);
@@ -817,15 +835,41 @@ public final class ConversationListFragment extends ListFragment implements
         ConversationItemViewModel.onFolderUpdated(mFolder);
     }
 
+    private boolean isLoadingAndEmpty() {
+        final ConversationCursor cursor = getConversationListCursor();
+        if (cursor == null) {
+            return true;
+        } else {
+            final Bundle extras = cursor.getExtras();
+            final int cursorStatus = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
+            return(UIProvider.CursorStatus.isWaitingForResults(cursorStatus) &&
+                    cursor.getCount() == 0);
+        }
+    }
     /**
      * Updates the footer visibility and updates the conversation cursor
      */
     public void onConversationListStatusUpdated() {
-        final ConversationCursor cursor = getConversationListCursor();
-        final boolean showFooter = mFooterView.updateStatus(cursor);
-        // Update the folder status, in case the cursor could affect it.
-        onFolderStatusUpdated();
-        mListAdapter.setFooterVisibility(showFooter);
+        if (isLoadingAndEmpty()) {
+            // Wait a bit before showing either the empty or loading view. If the messages are
+            // actually local, it's disorienting to see this appear on every folder transition.
+            // If they aren't, then it will likely take more than 200 milliseconds to load, and
+            // then we'll see the loading view.
+            if (!mLoadingViewPending) {
+                mHandler.postDelayed(mLoadingViewRunnable, LOADING_DELAY_MS);
+                mLoadingViewPending = true;
+            }
+
+        } else {
+            mLoadingView.setVisibility(View.GONE);
+            final ConversationCursor cursor = getConversationListCursor();
+            final boolean showFooter = mFooterView.updateStatus(cursor);
+            // Update the folder status, in case the cursor could affect it.
+            onFolderStatusUpdated();
+            mListAdapter.setFooterVisibility(showFooter);
+            mLoadingViewPending = false;
+            mHandler.removeCallbacks(mLoadingViewRunnable);
+        }
 
         // Also change the cursor here.
         onCursorUpdated();
@@ -852,6 +896,7 @@ public final class ConversationListFragment extends ListFragment implements
                 mEmptyView.setupEmptyView(
                         mFolder, mViewContext.searchQuery, mListAdapter.getBidiFormatter());
                 mListView.setEmptyView(mEmptyView);
+                mLoadingView.setVisibility(View.GONE);
             }
         }
     }
