@@ -35,12 +35,12 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts.Photo;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.text.BidiFormatter;
+import android.support.v4.util.ArrayMap;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
-import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.SparseArray;
 
