@@ -134,8 +134,10 @@
     <item quantity="one" msgid="3657821200245019288">"Hamisha mazungumzo"</item>
     <item quantity="other" msgid="1685896770174368261">"Hamisha mazungumzo <xliff:g id="ID_1">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> kuhusu <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> tarehe <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
-    <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> kuhusu <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> saa <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <!-- no translation found for content_description (169080965055367954) -->
+    <skip />
+    <!-- no translation found for content_description_today (7796658700638720091) -->
+    <skip />
     <string name="read_string" msgid="219566857950091332">"mazungumzo yamesomwa"</string>
     <string name="unread_string" msgid="588180203444398297">"mazungumzo hayajasomwa"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -147,8 +149,10 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Inatuma…"</string>
     <string name="send_failed" msgid="750908595144529579">"Ujumbe haukutumwa."</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"mimi"</string>
-    <string name="me_subject_pronun" msgid="1088657349831581116">"mimi"</string>
+    <!-- no translation found for me_object_pronoun (6957328068206184521) -->
+    <skip />
+    <!-- no translation found for me_subject_pronoun (271527705272088475) -->
+    <skip />
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Kikasha"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Mazungumzo haya yafutwe?"</item>
@@ -159,8 +163,8 @@
     <item quantity="other" msgid="4713469868399246772">"Mazungumzo haya <xliff:g id="COUNT">%1$d</xliff:g> yajalidiwe?"</item>
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one" msgid="5974090449454432874">"Tupa rasimu kutoka kwenye mazungumzo haya?"</item>
-    <item quantity="other" msgid="4173815457177336569">"Tupa rasimu kutoka kwenye mazungumzo haya <xliff:g id="COUNT">%1$d</xliff:g>?"</item>
+    <item quantity="one" msgid="3560777326142175666">"Ungependa kutupa ujumbe huu?"</item>
+    <item quantity="other" msgid="4909853098394068722">"Ungependa kufuta ujumbe huu <xliff:g id="COUNT">%1$d</xliff:g>?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Ujumbe huu utupwe?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Inapakia…"</string>
