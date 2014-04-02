@@ -26,6 +26,7 @@ public class MessageInfo implements Parcelable {
 
     public boolean read;
     public boolean starred;
+    public boolean hasAttachments;
     public String sender;
     public String senderEmail;
     public int priority;
@@ -33,14 +34,15 @@ public class MessageInfo implements Parcelable {
     public MessageInfo() {
     }
 
-    public MessageInfo(boolean isRead, boolean isStarred, String senderString, int p,
+    public MessageInfo(boolean isRead, boolean isStarred, boolean has, String senderString, int p,
             String email) {
-        set(isRead, isStarred, senderString, p, email);
+        set(isRead, isStarred, has, senderString, p, email);
     }
 
     private MessageInfo(Parcel in) {
         read = (in.readInt() != 0);
         starred = (in.readInt() != 0);
+        hasAttachments = (in.readInt() != 0);
         sender = in.readString();
         priority = in.readInt();
         senderEmail = in.readString();
@@ -55,14 +57,17 @@ public class MessageInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(read ? 1 : 0);
         dest.writeInt(starred ? 1 : 0);
+        dest.writeInt(hasAttachments ? 1 : 0);
         dest.writeString(sender);
         dest.writeInt(priority);
         dest.writeString(senderEmail);
     }
 
-    public void set(boolean isRead, boolean isStarred, String senderString, int p, String email) {
+    public void set(boolean isRead, boolean isStarred, boolean has, String senderString, int p,
+            String email) {
         read = isRead;
         starred = isStarred;
+        hasAttachments = has;
         sender = senderString;
         priority = p;
         senderEmail = email;
@@ -78,7 +83,7 @@ public class MessageInfo implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(read, starred, sender, senderEmail);
+        return Objects.hashCode(read, starred, hasAttachments, sender, senderEmail);
     }
 
     public static final Creator<MessageInfo> CREATOR = new Creator<MessageInfo>() {
@@ -100,6 +105,10 @@ public class MessageInfo implements Parcelable {
         final StringBuilder builder = new StringBuilder();
         builder.append("[MessageInfo: read = ");
         builder.append(read);
+        builder.append(", starred = ");
+        builder.append(starred);
+        builder.append(", hasAttachments = ");
+        builder.append(hasAttachments);
         builder.append(", sender = ");
         builder.append(sender);
         builder.append(", senderEmail = ");

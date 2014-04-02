@@ -54,6 +54,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     private LoaderManager mLoaderManager;
     private FragmentManager mFragmentManager;
     private AttachmentCursor mAttachmentsCursor;
+    private LinearLayout mAttachmentLoadMore;
     private TextView mTitleText;
     private AttachmentTileGrid mAttachmentGrid;
     private LinearLayout mAttachmentBarList;
@@ -78,6 +79,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        mAttachmentLoadMore = (LinearLayout) findViewById(R.id.attachment_placeholder_load_more);
         mTitleText = (TextView) findViewById(R.id.attachments_header_text);
         mAttachmentGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
         mAttachmentBarList = (LinearLayout) findViewById(R.id.attachment_bar_list);
@@ -97,11 +99,11 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         // we're only updating the attachments.
         if (mMessageHeaderItem != null &&
                 mMessageHeaderItem.getMessage() != null &&
-                mMessageHeaderItem.getMessage().attachmentListUri != null &&
-                !mMessageHeaderItem.getMessage().attachmentListUri.equals(
-                headerItem.getMessage().attachmentListUri)) {
+                mMessageHeaderItem.getMessage().attachmentListUri != null) {
+            mAttachmentLoadMore.removeAllViewsInLayout();
             mAttachmentGrid.removeAllViewsInLayout();
             mAttachmentBarList.removeAllViewsInLayout();
+            mAttachmentLoadMore.setVisibility(View.GONE);
             mTitleText.setVisibility(View.GONE);
             mAttachmentGrid.setVisibility(View.GONE);
             mAttachmentBarList.setVisibility(View.GONE);
@@ -129,8 +131,9 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         }
 
         // Do an initial render if initLoader didn't already do one
-        if (mAttachmentGrid.getChildCount() == 0 &&
-                mAttachmentBarList.getChildCount() == 0) {
+        if (mAttachmentLoadMore.getChildCount() == 0
+                && mAttachmentGrid.getChildCount() == 0
+                && mAttachmentBarList.getChildCount() == 0) {
             renderAttachments(false);
         }
         setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
@@ -159,11 +162,21 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
         // filter the attachments into tiled and non-tiled
         final int maxSize = attachments.size();
+        Attachment loadMore = null;
         final List<Attachment> tiledAttachments = new ArrayList<Attachment>(maxSize);
         final List<Attachment> barAttachments = new ArrayList<Attachment>(maxSize);
 
         for (Attachment attachment : attachments) {
-            if (AttachmentTile.isTiledAttachment(attachment)) {
+            if (attachment.isInlineAttachment()) {
+                LogUtils.d(LOG_TAG, "attachment(" + attachment.contentUri
+                        + ") is inline attachment. Ignore and do not show it!");
+                continue;
+            }
+
+            if (attachment.isLoadMore()) {
+                loadMore = attachment;
+                loadMore.messageLoadMoreUri = mMessageHeaderItem.getMessage().loadMoreUri;
+            } else if (AttachmentTile.isTiledAttachment(attachment)) {
                 tiledAttachments.add(attachment);
             } else {
                 barAttachments.add(attachment);
@@ -171,10 +184,22 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         }
         mMessageHeaderItem.getMessage().attachmentsJson = Attachment.toJSONArray(attachments);
 
-        mTitleText.setVisibility(View.VISIBLE);
+        if (tiledAttachments.size() > 0 || barAttachments.size() > 0) {
+            // If there isn't any tiled attachment or bar attachment,
+            // then we needn't to show the title.
+            mTitleText.setVisibility(View.VISIBLE);
+        }
 
+        renderLoadMore(loadMore, loaderResult);
         renderTiledAttachments(tiledAttachments, loaderResult);
         renderBarAttachments(barAttachments, loaderResult);
+    }
+
+    private void renderLoadMore(Attachment loadMore, boolean loaderResult) {
+        if (loadMore == null) return;
+
+        mAttachmentLoadMore.setVisibility(View.VISIBLE);
+        renderAttachment(mAttachmentLoadMore, loadMore, loaderResult);
     }
 
     private void renderTiledAttachments(List<Attachment> tiledAttachments, boolean loaderResult) {
@@ -189,19 +214,24 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mAttachmentBarList.setVisibility(View.VISIBLE);
 
         for (Attachment attachment : barAttachments) {
-            final Uri id = attachment.getIdentifierUri();
-            MessageAttachmentBar barAttachmentView =
-                    (MessageAttachmentBar) mAttachmentBarList.findViewWithTag(id);
-
-            if (barAttachmentView == null) {
-                barAttachmentView = MessageAttachmentBar.inflate(mInflater, this);
-                barAttachmentView.setTag(id);
-                barAttachmentView.initialize(mFragmentManager);
-                mAttachmentBarList.addView(barAttachmentView);
-            }
-
-            barAttachmentView.render(attachment, mAccountUri, loaderResult);
+            renderAttachment(mAttachmentBarList, attachment, loaderResult);
         }
+    }
+
+    private void renderAttachment(LinearLayout parentView, Attachment attachment,
+            boolean loaderResult) {
+        final Uri id = attachment.getIdentifierUri();
+        MessageAttachmentBar barAttachmentView =
+                (MessageAttachmentBar) parentView.findViewWithTag(id);
+
+        if (barAttachmentView == null) {
+            barAttachmentView = MessageAttachmentBar.inflate(mInflater, this);
+            barAttachmentView.setTag(id);
+            barAttachmentView.initialize(mFragmentManager);
+            parentView.addView(barAttachmentView);
+        }
+
+        barAttachmentView.render(attachment, mAccountUri, loaderResult);
     }
 
     private Integer getAttachmentLoaderId() {

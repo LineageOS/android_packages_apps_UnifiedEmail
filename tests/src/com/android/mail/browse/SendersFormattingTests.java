@@ -38,8 +38,8 @@ public class SendersFormattingTests extends AndroidTestCase {
     public void testMe() {
         // Blank sender == from "me"
         ConversationInfo conv = createConversationInfo(1);
-        boolean read = false, starred = false;
-        MessageInfo info = new MessageInfo(read, starred, null, -1, null);
+        boolean read = false, starred = false, hasAttachments = false;
+        MessageInfo info = new MessageInfo(read, starred, hasAttachments, null, -1, null);
         conv.addMessage(info);
         ArrayList<SpannableString> strings = new ArrayList<SpannableString>();
         ArrayList<String> emailDisplays = null;
@@ -49,7 +49,7 @@ public class SendersFormattingTests extends AndroidTestCase {
         assertEquals(strings.get(0).toString(), "me");
 
         ConversationInfo conv2 = createConversationInfo(1);
-        MessageInfo info2 = new MessageInfo(read, starred, "", -1, null);
+        MessageInfo info2 = new MessageInfo(read, starred, hasAttachments, "", -1, null);
         strings.clear();
         conv2.addMessage(info2);
         SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
@@ -58,9 +58,9 @@ public class SendersFormattingTests extends AndroidTestCase {
         assertEquals(strings.get(0).toString(), "me");
 
         ConversationInfo conv3 = createConversationInfo(2);
-        MessageInfo info3 = new MessageInfo(read, starred, "", -1, null);
+        MessageInfo info3 = new MessageInfo(read, starred, hasAttachments, "", -1, null);
         conv3.addMessage(info3);
-        MessageInfo info4 = new MessageInfo(read, starred, "", -1, null);
+        MessageInfo info4 = new MessageInfo(read, starred, hasAttachments, "", -1, null);
         conv3.addMessage(info4);
         strings.clear();
         SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
@@ -74,11 +74,11 @@ public class SendersFormattingTests extends AndroidTestCase {
         ArrayList<SpannableString> strings = new ArrayList<SpannableString>();
         ArrayList<String> emailDisplays = null;
         ConversationInfo conv = createConversationInfo(2);
-        boolean read = false, starred = false;
+        boolean read = false, starred = false, hasAttachments = false;
         String sender = "sender@sender.com";
-        MessageInfo info = new MessageInfo(read, starred, sender, -1, null);
+        MessageInfo info = new MessageInfo(read, starred, hasAttachments, sender, -1, null);
         conv.addMessage(info);
-        MessageInfo info2 = new MessageInfo(read, starred, sender, -1, null);
+        MessageInfo info2 = new MessageInfo(read, starred, hasAttachments, sender, -1, null);
         conv.addMessage(info2);
         SendersView.format(getContext(), conv, "", 100, strings, emailDisplays, emailDisplays,
                 null, false);
@@ -96,7 +96,7 @@ public class SendersFormattingTests extends AndroidTestCase {
 
     public void testSenderNameBadInput() {
         final ConversationInfo conv = createConversationInfo(1);
-        final MessageInfo msg = new MessageInfo(false, false, "****^****", 0, null);
+        final MessageInfo msg = new MessageInfo(false, false, false, "****^****", 0, null);
         conv.addMessage(msg);
 
         final byte[] serialized = conv.toBlob();
@@ -113,7 +113,7 @@ public class SendersFormattingTests extends AndroidTestCase {
 
         final ConversationInfo conv = new ConversationInfo(42, 49, firstSnippet,
                 firstUnreadSnippet, lastSnippet);
-        final MessageInfo msg = new MessageInfo(false, false, "Foo Bar", 0, null);
+        final MessageInfo msg = new MessageInfo(false, false, false, "Foo Bar", 0, null);
         conv.addMessage(msg);
 
         assertEquals(firstSnippet, conv.firstSnippet);
