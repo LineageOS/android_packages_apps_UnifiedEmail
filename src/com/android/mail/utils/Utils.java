@@ -16,7 +16,6 @@
 
 package com.android.mail.utils;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -99,6 +98,8 @@ public class Utils {
     public static final String EXTRA_COMPOSE_URI = "composeUri";
     public static final String EXTRA_CONVERSATION = "conversationUri";
     public static final String EXTRA_FROM_NOTIFICATION = "notification";
+    public static final String EXTRA_IGNORE_INITIAL_CONVERSATION_LIMIT =
+            "ignore-initial-conversation-limit";
 
     private static final String MAILTO_SCHEME = "mailto";
 
