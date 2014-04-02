@@ -2353,9 +2353,9 @@ public class UIProvider {
          */
         public static final String EXTRA_ORIGINAL_URI = "original_uri";
         /**
-         * Parcelable extra passed to the proxy which indicates the account being viewed from.
+         * String extra passed to the proxy which indicates the account being viewed.
          */
-        public static final String EXTRA_ACCOUNT = "account";
+        public static final String EXTRA_ACCOUNT_NAME = "account_name";
         /**
          * String extra passed from the proxy which indicates the salt used to generate the digest.
          */
