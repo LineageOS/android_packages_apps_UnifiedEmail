@@ -169,8 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"¡Hurra! No hay spam."</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"La Papelera está vacía. Gracias por reciclar."</string>
     <string name="empty_folder" msgid="107806583742395757">"No hay correo en esta carpeta."</string>
-    <!-- no translation found for getting_messages (563711962781090231) -->
-    <skip />
+    <string name="getting_messages" msgid="563711962781090231">"Cargando mensajes"</string>
     <string name="undo" msgid="6070869718469782251">"Deshacer"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Quitando marca de estrella de <xliff:g id="COUNT">%1$d</xliff:g> conversación"</item>
