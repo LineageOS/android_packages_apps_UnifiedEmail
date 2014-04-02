@@ -34,11 +34,11 @@ import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentRendition;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.providers.UIProvider.AttachmentType;
+import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
-import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.io.IOUtils;
@@ -168,6 +168,19 @@ public class Attachment implements Parcelable {
      */
     private boolean supportsDownloadAgain;
 
+    /**
+     * Might be null.
+     *
+     * @see AttachmentColumns#CONTENT_ID
+     */
+    public String contentId;
+
+    /**
+     * Might be null.
+     *
+     * @see MessageColumns#MESSAGE_LOAD_MORE_URI
+     */
+    public Uri messageLoadMoreUri = null;
 
     public Attachment() {
     }
@@ -187,6 +200,8 @@ public class Attachment implements Parcelable {
         supportsDownloadAgain = in.readInt() == 1;
         type = in.readInt();
         flags = in.readInt();
+        contentId = in.readString();
+        messageLoadMoreUri = in.readParcelable(null);
     }
 
     public Attachment(Cursor cursor) {
@@ -212,6 +227,7 @@ public class Attachment implements Parcelable {
                 cursor.getColumnIndex(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN)) == 1;
         type = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.TYPE));
         flags = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.FLAGS));
+        contentId = cursor.getString(cursor.getColumnIndex(AttachmentColumns.CONTENT_ID));
     }
 
     public Attachment(JSONObject srcJson) {
@@ -229,6 +245,7 @@ public class Attachment implements Parcelable {
         supportsDownloadAgain = srcJson.optBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, true);
         type = srcJson.optInt(AttachmentColumns.TYPE);
         flags = srcJson.optInt(AttachmentColumns.FLAGS);
+        contentId = srcJson.optString(AttachmentColumns.CONTENT_ID, null);
     }
 
     /**
@@ -256,6 +273,8 @@ public class Attachment implements Parcelable {
             destination = AttachmentDestination.CACHE;
             type = AttachmentType.STANDARD;
             flags = 0;
+            contentId = part.getContentId();
+            messageLoadMoreUri = null;
 
             // insert attachment into content provider so that we can open the file
             final ContentResolver resolver = context.getContentResolver();
@@ -301,6 +320,7 @@ public class Attachment implements Parcelable {
         supportsDownloadAgain = values.getAsBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN);
         type = values.getAsInteger(AttachmentColumns.TYPE);
         flags = values.getAsInteger(AttachmentColumns.FLAGS);
+        contentId = values.getAsString(AttachmentColumns.CONTENT_ID);
     }
 
     /**
@@ -325,6 +345,7 @@ public class Attachment implements Parcelable {
         values.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
         values.put(AttachmentColumns.TYPE, type);
         values.put(AttachmentColumns.FLAGS, flags);
+        values.put(AttachmentColumns.CONTENT_ID, contentId);
 
         return values;
     }
@@ -345,6 +366,8 @@ public class Attachment implements Parcelable {
         dest.writeInt(supportsDownloadAgain ? 1 : 0);
         dest.writeInt(type);
         dest.writeInt(flags);
+        dest.writeString(contentId);
+        dest.writeParcelable(messageLoadMoreUri, flags);
     }
 
     public JSONObject toJSON() throws JSONException {
@@ -364,6 +387,7 @@ public class Attachment implements Parcelable {
         result.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
         result.put(AttachmentColumns.TYPE, type);
         result.put(AttachmentColumns.FLAGS, flags);
+        result.put(AttachmentColumns.CONTENT_ID, contentId);
 
         return result;
     }
@@ -446,6 +470,14 @@ public class Attachment implements Parcelable {
 
     public boolean isDownloadFinishedOrFailed() {
         return state == AttachmentState.FAILED || state == AttachmentState.SAVED;
+    }
+
+    public boolean isInlineAttachment() {
+        return !TextUtils.isEmpty(contentId);
+    }
+
+    public boolean isLoadMore() {
+        return (flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0;
     }
 
     public boolean supportsDownloadAgain() {
@@ -578,6 +610,9 @@ public class Attachment implements Parcelable {
         if (uri != null ? !uri.equals(that.uri) : that.uri != null) {
             return false;
         }
+        if (contentId != null ? !contentId.equals(that.contentId) : that.contentId != null) {
+            return false;
+        }
 
         return true;
     }
@@ -598,6 +633,7 @@ public class Attachment implements Parcelable {
         result = 31 * result + type;
         result = 31 * result + (providerData != null ? providerData.hashCode() : 0);
         result = 31 * result + (supportsDownloadAgain ? 1 : 0);
+        result = 31 * result + (contentId != null ? contentId.hashCode() : 0);
         return result;
     }
 
@@ -648,7 +684,8 @@ public class Attachment implements Parcelable {
                 contentUri != null ? SERVER_ATTACHMENT : LOCAL_FILE,
                 contentUri != null ? contentUri.toString() : "",
                 "" /* cachedFileUri */,
-                String.valueOf(type)));
+                String.valueOf(type),
+                contentId));
     }
 
     /**

@@ -282,7 +282,6 @@ public class AttachmentActionHandler {
     }
 
     private File performAttachmentSave(final Attachment attachment) {
-        Uri attachmentUri = attachment.uri;
         try {
             File downloads = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS);

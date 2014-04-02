@@ -22,6 +22,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     style="@style/ConversationViewSideMarginStyle" >
+    <LinearLayout
+        android:id="@+id/attachment_placeholder_load_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical"
+        style="@style/AttachmentMarginStyle" />
+
     <TextView
         android:id="@+id/attachments_header_text"
         android:layout_width="wrap_content"
@@ -37,6 +45,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         style="@style/AttachmentMarginStyle" />
+
     <LinearLayout
         android:id="@+id/attachment_bar_list"
         android:layout_width="match_parent"

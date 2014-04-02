@@ -984,7 +984,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
             @Override
             public void run() {
                 activity.mRefMessage = refMessage;
-                activity.initAttachments(refMessage);
+                activity.initAttachments(refMessage, true);
                 assertEquals(activity.getAttachments().size(), 2);
                 activity.onNavigationItemSelected(1, ComposeActivity.REPLY);
                 assertEquals(activity.getAttachments().size(), 0);
