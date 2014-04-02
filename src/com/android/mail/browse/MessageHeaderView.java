@@ -705,8 +705,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     private void setLoadMoreVisible() {
-        if (mMessage.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL_COMPLETE
-                && mOverflowButton == null) {
+        if (mOverflowButton == null
+                && mMessage.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL_COMPLETE) {
             setChildVisibility(VISIBLE, mLoadMoreButton);
             return;
         } else {

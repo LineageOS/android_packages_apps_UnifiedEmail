@@ -28,6 +28,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
+import android.content.AsyncQueryHandler;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -422,7 +423,6 @@ public abstract class AbstractActivityController implements ActivityController,
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
     private DestructiveAction mPendingDestruction;
     protected AsyncRefreshTask mFolderSyncTask;
-    protected AsyncRefreshTask mLoadMoreTask;
     private Folder mFolderListFolder;
     private boolean mIsDragHappening;
     private final int mShowUndoBarDelay;
@@ -1896,16 +1896,22 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void loadMore(ConversationMessage msg) {
         if (msg != null && msg.loadMoreUri != null) {
-            startLoadMoreTask(msg.loadMoreUri);
+            LoadMoreAction action = new LoadMoreAction(mResolver, msg.loadMoreUri);
+            action.sendCommand();
         }
     }
 
-    private void startLoadMoreTask(Uri uri) {
-        if (mLoadMoreTask != null) {
-            mLoadMoreTask.cancel(true);
+    private class LoadMoreAction extends AsyncQueryHandler {
+        private final Uri mLoadMoreUri;
+
+        public LoadMoreAction(ContentResolver resolver, Uri loadMoreUri) {
+            super(resolver);
+            mLoadMoreUri = loadMoreUri;
         }
-        mLoadMoreTask = new AsyncRefreshTask(mActivity.getActivityContext(), uri);
-        mLoadMoreTask.execute();
+
+        public void sendCommand() {
+            startQuery(0, null, mLoadMoreUri, null, null, null, null);
+        }
     }
 
     @Override

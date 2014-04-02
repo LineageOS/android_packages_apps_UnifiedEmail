@@ -166,9 +166,14 @@ public class SecureConversationViewController implements
         // Clear out the old info from the header before (re)binding
         mMessageHeaderView.unbind();
         mMessageHeaderView.bind(item, false);
-        if (mMessage.hasAttachments) {
+        if (mMessage.hasAttachments
+                || mMessage.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL_COMPLETE) {
+            // Do not have the attachment, but the flag is partial complete, it must contains
+            // the load more placeholder, and we will show it.
             mMessageFooterView.setVisibility(View.VISIBLE);
             mMessageFooterView.bind(item, mCallbacks.getAccountUri(), false);
+        } else {
+            mMessageFooterView.setVisibility(View.GONE);
         }
         if (mMessage.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL
                 || mMessage.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL_FETCHING) {

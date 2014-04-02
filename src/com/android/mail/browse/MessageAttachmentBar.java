@@ -20,6 +20,8 @@ package com.android.mail.browse;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -59,6 +61,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         OnMenuItemClickListener, AttachmentViewInterface {
 
     private Attachment mAttachment;
+    private ImageView mIcon;
     private TextView mTitle;
     private TextView mSubTitle;
     private String mAttachmentSizeText;
@@ -125,8 +128,10 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
                 attachment.getContentType(), attachment.flags);
 
-        if ((attachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
-            mTitle.setText(R.string.load_attachment);
+        if (attachment.isLoadMore()) {
+            mIcon.setImageResource(R.drawable.ic_load_more_holo_light);
+            mTitle.setText(R.string.load_more);
+            mOverflowButton.setVisibility(View.GONE);
         } else if (prevAttachment == null
                 || !TextUtils.equals(attachment.getName(), prevAttachment.getName())) {
             mTitle.setText(attachment.getName());
@@ -147,6 +152,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        mIcon = (ImageView) findViewById(R.id.attachment_icon);
         mTitle = (TextView) findViewById(R.id.attachment_title);
         mSubTitle = (TextView) findViewById(R.id.attachment_subtitle);
         mProgress = (ProgressBar) findViewById(R.id.attachment_progress);
@@ -223,11 +229,13 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             final String mime = Utils.normalizeMimeType(mAttachment.getContentType());
             final String action;
 
-            if ((mAttachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
-                // This is a dummy. We need to download it, but not attempt to open or preview.
-                mActionHandler.showDownloadingDialog();
-                mActionHandler.setViewOnFinish(false);
-                mActionHandler.startDownloadingAttachment(AttachmentDestination.CACHE);
+            if (mAttachment.isLoadMore()) {
+                // Changed to use the Message's load more uri to get the entire mail.
+                if (mAttachment.messageLoadMoreUri != null) {
+                    LoadMoreAction loadmore = new LoadMoreAction(getContext().getContentResolver(),
+                            mAttachment.messageLoadMoreUri);
+                    loadmore.sendCommand();
+                }
 
                 action = null;
             }
@@ -291,7 +299,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     }
 
     private boolean shouldShowSave() {
-        return mAttachment.canSave() && !mSaveClicked;
+        return mAttachment.canSave() && !mSaveClicked && !mAttachment.isLoadMore();
     }
 
     private boolean shouldShowDownloadAgain() {
@@ -412,5 +420,18 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             }
         }
         mSubTitle.setText(sb.toString());
+    }
+
+    private class LoadMoreAction extends AsyncQueryHandler {
+        private final Uri mLoadMoreUri;
+
+        public LoadMoreAction(ContentResolver resolver, Uri loadMoreUri) {
+            super(resolver);
+            mLoadMoreUri = loadMoreUri;
+        }
+
+        public void sendCommand() {
+            startQuery(0, null, mLoadMoreUri, null, null, null, null);
+        }
     }
 }
