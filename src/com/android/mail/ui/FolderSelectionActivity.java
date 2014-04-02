@@ -247,8 +247,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
      */
     protected void createWidget(int id, Account account, Folder selectedFolder) {
         WidgetProvider.updateWidget(this, id, account, selectedFolder.type,
-                selectedFolder.folderUri.fullUri, selectedFolder.conversationListUri,
-                selectedFolder.name);
+                selectedFolder.capabilities, selectedFolder.folderUri.fullUri,
+                selectedFolder.conversationListUri, selectedFolder.name);
         final Intent result = new Intent();
         result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
         setResult(RESULT_OK, result);

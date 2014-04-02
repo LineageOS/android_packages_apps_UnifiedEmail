@@ -760,6 +760,20 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
+     * Return true if this folder prefers to display recipients over senders.
+     */
+    public boolean shouldShowRecipients() {
+        return supportsCapability(UIProvider.FolderCapabilities.SHOW_RECIPIENTS);
+    }
+
+    /**
+     * Return true if this folder prefers to display recipients over senders.
+     */
+    public static boolean shouldShowRecipients(final int folderCapabilities) {
+        return (folderCapabilities & UIProvider.FolderCapabilities.SHOW_RECIPIENTS) != 0;
+    }
+
+    /**
      * @return a non-user facing English string describing this folder's type
      */
     public String getTypeDescription() {

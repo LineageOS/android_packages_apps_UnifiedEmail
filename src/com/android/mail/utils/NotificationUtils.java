@@ -1171,7 +1171,8 @@ public class NotificationUtils {
                     new TextAppearanceSpan(context, R.style.NotificationSendersReadTextAppearance);
         }
         SendersView.format(context, conversationInfo, "", maxLength, senders, null, null, account,
-                sNotificationUnreadStyleSpan, sNotificationReadStyleSpan, false);
+                sNotificationUnreadStyleSpan, sNotificationReadStyleSpan,
+                false /* showToHeader */, false /* resourceCachingRequired */);
 
         return ellipsizeStyledSenders(context, senders);
     }

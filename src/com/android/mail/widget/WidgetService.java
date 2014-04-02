@@ -32,7 +32,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
-import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -48,13 +47,14 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.AccountUtils;
-import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.DelayedTaskHandler;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WidgetService extends RemoteViewsService {
     /**
@@ -70,18 +70,20 @@ public class WidgetService extends RemoteViewsService {
     }
 
     protected void configureValidAccountWidget(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, final int folderType, final Uri folderUri,
-            final Uri folderConversationListUri, String folderName) {
+            int appWidgetId, Account account, final int folderType, final int folderCapabilities,
+            final Uri folderUri, final Uri folderConversationListUri, String folderName) {
         configureValidAccountWidget(context, remoteViews, appWidgetId, account, folderType,
-                folderUri, folderConversationListUri, folderName, WidgetService.class);
+                folderCapabilities, folderUri, folderConversationListUri, folderName,
+                WidgetService.class);
     }
 
     /**
      * Modifies the remoteView for the given account and folder.
      */
     public static void configureValidAccountWidget(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, final int folderType, final Uri folderUri,
-            final Uri folderConversationListUri, String folderDisplayName, Class<?> widgetService) {
+            int appWidgetId, Account account, final int folderType, final int folderCapabilities,
+            final Uri folderUri, final Uri folderConversationListUri, String folderDisplayName,
+            Class<?> widgetService) {
         remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
 
         // If the folder or account name are empty, we don't want to overwrite the valid data that
@@ -111,13 +113,14 @@ public class WidgetService extends RemoteViewsService {
         remoteViews.setEmptyView(R.id.conversation_list, R.id.empty_conversation_list);
 
         WidgetService.configureValidWidgetIntents(context, remoteViews, appWidgetId, account,
-                folderType, folderUri, folderConversationListUri, folderDisplayName, widgetService);
+                folderType, folderCapabilities, folderUri, folderConversationListUri,
+                folderDisplayName, widgetService);
     }
 
     public static void configureValidWidgetIntents(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, final int folderType, final Uri folderUri,
-            final Uri folderConversationListUri, final String folderDisplayName,
-            Class<?> serviceClass) {
+            int appWidgetId, Account account, final int folderType, final int folderCapabilities,
+            final Uri folderUri, final Uri folderConversationListUri,
+            final String folderDisplayName, Class<?> serviceClass) {
         remoteViews.setViewVisibility(R.id.widget_configuration, View.GONE);
 
 
@@ -126,6 +129,7 @@ public class WidgetService extends RemoteViewsService {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
         intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_TYPE, folderType);
+        intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_CAPABILITIES, folderCapabilities);
         intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_URI, folderUri);
         intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER_CONVERSATION_LIST_URI,
                 folderConversationListUri);
@@ -208,6 +212,7 @@ public class WidgetService extends RemoteViewsService {
         private final int mAppWidgetId;
         private final Account mAccount;
         private final int mFolderType;
+        private final int mFolderCapabilities;
         private final Uri mFolderUri;
         private final Uri mFolderConversationListUri;
         private final String mFolderDisplayName;
@@ -223,8 +228,6 @@ public class WidgetService extends RemoteViewsService {
         private final WidgetService mService;
         private String mSendersSplitToken;
         private String mElidedPaddingToken;
-        private TextAppearanceSpan mUnreadStyle;
-        private TextAppearanceSpan mReadStyle;
 
         public MailFactory(Context context, Intent intent, WidgetService service) {
             mContext = context;
@@ -232,6 +235,7 @@ public class WidgetService extends RemoteViewsService {
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             mAccount = Account.newInstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT));
             mFolderType = intent.getIntExtra(WidgetProvider.EXTRA_FOLDER_TYPE, FolderType.DEFAULT);
+            mFolderCapabilities = intent.getIntExtra(WidgetProvider.EXTRA_FOLDER_CAPABILITIES, 0);
             mFolderDisplayName = intent.getStringExtra(WidgetProvider.EXTRA_FOLDER_DISPLAY_NAME);
 
             final Uri folderUri = intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER_URI);
@@ -253,7 +257,8 @@ public class WidgetService extends RemoteViewsService {
                     mFolderConversationListUri = Uri.EMPTY;
                     // this will mark the widget as unconfigured
                     BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
-                            mFolderUri, mFolderConversationListUri, mFolderDisplayName);
+                            mFolderCapabilities, mFolderUri, mFolderConversationListUri,
+                            mFolderDisplayName);
                 }
             }
 
@@ -271,7 +276,8 @@ public class WidgetService extends RemoteViewsService {
             // "Tap to configure" mode.
             if (!mService.isWidgetConfigured(mContext, mAppWidgetId, mAccount)) {
                 BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
-                        mFolderUri, mFolderConversationListUri, mFolderDisplayName);
+                        mFolderCapabilities, mFolderUri, mFolderConversationListUri,
+                        mFolderDisplayName);
             }
 
             mFolderInformationShown = false;
@@ -405,12 +411,12 @@ public class WidgetService extends RemoteViewsService {
 
                 Conversation conversation = new Conversation(mConversationCursor);
                 // Split the senders and status from the instructions.
-                SpannableStringBuilder senderBuilder = new SpannableStringBuilder();
 
                 ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
                 SendersView.format(mContext, conversation.conversationInfo, "",
-                        MAX_SENDERS_LENGTH, senders, null, null, mAccount.getEmailAddress(), true);
-                senderBuilder = ellipsizeStyledSenders(senders);
+                        MAX_SENDERS_LENGTH, senders, null, null, mAccount.getEmailAddress(),
+                        Folder.shouldShowRecipients(mFolderCapabilities), true);
+                final SpannableStringBuilder senderBuilder = elideParticipants(senders);
 
                 // Get styled date.
                 CharSequence date = DateUtils.getRelativeTimeSpanString(mContext,
@@ -437,11 +443,19 @@ public class WidgetService extends RemoteViewsService {
             }
         }
 
-        private SpannableStringBuilder ellipsizeStyledSenders(
-                ArrayList<SpannableString> styledSenders) {
-            SpannableStringBuilder builder = new SpannableStringBuilder();
+        private SpannableStringBuilder elideParticipants(List<SpannableString> parts) {
+            final SpannableStringBuilder builder = new SpannableStringBuilder();
             SpannableString prevSender = null;
-            for (SpannableString sender : styledSenders) {
+
+            boolean skipToHeader = false;
+
+            // start with "To: " if we're showing recipients
+            if (Folder.shouldShowRecipients(mFolderCapabilities)) {
+                builder.append(SendersView.getFormattedToHeader());
+                skipToHeader = true;
+            }
+
+            for (SpannableString sender : parts) {
                 if (sender == null) {
                     LogUtils.e(LOG_TAG, "null sender while iterating over styledSenders");
                     continue;
@@ -450,13 +464,14 @@ public class WidgetService extends RemoteViewsService {
                 if (SendersView.sElidedString.equals(sender.toString())) {
                     prevSender = sender;
                     sender = copyStyles(spans, mElidedPaddingToken + sender + mElidedPaddingToken);
-                } else if (builder.length() > 0
+                } else if (!skipToHeader && builder.length() > 0
                         && (prevSender == null || !SendersView.sElidedString.equals(prevSender
                                 .toString()))) {
                     prevSender = sender;
                     sender = copyStyles(spans, mSendersSplitToken + sender);
                 } else {
                     prevSender = sender;
+                    skipToHeader = false;
                 }
                 builder.append(sender);
             }
@@ -514,14 +529,16 @@ public class WidgetService extends RemoteViewsService {
 
             if (!mService.isWidgetConfigured(mContext, mAppWidgetId, mAccount)) {
                 BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
-                        mFolderUri, mFolderConversationListUri, mFolderDisplayName);
+                        mFolderCapabilities, mFolderUri, mFolderConversationListUri,
+                        mFolderDisplayName);
             }
 
             if (loader == mFolderLoader) {
                 if (!isDataValid(data)) {
                     // Our folder may have disappeared on us
                     BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
-                            mFolderUri, mFolderConversationListUri, mFolderDisplayName);
+                            mFolderCapabilities, mFolderUri, mFolderConversationListUri,
+                            mFolderDisplayName);
 
                     return;
                 }
@@ -537,8 +554,8 @@ public class WidgetService extends RemoteViewsService {
                     // widget update. This causes the folder name to be shown as blank if the state
                     // of the widget is restored.
                     mService.configureValidAccountWidget(mContext, remoteViews, mAppWidgetId,
-                            mAccount, mFolderType, mFolderUri, mFolderConversationListUri,
-                            folderName);
+                            mAccount, mFolderType, mFolderCapabilities, mFolderUri,
+                            mFolderConversationListUri, folderName);
                     appWidgetManager.updateAppWidget(mAppWidgetId, remoteViews);
                     mFolderInformationShown = true;
                 }
@@ -591,7 +608,8 @@ public class WidgetService extends RemoteViewsService {
                 }
             } else if (loader == mAccountLoader) {
                 BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolderType,
-                        mFolderUri, mFolderConversationListUri, mFolderDisplayName);
+                        mFolderCapabilities, mFolderUri, mFolderConversationListUri,
+                        mFolderDisplayName);
             }
         }
 

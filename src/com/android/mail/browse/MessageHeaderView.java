@@ -246,7 +246,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         mIsSnappy = false;
         mEmailCopyMenu = new EmailCopyContextMenu(getContext());
         mInflater = LayoutInflater.from(context);
-        mMyName = context.getString(R.string.me_object_pronun);
+        mMyName = context.getString(R.string.me_object_pronoun);
 
         final Resources resources = getResources();
         mContactPhotoWidth = resources.getDimensionPixelSize(

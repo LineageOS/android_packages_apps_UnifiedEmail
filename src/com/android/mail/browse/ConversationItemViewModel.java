@@ -48,7 +48,6 @@ import java.util.List;
 public class ConversationItemViewModel {
     private static final int MAX_CACHE_SIZE = 100;
 
-    int fontColor;
     @VisibleForTesting
     static LruCache<Pair<String, Long>, ConversationItemViewModel> sConversationHeaderMap
         = new LruCache<Pair<String, Long>, ConversationItemViewModel>(MAX_CACHE_SIZE);
@@ -286,7 +285,7 @@ public class ConversationItemViewModel {
     /**
      * Get conversation information to use for accessibility.
      */
-    public CharSequence getContentDescription(Context context) {
+    public CharSequence getContentDescription(Context context, boolean showToHeader) {
         if (mContentDescription == null) {
             // If any are unread, get the first unread sender.
             // If all are unread, get the first sender.
@@ -300,7 +299,7 @@ public class ConversationItemViewModel {
             }
             if (conversation.read) {
                 participant = TextUtils.isEmpty(lastParticipant) ?
-                        SendersView.getMe(context) : lastParticipant;
+                        SendersView.getMe(showToHeader /* useObjectMe */) : lastParticipant;
             } else {
                 ParticipantInfo firstUnread = null;
                 for (ParticipantInfo p : conversation.conversationInfo.participantInfos) {
@@ -311,20 +310,27 @@ public class ConversationItemViewModel {
                 }
                 if (firstUnread != null) {
                     participant = TextUtils.isEmpty(firstUnread.name) ?
-                            SendersView.getMe(context) : firstUnread.name;
+                            SendersView.getMe(showToHeader /* useObjectMe */) : firstUnread.name;
                 }
             }
             if (TextUtils.isEmpty(participant)) {
                 // Just take the last sender
                 participant = lastParticipant;
             }
+
+            // the toHeader should read "To: " if requested
+            String toHeader = "";
+            if (showToHeader && !TextUtils.isEmpty(participant)) {
+                toHeader = SendersView.getFormattedToHeader().toString();
+            }
+
             boolean isToday = DateUtils.isToday(conversation.dateMs);
             String date = DateUtils.getRelativeTimeSpanString(context, conversation.dateMs)
                     .toString();
             String readString = context.getString(
                     conversation.read ? R.string.read_string : R.string.unread_string);
             int res = isToday ? R.string.content_description_today : R.string.content_description;
-            mContentDescription = context.getString(res, participant,
+            mContentDescription = context.getString(res, toHeader, participant,
                     conversation.subject, conversation.getSnippet(), date, readString);
         }
         return mContentDescription;
