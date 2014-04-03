@@ -26,23 +26,6 @@
   public <methods>;
 }
 
-# Needed for Parcelable/SafeParcelable Creators to not get stripped
--keep class * implements android.os.Parcelable {
-    public static final ** CREATOR;
-}
-
--keepclasseswithmembers class com.google.common.collect.ImmutableMap {
-  *** of(...);
-}
-
--keepclasseswithmembers class com.google.common.collect.ImmutableList {
-  *** of(...);
-}
-
--keepclasseswithmembers class com.google.common.collect.Sets {
-  *** of(...);
-}
-
 -keepclasseswithmembers class com.android.mail.ui.LeaveBehindItem {
   *** setAnimatedHeight(...);
 }
