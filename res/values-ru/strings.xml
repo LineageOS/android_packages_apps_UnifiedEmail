@@ -134,8 +134,10 @@
     <item quantity="one" msgid="3657821200245019288">"Переместить цепочку"</item>
     <item quantity="other" msgid="1685896770174368261">"Переместить цепочки (<xliff:g id="ID_1">%1$d</xliff:g>)"</item>
   </plurals>
-    <string name="content_description" msgid="5191020413686786341">"Отправитель: <xliff:g id="SENDER">%1$s</xliff:g>; тема: <xliff:g id="SUBJECT">%2$s</xliff:g>; фрагмент: <xliff:g id="SNIPPET">%3$s</xliff:g>; дата: <xliff:g id="DATE">%4$s</xliff:g>; состояние: <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
-    <string name="content_description_today" msgid="2303358176694038320">"Отправитель: <xliff:g id="SENDER">%1$s</xliff:g>; тема: <xliff:g id="SUBJECT">%2$s</xliff:g>; фрагмент: <xliff:g id="SNIPPET">%3$s</xliff:g>; время: <xliff:g id="TIME">%4$s</xliff:g>; состояние: <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <!-- no translation found for content_description (169080965055367954) -->
+    <skip />
+    <!-- no translation found for content_description_today (7796658700638720091) -->
+    <skip />
     <string name="read_string" msgid="219566857950091332">"прочитано"</string>
     <string name="unread_string" msgid="588180203444398297">"не прочитано"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -147,8 +149,10 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Отправка…"</string>
     <string name="send_failed" msgid="750908595144529579">"Не отправлено."</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"я"</string>
-    <string name="me_subject_pronun" msgid="1088657349831581116">"я"</string>
+    <!-- no translation found for me_object_pronoun (6957328068206184521) -->
+    <skip />
+    <!-- no translation found for me_subject_pronoun (271527705272088475) -->
+    <skip />
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Входящие"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Удалить эту цепочку?"</item>
@@ -159,8 +163,8 @@
     <item quantity="other" msgid="4713469868399246772">"Архивировать эти цепочки (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one" msgid="5974090449454432874">"Удалить черновики из этой цепочки?"</item>
-    <item quantity="other" msgid="4173815457177336569">"Удалить черновики из этих цепочек (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
+    <item quantity="one" msgid="3560777326142175666">"Удалить это сообщение?"</item>
+    <item quantity="other" msgid="4909853098394068722">"Удалить сообщения (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Удалить это сообщение?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Загрузка…"</string>
