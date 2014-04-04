@@ -6,25 +6,7 @@
 -dontwarn android.support.v13.**
 -dontwarn com.android.ex.photo.**
 
-# keep names that are used by reflection, from javascript or from unit tests
-
--keepclasseswithmembers class com.android.mail.compose.ComposeActivity {
-  *** registerTestSendOrSaveCallback(...);
-  *** getSubject(...);
-  *** getBodyHtml(...);
-}
-
--keepclasseswithmembers class com.android.mail.providers.protos.mock.MockUiProvider {
-  *** getAccountsUri(...);
-}
-
--keepclasseswithmembers class com.android.mail.providers.UIProvider {
-  *** getAccountsUri(...);
-}
-
--keepclasseswithmembers class com.android.mail.utils.LogUtils {
-  public <methods>;
-}
+# keep names that are used by reflection, or from javascript
 
 -keepclasseswithmembers class com.android.mail.ui.LeaveBehindItem {
   *** setAnimatedHeight(...);
@@ -34,41 +16,11 @@
   public <methods>;
 }
 
--keepclasseswithmembers class com.android.mail.ui.TwoPaneLayout {
-  *** setFoldersLeft(...);
-  *** setListBitmapLeft(...);
-  *** setListBitmapAlpha(...);
-  *** setListLeft(...);
-  *** setListAlpha(...);
-  *** setConversationLeft(...);
-}
-
 -keepclasseswithmembers class com.android.mail.browse.ConversationItemView {
   *** setAnimatedHeightFraction(...);
-}
-
--keepclasseswithmembers class com.android.mail.ui.MailActivity {
-  *** doNothingClickHandler(...);
 }
 
 -keepclasseswithmembers class * extends com.android.mail.ui.ConversationSpecialItemView {
   *** setAnimatedHeight(...);
 }
 
-# the widget "Tap to set up" intent builder references this class by name...
--keep class com.android.mail.ui.MailboxSelectionActivity
-
-# not yet used in UnifiedEmail, but needed by UnifiedEmailTests
--keep class com.android.mail.ui.MailAsyncTaskLoader
-
--keepclasseswithmembers class com.android.emailcommon.mail.Address {
-  public <methods>;
-}
-
--keepclasseswithmembers class com.android.mail.providers.ConversationInfo {
-  *** addParticipant(...);
-}
-
--keepclasseswithmembers class com.android.mail.providers.ParticipantInfo {
-  public <methods>;
-}
