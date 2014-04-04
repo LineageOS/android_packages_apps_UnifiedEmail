@@ -84,7 +84,6 @@ public class MessageScrollView extends ScrollView implements ScrollNotifier,
      */
     private GestureDetector mGestureDetector;
     private boolean mDoubleTapOccurred;
-    private boolean mDoubleTapBlocked;
     private boolean mZoomedIn;
 
     /**
@@ -232,17 +231,14 @@ public class MessageScrollView extends ScrollView implements ScrollNotifier,
     private boolean triggerZoom() {
         boolean handled = false;
         if (mDoubleTapOccurred) {
-            if (!mDoubleTapBlocked) {
-                if (mZoomedIn) {
-                    mTouchableChild.zoomOut();
-                } else {
-                    mTouchableChild.zoomIn();
-                }
-                mZoomedIn = !mZoomedIn;
-                LogUtils.d(LogUtils.TAG, "Trigger Zoom!");
-                handled = true;
+            if (mZoomedIn) {
+                mTouchableChild.zoomOut();
+            } else {
+                mTouchableChild.zoomIn();
             }
-            mDoubleTapBlocked = false;
+            mZoomedIn = !mZoomedIn;
+            LogUtils.d(LogUtils.TAG, "Trigger Zoom!");
+            handled = true;
         }
         mDoubleTapOccurred = false;
         return handled;
