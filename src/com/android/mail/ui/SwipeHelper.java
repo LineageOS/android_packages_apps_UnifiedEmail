@@ -264,7 +264,7 @@ public class SwipeHelper {
      *            move
      */
     private void dismissChild(final SwipeableItemView view, float velocity) {
-        final View animView = mCurrView.getSwipeableView().getView();
+        final View animView = view.getSwipeableView().getView();
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
         float newPos = determinePos(animView, velocity);
         int duration = determineDuration(animView, newPos, velocity);
@@ -274,7 +274,7 @@ public class SwipeHelper {
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mCallback.onChildDismissed(mCurrView);
+                mCallback.onChildDismissed(view);
                 animView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
