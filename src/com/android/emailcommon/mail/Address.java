@@ -91,6 +91,7 @@ public class Address implements Parcelable {
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
+    @VisibleForTesting
     public Address(String address) {
         setAddress(address);
     }
