@@ -1785,7 +1785,7 @@ public class ConversationItemView extends View
     public void dismiss() {
         SwipeableListView listView = getListView();
         if (listView != null) {
-            getListView().dismissChild(this);
+            listView.dismissChild(this);
         }
     }
 
