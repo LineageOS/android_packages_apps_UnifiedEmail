@@ -1103,6 +1103,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         if (mCallbacks != null) {
             mCallbacks.setMessageDetailsExpanded(mMessageHeaderItem, detailsExpanded, heightBefore);
         }
+
+        requestLayout();
     }
 
     private void setMessageDetailsExpanded(boolean expand) {
