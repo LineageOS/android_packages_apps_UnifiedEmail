@@ -20,9 +20,6 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import org.apache.james.mime4j.decoder.DecoderUtil;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 /**
  * This is a series of unit tests for the Address class.  These tests must be locally
  * complete - no server(s) required.
@@ -71,7 +68,7 @@ public class AddressUnitTests extends AndroidTestCase {
     }
 
     // see documentation of DecoderUtil.decodeEncodedWords() for details
-    private String padEncoded(String s) {
+    private static String padEncoded(String s) {
         return "=?UTF-8?B?" + s + "?=";
     }
 
@@ -682,37 +679,5 @@ public class AddressUnitTests extends AndroidTestCase {
 
         // isAllValid() must accept empty address list as valid
         assertTrue("Empty address list is valid", Address.isAllValid(""));
-    }
-
-    /**
-     * Legacy pack() used for testing legacyUnpack().
-     * The packed list is a comma separated list of:
-     * URLENCODE(address)[;URLENCODE(personal)]
-     * @See pack()
-     */
-    private static String legacyPack(Address[] addresses) {
-        if (addresses == null) {
-            return null;
-        } else if (addresses.length == 0) {
-            return "";
-        }
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0, count = addresses.length; i < count; i++) {
-            Address address = addresses[i];
-            try {
-                sb.append(URLEncoder.encode(address.getAddress(), "UTF-8"));
-                if (address.getPersonal() != null) {
-                    sb.append(';');
-                    sb.append(URLEncoder.encode(address.getPersonal(), "UTF-8"));
-                }
-                if (i < count - 1) {
-                    sb.append(',');
-                }
-            }
-            catch (UnsupportedEncodingException uee) {
-                return null;
-            }
-        }
-        return sb.toString();
     }
 }

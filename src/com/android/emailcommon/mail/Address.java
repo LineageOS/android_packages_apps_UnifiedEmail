@@ -196,6 +196,7 @@ public class Address implements Parcelable {
      * This method is used to check that all the addresses that the user
      * entered in a list (e.g. To:) are valid, so that none is dropped.
      */
+    @VisibleForTesting
     public static boolean isAllValid(String addressList) {
         // This code mimics the parse() method below.
         // I don't know how to better avoid the code-duplication.
@@ -321,6 +322,7 @@ public class Address implements Parcelable {
      * @param addresses Address array
      * @return Human readable comma-delimited address string.
      */
+    @VisibleForTesting
     public static String toString(Address[] addresses) {
         return toString(addresses, ADDRESS_DELIMETER);
     }
@@ -391,6 +393,7 @@ public class Address implements Parcelable {
      * @return the personal part of this Address, or the address part if the
      * personal part is not available
      */
+    @VisibleForTesting
     public String toFriendly() {
         if (mPersonal != null && mPersonal.length() > 0) {
             return mPersonal;
@@ -425,6 +428,7 @@ public class Address implements Parcelable {
     /**
      * Returns exactly the same result as Address.toString(Address.fromHeader(addressList)).
      */
+    @VisibleForTesting
     public static String fromHeaderToString(String addressList) {
         return toString(fromHeader(addressList));
     }
@@ -432,6 +436,7 @@ public class Address implements Parcelable {
     /**
      * Returns exactly the same result as Address.toHeader(Address.parse(addressList)).
      */
+    @VisibleForTesting
     public static String parseToHeader(String addressList) {
         return Address.toHeader(Address.parse(addressList));
     }
@@ -441,6 +446,7 @@ public class Address implements Parcelable {
      * The same as Address.fromHeader(addressList)[0] for non-empty list.
      * This is an utility method that offers some performance optimization opportunities.
      */
+    @VisibleForTesting
     public static Address firstAddress(String addressList) {
         Address[] array = fromHeader(addressList);
         return array.length > 0 ? array[0] : null;
@@ -462,6 +468,7 @@ public class Address implements Parcelable {
      * @param addressList a CSV of RFC822 addresses or the deprecated legacy string format
      * @return array of addresses parsed from <code>addressList</code>
      */
+    @VisibleForTesting
     public static Address[] fromHeader(String addressList) {
         if (addressList == null || addressList.length() == 0) {
             return EMPTY_ADDRESS_ARRAY;
