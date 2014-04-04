@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -98,15 +99,21 @@ public class AbstractConversationWebViewClient extends WebViewClient {
     }
 
     private Intent generateProxyIntent(Uri uri) {
-        final Intent intent = new Intent(Intent.ACTION_VIEW, mAccount.viewIntentProxyUri);
+        return generateProxyIntent(
+                mActivity, mAccount.viewIntentProxyUri, uri, mAccount.getEmailAddress());
+    }
+
+    public static Intent generateProxyIntent(
+            Context context, Uri proxyUri, Uri uri, String accountName) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW, proxyUri);
         intent.putExtra(UIProvider.ViewProxyExtras.EXTRA_ORIGINAL_URI, uri);
-        intent.putExtra(UIProvider.ViewProxyExtras.EXTRA_ACCOUNT, mAccount);
+        intent.putExtra(UIProvider.ViewProxyExtras.EXTRA_ACCOUNT_NAME, accountName);
 
         PackageManager manager = null;
         // We need to catch the exception to make CanvasConversationHeaderView
         // test pass.  Bug: http://b/issue?id=3470653.
         try {
-            manager = mActivity.getPackageManager();
+            manager = context.getPackageManager();
         } catch (UnsupportedOperationException e) {
             LogUtils.e(LOG_TAG, e, "Error getting package manager");
         }
@@ -116,7 +123,7 @@ public class AbstractConversationWebViewClient extends WebViewClient {
             final List<ResolveInfo> resolvedActivities = manager.queryIntentActivities(
                     intent, PackageManager.MATCH_DEFAULT_ONLY);
 
-            final String packageName = mActivity.getPackageName();
+            final String packageName = context.getPackageName();
 
             // Now try and find one that came from this package, if one is not found, the UI
             // provider must have specified an intent that is to be handled by a different apk.
