@@ -411,6 +411,7 @@ public class Address implements Parcelable {
      * @return A comma-delimited string listing all of the addresses supplied.  Null if source
      * was null or empty.
      */
+    @VisibleForTesting
     public static String toFriendly(Address[] addresses) {
         if (addresses == null || addresses.length == 0) {
             return null;
