@@ -169,8 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"អូ, គ្មាន​សារ​ឥត​បាន​ការ​នៅ​ទីនេះ!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"មិន​មាន​ធុងសំរាម​នៅ​ទីនេះ។ អរគុណ​ចំពោះ​ការ​ប្រើ​ឡើងវិញ!"</string>
     <string name="empty_folder" msgid="107806583742395757">"មិន​មាន​សំបុត្រ​​នៅ​ទីនេះ។"</string>
-    <!-- no translation found for getting_messages (563711962781090231) -->
-    <skip />
+    <string name="getting_messages" msgid="563711962781090231">"ទទួល​​សារ​របស់​អ្នក"</string>
     <string name="undo" msgid="6070869718469782251">"​មិន​​ធ្វើ​វិញ"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"មិន​ដាក់​ផ្កាយ​ការ​សន្ទនា <xliff:g id="COUNT">%1$d</xliff:g> ​។"</item>

@@ -169,8 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Hurra, ikke noe søppelpost her!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Det er ikke noe søppelpost her. Takk for at du resirkulerer."</string>
     <string name="empty_folder" msgid="107806583742395757">"Det er ingen e-poster her."</string>
-    <!-- no translation found for getting_messages (563711962781090231) -->
-    <skip />
+    <string name="getting_messages" msgid="563711962781090231">"Henter e-posten din …"</string>
     <string name="undo" msgid="6070869718469782251">"Angre"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Fjerner stjernemerking for <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>

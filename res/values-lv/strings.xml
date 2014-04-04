@@ -169,8 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Urrā! Šeit nav mēstuļu!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Šeit nav mēstuļu. Paldies par šķirošanu!"</string>
     <string name="empty_folder" msgid="107806583742395757">"Šeit nav ziņojumu."</string>
-    <!-- no translation found for getting_messages (563711962781090231) -->
-    <skip />
+    <string name="getting_messages" msgid="563711962781090231">"Notiek ziņojumu saņemšana"</string>
     <string name="undo" msgid="6070869718469782251">"Atsaukt"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Notiek zvaigznītes noņemšana no <xliff:g id="COUNT">%1$d</xliff:g> sarunas."</item>

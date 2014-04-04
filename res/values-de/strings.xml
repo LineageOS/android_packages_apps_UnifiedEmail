@@ -169,8 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Der Spamordner ist leer."</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Der Papierkorb ist leer."</string>
     <string name="empty_folder" msgid="107806583742395757">"Dieser Ordner ist leer."</string>
-    <!-- no translation found for getting_messages (563711962781090231) -->
-    <skip />
+    <string name="getting_messages" msgid="563711962781090231">"Ihre Nachrichten werden geladen."</string>
     <string name="undo" msgid="6070869718469782251">"Rückgängig"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Markierung von <xliff:g id="COUNT">%1$d</xliff:g> Konversation wird aufgehoben..."</item>
