@@ -295,7 +295,7 @@ public class AttachmentActionHandler {
             Uri contentUri = attachment.contentUri;
             InputStream in = mContext.getContentResolver().openInputStream(contentUri);
             OutputStream out = new FileOutputStream(file);
-            IOUtils.copy(in, out);
+            int size = IOUtils.copy(in, out);
             out.flush();
             out.close();
             in.close();
@@ -306,7 +306,7 @@ public class AttachmentActionHandler {
                     (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
             dm.addCompletedDownload(attachment.getName(), attachment.getName(),
                     false /* do not use media scanner */,
-                    attachment.getContentType(), absolutePath, attachment.downloadedSize,
+                    attachment.getContentType(), absolutePath, size,
                     true /* show notification */);
 
             return file;
