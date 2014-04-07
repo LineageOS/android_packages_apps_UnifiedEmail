@@ -8,6 +8,11 @@
 
 # keep names that are used by reflection, or from javascript
 
+# TODO(skennedy) Remove this when the base file includes it
+-keep class * implements android.os.Parcelable {
+  public static final ** CREATOR;
+}
+
 -keepclasseswithmembers class com.android.mail.ui.LeaveBehindItem {
   *** setAnimatedHeight(...);
 }
