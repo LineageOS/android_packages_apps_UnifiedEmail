@@ -88,6 +88,8 @@ public final class ConversationListFragment extends ListFragment implements
 
     // Delay before displaying the loading view.
     private static final int LOADING_DELAY_MS = 500;
+    // Minimum amount of time to keep the loading view displayed.
+    private static final int MINIMUM_LOADING_DURATION = 2000;
 
     /**
      * Frequency of update of timestamps. Initialized in
@@ -154,18 +156,32 @@ public final class ConversationListFragment extends ListFragment implements
     /** The time at which we last exited CAB mode. */
     private long mSelectionModeExitedTimestamp = -1;
 
-    final private Runnable mLoadingViewRunnable = new FragmentRunnable("LoadingRunnable", this) {
+    private final Runnable mLoadingViewRunnable = new FragmentRunnable("LoadingRunnable", this) {
         @Override
         public void go() {
             if (isLoadingAndEmpty()) {
                 mLoadingView.setVisibility(View.VISIBLE);
                 mEmptyView.setVisibility(View.GONE);
+                mCanTakeDownLoadingView = false;
+                mHandler.removeCallbacks(mHideLoadingRunnable);
+                mHandler.postDelayed(mHideLoadingRunnable, MINIMUM_LOADING_DURATION);
             }
             mLoadingViewPending = false;
         }
     };
 
+    private final Runnable mHideLoadingRunnable = new FragmentRunnable("CancelLoading", this) {
+        @Override
+        public void go() {
+            mCanTakeDownLoadingView = true;
+            if (!isLoadingAndEmpty()) {
+                hideLoadingViewAndShowContents();
+            }
+        }
+    };
+
     private boolean mLoadingViewPending;
+    private boolean mCanTakeDownLoadingView;
 
     /**
      * If <code>true</code>, we have restored (or attempted to restore) the list's scroll position
@@ -274,6 +290,7 @@ public final class ConversationListFragment extends ListFragment implements
     public void onActivityCreated(Bundle savedState) {
         super.onActivityCreated(savedState);
         mLoadingViewPending = false;
+        mCanTakeDownLoadingView = true;
         if (sSelectionModeAnimationDuration < 0) {
             sSelectionModeAnimationDuration = getResources().getInteger(
                     R.integer.conv_item_view_cab_anim_duration);
@@ -861,18 +878,24 @@ public final class ConversationListFragment extends ListFragment implements
             }
 
         } else {
-            mLoadingView.setVisibility(View.GONE);
-            final ConversationCursor cursor = getConversationListCursor();
-            final boolean showFooter = mFooterView.updateStatus(cursor);
-            // Update the folder status, in case the cursor could affect it.
-            onFolderStatusUpdated();
-            mListAdapter.setFooterVisibility(showFooter);
-            mLoadingViewPending = false;
-            mHandler.removeCallbacks(mLoadingViewRunnable);
+            if (mCanTakeDownLoadingView) {
+                hideLoadingViewAndShowContents();
+            }
         }
 
         // Also change the cursor here.
         onCursorUpdated();
+    }
+
+    private void hideLoadingViewAndShowContents() {
+        mLoadingView.setVisibility(View.GONE);
+        final ConversationCursor cursor = getConversationListCursor();
+        final boolean showFooter = mFooterView.updateStatus(cursor);
+        // Update the folder status, in case the cursor could affect it.
+        onFolderStatusUpdated();
+        mListAdapter.setFooterVisibility(showFooter);
+        mLoadingViewPending = false;
+        mHandler.removeCallbacks(mLoadingViewRunnable);
     }
 
     private void onFolderStatusUpdated() {
