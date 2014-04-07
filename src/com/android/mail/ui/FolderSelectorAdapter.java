@@ -117,6 +117,11 @@ public class FolderSelectorAdapter extends BaseAdapter {
         }
         final List<FolderRow> allFolders = new ArrayList<FolderRow>(folders.getCount());
 
+        // Rows corresponding to user created, unchecked folders.
+        final List<FolderRow> userUnselected = new ArrayList<FolderRow>();
+        // Rows corresponding to system created, unchecked folders.
+        final List<FolderRow> systemUnselected = new ArrayList<FolderRow>();
+
         if (folders.moveToFirst()) {
             do {
                 final Folder folder = new Folder(folders);
@@ -125,15 +130,16 @@ public class FolderSelectorAdapter extends BaseAdapter {
                         folder.folderUri.getComparisonUri().toString());
                 final FolderRow row = new FolderRow(folder, isSelected);
                 allFolders.add(row);
+
+                // Add system folders here since we want the original unsorted order (for now..)
+                if (!row.isPresent() && meetsRequirements(folder) &&
+                        !Objects.equal(folder, mExcludedFolder) && folder.isProviderFolder()) {
+                    systemUnselected.add(row);
+                }
             } while (folders.moveToNext());
         }
         // Need to do the foldersort first with all folders present to avoid dropping orphans
         folderSort(allFolders);
-
-        // Rows corresponding to user created, unchecked folders.
-        final List<FolderRow> userUnselected = new ArrayList<FolderRow>();
-        // Rows corresponding to system created, unchecked folders.
-        final List<FolderRow> systemUnselected = new ArrayList<FolderRow>();
 
         // Divert the folders to the appropriate sections
         for (final FolderRow row : allFolders) {
@@ -142,9 +148,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
                 // Add the currently selected first.
                 if (row.isPresent()) {
                     mFolderRows.add(row);
-                } else if (folder.isProviderFolder()) {
-                    systemUnselected.add(row);
-                } else {
+                } else if (!folder.isProviderFolder()) {
                     userUnselected.add(row);
                 }
             }
