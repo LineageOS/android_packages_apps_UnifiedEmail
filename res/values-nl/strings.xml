@@ -148,7 +148,7 @@
     <string name="sending" msgid="8214361929125649771">"Verzenden..."</string>
     <string name="send_failed" msgid="750908595144529579">"Niet verzonden."</string>
     <string name="me_object_pronoun" msgid="6957328068206184521">"mij"</string>
-    <string name="me_subject_pronoun" msgid="271527705272088475">"mij"</string>
+    <string name="me_subject_pronoun" msgid="271527705272088475">"ik"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Postvak IN"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Deze conversatie verwijderen?"</item>
