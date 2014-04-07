@@ -127,6 +127,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         RespondInlineListener, TextWatcher,
         AttachmentAddedOrDeletedListener, OnAccountChangedListener,
         LoaderManager.LoaderCallbacks<Cursor>, TextView.OnEditorActionListener {
+    /**
+     * An {@link Intent} action that launches {@link ComposeActivity}, but is handled as if the
+     * {@link Activity} were launched with no special action.
+     */
+    private static final String ACTION_LAUNCH_COMPOSE =
+            "com.android.mail.intent.action.LAUNCH_COMPOSE";
+
     // Identifiers for which type of composition this is
     public static final int COMPOSE = -1;
     public static final int REPLY = 0;
@@ -352,9 +359,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return createActionIntent(launcher, account, messageUri, FORWARD);
     }
 
-    private static Intent createActionIntent(final Context launcher, final Account account,
+    private static Intent createActionIntent(final Context context, final Account account,
             final Uri messageUri, final int action) {
-        final Intent intent = new Intent(launcher, ComposeActivity.class);
+        final Intent intent = new Intent(ACTION_LAUNCH_COMPOSE);
+        intent.setPackage(context.getPackageName());
 
         updateActionIntent(account, messageUri, action, intent);
 
@@ -399,10 +407,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 "android-gmail-readability@google.com", body, null, null, null /* extraValues */);
     }
 
-    private static void launch(Context launcher, Account account, Message message, int action,
+    private static void launch(Context context, Account account, Message message, int action,
             String toAddress, String body, String quotedText, String subject,
             final ContentValues extraValues) {
-        Intent intent = new Intent(launcher, ComposeActivity.class);
+        Intent intent = new Intent(ACTION_LAUNCH_COMPOSE);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(EXTRA_ACTION, action);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
@@ -427,15 +436,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             LogUtils.d(LOG_TAG, "Launching with extraValues: %s", extraValues.toString());
             intent.putExtra(EXTRA_VALUES, extraValues);
         }
-        launcher.startActivity(intent);
+        context.startActivity(intent);
     }
 
-    public static void composeMailto(Context launcher, Account account, Uri mailto) {
-        final Intent intent = new Intent(Intent.ACTION_VIEW, mailto, launcher,
-                ComposeActivity.class);
+    public static void composeMailto(Context context, Account account, Uri mailto) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW, mailto);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
-        launcher.startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
