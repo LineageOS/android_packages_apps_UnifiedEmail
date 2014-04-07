@@ -213,7 +213,7 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
         append(sConversationLower, contentReadyClass, mContext.getString(R.string.hide_elided),
                 showElided, docBaseUri, conversationBaseUri, viewportWidth, webviewWidth,
                 enableContentReadySignal, normalizeMessageWidths,
-                enableMungeTables, enableMungeImages);
+                enableMungeTables, enableMungeImages, Utils.isRunningKitkatOrLater());
 
         mInProgress = false;
 
