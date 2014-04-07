@@ -134,8 +134,8 @@
     <item quantity="one" msgid="3657821200245019288">"İleti dizisini taşı"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> ileti dizisini taşı"</item>
   </plurals>
-    <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> konu: <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> tarih: <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
-    <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> konu: <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> saat: <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <string name="content_description" msgid="169080965055367954">"<xliff:g id="SUBJECT">%3$s</xliff:g> hakkında <xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>, <xliff:g id="DATE">%5$s</xliff:g> tarihinde <xliff:g id="SNIPPET">%4$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="7796658700638720091">"<xliff:g id="SUBJECT">%3$s</xliff:g> hakkında <xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> (saat: <xliff:g id="TIME">%5$s</xliff:g>), <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="read_string" msgid="219566857950091332">"ileti dizisi okundu"</string>
     <string name="unread_string" msgid="588180203444398297">"ileti dizisi okunmadı"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -147,8 +147,8 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Gönderiliyor..."</string>
     <string name="send_failed" msgid="750908595144529579">"İleti gönderilmedi."</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"ben"</string>
-    <string name="me_subject_pronun" msgid="1088657349831581116">"ben"</string>
+    <string name="me_object_pronoun" msgid="6957328068206184521">"ben"</string>
+    <string name="me_subject_pronoun" msgid="271527705272088475">"ben"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Gelen Kutusu"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Bu ileti dizisi silinsin mi?"</item>
@@ -169,8 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Yaşasın, burada hiç spam yok!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Çöp kutusu boş. Geri dönüşüm için teşekkür ederiz!"</string>
     <string name="empty_folder" msgid="107806583742395757">"Burada posta yok."</string>
-    <!-- no translation found for getting_messages (563711962781090231) -->
-    <skip />
+    <string name="getting_messages" msgid="563711962781090231">"İletileriniz alınıyor"</string>
     <string name="undo" msgid="6070869718469782251">"Geri Al"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"<xliff:g id="COUNT">%1$d</xliff:g> ileti dizisinin yıldızı kaldırılıyor."</item>
