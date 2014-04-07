@@ -151,6 +151,7 @@ public class FolderListFragment extends ListFragment implements
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
     private static final String BUNDLE_SELECTED_ITEM_TYPE = "flf-selected-item-type";
     private static final String BUNDLE_SELECTED_TYPE = "flf-selected-type";
+    private static final String BUNDLE_INBOX_PRESENT = "flf-inbox-present";
 
     /** Number of avatars to we whould like to fit in the avatar cache */
     private static final int IMAGE_CACHE_COUNT = 10;
@@ -209,6 +210,8 @@ public class FolderListFragment extends ListFragment implements
 
     private BitmapCache mImagesCache;
     private ContactResolver mContactResolver;
+
+    private boolean mInboxPresent;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -451,6 +454,11 @@ public class FolderListFragment extends ListFragment implements
             mSelectedFolderUri = mParentFolder.folderUri;
             // No selected folder type required for hierarchical lists.
         }
+        if (savedState != null) {
+            mInboxPresent = savedState.getBoolean(BUNDLE_INBOX_PRESENT, true);
+        } else {
+            mInboxPresent = true;
+        }
 
         // only show the footer on drawered layouts, and definitely not in the folder selection
         // activity
@@ -528,6 +536,7 @@ public class FolderListFragment extends ListFragment implements
         }
         outState.putInt(BUNDLE_SELECTED_ITEM_TYPE, mSelectedDrawerItemType);
         outState.putInt(BUNDLE_SELECTED_TYPE, mSelectedFolderType);
+        outState.putBoolean(BUNDLE_INBOX_PRESENT, mInboxPresent);
     }
 
     @Override
@@ -859,7 +868,16 @@ public class FolderListFragment extends ListFragment implements
          * populating {@link com.android.mail.ui.FolderListFragment.FolderAdapter#mItemList}
          */
         private void rebuildFolderList() {
+            final boolean oldInboxPresent = mInboxPresent;
             mItemList = recalculateListFolders();
+            if (mInboxPresent && !oldInboxPresent) {
+                // We didn't have an inbox folder before, but now we do. This can occur when
+                // setting up a new account. We automatically create the "starred" virtual
+                // virtual folder, but we won't create the inbox until it gets synced.
+                // This means that we'll start out looking at the "starred" folder, and the
+                // user will need to manually switch to the inbox. See b/13793316
+                mAccountController.switchToDefaultInboxOrChangeAccount(mCurrentAccount);
+            }
             // Ask the list to invalidate its views.
             notifyDataSetChanged();
         }
@@ -938,6 +956,8 @@ public class FolderListFragment extends ListFragment implements
                     changeAccount(mCurrentAccount);
                 }
             }
+
+            mInboxPresent = (inboxFolders.size() > 0);
 
             // Add all inboxes (sectioned Inboxes included) before recent folders.
             addFolderDivision(itemList, inboxFolders, R.string.inbox_folders_heading);
