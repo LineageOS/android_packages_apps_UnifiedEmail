@@ -147,8 +147,8 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Invio..."</string>
     <string name="send_failed" msgid="750908595144529579">"Messaggio non inviato."</string>
-    <string name="me_object_pronoun" msgid="6957328068206184521">"io"</string>
-    <string name="me_subject_pronoun" msgid="271527705272088475">"io"</string>
+    <string name="me_object_pronoun" msgid="6957328068206184521">"me"</string>
+    <string name="me_subject_pronoun" msgid="271527705272088475">"me"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Posta in arrivo"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Eliminare questa conversazione?"</item>
