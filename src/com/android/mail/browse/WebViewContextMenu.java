@@ -343,6 +343,9 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
      */
     protected boolean setupImageMenu(String url, ContextMenu menu) {
         final Message msg = (mCallbacks != null) ? mCallbacks.getMessageForClickedUrl(url) : null;
+        if (msg == null) {
+            return false;
+        }
         final Intent intent = mIntentBuilder.createInlineAttachmentViewIntent(mActivity, url, msg);
         if (intent == null) {
             return false;
