@@ -1518,20 +1518,23 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
         private int mUndoSequence = 0;
         private ArrayList<Uri> mUndoDeleteUris = new ArrayList<Uri>();
+        private UndoCallback mUndoCallback = null;
 
-        void addToUndoSequence(Uri uri) {
+        void addToUndoSequence(Uri uri, UndoCallback undoCallback) {
             if (sSequence != mUndoSequence) {
                 mUndoSequence = sSequence;
                 mUndoDeleteUris.clear();
+                mUndoCallback = undoCallback;
             }
             mUndoDeleteUris.add(uri);
         }
 
         @VisibleForTesting
-        void deleteLocal(Uri uri, ConversationCursor conversationCursor) {
+        void deleteLocal(Uri uri, ConversationCursor conversationCursor,
+                UndoCallback undoCallback) {
             String uriString = uriStringFromCachingUri(uri);
             conversationCursor.cacheValue(uriString, DELETED_COLUMN, true);
-            addToUndoSequence(uri);
+            addToUndoSequence(uri, undoCallback);
         }
 
         @VisibleForTesting
@@ -1540,11 +1543,12 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             conversationCursor.cacheValue(uriString, DELETED_COLUMN, false);
         }
 
-        void setMostlyDead(Conversation conv, ConversationCursor conversationCursor) {
+        void setMostlyDead(Conversation conv, ConversationCursor conversationCursor,
+                           UndoCallback undoCallback) {
             Uri uri = conv.uri;
             String uriString = uriStringFromCachingUri(uri);
             conversationCursor.setMostlyDead(uriString, conv);
-            addToUndoSequence(uri);
+            addToUndoSequence(uri, undoCallback);
         }
 
         void commitMostlyDead(Conversation conv, ConversationCursor conversationCursor) {
@@ -1571,6 +1575,11 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             // Notify listeners that there was a change to the underlying
             // cursor to add back in some items.
             conversationCursor.notifyDataChanged();
+
+            // If the caller specified an undo callback, call it here
+            if (mUndoCallback != null) {
+                mUndoCallback.performUndoCallback();
+            }
         }
 
         @VisibleForTesting
@@ -1708,6 +1717,9 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         private final Uri mUri;
         private final Conversation mConversation;
         private final ContentValues mValues;
+        // Callback handler for when this operation is undone
+        private final UndoCallback mUndoCallback;
+
         // True if an updated item should be removed locally (from ConversationCursor)
         // This would be the case for a folder change in which the conversation is no longer
         // in the folder represented by the ConversationCursor
@@ -1718,15 +1730,17 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         // Whether this item is already mostly dead
         private final boolean mMostlyDead;
 
-        public ConversationOperation(int type, Conversation conv) {
-            this(type, conv, null);
+        public ConversationOperation(int type, Conversation conv, UndoCallback undoCallback) {
+            this(type, conv, null, undoCallback);
         }
 
-        public ConversationOperation(int type, Conversation conv, ContentValues values) {
+        public ConversationOperation(int type, Conversation conv, ContentValues values,
+                UndoCallback undoCallback) {
             mType = type;
             mUri = conv.uri;
             mConversation = conv;
             mValues = values;
+            mUndoCallback = undoCallback;
             mLocalDeleteOnUpdate = conv.localDeleteOnUpdate;
             mMostlyDead = conv.isMostlyDead();
         }
@@ -1740,7 +1754,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             switch(mType) {
                 case UPDATE:
                     if (mLocalDeleteOnUpdate) {
-                        sProvider.deleteLocal(mUri, ConversationCursor.this);
+                        sProvider.deleteLocal(mUri, ConversationCursor.this, mUndoCallback);
                     } else {
                         sProvider.updateLocal(mUri, mValues, ConversationCursor.this);
                         mRecalibrateRequired = false;
@@ -1754,7 +1768,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     }
                     break;
                 case MOSTLY_DESTRUCTIVE_UPDATE:
-                    sProvider.setMostlyDead(mConversation, ConversationCursor.this);
+                    sProvider.setMostlyDead(mConversation, ConversationCursor.this, mUndoCallback);
                     op = ContentProviderOperation.newUpdate(uri).withValues(mValues).build();
                     break;
                 case INSERT:
@@ -1766,7 +1780,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                 // "Mostly" operations are reflected globally, but not locally, except to set
                 // FLAG_MOSTLY_DEAD in the conversation itself
                 case DELETE:
-                    sProvider.deleteLocal(mUri, ConversationCursor.this);
+                    sProvider.deleteLocal(mUri, ConversationCursor.this, mUndoCallback);
                     if (!mMostlyDead) {
                         op = ContentProviderOperation.newDelete(uri).build();
                     } else {
@@ -1774,11 +1788,11 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     }
                     break;
                 case MOSTLY_DELETE:
-                    sProvider.setMostlyDead(mConversation,ConversationCursor.this);
+                    sProvider.setMostlyDead(mConversation,ConversationCursor.this, mUndoCallback);
                     op = ContentProviderOperation.newDelete(uri).build();
                     break;
                 case ARCHIVE:
-                    sProvider.deleteLocal(mUri, ConversationCursor.this);
+                    sProvider.deleteLocal(mUri, ConversationCursor.this, mUndoCallback);
                     if (!mMostlyDead) {
                         // Create an update operation that represents archive
                         op = ContentProviderOperation.newUpdate(uri).withValue(
@@ -1790,7 +1804,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     }
                     break;
                 case MOSTLY_ARCHIVE:
-                    sProvider.setMostlyDead(mConversation, ConversationCursor.this);
+                    sProvider.setMostlyDead(mConversation, ConversationCursor.this, mUndoCallback);
                     // Create an update operation that represents archive
                     op = ContentProviderOperation.newUpdate(uri).withValue(
                             ConversationOperations.OPERATION_KEY, ConversationOperations.ARCHIVE)
@@ -1798,7 +1812,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     break;
                 case MUTE:
                     if (mLocalDeleteOnUpdate) {
-                        sProvider.deleteLocal(mUri, ConversationCursor.this);
+                        sProvider.deleteLocal(mUri, ConversationCursor.this, mUndoCallback);
                     }
 
                     // Create an update operation that represents mute
@@ -1808,7 +1822,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     break;
                 case REPORT_SPAM:
                 case REPORT_NOT_SPAM:
-                    sProvider.deleteLocal(mUri, ConversationCursor.this);
+                    sProvider.deleteLocal(mUri, ConversationCursor.this, mUndoCallback);
 
                     final String operation = mType == REPORT_SPAM ?
                             ConversationOperations.REPORT_SPAM :
@@ -1819,7 +1833,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                             ConversationOperations.OPERATION_KEY, operation).build();
                     break;
                 case REPORT_PHISHING:
-                    sProvider.deleteLocal(mUri, ConversationCursor.this);
+                    sProvider.deleteLocal(mUri, ConversationCursor.this, mUndoCallback);
 
                     // Create an update operation that represents report phishing
                     op = ContentProviderOperation.newUpdate(uri).withValue(
@@ -1827,7 +1841,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                             ConversationOperations.REPORT_PHISHING).build();
                     break;
                 case DISCARD_DRAFTS:
-                    sProvider.deleteLocal(mUri, ConversationCursor.this);
+                    sProvider.deleteLocal(mUri, ConversationCursor.this, mUndoCallback);
 
                     // Create an update operation that represents discarding drafts
                     op = ContentProviderOperation.newUpdate(uri).withValue(
@@ -2052,14 +2066,20 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * @return the sequence number of the operation (for undo)
      */
     public int updateValues(Collection<Conversation> conversations, ContentValues values) {
+        return updateValues(conversations, values, null);
+    }
+
+    public int updateValues(Collection<Conversation> conversations, ContentValues values,
+            UndoCallback undoCallback) {
         return apply(
-                getOperationsForConversations(conversations, ConversationOperation.UPDATE, values));
+                getOperationsForConversations(conversations, ConversationOperation.UPDATE, values,
+                        undoCallback));
     }
 
     /**
      * Apply many operations in a single batch transaction.
      * @param op the collection of operations obtained through successive calls to
-     * {@link #getOperationForConversation(Conversation, int, ContentValues)}.
+     * {@link #getOperationForConversation(Conversation, int, ContentValues, UndoCallback)}.
      * @return the sequence number of the operation (for undo)
      */
     public int updateBulkValues(Collection<ConversationOperation> op) {
@@ -2067,17 +2087,23 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     }
 
     private ArrayList<ConversationOperation> getOperationsForConversations(
-            Collection<Conversation> conversations, int type, ContentValues values) {
+            Collection<Conversation> conversations, int type, ContentValues values,
+            UndoCallback undoCallback) {
         final ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
-            ops.add(getOperationForConversation(conv, type, values));
+            ops.add(getOperationForConversation(conv, type, values, undoCallback));
         }
         return ops;
     }
 
     public ConversationOperation getOperationForConversation(Conversation conv, int type,
             ContentValues values) {
-        return new ConversationOperation(type, conv, values);
+        return getOperationForConversation(conv, type, values, null);
+    }
+
+    public ConversationOperation getOperationForConversation(Conversation conv, int type,
+            ContentValues values, UndoCallback undoCallback) {
+        return new ConversationOperation(type, conv, values, undoCallback);
     }
 
     public static void addFolderUpdates(ArrayList<Uri> folderUris, ArrayList<Boolean> add,
@@ -2096,16 +2122,29 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
     public ConversationOperation getConversationFolderOperation(Conversation conv,
             ArrayList<Uri> folderUris, ArrayList<Boolean> add, Collection<Folder> targetFolders) {
-        return getConversationFolderOperation(conv, folderUris, add, targetFolders,
-                new ContentValues());
+        return getConversationFolderOperation(conv, folderUris, add, targetFolders, null, null);
     }
 
     public ConversationOperation getConversationFolderOperation(Conversation conv,
             ArrayList<Uri> folderUris, ArrayList<Boolean> add, Collection<Folder> targetFolders,
             ContentValues values) {
+        return getConversationFolderOperation(conv, folderUris, add, targetFolders, values, null);
+    }
+
+    public ConversationOperation getConversationFolderOperation(Conversation conv,
+            ArrayList<Uri> folderUris, ArrayList<Boolean> add, Collection<Folder> targetFolders,
+            UndoCallback undoCallback) {
+        return getConversationFolderOperation(conv, folderUris, add, targetFolders,
+                new ContentValues(), undoCallback);
+    }
+
+    public ConversationOperation getConversationFolderOperation(Conversation conv,
+            ArrayList<Uri> folderUris, ArrayList<Boolean> add, Collection<Folder> targetFolders,
+            ContentValues values, UndoCallback undoCallback) {
         addFolderUpdates(folderUris, add, values);
         addTargetFolders(targetFolders, values);
-        return getOperationForConversation(conv, ConversationOperation.UPDATE, values);
+        return getOperationForConversation(conv, ConversationOperation.UPDATE, values,
+                undoCallback);
     }
 
     // Convenience methods
@@ -2136,63 +2175,99 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      * underlying provider. See applyAction for argument descriptions
      */
     public int delete(Collection<Conversation> conversations) {
-        return applyAction(conversations, ConversationOperation.DELETE);
+        return delete(conversations, null);
+    }
+
+    public int delete(Collection<Conversation> conversations, UndoCallback undoCallback) {
+        return applyAction(conversations, ConversationOperation.DELETE, undoCallback);
     }
 
     /**
      * As above, for archive
      */
     public int archive(Collection<Conversation> conversations) {
-        return applyAction(conversations, ConversationOperation.ARCHIVE);
+        return archive(conversations, null);
+    }
+
+    public int archive(Collection<Conversation> conversations, UndoCallback undoCallback) {
+        return applyAction(conversations, ConversationOperation.ARCHIVE, undoCallback);
     }
 
     /**
      * As above, for mute
      */
     public int mute(Collection<Conversation> conversations) {
-        return applyAction(conversations, ConversationOperation.MUTE);
+        return mute(conversations, null);
+    }
+
+    public int mute(Collection<Conversation> conversations, UndoCallback undoCallback) {
+        return applyAction(conversations, ConversationOperation.MUTE, undoCallback);
     }
 
     /**
      * As above, for report spam
      */
     public int reportSpam(Collection<Conversation> conversations) {
-        return applyAction(conversations, ConversationOperation.REPORT_SPAM);
+        return reportSpam(conversations, null);
+    }
+
+    public int reportSpam(Collection<Conversation> conversations, UndoCallback undoCallback) {
+        return applyAction(conversations, ConversationOperation.REPORT_SPAM, undoCallback);
     }
 
     /**
      * As above, for report not spam
      */
     public int reportNotSpam(Collection<Conversation> conversations) {
-        return applyAction(conversations, ConversationOperation.REPORT_NOT_SPAM);
+        return reportNotSpam(conversations, null);
+    }
+
+    public int reportNotSpam(Collection<Conversation> conversations, UndoCallback undoCallback) {
+        return applyAction(conversations, ConversationOperation.REPORT_NOT_SPAM, undoCallback);
     }
 
     /**
      * As above, for report phishing
      */
     public int reportPhishing(Collection<Conversation> conversations) {
-        return applyAction(conversations, ConversationOperation.REPORT_PHISHING);
+        return reportPhishing(conversations, null);
+    }
+
+    public int reportPhishing(Collection<Conversation> conversations, UndoCallback undoCallback) {
+        return applyAction(conversations, ConversationOperation.REPORT_PHISHING, undoCallback);
     }
 
     /**
      * Discard the drafts in the specified conversations
      */
     public int discardDrafts(Collection<Conversation> conversations) {
-        return applyAction(conversations, ConversationOperation.DISCARD_DRAFTS);
+        return discardDrafts(conversations, null);
+    }
+
+    public int discardDrafts(Collection<Conversation> conversations, UndoCallback undoCallback) {
+        return applyAction(conversations, ConversationOperation.DISCARD_DRAFTS, undoCallback);
     }
 
     /**
      * As above, for mostly archive
      */
     public int mostlyArchive(Collection<Conversation> conversations) {
-        return applyAction(conversations, ConversationOperation.MOSTLY_ARCHIVE);
+        return mostlyArchive(conversations, null);
+    }
+
+    public int mostlyArchive(Collection<Conversation> conversations, UndoCallback undoCallback) {
+        return applyAction(conversations, ConversationOperation.MOSTLY_ARCHIVE, undoCallback);
     }
 
     /**
      * As above, for mostly delete
      */
     public int mostlyDelete(Collection<Conversation> conversations) {
-        return applyAction(conversations, ConversationOperation.MOSTLY_DELETE);
+        return mostlyDelete(conversations, null);
+    }
+
+    public int mostlyDelete(Collection<Conversation> conversations, UndoCallback undoCallback) {
+        return applyAction(conversations, ConversationOperation.MOSTLY_DELETE, undoCallback);
     }
 
     /**
@@ -2200,22 +2275,29 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
      */
     public int mostlyDestructiveUpdate(Collection<Conversation> conversations,
             ContentValues values) {
+        return mostlyDestructiveUpdate(conversations, values, null);
+    }
+
+    public int mostlyDestructiveUpdate(Collection<Conversation> conversations,
+            ContentValues values, UndoCallback undoCallback) {
         return apply(
                 getOperationsForConversations(conversations,
-                        ConversationOperation.MOSTLY_DESTRUCTIVE_UPDATE, values));
+                        ConversationOperation.MOSTLY_DESTRUCTIVE_UPDATE, values, undoCallback));
     }
 
     /**
      * Convenience method for performing an operation on a group of conversations
      * @param conversations the conversations to be affected
      * @param opAction the action to take
+     * @param undoCallback the undo callback handler
      * @return the sequence number of the operation applied in CC
      */
-    private int applyAction(Collection<Conversation> conversations, int opAction) {
+    private int applyAction(Collection<Conversation> conversations, int opAction,
+            UndoCallback undoCallback) {
         ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
             ConversationOperation op =
-                    new ConversationOperation(opAction, conv);
+                    new ConversationOperation(opAction, conv, undoCallback);
             ops.add(op);
         }
         return apply(ops);
@@ -2324,7 +2406,8 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                             undoConversations.add(conversation);
 
                             if (!mNotificationTempDeleted.contains(conversation)) {
-                                sProvider.deleteLocal(conversation.uri, ConversationCursor.this);
+                                sProvider.deleteLocal(conversation.uri, ConversationCursor.this,
+                                        null);
                                 mNotificationTempDeleted.add(conversation);
 
                                 changed = true;

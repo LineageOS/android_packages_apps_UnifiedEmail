@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import com.android.mail.browse.SelectedConversationsActionMenu;
+import com.android.mail.browse.UndoCallback;
 
 /**
  * Interface for listening to completed UI actions like Archive, Delete, star, etc.
@@ -26,6 +27,12 @@ import com.android.mail.browse.SelectedConversationsActionMenu;
  * {@link #performAction()} will get called.
  */
 public interface DestructiveAction {
+    /**
+     * Sets the UndoCallback if the destructive action is undone
+     * Note that this needs to be set before performAction is called for the callback to be
+     * properly associated
+     */
+    public void setUndoCallback(UndoCallback undoCallback);
     /**
      * Performs the destructive action.
      */

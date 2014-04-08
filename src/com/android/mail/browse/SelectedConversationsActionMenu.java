@@ -122,31 +122,35 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, itemId,
                 "cab_mode", 0);
 
+        UndoCallback undoCallback = null;   // not applicable here (yet)
         if (itemId == R.id.delete) {
             LogUtils.i(LOG_TAG, "Delete selected from CAB menu");
-            performDestructiveAction(R.id.delete);
+            performDestructiveAction(R.id.delete, undoCallback);
         } else if (itemId == R.id.discard_drafts) {
-            performDestructiveAction(R.id.discard_drafts);
+            performDestructiveAction(R.id.discard_drafts, undoCallback);
         } else if (itemId == R.id.archive) {
             LogUtils.i(LOG_TAG, "Archive selected from CAB menu");
-            performDestructiveAction(R.id.archive);
+            performDestructiveAction(R.id.archive, undoCallback);
         } else if (itemId == R.id.remove_folder) {
             destroy(R.id.remove_folder, mSelectionSet.values(),
                     mUpdater.getDeferredRemoveFolder(mSelectionSet.values(), mFolder, true,
-                            true, true));
+                            true, true, undoCallback));
         } else if (itemId == R.id.mute) {
-            destroy(R.id.mute, mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
+            destroy(R.id.mute, mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute,
+                    undoCallback));
         } else if (itemId == R.id.report_spam) {
             destroy(R.id.report_spam, mSelectionSet.values(),
-                    mUpdater.getBatchAction(R.id.report_spam));
+                    mUpdater.getBatchAction(R.id.report_spam, undoCallback));
         } else if (itemId == R.id.mark_not_spam) {
             // Currently, since spam messages are only shown in list with other spam messages,
             // marking a message not as spam is a destructive action
             destroy (R.id.mark_not_spam,
-                    mSelectionSet.values(), mUpdater.getBatchAction(R.id.mark_not_spam)) ;
+                    mSelectionSet.values(), mUpdater.getBatchAction(R.id.mark_not_spam,
+                            undoCallback)) ;
         } else if (itemId == R.id.report_phishing) {
             destroy(R.id.report_phishing,
-                    mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_phishing));
+                    mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_phishing,
+                            undoCallback));
         } else if (itemId == R.id.read) {
             markConversationsRead(true);
         } else if (itemId == R.id.unread) {
@@ -156,7 +160,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         } else if (itemId == R.id.remove_star) {
             if (mFolder.isType(UIProvider.FolderType.STARRED)) {
                 LogUtils.d(LOG_TAG, "We are in a starred folder, removing the star");
-                performDestructiveAction(R.id.remove_star);
+                performDestructiveAction(R.id.remove_star, undoCallback);
             } else {
                 LogUtils.d(LOG_TAG, "Not in a starred folder.");
                 starConversations(false);
@@ -213,7 +217,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             markConversationsImportant(true);
         } else if (itemId == R.id.mark_not_important) {
             if (mFolder.supportsCapability(UIProvider.FolderCapabilities.ONLY_IMPORTANT)) {
-                performDestructiveAction(R.id.mark_not_important);
+                performDestructiveAction(R.id.mark_not_important, undoCallback);
             } else {
                 markConversationsImportant(false);
             }
@@ -244,7 +248,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
-    private void performDestructiveAction(final int action) {
+    private void performDestructiveAction(final int action, UndoCallback undoCallback) {
         final Collection<Conversation> conversations = mSelectionSet.values();
         final Settings settings = mAccount.settings;
         final boolean showDialog;
@@ -258,7 +262,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             showDialog = false;
         }
         if (showDialog) {
-            mUpdater.makeDialogListener(action, true /* fromSelectedSet */);
+            mUpdater.makeDialogListener(action, true /* fromSelectedSet */, null /* undoCallback */);
             final int resId;
             if (action == R.id.delete) {
                 resId = R.plurals.confirm_delete_conversation;
@@ -274,7 +278,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             // No need to show the dialog, just make a destructive action and destroy the
             // selected set immediately.
             // TODO(viki): Stop using the deferred action here. Use the registered action.
-            destroy(action, conversations, mUpdater.getDeferredBatchAction(action));
+            destroy(action, conversations, mUpdater.getDeferredBatchAction(action, undoCallback));
         }
     }
 

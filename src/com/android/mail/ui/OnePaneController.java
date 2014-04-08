@@ -207,8 +207,8 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
-        super.showConversation(conversation, inLoaderCallbacks);
+    protected void showConversation(Conversation conversation) {
+        super.showConversation(conversation);
         mConversationListVisible = false;
         if (conversation == null) {
             transitionBackToConversationListMode();

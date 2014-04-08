@@ -24,6 +24,7 @@ import android.net.Uri;
 import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationMessage;
+import com.android.mail.browse.UndoCallback;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
@@ -122,7 +123,7 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * @param action
      * @return
      */
-    public DestructiveAction getBatchAction(int action);
+    public DestructiveAction getBatchAction(int action, UndoCallback undoCallback);
 
     /**
      * Get a destructive action for selected conversations. The action corresponds to Menu item
@@ -130,17 +131,22 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * @param action
      * @return
      */
-    public DestructiveAction getDeferredBatchAction(int action);
+    public DestructiveAction getDeferredBatchAction(int action, UndoCallback undoCallback);
 
     /**
      * Get destructive folder change for selected conversations.
      * The caller must explicitly call performAction.
-     * @param action
+     * @param target
+     * @param toRemove
+     * @param isDestructive
+     * @param isBatch
+     * @param showUndo
+     * @param undoCallback
      * @return
      */
     public DestructiveAction getDeferredRemoveFolder(Collection<Conversation> target,
             Folder toRemove, boolean isDestructive, boolean isBatch,
-            boolean showUndo);
+            boolean showUndo, UndoCallback undoCallback);
 
     /**
      * Assign the target conversations to the given folders, and remove them from all other folders
@@ -175,8 +181,11 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * @param action the resource ID of the menu action: R.id.delete, for example
      * @param fromSelectedSet true if the listener acts on the selected set, false if the listener
      *        acts on the current conversation.
+     * @param undoCallback the appropriate callback (if any) that needs to be run when this
+     *        specific action is undone
      */
-    public void makeDialogListener(final int action, boolean fromSelectedSet);
+    public void makeDialogListener(final int action, boolean fromSelectedSet,
+            UndoCallback undoCallback);
 
     /**
      * If set, get the listener associated with the existing {@link ConfirmDialogFragment}.  This
