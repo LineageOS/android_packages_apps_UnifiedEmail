@@ -919,4 +919,13 @@
         <item name="android:layout_marginLeft">@dimen/teaser_arrow_margin_start</item>
         <item name="android:layout_marginRight">@dimen/teaser_arrow_margin_end</item>
     </style>
+
+    <style name="UndoDescriptionStyle">
+        <item name="android:paddingLeft">@dimen/undo_description_padding</item>
+    </style>
+
+    <style name="UndoIconStyle">
+        <item name="android:paddingLeft">@dimen/undo_icon_padding_start</item>
+        <item name="android:paddingRight">@dimen/undo_icon_padding_end</item>
+    </style>
 </resources>

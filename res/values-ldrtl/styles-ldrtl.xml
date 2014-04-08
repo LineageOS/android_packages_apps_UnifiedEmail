@@ -378,4 +378,13 @@
         <item name="android:layout_marginStart">@dimen/teaser_arrow_margin_start</item>
         <item name="android:layout_marginEnd">@dimen/teaser_arrow_margin_end</item>
     </style>
+
+    <style name="UndoDescriptionStyle">
+        <item name="android:paddingStart">@dimen/undo_description_padding</item>
+    </style>
+
+    <style name="UndoIconStyle">
+        <item name="android:paddingStart">@dimen/undo_icon_padding_start</item>
+        <item name="android:paddingEnd">@dimen/undo_icon_padding_end</item>
+    </style>
 </resources>
