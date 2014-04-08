@@ -214,4 +214,8 @@
 
     <dimen name="avatar_border_width">.5dp</dimen>
     <dimen name="progress_bar_height">30dp</dimen>
+
+    <dimen name="undo_description_padding">16dip</dimen>
+    <dimen name="undo_icon_padding_start">12dip</dimen>
+    <dimen name="undo_icon_padding_end">8dip</dimen>
 </resources>
