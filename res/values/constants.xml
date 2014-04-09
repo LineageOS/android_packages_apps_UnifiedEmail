@@ -18,6 +18,7 @@
 <resources>
     <!-- Boolean value indicating whether the tablet UI should be used. -->
     <bool name="use_tablet_ui">false</bool>
+    <bool name="use_expansive_tablet_ui">false</bool>
     <integer name="conversation_header_mode">1</integer>
     <integer name="conversation_list_search_header_mode">1</integer>
 

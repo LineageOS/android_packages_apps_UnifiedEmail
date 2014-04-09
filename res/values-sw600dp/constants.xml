@@ -18,7 +18,6 @@
 <resources>
     <!-- Boolean value indicating whether the table UI should be used. -->
     <bool name="use_tablet_ui">true</bool>
-    <bool name="use_expansive_tablet_ui">false</bool>
     <integer name="conversation_header_mode">1</integer>
     <integer name="conversation_desired_font_size_px">16</integer>
 
