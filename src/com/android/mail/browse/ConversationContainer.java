@@ -138,7 +138,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     /**
      * A recycler that holds removed scrap views, organized by integer item view type. All views
-     * in this data structure should be removed from their view parent prior to insertion.
+     * in this data structure should remain in their view parent.
      */
     private final DequeMap<Integer, View> mScrapViews = new DequeMap<Integer, View>();
 
@@ -853,14 +853,32 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         if (view.getParent() == null) {
             addViewInLayoutWrapper(view, postAddView);
         } else {
-            // Need to call postInvalidate since the view is being moved back on
-            // screen and we want to force it to draw the view. Without doing this,
-            // the view may not draw itself when it comes back on screen.
-            view.postInvalidate();
+            // Need to post a runnable to requestLayout and invalidate.
+            // Without doing this, the view may not draw itself when it comes back on screen.
+            final ResetViewRunnable resetViewRunnable = new ResetViewRunnable(view);
+            if (postAddView) {
+                post(resetViewRunnable);
+            } else {
+                resetViewRunnable.run();
+            }
         }
 
         return view;
     }
+
+    private static class ResetViewRunnable implements Runnable {
+        public final View mView;
+
+        public ResetViewRunnable(View view) {
+            mView = view;
+        }
+
+        @Override
+        public void run() {
+            mView.requestLayout();
+            mView.invalidate();
+        }
+    };
 
     private void addViewInLayoutWrapper(View view, boolean postAddView) {
         final AddViewRunnable addviewRunnable = new AddViewRunnable(view);
