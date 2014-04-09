@@ -38,7 +38,7 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
     // Keys used to pass data to {@link WaitFragment}.
     private static final String ACCOUNT_KEY = "account";
 
-    private static final String DEFAULT_KEY = "isDefault";
+    private static final String EXPECTING_MESSAGES_KEY = "expectingMessages";
 
     private static final int MANUAL_SYNC_LOADER = 0;
 
@@ -47,21 +47,17 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
 
     private LayoutInflater mInflater;
 
-    private boolean mDefault;
+    private boolean mExpectingMessages;
 
     // Public no-args constructor needed for fragment re-instantiation
     public WaitFragment() {}
 
-    public static WaitFragment newInstance(Account account) {
-        return newInstance(account, false);
-    }
-
-    public static WaitFragment newInstance(Account account, boolean def) {
+    public static WaitFragment newInstance(Account account, boolean expectingMessages) {
         WaitFragment fragment = new WaitFragment();
 
         final Bundle args = new Bundle();
         args.putParcelable(ACCOUNT_KEY, account);
-        args.putBoolean(DEFAULT_KEY, def);
+        args.putBoolean(EXPECTING_MESSAGES_KEY, expectingMessages);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +68,7 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
 
         Bundle args = getArguments();
         mAccount = (Account)args.getParcelable(ACCOUNT_KEY);
-        mDefault = args.getBoolean(DEFAULT_KEY, false);
+        mExpectingMessages = args.getBoolean(EXPECTING_MESSAGES_KEY, false);
     }
 
     @Override
@@ -96,10 +92,10 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
             view.findViewById(R.id.manual_sync).setOnClickListener(this);
             view.findViewById(R.id.change_sync_settings).setOnClickListener(this);
 
-        } else if (mDefault) {
-            view = mInflater.inflate(R.layout.wait_default, root, false);
+        } else if (mExpectingMessages) {
+            view = mInflater.inflate(R.layout.loading_messages, root, false);
         } else {
-            view = mInflater.inflate(R.layout.wait_for_sync, root, false);
+            view = mInflater.inflate(R.layout.wait_default, root, false);
         }
 
         return view;

@@ -330,7 +330,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
             fragment.updateAccount(account);
         } else {
             mWait.setVisibility(View.VISIBLE);
-            replaceFragment(WaitFragment.newInstance(account, true),
+            replaceFragment(WaitFragment.newInstance(account, false /* expectingMessages */),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
         }
         mContent.setVisibility(View.GONE);

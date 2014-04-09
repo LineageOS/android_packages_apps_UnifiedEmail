@@ -161,6 +161,18 @@ public class ButteryProgressBar extends View {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        start();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        stop();
+    }
+
+    @Override
     protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
 
@@ -172,16 +184,13 @@ public class ButteryProgressBar extends View {
     }
 
     private void start() {
-        if (mAnimator == null) {
+        if (getVisibility() != VISIBLE) {
             return;
         }
         mAnimator.start();
     }
 
     private void stop() {
-        if (mAnimator == null) {
-            return;
-        }
         mAnimator.cancel();
     }
 

@@ -615,8 +615,6 @@
     <!-- Wait fragment strings -->
     <!-- Displayed in title bar during the initial sync  [CHAR LIMIT=40] -->
     <string name="wait_for_sync_title">Waiting for sync</string>
-    <!-- Displayed in the middle of the screen during the initial sync [CHAR LIMIT=40] -->
-    <string name="wait_for_sync_body">Your email will appear shortly.</string>
     <!-- Title for the screen displayed during the initial sync [CHAR LIMIT=100]  -->
     <string name="not_synced_title">Account not synced</string>
     <!-- Displayed in the middle of the screen during the initial sync [CHAR LIMIT=300]-->
