@@ -461,6 +461,7 @@ public final class ConversationListFragment extends ListFragment implements
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = (ConversationListEmptyView) rootView.findViewById(R.id.empty_view);
         mLoadingView = rootView.findViewById(R.id.loading_view);
+        mLoadingView.setVisibility(View.GONE);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);

@@ -2466,7 +2466,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void showWaitForInitialization() {
         mViewMode.enterWaitingForInitializationMode();
-        mWaitFragment = WaitFragment.newInstance(mAccount);
+        mWaitFragment = WaitFragment.newInstance(mAccount, true /* expectingMessages */);
     }
 
     private void updateWaitMode() {

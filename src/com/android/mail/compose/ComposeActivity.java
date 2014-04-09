@@ -3590,7 +3590,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             fragment.updateAccount(account);
         } else {
             findViewById(R.id.wait).setVisibility(View.VISIBLE);
-            replaceFragment(WaitFragment.newInstance(account, true),
+            replaceFragment(WaitFragment.newInstance(account, false /* expectingMessages */),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
         }
     }
