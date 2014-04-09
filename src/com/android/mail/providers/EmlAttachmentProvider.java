@@ -19,6 +19,7 @@ package com.android.mail.providers;
 
 import android.app.DownloadManager;
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
+import android.text.TextUtils;
 
 import com.android.ex.photo.provider.PhotoContract;
 import com.android.mail.R;
@@ -66,6 +68,7 @@ public class EmlAttachmentProvider extends ContentProvider {
 
     private static final int ATTACHMENT_LIST = 0;
     private static final int ATTACHMENT = 1;
+    private static final int ATTACHMENT_BY_CID = 2;
 
     /**
      * The buffer size used to copy data from cache to sd card.
@@ -98,8 +101,9 @@ public class EmlAttachmentProvider extends ContentProvider {
 
         if (!sUrisAddedToMatcher) {
             sUrisAddedToMatcher = true;
-            sUriMatcher.addURI(authority, "*/*", ATTACHMENT_LIST);
-            sUriMatcher.addURI(authority, "*/*/#", ATTACHMENT);
+            sUriMatcher.addURI(authority, "attachments/*/*", ATTACHMENT_LIST);
+            sUriMatcher.addURI(authority, "attachment/*/*/#", ATTACHMENT);
+            sUriMatcher.addURI(authority, "attachmentByCid/*/*/*", ATTACHMENT_BY_CID);
         }
 
         mDownloadManager =
@@ -116,9 +120,10 @@ public class EmlAttachmentProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         // ignore other projections
         final MatrixCursor cursor = new MatrixCursor(UIProvider.ATTACHMENT_PROJECTION);
+        final ContentResolver cr = getContext().getContentResolver();
 
         switch (match) {
-            case ATTACHMENT_LIST:
+            case ATTACHMENT_LIST: {
                 final List<String> contentTypeQueryParameters =
                         uri.getQueryParameters(PhotoContract.ContentTypeParameters.CONTENT_TYPE);
                 uri = uri.buildUpon().clearQuery().build();
@@ -126,13 +131,35 @@ public class EmlAttachmentProvider extends ContentProvider {
                 for (final Uri attachmentUri : attachmentUris) {
                     addRow(cursor, attachmentUri, contentTypeQueryParameters);
                 }
-                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                cursor.setNotificationUri(cr, uri);
                 break;
-            case ATTACHMENT:
+            }
+            case ATTACHMENT: {
                 addRow(cursor, mUriAttachmentMap.get(uri));
-                cursor.setNotificationUri(
-                        getContext().getContentResolver(), getListUriFromAttachmentUri(uri));
+                cursor.setNotificationUri(cr, getListUriFromAttachmentUri(uri));
                 break;
+            }
+            case ATTACHMENT_BY_CID: {
+                // form the attachment lists uri by clipping off the cid from the given uri
+                final Uri attachmentsListUri = getListUriFromAttachmentUri(uri);
+                final String cid = uri.getPathSegments().get(3);
+
+                // find all uris for the parent message
+                final List<Uri> attachmentUris = mUriListMap.get(attachmentsListUri);
+
+                if (attachmentUris != null) {
+                    // find the attachment that contains the given cid
+                    for (Uri attachmentsUri : attachmentUris) {
+                        final Attachment attachment = mUriAttachmentMap.get(attachmentsUri);
+                        if (TextUtils.equals(cid, attachment.partId)) {
+                            addRow(cursor, attachment);
+                            cursor.setNotificationUri(cr, attachmentsListUri);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -244,7 +271,8 @@ public class EmlAttachmentProvider extends ContentProvider {
                 .add(attachment.providerData)                       // providerData
                 .add(attachment.supportsDownloadAgain() ? 1 : 0)    // supportsDownloadAgain
                 .add(attachment.type)                               // type
-                .add(attachment.flags);                             // flags
+                .add(attachment.flags)                              // flags
+                .add(attachment.partId);                            // partId (same as RFC822 cid)
     }
 
     /**
@@ -389,21 +417,38 @@ public class EmlAttachmentProvider extends ContentProvider {
     }
 
     /**
-     * Returns an attachment list uri for an eml file at the given uri
-     * with the given message id.
+     * Returns an attachment list uri for the specific attachment uri passed.
      */
-    public static Uri getAttachmentsListUri(Uri emlFileUri, String messageId) {
-        return BASE_URI.buildUpon().appendPath(Integer.toString(emlFileUri.hashCode()))
-                .appendPath(messageId).build();
+    private static Uri getListUriFromAttachmentUri(Uri uri) {
+        final List<String> segments = uri.getPathSegments();
+        return BASE_URI.buildUpon()
+                .appendPath("attachments")
+                .appendPath(segments.get(1))
+                .appendPath(segments.get(2))
+                .build();
     }
 
     /**
-     * Returns an attachment list uri for the specific attachment uri passed.
+     * Returns an attachment list uri for an eml file at the given uri with the given message id.
      */
-    public static Uri getListUriFromAttachmentUri(Uri uri) {
-        final List<String> segments = uri.getPathSegments();
+    public static Uri getAttachmentsListUri(Uri emlFileUri, String messageId) {
         return BASE_URI.buildUpon()
-                .appendPath(segments.get(0)).appendPath(segments.get(1)).build();
+                .appendPath("attachments")
+                .appendPath(Integer.toString(emlFileUri.hashCode()))
+                .appendPath(messageId)
+                .build();
+    }
+
+    /**
+     * Returns an attachment uri for an eml file at the given uri with the given message id.
+     * The consumer of this uri must append a specific CID to it to complete the uri.
+     */
+    public static Uri getAttachmentByCidUri(Uri emlFileUri, String messageId) {
+        return BASE_URI.buildUpon()
+                .appendPath("attachmentByCid")
+                .appendPath(Integer.toString(emlFileUri.hashCode()))
+                .appendPath(messageId)
+                .build();
     }
 
     /**
@@ -411,8 +456,12 @@ public class EmlAttachmentProvider extends ContentProvider {
      * the given message id and part id.
      */
     public static Uri getAttachmentUri(Uri emlFileUri, String messageId, String partId) {
-        return BASE_URI.buildUpon().appendPath(Integer.toString(emlFileUri.hashCode()))
-                .appendPath(messageId).appendPath(partId).build();
+        return BASE_URI.buildUpon()
+                .appendPath("attachment")
+                .appendPath(Integer.toString(emlFileUri.hashCode()))
+                .appendPath(messageId)
+                .appendPath(partId)
+                .build();
     }
 
     /**
@@ -441,7 +490,7 @@ public class EmlAttachmentProvider extends ContentProvider {
      * Returns the root directory for the attachments for the specific uri.
      */
     private String getCacheFileDirectory(Uri uri) {
-        return getCacheDir() + "/" + Uri.encode(uri.getPathSegments().get(0));
+        return getCacheDir() + "/" + Uri.encode(uri.getPathSegments().get(1));
     }
 
     /**

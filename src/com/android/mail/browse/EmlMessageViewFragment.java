@@ -33,6 +33,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -96,6 +97,18 @@ public class EmlMessageViewFragment extends Fragment
     private class EmlWebViewClient extends AbstractConversationWebViewClient {
         public EmlWebViewClient(Account account) {
             super(account);
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            // try to load the url assuming it is a cid url
+            final Uri uri = Uri.parse(url);
+            final WebResourceResponse response = loadCIDUri(uri, mViewController.getMessage());
+            if (response != null) {
+                return response;
+            }
+
+            return super.shouldInterceptRequest(view, url);
         }
 
         @Override

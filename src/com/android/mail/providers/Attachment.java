@@ -233,7 +233,8 @@ public class Attachment implements Parcelable {
     /**
      * Constructor for use when creating attachments in eml files.
      */
-    public Attachment(Context context, Part part, Uri emlFileUri, String messageId, String partId) {
+    public Attachment(Context context, Part part, Uri emlFileUri, String messageId, String cid,
+                      boolean inline) {
         try {
             // Transfer fields from mime format to provider format
             final String contentTypeHeader = MimeUtility.unfoldAndDecode(part.getContentType());
@@ -245,7 +246,7 @@ public class Attachment implements Parcelable {
             }
 
             contentType = MimeType.inferMimeType(name, part.getMimeType());
-            uri = EmlAttachmentProvider.getAttachmentUri(emlFileUri, messageId, partId);
+            uri = EmlAttachmentProvider.getAttachmentUri(emlFileUri, messageId, cid);
             contentUri = uri;
             thumbnailUri = uri;
             previewIntentUri = null;
@@ -253,7 +254,8 @@ public class Attachment implements Parcelable {
             providerData = null;
             supportsDownloadAgain = false;
             destination = AttachmentDestination.CACHE;
-            type = AttachmentType.STANDARD;
+            type = inline ? AttachmentType.INLINE_CURRENT_MESSAGE : AttachmentType.STANDARD;
+            partId = cid;
             flags = 0;
 
             // insert attachment into content provider so that we can open the file
@@ -300,6 +302,7 @@ public class Attachment implements Parcelable {
         supportsDownloadAgain = values.getAsBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN);
         type = values.getAsInteger(AttachmentColumns.TYPE);
         flags = values.getAsInteger(AttachmentColumns.FLAGS);
+        partId = values.getAsString(AttachmentColumns.CONTENT_ID);
     }
 
     /**
@@ -324,6 +327,7 @@ public class Attachment implements Parcelable {
         values.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
         values.put(AttachmentColumns.TYPE, type);
         values.put(AttachmentColumns.FLAGS, flags);
+        values.put(AttachmentColumns.CONTENT_ID, partId);
 
         return values;
     }

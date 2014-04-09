@@ -1545,6 +1545,7 @@ public class UIProvider {
         MessageColumns.APPEND_REF_MESSAGE_CONTENT,
         MessageColumns.HAS_ATTACHMENTS,
         MessageColumns.ATTACHMENT_LIST_URI,
+        MessageColumns.ATTACHMENT_BY_CID_URI,
         MessageColumns.MESSAGE_FLAGS,
         MessageColumns.ALWAYS_SHOW_IMAGES,
         MessageColumns.READ,
@@ -1592,23 +1593,24 @@ public class UIProvider {
     public static final int MESSAGE_APPEND_REF_MESSAGE_CONTENT_COLUMN = 17;
     public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 18;
     public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 19;
-    public static final int MESSAGE_FLAGS_COLUMN = 20;
-    public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 21;
-    public static final int MESSAGE_READ_COLUMN = 22;
-    public static final int MESSAGE_SEEN_COLUMN = 23;
-    public static final int MESSAGE_STARRED_COLUMN = 24;
-    public static final int QUOTED_TEXT_OFFSET_COLUMN = 25;
-    public static final int MESSAGE_ATTACHMENTS_COLUMN = 26;
-    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 27;
-    public static final int MESSAGE_ACCOUNT_URI_COLUMN = 28;
-    public static final int MESSAGE_EVENT_INTENT_COLUMN = 29;
-    public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 30;
-    public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 31;
-    public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 32;
-    public static final int MESSAGE_VIA_DOMAIN_COLUMN = 33;
-    public static final int MESSAGE_IS_SENDING_COLUMN = 34;
-    public static final int MESSAGE_CLIPPED_COLUMN = 35;
-    public static final int MESSAGE_PERMALINK_COLUMN = 36;
+    public static final int MESSAGE_ATTACHMENT_BY_CID_URI_COLUMN = 20;
+    public static final int MESSAGE_FLAGS_COLUMN = 21;
+    public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 22;
+    public static final int MESSAGE_READ_COLUMN = 23;
+    public static final int MESSAGE_SEEN_COLUMN = 24;
+    public static final int MESSAGE_STARRED_COLUMN = 25;
+    public static final int QUOTED_TEXT_OFFSET_COLUMN = 26;
+    public static final int MESSAGE_ATTACHMENTS_COLUMN = 27;
+    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 28;
+    public static final int MESSAGE_ACCOUNT_URI_COLUMN = 29;
+    public static final int MESSAGE_EVENT_INTENT_COLUMN = 30;
+    public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 31;
+    public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 32;
+    public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 33;
+    public static final int MESSAGE_VIA_DOMAIN_COLUMN = 34;
+    public static final int MESSAGE_IS_SENDING_COLUMN = 35;
+    public static final int MESSAGE_CLIPPED_COLUMN = 36;
+    public static final int MESSAGE_PERMALINK_COLUMN = 37;
 
     public static final class CursorStatus {
         // The cursor is actively loading more data
@@ -1749,6 +1751,11 @@ public class UIProvider {
          */
         public static final String ATTACHMENT_LIST_URI = "attachmentListUri";
         /**
+         * This string column contains the content provider URI for the details of an attachment
+         * associated with this message. (CID to be appended at the time the URI is used)
+         */
+        public static final String ATTACHMENT_BY_CID_URI = "attachmentByCidUri";
+        /**
          * This long column is a bit field of flags defined in {@link MessageFlags}.
          */
         public static final String MESSAGE_FLAGS = "messageFlags";
@@ -1887,7 +1894,8 @@ public class UIProvider {
         AttachmentColumns.PROVIDER_DATA,
         AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN,
         AttachmentColumns.TYPE,
-        AttachmentColumns.FLAGS
+        AttachmentColumns.FLAGS,
+        AttachmentColumns.CONTENT_ID
     };
     public static final int ATTACHMENT_NAME_COLUMN = 0;
     public static final int ATTACHMENT_SIZE_COLUMN = 1;
@@ -1902,6 +1910,7 @@ public class UIProvider {
     public static final int ATTACHMENT_SUPPORTS_DOWNLOAD_AGAIN_COLUMN = 10;
     public static final int ATTACHMENT_TYPE_COLUMN = 11;
     public static final int ATTACHMENT_FLAGS_COLUMN = 12;
+    public static final int ATTACHMENT_CONTENT_ID_COLUMN = 13;
 
     /** Separates attachment info parts in strings in the database. */
     public static final String ATTACHMENT_INFO_SEPARATOR = "\n"; // use to join
@@ -2081,6 +2090,12 @@ public class UIProvider {
          * This column holds various bitwise flags for status information.
          */
         public static final String FLAGS = "flags";
+
+        /**
+         * This column holds the RFC 2392 content id of the email part for this attachment, if
+         * possible; otherwise it holds an identifier unique to the parent message.
+         */
+        public static final String CONTENT_ID = "contentId";
 
         private AttachmentColumns() {}
     }

@@ -19,22 +19,31 @@ package com.android.mail.ui;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.provider.Browser;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.android.mail.browse.ConversationMessage;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -62,6 +71,66 @@ public class AbstractConversationWebViewClient extends WebViewClient {
 
     public Activity getActivity() {
         return mActivity;
+    }
+
+    /**
+     * Translates Content ID urls (CID urls) into provider queries for the associated attachment.
+     * With the attachment in hand, it's trivial to open a stream to the file containing the content
+     * of the attachment.
+     *
+     * @param uri the raw URI from the HTML document in the Webview
+     * @param message the message containing the HTML that is being rendered
+     * @return a response if a stream to the attachment file can be created from the CID URL;
+     *      <tt>null</tt> if it cannot for any reason
+     */
+    protected final WebResourceResponse loadCIDUri(Uri uri, ConversationMessage message) {
+        // if the url is not a CID url, we do nothing
+        if (!"cid".equals(uri.getScheme())) {
+            return null;
+        }
+
+        // cid urls can be translated to content urls
+        final String cid = uri.getSchemeSpecificPart();
+        if (cid == null) {
+            return null;
+        }
+
+        if (message.attachmentByCidUri == null) {
+            return null;
+        }
+
+        final Uri queryUri = Uri.withAppendedPath(message.attachmentByCidUri, cid);
+        if (queryUri == null) {
+            return null;
+        }
+
+        // query for the attachment using its cid
+        final ContentResolver cr = getActivity().getContentResolver();
+        final Cursor c = cr.query(queryUri, UIProvider.ATTACHMENT_PROJECTION, null, null, null);
+        if (c == null) {
+            return null;
+        }
+
+        // create the attachment from the cursor, if one was found
+        final Attachment target;
+        try {
+            if (!c.moveToFirst()) {
+                return null;
+            }
+            target = new Attachment(c);
+        } finally {
+            c.close();
+        }
+
+        // try to return a response that includes a stream to the attachment data
+        try {
+            final ParcelFileDescriptor fd = cr.openFileDescriptor(target.contentUri, "r");
+            final InputStream stream = new FileInputStream(fd.getFileDescriptor());
+            return new WebResourceResponse(target.getContentType(), null, stream);
+        } catch (FileNotFoundException e) {
+            // if no attachment file was found return null to let webview handle it
+            return null;
+        }
     }
 
     @Override

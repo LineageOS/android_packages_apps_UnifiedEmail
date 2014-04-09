@@ -31,9 +31,10 @@ import android.text.util.Linkify;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
-import com.android.emailcommon.mail.Address;
+import com.android.emailcommon.internet.MimeHeader;
 import com.android.emailcommon.internet.MimeMessage;
 import com.android.emailcommon.internet.MimeUtility;
+import com.android.emailcommon.mail.Address;
 import com.android.emailcommon.mail.MessagingException;
 import com.android.emailcommon.mail.Part;
 import com.android.emailcommon.utility.ConversionUtilities;
@@ -59,6 +60,9 @@ public class Message implements Parcelable, HtmlMessage {
      */
     private static Pattern INLINE_IMAGE_PATTERN = Pattern.compile("<img\\s+[^>]*src=",
             Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+
+    // regex that matches content id surrounded by "<>" optionally.
+    private static final Pattern REMOVE_OPTIONAL_BRACKETS = Pattern.compile("^<?([^>]+)>?$");
 
     /**
      * @see BaseColumns#_ID
@@ -140,6 +144,10 @@ public class Message implements Parcelable, HtmlMessage {
      * @see UIProvider.MessageColumns#ATTACHMENT_LIST_URI
      */
     public Uri attachmentListUri;
+    /**
+     * @see UIProvider.MessageColumns#ATTACHMENT_BY_CID_URI
+     */
+    public Uri attachmentByCidUri;
     /**
      * @see UIProvider.MessageColumns#MESSAGE_FLAGS
      */
@@ -379,6 +387,10 @@ public class Message implements Parcelable, HtmlMessage {
                     .getString(UIProvider.MESSAGE_ATTACHMENT_LIST_URI_COLUMN);
             attachmentListUri = hasAttachments && !TextUtils.isEmpty(attachmentsUri) ? Uri
                     .parse(attachmentsUri) : null;
+            final String attachmentsByCidUri = cursor
+                    .getString(UIProvider.MESSAGE_ATTACHMENT_BY_CID_URI_COLUMN);
+            attachmentByCidUri = hasAttachments && !TextUtils.isEmpty(attachmentsByCidUri) ?
+                    Uri.parse(attachmentsByCidUri) : null;
             messageFlags = cursor.getLong(UIProvider.MESSAGE_FLAGS_COLUMN);
             alwaysShowImages = cursor.getInt(UIProvider.MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN) != 0;
             read = cursor.getInt(UIProvider.MESSAGE_READ_COLUMN) != 0;
@@ -442,8 +454,7 @@ public class Message implements Parcelable, HtmlMessage {
         ArrayList<Part> attachments = new ArrayList<Part>();
         MimeUtility.collectParts(mimeMessage, viewables, attachments);
 
-        ConversionUtilities.BodyFieldData data =
-                ConversionUtilities.parseBodyFields(viewables);
+        ConversionUtilities.BodyFieldData data = ConversionUtilities.parseBodyFields(viewables);
 
         snippet = data.snippet;
         bodyText = data.textContent;
@@ -452,17 +463,30 @@ public class Message implements Parcelable, HtmlMessage {
         // populate mAttachments
         mAttachments = Lists.newArrayList();
 
-        int partId = 0;
         final String messageId = mimeMessage.getMessageId();
+
+        int partId = 0;
         for (final Part attachmentPart : attachments) {
             mAttachments.add(new Attachment(context, attachmentPart,
-                    emlFileUri, messageId, Integer.toString(partId++)));
+                    emlFileUri, messageId, Integer.toString(partId++), false));
+        }
+
+        // instantiating an Attachment for each viewable will cause it to be registered within the
+        // EmlAttachmentProvider for later access when displaying inline attachments
+        for (final Part viewablePart : viewables) {
+            final String[] cids = viewablePart.getHeader(MimeHeader.HEADER_CONTENT_ID);
+            if (cids != null && cids.length == 1) {
+                final String cid = REMOVE_OPTIONAL_BRACKETS.matcher(cids[0]).replaceAll("$1");
+                new Attachment(context, viewablePart, emlFileUri, messageId, cid, true);
+            }
         }
 
         hasAttachments = !mAttachments.isEmpty();
 
-        attachmentListUri =  hasAttachments ?
+        attachmentListUri = hasAttachments ?
                 EmlAttachmentProvider.getAttachmentsListUri(emlFileUri, messageId) : null;
+
+        attachmentByCidUri = EmlAttachmentProvider.getAttachmentByCidUri(emlFileUri, messageId);
     }
 
     public boolean isFlaggedReplied() {
