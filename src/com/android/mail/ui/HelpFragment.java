@@ -163,7 +163,11 @@ public final class HelpFragment extends Fragment {
         startActivity(i);
     }
 
-    private static class CopyrightDialogFragment extends DialogFragment {
+    public static class CopyrightDialogFragment extends DialogFragment {
+
+        public CopyrightDialogFragment() {
+        }
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // generate and display a copyright statement resembling "© Google 2014"
