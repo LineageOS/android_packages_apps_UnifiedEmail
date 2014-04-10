@@ -54,7 +54,6 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
 import com.android.mail.ui.SwipeableListView.ListItemSwipedListener;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
@@ -87,9 +86,9 @@ public final class ConversationListFragment extends ListFragment implements
     private static boolean mTabletDevice;
 
     // Delay before displaying the loading view.
-    private static final int LOADING_DELAY_MS = 500;
+    private static int LOADING_DELAY_MS;
     // Minimum amount of time to keep the loading view displayed.
-    private static final int MINIMUM_LOADING_DURATION = 2000;
+    private static int MINIMUM_LOADING_DURATION;
 
     /**
      * Frequency of update of timestamps. Initialized in
@@ -424,6 +423,8 @@ public final class ConversationListFragment extends ListFragment implements
         // Initialize fragment constants from resources
         final Resources res = getResources();
         TIMESTAMP_UPDATE_INTERVAL = res.getInteger(R.integer.timestamp_update_interval);
+        LOADING_DELAY_MS = res.getInteger(R.integer.conversationview_show_loading_delay);
+        MINIMUM_LOADING_DURATION = res.getInteger(R.integer.conversationview_min_show_loading);
         mUpdateTimestampsRunnable = new Runnable() {
             @Override
             public void run() {
@@ -460,7 +461,9 @@ public final class ConversationListFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = (ConversationListEmptyView) rootView.findViewById(R.id.empty_view);
-        mLoadingView = rootView.findViewById(R.id.loading_view);
+        mLoadingView = rootView.findViewById(R.id.background_view);
+        mLoadingView.setVisibility(View.GONE);
+        mLoadingView.findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);
@@ -934,7 +937,7 @@ public final class ConversationListFragment extends ListFragment implements
             final int action;
             mListView.enableSwipe(true);
             if (ConversationListContext.isSearchResult(mViewContext)
-                    || (mFolder != null && mFolder.isType(FolderType.SPAM))) {
+                    || (mFolder != null && mFolder.isType(UIProvider.FolderType.SPAM))) {
                 action = R.id.delete;
             } else if (mFolder == null) {
                 action = R.id.remove_folder;
