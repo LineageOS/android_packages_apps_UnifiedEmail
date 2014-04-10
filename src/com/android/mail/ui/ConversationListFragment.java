@@ -156,12 +156,30 @@ public final class ConversationListFragment extends ListFragment implements
     /** The time at which we last exited CAB mode. */
     private long mSelectionModeExitedTimestamp = -1;
 
+    // Let's ensure that we are only showing one out of the three views at once
+    private void showListView() {
+        mListView.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.GONE);
+        mLoadingView.setVisibility(View.GONE);
+    }
+
+    private void showEmptyView() {
+        mListView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.VISIBLE);
+        mLoadingView.setVisibility(View.GONE);
+    }
+
+    private void showLoadingView() {
+        mListView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.GONE);
+        mLoadingView.setVisibility(View.VISIBLE);
+    }
+
     private final Runnable mLoadingViewRunnable = new FragmentRunnable("LoadingRunnable", this) {
         @Override
         public void go() {
             if (isLoadingAndEmpty()) {
-                mLoadingView.setVisibility(View.VISIBLE);
-                mEmptyView.setVisibility(View.GONE);
+                showLoadingView();;
                 mCanTakeDownLoadingView = false;
                 mHandler.removeCallbacks(mHideLoadingRunnable);
                 mHandler.postDelayed(mHideLoadingRunnable, MINIMUM_LOADING_DURATION);
@@ -467,6 +485,9 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setListItemSwipedListener(this);
         mListView.setSwipeListener(this);
+
+        // By default let's show the list view
+        showListView();
 
         if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
@@ -888,7 +909,7 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     private void hideLoadingViewAndShowContents() {
-        mLoadingView.setVisibility(View.GONE);
+        showListView();
         final ConversationCursor cursor = getConversationListCursor();
         final boolean showFooter = mFooterView.updateStatus(cursor);
         // Update the folder status, in case the cursor could affect it.
@@ -919,7 +940,7 @@ public final class ConversationListFragment extends ListFragment implements
                 mEmptyView.setupEmptyView(
                         mFolder, mViewContext.searchQuery, mListAdapter.getBidiFormatter());
                 mListView.setEmptyView(mEmptyView);
-                mLoadingView.setVisibility(View.GONE);
+                showEmptyView();
             }
         }
     }
