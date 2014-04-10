@@ -94,6 +94,11 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
                             return;
                         }
                         final AlertDialog dialog = (AlertDialog) getDialog();
+                        if (dialog == null) {
+                            // This could happen if the dialog is dismissed just before the
+                            // load finishes.
+                            return;
+                        }
                         // The number of view types changes here, so we have to reset the listview's
                         // adapter.
                         dialog.getListView().setAdapter(null);
