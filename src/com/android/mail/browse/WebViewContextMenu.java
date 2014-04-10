@@ -35,6 +35,7 @@ import android.view.View.OnCreateContextMenuListener;
 import android.webkit.WebView;
 
 import com.android.mail.R;
+import com.android.mail.providers.Message;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -59,6 +60,8 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
     private final boolean mSupportsDial;
     private final boolean mSupportsSms;
 
+    private Callbacks mCallbacks;
+
     protected static enum MenuType {
         OPEN_MENU,
         COPY_LINK_MENU,
@@ -71,6 +74,17 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         COPY_MAIL_MENU,
         MAP_MENU,
         COPY_GEO_MENU,
+    }
+
+    public interface Callbacks {
+        /**
+         * Given a URL the user clicks/long-presses on, get the {@link Message} whose body contains
+         * that URL.
+         *
+         * @param url URL of a selected link
+         * @return Message containing that URL
+         */
+        Message getMessageForClickedUrl(String url);
     }
 
     public WebViewContextMenu(Activity host, InlineAttachmentViewIntentBuilder builder) {
@@ -87,6 +101,10 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
         mSupportsSms = !pm.queryIntentActivities(
                 new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:")),
                 PackageManager.MATCH_DEFAULT_ONLY).isEmpty();
+    }
+
+    public void setCallbacks(Callbacks cb) {
+        mCallbacks = cb;
     }
 
     // For our copy menu items.
@@ -324,7 +342,8 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
      * {@code false}, otherwise.
      */
     protected boolean setupImageMenu(String url, ContextMenu menu) {
-        final Intent intent = mIntentBuilder.createInlineAttachmentViewIntent(mActivity, url);
+        final Message msg = (mCallbacks != null) ? mCallbacks.getMessageForClickedUrl(url) : null;
+        final Intent intent = mIntentBuilder.createInlineAttachmentViewIntent(mActivity, url, msg);
         if (intent == null) {
             return false;
         }

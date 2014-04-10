@@ -116,7 +116,7 @@ public class SecureConversationViewController implements
                         getInlineAttachmentViewIntentCreator();
         mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(
                 mCallbacks.getFragment().getActivity(),
-                creator.createInlineAttachmentViewIntentBuilder(null, null, -1)));
+                creator.createInlineAttachmentViewIntentBuilder(null, -1)));
         mWebView.setFocusable(false);
         final WebSettings settings = mWebView.getSettings();
 

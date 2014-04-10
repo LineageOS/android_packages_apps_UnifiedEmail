@@ -17,7 +17,6 @@
 
 package com.android.mail.browse;
 
-import java.util.Map;
 
 /**
  * Creates {@link InlineAttachmentViewIntentBuilder}s. Only one
@@ -26,5 +25,5 @@ import java.util.Map;
  */
 public interface InlineAttachmentViewIntentBuilderCreator {
     InlineAttachmentViewIntentBuilder createInlineAttachmentViewIntentBuilder(
-            Map<String, String> urlToMessageIdMap, String account, long conversationId);
+            String account, long conversationId);
 }
