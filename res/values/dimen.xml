@@ -94,7 +94,7 @@
     <dimen name="account_item_folder_color_width">36dip</dimen>
     <dimen name="drawer_footer_item_padding">6dp</dimen>
     <dimen name="drawer_footer_text_padding_start">8dp</dimen>
-    <dimen name="drawer_footer_item_minimum_height">40dp</dimen>
+    <dimen name="drawer_footer_item_minimum_height">46dp</dimen>
     <dimen name="widget_subject_font_size">13sp</dimen>
     <dimen name="widget_date_font_size">12sp</dimen>
     <dimen name="widget_margin_top">0dip</dimen>
