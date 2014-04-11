@@ -38,6 +38,7 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
 
     private Context mContext;
 
+    @VisibleForTesting
     public HierarchicalFolderSelectorAdapter(Context context, Cursor folders,
             Set<String> initiallySelected, int layout, String header) {
         super(context, folders, initiallySelected, layout, header);
