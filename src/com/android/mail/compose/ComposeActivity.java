@@ -3051,6 +3051,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        i.putExtra("exit_after_record", true); // For Sound Recorder
         i.setType(type);
         mAddingAttachment = true;
         startActivityForResult(Intent.createChooser(i, getText(R.string.select_attachment_type)),
