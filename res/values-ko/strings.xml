@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"스팸메일이 없습니다."</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"휴지통이 비어 있습니다."</string>
     <string name="empty_folder" msgid="107806583742395757">"메일이 없습니다."</string>
+    <string name="getting_messages" msgid="563711962781090231">"메시지 가져오는 중"</string>
     <string name="undo" msgid="6070869718469782251">"실행취소"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개의 별표를 제거하는 중 입니다."</item>

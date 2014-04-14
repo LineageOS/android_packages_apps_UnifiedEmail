@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"እሰይ፣ እዚህ አይፈለጌ መልዕክት የለም!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"እዚህ መጣያ የለም። ለዳግም አገልግሎት ስላዋሉ እናመሰግናለን!"</string>
     <string name="empty_folder" msgid="107806583742395757">"እዚህ ምንም መልዕክት የለም።"</string>
+    <string name="getting_messages" msgid="563711962781090231">"የእርስዎን መልዕክቶች ማግኘት"</string>
     <string name="undo" msgid="6070869718469782251">"ቀልብስ"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"የ<xliff:g id="COUNT">%1$d</xliff:g> ውይይት ኮከብ በማንሳት ላይ።"</item>

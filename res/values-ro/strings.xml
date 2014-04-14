@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Ura, niciun mesaj spam!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Niciun articol în coșul de gunoi. Vă mulțumim că reciclați."</string>
     <string name="empty_folder" msgid="107806583742395757">"Nu există niciun e-mail în acest dosar."</string>
+    <string name="getting_messages" msgid="563711962781090231">"Mesaje în curs de încărcare"</string>
     <string name="undo" msgid="6070869718469782251">"Anulaţi"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Se elimină steaua pentru <xliff:g id="COUNT">%1$d</xliff:g> conversaţie."</item>

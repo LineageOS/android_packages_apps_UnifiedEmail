@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Valio, čia nėra jokio šlamšto."</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Čia nėra jokių šiukšlių. Dėkojame, kad rūpinatės švara."</string>
     <string name="empty_folder" msgid="107806583742395757">"Čia nėra jokių laiškų."</string>
+    <string name="getting_messages" msgid="563711962781090231">"Gaunami pranešimai"</string>
     <string name="undo" msgid="6070869718469782251">"Anuliuoti"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Atšaukiamas <xliff:g id="COUNT">%1$d</xliff:g> pokalb. žymėjimas žvaigždute."</item>

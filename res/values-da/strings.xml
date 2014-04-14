@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Hurra, her er ingen spam!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Papirkurven er tom. Tak, fordi du genbruger!"</string>
     <string name="empty_folder" msgid="107806583742395757">"Der er ingen e-mails her."</string>
+    <string name="getting_messages" msgid="563711962781090231">"Dine beskeder hentes"</string>
     <string name="undo" msgid="6070869718469782251">"Fortryd"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Fjerner stjernemarkering fra <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>

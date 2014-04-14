@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"هـــــورا، هرزنامه‌ای اینجا نیست!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"مورد حذف‌شده‌ای اینجا نیست. از بازیافت متشکریم!"</string>
     <string name="empty_folder" msgid="107806583742395757">"ایمیلی در اینجا موجود نیست."</string>
+    <string name="getting_messages" msgid="563711962781090231">"در حال دریافت پیام‌های شما"</string>
     <string name="undo" msgid="6070869718469782251">"لغو"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"در حال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>

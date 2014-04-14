@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"太棒了，没有任何垃圾邮件！"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"没有任何已删除的邮件。还是下次再来回收吧。"</string>
     <string name="empty_folder" msgid="107806583742395757">"此文件夹中没有任何邮件。"</string>
+    <string name="getting_messages" msgid="563711962781090231">"正在获取您的邮件"</string>
     <string name="undo" msgid="6070869718469782251">"撤消"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"正在取消 <xliff:g id="COUNT">%1$d</xliff:g> 个会话的星标。"</item>

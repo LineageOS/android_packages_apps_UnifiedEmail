@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Hurá, nemáte žádný spam!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Koš je prázdný. Děkujeme, že třídíte odpad!"</string>
     <string name="empty_folder" msgid="107806583742395757">"Není zde žádná pošta."</string>
+    <string name="getting_messages" msgid="563711962781090231">"Načítání zpráv"</string>
     <string name="undo" msgid="6070869718469782251">"Vrátit zpět"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Ruší se označení <xliff:g id="COUNT">%1$d</xliff:g> konverzace hvězdičkou."</item>

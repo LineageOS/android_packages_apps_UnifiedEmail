@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Yehey, walang spam dito!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Walang basura dito. Salamat sa pagre-recycle!"</string>
     <string name="empty_folder" msgid="107806583742395757">"Walang mail dito."</string>
+    <string name="getting_messages" msgid="563711962781090231">"Kinukuha ang iyong mga mensahe"</string>
     <string name="undo" msgid="6070869718469782251">"I-undo"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Inaalisan ng star ang <xliff:g id="COUNT">%1$d</xliff:g> (na) pag-uusap."</item>

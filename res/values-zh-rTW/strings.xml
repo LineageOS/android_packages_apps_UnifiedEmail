@@ -169,6 +169,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"太好了，這裡沒有垃圾郵件！"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"垃圾桶清空了。感謝清理！"</string>
     <string name="empty_folder" msgid="107806583742395757">"這裡沒有任何郵件。"</string>
+    <string name="getting_messages" msgid="563711962781090231">"正在擷取您的郵件"</string>
     <string name="undo" msgid="6070869718469782251">"復原"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"正在移除 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組的星號。"</item>
