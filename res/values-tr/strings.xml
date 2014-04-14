@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Ad klasörü kısayolu"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Senkronize etmek için bekleniyor"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"E-postanız birazdan görüntülenecektir."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Hesap senkronize değil"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Bu hesap otomatik olarak senkronize edilecek şekilde yapılandırılmadı.\nPostayı bir kez senkronize etmek için "<b>"Şimdi Senk Et"</b>"\'e veya bu hesabı postayı otomatik olarak senkronize edilecek şekilde ayarlamak için "<b>"Senk Ayarlarını Değiştir"</b>"\'e dokunun."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Şimdi senk et"</string>

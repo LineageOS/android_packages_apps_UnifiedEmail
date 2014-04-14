@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Kortkommando för att namnge mapp"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Väntar på synk"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Ditt e-postmeddelande visas snart."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Kontot är inte synkat"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Det här kontot har inte konfigurerats så att det synkroniseras automatiskt.\nTryck på "<b>"Synka nu"</b>" om du vill synkronisera e-post en gång eller "<b>"Ändra synkroniseringsinställn."</b>" om du vill konfigurera kontot så att e-post synkroniseras automatiskt."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synka nu"</string>

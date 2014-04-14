@@ -21,7 +21,7 @@
     <string name="to" msgid="4392614766835725698">"ถึง"</string>
     <string name="cc" msgid="7017720927911078193">"สำเนา"</string>
     <string name="bcc" msgid="3098643138241111579">"สำเนาลับ"</string>
-    <string name="subject_hint" msgid="7253964583324677128">"หัวเรื่อง"</string>
+    <string name="subject_hint" msgid="7253964583324677128">"เรื่อง"</string>
     <string name="body_hint" msgid="4279864165439577668">"เขียนอีเมล"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"แนบไฟล์"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"แนบรูปภาพ"</string>
@@ -111,11 +111,11 @@
     <string name="download_failed" msgid="442019281547315527">"โหลดไม่ได้ แตะเพื่อลองซ้ำ"</string>
     <string name="attachments_header" msgid="6459475590011460229">"ไฟล์แนบ"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"บันทึกทั้งหมด"</string>
-    <string name="menu_photo_share" msgid="2214772815165829079">"แบ่งปัน"</string>
-    <string name="menu_photo_share_all" msgid="4577299400844129078">"แบ่งปันหมด"</string>
+    <string name="menu_photo_share" msgid="2214772815165829079">"แชร์"</string>
+    <string name="menu_photo_share_all" msgid="4577299400844129078">"แชร์หมด"</string>
     <string name="menu_photo_print" msgid="1751063711206436775">"พิมพ์"</string>
     <string name="saving" msgid="925514721138014677">"กำลังบันทึก…"</string>
-    <string name="choosertitle_sharevia" msgid="6142681649048665134">"แบ่งปันผ่าน"</string>
+    <string name="choosertitle_sharevia" msgid="6142681649048665134">"แชร์ผ่าน"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"เปิดในเบราว์เซอร์"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"คัดลอก"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"คัดลอก URL ของลิงก์"</string>
@@ -125,7 +125,7 @@
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"เพิ่มรายชื่อติดต่อ"</string>
     <string name="contextmenu_send_mail" msgid="8301941130009797208">"ส่งอีเมล"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"แผนที่"</string>
-    <string name="contextmenu_sharelink" msgid="6213520416250245200">"แบ่งปันลิงก์"</string>
+    <string name="contextmenu_sharelink" msgid="6213520416250245200">"แชร์ลิงก์"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"ความช่วยเหลือ"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"ส่งความคิดเห็น"</string>
     <!-- no translation found for num_selected (5723323585692387843) -->
@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"ตั้งชื่อทางลัดของโฟลเดอร์"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"กำลังรอการซิงค์"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"อีเมลของคุณจะปรากฏในไม่ช้า"</string>
     <string name="not_synced_title" msgid="794279749170198599">"บัญชีไม่ได้ซิงค์"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"บัญชีนี้ไม่ได้รับการตั้งค่าให้ซิงค์อัตโนมัติ\nแตะ "<b>"ซิงค์เลย"</b>" เพื่อซิงค์เมลหนึ่งครั้ง หรือแตะ "<b>"เปลี่ยนการตั้งค่าการซิงค์"</b>" เพื่อตั้งค่าบัญชีนี้ให้ซิงค์เมลอัตโนมัติ"</string>
     <string name="manual_sync" msgid="6743983544685622800">"ซิงค์เลย"</string>

@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Nome scorciatoia cartella"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"In attesa di sincronizzazione"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Le email verranno visualizzate tra poco."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Account non sincronizzato"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Questo account non è configurato per la sincronizzazione automatica.\nTocca "<b>"Sincronizza ora"</b>" per sincronizzare una volta i messaggi, oppure "<b>"Modifica impostazioni sincronizzazione"</b>" per configurare la sincronizzazione automatica dei messaggi per questo account."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincronizza"</string>
