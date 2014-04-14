@@ -119,6 +119,7 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
                             // TODO: this makes these entries sort to the top after rotation
                             checked.add(folderUri.toString());
                         }
+                        mAdapter.clearSections();
                         // TODO(mindyp) : bring this back in UR8 when Email providers
                         // will have divided folder sections.
                         /* final String[] headers = mContext.getResources()
