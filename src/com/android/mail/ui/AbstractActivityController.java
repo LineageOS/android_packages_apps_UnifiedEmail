@@ -75,6 +75,7 @@ import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationPagerController;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.SyncErrorDialogFragment;
+import com.android.mail.browse.UndoCallback;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursor;
@@ -1388,6 +1389,52 @@ public abstract class AbstractActivityController implements ActivityController,
 
     public abstract boolean doesActionChangeConversationListVisibility(int action);
 
+    /**
+     * Helper function that determines if we should associate an undo callback with
+     * the current menu action item
+     * @param actionId the id of the action
+     * @return the appropriate callback handler, or null if not applicable
+     */
+    private UndoCallback getUndoCallbackForDestructiveActionsWithAutoAdvance(
+            int actionId, final Conversation conv) {
+        // We associated the undoCallback if the user is going to perform an action on the current
+        // conversation, causing the current conversation to be removed from view and replacing it
+        // with another (via Auto Advance). The undoCallback will bring the removed conversation
+        // back into the view if the action is undone.
+        final Collection<Conversation> convCol = Conversation.listOf(conv);
+        final boolean isApplicableForReshow = mAccount != null &&
+                mAccount.settings != null &&
+                mTracker != null &&
+                // ensure that we will show another conversation due to Auto Advance
+                mTracker.getNextConversation(
+                        mAccount.settings.getAutoAdvanceSetting(), convCol) != null &&
+                // ensure that we are performing the action from conversation view
+                isCurrentConversationInView(convCol) &&
+                // check for the appropriate destructive actions
+                doesActionRemoveCurrentConversationFromView(actionId);
+        return (isApplicableForReshow) ?
+            new UndoCallback() {
+                @Override
+                public void performUndoCallback() {
+                    showConversation(conv);
+                }
+            } : null;
+    }
+
+    /**
+     * Check if the provided action will remove the active conversation from view
+     * @param actionId the applied action
+     * @return true if it will remove the conversation from view, false otherwise
+     */
+    private boolean doesActionRemoveCurrentConversationFromView(int actionId) {
+        return actionId == R.id.archive ||
+                actionId == R.id.delete ||
+                actionId == R.id.remove_folder ||
+                actionId == R.id.report_spam ||
+                actionId == R.id.report_phishing ||
+                actionId == R.id.move_to;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -1414,44 +1461,50 @@ public abstract class AbstractActivityController implements ActivityController,
         // The user is choosing a new action; commit whatever they had been
         // doing before. Don't animate if we are launching a new screen.
         commitDestructiveActions(!doesActionChangeConversationListVisibility(id));
+        final UndoCallback undoCallback = getUndoCallbackForDestructiveActionsWithAutoAdvance(
+                id, mCurrentConversation);
+
         if (id == R.id.archive) {
             final boolean showDialog = (settings != null && settings.confirmArchive);
-            confirmAndDelete(id, target, showDialog, R.plurals.confirm_archive_conversation);
+            confirmAndDelete(id, target, showDialog, R.plurals.confirm_archive_conversation, undoCallback);
         } else if (id == R.id.remove_folder) {
             delete(R.id.remove_folder, target,
-                    getDeferredRemoveFolder(target, mFolder, true, isBatch, true), isBatch);
+                    getDeferredRemoveFolder(target, mFolder, true, isBatch, true, undoCallback),
+                    isBatch);
         } else if (id == R.id.delete) {
             final boolean showDialog = (settings != null && settings.confirmDelete);
-            confirmAndDelete(id, target, showDialog, R.plurals.confirm_delete_conversation);
+            confirmAndDelete(id, target, showDialog, R.plurals.confirm_delete_conversation, undoCallback);
         } else if (id == R.id.discard_drafts) {
             // drafts are lost forever, so always confirm
             confirmAndDelete(id, target, true /* showDialog */,
-                    R.plurals.confirm_discard_drafts_conversation);
+                    R.plurals.confirm_discard_drafts_conversation, undoCallback);
         } else if (id == R.id.mark_important) {
             updateConversation(Conversation.listOf(mCurrentConversation),
                     ConversationColumns.PRIORITY, UIProvider.ConversationPriority.HIGH);
         } else if (id == R.id.mark_not_important) {
             if (mFolder != null && mFolder.isImportantOnly()) {
                 delete(R.id.mark_not_important, target,
-                        getDeferredAction(R.id.mark_not_important, target, isBatch), isBatch);
+                        getDeferredAction(R.id.mark_not_important, target, isBatch, undoCallback),
+                        isBatch);
             } else {
                 updateConversation(Conversation.listOf(mCurrentConversation),
                         ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
             }
         } else if (id == R.id.mute) {
-            delete(R.id.mute, target, getDeferredAction(R.id.mute, target, isBatch), isBatch);
+            delete(R.id.mute, target, getDeferredAction(R.id.mute, target, isBatch, undoCallback),
+                    isBatch);
         } else if (id == R.id.report_spam) {
             delete(R.id.report_spam, target,
-                    getDeferredAction(R.id.report_spam, target, isBatch), isBatch);
+                    getDeferredAction(R.id.report_spam, target, isBatch, undoCallback), isBatch);
         } else if (id == R.id.mark_not_spam) {
             // Currently, since spam messages are only shown in list with
             // other spam messages,
             // marking a message not as spam is a destructive action
             delete(R.id.mark_not_spam, target,
-                    getDeferredAction(R.id.mark_not_spam, target, isBatch), isBatch);
+                    getDeferredAction(R.id.mark_not_spam, target, isBatch, undoCallback), isBatch);
         } else if (id == R.id.report_phishing) {
             delete(R.id.report_phishing, target,
-                    getDeferredAction(R.id.report_phishing, target, isBatch), isBatch);
+                    getDeferredAction(R.id.report_phishing, target, isBatch, undoCallback), isBatch);
         } else if (id == android.R.id.home) {
             onUpPressed();
         } else if (id == R.id.compose) {
@@ -1794,6 +1847,18 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
+     * Helper function to determine if the provided set of conversations is in view
+     * @param target set of conversations that we are interested in
+     * @return true if they are in view, false otherwise
+     */
+    private boolean isCurrentConversationInView(final Collection<Conversation> target) {
+        final int viewMode = mViewMode.getMode();
+        return (viewMode == ViewMode.CONVERSATION
+                || viewMode == ViewMode.SEARCH_RESULTS_CONVERSATION)
+                && Conversation.contains(target, mCurrentConversation);
+    }
+
+    /**
      * Auto-advance to a different conversation if the currently visible conversation in
      * conversation mode is affected (deleted, marked unread, etc.).
      *
@@ -1817,12 +1882,7 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     private boolean showNextConversation(final Collection<Conversation> target,
             final Runnable operation) {
-        final int viewMode = mViewMode.getMode();
-        final boolean currentConversationInView = (viewMode == ViewMode.CONVERSATION
-                || viewMode == ViewMode.SEARCH_RESULTS_CONVERSATION)
-                && Conversation.contains(target, mCurrentConversation);
-
-        if (currentConversationInView) {
+        if (isCurrentConversationInView(target)) {
             final int autoAdvanceSetting = mAccount.settings.getAutoAdvanceSetting();
 
             if (autoAdvanceSetting == AutoAdvance.UNSET && mIsTablet) {
@@ -1958,16 +2018,16 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param confirmResource the resource ID of the string that is shown in the confirmation dialog
      */
     private void confirmAndDelete(int actionId, final Collection<Conversation> target,
-            boolean showDialog, int confirmResource) {
+            boolean showDialog, int confirmResource, UndoCallback undoCallback) {
         final boolean isBatch = false;
         if (showDialog) {
-            makeDialogListener(actionId, isBatch);
+            makeDialogListener(actionId, isBatch, undoCallback);
             final CharSequence message = Utils.formatPlural(mContext, confirmResource,
                     target.size());
             final ConfirmDialogFragment c = ConfirmDialogFragment.newInstance(message);
             c.displayDialog(mActivity.getFragmentManager());
         } else {
-            delete(0, target, getDeferredAction(actionId, target, isBatch), isBatch);
+            delete(0, target, getDeferredAction(actionId, target, isBatch, undoCallback), isBatch);
         }
     }
 
@@ -2314,7 +2374,9 @@ public abstract class AbstractActivityController implements ActivityController,
         // If there has been an orientation change, and we need to recreate the listener for the
         // confirm dialog fragment (delete/archive/...), then do it here.
         if (mDialogAction != -1) {
-            makeDialogListener(mDialogAction, mDialogFromSelectedSet);
+            makeDialogListener(mDialogAction, mDialogFromSelectedSet,
+                    getUndoCallbackForDestructiveActionsWithAutoAdvance(
+                            mDialogAction, mCurrentConversation));
         }
 
         mInbox = savedState.getParcelable(SAVED_INBOX_KEY);
@@ -2436,20 +2498,15 @@ public abstract class AbstractActivityController implements ActivityController,
         mSelectedSet.putAll(selectedSet);
     }
 
-    private void showConversation(Conversation conversation) {
-        showConversation(conversation, false /* inLoaderCallbacks */);
-    }
-
     /**
      * Show the conversation provided in the arguments. It is safe to pass a null conversation
      * object, which is a signal to back out of conversation view mode.
      * Child classes must call super.showConversation() <b>before</b> their own implementations.
      * @param conversation the conversation to be shown, or null if we want to back out to list
      *                     mode.
-     * @param inLoaderCallbacks true if the method is called as a result of
      * onLoadFinished(Loader, Cursor) on any callback.
      */
-    protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
+    protected void showConversation(Conversation conversation) {
         if (conversation != null) {
             Utils.sConvLoadTimer.start();
         }
@@ -2533,7 +2590,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // Only animate destructive actions if we are going to be showing the
         // conversation list when we show the next conversation.
         commitDestructiveActions(mIsTablet);
-        showConversation(conversation, inLoaderCallbacks);
+        showConversation(conversation);
     }
 
     @Override
@@ -2803,6 +2860,8 @@ public abstract class AbstractActivityController implements ActivityController,
         /** Whether this is an action on the currently selected set. */
         private final boolean mIsSelectedSet;
 
+        private UndoCallback mCallback;
+
         /**
          * Create a listener object.
          * @param action action is one of four constants: R.id.y_button (archive),
@@ -2814,6 +2873,11 @@ public abstract class AbstractActivityController implements ActivityController,
             mAction = action;
             mTarget = ImmutableList.copyOf(target);
             mIsSelectedSet = isBatch;
+        }
+
+        @Override
+        public void setUndoCallback(UndoCallback undoCallback) {
+            mCallback = undoCallback;
         }
 
         /**
@@ -2843,10 +2907,10 @@ public abstract class AbstractActivityController implements ActivityController,
 
             if (mAction == R.id.archive) {
                 LogUtils.d(LOG_TAG, "Archiving");
-                mConversationListCursor.archive(mTarget);
+                mConversationListCursor.archive(mTarget, mCallback);
             } else if (mAction == R.id.delete) {
                 LogUtils.d(LOG_TAG, "Deleting");
-                mConversationListCursor.delete(mTarget);
+                mConversationListCursor.delete(mTarget, mCallback);
                 if (mFolder.supportsCapability(FolderCapabilities.DELETE_ACTION_FINAL)) {
                     undoEnabled = false;
                 }
@@ -2857,16 +2921,16 @@ public abstract class AbstractActivityController implements ActivityController,
                         c.localDeleteOnUpdate = true;
                     }
                 }
-                mConversationListCursor.mute(mTarget);
+                mConversationListCursor.mute(mTarget, mCallback);
             } else if (mAction == R.id.report_spam) {
                 LogUtils.d(LOG_TAG, "Reporting spam");
-                mConversationListCursor.reportSpam(mTarget);
+                mConversationListCursor.reportSpam(mTarget, mCallback);
             } else if (mAction == R.id.mark_not_spam) {
                 LogUtils.d(LOG_TAG, "Marking not spam");
-                mConversationListCursor.reportNotSpam(mTarget);
+                mConversationListCursor.reportNotSpam(mTarget, mCallback);
             } else if (mAction == R.id.report_phishing) {
                 LogUtils.d(LOG_TAG, "Reporting phishing");
-                mConversationListCursor.reportPhishing(mTarget);
+                mConversationListCursor.reportPhishing(mTarget, mCallback);
             } else if (mAction == R.id.remove_star) {
                 LogUtils.d(LOG_TAG, "Removing star");
                 // Star removal is destructive in the Starred folder.
@@ -2942,6 +3006,10 @@ public abstract class AbstractActivityController implements ActivityController,
             }
         }
         final DestructiveAction folderChange;
+        final UndoCallback undoCallback = isMoveTo ?
+                getUndoCallbackForDestructiveActionsWithAutoAdvance(R.id.move_to,
+                        mCurrentConversation)
+                : null;
         // Update the UI elements depending no their visibility and availability
         // TODO(viki): Consolidate this into a single method requestDelete.
         if (isDestructive) {
@@ -2974,11 +3042,11 @@ public abstract class AbstractActivityController implements ActivityController,
             }
 
             folderChange = getDeferredFolderChange(target, folderOps, isDestructive,
-                    batch, showUndo, isMoveTo, actionFolder);
+                    batch, showUndo, isMoveTo, actionFolder, undoCallback);
             delete(0, target, folderChange, batch);
         } else {
             folderChange = getFolderChange(target, folderOps, isDestructive,
-                    batch, showUndo, false /* isMoveTo */, mFolder);
+                    batch, showUndo, false /* isMoveTo */, mFolder, undoCallback);
             requestUpdate(folderChange);
         }
     }
@@ -3258,7 +3326,8 @@ public abstract class AbstractActivityController implements ActivityController,
         // current folder.
         final DestructiveAction action =
                 getFolderChange(conversations, dragDropOperations, isDestructive,
-                        true /* isBatch */, true /* showUndo */, true /* isMoveTo */, folder);
+                        true /* isBatch */, true /* showUndo */, true /* isMoveTo */, folder,
+                        null /* undoCallback */);
         if (isDestructive) {
             delete(0, conversations, action, true);
         } else {
@@ -3321,6 +3390,11 @@ public abstract class AbstractActivityController implements ActivityController,
             mConversations = conversations;
             mInitialFolder = initialFolder;
             mStarred = starredFolder;
+        }
+
+        @Override
+        public void setUndoCallback(UndoCallback undoCallback) {
+            return;     // currently not applicable
         }
 
         @Override
@@ -3769,15 +3843,16 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public final DestructiveAction getBatchAction(int action) {
+    public final DestructiveAction getBatchAction(int action, UndoCallback undoCallback) {
         final DestructiveAction da = new ConversationAction(action, mSelectedSet.values(), true);
+        da.setUndoCallback(undoCallback);
         registerDestructiveAction(da);
         return da;
     }
 
     @Override
-    public final DestructiveAction getDeferredBatchAction(int action) {
-        return getDeferredAction(action, mSelectedSet.values(), true);
+    public final DestructiveAction getDeferredBatchAction(int action, UndoCallback undoCallback) {
+        return getDeferredAction(action, mSelectedSet.values(), true, undoCallback);
     }
 
     /**
@@ -3790,8 +3865,10 @@ public abstract class AbstractActivityController implements ActivityController,
      * @return a {@link DestructiveAction} that performs the specified action.
      */
     private DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
-            boolean batch) {
-        return new ConversationAction(action, target, batch);
+            boolean batch, UndoCallback callback) {
+        ConversationAction cAction = new ConversationAction(action, target, batch);
+        cAction.setUndoCallback(callback);
+        return cAction;
     }
 
     /**
@@ -3810,6 +3887,8 @@ public abstract class AbstractActivityController implements ActivityController,
         private final int mAction;
         private final Folder mActionFolder;
 
+        private UndoCallback mUndoCallback;
+
         /**
          * Create a new folder destruction object to act on the given conversations.
          * @param target conversations to act upon.
@@ -3825,6 +3904,11 @@ public abstract class AbstractActivityController implements ActivityController,
             mShowUndo = showUndo;
             mAction = action;
             mActionFolder = actionFolder;
+        }
+
+        @Override
+        public void setUndoCallback(UndoCallback undoCallback) {
+            mUndoCallback = undoCallback;
         }
 
         @Override
@@ -3860,7 +3944,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     }
                 }
                 ops.add(mConversationListCursor.getConversationFolderOperation(target,
-                        folderUris, adds, targetFolders.values()));
+                        folderUris, adds, targetFolders.values(), mUndoCallback));
             }
             if (mConversationListCursor != null) {
                 mConversationListCursor.updateBulkValues(ops);
@@ -3886,28 +3970,34 @@ public abstract class AbstractActivityController implements ActivityController,
 
     public final DestructiveAction getFolderChange(Collection<Conversation> target,
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
-            boolean showUndo, final boolean isMoveTo, final Folder actionFolder) {
+            boolean showUndo, final boolean isMoveTo, final Folder actionFolder,
+            UndoCallback undoCallback) {
         final DestructiveAction da = getDeferredFolderChange(target, folders, isDestructive,
-                isBatch, showUndo, isMoveTo, actionFolder);
+                isBatch, showUndo, isMoveTo, actionFolder, undoCallback);
         registerDestructiveAction(da);
         return da;
     }
 
     public final DestructiveAction getDeferredFolderChange(Collection<Conversation> target,
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
-            boolean showUndo, final boolean isMoveTo, final Folder actionFolder) {
-        return new FolderDestruction(target, folders, isDestructive, isBatch, showUndo,
-                isMoveTo ? R.id.move_folder : R.id.change_folders, actionFolder);
+            boolean showUndo, final boolean isMoveTo, final Folder actionFolder,
+            UndoCallback undoCallback) {
+        final DestructiveAction fd = new FolderDestruction(target, folders, isDestructive, isBatch,
+                showUndo, isMoveTo ? R.id.move_folder : R.id.change_folders, actionFolder);
+        fd.setUndoCallback(undoCallback);
+        return fd;
     }
 
     @Override
     public final DestructiveAction getDeferredRemoveFolder(Collection<Conversation> target,
             Folder toRemove, boolean isDestructive, boolean isBatch,
-            boolean showUndo) {
+            boolean showUndo, UndoCallback undoCallback) {
         Collection<FolderOperation> folderOps = new ArrayList<FolderOperation>();
         folderOps.add(new FolderOperation(toRemove, false));
-        return new FolderDestruction(target, folderOps, isDestructive, isBatch,
+        final DestructiveAction da = new FolderDestruction(target, folderOps, isDestructive, isBatch,
                 showUndo, R.id.remove_folder, mFolder);
+        da.setUndoCallback(undoCallback);
+        return da;
     }
 
     @Override
@@ -4112,7 +4202,8 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void makeDialogListener (final int action, final boolean isBatch) {
+    public void makeDialogListener (final int action, final boolean isBatch,
+            UndoCallback undoCallback) {
         final Collection<Conversation> target;
         if (isBatch) {
             target = mSelectedSet.values();
@@ -4120,7 +4211,8 @@ public abstract class AbstractActivityController implements ActivityController,
             LogUtils.d(LOG_TAG, "Will act upon %s", mCurrentConversation);
             target = Conversation.listOf(mCurrentConversation);
         }
-        final DestructiveAction destructiveAction = getDeferredAction(action, target, isBatch);
+        final DestructiveAction destructiveAction = getDeferredAction(action, target, isBatch,
+                undoCallback);
         mDialogAction = action;
         mDialogFromSelectedSet = isBatch;
         mDialogListener = new AlertDialog.OnClickListener() {
