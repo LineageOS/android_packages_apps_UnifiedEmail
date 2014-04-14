@@ -33,4 +33,8 @@ public final class FullMessageContract {
      * String extra for the account to which the message belongs.
      */
     public static final String EXTRA_ACCOUNT_NAME = "account-name";
+    /**
+     * (Optional) String extra for the server message id of the message.
+     */
+    public static final String EXTRA_SERVER_MESSAGE_ID = "server-message-id";
 }
