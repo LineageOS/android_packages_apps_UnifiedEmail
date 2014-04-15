@@ -296,10 +296,12 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         intent.setClassName(context, activityName);
         final Account account = getAccount();
         if (account != null) {
-            final Conversation conv = mMessageHeaderItem.getMessage().getConversation();
+            final ConversationMessage message = mMessageHeaderItem.getMessage();
+            final Conversation conv = message.getConversation();
             intent.putExtra(AccountFeedbackActivity.EXTRA_ACCOUNT_URI, account.uri);
             intent.putExtra(FullMessageContract.EXTRA_PERMALINK, conv.permalink);
             intent.putExtra(FullMessageContract.EXTRA_ACCOUNT_NAME, account.getEmailAddress());
+            intent.putExtra(FullMessageContract.EXTRA_SERVER_MESSAGE_ID, message.serverId);
             context.startActivity(intent);
         }
     }
