@@ -576,6 +576,10 @@ function restoreScrollPosition() {
 }
 
 function onContentReady(event) {
+    // hack for b/1333356
+    if (RUNNING_KITKAT_OR_LATER) {
+        restoreScrollPosition();
+    }
     window.mail.onContentReady();
 }
 
@@ -779,6 +783,9 @@ collapseAllQuotedText();
 hideAllUnsafeImages();
 normalizeAllMessageWidths();
 //setWideViewport();
-restoreScrollPosition();
+// hack for b/1333356
+if (!RUNNING_KITKAT_OR_LATER) {
+    restoreScrollPosition();
+}
 measurePositions();
 
