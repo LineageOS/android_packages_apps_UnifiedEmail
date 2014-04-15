@@ -367,6 +367,27 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
     }
 
+    /**
+     * Helper function to ensure that the menu items that are prone to variable changes and race
+     * conditions are properly set to the correct visibility
+     */
+    public void validateVolatileMenuOptionVisibility() {
+        if (mFolderSettingsItem != null) {
+            mFolderSettingsItem.setVisible(mFolder != null
+                    && mFolder.supportsCapability(FolderCapabilities.SUPPORTS_SETTINGS));
+        }
+        if (mEmptyTrashItem != null) {
+            mEmptyTrashItem.setVisible(mAccount != null && mFolder != null
+                    && mAccount.supportsCapability(AccountCapabilities.EMPTY_TRASH)
+                    && mFolder.isTrash() && mFolder.totalCount > 0);
+        }
+        if (mEmptySpamItem != null) {
+            mEmptySpamItem.setVisible(mAccount != null && mFolder != null
+                    && mAccount.supportsCapability(AccountCapabilities.EMPTY_SPAM)
+                    && mFolder.isType(FolderType.SPAM) && mFolder.totalCount > 0);
+        }
+    }
+
     public boolean onPrepareOptionsMenu(Menu menu) {
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
@@ -403,20 +424,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             }
             return false;
         }
-        if (mFolderSettingsItem != null) {
-            mFolderSettingsItem.setVisible(mFolder != null
-                    && mFolder.supportsCapability(FolderCapabilities.SUPPORTS_SETTINGS));
-        }
-        if (mEmptyTrashItem != null) {
-            mEmptyTrashItem.setVisible(mAccount != null && mFolder != null
-                    && mAccount.supportsCapability(AccountCapabilities.EMPTY_TRASH)
-                    && mFolder.isTrash() && mFolder.totalCount > 0);
-        }
-        if (mEmptySpamItem != null) {
-            mEmptySpamItem.setVisible(mAccount != null && mFolder != null
-                    && mAccount.supportsCapability(AccountCapabilities.EMPTY_SPAM)
-                    && mFolder.isType(FolderType.SPAM) && mFolder.totalCount > 0);
-        }
+        validateVolatileMenuOptionVisibility();
 
         switch (getMode()) {
             case ViewMode.CONVERSATION:
@@ -767,6 +775,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (changingFolders && !ConversationListContext.isSearchResult(listContext)) {
             closeSearchField();
         }
+        // make sure that we re-validate the optional menu items
+        validateVolatileMenuOptionVisibility();
     }
 
     @Override
