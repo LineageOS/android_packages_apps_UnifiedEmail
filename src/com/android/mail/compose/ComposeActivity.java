@@ -330,14 +330,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /**
      * Can be called from a non-UI thread.
      */
-    public static void composeWithQuotedText(Context launcher, Account account,
-            String quotedText, String subject, final ContentValues extraValues) {
-        launch(launcher, account, null, COMPOSE, null, null, quotedText, subject, extraValues);
-    }
-
-    /**
-     * Can be called from a non-UI thread.
-     */
     public static void composeWithExtraValues(Context launcher, Account account,
             String subject, final ContentValues extraValues) {
         launch(launcher, account, null, COMPOSE, null, null, null, subject, extraValues);
