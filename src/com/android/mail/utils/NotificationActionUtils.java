@@ -357,11 +357,6 @@ public class NotificationActionUtils {
                 final Intent intent = createReplyIntent(context, account, messageUri, false);
                 intent.setPackage(context.getPackageName());
                 intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
-                // To make sure that the reply intents one notification don't clobber over
-                // intents for other notification, force a data uri on the intent
-                final Uri notificationUri =
-                        Uri.parse("mailfrom://mail/account/" + "reply/" + notificationId);
-                intent.setData(notificationUri);
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(intent);
 
@@ -375,11 +370,6 @@ public class NotificationActionUtils {
                 final Intent intent = createReplyIntent(context, account, messageUri, true);
                 intent.setPackage(context.getPackageName());
                 intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
-                // To make sure that the reply intents one notification don't clobber over
-                // intents for other notification, force a data uri on the intent
-                final Uri notificationUri =
-                        Uri.parse("mailfrom://mail/account/" + "replyall/" + notificationId);
-                intent.setData(notificationUri);
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(intent);
 
