@@ -397,16 +397,6 @@ public class NotificationActionUtils {
         return intent;
     }
 
-    /**
-     * @return an intent which, if launched, will forward the conversation
-     */
-    public static Intent createForwardIntent(
-            final Context context, final Account account, final Uri messageUri) {
-        final Intent intent = ComposeActivity.createForwardIntent(context, account, messageUri);
-        intent.putExtra(Utils.EXTRA_FROM_NOTIFICATION, true);
-        return intent;
-    }
-
     public static class NotificationAction implements Parcelable {
         private final NotificationActionType mNotificationActionType;
         private final Account mAccount;
