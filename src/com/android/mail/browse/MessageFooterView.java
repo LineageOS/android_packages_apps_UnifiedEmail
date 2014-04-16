@@ -39,7 +39,6 @@ import com.android.mail.browse.ConversationContainer.DetachListener;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
-import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.ui.AccountFeedbackActivity;
 import com.android.mail.ui.AttachmentTile;
@@ -295,11 +294,10 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         }
         intent.setClassName(context, activityName);
         final Account account = getAccount();
-        if (account != null) {
-            final ConversationMessage message = mMessageHeaderItem.getMessage();
-            final Conversation conv = message.getConversation();
+        final ConversationMessage message = mMessageHeaderItem.getMessage();
+        if (account != null && message.permalink != null) {
             intent.putExtra(AccountFeedbackActivity.EXTRA_ACCOUNT_URI, account.uri);
-            intent.putExtra(FullMessageContract.EXTRA_PERMALINK, conv.permalink);
+            intent.putExtra(FullMessageContract.EXTRA_PERMALINK, message.permalink);
             intent.putExtra(FullMessageContract.EXTRA_ACCOUNT_NAME, account.getEmailAddress());
             intent.putExtra(FullMessageContract.EXTRA_SERVER_MESSAGE_ID, message.serverId);
             context.startActivity(intent);

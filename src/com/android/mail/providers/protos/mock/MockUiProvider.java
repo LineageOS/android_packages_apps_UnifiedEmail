@@ -199,7 +199,6 @@ public final class MockUiProvider extends ContentProvider {
         conversationMap.put(ConversationColumns.STARRED, 0);
         conversationMap.put(ConversationColumns.CONVERSATION_INFO,
                 generateConversationInfo(messageCount, draftCount));
-        conversationMap.put(ConversationColumns.PERMALINK, null);
         final List<Folder> folders = new ArrayList<Folder>(3);
         for (int i = 0; i < 3; i++) {
             final Folder folder = Folder.newUnsafeInstance();

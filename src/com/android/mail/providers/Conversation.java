@@ -157,10 +157,6 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#REMOTE
      */
     public final boolean isRemote;
-    /**
-     * @see UIProvider.ConversationColumns#PERMALINK
-     */
-    public final String permalink;
 
     /**
      * Used within the UI to indicate the adapter position of this conversation
@@ -224,7 +220,6 @@ public class Conversation implements Parcelable {
         dest.writeString(attachmentPreviewUri1);
         dest.writeInt(attachmentPreviewStates);
         dest.writeInt(attachmentPreviewsCount);
-        dest.writeString(permalink);
     }
 
     private Conversation(Parcel in, ClassLoader loader) {
@@ -257,7 +252,6 @@ public class Conversation implements Parcelable {
         attachmentPreviewUri1 = in.readString();
         attachmentPreviewStates = in.readInt();
         attachmentPreviewsCount = in.readInt();
-        permalink = in.readString();
     }
 
     @Override
@@ -351,7 +345,6 @@ public class Conversation implements Parcelable {
                 UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN);
         attachmentPreviewsCount = cursor.getInt(
                 UIProvider.CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN);
-        permalink = cursor.getString(UIProvider.CONVERSATION_PERMALINK_COLUMN);
     }
 
     public Conversation(Conversation other) {
@@ -390,7 +383,6 @@ public class Conversation implements Parcelable {
         attachmentPreviewUri1 = other.attachmentPreviewUri1;
         attachmentPreviewStates = other.attachmentPreviewStates;
         attachmentPreviewsCount = other.attachmentPreviewsCount;
-        permalink = other.permalink;
     }
 
     private Conversation(long id, Uri uri, String subject, long dateMs,
@@ -431,7 +423,6 @@ public class Conversation implements Parcelable {
         this.attachmentPreviewUri1 = attachmentPreviewUri1;
         this.attachmentPreviewStates = attachmentPreviewStates;
         this.attachmentPreviewsCount = attachmentPreviewsCount;
-        this.permalink = permalink;
     }
 
     public static class Builder {
