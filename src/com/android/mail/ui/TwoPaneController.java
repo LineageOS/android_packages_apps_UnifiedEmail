@@ -121,6 +121,8 @@ public final class TwoPaneController extends AbstractActivityController {
     public boolean onCreate(Bundle savedState) {
         mActivity.setContentView(R.layout.two_pane_activity);
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
+        mDrawerContainer.setDrawerTitle(Gravity.START,
+                mActivity.getActivityContext().getString(R.string.drawer_title));
         mDrawerPullout = mDrawerContainer.findViewById(R.id.content_pane);
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
         if (mLayout == null) {
