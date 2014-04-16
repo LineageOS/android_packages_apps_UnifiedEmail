@@ -39,6 +39,7 @@ import android.widget.TextView;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.analytics.AnalyticsTimer;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewModel;
@@ -623,6 +624,7 @@ public final class ConversationListFragment extends ListFragment implements
                     // this is a peek.
                     Analytics.getInstance().sendEvent("peek", null, null, mSelectedSet.size());
                 }
+                AnalyticsTimer.getInstance().trackStart(AnalyticsTimer.OPEN_CONV_VIEW_FROM_LIST);
                 viewConversation(position);
             }
         } else {

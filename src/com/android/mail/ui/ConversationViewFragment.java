@@ -47,6 +47,7 @@ import com.android.emailcommon.mail.Address;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.analytics.AnalyticsTimer;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationContainer.OverlayPosition;
 import com.android.mail.browse.ConversationMessage;
@@ -619,6 +620,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     private void revealConversation() {
         timerMark("revealing conversation");
         mProgressController.dismissLoadingStatus(mOnProgressDismiss);
+        if (isUserVisible()) {
+            AnalyticsTimer.getInstance().logDuration(AnalyticsTimer.OPEN_CONV_VIEW_FROM_LIST,
+                    true /* isDestructive */, "open_conversation", "from_list", null);
+        }
     }
 
     private boolean isLoadWaiting() {

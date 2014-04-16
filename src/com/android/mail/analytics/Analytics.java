@@ -85,6 +85,9 @@ public final class Analytics {
         public void sendEvent(String category, String action, String label, long value) {}
 
         @Override
+        public void sendTiming(String category, long millis, String name, String label) {}
+
+        @Override
         public void sendMenuItemEvent(String category, int itemResId, String label, long value) {}
 
         @Override

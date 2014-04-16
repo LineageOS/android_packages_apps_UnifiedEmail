@@ -27,6 +27,7 @@ public interface Tracker {
     void activityStart(Activity a);
     void activityStop(Activity a);
     void sendEvent(String category, String action, String label, long value);
+    void sendTiming(String category, long millis, String name, String label);
     void sendMenuItemEvent(String category, int itemResId, String label, long value);
     void sendView(String view);
     void setCustomDimension(int index, String value);
