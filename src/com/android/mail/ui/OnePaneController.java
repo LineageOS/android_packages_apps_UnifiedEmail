@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
@@ -129,6 +130,8 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean onCreate(Bundle savedInstanceState) {
         mActivity.setContentView(R.layout.one_pane_activity);
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
+        mDrawerContainer.setDrawerTitle(Gravity.START,
+                mActivity.getActivityContext().getString(R.string.drawer_title));
         final String drawerPulloutTag = mActivity.getString(R.string.drawer_pullout_tag);
         mDrawerPullout = mDrawerContainer.findViewWithTag(drawerPulloutTag);
         mDrawerPullout.setBackgroundResource(R.color.list_background_color);

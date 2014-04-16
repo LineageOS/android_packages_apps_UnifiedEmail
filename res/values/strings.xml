@@ -167,6 +167,8 @@
     <string name="menu_settings">Settings</string>
     <!-- Menu item: search through the Gmail inbox -->
     <string name="menu_search">Search</string>
+    <!-- Title of the drawer, indicating what it is used for, which is navigation of the app -->
+    <string name="drawer_title">Navigation</string>
 
     <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as important [CHAR LIMIT=30] -->
     <string name="mark_important">Mark important</string>
