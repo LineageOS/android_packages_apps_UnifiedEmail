@@ -91,7 +91,7 @@ public class ScrollNotifyingListView extends ListView implements ScrollNotifier 
         @SuppressWarnings("unused")
         public void onScrollChanged(int l, int t, int oldl, int oldt) {
             for (ScrollListener sl : mObservers) {
-                sl.onNotifierScroll(t);
+                sl.onNotifierScroll(l, t);
             }
         }
 

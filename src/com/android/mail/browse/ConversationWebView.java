@@ -180,7 +180,7 @@ public class ConversationWebView extends MailWebView implements ScrollNotifier {
         super.onScrollChanged(l, t, oldl, oldt);
 
         for (ScrollListener listener : mScrollListeners) {
-            listener.onNotifierScroll(t);
+            listener.onNotifierScroll(l, t);
         }
     }
 

@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.DataSetObserver;
+import android.graphics.Canvas;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -62,14 +63,8 @@ import java.util.List;
  * sandwich has unique characteristics: the list items are scrolled based on an external controller,
  * and we happen to know all of the overlay positions up front. So it didn't make sense to shoehorn
  * a ListView in and instead, we rolled our own view recycler by borrowing key details from
- * ListView and AbsListView.<br/><br/>
+ * ListView and AbsListView.
  *
- * There is one additional constraint with the recycling: since scroll
- * notifications happen during the WebView's draw, we do not remove and re-add views for recycling.
- * Instead, we simply move the views off-screen and add them to our recycle cache. When the views
- * are reused, they are simply moved back on screen instead of added. This practice
- * circumvents the issues found when views are added or removed during draw (which results in
- * elements not being drawn and other visual oddities). See b/10994303 for more details.
  */
 public class ConversationContainer extends ViewGroup implements ScrollListener {
     private static final String TAG = ConversationViewFragment.LAYOUT_TAG;
@@ -94,6 +89,20 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private OverlayPosition[] mOverlayPositions;
     private ConversationWebView mWebView;
     private SnapHeader mSnapHeader;
+    private View mTopMostOverlay;
+
+    /**
+     * This is a hack.
+     *
+     * <p>Without this hack enabled, very fast scrolling can sometimes cause the top-most layers
+     * to skip being drawn for a frame or two. It happens specifically when overlay views are
+     * attached or added, and WebView happens to draw (on its own) immediately afterwards.
+     *
+     * <p>The workaround is to force an additional draw of the top-most overlay. Since the problem
+     * only occurs when scrolling overlays are added, restrict the additional draw to only occur
+     * if scrolling overlays were added since the last draw.
+     */
+    private boolean mAttachedOverlaySinceLastDraw;
 
     private final List<View> mNonScrollingChildren = Lists.newArrayList();
 
@@ -169,7 +178,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     /**
      * The adapter index of the lowest overlay item that is above the top of the screen and reports
      * {@link ConversationOverlayItem#canPushSnapHeader()}. We calculate this after a pass through
-     * {@link #positionOverlays}.
+     * {@link #positionOverlays(int, int)}.
      *
      */
     private int mSnapIndex;
@@ -254,6 +263,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         mWebView = (ConversationWebView) findViewById(R.id.webview);
         mWebView.addScrollListener(this);
 
+        mTopMostOverlay = findViewById(R.id.conversation_topmost_overlay);
+
         for (int id : BOTTOM_LAYER_VIEW_IDS) {
             mNonScrollingChildren.add(findViewById(id));
         }
@@ -335,7 +346,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private void clearOverlays() {
         for (int i = 0, len = mOverlayViews.size(); i < len; i++) {
-            detachOverlay(mOverlayViews.valueAt(i), true /* removeFromContainer */);
+            detachOverlay(mOverlayViews.valueAt(i));
         }
         mOverlayViews.clear();
     }
@@ -356,7 +367,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         mAdditionalBottomBorderAdded = false;
 
         mSnapEnabled = isSnapEnabled();
-        positionOverlays(mOffsetY, false /* postAddView */);
+        positionOverlays(0, mOffsetY);
     }
 
     private void forwardFakeMotionEvent(MotionEvent original, int newAction) {
@@ -439,23 +450,14 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     @Override
-    public void onNotifierScroll(final int y) {
+    public void onNotifierScroll(final int x, final int y) {
         mVelocityTracker.onInput(y);
         mDisableLayoutTracing = true;
-        positionOverlays(y, true /* postAddView */); // post the addView since we're in draw code
+        positionOverlays(x, y);
         mDisableLayoutTracing = false;
     }
 
-    /**
-     * Positions the overlays given an updated y position for the container.
-     * @param y the current top position on screen
-     * @param postAddView If {@code true}, posts all calls to
-     *                    {@link #addViewInLayoutWrapper(android.view.View, boolean)}
-     *                    to the UI thread rather than adding it immediately. If {@code false},
-     *                    calls {@link #addViewInLayoutWrapper(android.view.View, boolean)}
-     *                    immediately.
-     */
-    private void positionOverlays(int y, boolean postAddView) {
+    private void positionOverlays(int x, int y) {
         mOffsetY = y;
 
         /*
@@ -523,7 +525,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
             traceLayout("in loop, spacer=%d overlay=%d t/b=%d/%d (%s)", spacerIndex, adapterIndex,
                     itemPos.top, itemPos.bottom, adapterItem);
-            positionOverlay(adapterIndex, itemPos.top, itemPos.bottom, postAddView);
+            positionOverlay(adapterIndex, itemPos.top, itemPos.bottom);
 
             // and keep stacking overlays unconditionally if we are on the first spacer, or as long
             // as overlays are contiguous
@@ -543,21 +545,21 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
                 traceLayout("in contig loop, spacer=%d overlay=%d t/b=%d/%d (%s)", spacerIndex,
                         adapterIndex, itemPos.top, itemPos.bottom, adapterItem);
-                positionOverlay(adapterIndex, itemPos.top, itemPos.bottom, postAddView);
+                positionOverlay(adapterIndex, itemPos.top, itemPos.bottom);
             }
 
             spacerIndex--;
         }
 
         positionSnapHeader(mSnapIndex);
-        positionAdditionalBottomBorder(postAddView);
+        positionAdditionalBottomBorder();
     }
 
     /**
      * Adds an additional bottom border to the overlay views in case
      * the overlays do not fill the entire screen.
      */
-    private void positionAdditionalBottomBorder(boolean postAddView) {
+    private void positionAdditionalBottomBorder() {
         final int lastBottom = mAdditionalBottomBorderOverlayTop;
         final int containerHeight = webPxToScreenPx(mWebView.getContentHeight());
         final int speculativeHeight = containerHeight - lastBottom;
@@ -570,7 +572,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             setAdditionalBottomBorderHeight(speculativeHeight);
 
             if (!mAdditionalBottomBorderAdded) {
-                addViewInLayoutWrapper(mAdditionalBottomBorder, postAddView);
+                addViewInLayoutWrapper(mAdditionalBottomBorder);
                 mAdditionalBottomBorderAdded = true;
             }
 
@@ -647,11 +649,18 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private void onOverlayScrolledOff(final int adapterIndex, final OverlayView overlay,
             int overlayTop, int overlayBottom) {
-        // immediately remove this view from the view set so future lookups don't find it
+        // detach the view asynchronously, as scroll notification can happen during a draw, when
+        // it's not safe to remove children
+
+        // but immediately remove this view from the view set so future lookups don't find it
         mOverlayViews.remove(adapterIndex);
 
-        // detach but don't actually remove from the view
-        detachOverlay(overlay, false /* removeFromContainer */);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                detachOverlay(overlay);
+            }
+        });
 
         // push it out of view immediately
         // otherwise this scrolled-off header will continue to draw until the runnable runs
@@ -669,15 +678,12 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     public void addScrapView(int type, View v) {
         mScrapViews.add(type, v);
-        addViewInLayoutWrapper(v, false /* postAddView */);
     }
 
-    private void detachOverlay(OverlayView overlay, boolean removeFromContainer) {
+    private void detachOverlay(OverlayView overlay) {
         // Prefer removeViewInLayout over removeView. The typical followup layout pass is unneeded
         // because removing overlay views doesn't affect overall layout.
-        if (removeFromContainer) {
-            removeViewInLayout(overlay.view);
-        }
+        removeViewInLayout(overlay.view);
         mScrapViews.add(overlay.itemType, overlay.view);
         if (overlay.view instanceof DetachListener) {
             ((DetachListener) overlay.view).onDetachedFromParent();
@@ -731,7 +737,17 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             }
         }
 
-        positionOverlays(mOffsetY, false /* postAddView */);
+        positionOverlays(0, mOffsetY);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+
+        if (mAttachedOverlaySinceLastDraw) {
+            drawChild(canvas, mTopMostOverlay, getDrawingTime());
+            mAttachedOverlaySinceLastDraw = false;
+        }
     }
 
     @Override
@@ -768,8 +784,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         return (int) (webPx * mScale);
     }
 
-    private void positionOverlay(
-            int adapterIndex, int overlayTopY, int overlayBottomY, boolean postAddView) {
+    private void positionOverlay(int adapterIndex, int overlayTopY, int overlayBottomY) {
         final OverlayView overlay = mOverlayViews.get(adapterIndex);
         final ConversationOverlayItem item = mOverlayAdapter.getItem(adapterIndex);
 
@@ -782,7 +797,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             View overlayView = overlay != null ? overlay.view : null;
             // show and/or move overlay
             if (overlayView == null) {
-                overlayView = addOverlayView(adapterIndex, postAddView);
+                overlayView = addOverlayView(adapterIndex);
                 ViewCompat.setLayoutDirection(overlayView, ViewCompat.getLayoutDirection(this));
                 measureOverlayView(overlayView);
                 item.markMeasurementValid();
@@ -837,7 +852,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         child.layout(childLeft, top, childLeft + child.getMeasuredWidth(), bottom);
     }
 
-    private View addOverlayView(int adapterIndex, boolean postAddView) {
+    private View addOverlayView(int adapterIndex) {
         final int itemType = mOverlayAdapter.getItemViewType(adapterIndex);
         final View convertView = mScrapViews.poll(itemType);
 
@@ -850,40 +865,16 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             LogUtils.d(TAG, "want to CREATE scrolled-in view: index=%d obj=%s", adapterIndex, view);
         }
 
-        if (view.getParent() == null) {
-            addViewInLayoutWrapper(view, postAddView);
-        } else {
-            // Need to call postInvalidate since the view is being moved back on
-            // screen and we want to force it to draw the view. Without doing this,
-            // the view may not draw itself when it comes back on screen.
-            view.postInvalidate();
-        }
+        addViewInLayoutWrapper(view);
 
         return view;
     }
 
-    private void addViewInLayoutWrapper(View view, boolean postAddView) {
-        final AddViewRunnable addviewRunnable = new AddViewRunnable(view);
-        if (postAddView) {
-            post(addviewRunnable);
-        } else {
-            addviewRunnable.run();
-        }
+    private void addViewInLayoutWrapper(View view) {
+        final int index = BOTTOM_LAYER_VIEW_IDS.length;
+        addViewInLayout(view, index, view.getLayoutParams(), true /* preventRequestLayout */);
+        mAttachedOverlaySinceLastDraw = true;
     }
-
-    private class AddViewRunnable implements Runnable {
-        public final View mView;
-
-        public AddViewRunnable(View view) {
-            mView = view;
-        }
-
-        @Override
-        public void run() {
-            final int index = BOTTOM_LAYER_VIEW_IDS.length;
-            addViewInLayout(mView, index, mView.getLayoutParams(), true /* preventRequestLayout */);
-        }
-    };
 
     private boolean isSnapEnabled() {
         if (mAccountController == null || mAccountController.getAccount() == null
@@ -945,6 +936,19 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     /**
+     * Return a collection of all currently visible overlay views, in no particular order.
+     * Please don't mess with them too badly (e.g. remove from parent).
+     *
+     */
+    public List<View> getOverlayViews() {
+        final List<View> views = Lists.newArrayList();
+        for (int i = 0, len = mOverlayViews.size(); i < len; i++) {
+            views.add(mOverlayViews.valueAt(i).view);
+        }
+        return views;
+    }
+
+    /**
      * Prevents any layouts from happening until the next time
      * {@link #onGeometryChange(OverlayPosition[])} is
      * called. Useful when you know the HTML spacer coordinates are inconsistent with adapter items.
@@ -965,7 +969,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
 
         mOverlayPositions = overlayPositions;
-        positionOverlays(mOffsetY, false /* postAddView */);
+        positionOverlays(0, mOffsetY);
     }
 
     private void traceLayout(String msg, Object... params) {

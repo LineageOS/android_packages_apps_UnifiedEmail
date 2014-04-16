@@ -258,7 +258,7 @@ public class MessageScrollView extends ScrollView implements ScrollNotifier,
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         for (ScrollListener listener : mScrollListeners) {
-            listener.onNotifierScroll(t);
+            listener.onNotifierScroll(l, t);
         }
     }
 

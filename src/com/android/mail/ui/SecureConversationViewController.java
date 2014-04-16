@@ -22,7 +22,6 @@ import android.app.FragmentManager;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.text.BidiFormatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,7 +168,7 @@ public class SecureConversationViewController implements
     }
 
     @Override
-    public void onNotifierScroll(final int y) {
+    public void onNotifierScroll(final int x, final int y) {
         // We need to decide whether or not to display the snap header.
         // Get the location of the moveable message header inside the scroll view.
         Rect rect = new Rect();
