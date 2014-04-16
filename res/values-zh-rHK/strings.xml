@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"為資料夾捷徑命名"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"正在等待同步處理"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"您的電子郵件即將顯示。"</string>
     <string name="not_synced_title" msgid="794279749170198599">"帳戶未同步"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"這個帳戶尚未設定為自動保持同步。\n請輕觸 [立即同步]"<b></b>"，將您的郵件進行同步處理一次，或者輕觸 [更改同步設定]"<b></b>"，將帳戶設定為自動保持郵件同步。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步"</string>

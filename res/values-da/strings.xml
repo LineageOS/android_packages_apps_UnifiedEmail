@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Genvej til navngivning af mappe"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Venter på synkronisering"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Din e-mail vises om et øjeblik."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Kontoen er ikke synkroniseret"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Denne konto er ikke konfigureret til automatisk synkronisering.\nTryk på "<b>"Synkroniser nu"</b>" for at synkronisere e-mails én gang, eller tryk på "<b>"Skift synkroniseringsindstillinger"</b>" for at konfigurere denne konto til at synkronisere e-mail automatisk."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synkroniser nu"</string>

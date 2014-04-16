@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Shortcut sa pangalan ng folder"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Naghihintay ng pag-sync"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Lilitaw na ang iyong email."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Hindi na-sync ang account"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Hindi naka-set up ang account na ito upang awtomatikong mag-sync.\nPindutin ang "<b>"I-sync Ngayon"</b>" upang i-sync ang mail nang isang beses, o "<b>"Baguhin ang Mga Setting ng Pag-sync"</b>" upang i-set up ang account na ito upang awtomatikong i-sync ang mail."</string>
     <string name="manual_sync" msgid="6743983544685622800">"I-sync na"</string>

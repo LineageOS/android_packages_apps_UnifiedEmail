@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"ຊື່ໂຟນເດີທາງລັດ"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"ກຳລັງລໍຖ້າເພື່ອຊິ້ງຂໍ້ມູນ"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"ອີເມວຂອງທ່ານຈະໄປປາກົດໄວໆນີ້."</string>
     <string name="not_synced_title" msgid="794279749170198599">"ບັນຊີບໍ່ໄດ້ຊິ້ງຂໍ້ມູນ"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"ບັນຊີນີ້ບໍ່ໄດ້ຖືກຕັ້ງໃຫ້ຊິ້ງຂໍ້ມູນອັດຕະໂນມັດ.\nແຕະ "<b>"ຊິ້ງຂໍ້ມູນດຽວນີ້"</b>" ເພື່ອຊິ້ງຂໍ້ມູນເມວ ຫຼື "<b>"ປ່ຽນການຕັ້ງຄ່າການຊິ້ງຂໍ້ມູນ"</b>" ເພື່ອຕັ້ງໃຫ້ບັນຊີນີ້ຊິ້ງຂໍ້ມູນອີເມວອັດຕະໂນມັດ."</string>
     <string name="manual_sync" msgid="6743983544685622800">"ຊິ້ງຂໍ້ມູນດຽວນີ້"</string>

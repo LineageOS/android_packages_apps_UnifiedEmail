@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Snelkoppeling naar map een naam geven"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Wachten op synchronisatie"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Uw e-mail wordt zo weergegeven."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Account niet gesynchroniseerd"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Automatische synchronisatie is niet ingesteld voor dit account.\nRaak"<b>"Nu synchroniseren"</b>" aan om e-mail één keer te synchroniseren of raak "<b>"Synchronisatie-instellingen wijzigen"</b>" aan om automatische synchronisatie in te stellen voor dit account."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Nu synchroniseren"</string>

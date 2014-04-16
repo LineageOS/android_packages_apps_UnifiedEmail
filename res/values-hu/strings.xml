@@ -290,7 +290,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Mappaparancsikon elnevezése"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Várakozás a szinkronizálásra"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Az e-mail hamarosan megjelenik."</string>
     <string name="not_synced_title" msgid="794279749170198599">"A fiók nincs szinkronizálva"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Ez a fiók nincs beállítva automatikus szinkronizáláshoz.\nÉrintse meg a "<b>"Szinkr. most"</b>" elemet a levelek egyszeri szinkronizálásához, vagy érintse meg a "<b>"Szinkr. beállítások módosítása"</b>" lehetőséget a fiók leveleinek automatikusan szinkronizálásához."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Szinkr. most"</string>
