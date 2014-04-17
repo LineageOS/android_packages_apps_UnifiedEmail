@@ -203,6 +203,10 @@ public class Message implements Parcelable, HtmlMessage {
      * @see UIProvider.MessageColumns#CLIPPED
      */
     public boolean clipped;
+    /**
+     * @see UIProvider.MessageColumns#PERMALINK
+     */
+    public String permalink;
 
     private transient String[] mFromAddresses = null;
     private transient String[] mToAddresses = null;
@@ -281,6 +285,7 @@ public class Message implements Parcelable, HtmlMessage {
         dest.writeString(viaDomain);
         dest.writeInt(isSending ? 1 : 0);
         dest.writeInt(clipped ? 1 : 0);
+        dest.writeString(permalink);
     }
 
     private Message(Parcel in) {
@@ -316,6 +321,7 @@ public class Message implements Parcelable, HtmlMessage {
         viaDomain = in.readString();
         isSending = in.readInt() != 0;
         clipped = in.readInt() != 0;
+        permalink = in.readString();
     }
 
     public Message() {
@@ -391,6 +397,7 @@ public class Message implements Parcelable, HtmlMessage {
             viaDomain = cursor.getString(UIProvider.MESSAGE_VIA_DOMAIN_COLUMN);
             isSending = cursor.getInt(UIProvider.MESSAGE_IS_SENDING_COLUMN) != 0;
             clipped = cursor.getInt(UIProvider.MESSAGE_CLIPPED_COLUMN) != 0;
+            permalink = cursor.getString(UIProvider.MESSAGE_PERMALINK_COLUMN);
         }
     }
 
@@ -426,6 +433,7 @@ public class Message implements Parcelable, HtmlMessage {
         spamWarningString = null;
         messageFlags = 0;
         clipped = false;
+        permalink = null;
         hasAttachments = false;
 
         // body values (snippet/bodyText/bodyHtml)
