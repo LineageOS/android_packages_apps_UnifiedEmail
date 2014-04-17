@@ -1018,8 +1018,7 @@ public class UIProvider {
         ConversationColumns.ATTACHMENT_PREVIEW_URI0,
         ConversationColumns.ATTACHMENT_PREVIEW_URI1,
         ConversationColumns.ATTACHMENT_PREVIEW_STATES,
-        ConversationColumns.ATTACHMENT_PREVIEWS_COUNT,
-        ConversationColumns.PERMALINK
+        ConversationColumns.ATTACHMENT_PREVIEWS_COUNT
     };
 
     /**
@@ -1061,7 +1060,6 @@ public class UIProvider {
     public static final int CONVERSATION_ATTACHMENT_PREVIEW_URI1_COLUMN = 27;
     public static final int CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN = 28;
     public static final int CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN = 29;
-    public static final int CONVERSATION_PERMALINK_COLUMN = 30;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -1268,12 +1266,6 @@ public class UIProvider {
          * total count may be higher than the number of ATTACHMENT_PREVIEW_URI columns.
          */
         public static final String ATTACHMENT_PREVIEWS_COUNT = "attachmentPreviewsCount";
-
-        /**
-         * This string column contains the permalink value of the conversation
-         * or null if one does not exist.
-         */
-        public static final String PERMALINK = "permalink";
 
         private ConversationColumns() {
         }
@@ -1568,7 +1560,8 @@ public class UIProvider {
         MessageColumns.SPAM_WARNING_LINK_TYPE,
         MessageColumns.VIA_DOMAIN,
         MessageColumns.IS_SENDING,
-        MessageColumns.CLIPPED
+        MessageColumns.CLIPPED,
+        MessageColumns.PERMALINK
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -1615,6 +1608,7 @@ public class UIProvider {
     public static final int MESSAGE_VIA_DOMAIN_COLUMN = 33;
     public static final int MESSAGE_IS_SENDING_COLUMN = 34;
     public static final int MESSAGE_CLIPPED_COLUMN = 35;
+    public static final int MESSAGE_PERMALINK_COLUMN = 36;
 
     public static final class CursorStatus {
         // The cursor is actively loading more data
@@ -1834,6 +1828,11 @@ public class UIProvider {
          * This boolean column indicates whether the message body has been clipped.
          */
         public static final String CLIPPED = "clipped";
+        /**
+         * This string column contains the permalink value of the conversation
+         * for which this message belongs or null if one does not exist.
+         */
+        public static final String PERMALINK = "permalink";
 
         private MessageColumns() {}
     }
