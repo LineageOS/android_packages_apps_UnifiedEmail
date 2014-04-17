@@ -1098,6 +1098,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     private void toggleMessageDetails() {
         int heightBefore = measureHeight();
         final boolean detailsExpanded = !mMessageHeaderItem.detailsExpanded;
+        Analytics.getInstance().sendEvent(
+                "message_header", "toggle_details", detailsExpanded ? "expand" : "collapse", 0);
         setMessageDetailsExpanded(detailsExpanded);
         updateSpacerHeight();
         if (mCallbacks != null) {
