@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.browse.ConversationContainer.DetachListener;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
@@ -145,8 +146,9 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             renderAttachments(false);
         }
 
+        final ConversationMessage message = mMessageHeaderItem.getMessage();
         mViewEntireMessagePrompt.setVisibility(
-                mMessageHeaderItem.getMessage().clipped ? VISIBLE : GONE);
+                message.clipped && !TextUtils.isEmpty(message.permalink) ? VISIBLE : GONE);
         setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
     }
 
@@ -284,6 +286,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     }
 
     private void viewEntireMessage() {
+        Analytics.getInstance().sendEvent("view_entire_message", "clicked", null, 0);
+
         final Context context = getContext();
         final Intent intent = new Intent();
         final String activityName =
@@ -295,7 +299,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         intent.setClassName(context, activityName);
         final Account account = getAccount();
         final ConversationMessage message = mMessageHeaderItem.getMessage();
-        if (account != null && message.permalink != null) {
+        if (account != null && !TextUtils.isEmpty(message.permalink)) {
             intent.putExtra(AccountFeedbackActivity.EXTRA_ACCOUNT_URI, account.uri);
             intent.putExtra(FullMessageContract.EXTRA_PERMALINK, message.permalink);
             intent.putExtra(FullMessageContract.EXTRA_ACCOUNT_NAME, account.getEmailAddress());
