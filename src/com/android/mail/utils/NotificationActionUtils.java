@@ -28,10 +28,10 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
-import android.preview.support.wearable.notifications.RemoteInput;
-import android.preview.support.wearable.notifications.WearableNotifications;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.wearable.notifications.RemoteInput;
+import android.support.wearable.notifications.WearableNotifications;
 import android.widget.RemoteViews;
 
 import com.android.mail.MailIntentService;
