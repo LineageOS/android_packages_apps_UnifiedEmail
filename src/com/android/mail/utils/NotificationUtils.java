@@ -658,16 +658,7 @@ public class NotificationUtils {
                         return;
                     }
 
-                    // Amend the click intent with a hint that its source was a notification,
-                    // but remove the hint before it's used to generate notification action
-                    // intents. This prevents the following sequence:
-                    // 1. generate single notification
-                    // 2. user clicks reply, then completes Compose activity
-                    // 3. main activity launches, gets FROM_NOTIFICATION hint in intent
-                    notificationIntent.putExtra(Utils.EXTRA_FROM_NOTIFICATION, true);
-                    clickIntent = PendingIntent.getActivity(context, -1, notificationIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
-                    notificationIntent.removeExtra(Utils.EXTRA_FROM_NOTIFICATION);
+                    clickIntent = createClickPendingIntent(context, notificationIntent);
 
                     configureLatestEventInfoFromConversation(context, account, folderPreferences,
                             notification, wearableExtender, msgNotifications, notificationId,
@@ -777,6 +768,21 @@ public class NotificationUtils {
                 cursor.close();
             }
         }
+    }
+
+    private static PendingIntent createClickPendingIntent(Context context,
+            Intent notificationIntent) {
+        // Amend the click intent with a hint that its source was a notification,
+        // but remove the hint before it's used to generate notification action
+        // intents. This prevents the following sequence:
+        // 1. generate single notification
+        // 2. user clicks reply, then completes Compose activity
+        // 3. main activity launches, gets FROM_NOTIFICATION hint in intent
+        notificationIntent.putExtra(Utils.EXTRA_FROM_NOTIFICATION, true);
+        PendingIntent clickIntent = PendingIntent.getActivity(context, -1, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        notificationIntent.removeExtra(Utils.EXTRA_FROM_NOTIFICATION);
+        return clickIntent;
     }
 
     /**
@@ -964,6 +970,11 @@ public class NotificationUtils {
                                     new NotificationCompat.Builder(context);
                             childNotif.setSmallIcon(R.drawable.stat_notify_email);
                             childNotif.setContentText(digestLine);
+                            Intent childNotificationIntent = createViewConversationIntent(context,
+                                    account, folder, conversationCursor);
+                            PendingIntent childClickIntent = createClickPendingIntent(context,
+                                    childNotificationIntent);
+                            childNotif.setContentIntent(childClickIntent);
 
                             // TODO: Use a stable sort key if possible, e.g. message post time
                             // + msgid hash
