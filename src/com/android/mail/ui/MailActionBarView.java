@@ -379,12 +379,16 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (mEmptyTrashItem != null) {
             mEmptyTrashItem.setVisible(mAccount != null && mFolder != null
                     && mAccount.supportsCapability(AccountCapabilities.EMPTY_TRASH)
-                    && mFolder.isTrash() && mFolder.totalCount > 0);
+                    && mFolder.isTrash() && mFolder.totalCount > 0
+                    && (mController.getConversationListCursor() == null
+                    || mController.getConversationListCursor().getCount() > 0));
         }
         if (mEmptySpamItem != null) {
             mEmptySpamItem.setVisible(mAccount != null && mFolder != null
                     && mAccount.supportsCapability(AccountCapabilities.EMPTY_SPAM)
-                    && mFolder.isType(FolderType.SPAM) && mFolder.totalCount > 0);
+                    && mFolder.isType(FolderType.SPAM) && mFolder.totalCount > 0
+                    && (mController.getConversationListCursor() == null
+                    || mController.getConversationListCursor().getCount() > 0));
         }
     }
 

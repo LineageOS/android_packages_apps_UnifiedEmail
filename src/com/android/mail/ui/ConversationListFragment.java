@@ -163,6 +163,9 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     private void showEmptyView() {
+        mEmptyView.setupEmptyView(
+                mFolder, mViewContext.searchQuery, mListAdapter.getBidiFormatter());
+        mListView.setEmptyView(mEmptyView);
         mListView.setVisibility(View.GONE);
         mEmptyView.setVisibility(View.VISIBLE);
         mLoadingView.setVisibility(View.GONE);
@@ -912,8 +915,12 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     private void hideLoadingViewAndShowContents() {
-        showListView();
         final ConversationCursor cursor = getConversationListCursor();
+        if (cursor != null && cursor.getCount() == 0) {
+            showEmptyView();
+        } else {
+            showListView();
+        }
         final boolean showFooter = mFooterView.updateStatus(cursor);
         // Update the folder status, in case the cursor could affect it.
         onFolderStatusUpdated();
@@ -940,9 +947,6 @@ public final class ConversationListFragment extends ListFragment implements
                 || cursorStatus == UIProvider.CursorStatus.COMPLETE) || folderCount > 0) {
             updateSearchResultHeader(folderCount);
             if (folderCount == 0) {
-                mEmptyView.setupEmptyView(
-                        mFolder, mViewContext.searchQuery, mListAdapter.getBidiFormatter());
-                mListView.setEmptyView(mEmptyView);
                 showEmptyView();
             }
         }
