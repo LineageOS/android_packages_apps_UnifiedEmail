@@ -26,10 +26,6 @@ res_dirs := res $(chips_dir) $(photo_dir) $(gridlayout_dir) $(datetimepicker_dir
 ##################################################
 include $(CLEAR_VARS)
 
-# STOPSHIP: Use the real support jar before ship.
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
-    wearable-preview-support:libs/wearable-preview-support.jar
-
 include $(BUILD_MULTI_PREBUILT)
 
 ##################################################
@@ -47,7 +43,8 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-gridlayout
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 LOCAL_STATIC_JAVA_LIBRARIES += android-opt-datetimepicker
-LOCAL_STATIC_JAVA_LIBRARIES += wearable-preview-support
+# STOPSHIP: Open source the wearable support jar
+LOCAL_STATIC_JAVA_LIBRARIES += prebuilt-wearable-support
 
 LOCAL_SDK_VERSION := current
 
