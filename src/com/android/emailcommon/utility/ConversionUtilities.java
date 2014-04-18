@@ -27,13 +27,6 @@ import java.util.ArrayList;
 
 public class ConversionUtilities {
     /**
-     * Values for HEADER_ANDROID_BODY_QUOTED_PART to tag body parts
-     */
-    public static final String BODY_QUOTED_PART_REPLY = "quoted-reply";
-    public static final String BODY_QUOTED_PART_FORWARD = "quoted-forward";
-    public static final String BODY_QUOTED_PART_INTRO = "quoted-intro";
-
-    /**
      * Helper function to append text to a StringBuffer, creating it if necessary.
      * Optimization:  The majority of the time we are *not* appending - we should have a path
      * that deals with single strings.
