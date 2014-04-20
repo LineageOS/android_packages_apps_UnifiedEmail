@@ -206,7 +206,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     /**
      * Child views of this container should implement this interface to be notified when they are
      * being detached.
-     *
      */
     public interface DetachListener {
         /**

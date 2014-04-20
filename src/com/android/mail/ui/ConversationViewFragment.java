@@ -48,6 +48,7 @@ import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.analytics.AnalyticsTimer;
+import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationContainer.OverlayPosition;
 import com.android.mail.browse.ConversationMessage;
@@ -63,6 +64,7 @@ import com.android.mail.browse.InlineAttachmentViewIntentBuilderCreator;
 import com.android.mail.browse.InlineAttachmentViewIntentBuilderCreatorHolder;
 import com.android.mail.browse.MailWebView.ContentSizeChangeListener;
 import com.android.mail.browse.MessageCursor;
+import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
@@ -94,7 +96,8 @@ import java.util.Set;
  */
 public class ConversationViewFragment extends AbstractConversationViewFragment implements
         SuperCollapsedBlock.OnClickListener, OnLayoutChangeListener,
-        MessageHeaderView.MessageHeaderViewCallbacks, WebViewContextMenu.Callbacks {
+        MessageHeaderView.MessageHeaderViewCallbacks,
+        MessageFooterView.MessageFooterCallbacks, WebViewContextMenu.Callbacks {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -272,7 +275,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(context);
 
         mAdapter = new ConversationViewAdapter(mActivity, this,
-                getLoaderManager(), this, getContactInfoSource(), this,
+                getLoaderManager(), this, this, getContactInfoSource(), this,
                 this, mAddressCache, dateBuilder, mBidiFormatter);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
@@ -448,6 +451,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     public void onDestroyView() {
         super.onDestroyView();
         mConversationContainer.setOverlayAdapter(null);
+        AttachmentActionHandler.unregisterDismissListeners(mConversation.uri);
         mAdapter = null;
         resetLoadWaiting(); // be sure to unregister any active load observer
         mViewsCreated = false;
@@ -886,7 +890,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             final MessageHeaderItem header = ConversationViewAdapter.newMessageHeaderItem(
                     mAdapter, mAdapter.getDateBuilder(), msg, false /* expanded */,
                     alwaysShowImages || mViewState.getShouldShowImages(msg));
-            final MessageFooterItem footer = mAdapter.newMessageFooterItem(header);
+            final MessageFooterItem footer = mAdapter.newMessageFooterItem(mAdapter, header);
 
             final int headerPx = measureOverlayHeight(header);
             final int footerPx = measureOverlayHeight(footer);
@@ -933,7 +937,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
      * @param convItem adapter item with data to render and measure
      * @return height of the rendered view in screen px
      */
-    private int measureOverlayHeight(ConversationOverlayItem convItem) {
+    public int measureOverlayHeight(ConversationOverlayItem convItem) {
         final int type = convItem.getType();
 
         final View convertView = mConversationContainer.getScrapView(type);
@@ -1632,6 +1636,31 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     public void setMessageDetailsExpanded(MessageHeaderItem i, boolean expanded, int heightBefore) {
         mDiff = (expanded ? 1 : -1) * Math.abs(i.getHeight() - heightBefore);
     }
+
+    // START MessageFooterCallbacks
+
+    @Override
+    public void setMessageSpacerHeight(MessageFooterItem item, int newSpacerHeight) {
+        mConversationContainer.invalidateSpacerGeometry();
+
+        // update message HTML spacer height
+        final int h = mWebView.screenPxToWebPx(newSpacerHeight);
+        LogUtils.i(LAYOUT_TAG, "setting HTML spacer h=%dwebPx (%dscreenPx)", h, newSpacerHeight);
+        mWebView.loadUrl(String.format("javascript:setMessageFooterSpacerHeight('%s', %s);",
+                mTemplates.getMessageDomId(item.getHeaderItem().getMessage()), h));
+    }
+
+    @Override
+    public MessageFooterView getViewForItem(MessageFooterItem item) {
+        return (MessageFooterView) mConversationContainer.getViewForItem(item);
+    }
+
+    @Override
+    public int getUpdatedHeight(MessageFooterItem item) {
+        return measureOverlayHeight(item);
+    }
+
+    // END MessageFooterCallbacks
 
     /**
      * @return {@code true} because either the Print or Print All menu item is shown in GMail

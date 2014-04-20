@@ -225,6 +225,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 menu.findItem(R.id.attachment_extra_option1).setVisible(shouldShowExtraOption1());
 
                 mPopup.show();
+
+                AttachmentActionHandler.onOverflowOpened(getContext());
             }
         } else {
             // Handles clicking the attachment

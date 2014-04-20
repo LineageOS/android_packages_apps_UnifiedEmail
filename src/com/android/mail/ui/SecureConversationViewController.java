@@ -29,9 +29,11 @@ import android.webkit.WebSettings;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
+import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.browse.BorderView;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationViewAdapter;
+import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.InlineAttachmentViewIntentBuilderCreator;
@@ -54,7 +56,8 @@ import com.android.mail.utils.ConversationViewUtils;
  * is pretty much the rendering logic.
  */
 public class SecureConversationViewController implements
-        MessageHeaderView.MessageHeaderViewCallbacks, ScrollListener {
+        MessageHeaderView.MessageHeaderViewCallbacks, ScrollListener,
+        MessageFooterView.MessageFooterCallbacks {
     private static final String BEGIN_HTML =
             "<body style=\"margin: 0 %spx;\"><div style=\"margin: 16px 0; font-size: 80%%\">";
     private static final String END_HTML = "</div></body>";
@@ -156,7 +159,7 @@ public class SecureConversationViewController implements
         mCallbacks.setupMessageHeaderVeiledMatcher(mSnapHeaderView);
 
         mMessageFooterView.initialize(fragment.getLoaderManager(), fragment.getFragmentManager(),
-                mCallbacks.getConversationAccountController());
+                mCallbacks.getConversationAccountController(), this);
 
         mCallbacks.startMessageLoader();
 
@@ -165,6 +168,10 @@ public class SecureConversationViewController implements
         final Resources r = mCallbacks.getFragment().getResources();
         mSideMarginInWebPx = (int) (r.getDimensionPixelOffset(
                 R.dimen.conversation_message_content_margin_side) / r.getDisplayMetrics().density);
+    }
+
+    public void onDestroyView() {
+        AttachmentActionHandler.unregisterDismissListeners(mMessage.conversationUri);
     }
 
     @Override
@@ -216,7 +223,8 @@ public class SecureConversationViewController implements
 
         if (mMessage.hasAttachments) {
             mMessageFooterView.setVisibility(View.VISIBLE);
-            mMessageFooterView.bind(item, false);
+            mMessageFooterView.bind(
+                    item, ConversationViewAdapter.newMessageFooterItem(null, item), false);
         }
     }
 
@@ -288,4 +296,23 @@ public class SecureConversationViewController implements
     }
 
     // End MessageHeaderViewCallbacks implementations
+
+    // START MessageFooterCallbacks
+
+    @Override
+    public void setMessageSpacerHeight(MessageFooterItem item, int newSpacerHeight) {
+        // Do nothing.
+    }
+
+    @Override
+    public MessageFooterView getViewForItem(MessageFooterItem item) {
+        return mMessageFooterView;
+    }
+
+    @Override
+    public int getUpdatedHeight(MessageFooterItem item) {
+        return 0; // should never get called since we'll always have a footer view
+    }
+
+    // END MessageFooterCallbacks
 }

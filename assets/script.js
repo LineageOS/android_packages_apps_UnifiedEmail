@@ -662,6 +662,15 @@ function setConversationHeaderSpacerHeight(spacerHeight) {
 
 function setMessageHeaderSpacerHeight(messageDomId, spacerHeight) {
     var spacer = document.querySelector("#" + messageDomId + " > .mail-message-header");
+    setSpacerHeight(spacer, spacerHeight);
+}
+
+function setMessageFooterSpacerHeight(messageDomId, spacerHeight) {
+    var spacer = document.querySelector("#" + messageDomId + " > .mail-message-footer");
+    setSpacerHeight(spacer, spacerHeight);
+}
+
+function setSpacerHeight(spacer, spacerHeight) {
     if (!spacer) {
         console.log("can't set spacer for message with id: " + messageDomId);
         return;
