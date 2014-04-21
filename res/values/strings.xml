@@ -443,9 +443,6 @@
     <!-- Toast shown when the user taps the search hard key when viewing an account that does not support search [CHAR LIMIT=100] -->
     <string name="search_unsupported">Search is not supported on this account.</string>
 
-    <!-- Search Results: Text for header that is shown above search results, while waiting for search results from the server [CHAR LIMIT=30] -->
-    <string name="search_results_searching_header">Searching\u2026</string>
-
     <!-- Conversation view -->
     <!--  Text anchor for control to add / change labels on a conversation when
           viewing it. [CHAR LIMIT=40] -->
