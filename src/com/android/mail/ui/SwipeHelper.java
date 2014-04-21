@@ -208,6 +208,10 @@ public class SwipeHelper {
                 View view = mCallback.getChildAtPosition(ev);
                 if (view instanceof SwipeableItemView) {
                     mCurrView = (SwipeableItemView) view;
+                } else {
+                    // If the touched item is not a swipeable one, clean the cache in
+                    // mCurrView to make sure nothing will be swiped for this action
+                    mCurrView = null;
                 }
                 mVelocityTracker.clear();
                 if (mCurrView != null) {
