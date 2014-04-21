@@ -78,6 +78,7 @@
     <string name="menu_folder_options" msgid="8897520487430647932">"ការ​កំណត់​ថត"</string>
     <string name="menu_settings" msgid="6007027046949837282">"ការ​កំណត់"</string>
     <string name="menu_search" msgid="5297197523031943248">"ស្វែងរក"</string>
+    <string name="drawer_title" msgid="5888199203222498840">"ការ​រុករក"</string>
     <string name="mark_important" msgid="6904096897104265870">"សម្គាល់​​ថា​សំខាន់"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"សម្គាល់​ថា​មិន​សំខាន់"</string>
     <string name="add_cc_label" msgid="504861315425773180">"បន្ថែម ចម្លង​ជូន/​ចម្លង​ជា​សម្ងាត់​ជូន"</string>

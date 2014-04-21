@@ -78,6 +78,8 @@
     <string name="menu_folder_options" msgid="8897520487430647932">"Kansion asetukset..."</string>
     <string name="menu_settings" msgid="6007027046949837282">"Asetukset"</string>
     <string name="menu_search" msgid="5297197523031943248">"Haku"</string>
+    <!-- no translation found for drawer_title (5888199203222498840) -->
+    <skip />
     <string name="mark_important" msgid="6904096897104265870">"Merkitse tärkeäksi"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Merkitse ei-tärkeäksi"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Lisää kopio/piilokopio"</string>

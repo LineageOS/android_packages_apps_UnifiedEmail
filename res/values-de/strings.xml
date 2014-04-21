@@ -78,6 +78,7 @@
     <string name="menu_folder_options" msgid="8897520487430647932">"Ordnereinstellungen"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Einstellungen"</string>
     <string name="menu_search" msgid="5297197523031943248">"Suche"</string>
+    <string name="drawer_title" msgid="5888199203222498840">"Navigation"</string>
     <string name="mark_important" msgid="6904096897104265870">"Als wichtig markieren"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Als nicht wichtig markieren"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Cc/Bcc hinzufügen"</string>
