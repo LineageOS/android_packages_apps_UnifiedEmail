@@ -78,6 +78,7 @@
     <string name="menu_folder_options" msgid="8897520487430647932">"資料夾設定"</string>
     <string name="menu_settings" msgid="6007027046949837282">"設定"</string>
     <string name="menu_search" msgid="5297197523031943248">"搜尋"</string>
+    <string name="drawer_title" msgid="5888199203222498840">"瀏覽"</string>
     <string name="mark_important" msgid="6904096897104265870">"標示為重要"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"標示為不重要"</string>
     <string name="add_cc_label" msgid="504861315425773180">"新增副本/密件副本"</string>
