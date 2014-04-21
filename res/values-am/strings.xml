@@ -21,7 +21,7 @@
     <string name="to" msgid="4392614766835725698">"ለ"</string>
     <string name="cc" msgid="7017720927911078193">"ካርቦን ቅጂ"</string>
     <string name="bcc" msgid="3098643138241111579">"ስውር ቅጂ"</string>
-    <string name="subject_hint" msgid="7253964583324677128">"ርእሰ ጉዳይ"</string>
+    <string name="subject_hint" msgid="7253964583324677128">"ርዕሰ ጉዳይ"</string>
     <string name="body_hint" msgid="4279864165439577668">"ኢሜይል ፃፍ"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"ፋይል አያይዝ"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"ስዕል አያይዝ"</string>
