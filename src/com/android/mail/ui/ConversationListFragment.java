@@ -150,6 +150,10 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationUpdater mUpdater;
     /** Hash of the Conversation Cursor we last obtained from the controller. */
     private int mConversationCursorHash;
+    // The number of items in the last known ConversationCursor
+    private int mConversationCursorLastCount;
+    // State variable to keep track if we just loaded a new list
+    private boolean mJustLoadedNewList;
 
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
@@ -719,6 +723,7 @@ public final class ConversationListFragment extends ListFragment implements
      * must be called on the UI thread.
      */
     private void showList() {
+        mJustLoadedNewList = true;
         mListView.setEmptyView(null);
         onFolderUpdated(mActivity.getFolderController().getFolder());
         onConversationListStatusUpdated();
@@ -1023,6 +1028,9 @@ public final class ConversationListFragment extends ListFragment implements
         if (mConversationCursorHash == newCursorHash && mConversationCursorHash != 0) {
             mListAdapter.notifyDataSetChanged();
         }
+        if (newCursor != null) {
+            updateAnalyticsData(newCursor);
+        }
         mConversationCursorHash = newCursorHash;
 
         if (newCursor != null && newCursor.getCount() > 0) {
@@ -1133,5 +1141,34 @@ public final class ConversationListFragment extends ListFragment implements
 
         // This will call back to showSyncStatusBar():
         mActivity.getFolderController().requestFolderRefresh();
+    }
+
+    /**
+     * Extracted function that handles Analytics state and logging updates whenever a new non-null
+     * cursor is set as the new cursor
+     * @param newCursor
+     */
+    private void updateAnalyticsData(ConversationCursor newCursor) {
+        Bundle extras = (newCursor.getExtras() != null) ? newCursor.getExtras() : Bundle.EMPTY;
+        int cursorStatus = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
+        // Check if the cursor is ready for display
+        if (!UIProvider.CursorStatus.isWaitingForResults(cursorStatus)) {
+            // If the count is 0, then we check which log is applicable
+            if (newCursor.getCount() == 0) {
+                if (mJustLoadedNewList) {
+                    Analytics.getInstance().sendEvent("empty_state", "post_label_change",
+                            mFolder.getTypeDescription(), 0);
+                } else if (mConversationCursorLastCount > 0) {
+                    Analytics.getInstance().sendEvent("empty_state", "post_delete",
+                            mFolder.getTypeDescription(), 0);
+                }
+            }
+
+            // We save the count here because for folders that are empty, multiple successful
+            // cursor loads will occur with size of 0. Thus we don't want to emit any false
+            // positive post_delete events.
+            mConversationCursorLastCount = newCursor.getCount();
+            mJustLoadedNewList = false;
+        }
     }
 }
