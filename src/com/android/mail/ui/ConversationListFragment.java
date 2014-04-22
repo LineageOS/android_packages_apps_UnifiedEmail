@@ -263,12 +263,7 @@ public final class ConversationListFragment extends ListFragment implements
         // needs to reside in a separate class that handles the text view in
         // isolation. Then,
         // that logic can be reused in other fragments.
-        if (showHeader) {
-            mSearchStatusTextView.setText(res.getString(R.string.search_results_searching_header));
-            // Initially reset the count
-            mSearchResultCountTextView.setText("");
-        }
-        mSearchStatusView.setVisibility(showHeader ? View.VISIBLE : View.GONE);
+        mSearchStatusView.setVisibility(showHeader ? View.INVISIBLE : View.GONE);
         int paddingTop = showHeader ? (int) res.getDimension(R.dimen.notification_view_height) : 0;
         mListView.setPadding(mListView.getPaddingLeft(), paddingTop, mListView.getPaddingRight(),
                 mListView.getPaddingBottom());
@@ -289,6 +284,7 @@ public final class ConversationListFragment extends ListFragment implements
             mSearchStatusTextView.setText(res.getString(R.string.search_results_header));
             mSearchResultCountTextView
                     .setText(res.getString(R.string.search_results_loaded, count));
+            mSearchStatusView.setVisibility(View.VISIBLE);
         }
     }
 
