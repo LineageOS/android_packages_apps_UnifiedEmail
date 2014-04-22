@@ -15,27 +15,23 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/details_collapsed_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/message_details_header_margin_top"
-    android:paddingBottom="@dimen/message_details_header_padding_bottom"
     android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical"
+    android:paddingBottom="@dimen/message_details_header_vertical_padding"
     style="@style/MessageDetailsHeaderStyle" >
     <TextView
-        android:id="@+id/recipients_summary_collapsed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/recipients_summary"
+        android:layout_width="0dp"
+        android:layout_gravity="fill_horizontal"
         android:singleLine="true"
-        style="@style/MessageHeaderSmallStyle" />
-    <TextView
-        android:id="@+id/details_text"
-        android:layout_width="match_parent"
+        android:bufferType="spannable"
+        style="@style/RecipientSummaryStyle" />
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:text="@string/details"
-        android:textColor="@color/conv_header_text_link_blue"
-        style="@style/MessageHeaderSmallStyle" />
-</LinearLayout>
+        android:contentDescription="@string/expand_recipient_details"
+        android:src="@drawable/ic_menu_expander_minimized_holo_light" />
+</GridLayout>
