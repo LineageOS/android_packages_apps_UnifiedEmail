@@ -214,8 +214,9 @@ public class NotificationActionUtils {
             String title = context.getString(notificationAction.getDisplayStringResId(
                     folder, conversation, message));
 
-            if (notificationAction == NotificationActionType.REPLY
-                    || notificationAction == NotificationActionType.REPLY_ALL) {
+            // TODO: re-enable after b/14218390 is fixed.
+            if (false && (notificationAction == NotificationActionType.REPLY
+                    || notificationAction == NotificationActionType.REPLY_ALL)) {
                 wearableNotification.addAction(new WearableNotifications.Action.Builder(
                         actionIconResId, title, pendingIntent)
                         .addRemoteInput(new RemoteInput.Builder(WEAR_REPLY_INPUT)
