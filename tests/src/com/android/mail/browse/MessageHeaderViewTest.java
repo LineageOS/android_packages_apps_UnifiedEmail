@@ -27,6 +27,43 @@ import java.util.HashMap;
 public class MessageHeaderViewTest extends AndroidTestCase {
 
     @SmallTest
+    public void testRecipientSummaryLongTo() {
+        String[] to = makeRecipientArray("TO", 60);
+        String[] cc = makeRecipientArray("CC", 60);
+        String summary = MessageHeaderView.getRecipientSummaryText(getContext(), "", "", to, cc,
+                null, new HashMap<String, Address>(), null).toString();
+
+        assertTrue(summary.contains("TO00"));
+        assertTrue(summary.contains("TO49"));
+        assertFalse(summary.contains("TO50"));
+    }
+
+    @SmallTest
+    public void testRecipientSummaryLongMultipleLists() {
+        String[] to = makeRecipientArray("TO", 20);
+        String[] cc = makeRecipientArray("CC", 10);
+        String[] bcc = makeRecipientArray("BB", 60);
+        String summary = MessageHeaderView.getRecipientSummaryText(getContext(), "", "", to, cc,
+                bcc, new HashMap<String, Address>(), null).toString();
+
+        assertTrue(summary.contains("TO00"));
+        assertTrue(summary.contains("TO19"));
+        assertTrue(summary.contains("CC00"));
+        assertTrue(summary.contains("CC09"));
+        assertTrue(summary.contains("BB00"));
+        assertTrue(summary.contains("BB19"));
+        assertFalse(summary.contains("BB20"));
+    }
+
+    private static String[] makeRecipientArray(String prefix, int len) {
+        String[] arr = new String[len];
+        for (int i=0; i < arr.length; i++) {
+            arr[i] = String.format("\"%s%02d\" <foo@bar.com>", prefix, i);
+        }
+        return arr;
+    }
+
+    @SmallTest
     public void testMakeSnippet() {
         assertSnippetEquals("Hello, world!",
                 "Hello, world!");

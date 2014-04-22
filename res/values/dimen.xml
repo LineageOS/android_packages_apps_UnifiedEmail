@@ -49,21 +49,16 @@
     <dimen name="conversation_folder_padding_extra_width">14dip</dimen>
     <dimen name="conversation_folder_padding_before">8dip</dimen>
     <dimen name="conversation_folder_padding_above">4dip</dimen>
-    <dimen name="message_attachment_header_padding_start">16dip</dimen>
-    <dimen name="message_details_extra_content_padding_start">68dip</dimen>
-    <dimen name="message_details_header_margin_start">6dp</dimen>
-    <dimen name="message_details_header_margin_end">22dp</dimen>
-    <dimen name="message_details_header_padding">4dp</dimen>
+    <dimen name="message_details_header_padding_start">16dip</dimen>
+    <dimen name="message_details_header_padding_start_collapsed">68dip</dimen>
+    <dimen name="message_details_header_padding_end">10dip</dimen>
     <dimen name="message_details_header_vertical_padding">7dp</dimen>
-    <dimen name="message_details_header_margin_top">-3dp</dimen>
-    <dimen name="message_details_header_padding_bottom">2dp</dimen>
     <dimen name="message_show_pics_header_padding_end">14dip</dimen>
     <dimen name="message_border_height">8dp</dimen>
     <dimen name="message_border_height_collapsed">1dp</dimen>
     <dimen name="message_header_presence_top_margin">-4dp</dimen>
     <dimen name="message_header_action_button_width">48dp</dimen>
     <dimen name="message_header_action_button_height">48dp</dimen>
-    <dimen name="message_header_action_button_height_condensed">48dp</dimen>
     <dimen name="message_header_padding_start">
         @dimen/conversation_message_content_margin_side</dimen>
     <dimen name="message_header_title_container_margin_end_collapsed">10dp</dimen>
@@ -72,8 +67,8 @@
     <dimen name="super_collapsed_height">30sp</dimen>
     <dimen name="super_collapsed_text_size">14sp</dimen>
     <dimen name="notification_view_height">36dip</dimen>
-    <dimen name="message_header_contact_photo_width">48dp</dimen>
-    <dimen name="message_header_contact_photo_height">48dp</dimen>
+    <dimen name="message_header_contact_photo_width">48sp</dimen>
+    <dimen name="message_header_contact_photo_height">48sp</dimen>
     <dimen name="message_header_inner_side_padding">10dp</dimen>
     <dimen name="attachment_toast_yoffset">-100dip</dimen>
     <dimen name="spinner_frame_width">196dip</dimen>
@@ -134,8 +129,8 @@
     <dimen name="dismiss_separator_padding">16dip</dimen>
     <dimen name="teaser_text_padding">16dip</dimen>
     <dimen name="attachment_margin_side">16dip</dimen>
-    <dimen name="attachment_icon_padding">10dip</dimen>
-    <dimen name="upper_date_margin">1dp</dimen>
+    <dimen name="attachment_icon_padding">5dip</dimen>
+    <dimen name="recipient_summary_margin">16dip</dimen>
 
     <!-- Minimum width of the folder teaser count TextView -->
     <dimen name="folder_teaser_count_textview_minwidth">68dp</dimen>
