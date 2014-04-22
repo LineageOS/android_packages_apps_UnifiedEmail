@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.view.View;
 
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
@@ -265,6 +266,37 @@ public class AttachmentActionHandler {
         sOptionHandler.handleOption1(mContext, mAccount, mMessage, mAttachment, mFragmentManager);
     }
 
+    public static boolean shouldShowAboveBarAttachmentLayout(Context context) {
+        return (sOptionHandler != null) &&
+                sOptionHandler.shouldShowAboveBarAttachmentLayout(context);
+    }
+
+    public static void setupAboveBarAttachmentLayout(View view) {
+        if (sOptionHandler != null) {
+            sOptionHandler.setupAboveBarAttachmentLayout(view);
+        }
+    }
+
+    public static void onOverflowOpened(Context context) {
+        if(sOptionHandler != null) {
+            sOptionHandler.onOverflowOpened(context);
+        }
+    }
+
+    public static void registerDismissListener(Uri conversationUri,
+            AboveAttachmentLayoutDismissedListener listener) {
+        if (sOptionHandler != null) {
+            sOptionHandler.registerDismissListener(conversationUri, listener);
+        }
+    }
+
+    public static void unregisterDismissListeners(Uri conversationUri) {
+        if(sOptionHandler != null) {
+            sOptionHandler.unregisterDismissListeners(conversationUri);
+        }
+    }
+
+
     /**
      * A default, no-op option class. Override this and set it globally with
      * {@link AttachmentActionHandler#setOptionHandler(OptionHandler)}.<br>
@@ -278,12 +310,31 @@ public class AttachmentActionHandler {
             return false;
         }
 
-        @SuppressWarnings("unused")
         public void handleOption1(Context context, String account, Message message,
                 Attachment attachment, FragmentManager fm) {
             // no-op
         }
 
+        public boolean shouldShowAboveBarAttachmentLayout(Context context) {
+            return false;
+        }
+
+        public void setupAboveBarAttachmentLayout(View view) { /* no-op */ }
+
+        public void onOverflowOpened(Context context) { /* no-op */ }
+
+        public void registerDismissListener(Uri conversationUri,
+                AboveAttachmentLayoutDismissedListener listener) {
+            // no-op
+        }
+
+        public void unregisterDismissListeners(Uri conversationUri) {
+            // no-op
+        }
+    }
+
+    public interface AboveAttachmentLayoutDismissedListener {
+        void onOtherLayoutDismissed();
     }
 
 }

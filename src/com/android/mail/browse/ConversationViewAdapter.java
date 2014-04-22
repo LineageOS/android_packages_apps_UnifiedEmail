@@ -32,6 +32,7 @@ import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
+import com.android.mail.browse.MessageFooterView.MessageFooterCallbacks;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock.OnClickListener;
 import com.android.mail.providers.Conversation;
@@ -64,6 +65,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final LoaderManager mLoaderManager;
     private final FragmentManager mFragmentManager;
     private final MessageHeaderViewCallbacks mMessageCallbacks;
+    private final MessageFooterCallbacks mFooterCallbacks;
     private final ContactInfoSource mContactInfoSource;
     private final ConversationViewHeaderCallbacks mConversationCallbacks;
     private final OnClickListener mSuperCollapsedListener;
@@ -266,15 +268,19 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
     }
 
-    public class MessageFooterItem extends ConversationOverlayItem {
+    public static class MessageFooterItem extends ConversationOverlayItem implements
+            AttachmentActionHandler.AboveAttachmentLayoutDismissedListener {
+        private final ConversationViewAdapter mAdapter;
+
         /**
          * A footer can only exist if there is a matching header. Requiring a header allows a
          * footer to stay in sync with the expanded state of the header.
          */
-        private final MessageHeaderItem mHeaderitem;
+        private final MessageHeaderItem mHeaderItem;
 
-        private MessageFooterItem(MessageHeaderItem item) {
-            mHeaderitem = item;
+        private MessageFooterItem(ConversationViewAdapter adapter, MessageHeaderItem item) {
+            mAdapter = adapter;
+            mHeaderItem = item;
         }
 
         @Override
@@ -286,14 +292,15 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageFooterView v = (MessageFooterView) inflater.inflate(
                     R.layout.conversation_message_footer, parent, false);
-            v.initialize(mLoaderManager, mFragmentManager, mAccountController);
+            v.initialize(mAdapter.mLoaderManager, mAdapter.mFragmentManager,
+                    mAdapter.mAccountController, mAdapter.mFooterCallbacks);
             return v;
         }
 
         @Override
         public void bindView(View v, boolean measureOnly) {
             final MessageFooterView attachmentsView = (MessageFooterView) v;
-            attachmentsView.bind(mHeaderitem, measureOnly);
+            attachmentsView.bind(mHeaderItem, this, measureOnly);
         }
 
         @Override
@@ -303,7 +310,7 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         @Override
         public boolean isExpanded() {
-            return mHeaderitem.isExpanded();
+            return mHeaderItem.isExpanded();
         }
 
         @Override
@@ -317,10 +324,31 @@ public class ConversationViewAdapter extends BaseAdapter {
         public int getHeight() {
             // a footer may change height while its view does not exist because it is offscreen
             // (but the header is onscreen and thus collapsible)
-            if (!mHeaderitem.isExpanded()) {
+            if (!mHeaderItem.isExpanded()) {
                 return 0;
             }
             return super.getHeight();
+        }
+
+        public MessageHeaderItem getHeaderItem() {
+            return mHeaderItem;
+        }
+
+        @Override
+        public void onOtherLayoutDismissed() {
+            final MessageFooterView view = mAdapter.mFooterCallbacks.getViewForItem(this);
+
+            // the item has a view, use the normal path
+            if (view != null) {
+                view.collapseAboveBarAttachmentsView();
+                return;
+            }
+
+            // the item is offscreen or otherwise doesn't have a view
+            // just update the HTML
+            final int newHeight = mAdapter.mFooterCallbacks.getUpdatedHeight(this);
+            setHeight(newHeight);
+            mAdapter.mFooterCallbacks.setMessageSpacerHeight(this, newHeight);
         }
     }
 
@@ -453,6 +481,7 @@ public class ConversationViewAdapter extends BaseAdapter {
             ConversationAccountController accountController,
             LoaderManager loaderManager,
             MessageHeaderViewCallbacks messageCallbacks,
+            MessageFooterCallbacks footerCallbacks,
             ContactInfoSource contactInfoSource,
             ConversationViewHeaderCallbacks convCallbacks,
             SuperCollapsedBlock.OnClickListener scbListener, Map<String, Address> addressCache,
@@ -463,6 +492,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         mLoaderManager = loaderManager;
         mFragmentManager = controllableActivity.getFragmentManager();
         mMessageCallbacks = messageCallbacks;
+        mFooterCallbacks = footerCallbacks;
         mContactInfoSource = contactInfoSource;
         mConversationCallbacks = convCallbacks;
         mSuperCollapsedListener = scbListener;
@@ -548,7 +578,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     }
 
     public int addMessageFooter(MessageHeaderItem headerItem) {
-        return addItem(new MessageFooterItem(headerItem));
+        return addItem(new MessageFooterItem(this, headerItem));
     }
 
     public static MessageHeaderItem newMessageHeaderItem(ConversationViewAdapter adapter,
@@ -557,8 +587,9 @@ public class ConversationViewAdapter extends BaseAdapter {
         return new MessageHeaderItem(adapter, dateBuilder, message, expanded, showImages);
     }
 
-    public MessageFooterItem newMessageFooterItem(MessageHeaderItem headerItem) {
-        return new MessageFooterItem(headerItem);
+    public static MessageFooterItem newMessageFooterItem(
+            ConversationViewAdapter adapter, MessageHeaderItem headerItem) {
+        return new MessageFooterItem(adapter, headerItem);
     }
 
     public int addSuperCollapsedBlock(int start, int end) {

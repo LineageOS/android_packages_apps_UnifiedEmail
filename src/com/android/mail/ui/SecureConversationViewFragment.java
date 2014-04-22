@@ -141,6 +141,12 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mViewController.onActivityCreated(savedInstanceState);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mViewController.onDestroyView();
+    }
+
     // Start implementations of SecureConversationViewControllerCallbacks
 
     @Override
