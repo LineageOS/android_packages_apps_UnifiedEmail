@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:background="@color/footer_background_color">
+        android:background="@color/loading_messages_background_color">
 
     <ImageView
             android:id="@+id/loading_icon"

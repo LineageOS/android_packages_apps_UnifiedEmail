@@ -45,8 +45,7 @@
     <!-- Folder List/Drawer colors -->
     <color name="account_item_selected_text_color">@color/mail_app_blue</color>
     <color name="folder_list_heading_text_color">@color/dark_gray_text_color</color>
-    <color name="list_background_color">@android:color/white</color>
-    <color name="footer_background_color">#eeeeee</color>
+    <color name="list_background_color">#f5f5f5</color>
     <color name="separator_color">#bebebe</color>
 
     <!-- Compose colors -->
@@ -138,4 +137,6 @@
     <color name="swipe_refresh_color4">#fff4b400</color>
 
     <color name="badge_background_color">#edb802</color>
+
+    <color name="loading_messages_background_color">#eeeeee</color>
 </resources>
