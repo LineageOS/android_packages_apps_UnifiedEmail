@@ -214,18 +214,19 @@ public class NotificationActionUtils {
             String title = context.getString(notificationAction.getDisplayStringResId(
                     folder, conversation, message));
 
-            // TODO: re-enable after b/14218390 is fixed.
-            if (false && (notificationAction == NotificationActionType.REPLY
-                    || notificationAction == NotificationActionType.REPLY_ALL)) {
-                wearableNotification.addAction(new WearableNotifications.Action.Builder(
-                        actionIconResId, title, pendingIntent)
-                        .addRemoteInput(new RemoteInput.Builder(WEAR_REPLY_INPUT)
-                                .setLabel(title).build())
-                        .build());
+            // Always add all actions to both standard and wearable notifications.
+            notification.addAction(actionIconResId, title, pendingIntent);
+
+            WearableNotifications.Action.Builder wearableActionBuilder =
+                    new WearableNotifications.Action.Builder(actionIconResId, title, pendingIntent);
+            if (notificationAction == NotificationActionType.REPLY
+                    || notificationAction == NotificationActionType.REPLY_ALL) {
+                wearableActionBuilder.addRemoteInput(
+                        new RemoteInput.Builder(WEAR_REPLY_INPUT).setLabel(title).build());
                 LogUtils.d(LOG_TAG, "Adding wearable action!!");
-            } else {
-                notification.addAction(actionIconResId, title, pendingIntent);
             }
+
+            wearableNotification.addAction(wearableActionBuilder.build());
         }
     }
 
