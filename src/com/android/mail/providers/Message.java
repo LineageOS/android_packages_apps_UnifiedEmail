@@ -468,7 +468,7 @@ public class Message implements Parcelable, HtmlMessage {
         int partId = 0;
         for (final Part attachmentPart : attachments) {
             mAttachments.add(new Attachment(context, attachmentPart,
-                    emlFileUri, messageId, Integer.toString(partId++), false));
+                    emlFileUri, messageId, Integer.toString(partId++), false /* inline */));
         }
 
         // instantiating an Attachment for each viewable will cause it to be registered within the
@@ -477,7 +477,8 @@ public class Message implements Parcelable, HtmlMessage {
             final String[] cids = viewablePart.getHeader(MimeHeader.HEADER_CONTENT_ID);
             if (cids != null && cids.length == 1) {
                 final String cid = REMOVE_OPTIONAL_BRACKETS.matcher(cids[0]).replaceAll("$1");
-                new Attachment(context, viewablePart, emlFileUri, messageId, cid, true);
+                mAttachments.add(new Attachment(context, viewablePart, emlFileUri, messageId, cid,
+                        true /* inline */));
             }
         }
 

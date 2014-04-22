@@ -1038,6 +1038,11 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         return (domId == null) ? null : mMessageTransforms.get(domId);
     }
 
+    @Override
+    public boolean isSecure() {
+        return false;
+    }
+
     // END message header callbacks
 
     @Override

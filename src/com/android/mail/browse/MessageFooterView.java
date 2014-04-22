@@ -89,6 +89,12 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         MessageFooterView getViewForItem(MessageFooterItem item);
 
         int getUpdatedHeight(MessageFooterItem item);
+
+        /**
+         * @return <tt>true</tt> if this footer is contained within a SecureConversationViewFragment
+         * and cannot assume the content is <strong>not</strong> malicious
+         */
+        boolean isSecure();
     }
 
     public MessageFooterView(Context context) {
@@ -222,13 +228,15 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         final List<Attachment> barAttachments = new ArrayList<Attachment>(maxSize);
 
         for (Attachment attachment : attachments) {
-            if (attachment.isInlineAttachment()) {
-                // skip non-standard (aka inline) attachments
-                continue;
-            } else if (AttachmentTile.isTiledAttachment(attachment)) {
-                tiledAttachments.add(attachment);
-            } else {
-                barAttachments.add(attachment);
+            // attachments in secure views are displayed in the footer so the user may interact with
+            // them; for normal views there is no need to show inline attachments in the footer
+            // since users can interact with them in place
+            if (!attachment.isInlineAttachment() || mCallbacks.isSecure()) {
+                if (AttachmentTile.isTiledAttachment(attachment)) {
+                    tiledAttachments.add(attachment);
+                } else {
+                    barAttachments.add(attachment);
+                }
             }
         }
 
