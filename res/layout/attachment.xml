@@ -22,18 +22,18 @@
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="48dp"
-        android:layout_height="match_parent"
-        android:scaleType="center"
-        android:src="@drawable/ic_attachment_holo_light" />
+        android:src="@drawable/ic_attachment_holo_light"
+        android:layout_gravity="center_vertical"
+        style="@style/AttachmentThumbnail"/>
 
     <!-- Attachment name and size -->
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="0dp"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_gravity="center_vertical" >
+        android:layout_gravity="center_vertical"
+        style="@style/AttachmentTextContainer" >
 
         <TextView android:id="@+id/attachment_name"
             style="@style/AttachmentName" />
@@ -46,7 +46,7 @@
     <!-- Remove button -->
     <ImageButton android:id="@+id/remove_attachment"
         android:src="@drawable/ic_cancel_holo_light"
-        android:layout_width="48dp"
+        android:layout_width="48dip"
         android:layout_height="match_parent"
         android:clickable="true"
         android:gravity="center"
