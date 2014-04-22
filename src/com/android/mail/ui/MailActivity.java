@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityManager;
 
+import com.android.mail.analytics.AnalyticsTimer;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.StorageLowState;
@@ -137,6 +138,12 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
+        // Log the start time if this is launched from the launcher with no saved states
+        Intent i = getIntent();
+        if (i != null && i.getCategories() != null &&
+                i.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
+            AnalyticsTimer.getInstance().trackStart(AnalyticsTimer.COLD_START_LAUNCHER);
+        }
 
         mViewMode = new ViewMode();
         final boolean tabletUi = Utils.useTabletUI(this.getResources());

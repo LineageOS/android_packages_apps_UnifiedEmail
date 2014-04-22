@@ -191,6 +191,7 @@ public final class ConversationListFragment extends ListFragment implements
                 mHandler.postDelayed(mHideLoadingRunnable, MINIMUM_LOADING_DURATION);
             }
             mLoadingViewPending = false;
+            onViewStateUpdated();
         }
     };
 
@@ -1026,14 +1027,9 @@ public final class ConversationListFragment extends ListFragment implements
         if (mConversationCursorHash == newCursorHash && mConversationCursorHash != 0) {
             mListAdapter.notifyDataSetChanged();
         }
-
-        // Check if the cursor is ready for display
-        if (newCursor != null && !mLoadingViewPending) {
-            updateAnalyticsData(newCursor);
-            // Some analytics depend on this variable, so we'll set it after we update analytics
-            mInitialCursorLoading = false;
-        }
         mConversationCursorHash = newCursorHash;
+
+        onViewStateUpdated();
 
         if (newCursor != null && newCursor.getCount() > 0) {
             newCursor.markContentsSeen();
@@ -1146,19 +1142,47 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
+     * This is called whenever the conversation cursor gets updated or mLoadingViewPending is
+     * set to true. The latter is necessary to ensure that this function is called AT LEAST ONCE
+     * after mLoadingViewPending changes to true.
+     */
+    private void onViewStateUpdated() {
+        // Check if the cursor is ready for display
+        ConversationCursor cursor = getConversationListCursor();
+        if (cursor != null && !mLoadingViewPending) {
+            updateAnalyticsData(cursor);
+            // Some analytics depend on this variable, so we'll set it after we update analytics
+            mInitialCursorLoading = false;
+        }
+    }
+
+    /**
      * Extracted function that handles Analytics state and logging updates whenever a new non-null
      * cursor is set as the new cursor
      * @param newCursor the new cursor pointer, cannot be null
      */
     private void updateAnalyticsData(ConversationCursor newCursor) {
         // If the count is 0, then we check which log is applicable
-        if (newCursor.getCount() == 0) {
-            if (mInitialCursorLoading) {
+        if (newCursor.getCount() == 0 && mConversationCursorLastCount > 0) {
+            Analytics.getInstance().sendEvent("empty_state", "post_delete",
+                mFolder.getTypeDescription(), 0);
+        }
+
+        // This marks the very first time the cursor with the data the user sees returned.
+        // Use this point to log the appropriate timing information that depends on when
+        // the conversation list view finishes loading
+        if (mInitialCursorLoading) {
+            if (newCursor.getCount() == 0) {
                 Analytics.getInstance().sendEvent("empty_state", "post_label_change",
                         mFolder.getTypeDescription(), 0);
-            } else if (mConversationCursorLastCount > 0) {
-                Analytics.getInstance().sendEvent("empty_state", "post_delete",
-                        mFolder.getTypeDescription(), 0);
+            }
+            AnalyticsTimer.getInstance().logDuration(AnalyticsTimer.COLD_START_LAUNCHER,
+                    true /* isDestructive */, "cold_start_to_list", "from_launcher", null);
+            // Don't need null checks because the activity, controller, and folder cannot
+            // be null in this case
+            if (mActivity.getFolderController().getFolder().isSearch()) {
+                AnalyticsTimer.getInstance().logDuration(AnalyticsTimer.SEARCH_TO_LIST,
+                        true /* isDestructive */, "search_to_list", null, null);
             }
         }
 
