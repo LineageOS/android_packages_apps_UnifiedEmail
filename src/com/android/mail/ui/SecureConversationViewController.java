@@ -172,7 +172,9 @@ public class SecureConversationViewController implements
     }
 
     public void onDestroyView() {
-        AttachmentActionHandler.unregisterDismissListeners(mMessage.conversationUri);
+        if (mMessage != null && mMessage.getConversation() != null) {
+            AttachmentActionHandler.unregisterDismissListeners(mMessage.getConversation().uri);
+        }
     }
 
     @Override
