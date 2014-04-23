@@ -163,22 +163,22 @@ public final class ConversationListFragment extends ListFragment implements
     // Let's ensure that we are only showing one out of the three views at once
     private void showListView() {
         mListView.setVisibility(View.VISIBLE);
-        mEmptyView.setVisibility(View.GONE);
-        mLoadingView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.INVISIBLE);
+        mLoadingView.setVisibility(View.INVISIBLE);
     }
 
     private void showEmptyView() {
         mEmptyView.setupEmptyView(
                 mFolder, mViewContext.searchQuery, mListAdapter.getBidiFormatter());
         mListView.setEmptyView(mEmptyView);
-        mListView.setVisibility(View.GONE);
+        mListView.setVisibility(View.INVISIBLE);
         mEmptyView.setVisibility(View.VISIBLE);
-        mLoadingView.setVisibility(View.GONE);
+        mLoadingView.setVisibility(View.INVISIBLE);
     }
 
     private void showLoadingView() {
-        mListView.setVisibility(View.GONE);
-        mEmptyView.setVisibility(View.GONE);
+        mListView.setVisibility(View.INVISIBLE);
+        mEmptyView.setVisibility(View.INVISIBLE);
         mLoadingView.setVisibility(View.VISIBLE);
     }
 
@@ -186,8 +186,8 @@ public final class ConversationListFragment extends ListFragment implements
         @Override
         public void go() {
             if (isLoadingAndEmpty()) {
-                showLoadingView();;
                 mCanTakeDownLoadingView = false;
+                showLoadingView();
                 mHandler.removeCallbacks(mHideLoadingRunnable);
                 mHandler.postDelayed(mHideLoadingRunnable, MINIMUM_LOADING_DURATION);
             }
