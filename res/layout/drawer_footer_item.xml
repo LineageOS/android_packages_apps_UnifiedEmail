@@ -19,8 +19,7 @@
 <!-- Item in the drawer that launches the Help or Feedback activities. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/footer_background_color">
+    android:layout_height="wrap_content" >
 
     <LinearLayout
         android:layout_height="wrap_content"
