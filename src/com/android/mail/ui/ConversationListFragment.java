@@ -1030,6 +1030,7 @@ public final class ConversationListFragment extends ListFragment implements
         }
         if (newCursor != null) {
             updateAnalyticsData(newCursor);
+            updateSearchResultHeader(newCursor.getCount());
         }
         mConversationCursorHash = newCursorHash;
 
