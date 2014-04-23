@@ -209,7 +209,7 @@
     <string name="search_unsupported" msgid="4654227193354052607">"Utafutaji hauauniwi kwenye akaunti hii."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Inatafuta…"</string>
     <string name="add_label" msgid="6060201715848652940">"Ongeza folda"</string>
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"Ujumbe mpya kutoka <xliff:g id="SENDER">%s</xliff:g>. Onyesha."</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Barua pepe mpya kutoka <xliff:g id="SENDER">%s</xliff:g>. Onyesha."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="6028908826781946980">"Barua pepe <xliff:g id="COUNT">%1$d</xliff:g> mpya. Onyesha."</item>
   </plurals>
@@ -262,9 +262,9 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sawazisha Folda"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> ambazo hazijasomwa"</item>
+    <item quantity="other" msgid="6210217540181960613">"Hujasoma barua pepe <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Zaidi ya <xliff:g id="COUNT">%1$d</xliff:g> ambazo hazijasomwa"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Hujasoma zaidi ya barua pepe <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ona mazungumzo zaidi"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Inapakia…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Chagua akaunti"</string>

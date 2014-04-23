@@ -73,7 +73,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"Бичих"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Фолдеруудыг өөрчлөх"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"Шилжүүлэх газар"</string>
-    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Ирсэн имэйл рүү шилжүүлэх"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Ирсэн мэйлрүү зөөх"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Фолдерын тохиргоо"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Авто-хэмжээ тохируулахыг буцаах"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Фолдерын тохиргоо"</string>
