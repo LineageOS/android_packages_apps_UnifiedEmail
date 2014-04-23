@@ -214,7 +214,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"<xliff:g id="FOLDERNAME">%1$s</xliff:g>(으)로 이동함"</string>
     <string name="search_results_header" msgid="4669917471897026269">"검색결과"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"이 계정에서는 검색이 지원되지 않습니다."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"검색 중…"</string>
     <string name="add_label" msgid="6060201715848652940">"폴더 추가"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"<xliff:g id="SENDER">%s</xliff:g>님이 보낸 새 메일 보기"</string>
   <plurals name="new_incoming_messages_many">

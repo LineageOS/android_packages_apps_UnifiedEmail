@@ -214,7 +214,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"ຍ້າຍໄປ <xliff:g id="FOLDERNAME">%1$s</xliff:g> ແລ້ວ"</string>
     <string name="search_results_header" msgid="4669917471897026269">"ຜົນໄດ້ຮັບ"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"ການຊອກຫາບໍ່ຮອງຮັບສຳລັບບັນຊີນີ້."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"ກຳລັງຊອກຫາ..."</string>
     <string name="add_label" msgid="6060201715848652940">"ເພີ່ມໂຟນເດີ"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"ສະ​ແດງ​ຂໍ້​ຄວາມ​ໃຫມ່​ຈາກ <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
