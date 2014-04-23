@@ -451,7 +451,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     public void onDestroyView() {
         super.onDestroyView();
         mConversationContainer.setOverlayAdapter(null);
-        AttachmentActionHandler.unregisterDismissListeners(mConversation.uri);
+        // AdViewFragment has no conversation and will crash.
+        if (mConversation != null) {
+            AttachmentActionHandler.unregisterDismissListeners(mConversation.uri);
+        }
         mAdapter = null;
         resetLoadWaiting(); // be sure to unregister any active load observer
         mViewsCreated = false;
