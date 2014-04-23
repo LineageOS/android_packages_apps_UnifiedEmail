@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,8 +96,6 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private static int TIMESTAMP_UPDATE_INTERVAL = 0;
 
-    private static long NO_NEW_MESSAGE_DURATION = 1 * DateUtils.SECOND_IN_MILLIS;
-
     private ControllableActivity mActivity;
 
     // Control state.
@@ -157,8 +154,6 @@ public final class ConversationListFragment extends ListFragment implements
 
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
-    /** The time at which we last exited CAB mode. */
-    private long mSelectionModeExitedTimestamp = -1;
 
     // Let's ensure that we are only showing one out of the three views at once
     private void showListView() {
@@ -1097,7 +1092,6 @@ public final class ConversationListFragment extends ListFragment implements
 
         @Override
         public void onSetEmpty() {
-            mSelectionModeExitedTimestamp = System.currentTimeMillis();
             mSwipeRefreshWidget.setEnabled(true);
         }
 

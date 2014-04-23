@@ -84,14 +84,9 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     private static final int SHOW_IMAGE_PROMPT_ONCE = 1;
     private static final int SHOW_IMAGE_PROMPT_ALWAYS = 2;
 
-    private static final String HEADER_INFLATE_TAG = "message header inflate";
-    private static final String HEADER_ADDVIEW_TAG = "message header addView";
     private static final String HEADER_RENDER_TAG = "message header render";
-    private static final String PREMEASURE_TAG = "message header pre-measure";
     private static final String LAYOUT_TAG = "message header layout";
     private static final String MEASURE_TAG = "message header measure";
-
-    private static final String RECIPIENT_HEADING_DELIMITER = "   ";
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -561,13 +556,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         }
         final String displayName = sender.getPersonal();
         return TextUtils.isEmpty(displayName) ? sender.getAddress() : displayName;
-    }
-
-    /**
-     * Return the address, if a name is present, or null if not.
-     */
-    private static CharSequence getSenderAddress(Address sender) {
-        return (sender != null) ? sender.getAddress() : "";
     }
 
     private static void setChildVisibility(int visibility, View... children) {
@@ -1083,7 +1071,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         public int bottomHeight = -1;
     }
 
-    private boolean isValidPosition(int position, int size) {
+    private static boolean isValidPosition(int position, int size) {
         return position >= 0 && position < size;
     }
 

@@ -367,7 +367,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     }
 
     public void collapseAboveBarAttachmentsView() {
-        int heightBefore = measureHeight();
+        measureHeight();
         mAboveAttachmentBarListLayout.setVisibility(View.GONE);
         updateSpacerHeight();
     }
