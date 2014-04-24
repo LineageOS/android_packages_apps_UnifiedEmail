@@ -22,7 +22,6 @@ import android.app.FragmentManager;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.text.BidiFormatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -291,6 +290,11 @@ public class SecureConversationViewController implements
     @Override
     public String getMessageTransforms(final Message msg) {
         return null;
+    }
+
+    @Override
+    public boolean isSecure() {
+        return true;
     }
 
     @Override

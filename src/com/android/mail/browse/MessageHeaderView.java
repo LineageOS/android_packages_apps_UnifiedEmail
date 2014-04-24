@@ -225,6 +225,12 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         String getMessageTransforms(Message msg);
 
         FragmentManager getFragmentManager();
+
+        /**
+         * @return <tt>true</tt> if this header is contained within a SecureConversationViewFragment
+         * and cannot assume the content is <strong>not</strong> malicious
+         */
+        boolean isSecure();
     }
 
     public MessageHeaderView(Context context) {
@@ -414,9 +420,21 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         mMessage = mMessageHeaderItem.getMessage();
 
         final Account account = getAccount();
-        final boolean alwaysShowImages = (account != null) &&
+        final boolean alwaysShowImagesForAccount = (account != null) &&
                 (account.settings.showImages == Settings.ShowImages.ALWAYS);
-        mShowImagePrompt = mMessage.shouldShowImagePrompt() && !alwaysShowImages;
+
+        final boolean alwaysShowImagesForMessage = mMessage.shouldShowImagePrompt();
+
+        if (!alwaysShowImagesForMessage) {
+            // we don't need the "Show picture" prompt if the user allows images for this message
+            mShowImagePrompt = false;
+        } else if (mCallbacks.isSecure()) {
+            // in a secure view we always display the "Show picture" prompt
+            mShowImagePrompt = true;
+        } else {
+            // otherwise honor the account setting for automatically showing pictures
+            mShowImagePrompt = !alwaysShowImagesForAccount;
+        }
 
         setExpanded(mMessageHeaderItem.isExpanded());
 
