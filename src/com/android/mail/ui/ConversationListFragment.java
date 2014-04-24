@@ -200,6 +200,8 @@ public final class ConversationListFragment extends ListFragment implements
         }
     };
 
+    // Keep track of if we are waiting for the loading view. This variable is also used to check
+    // if the cursor corresponding to the current folder loaded (either partially or completely).
     private boolean mLoadingViewPending;
     private boolean mCanTakeDownLoadingView;
 
@@ -1141,13 +1143,11 @@ public final class ConversationListFragment extends ListFragment implements
     /**
      * Extracted function that handles Analytics state and logging updates whenever a new non-null
      * cursor is set as the new cursor
-     * @param newCursor
+     * @param newCursor the new cursor pointer, cannot be null
      */
     private void updateAnalyticsData(ConversationCursor newCursor) {
-        Bundle extras = (newCursor.getExtras() != null) ? newCursor.getExtras() : Bundle.EMPTY;
-        int cursorStatus = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
         // Check if the cursor is ready for display
-        if (!UIProvider.CursorStatus.isWaitingForResults(cursorStatus)) {
+        if (!mLoadingViewPending) {
             // If the count is 0, then we check which log is applicable
             if (newCursor.getCount() == 0) {
                 if (mJustLoadedNewList) {
