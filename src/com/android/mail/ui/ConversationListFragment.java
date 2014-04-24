@@ -153,7 +153,7 @@ public final class ConversationListFragment extends ListFragment implements
     // The number of items in the last known ConversationCursor
     private int mConversationCursorLastCount;
     // State variable to keep track if we just loaded a new list
-    private boolean mJustLoadedNewList;
+    private boolean mInitialCursorLoading;
 
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
@@ -170,7 +170,6 @@ public final class ConversationListFragment extends ListFragment implements
     private void showEmptyView() {
         mEmptyView.setupEmptyView(
                 mFolder, mViewContext.searchQuery, mListAdapter.getBidiFormatter());
-        mListView.setEmptyView(mEmptyView);
         mListView.setVisibility(View.INVISIBLE);
         mEmptyView.setVisibility(View.VISIBLE);
         mLoadingView.setVisibility(View.INVISIBLE);
@@ -725,8 +724,7 @@ public final class ConversationListFragment extends ListFragment implements
      * must be called on the UI thread.
      */
     private void showList() {
-        mJustLoadedNewList = true;
-        mListView.setEmptyView(null);
+        mInitialCursorLoading = true;
         onFolderUpdated(mActivity.getFolderController().getFolder());
         onConversationListStatusUpdated();
 
@@ -862,6 +860,17 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     public void onFolderUpdated(Folder folder) {
+        if (isLoadingAndEmpty()) {
+            // Wait a bit before showing either the empty or loading view. If the messages are
+            // actually local, it's disorienting to see this appear on every folder transition.
+            // If they aren't, then it will likely take more than 200 milliseconds to load, and
+            // then we'll see the loading view.
+            if (!mLoadingViewPending) {
+                mHandler.postDelayed(mLoadingViewRunnable, LOADING_DELAY_MS);
+                mLoadingViewPending = true;
+            }
+        }
+
         mFolder = folder;
         setSwipeAction();
 
@@ -891,32 +900,22 @@ public final class ConversationListFragment extends ListFragment implements
         } else {
             final Bundle extras = cursor.getExtras();
             final int cursorStatus = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
-            return(UIProvider.CursorStatus.isWaitingForResults(cursorStatus) &&
-                    cursor.getCount() == 0);
+            // It's possible for cursor status to mess up and not get out of LOADING state on time
+            // if that happens and the real cursor's count is actually 0, then we get flickering
+            return (UIProvider.CursorStatus.isWaitingForResults(cursorStatus) &&
+                    cursor.getCount() == 0 && mInitialCursorLoading);
         }
     }
     /**
      * Updates the footer visibility and updates the conversation cursor
      */
     public void onConversationListStatusUpdated() {
-        if (isLoadingAndEmpty()) {
-            // Wait a bit before showing either the empty or loading view. If the messages are
-            // actually local, it's disorienting to see this appear on every folder transition.
-            // If they aren't, then it will likely take more than 200 milliseconds to load, and
-            // then we'll see the loading view.
-            if (!mLoadingViewPending) {
-                mHandler.postDelayed(mLoadingViewRunnable, LOADING_DELAY_MS);
-                mLoadingViewPending = true;
-            }
-
-        } else {
-            if (mCanTakeDownLoadingView) {
-                hideLoadingViewAndShowContents();
-            }
-        }
-
         // Also change the cursor here.
         onCursorUpdated();
+
+        if (!isLoadingAndEmpty() && mCanTakeDownLoadingView) {
+            hideLoadingViewAndShowContents();
+        }
     }
 
     private void hideLoadingViewAndShowContents() {
@@ -951,9 +950,6 @@ public final class ConversationListFragment extends ListFragment implements
                 && (cursorStatus == UIProvider.CursorStatus.LOADED
                 || cursorStatus == UIProvider.CursorStatus.COMPLETE) || folderCount > 0) {
             updateSearchResultHeader(folderCount);
-            if (folderCount == 0) {
-                showEmptyView();
-            }
         }
     }
 
@@ -1030,8 +1026,12 @@ public final class ConversationListFragment extends ListFragment implements
         if (mConversationCursorHash == newCursorHash && mConversationCursorHash != 0) {
             mListAdapter.notifyDataSetChanged();
         }
-        if (newCursor != null) {
+
+        // Check if the cursor is ready for display
+        if (newCursor != null && !mLoadingViewPending) {
             updateAnalyticsData(newCursor);
+            // Some analytics depend on this variable, so we'll set it after we update analytics
+            mInitialCursorLoading = false;
         }
         mConversationCursorHash = newCursorHash;
 
@@ -1151,24 +1151,20 @@ public final class ConversationListFragment extends ListFragment implements
      * @param newCursor the new cursor pointer, cannot be null
      */
     private void updateAnalyticsData(ConversationCursor newCursor) {
-        // Check if the cursor is ready for display
-        if (!mLoadingViewPending) {
-            // If the count is 0, then we check which log is applicable
-            if (newCursor.getCount() == 0) {
-                if (mJustLoadedNewList) {
-                    Analytics.getInstance().sendEvent("empty_state", "post_label_change",
-                            mFolder.getTypeDescription(), 0);
-                } else if (mConversationCursorLastCount > 0) {
-                    Analytics.getInstance().sendEvent("empty_state", "post_delete",
-                            mFolder.getTypeDescription(), 0);
-                }
+        // If the count is 0, then we check which log is applicable
+        if (newCursor.getCount() == 0) {
+            if (mInitialCursorLoading) {
+                Analytics.getInstance().sendEvent("empty_state", "post_label_change",
+                        mFolder.getTypeDescription(), 0);
+            } else if (mConversationCursorLastCount > 0) {
+                Analytics.getInstance().sendEvent("empty_state", "post_delete",
+                        mFolder.getTypeDescription(), 0);
             }
-
-            // We save the count here because for folders that are empty, multiple successful
-            // cursor loads will occur with size of 0. Thus we don't want to emit any false
-            // positive post_delete events.
-            mConversationCursorLastCount = newCursor.getCount();
-            mJustLoadedNewList = false;
         }
+
+        // We save the count here because for folders that are empty, multiple successful
+        // cursor loads will occur with size of 0. Thus we don't want to emit any false
+        // positive post_delete events.
+        mConversationCursorLastCount = newCursor.getCount();
     }
 }
