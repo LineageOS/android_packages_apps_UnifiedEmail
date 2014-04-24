@@ -214,7 +214,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"გადატანილია <xliff:g id="FOLDERNAME">%1$s</xliff:g>-ში"</string>
     <string name="search_results_header" msgid="4669917471897026269">"შედეგები"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"ძიება ამ ანგარიშში არ არის მხარდაჭერილი."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"ძიება…"</string>
     <string name="add_label" msgid="6060201715848652940">"საქაღალდის დამატება"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"<xliff:g id="SENDER">%s</xliff:g>-დან მიღებული ახალი შეტყობინების ჩვენება."</string>
   <plurals name="new_incoming_messages_many">

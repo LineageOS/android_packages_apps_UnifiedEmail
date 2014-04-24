@@ -22,7 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"Копија"</string>
     <string name="bcc" msgid="3098643138241111579">"Скривена копија"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Наслов"</string>
-    <string name="body_hint" msgid="4279864165439577668">"Напишите поруку е-поште"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Напишите имејл"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Приложи датотеку"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Приложи слику"</string>
     <string name="save_draft" msgid="5555744208032445632">"Сачувај недовршену поруку"</string>
@@ -124,7 +124,7 @@
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Позови..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Додај контакт"</string>
-    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Пошаљи поруку е-поште"</string>
+    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Пошаљи имејл"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Мапа"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Дели везу"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Помоћ"</string>
@@ -214,7 +214,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Премештена је у <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Резултати"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Претрага није подржана на овом налогу."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Претраживање..."</string>
     <string name="add_label" msgid="6060201715848652940">"Додај директоријум"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Прикажи нову поруку пошиљаоца <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">

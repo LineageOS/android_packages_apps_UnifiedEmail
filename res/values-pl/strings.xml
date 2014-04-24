@@ -214,7 +214,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Przeniesiono do: <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Wyniki"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Wyszukiwanie nie jest obsługiwane na tym koncie."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Wyszukiwanie…"</string>
     <string name="add_label" msgid="6060201715848652940">"Dodaj folder"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Pokaż nową wiadomość od: <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">

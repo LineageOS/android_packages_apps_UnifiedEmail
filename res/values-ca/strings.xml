@@ -214,7 +214,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"S\'ha mogut a <xliff:g id="FOLDERNAME">%1$s</xliff:g>."</string>
     <string name="search_results_header" msgid="4669917471897026269">"Resultats"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"La cerca no és compatible en aquest compte."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"S\'està cercant..."</string>
     <string name="add_label" msgid="6060201715848652940">"Afegeix una carpeta"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Mostra el missatge nou de <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">

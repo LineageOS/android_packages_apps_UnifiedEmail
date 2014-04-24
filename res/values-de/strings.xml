@@ -214,7 +214,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Verschoben nach <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Ergebnisse"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Die Suche wird für dieses Konto nicht unterstützt."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Wird gesucht..."</string>
     <string name="add_label" msgid="6060201715848652940">"Ordner hinzufügen"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Neue Nachricht von <xliff:g id="SENDER">%s</xliff:g> anzeigen"</string>
   <plurals name="new_incoming_messages_many">

@@ -214,7 +214,6 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Đã chuyển vào <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Kết quả"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Không hỗ trợ tính năng tìm kiếm trên tài khoản này."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Đang tìm kiếm…"</string>
     <string name="add_label" msgid="6060201715848652940">"Thêm thư mục"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Hiển thị tin nhắn mới từ <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
