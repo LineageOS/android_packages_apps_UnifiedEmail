@@ -39,6 +39,7 @@ import com.android.ex.photo.views.ProgressBarWrapper;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.AttachmentActionHandler;
+import com.android.mail.browse.ConversationMessage;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
@@ -79,6 +80,10 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
     private static final String EXTRA_ACCOUNT = MailPhotoViewActivity.class.getName() + "-acct";
     private static final String EXTRA_MESSAGE = MailPhotoViewActivity.class.getName() + "-msg";
+    private static final String EXTRA_HIDE_EXTRA_OPTION_ONE =
+            MailPhotoViewActivity.class.getName() + "-hide-extra-option-one";
+
+    private boolean mHideExtraOptionOne;
 
     /**
      * Start a new MailPhotoViewActivity to view the given images.
@@ -86,7 +91,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      * @param photoIndex The index of the photo to show first.
      */
     public static void startMailPhotoViewActivity(final Context context, final String account,
-            final Message msg, final int photoIndex) {
+            final ConversationMessage msg, final int photoIndex) {
         final Intents.PhotoViewIntentBuilder builder =
                 Intents.newPhotoViewIntentBuilder(context,
                         "com.android.mail.photo.MailPhotoViewActivity");
@@ -104,13 +109,13 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      * @param initialPhotoUri The uri of the photo to show first.
      */
     public static void startMailPhotoViewActivity(final Context context, final String account,
-            final Message msg, final String initialPhotoUri) {
+            final ConversationMessage msg, final String initialPhotoUri) {
         context.startActivity(
                 buildMailPhotoViewActivityIntent(context, account, msg, initialPhotoUri));
     }
 
     public static Intent buildMailPhotoViewActivityIntent(
-            final Context context, final String account, final Message msg,
+            final Context context, final String account, final ConversationMessage msg,
             final String initialPhotoUri) {
         final Intents.PhotoViewIntentBuilder builder = Intents.newPhotoViewIntentBuilder(
                 context, "com.android.mail.photo.MailPhotoViewActivity");
@@ -122,9 +127,11 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         return wrapIntent(builder.build(), account, msg);
     }
 
-    private static Intent wrapIntent(final Intent intent, final String account, final Message msg) {
+    private static Intent wrapIntent(
+            final Intent intent, final String account, final ConversationMessage msg) {
         intent.putExtra(EXTRA_MESSAGE, msg);
         intent.putExtra(EXTRA_ACCOUNT, account);
+        intent.putExtra(EXTRA_HIDE_EXTRA_OPTION_ONE, msg.getConversation() == null);
         return intent;
     }
 
@@ -139,6 +146,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         final Intent intent = getIntent();
         final String account = intent.getStringExtra(EXTRA_ACCOUNT);
         final Message msg = intent.getParcelableExtra(EXTRA_MESSAGE);
+        mHideExtraOptionOne = intent.getBooleanExtra(EXTRA_HIDE_EXTRA_OPTION_ONE, false);
         mActionHandler.setAccount(account);
         mActionHandler.setMessage(msg);
     }
@@ -183,7 +191,11 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             mShareItem.setEnabled(canShare);
             mPrintItem.setEnabled(canShare);
             mDownloadAgainItem.setEnabled(attachment.canSave() && attachment.isDownloading());
-            mExtraOption1Item.setEnabled(mActionHandler.shouldShowExtraOption1());
+            if (mHideExtraOptionOne) {
+                mExtraOption1Item.setVisible(false);
+            } else {
+                mExtraOption1Item.setEnabled(mActionHandler.shouldShowExtraOption1());
+            }
         } else {
             if (mMenu != null) {
                 mMenu.setGroupEnabled(R.id.photo_view_menu_group, false);

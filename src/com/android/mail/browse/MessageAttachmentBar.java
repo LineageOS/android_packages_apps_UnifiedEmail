@@ -83,6 +83,13 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
+    /**
+     * Boolean used to tell whether extra option 1 should always be hidden.
+     * Currently makes sure that there is no conversation because that state
+     * means that we're in the EML viewer.
+     */
+    private boolean mHideExtraOptionOne;
+
 
     public MessageAttachmentBar(Context context) {
         this(context, null);
@@ -119,6 +126,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         mActionHandler.setAccount(mAccount.getEmailAddress());
         mActionHandler.setMessage(message);
         mActionHandler.setAttachment(mAttachment);
+        mHideExtraOptionOne = message.getConversation() == null;
 
         // reset mSaveClicked if we are not currently downloading
         // So if the download fails or the download completes, we stop
@@ -304,7 +312,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     }
 
     private boolean shouldShowExtraOption1() {
-        return mActionHandler.shouldShowExtraOption1();
+        return !mHideExtraOptionOne && mActionHandler.shouldShowExtraOption1();
     }
 
     private boolean shouldShowOverflow() {

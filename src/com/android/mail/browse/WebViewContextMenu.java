@@ -90,7 +90,7 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
          * @param url URL of a selected link
          * @return Message containing that URL
          */
-        Message getMessageForClickedUrl(String url);
+        ConversationMessage getMessageForClickedUrl(String url);
     }
 
     public WebViewContextMenu(Activity host, InlineAttachmentViewIntentBuilder builder) {
@@ -385,7 +385,8 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
      * @param menu The {@link android.view.ContextMenu} that is about to be shown.
      */
     private void setupImageMenu(String url, ContextMenu menu) {
-        final Message msg = (mCallbacks != null) ? mCallbacks.getMessageForClickedUrl(url) : null;
+        final ConversationMessage msg =
+                (mCallbacks != null) ? mCallbacks.getMessageForClickedUrl(url) : null;
         if (msg == null) {
             menu.setGroupVisible(R.id.IMAGE_MENU, false);
             return;
