@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.ui.AccountFeedbackActivity;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -47,6 +48,7 @@ public class EmlViewerActivity extends AccountFeedbackActivity {
                 transaction.add(R.id.root, EmlMessageViewFragment.newInstance(
                         intent.getData(), mAccountUri), FRAGMENT_TAG);
                 transaction.commit();
+                Analytics.getInstance().sendEvent("eml_viewer", null, null, 0);
             } else {
                 LogUtils.wtf(LOG_TAG,
                         "Entered EmlViewerActivity with wrong intent action or type: %s, %s",
