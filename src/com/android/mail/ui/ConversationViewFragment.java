@@ -1133,7 +1133,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     @Override
-    public Message getMessageForClickedUrl(String url) {
+    public ConversationMessage getMessageForClickedUrl(String url) {
         final String domMessageId = mUrlToMessageIdMap.get(url);
         if (domMessageId == null) {
             return null;

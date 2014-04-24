@@ -31,7 +31,6 @@ import com.android.mail.compose.ComposeAttachmentTile;
 import com.android.mail.photo.MailPhotoViewActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
-import com.android.mail.providers.Message;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.ui.AttachmentTile.AttachmentPreviewCache;
 import com.android.mail.utils.ViewUtils;
@@ -54,7 +53,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
     private final HashMap<String, AttachmentPreview> mAttachmentPreviews;
     private FragmentManager mFragmentManager;
     private Account mAccount;
-    private Message mMessage;
+    private ConversationMessage mMessage;
 
     public AttachmentTileGrid(Context context, AttributeSet attrs) {
         super(context, attrs);

@@ -20,8 +20,6 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.content.Intent;
 
-import com.android.mail.providers.Message;
-
 /**
  * Builds an intent to be used when the user long presses an
  * inline image and selects "View image".
@@ -39,5 +37,6 @@ public interface InlineAttachmentViewIntentBuilder {
      * inline image and selects "View Image" or {@code null} if there should not
      * be a "View image" option for this url.
      */
-    Intent createInlineAttachmentViewIntent(Context context, String url, Message message);
+    Intent createInlineAttachmentViewIntent(
+            Context context, String url, ConversationMessage message);
 }
