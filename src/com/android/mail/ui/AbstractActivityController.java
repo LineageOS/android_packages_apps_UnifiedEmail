@@ -66,6 +66,7 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.MailLogService;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.analytics.AnalyticsTimer;
 import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
@@ -2186,6 +2187,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void executeSearch(String query) {
+        AnalyticsTimer.getInstance().trackStart(AnalyticsTimer.SEARCH_TO_LIST);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, query);

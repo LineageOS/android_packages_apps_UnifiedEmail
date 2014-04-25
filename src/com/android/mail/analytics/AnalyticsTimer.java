@@ -32,6 +32,8 @@ import java.util.Map;
  */
 public class AnalyticsTimer {
     public static final String OPEN_CONV_VIEW_FROM_LIST = "open_conv_from_list";
+    public static final String COLD_START_LAUNCHER = "cold_start_to_list";
+    public static final String SEARCH_TO_LIST = "search_to_list";
 
     private final Map<String, Long> mStartTimes = Maps.newConcurrentMap();
 
@@ -44,6 +46,11 @@ public class AnalyticsTimer {
         return mInstance;
     }
 
+    /**
+     * Record the current time as the start time of the provided id. If the id has a previously
+     * recorded start time, that time is overwritten.
+     * @param id
+     */
     public void trackStart(String id) {
         mStartTimes.put(id, SystemClock.uptimeMillis());
     }
