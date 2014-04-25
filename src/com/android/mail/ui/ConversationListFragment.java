@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -494,6 +495,12 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setListItemSwipedListener(this);
         mListView.setSwipeListener(this);
+
+        // enable animateOnLayout (equivalent of setLayoutTransition) only for >=JB (b/14302062)
+        if (Utils.isRunningJellybeanOrLater()) {
+            ((ViewGroup) rootView.findViewById(R.id.conversation_list_parent_frame))
+                    .setLayoutTransition(new LayoutTransition());
+        }
 
         // By default let's show the list view
         showListView();

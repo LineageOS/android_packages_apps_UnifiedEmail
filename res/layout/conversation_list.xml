@@ -29,9 +29,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <FrameLayout
+            android:id="@+id/conversation_list_parent_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:animateLayoutChanges="true"
             android:clickable="true">
             <!-- Note: intentionally not called "empty" because we call
              setEmptyView programmatically-->
