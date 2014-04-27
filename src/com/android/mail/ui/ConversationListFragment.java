@@ -1019,11 +1019,13 @@ public final class ConversationListFragment extends ListFragment implements
         mConversationCursorHash = newCursorHash;
 
         updateAnalyticsData(newCursor);
-        updateSearchResultHeader(newCursor.getCount());
-
-        if (newCursor != null && newCursor.getCount() > 0) {
-            newCursor.markContentsSeen();
-            restoreLastScrolledPosition();
+        if (newCursor != null) {
+            final int newCursorCount = newCursor.getCount();
+            updateSearchResultHeader(newCursorCount);
+            if (newCursorCount > 0) {
+                newCursor.markContentsSeen();
+                restoreLastScrolledPosition();
+            }
         }
 
         // If a current conversation is available, and none is selected in the list, then ask
