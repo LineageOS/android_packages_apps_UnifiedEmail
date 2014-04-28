@@ -870,7 +870,7 @@ public class FolderListFragment extends ListFragment implements
         private void rebuildFolderList() {
             final boolean oldInboxPresent = mInboxPresent;
             mItemList = recalculateListFolders();
-            if (mInboxPresent && !oldInboxPresent) {
+            if ((mInboxPresent && !oldInboxPresent) || FolderUri.EMPTY.equals(mSelectedFolderUri)) {
                 // We didn't have an inbox folder before, but now we do. This can occur when
                 // setting up a new account. We automatically create the "starred" virtual
                 // virtual folder, but we won't create the inbox until it gets synced.
