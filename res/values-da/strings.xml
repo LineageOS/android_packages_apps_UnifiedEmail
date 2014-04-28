@@ -376,7 +376,7 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Åbn navigationsskuffen"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Luk navigationsskuffen"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tryk på et afsenderbillede for at vælge den samtale."</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tryk på afsenderbilledet for at markere samtalen."</string>
     <string name="long_press_to_select_tip" msgid="9205666839837250150">"Tryk og hold nede for at vælge en samtale, og tryk derefter igen for at vælge flere."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Mappeikon"</string>
     <string name="add_account" msgid="2162808366829269770">"Tilføj konto"</string>
