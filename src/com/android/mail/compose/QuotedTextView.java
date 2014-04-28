@@ -340,6 +340,13 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         return pos >= 0;
     }
 
+    /**
+     * Returns the index of the actual quoted text and NOT the meta information such as:
+     * "On April 4, 2013 Joe Smith <jsmith@example.com> wrote:" that is part of the original
+     * message when replying and including the original text.
+     * @param text HTML text that includes quoted text.
+     * @return The offset found.
+     */
     public static int getQuotedTextOffset(String text) {
         return text.indexOf(QuotedTextView.HEADER_SEPARATOR)
                 + QuotedTextView.HEADER_SEPARATOR_LENGTH;

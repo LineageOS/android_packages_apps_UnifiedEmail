@@ -951,7 +951,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         int mode = getMode();
         state.putInt(EXTRA_ACTION, mode);
 
-        final Message message = createMessage(selectedReplyFromAccount, mode);
+        final Message message = createMessage(selectedReplyFromAccount, mRefMessage, mode);
         if (mDraft != null) {
             message.id = mDraft.id;
             message.serverId = mDraft.serverId;
@@ -986,7 +986,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return mode;
     }
 
-    private Message createMessage(ReplyFromAccount selectedReplyFromAccount, int mode) {
+    private Message createMessage(ReplyFromAccount selectedReplyFromAccount, Message refMessage,
+            int mode) {
         Message message = new Message();
         message.id = UIProvider.INVALID_MESSAGE_ID;
         message.serverId = null;
@@ -1011,8 +1012,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.alwaysShowImages = false;
         message.attachmentsJson = Attachment.toJSONArray(attachments);
         CharSequence quotedText = mQuotedTextView.getQuotedText();
-        message.quotedTextOffset = !TextUtils.isEmpty(quotedText) ? QuotedTextView
-                .getQuotedTextOffset(quotedText.toString()) : -1;
+        message.quotedTextOffset = -1; // Just a default value.
+        if (refMessage != null && !TextUtils.isEmpty(quotedText)) {
+            if (!TextUtils.isEmpty(refMessage.bodyHtml)) {
+                // We want the index to point to just the quoted text and not the
+                // "On December 25, 2014..." part of it.
+                message.quotedTextOffset =
+                        QuotedTextView.getQuotedTextOffset(quotedText.toString());
+            } else if (!TextUtils.isEmpty(refMessage.bodyText)) {
+                // We want to point to the entire quoted text.
+                message.quotedTextOffset = QuotedTextView.findQuotedTextIndex(quotedText);
+            }
+        }
         message.accountUri = null;
         final String email = selectedReplyFromAccount != null ? selectedReplyFromAccount.address
                 : mAccount != null ? mAccount.getEmailAddress() : null;
@@ -1371,14 +1382,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 addAttachmentAndUpdateView(a);
             }
         }
-        int quotedTextIndex = message.appendRefMessageContent ?
-                message.quotedTextOffset : -1;
+        int quotedTextIndex = message.appendRefMessageContent ? message.quotedTextOffset : -1;
         // Set the body
         CharSequence quotedText = null;
         if (!TextUtils.isEmpty(message.bodyHtml)) {
             CharSequence htmlText = "";
             if (quotedTextIndex > -1) {
-                // Find the offset in the htmltext of the actual quoted text and strip it out.
+                // Find the offset in the html text of the actual quoted text and strip it out.
+                // Note that the actual quotedTextOffset in the message has not changed as
+                // this different offset is used only for display purposes. They point to different
+                // parts of the original message.  Please see the comments in QuoteTextView
+                // to see the differences.
                 quotedTextIndex = QuotedTextView.findQuotedTextIndex(message.bodyHtml);
                 if (quotedTextIndex > -1) {
                     htmlText = Utils.convertHtmlToPlainText(message.bodyHtml.substring(0,
@@ -1392,13 +1406,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mBodyView.setText(htmlText);
         } else {
             final String body = message.bodyText;
-            final CharSequence bodyText = !TextUtils.isEmpty(body) ?
-                    (quotedTextIndex > -1 ?
-                            message.bodyText.substring(0, quotedTextIndex) : message.bodyText)
-                            : "";
-            if (quotedTextIndex > -1) {
-                quotedText = !TextUtils.isEmpty(body) ? message.bodyText.substring(quotedTextIndex)
-                        : null;
+            final CharSequence bodyText;
+            if (TextUtils.isEmpty(body)) {
+                bodyText = "";
+                quotedText = null;
+            } else {
+                if (quotedTextIndex > body.length()) {
+                    // Sanity check to guarantee that we will not over index the String.
+                    // If this happens there is a bigger problem. This should never happen hence
+                    // the wtf logging.
+                    quotedTextIndex = -1;
+                    LogUtils.wtf(LOG_TAG, "quotedTextIndex (%d) > body.length() (%d)",
+                            quotedTextIndex, body.length());
+                }
+                bodyText = quotedTextIndex > -1 ? body.substring(0, quotedTextIndex) : body;
+                if (quotedTextIndex > -1) {
+                    quotedText = body.substring(quotedTextIndex);
+                }
             }
             mBodyView.setText(bodyText);
         }
@@ -2841,46 +2865,63 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         MessageModification.putToAddresses(values, message.getToAddresses());
         MessageModification.putCcAddresses(values, message.getCcAddresses());
         MessageModification.putBccAddresses(values, message.getBccAddresses());
-
         MessageModification.putCustomFromAddress(values, message.getFrom());
 
         MessageModification.putSubject(values, message.subject);
+
         // Make sure to remove only the composing spans from the Spannable before saving.
         final String htmlBody = Html.toHtml(removeComposingSpans(body));
-
-        boolean includeQuotedText = !TextUtils.isEmpty(quotedText);
-        StringBuilder fullBody = new StringBuilder(htmlBody);
-        if (includeQuotedText) {
-            // HTML gets converted to text for now
-            final String text = quotedText.toString();
-            if (QuotedTextView.containsQuotedText(text)) {
-                int pos = QuotedTextView.getQuotedTextOffset(text);
-                final int quoteStartPos = fullBody.length() + pos;
-                fullBody.append(text);
-                MessageModification.putQuoteStartPos(values, quoteStartPos);
-                MessageModification.putForward(values, composeMode == ComposeActivity.FORWARD);
-                MessageModification.putAppendRefMessageContent(values, true /* include quoted */);
-            } else {
-                LogUtils.w(LOG_TAG, "Couldn't find quoted text");
-                // This shouldn't happen, but just use what we have,
-                // and don't do server-side expansion
-                fullBody.append(text);
-            }
+        final String textBody = Utils.convertHtmlToPlainText(htmlBody);
+        // fullbody will contain the actual body plus the quoted text.
+        final String fullBody;
+        final String quotedString;
+        final boolean hasQuotedText = !TextUtils.isEmpty(quotedText);
+        if (hasQuotedText) {
+            // The quoted text is HTML at this point.
+            quotedString = quotedText.toString();
+            fullBody = htmlBody + quotedString;
+            MessageModification.putForward(values, composeMode == ComposeActivity.FORWARD);
+            MessageModification.putAppendRefMessageContent(values, true /* include quoted */);
+        } else {
+            fullBody = htmlBody;
+            quotedString = null;
         }
-        int draftType = getDraftType(composeMode);
-        MessageModification.putDraftType(values, draftType);
         if (refMessage != null) {
+            // The code below might need to be revisited. The quoted text position is different
+            // between text/html and text/plain parts and they should be stored seperately and
+            // the right version should be used in the UI. text/html should have preference
+            // if both exist.  Issues like this made me file b/14256940 to make sure that we
+            // properly handle the existing of both text/html and text/plain parts and to verify
+            // that we are not making some assumptions that break if there is no text/html part.
+            int quotedTextPos = -1;
             if (!TextUtils.isEmpty(refMessage.bodyHtml)) {
                 MessageModification.putBodyHtml(values, fullBody.toString());
+                if (hasQuotedText) {
+                    quotedTextPos = htmlBody.length() +
+                            QuotedTextView.getQuotedTextOffset(quotedString);
+                }
             }
             if (!TextUtils.isEmpty(refMessage.bodyText)) {
                 MessageModification.putBody(values,
                         Utils.convertHtmlToPlainText(fullBody.toString()));
+                if (hasQuotedText && (quotedTextPos == -1)) {
+                    quotedTextPos = textBody.length();
+                }
+            }
+            if (quotedTextPos != -1) {
+                // The quoted text pos is the text/html version first and the text/plan version
+                // if there is no text/html part. The reason for this is because preference
+                // is given to text/html in the compose window if it exists. In the future, we
+                // should calculate the index for both since the user could choose to compose
+                // explicitly in text/plain.
+                MessageModification.putQuoteStartPos(values, quotedTextPos);
             }
         } else {
             MessageModification.putBodyHtml(values, fullBody.toString());
             MessageModification.putBody(values, Utils.convertHtmlToPlainText(fullBody.toString()));
         }
+        int draftType = getDraftType(composeMode);
+        MessageModification.putDraftType(values, draftType);
         MessageModification.putAttachments(values, message.getAttachments());
         if (!TextUtils.isEmpty(refMessageId)) {
             MessageModification.putRefMessageId(values, refMessageId);
@@ -3028,7 +3069,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mSendSaveTaskHandler = new Handler(handlerThread.getLooper());
         }
 
-        Message msg = createMessage(mReplyFromAccount, getMode());
+        Message msg = createMessage(mReplyFromAccount, mRefMessage, getMode());
         mRequestId = sendOrSaveInternal(this, mReplyFromAccount, msg, mRefMessage, body,
                 mQuotedTextView.getQuotedTextIfIncluded(), callback,
                 mSendSaveTaskHandler, save, mComposeMode, mDraftAccount, mExtraValues);
