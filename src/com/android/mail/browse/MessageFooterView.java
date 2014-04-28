@@ -80,6 +80,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     private MessageFooterCallbacks mCallbacks;
 
+    private Integer mOldAttachmentLoaderId;
+
     /**
      * Callbacks for the MessageFooterView to enable resizing the height.
      */
@@ -130,15 +132,20 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     public void bind(
             MessageHeaderItem headerItem, MessageFooterItem footerItem, boolean measureOnly) {
-        // Resets the footer view. This step is only done if the
-        // attachmentsListUri changes so that we don't
-        // repeat the work of layout and measure when
-        // we're only updating the attachments.
-        if (mMessageHeaderItem != null &&
-                mMessageHeaderItem.getMessage() != null &&
-                mMessageHeaderItem.getMessage().attachmentListUri != null &&
-                !mMessageHeaderItem.getMessage().attachmentListUri.equals(
-                headerItem.getMessage().attachmentListUri)) {
+        mMessageFooterItem = footerItem;
+        mMessageHeaderItem = headerItem;
+
+        final Integer attachmentLoaderId = getAttachmentLoaderId();
+
+        // Destroy the loader if we are attempting to load a different attachment
+        if (mOldAttachmentLoaderId != null &&
+                !Objects.equal(mOldAttachmentLoaderId, attachmentLoaderId)) {
+            mLoaderManager.destroyLoader(mOldAttachmentLoaderId);
+
+            // Resets the footer view. This step is only done if the
+            // attachmentsListUri changes so that we don't
+            // repeat the work of layout and measure when
+            // we're only updating the attachments.
             mAttachmentGrid.removeAllViewsInLayout();
             mAttachmentBarList.removeAllViewsInLayout();
             mViewEntireMessagePrompt.setVisibility(View.GONE);
@@ -147,20 +154,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             mAttachmentBarList.setVisibility(View.GONE);
             hideAboveAttachmentBarListLayout();
         }
-
-        // If this MessageFooterView is being bound to a new attachment, we need to unbind with the
-        // old loader
-        final Integer oldAttachmentLoaderId = getAttachmentLoaderId();
-
-        mMessageFooterItem = footerItem;
-        mMessageHeaderItem = headerItem;
-
-        final Integer attachmentLoaderId = getAttachmentLoaderId();
-        // Destroy the loader if we are attempting to load a different attachment
-        if (oldAttachmentLoaderId != null &&
-                !Objects.equal(oldAttachmentLoaderId, attachmentLoaderId)) {
-            mLoaderManager.destroyLoader(oldAttachmentLoaderId);
-        }
+        mOldAttachmentLoaderId = attachmentLoaderId;
 
         // kick off load of Attachment objects in background thread
         // but don't do any Loader work if we're only measuring
