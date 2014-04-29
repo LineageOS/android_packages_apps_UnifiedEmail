@@ -403,7 +403,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final WebSettings settings = mWebView.getSettings();
 
         final ScrollIndicatorsView scrollIndicators =
-            (ScrollIndicatorsView) rootView.findViewById(R.id.scroll_indicators);
+                (ScrollIndicatorsView) rootView.findViewById(R.id.scroll_indicators);
         scrollIndicators.setSourceView(mWebView);
 
         settings.setJavaScriptEnabled(true);
