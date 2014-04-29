@@ -155,7 +155,8 @@ public class Utils {
         if (isRunningKitkatOrLater()) {
             final ActivityManager am = (ActivityManager) context.getSystemService(
                     Context.ACTIVITY_SERVICE);
-            return am.isLowRamDevice();
+            // This will be null when running unit tests
+            return am != null && am.isLowRamDevice();
         } else {
             return false;
         }
