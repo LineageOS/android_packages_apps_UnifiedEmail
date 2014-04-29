@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Skrytá kopie"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Předmět"</string>
     <string name="body_hint" msgid="4279864165439577668">"Napsat zprávu"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Přiložit soubor"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Připojit obrázek"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Připojit video"</string>
@@ -37,6 +36,7 @@
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"Dne <xliff:g id="DATE">%s</xliff:g> <xliff:g id="PERSON">%s</xliff:g> napsal(a):"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Přeposlaná zpráva ----------&lt;br&gt;Od: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Datum: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Předmět: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Komu: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- Přeposlaná zpráva ----------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Kopie: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Vyberte typ přílohy"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"Nelze připojit soubor vetší než <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
@@ -65,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Oznámit phishing"</string>
     <string name="delete" msgid="844871204175957681">"Smazat"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Zahodit koncepty"</string>
-    <string name="next" msgid="4674401197968248302">"Starší"</string>
-    <string name="previous" msgid="309943944831349924">"Novější"</string>
     <string name="refresh" msgid="490989798005710951">"Aktualizovat"</string>
     <string name="reply" msgid="2032052598496088561">"Odpovědět"</string>
     <string name="reply_all" msgid="7257248094625487557">"Odpovědět všem"</string>
@@ -78,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Přesunout do Doručené pošty"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Nastavení složek"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Původní velikost"</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Zpráva byla oproti původní verzi upravena tak, aby se vešla na tuto obrazovku.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Složky"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Další"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Další účty"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Synchronizace a upozornění"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Nastavení složek"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Nastavení účtu"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Nastavení"</string>
     <string name="menu_search" msgid="5297197523031943248">"Vyhledat"</string>
-    <string name="more" msgid="1238344647379009858">"Více"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> z <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Novější"</string>
-    <string name="older" msgid="6651690916337202936">"Starší"</string>
     <string name="mark_important" msgid="6904096897104265870">"Označit jako důležité"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Označit jako nedůležité"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Přidat kopii/skrytou"</string>
@@ -100,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Zahrnout citovaný text"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Text citace"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Vložená odpověď"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> kB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -115,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"Soubor <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Náhled"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Uložit"</string>
-    <string name="info_attachment" msgid="607849900865956536">"Informace"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Zrušit"</string>
     <string name="download_again" msgid="7418568915429156518">"Stáhnout znovu"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informace"</string>
@@ -130,12 +116,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Sdílet"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Sdílet vše"</string>
     <string name="saving" msgid="925514721138014677">"Ukládání…"</string>
-    <string name="attach_image" msgid="3713654042212409705">"Obrázek"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Video"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"Příloha: %d"</item>
-    <item quantity="other" msgid="4827833083675127409">"Přílohy: %d"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Sdílet pomocí"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Otevřít v prohlížeči"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopírovat"</string>
@@ -153,10 +133,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Přesunout konverzaci"</item>
     <item quantity="other" msgid="1685896770174368261">"Přesunutí <xliff:g id="ID_1">%1$d</xliff:g> konverzací"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 nepřečtený e-mail"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> nepřečtených e-mailů"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> – <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g>, dne <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> – <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> v <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -231,22 +207,12 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Přesunuto do složky <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Výsledky"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Vyhledávání není v tomto účtu podporováno."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Režim vyhledávání"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Režim vyhledávání konverzací"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Nastavit tlačítko Zpět"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Odebrat tlačítko Zpět"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Nastavit normální režim"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Režim výsledků vyhledávání"</string>
-    <string name="folderMode" msgid="553052020619895714">"Nastavit režim složek"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Vyhledávání..."</string>
-    <string name="recent_folders" msgid="8240081561436891330">"Poslední"</string>
-    <string name="add_label" msgid="1638508840481944248">"Přidat štítek"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> z <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"Novější"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"Starší"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"Nová zpráva od <xliff:g id="SENDER">%s</xliff:g>."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"Nové zprávy: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
-    <string name="show" msgid="7114006150083237343">"Zobrazit"</string>
+    <string name="add_label" msgid="6060201715848652940">"Přidat složku"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Nová zpráva od <xliff:g id="SENDER">%s</xliff:g>. Zobrazit."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"Nové zprávy: <xliff:g id="COUNT">%1$d</xliff:g>. Zobrazit."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Rozbalit podrobnosti o příjemci"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Sbalit podrobnosti o příjemci"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Zobrazit kontaktní údaje uživatele <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -259,8 +225,9 @@
     <string name="to_heading" msgid="1142876841308812954">"Komu: "</string>
     <string name="cc_heading" msgid="52678613787360092">"Kopie: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"Skrytá: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"Datum: "</string>
     <string name="show_images" msgid="1875700481186331432">"Zobrazit obrázky"</string>
-    <string name="always_show_images" msgid="5966408990164581801">"Obr. od tohoto odesílatele vždy zobrazit"</string>
+    <string name="always_show_images" msgid="5966408990164581801">"Vždy zobrazit obrázky od tohoto kontaktu"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Obrázky od tohoto odesílatele se zobrazí automaticky."</string>
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> přes <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
@@ -282,12 +249,10 @@
     <string name="done" msgid="3079981801778027540">"Hotovo"</string>
     <string name="cancel" msgid="8762981157252199115">"Zrušit"</string>
     <string name="clear" msgid="3184687982186479442">"Vymazat"</string>
-    <string name="close" msgid="419945428844076406">"Zavřít"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"Pro tento účet nebyly nastaveny žádné složky."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Podařilo se"</item>
     <item msgid="7109065688039971961">"Žádné připojení."</item>
-    <item msgid="8437496123716232060">"Přihlášení se nezdařilo."</item>
+    <item msgid="8437496123716232060">"Přihlášení se nezdařilo"</item>
     <item msgid="1651266301325684887">"Chyba zabezpečení."</item>
     <item msgid="1461520171154288533">"Chyba synchronizace."</item>
     <item msgid="4779810016424303449">"Interní chyba"</item>
@@ -304,32 +269,24 @@
     <string name="loading_conversation" msgid="489160038366067983">"Načítá se..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Výběr účtu"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Výběr složky"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
-    <string name="sync_all" msgid="1057043212338233359">"Synchronizovat: vše"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Synchronizovat: <xliff:g id="COUNT">%1$d</xliff:g> den"</item>
-    <item quantity="other" msgid="6856940335775567991">"Synchronizovat <xliff:g id="COUNT">%1$d</xliff:g> d."</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Synchronizovat: nic"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Složka aplikace E-mail"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Změnit složky"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Přesunout"</string>
     <string name="search_hint" msgid="3625734263059221350">"Vyhledat v poště"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Složky"</string>
     <string name="network_error" msgid="2125579009654728299">"Žádné připojení"</string>
-    <string name="loading" msgid="2600808404156989255">"Načítání konverzací…"</string>
     <string name="retry" msgid="4515885444824418022">"Opakovat"</string>
     <string name="load_more" msgid="420892447103014683">"Načíst další"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Zadejte název zkratky složky"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Čekání na synchronizaci"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Vaše e-maily se zobrazí za chvíli."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Účet není synchronizován"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tento účet není nastaven na automatickou synchronizaci.\nChcete-li poštu jednou synchronizovat, dotkněte se položky "<b>"Synchronizovat nyní"</b>". Chcete-li v účtu nastavit automatickou synchronizaci pošty, dotkněte se položky "<b>"Změnit nastavení Synchronizace"</b>"."</string>
-    <string name="manual_sync" msgid="6743983544685622800">"Synchroniz."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tento účet není nastaven na automatickou synchronizaci.\nChcete-li poštu jednou synchronizovat, dotkněte se položky "<b>"Synchronizovat"</b>". Chcete-li v účtu nastavit automatickou synchronizaci pošty, dotkněte se položky "<b>"Změnit nastavení synchronizace"</b>"."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Synchronizovat"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Změnit nastavení synchronizace"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Žádné nové zprávy"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Fotografii nelze načíst"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Přesun nelze uskutečnit, protože vybrané zprávy pocházejí z různých účtů."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -347,17 +304,14 @@
     <string name="sync_error" msgid="7368819509040597851">"Chyba synchronizace."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Ve vašem zařízení není pro synchronizaci dostatek místa."</string>
     <string name="storage" msgid="3262760336059073446">"Úložiště"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Všechny složky"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Poslední složky"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Podrobnosti zprávy"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"Automaticky pokračovat"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"Automatický přechod"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Vyberte, kterou obrazovku chcete zobrazit po smazání zprávy."</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Nastavit volbu automatického pokračování\n(po archivaci, smazání atd.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Nastavit volbu automatického přechodu\n(po archivaci, smazání atd.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Novější"</item>
     <item msgid="5562093094216840213">"Starší"</item>
@@ -368,8 +322,8 @@
     <item msgid="732746454445519134">"Po smazání zobrazit starší konverzaci"</item>
     <item msgid="2189929276292165301">"Po smazání zobrazit seznam konverzací"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Vymazat schválení obrázků"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vymazat schválení obrázků?"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Zrušit schválení obrázků"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Zrušit schválení obrázků?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Přestat zobrazovat vložené obrázky od odesílatelů, u kterých jste to dříve povolili."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Obrázky se nebudou zobrazovat automaticky."</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"Podpis"</string>
@@ -388,7 +342,7 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"Počet nových zpráv: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
+    <string name="new_messages" msgid="4419173946074516420">"Nové zprávy: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Tichý režim"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Akce archivace a smazání"</string>
@@ -423,14 +377,25 @@
     <string name="drawer_open" msgid="6074646853178471940">"Otevřít navigační složku"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Zavřít navigační složku"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Klepnutím na obrázek odesílatele vyberete příslušnou konverzaci."</string>
-    <!-- no translation found for long_press_to_select_tip (9205666839837250150) -->
-    <skip />
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Jednu konverzaci vyberete přidržením, další konverzace vyberete klepnutím."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Ikona složky"</string>
     <string name="add_account" msgid="2162808366829269770">"Přidat účet"</string>
     <string name="attached_message" msgid="4267189489654642035">"Přiložená zpráva"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Dnes v <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Včera v <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <!-- no translation found for dismiss_tip_hover_text (1930345936314578166) -->
-    <skip />
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Zavřít tip"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"Automatická synchronizace je vypnuta."</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Zapnete ji klepnutím."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Synchronizace účtu je vypnuta"</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Zapněte ji v <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"Nastavení účtu"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"Neodeslané zprávy ve složce <xliff:g id="OUTBOX">%2$s</xliff:g>: <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Zapnout automatickou synchronizaci?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Změny, které provedete ve všech aplikacích a účtech (nikoli jen v Gmailu), budou synchronizovány mezi webem, ostatními zařízeními a zařízením <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
+    <string name="phone" msgid="5171715391553213328">"telefon"</string>
+    <string name="tablet" msgid="7956969657216748522">"tablet"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Zapnout"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"Zobrazit další složky (<xliff:g id="NUMBER">%1$s</xliff:g>)"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"Skrýt složky"</string>
 </resources>

@@ -23,12 +23,11 @@
     <string name="bcc" msgid="3098643138241111579">"Skr. kopija"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Predmet"</string>
     <string name="body_hint" msgid="4279864165439577668">"Stvori novu poruku e-pošte"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Priloži datoteku"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Priloži sliku"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Priloži videozapis"</string>
     <string name="save_draft" msgid="5555744208032445632">"Spremi skicu"</string>
-    <string name="discard" msgid="1714960202994370243">"Odbaci"</string>
+    <string name="discard" msgid="1714960202994370243">"Zanemari"</string>
     <string name="compose" msgid="1473559896062432878">"Nova poruka"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Odgovor"</item>
@@ -37,6 +36,7 @@
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"Dana <xliff:g id="DATE">%s</xliff:g> osoba <xliff:g id="PERSON">%s</xliff:g> napisala je:"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Proslijeđena poruka ----------&lt;br&gt;Šalje: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Datum: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Predmet: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Prima: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- Proslijeđena poruka ----------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Kopija: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Odaberite vrstu privitka"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"Nije moguće priložiti datoteku veću od <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
@@ -65,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Prijavite krađu identiteta"</string>
     <string name="delete" msgid="844871204175957681">"Izbriši"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Odbaci skice"</string>
-    <string name="next" msgid="4674401197968248302">"Starije"</string>
-    <string name="previous" msgid="309943944831349924">"Novije"</string>
     <string name="refresh" msgid="490989798005710951">"Osvježi"</string>
     <string name="reply" msgid="2032052598496088561">"Odgovor"</string>
     <string name="reply_all" msgid="7257248094625487557">"Odgovori svima"</string>
@@ -78,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Premjesti u Pristiglu poštu"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Postavke mapa"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Vrati izvornu verziju"</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Izvorna verzija ove poruke izmijenjena je kako bi se prilagodila zaslonu.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Mape"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Više"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Više računa"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sinkroniziraj i obavijesti"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Postavke mape"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Postavke računa"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Postavke"</string>
     <string name="menu_search" msgid="5297197523031943248">"Pretraživanje"</string>
-    <string name="more" msgid="1238344647379009858">"Više"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> od <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Novije"</string>
-    <string name="older" msgid="6651690916337202936">"Starije"</string>
     <string name="mark_important" msgid="6904096897104265870">"Označi kao važno"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Označi kao nevažno"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Dodaj kopiju/skrivenu kopiju"</string>
@@ -100,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Obuhvati citirani tekst"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Citirani tekst"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Odgovori u tekstu"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -115,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> datoteka"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Pregled"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Spremi"</string>
-    <string name="info_attachment" msgid="607849900865956536">"Info"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Odustani"</string>
     <string name="download_again" msgid="7418568915429156518">"Preuzmi ponovo"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informacije"</string>
@@ -130,12 +116,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Dijeli"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Dijeli sve"</string>
     <string name="saving" msgid="925514721138014677">"Spremanje..."</string>
-    <string name="attach_image" msgid="3713654042212409705">"Slika"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Videozapis"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d privitak"</item>
-    <item quantity="other" msgid="4827833083675127409">"Broj privitaka: %d"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Dijeli putem"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Otvori u pregledniku"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopiraj"</string>
@@ -153,10 +133,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Premjesti razgovor"</item>
     <item quantity="other" msgid="1685896770174368261">"Premjesti sljedeći broj razgovora: <xliff:g id="ID_1">%1$d</xliff:g>"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 nepročitana poruka"</item>
-    <item quantity="other" msgid="1634106533609170998">"Broj nepročitanih poruka: <xliff:g id="ID_1">%1$d</xliff:g>"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> o temi <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> dana <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> o temi <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> u <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -231,22 +207,12 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Premješteno u mapu <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Rezultati"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Pretraživanje nije podržano na ovom računu."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Način pretraživanja"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Način pretraživanja razgovora"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Postavite gumb Natrag"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Uklonite gumb Natrag"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Postavi uobičajeni način"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Rezultat pretraživanja rezultata"</string>
-    <string name="folderMode" msgid="553052020619895714">"Postavljanje načina mape"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Traženje..."</string>
-    <string name="recent_folders" msgid="8240081561436891330">"Nedavno"</string>
-    <string name="add_label" msgid="1638508840481944248">"Dodaj oznaku"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> od <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"Novije"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"Starije"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"Novu poruku šalje <xliff:g id="SENDER">%s</xliff:g>."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"Novih poruka: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
-    <string name="show" msgid="7114006150083237343">"Prikaži"</string>
+    <string name="add_label" msgid="6060201715848652940">"Dodaj mapu"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Novu poruku šalje <xliff:g id="SENDER">%s</xliff:g>. Prikaži."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"Nove poruke: <xliff:g id="COUNT">%1$d</xliff:g>. Prikaži."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Proširi podatke o primatelju"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Sažmi podatke o primatelju"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Prikaži podatke o kontaktu za <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -259,6 +225,7 @@
     <string name="to_heading" msgid="1142876841308812954">"Prima: "</string>
     <string name="cc_heading" msgid="52678613787360092">"Kopija: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"Skr. kop.: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"Datum: "</string>
     <string name="show_images" msgid="1875700481186331432">"Prikaži slike"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Uvijek prikaži slike ovog pošiljatelja"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Slike ovog pošiljatelja automatski će se prikazati."</string>
@@ -282,8 +249,6 @@
     <string name="done" msgid="3079981801778027540">"Gotovo"</string>
     <string name="cancel" msgid="8762981157252199115">"Odustani"</string>
     <string name="clear" msgid="3184687982186479442">"Izbriši"</string>
-    <string name="close" msgid="419945428844076406">"Zatvori"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"Za ovaj račun nisu postavljene mape."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Uspjeh"</item>
     <item msgid="7109065688039971961">"Nema veze."</item>
@@ -304,24 +269,17 @@
     <string name="loading_conversation" msgid="489160038366067983">"Učitavanje…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Odabir računa"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Odabir mape"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
-    <string name="sync_all" msgid="1057043212338233359">"Sinkroniziraj: sve"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Sinkronizacija prethodnog dana: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
-    <item quantity="other" msgid="6856940335775567991">"Sinkronizacija sljedećeg broja prethodnih dana: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Sinkroniziraj: ništa"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Mapa e-pošte"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Promjena mapa"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Premještanje"</string>
     <string name="search_hint" msgid="3625734263059221350">"Pretraži poštu"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Mape"</string>
     <string name="network_error" msgid="2125579009654728299">"Nema veze"</string>
-    <string name="loading" msgid="2600808404156989255">"Učit. razgovora..."</string>
     <string name="retry" msgid="4515885444824418022">"Pokušajte ponovo"</string>
     <string name="load_more" msgid="420892447103014683">"Učitaj više"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Naziv prečaca mape"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Čekanje na sinkronizaciju"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Vaša će se e-pošta uskoro pojaviti."</string>
@@ -329,7 +287,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Ovaj račun nije postavljen za automatsku sinkronizaciju.\nDodirnite "<b>"Sinkroniziraj sada"</b>" da biste poštu sinkronizirali jednom ili "<b>"Promjena sinkronizacije"</b>" da biste ovaj račun postavili za automatsku sinkronizaciju pošte."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sink. sada"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Promjena sinkronizacije"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Nema novih poruka"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Nije moguće učitati sliku"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Premještanje nije moguće jer odabir sadrži više računa."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -347,9 +304,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Sinkronizacija nije bila moguća."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Uređaj nema dovoljno prostora za pohranu za sinkronizaciju."</string>
     <string name="storage" msgid="3262760336059073446">"Pohrana"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Sve mape"</string>
@@ -431,4 +385,17 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"Danas u <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Jučer u <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Odbacivanje savjeta"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"Automatska sinkronizacija nije uključena."</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Dodirnite za isključivanje."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Sinkronizacija računa nije uključena."</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Uključite je u <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"postavkama računa"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"Broj neposlanih poruka u mapi <xliff:g id="OUTBOX">%2$s</xliff:g>: <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Želite li uključiti automatsku sinkronizaciju?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Promjene koje unesete na svim aplikacijama i računima, a ne samo na Gmailu, sinkronizirat će se na webu, vašim ostalim uređajima i vašem uređaju <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
+    <string name="phone" msgid="5171715391553213328">"telefon"</string>
+    <string name="tablet" msgid="7956969657216748522">"tablet"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Uključi"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"Prikaži još mapa (<xliff:g id="NUMBER">%1$s</xliff:g>)"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"Sakrij mape"</string>
 </resources>

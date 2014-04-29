@@ -39,6 +39,7 @@ import com.android.emailcommon.utility.ConversionUtilities;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.ui.HtmlMessage;
 import com.android.mail.utils.Utils;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -468,6 +469,7 @@ public class Message implements Parcelable, HtmlMessage {
         mBccAddresses = null;
     }
 
+    @VisibleForTesting
     public String getReplyTo() {
         return mReplyTo;
     }

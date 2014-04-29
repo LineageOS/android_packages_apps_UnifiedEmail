@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Titkos másolat"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Tárgy"</string>
     <string name="body_hint" msgid="4279864165439577668">"Levélírás"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Fájl csatolása"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Kép csatolása"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Videó csatolása"</string>
@@ -32,11 +31,12 @@
     <string name="compose" msgid="1473559896062432878">"Levélírás"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Válasz"</item>
-    <item msgid="4085029907540221568">"Válasz mindenk."</item>
+    <item msgid="4085029907540221568">"válasz mindenkinek"</item>
     <item msgid="857480048798815437">"Továbbítás"</item>
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"<xliff:g id="PERSON">%s</xliff:g> ezt írta (<xliff:g id="DATE">%s</xliff:g>):"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Továbbított üzenet ----------&lt;br&gt;Feladó: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Dátum: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Tárgy: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Címzett: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- Továbbított levél ----------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Másolat: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Melléklet típusának kiválasztása"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"Nem lehet nagyobb fájlt csatolni, mint <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
@@ -65,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Adathalászat bejelentése"</string>
     <string name="delete" msgid="844871204175957681">"Törlés"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Piszkozatok elvetése"</string>
-    <string name="next" msgid="4674401197968248302">"Régebbi"</string>
-    <string name="previous" msgid="309943944831349924">"Újabb"</string>
     <string name="refresh" msgid="490989798005710951">"Frissítés"</string>
     <string name="reply" msgid="2032052598496088561">"Válasz"</string>
     <string name="reply_all" msgid="7257248094625487557">"Válasz mind."</string>
@@ -78,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Beérkező levelekhez"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mappabeállítások"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Auto.méretezés visszaáll."</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Ez az üzenet az eredeti változat jelen képernyőhöz igazított verziója.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Mappák"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Több"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"További fiókok"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Szinkronizálás és értesítés"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Mappabeállítások"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Fiókbeállítások"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Beállítások"</string>
     <string name="menu_search" msgid="5297197523031943248">"Keresés"</string>
-    <string name="more" msgid="1238344647379009858">"Egyebek"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="TOTAL">%2$s</xliff:g>/<xliff:g id="COUNT">%1$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Újabb"</string>
-    <string name="older" msgid="6651690916337202936">"Régebbi"</string>
     <string name="mark_important" msgid="6904096897104265870">"Megjelölés fontosként"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Megjelölés nem fontosként"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Másolatmezők"</string>
@@ -100,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Idézett szöveg beillesztése"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Idézett szöveg"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Válasz a soron belül"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -115,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> fájl"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Előnézet"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Mentés"</string>
-    <string name="info_attachment" msgid="607849900865956536">"Információ"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Mégse"</string>
     <string name="download_again" msgid="7418568915429156518">"Letöltés újra"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Információ"</string>
@@ -130,12 +116,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Megosztás"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Összes megosztása"</string>
     <string name="saving" msgid="925514721138014677">"Mentés..."</string>
-    <string name="attach_image" msgid="3713654042212409705">"Kép"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Videó"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d melléklet"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d melléklet"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Megosztás a következőn:"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Megnyitás böngészőben"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Másolás"</string>
@@ -153,10 +133,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Beszélgetés áthelyezése"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> beszélgetés áthelyezése"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 olvasatlan levél"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> olvasatlan levél"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> a következővel kapcsolatban: <xliff:g id="SUBJECT">%2$s</xliff:g> | <xliff:g id="SNIPPET">%3$s</xliff:g>, ezen a napon: <xliff:g id="DATE">%4$s</xliff:g> | <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> a következővel kapcsolatban: <xliff:g id="SUBJECT">%2$s</xliff:g> | <xliff:g id="SNIPPET">%3$s</xliff:g>, ekkor: <xliff:g id="TIME">%4$s</xliff:g> | <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -231,22 +207,12 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Áthelyezve ide: <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Találatok"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"A keresés nem támogatott ebben a fiókban."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Keresési mód"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Beszélgetés keresése mód"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Vissza gomb beállítása"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Vissza gomb eltávolítása"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Normál mód beállítása"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Keresési eredmények mód"</string>
-    <string name="folderMode" msgid="553052020619895714">"Mappamód beállítása"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Keresés..."</string>
-    <string name="recent_folders" msgid="8240081561436891330">"Legújabbak"</string>
-    <string name="add_label" msgid="1638508840481944248">"Címke hozzáadása"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="TOTAL">%2$s</xliff:g>/<xliff:g id="COUNT">%1$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"Újabb"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"Régebbi"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"<xliff:g id="SENDER">%s</xliff:g> új üzenetet küldött."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"<xliff:g id="COUNT">%1$d</xliff:g> új üzenet"</string>
-    <string name="show" msgid="7114006150083237343">"Megjelenítés"</string>
+    <string name="add_label" msgid="6060201715848652940">"Mappa hozzáadása"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g> új üzenete – megtekintés"</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> új üzenet – megtekintés"</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Címzett adatainak megjelenítése"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Címzett adatainak elrejtése"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g> elérhetőségi adatainak megjelenítése"</string>
@@ -259,6 +225,7 @@
     <string name="to_heading" msgid="1142876841308812954">"Címzett: "</string>
     <string name="cc_heading" msgid="52678613787360092">"Cc: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"Bcc: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"Dátum: "</string>
     <string name="show_images" msgid="1875700481186331432">"Képek megjelenítése"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Mindig jelenjenek meg képek a feladótól"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Az ettől a feladótól származó képek automatikusan megjelennek."</string>
@@ -282,8 +249,6 @@
     <string name="done" msgid="3079981801778027540">"Kész"</string>
     <string name="cancel" msgid="8762981157252199115">"Mégse"</string>
     <string name="clear" msgid="3184687982186479442">"Törlés"</string>
-    <string name="close" msgid="419945428844076406">"Bezárás"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"Nincs beállítva mappa ehhez a fiókhoz."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Sikerült"</item>
     <item msgid="7109065688039971961">"Nincs kapcsolat."</item>
@@ -304,24 +269,17 @@
     <string name="loading_conversation" msgid="489160038366067983">"Betöltés..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Fiók kiválasztása"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Mappa kiválasztása"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
-    <string name="sync_all" msgid="1057043212338233359">"Szinkronizálás: mind"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Az utolsó <xliff:g id="COUNT">%1$d</xliff:g> nap szinkronizálása"</item>
-    <item quantity="other" msgid="6856940335775567991">"Az utolsó <xliff:g id="COUNT">%1$d</xliff:g> nap szinkronizálása"</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Szinkronizálás: ne legyen"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"E-mail mappa"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Mappaváltás"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Áthelyezés ide:"</string>
     <string name="search_hint" msgid="3625734263059221350">"Keresés a levelek között"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Mappák"</string>
     <string name="network_error" msgid="2125579009654728299">"Nincs kapcsolat"</string>
-    <string name="loading" msgid="2600808404156989255">"Továbbiak betöltése"</string>
     <string name="retry" msgid="4515885444824418022">"Újra"</string>
     <string name="load_more" msgid="420892447103014683">"Továbbiak betöltése"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Mappaparancsikon elnevezése"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Várakozás a szinkronizálásra"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Az e-mail hamarosan megjelenik."</string>
@@ -329,7 +287,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Ez a fiók nincs beállítva automatikus szinkronizáláshoz.\nÉrintse meg a "<b>"Szinkr. most"</b>" elemet a levelek egyszeri szinkronizálásához, vagy érintse meg a "<b>"Szinkr. beállítások módosítása"</b>" lehetőséget a fiók leveleinek automatikusan szinkronizálásához."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Szinkr. most"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Szinkr. beállítások módosítása"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Nincs új üzenet"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"A kép betöltése sikertelen."</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Nem lehet áthelyezni, mert a kijelölés több fiókból származik."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -347,9 +304,6 @@
     <string name="sync_error" msgid="7368819509040597851">"A szinkronizálás sikertelen."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Az eszköz nem rendelkezik elegendő tárhellyel a szinkronizáláshoz."</string>
     <string name="storage" msgid="3262760336059073446">"Tárhely"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Összes mappa"</string>
@@ -431,4 +385,17 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"Ma, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Tegnap, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Tipp elvetése"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"Automatikus szinkronizálás kikapcsolva."</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Érintse meg a bekapcsoláshoz."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Fiókszinkronizálás kikapcsolva."</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Kapcsolja be itt: <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"Fiókbeállítások"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> nem elküldött levél van itt: <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Bekapcsolja az automatikus szinkronizálást?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Az összes alkalmazásban és fiókban (nem csak a Gmailben) végrehajtott módosítások szinkronizálva lesznek az internet, az egyéb eszközök és a <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> között."</string>
+    <string name="phone" msgid="5171715391553213328">"telefon"</string>
+    <string name="tablet" msgid="7956969657216748522">"táblagép"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Bekapcsolás"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"További <xliff:g id="NUMBER">%1$s</xliff:g> mappa megjelenítése"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"Mappák elrejtése"</string>
 </resources>

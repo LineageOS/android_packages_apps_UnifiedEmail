@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"نسخة مخفية الوجهة"</string>
     <string name="subject_hint" msgid="7253964583324677128">"الموضوع"</string>
     <string name="body_hint" msgid="4279864165439577668">"إنشاء رسالة إلكترونية"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"إرفاق ملف"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"إرفاق صورة"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"إرفاق فيديو"</string>
@@ -36,8 +35,9 @@
     <item msgid="857480048798815437">"إعادة توجيه"</item>
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"بتاريخ <xliff:g id="DATE">%s</xliff:g>، جاء من <xliff:g id="PERSON">%s</xliff:g>:"</string>
-    <string name="forward_attribution" msgid="1498936339458535158">"---------- الرسالة المعاد توجيهها ----------&lt;br&gt;من: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;التاريخ: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;الموضوع: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;إلى: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
-    <string name="cc_attribution" msgid="374493748526504562">"نسخة إلى: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution" msgid="1498936339458535158">"‏---------- الرسالة المعاد توجيهها ----------&lt;br&gt;من: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;التاريخ: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;الموضوع: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;إلى: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- رسالة مُعاد توجيهها ----------"</string>
+    <string name="cc_attribution" msgid="374493748526504562">"‏نسخة إلى: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"اختيار نوع المرفق"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"لا يمكن إرفاق ملف يزيد حجمه عن <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"لم يتم إرفاق ملف أو أكثر. الحد الأقصى هو <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
@@ -65,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"الإبلاغ عن تصيّد احتيالي"</string>
     <string name="delete" msgid="844871204175957681">"حذف"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"إلغاء المسودات"</string>
-    <string name="next" msgid="4674401197968248302">"أقدم"</string>
-    <string name="previous" msgid="309943944831349924">"أحدث"</string>
     <string name="refresh" msgid="490989798005710951">"تحديث"</string>
     <string name="reply" msgid="2032052598496088561">"رد"</string>
     <string name="reply_all" msgid="7257248094625487557">"رد على الكل"</string>
@@ -78,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"نقل إلى البريد الوارد"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"إعدادات المجلدات"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"عودة إلى الحجم التلقائي"</string>
-    <string name="message_modified" msgid="2564340197585393687">"(تم تعديل هذه الرسالة من إصدارها الأصلي لملاءمة هذه الشاشة.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"المجلدات"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"المزيد"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"مزيد من الحسابات"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"المزامنة والإشعارات"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"إعدادات المجلد"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"إعدادات الحساب"</string>
     <string name="menu_settings" msgid="6007027046949837282">"إعدادات"</string>
     <string name="menu_search" msgid="5297197523031943248">"بحث"</string>
-    <string name="more" msgid="1238344647379009858">"المزيد"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> من <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"أحدث"</string>
-    <string name="older" msgid="6651690916337202936">"أقدم"</string>
     <string name="mark_important" msgid="6904096897104265870">"وضع علامة كمهمة"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"وضع علامة كغير مهمة"</string>
     <string name="add_cc_label" msgid="504861315425773180">"إضافة نسخة/ مخفية"</string>
@@ -100,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"إدراج النص المقتبس"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"نص مقتبس"</string>
     <string name="respond_inline" msgid="6797117334768201180">"الرد مضمّن"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> بايت"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> ك ب"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> م ب"</string>
@@ -115,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"ملف <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"معاينة"</string>
     <string name="save_attachment" msgid="5360128849867863132">"حفظ"</string>
-    <string name="info_attachment" msgid="607849900865956536">"معلومات"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"إلغاء"</string>
     <string name="download_again" msgid="7418568915429156518">"تنزيل مرة أخرى"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"معلومات"</string>
@@ -130,18 +116,12 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"مشاركة"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"مشاركة الكل"</string>
     <string name="saving" msgid="925514721138014677">"جارٍ الحفظ..."</string>
-    <string name="attach_image" msgid="3713654042212409705">"صورة"</string>
-    <string name="attach_video" msgid="4996812138609677305">"فيديو"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d مرفق"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d من المرفقات"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"مشاركة عبر"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"فتح في المتصفح"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"نسخ"</string>
-    <string name="contextmenu_copylink" msgid="3580131515400610839">"نسخ عنوان URL لرابط"</string>
+    <string name="contextmenu_copylink" msgid="3580131515400610839">"‏نسخ عنوان URL لرابط"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"طلب..."</string>
-    <string name="contextmenu_sms_dot" msgid="6481040539501081547">"رسائل قصيرة SMS…"</string>
+    <string name="contextmenu_sms_dot" msgid="6481040539501081547">"‏رسائل قصيرة SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"إضافة جهة اتصال"</string>
     <string name="contextmenu_send_mail" msgid="8301941130009797208">"إرسال رسالة إلكترونية"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"خريطة"</string>
@@ -153,10 +133,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"نقل المحادثة"</item>
     <item quantity="other" msgid="1685896770174368261">"نقل <xliff:g id="ID_1">%1$d</xliff:g> من المحادثات"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 رسالة غير مقروءة"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> من الرسائل غير المقروءة"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> حول <xliff:g id="SUBJECT">%2$s</xliff:g>، <xliff:g id="SNIPPET">%3$s</xliff:g> بتاريخ <xliff:g id="DATE">%4$s</xliff:g>، <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> حول <xliff:g id="SUBJECT">%2$s</xliff:g>، <xliff:g id="SNIPPET">%3$s</xliff:g> في <xliff:g id="TIME">%4$s</xliff:g>، <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -194,32 +170,32 @@
     <item quantity="other" msgid="2222365088907519938">"جارٍ إلغاء تمييز <xliff:g id="COUNT">%1$d</xliff:g> من المحادثات بنجمة."</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"تم تجاهل &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="1941193356069303587">"تم تجاهل &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="3197365771487542615">"‏تم تجاهل &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="other" msgid="1941193356069303587">"‏تم تجاهل &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="3060864972122279220">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كغير مرغوب فيها."</item>
-    <item quantity="other" msgid="5071459475389411227">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كغير مرغوب فيها."</item>
+    <item quantity="one" msgid="3060864972122279220">"‏تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كغير مرغوب فيها."</item>
+    <item quantity="other" msgid="5071459475389411227">"‏تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كغير مرغوب فيها."</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثة ليست ضمن المحادثات غير المرغوب فيها."</item>
-    <item quantity="other" msgid="2250720080221922267">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثات ليست ضمن المحادثات غير المرغوب فيها."</item>
+    <item quantity="one" msgid="7361303622131552596">"‏تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثة ليست ضمن المحادثات غير المرغوب فيها."</item>
+    <item quantity="other" msgid="2250720080221922267">"‏تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثات ليست ضمن المحادثات غير المرغوب فيها."</item>
   </plurals>
   <plurals name="conversation_not_important">
-    <item quantity="one" msgid="788387259924027833">"تم وضع علامة على &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; تشير إلى عدم الأهمية."</item>
-    <item quantity="other" msgid="6662213740575340397">"تم وضع علامة على &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; تشير إلى عدم الأهمية."</item>
+    <item quantity="one" msgid="788387259924027833">"‏تم وضع علامة على &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; تشير إلى عدم الأهمية."</item>
+    <item quantity="other" msgid="6662213740575340397">"‏تم وضع علامة على &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; تشير إلى عدم الأهمية."</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثة تهدف إلى التصيّد."</item>
-    <item quantity="other" msgid="3678624994662639442">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثات تهدف إلى التصيّد."</item>
+    <item quantity="one" msgid="5386916574432049235">"‏تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثة تهدف إلى التصيّد."</item>
+    <item quantity="other" msgid="3678624994662639442">"‏تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثات تهدف إلى التصيّد."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="5457612502965117672">"تمت أرشفة &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="3012054504370916482">"تمت أرشفة &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="5457612502965117672">"‏تمت أرشفة &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="other" msgid="3012054504370916482">"‏تمت أرشفة &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"تم حذف &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="8630099095360065837">"تم حذف &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="4398693029405479323">"‏تم حذف &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="other" msgid="8630099095360065837">"‏تم حذف &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"تم الحذف"</string>
     <string name="archived" msgid="7533995360704366325">"تم الوضع في الأرشيف"</string>
@@ -231,22 +207,12 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"تم النقل إلى <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"النتائج"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"لا يمكن استخدام البحث على هذا الحساب."</string>
-    <string name="searchMode" msgid="3329807422114758583">"وضع البحث"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"وضع البحث في المحادثات"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"تعيين زر الرجوع"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"إزالة زر الرجوع"</string>
-    <string name="normalMode" msgid="4250277414924926730">"تعيين الوضع العادي"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"وضع نتائج البحث"</string>
-    <string name="folderMode" msgid="553052020619895714">"تعيين نمط المجلد"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"جارٍ البحث…"</string>
-    <string name="recent_folders" msgid="8240081561436891330">"الأخيرة"</string>
-    <string name="add_label" msgid="1638508840481944248">"إضافة تصنيف"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> من <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"أحدث"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"أقدم"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"رسالة جديدة من <xliff:g id="SENDER">%s</xliff:g>."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"<xliff:g id="COUNT">%1$d</xliff:g> من الرسائل الجديدة"</string>
-    <string name="show" msgid="7114006150083237343">"عرض"</string>
+    <string name="add_label" msgid="6060201715848652940">"إضافة مجلد"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"رسالة جديدة من <xliff:g id="SENDER">%s</xliff:g>. عرض."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> من الرسائل الجديدة. عرض."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"توسيع تفاصيل المستلم"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"تصغير تفاصيل المستلم"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"عرض معلومات جهة الاتصال لـ <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -259,6 +225,7 @@
     <string name="to_heading" msgid="1142876841308812954">"إلى: "</string>
     <string name="cc_heading" msgid="52678613787360092">"نسخة إلى: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"نسخة مخفية الوجهة: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"التاريخ: "</string>
     <string name="show_images" msgid="1875700481186331432">"إظهار الصور"</string>
     <string name="always_show_images" msgid="5966408990164581801">"عرض صور من هذا المرسل دومًا"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"سيتم عرض الصور من هذا المرسل تلقائيًا."</string>
@@ -282,8 +249,6 @@
     <string name="done" msgid="3079981801778027540">"تم"</string>
     <string name="cancel" msgid="8762981157252199115">"إلغاء"</string>
     <string name="clear" msgid="3184687982186479442">"محو"</string>
-    <string name="close" msgid="419945428844076406">"إغلاق"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"لم يتم تعيين أية مجلدات لهذا الحساب."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"تم بنجاح"</item>
     <item msgid="7109065688039971961">"لا يتوفر اتصال."</item>
@@ -304,24 +269,17 @@
     <string name="loading_conversation" msgid="489160038366067983">"جارٍ التحميل…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"اختيار حساب"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"اختيار مجلد"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
-    <string name="sync_all" msgid="1057043212338233359">"المزامنة: الكل"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"المزامنة: آخر <xliff:g id="COUNT">%1$d</xliff:g> يوم"</item>
-    <item quantity="other" msgid="6856940335775567991">"المزامنة: آخر <xliff:g id="COUNT">%1$d</xliff:g> يوم"</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"المزامنة: لا شيء"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"مجلد البريد الإلكتروني"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"تغيير المجلدات"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"نقل إلى"</string>
     <string name="search_hint" msgid="3625734263059221350">"بحث في البريد"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"المجلدات"</string>
     <string name="network_error" msgid="2125579009654728299">"ليس هناك اتصال"</string>
-    <string name="loading" msgid="2600808404156989255">"جارٍ تحميل المحادثات..."</string>
     <string name="retry" msgid="4515885444824418022">"إعادة المحاولة"</string>
     <string name="load_more" msgid="420892447103014683">"تحميل المزيد"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"اختصار اسم المجلد"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"في انتظار المزامنة"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"سيظهر بريدك الإلكتروني بعد قليل."</string>
@@ -329,7 +287,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"لم يتم تعيين هذا الحساب على المزامنة تلقائيًا.\nيمكنك لمس "<b>"المزامنة الآن"</b>" لمزامنة البريد مرة واحدة أو "<b>"تغيير إعدادات المزامنة"</b>" لإعداد هذا الحساب على مزامنة البريد تلقائيًا."</string>
     <string name="manual_sync" msgid="6743983544685622800">"مزامنة الآن"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"تغيير إعدادات المزامنة"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"ليست هناك رسائل جديدة"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"تعذر تحميل الصورة"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"يتعذر النقل نظرًا لاحتواء التحديد على عدة حسابات."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -347,9 +304,6 @@
     <string name="sync_error" msgid="7368819509040597851">"تعذرت المزامنة."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"ليست هناك مساحة تخزينية كافية على الجهاز لإجراء المزامنة."</string>
     <string name="storage" msgid="3262760336059073446">"وحدة التخزين"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">"، "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"جميع المجلدات"</string>
@@ -431,4 +385,17 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"اليوم، <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"أمس، <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"تجاهل النصيحة"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"المزامنة التلقائية متوقفة."</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"المس للتشغيل."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"مزامنة الحساب متوقفة."</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"تشغيل في <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"إعدادات الحساب"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> من الرسائل التي لم يتم إرسالها في <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"تشغيل المزامنة التلقائية؟"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"‏ستتم مزامنة التغييرات التي تجريها على جميع التطبيقات والحسابات، وليس Gmail فقط، بين الويب والأجهزة الأخرى و<xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
+    <string name="phone" msgid="5171715391553213328">"هاتف"</string>
+    <string name="tablet" msgid="7956969657216748522">"جهاز لوحي"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"تشغيل"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"عرض <xliff:g id="NUMBER">%1$s</xliff:g> من المجلدات الأخرى"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"إخفاء المجلدات"</string>
 </resources>

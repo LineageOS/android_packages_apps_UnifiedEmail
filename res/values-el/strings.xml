@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Κρυφ. κοιν."</string>
     <string name="subject_hint" msgid="7253964583324677128">"Θέμα"</string>
     <string name="body_hint" msgid="4279864165439577668">"Σύνταξη μηνύματος ηλεκτρονικού ταχυδρομείου"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Επισύναψη αρχείου"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Επισύναψη εικόνας"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Επισύναψη βίντεο"</string>
@@ -37,6 +36,7 @@
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"Στις <xliff:g id="DATE">%s</xliff:g>, ο χρήστης <xliff:g id="PERSON">%s</xliff:g> έγραψε:"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Προωθημένο μήνυμα ----------&lt;br&gt;Από: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Ημερομηνία: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Θέμα: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Προς: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- Προωθημένο μήνυμα ----------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Κοιν.: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Επιλογή τύπου συνημμένου"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"Δεν είναι δυνατή η επισύναψη του αρχείου που υπερβαίνει το όριο <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
@@ -65,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Αναφορά ηλεκτρονικού ψαρέματος"</string>
     <string name="delete" msgid="844871204175957681">"Διαγραφή"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Απόρριψη πρόχειρων"</string>
-    <string name="next" msgid="4674401197968248302">"Παλαιότερη"</string>
-    <string name="previous" msgid="309943944831349924">"Νεότερη"</string>
     <string name="refresh" msgid="490989798005710951">"Ανανέωση"</string>
     <string name="reply" msgid="2032052598496088561">"Απάντηση"</string>
     <string name="reply_all" msgid="7257248094625487557">"Απάν. σε όλ."</string>
@@ -78,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Μεταφορά στα Εισερχόμενα"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Ρυθμίσεις φακέλων"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Επαναφορά αυτόμ. μεγέθους"</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Αυτό το μήνυμα έχει τροποποιηθεί από την αρχική του έκδοση έτσι ώστε να προσαρμόζεται σε αυτήν την οθόνη.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Φάκελοι"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Περισσότερα"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Περισσότεροι λογαριασμοί"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Συγχρονισμός και ειδοποίηση"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Ρυθμίσεις φακέλου..."</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Ρυθμίσεις Λογαριασμού"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Ρυθμίσεις"</string>
     <string name="menu_search" msgid="5297197523031943248">"Αναζήτηση"</string>
-    <string name="more" msgid="1238344647379009858">"Περισσότερα"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> από <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Νεότερη"</string>
-    <string name="older" msgid="6651690916337202936">"Παλαιότερο"</string>
     <string name="mark_important" msgid="6904096897104265870">"Επισήμανση ως σημαντικής"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Επισήμανση ως μη σημαντικής"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Προσθήκη Κοιν./Κρ.κοιν."</string>
@@ -100,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Συμπερίληψη του αναφερόμενου κειμένου"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Αναφερόμενο κείμενο"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Απάντηση επί τόπου"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -115,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"Αρχείο <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Προεπισκ."</string>
     <string name="save_attachment" msgid="5360128849867863132">"Αποθήκευση"</string>
-    <string name="info_attachment" msgid="607849900865956536">"Πληροφ."</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Ακύρωση"</string>
     <string name="download_again" msgid="7418568915429156518">"Λήψη ξανά"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Πληροφορίες"</string>
@@ -130,12 +116,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Κοινή χρήση"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Κ.χρ. όλων"</string>
     <string name="saving" msgid="925514721138014677">"Αποθήκευση…"</string>
-    <string name="attach_image" msgid="3713654042212409705">"Εικόνα"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Βίντεο"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d συνημμένο αρχείο"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d συνημμένα αρχεία"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Κοινή χρήση μέσω"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Άνοιγμα στο πρόγραμμα περιήγησης"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Αντιγραφή"</string>
@@ -153,10 +133,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Μετακίνηση συνομιλίας"</item>
     <item quantity="other" msgid="1685896770174368261">"Μετακίνηση <xliff:g id="ID_1">%1$d</xliff:g> συνομιλιών"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 μη αναγνωσμένο μήνυμα ηλεκτρονικού ταχυδρομείου"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> μη αναγνωσμένα μηνύματα ηλεκτρονικού ταχυδρομείου"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> σχετικά με <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> στις <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> σχετικά με <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> στις <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -231,22 +207,12 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Μεταφέρθηκε στο φάκελο <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Αποτελέσματα"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Η αναζήτηση δεν υποστηρίζεται σε αυτόν τον λογαριασμό."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Λειτουργία αναζήτησης"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Λειτουργία αναζήτησης συνομιλίας"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Ορισμός κουμπιού \"Πίσω\""</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Κατάργηση κουμπιού \"Πίσω\""</string>
-    <string name="normalMode" msgid="4250277414924926730">"Ορισμός κανονικής λειτουργίας"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Λειτουργία αποτελεσμάτων αναζήτησης"</string>
-    <string name="folderMode" msgid="553052020619895714">"Ορισμός λειτουργίας φακέλου"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Αναζήτηση…"</string>
-    <string name="recent_folders" msgid="8240081561436891330">"Πρόσφατοι"</string>
-    <string name="add_label" msgid="1638508840481944248">"Προσθήκη ετικέτας"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> από <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"Νεότερη"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"Παλαιότερη"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"Νέο μήνυμα από τον χρήστη <xliff:g id="SENDER">%s</xliff:g>."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"<xliff:g id="COUNT">%1$d</xliff:g> νέα μηνύματα"</string>
-    <string name="show" msgid="7114006150083237343">"Προβολή"</string>
+    <string name="add_label" msgid="6060201715848652940">"Προσθήκη φακέλου"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Νέο μήνυμα από <xliff:g id="SENDER">%s</xliff:g>. Εμφάνιση."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> νέα μηνύματα. Εμφάνιση."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Ανάπτυξη στοιχείων παραλήπτη"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Σύμπτυξη στοιχείων παραλήπτη"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Εμφάνιση στοιχείων επικοινωνίας για τον χρήστη <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -259,6 +225,7 @@
     <string name="to_heading" msgid="1142876841308812954">"Προς: "</string>
     <string name="cc_heading" msgid="52678613787360092">"Κοιν.: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"Κρυφή κοιν.: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"Ημερομηνία: "</string>
     <string name="show_images" msgid="1875700481186331432">"Εμφάνιση εικόνων"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Πάντα εμφ. εικ. από αυτόν τον αποστολέα"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Αυτ. εμφ. εικ. από αυτόν τον αποστολέα."</string>
@@ -282,8 +249,6 @@
     <string name="done" msgid="3079981801778027540">"Τέλος"</string>
     <string name="cancel" msgid="8762981157252199115">"Ακύρωση"</string>
     <string name="clear" msgid="3184687982186479442">"Διαγραφή"</string>
-    <string name="close" msgid="419945428844076406">"Κλείσιμο"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"Δεν έχουν οριστεί φάκελοι σε αυτόν τον λογαριασμό."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Επιτυχία"</item>
     <item msgid="7109065688039971961">"Δεν υπάρχει σύνδεση."</item>
@@ -304,24 +269,17 @@
     <string name="loading_conversation" msgid="489160038366067983">"Φόρτωση..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Επιλογή λογαριασμού"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Επιλογή φακέλου"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
-    <string name="sync_all" msgid="1057043212338233359">"Συγχρονισμός: Όλες"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Συγχρονισμός: Τελευταίας <xliff:g id="COUNT">%1$d</xliff:g> ημέρας"</item>
-    <item quantity="other" msgid="6856940335775567991">"Συγχρονισμός: Τελευταίων <xliff:g id="COUNT">%1$d</xliff:g> ημερών"</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Συγχρονισμός: Καμία"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Φάκελος email"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Αλλαγή φακέλων"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Μετακίνηση σε"</string>
     <string name="search_hint" msgid="3625734263059221350">"Αναζήτηση μηνυμάτων ηλ. ταχ."</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Φάκελοι"</string>
     <string name="network_error" msgid="2125579009654728299">"Δεν υπάρχει σύνδεση"</string>
-    <string name="loading" msgid="2600808404156989255">"Φόρτ. συνομιλιών…"</string>
     <string name="retry" msgid="4515885444824418022">"Επανάληψη"</string>
     <string name="load_more" msgid="420892447103014683">"Φόρτωση περισσότερων"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Όνομα συντόμευσης φακέλου"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Αναμονή για συγχρονισμό"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Η αλληλογραφία θα εμφανιστεί σύντομα."</string>
@@ -329,7 +287,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Ο λογαριασμός αυτός δεν έχει ρυθμιστεί για αυτόματο συγχρονισμό.\nΑγγίξτε "<b>"Συγχρ. τώρα"</b>" για συγχρονισμό της αλληλογραφίας μία φορά ή "<b>"Αλλαγή ρυθμίσεων συγχρονισμού"</b>" για να ρυθμίσετε το λογαριασμό για αυτόματο συγχρονισμό της αλληλογραφίας."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Συγχρ. τώρα"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Αλλαγή ρυθμίσεων συγχρονισμού"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Δεν υπάρχουν νέα μηνύματα"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Αδύνατη η φόρτωση της εικόνας"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Δεν είναι δυνατή η μετακίνηση επειδή η επιλογή περιλαμβάνει πολλούς λογαριασμούς."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -347,9 +304,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Δεν ήταν δυνατός ο συγχρονισμός."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Η συσκευή σας δεν διαθέτει επαρκή χώρο αποθήκευσης για συγχρονισμό."</string>
     <string name="storage" msgid="3262760336059073446">"Χώρος αποθήκευσης"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Όλοι οι φάκελοι"</string>
@@ -431,4 +385,17 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"Σήμερα, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Χθες, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Παράβλεψη συμβουλής"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"Ο αυτόματος συγχρονισμός είναι απενεργοποιημένος."</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Αγγίξτε για ενεργοποίηση."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Ο συγχρονισμός του λογαριασμού είναι απενεργοποιημένος."</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Ενεργοποιήστε τον στην ενότητα <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> ."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"Ρυθμίσεις λογαριασμού"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> μη απεσταλμένα σε <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Ενεργοποίηση αυτόματου συγχρονισμού;"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Θα γίνει συγχρονισμός όλων των αλλαγών που πραγματοποιείτε σε όλες τις εφαρμογές και τους λογαριασμούς, όχι μόνο στο Gmail, στον ιστό, σε άλλες συσκευές και στο <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> σας."</string>
+    <string name="phone" msgid="5171715391553213328">"τηλέφωνo"</string>
+    <string name="tablet" msgid="7956969657216748522">"tablet"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Ενεργοποίηση"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"Εμφάνιση <xliff:g id="NUMBER">%1$s</xliff:g> ακόμη φακέλων"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"Απόκρυψη φακέλων"</string>
 </resources>

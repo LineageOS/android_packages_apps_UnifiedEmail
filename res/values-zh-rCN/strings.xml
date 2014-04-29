@@ -22,8 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"抄送"</string>
     <string name="bcc" msgid="3098643138241111579">"密送"</string>
     <string name="subject_hint" msgid="7253964583324677128">"主题"</string>
-    <string name="body_hint" msgid="4279864165439577668">"撰写电子邮件"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
+    <string name="body_hint" msgid="4279864165439577668">"邮件内容"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"添加附件"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"附加图片"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"附加视频"</string>
@@ -37,6 +36,7 @@
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"<xliff:g id="PERSON">%s</xliff:g>于 <xliff:g id="DATE">%s</xliff:g>写道："</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- 转发的邮件 ----------&lt;br&gt;发件人：<xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;日期：<xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;主题：<xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;收件人：<xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- 转发的邮件 ----------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"抄送：<xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"选择附件类型"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"不能附加大小超过 <xliff:g id="MAXSIZE">%1$s</xliff:g> 的文件。"</string>
@@ -65,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"举报网上诱骗行为"</string>
     <string name="delete" msgid="844871204175957681">"删除"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"舍弃草稿"</string>
-    <string name="next" msgid="4674401197968248302">"更早"</string>
-    <string name="previous" msgid="309943944831349924">"更晚"</string>
     <string name="refresh" msgid="490989798005710951">"刷新"</string>
     <string name="reply" msgid="2032052598496088561">"回复"</string>
     <string name="reply_all" msgid="7257248094625487557">"全部回复"</string>
@@ -78,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"移至收件箱"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"文件夹设置"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"撤消自动重设大小"</string>
-    <string name="message_modified" msgid="2564340197585393687">"（系统对此邮件进行了调整，使其适合此屏幕的大小。）"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"文件夹"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"更多"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"更多帐户"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"同步与通知"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"文件夹设置"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"帐户设置"</string>
     <string name="menu_settings" msgid="6007027046949837282">"设置"</string>
     <string name="menu_search" msgid="5297197523031943248">"搜索"</string>
-    <string name="more" msgid="1238344647379009858">"更多"</string>
-    <string name="message_count" msgid="1032500151281269302">"第 <xliff:g id="COUNT">%1$s</xliff:g> 封，共 <xliff:g id="TOTAL">%2$s</xliff:g> 封"</string>
-    <string name="newer" msgid="1007166236908596854">"更晚"</string>
-    <string name="older" msgid="6651690916337202936">"更早"</string>
     <string name="mark_important" msgid="6904096897104265870">"标记为重要"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"标记为不重要"</string>
     <string name="add_cc_label" msgid="504861315425773180">"添加抄送/密送地址"</string>
@@ -99,8 +87,7 @@
     <string name="help_and_info" msgid="7873089811705257882">"帮助"</string>
     <string name="quoted_text" msgid="7250749398672037355">"包含引用文字"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"引用文字"</string>
-    <string name="respond_inline" msgid="6797117334768201180">"内联回复"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
+    <string name="respond_inline" msgid="6797117334768201180">"在原邮件内容上回复"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -115,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> 文件"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"预览"</string>
     <string name="save_attachment" msgid="5360128849867863132">"保存"</string>
-    <string name="info_attachment" msgid="607849900865956536">"信息"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"取消"</string>
     <string name="download_again" msgid="7418568915429156518">"再次下载"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"信息"</string>
@@ -130,12 +116,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"分享"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"全部分享"</string>
     <string name="saving" msgid="925514721138014677">"正在保存…"</string>
-    <string name="attach_image" msgid="3713654042212409705">"图片"</string>
-    <string name="attach_video" msgid="4996812138609677305">"视频"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d 个附件"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d 个附件"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"分享方式："</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"在浏览器中打开"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"复制"</string>
@@ -153,10 +133,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"移动会话"</item>
     <item quantity="other" msgid="1685896770174368261">"移动 <xliff:g id="ID_1">%1$d</xliff:g> 个会话"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1封未读邮件"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g>封未读邮件"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"发送者：<xliff:g id="SENDER">%1$s</xliff:g>；主题：<xliff:g id="SUBJECT">%2$s</xliff:g>；摘要：<xliff:g id="SNIPPET">%3$s</xliff:g>；日期：<xliff:g id="DATE">%4$s</xliff:g>；阅读状态：<xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"发送者：<xliff:g id="SENDER">%1$s</xliff:g>；主题：<xliff:g id="SUBJECT">%2$s</xliff:g>；摘要：<xliff:g id="SNIPPET">%3$s</xliff:g>；时间：<xliff:g id="TIME">%4$s</xliff:g>；阅读状态：<xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -231,22 +207,12 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"已移至“<xliff:g id="FOLDERNAME">%1$s</xliff:g>”"</string>
     <string name="search_results_header" msgid="4669917471897026269">"结果"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"此帐户不支持搜索。"</string>
-    <string name="searchMode" msgid="3329807422114758583">"搜索模式"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"搜索会话模式"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"设置“返回”按钮"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"删除“返回”按钮"</string>
-    <string name="normalMode" msgid="4250277414924926730">"设置普通模式"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"搜索结果模式"</string>
-    <string name="folderMode" msgid="553052020619895714">"设置文件夹模式"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"正在搜索..."</string>
-    <string name="recent_folders" msgid="8240081561436891330">"最近"</string>
-    <string name="add_label" msgid="1638508840481944248">"添加标签"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"第 <xliff:g id="COUNT">%1$s</xliff:g> 封，共 <xliff:g id="TOTAL">%2$s</xliff:g> 封"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"更晚"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"更早"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"来自<xliff:g id="SENDER">%s</xliff:g>的新邮件。"</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"<xliff:g id="COUNT">%1$d</xliff:g> 封新邮件"</string>
-    <string name="show" msgid="7114006150083237343">"显示"</string>
+    <string name="add_label" msgid="6060201715848652940">"添加文件夹"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"有来自<xliff:g id="SENDER">%s</xliff:g>的新邮件。显示。"</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"有<xliff:g id="COUNT">%1$d</xliff:g>封新邮件。显示"</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"展开收件人详细信息"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"折叠收件人详细信息"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"显示<xliff:g id="NAME">%1$s</xliff:g>的联系人信息"</string>
@@ -259,9 +225,10 @@
     <string name="to_heading" msgid="1142876841308812954">"收件人： "</string>
     <string name="cc_heading" msgid="52678613787360092">"抄送： "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"密送： "</string>
+    <string name="date_heading" msgid="2086174555097691910">"日期： "</string>
     <string name="show_images" msgid="1875700481186331432">"显示图片"</string>
     <string name="always_show_images" msgid="5966408990164581801">"总是显示来自此发件人的图片"</string>
-    <string name="always_show_images_toast" msgid="6218061921546973716">"系统会自动显示来自此发件人的图片。"</string>
+    <string name="always_show_images_toast" msgid="6218061921546973716">"来自该发件人的图片将会自动显示。"</string>
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> 来自 <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"邮件已另存为草稿。"</string>
@@ -282,8 +249,6 @@
     <string name="done" msgid="3079981801778027540">"完成"</string>
     <string name="cancel" msgid="8762981157252199115">"取消"</string>
     <string name="clear" msgid="3184687982186479442">"清除"</string>
-    <string name="close" msgid="419945428844076406">"关闭"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"此帐户尚未设置文件夹。"</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"成功"</item>
     <item msgid="7109065688039971961">"无网络连接。"</item>
@@ -304,24 +269,17 @@
     <string name="loading_conversation" msgid="489160038366067983">"正在加载..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"选择帐户"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"选择文件夹"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
-    <string name="sync_all" msgid="1057043212338233359">"同步：全部"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"同步：过去 <xliff:g id="COUNT">%1$d</xliff:g> 天的会话"</item>
-    <item quantity="other" msgid="6856940335775567991">"同步：过去 <xliff:g id="COUNT">%1$d</xliff:g> 天的会话"</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"同步：否"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"电子邮件文件夹"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"更改文件夹"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"移至"</string>
     <string name="search_hint" msgid="3625734263059221350">"搜索邮件"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"文件夹"</string>
     <string name="network_error" msgid="2125579009654728299">"无连接"</string>
-    <string name="loading" msgid="2600808404156989255">"正在加载会话..."</string>
     <string name="retry" msgid="4515885444824418022">"重试"</string>
     <string name="load_more" msgid="420892447103014683">"加载更多"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"为文件夹快捷方式命名"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"正在等待同步"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"您的电子邮件很快就会显示。"</string>
@@ -329,7 +287,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"此帐户未设置为自动同步。您可以\n触摸"<b>"立即同步"</b>"同步邮件一次，或者触摸"<b>"更改同步设置"</b>"，将此帐户设置为自动同步邮件。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"更改同步设置"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"没有新邮件"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"无法加载图片"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"所选内容分属多个帐户，因此无法进行移动。"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -347,16 +304,13 @@
     <string name="sync_error" msgid="7368819509040597851">"无法同步。"</string>
     <string name="sync_error_message" msgid="5367907194753034375">"您的设备存储空间不足，无法同步。"</string>
     <string name="storage" msgid="3262760336059073446">"存储"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">"、"</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"所有文件夹"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"近期文件夹"</string>
     <string name="message_details_title" msgid="2183394728494962332">"邮件详情"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"自动跳转"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"选择删除邮件后所要显示的屏幕"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"选择删除邮件后显示的屏幕"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"自动跳转偏好设置\n（在您执行删除等操作后）"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"后一个会话"</item>
@@ -368,8 +322,8 @@
     <item msgid="732746454445519134">"在您执行删除操作后显示较旧的前一个会话"</item>
     <item msgid="2189929276292165301">"在您执行删除操作后显示会话列表"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"清除图片显示许可"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"清除图片显示许可？"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"清除“显示图片”设置"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"是否要清除“显示图片”设置？"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"对于您之前允许显示其邮件内嵌图片的发件人，停止显示其邮件内的图片。"</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"图片不会自动显示。"</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"签名"</string>
@@ -406,7 +360,7 @@
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"全部回复"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"用作默认的邮件回复方式"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"滑动即可归档"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"滑动即可删除"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"滑动删除邮件"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"在会话列表中"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"发件人头像"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"在会话列表中的名称旁显示"</string>
@@ -422,7 +376,7 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"打开抽屉式导航栏"</string>
     <string name="drawer_close" msgid="2764774620737876943">"关闭抽屉式导航栏"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"触摸发件人头像即可选择该会话。"</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"触摸发件人头像即可选择相应的会话。"</string>
     <string name="long_press_to_select_tip" msgid="9205666839837250150">"触摸并按住即可选择一个会话，然后再触摸即可选择其他会话。"</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"文件夹图标"</string>
     <string name="add_account" msgid="2162808366829269770">"添加帐户"</string>
@@ -431,4 +385,17 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"今天<xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"昨天<xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"忽略提示"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"自动同步功能已关闭。"</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"触摸即可开启。"</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"帐户同步功能已关闭。"</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"在“<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>”中开启。"</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"帐户设置"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g>中有<xliff:g id="NUMBER">%1$s</xliff:g>封未发送的邮件"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"要开启自动同步功能吗？"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"您对所有应用和帐户（不只是 Gmail）所做的更改都会在网络、您的其他设备和您的<xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>之间同步。"</string>
+    <string name="phone" msgid="5171715391553213328">"手机"</string>
+    <string name="tablet" msgid="7956969657216748522">"平板电脑"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"开启"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"显示另外<xliff:g id="NUMBER">%1$s</xliff:g>个文件夹"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"隐藏文件夹"</string>
 </resources>

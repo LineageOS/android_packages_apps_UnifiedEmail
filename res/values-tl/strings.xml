@@ -23,12 +23,11 @@
     <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Paksa"</string>
     <string name="body_hint" msgid="4279864165439577668">"Bumuo ng email"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Mag-attach ng file"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Mag-attach larawan"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Mag-attach ng Video"</string>
     <string name="save_draft" msgid="5555744208032445632">"I-save ang draft"</string>
-    <string name="discard" msgid="1714960202994370243">"Itapon"</string>
+    <string name="discard" msgid="1714960202994370243">"i-discard"</string>
     <string name="compose" msgid="1473559896062432878">"Bumuo"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Tumugon"</item>
@@ -37,6 +36,7 @@
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"Noong <xliff:g id="DATE">%s</xliff:g>, isinulat ni <xliff:g id="PERSON">%s</xliff:g> ang:"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Ipinasang mensahe ----------&lt;br&gt;Mula kay: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Petsa: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Paksa: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Para kay: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- Ipinasang mensahe ----------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Pumili ng uri ng attachment"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"Hindi ma-attach ang file na lagpas sa <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
@@ -65,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Iulat na phishing"</string>
     <string name="delete" msgid="844871204175957681">"Tanggalin"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"I-discard ang mga draft"</string>
-    <string name="next" msgid="4674401197968248302">"Mas luma"</string>
-    <string name="previous" msgid="309943944831349924">"Mas bago"</string>
     <string name="refresh" msgid="490989798005710951">"I-refresh"</string>
     <string name="reply" msgid="2032052598496088561">"Tumugon"</string>
     <string name="reply_all" msgid="7257248094625487557">"Tugon lahat"</string>
@@ -78,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Ilipat sa Inbox"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Mga setting ng folder"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"I-revert ang auto-sizing"</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Binago ang mensaheng ito mula sa orihinal nitong bersyon upang magkasya sa screen na ito.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Mga Folder"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Higit pa"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Higit pang mga account"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"I-sync at i-notify"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Mga setting ng folder"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Mga setting ng account"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Mga Setting"</string>
     <string name="menu_search" msgid="5297197523031943248">"Maghanap"</string>
-    <string name="more" msgid="1238344647379009858">"Higit pa"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> ng <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Mas bago"</string>
-    <string name="older" msgid="6651690916337202936">"Mas luma"</string>
     <string name="mark_important" msgid="6904096897104265870">"Markahang mahalaga"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Markahang hindi mahalaga"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Magdagdag ng Cc/Bcc"</string>
@@ -100,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Ibilang ang kasamang teksto"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"I-quote ang teksto"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Tumugon sa inline"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -115,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> File"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"I-preview"</string>
     <string name="save_attachment" msgid="5360128849867863132">"I-save"</string>
-    <string name="info_attachment" msgid="607849900865956536">"Impormasyon"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Kanselahin"</string>
     <string name="download_again" msgid="7418568915429156518">"I-download muli"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Impormasyon"</string>
@@ -130,12 +116,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Ibahagi"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Ibhgi lhat"</string>
     <string name="saving" msgid="925514721138014677">"Sine-save…"</string>
-    <string name="attach_image" msgid="3713654042212409705">"Larawan"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Video"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d attachment"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d (na) attachment"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Ibahagi sa pamamagitan ng"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Buksan sa Browser"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopyahin"</string>
@@ -153,10 +133,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Ilipat ang pag-uusap"</item>
     <item quantity="other" msgid="1685896770174368261">"Ilipat ang <xliff:g id="ID_1">%1$d</xliff:g> (na) pag-uusap"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"1 hindi pa nababasang mail"</item>
-    <item quantity="other" msgid="1634106533609170998">"<xliff:g id="ID_1">%1$d</xliff:g> (na) hindi pa nababasang mail"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"Si <xliff:g id="SENDER">%1$s</xliff:g> tungkol sa <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> noong <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"Si <xliff:g id="SENDER">%1$s</xliff:g> tungkol sa <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> ng <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -231,22 +207,12 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Inilipat sa <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Mga resulta"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Hindi sinusuportahan ang paghahanap sa account na ito."</string>
-    <string name="searchMode" msgid="3329807422114758583">"Mode ng Paghahanap"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Mode ng Paghahanap sa Pag-uusap"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Itakda ang Button na Bumalik"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Alisin ang Button na Bumalik"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Itakda sa Normal na Mode"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Mode ng Resulta ng Paghahanap"</string>
-    <string name="folderMode" msgid="553052020619895714">"Itakda ang Mode ng Folder"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Naghahanap..."</string>
-    <string name="recent_folders" msgid="8240081561436891330">"Kamakailan"</string>
-    <string name="add_label" msgid="1638508840481944248">"Magdagdag ng label"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> ng <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"Mas Bago"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"Mas Luma"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"Bagong mensahe mula kay <xliff:g id="SENDER">%s</xliff:g>."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"<xliff:g id="COUNT">%1$d</xliff:g> (na) bagong mensahe"</string>
-    <string name="show" msgid="7114006150083237343">"Ipakita"</string>
+    <string name="add_label" msgid="6060201715848652940">"Magdagdag ng folder"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Bagong mensahe mula <xliff:g id="SENDER">%s</xliff:g>. Ipakita."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> (na) bagong mensahe. Ipakita."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Palawakin ang mga detalye ng recipient"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Tiklupin ang mga detalye ng recipient"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Ipakita ang impormasyon ng contact para kay <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -259,6 +225,7 @@
     <string name="to_heading" msgid="1142876841308812954">"Sa/Kay: "</string>
     <string name="cc_heading" msgid="52678613787360092">"Cc: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"Bcc: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"Petsa: "</string>
     <string name="show_images" msgid="1875700481186331432">"Ipakita ang mga larawan"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Lagi pakita larawan mula nagpadalang ito"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Awtomatikong ipapakita ang mga larawan mula sa nagpadalang ito."</string>
@@ -282,8 +249,6 @@
     <string name="done" msgid="3079981801778027540">"Tapos na"</string>
     <string name="cancel" msgid="8762981157252199115">"Kanselahin"</string>
     <string name="clear" msgid="3184687982186479442">"I-clear"</string>
-    <string name="close" msgid="419945428844076406">"Isara"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"Walang mga folder na naitakda para sa account na ito."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Tagumpay"</item>
     <item msgid="7109065688039971961">"Walang koneksyon."</item>
@@ -304,24 +269,17 @@
     <string name="loading_conversation" msgid="489160038366067983">"Naglo-load…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Pumili ng account"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Pumili ng folder"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
-    <string name="sync_all" msgid="1057043212338233359">"I-sync: Lahat"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"I-sync: Huling <xliff:g id="COUNT">%1$d</xliff:g> araw"</item>
-    <item quantity="other" msgid="6856940335775567991">"I-sync: Huling <xliff:g id="COUNT">%1$d</xliff:g> (na) araw"</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"I-sync: Wala"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Folder ng Email"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Baguhin ang mga folder"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Ilipat sa"</string>
     <string name="search_hint" msgid="3625734263059221350">"Maghanap sa mail"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Mga Folder"</string>
     <string name="network_error" msgid="2125579009654728299">"Walang koneksyon"</string>
-    <string name="loading" msgid="2600808404156989255">"Nilo-load pag-uusap…"</string>
     <string name="retry" msgid="4515885444824418022">"Subukang Muli"</string>
     <string name="load_more" msgid="420892447103014683">"Mag-load ng higit pa"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Shortcut sa pangalan ng folder"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Naghihintay ng pag-sync"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Lilitaw na ang iyong email."</string>
@@ -329,7 +287,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Hindi naka-set up ang account na ito upang awtomatikong mag-sync.\nPindutin ang "<b>"I-sync Ngayon"</b>" upang i-sync ang mail nang isang beses, o "<b>"Baguhin ang Mga Setting ng Pag-sync"</b>" upang i-set up ang account na ito upang awtomatikong i-sync ang mail."</string>
     <string name="manual_sync" msgid="6743983544685622800">"I-sync na"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Baguhin mga setting ng sync"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Walang mga bagong mensahe"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Hindi mai-load ang larawan"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Hindi mailipat dahil naglalaman ng maraming account ang pinili."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -347,9 +304,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Hindi makapag-sync."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Walang sapat na espasyo ng storage ang iyong device upang makapag-sync."</string>
     <string name="storage" msgid="3262760336059073446">"Storage"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Lahat ng folder"</string>
@@ -357,7 +311,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Mga detalye ng mensahe"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"I-auto-advance"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Piliin ang screen na ipapakita pagkatapos magtanggal ng mensahe"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Magtakda auto-advance na kagustuhan\n(pagkatapos mong magtanggal, atbp.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Magtakda ng nais na auto-advance\n(pagkatapos mong magtanggal, atbp.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mas bago"</item>
     <item msgid="5562093094216840213">"Mas luma"</item>
@@ -368,7 +322,7 @@
     <item msgid="732746454445519134">"Magpakita ng mas lumang pag-uusap pagkatapos mong magtanggal"</item>
     <item msgid="2189929276292165301">"Ipakita ang listahan ng pag-uusap pagkatapos mong magtanggal"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"I-clear ang mga pag-apruba sa larawan"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"I-clear pag-apruba sa lararawan"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"I-clear ang mga pag-apruba sa larawan?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Huminto sa pagpapakita ng mga inline na larawan mula sa mga nagpadalang dati mong pinayagan."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Hindi awtomatikong ipapakita ang mga larawan."</string>
@@ -431,4 +385,17 @@
     <string name="date_message_received_today" msgid="7923108495669251362">"Ngayon, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Kahapon, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"I-dismiss ang tip"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"Naka-off ang auto-sync."</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Pindutin upang i-on."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Naka-off ang pag-sync sa account."</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"I-on sa <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"Mga setting ng account"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> ang hindi naipadala sa <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"I-on ang auto-sync?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Ang mga pagbabagong iyong ginawa sa lahat ng apps at account, hindi lang sa Gmail, ay masi-synchronize sa web, iba mo pang mga device, at iyong <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> ."</string>
+    <string name="phone" msgid="5171715391553213328">"telepono"</string>
+    <string name="tablet" msgid="7956969657216748522">"tablet"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"I-on"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"Magpakita ng <xliff:g id="NUMBER">%1$s</xliff:g> pang folder"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"Itago ang mga folder"</string>
 </resources>

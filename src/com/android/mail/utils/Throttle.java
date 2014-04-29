@@ -36,7 +36,8 @@ public class Throttle {
 
     public static final int DEFAULT_MIN_TIMEOUT = 150;
     public static final int DEFAULT_MAX_TIMEOUT = 2500;
-    /* package */ static final int TIMEOUT_EXTEND_INTERVAL = 500;
+    // exposed for testing
+    public static final int TIMEOUT_EXTEND_INTERVAL = 500;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -80,7 +81,8 @@ public class Throttle {
     }
 
     /** Constructor for tests */
-    /* package */ Throttle(String name, Runnable callback, Handler handler,int minTimeout,
+    // exposed for testing
+    public Throttle(String name, Runnable callback, Handler handler,int minTimeout,
             int maxTimeout, Clock clock, Timer timer) {
         if (maxTimeout < minTimeout) {
             throw new IllegalArgumentException();
@@ -111,7 +113,8 @@ public class Throttle {
         }
     }
 
-    /* package */ void updateTimeout() {
+    // exposed for testing
+    public void updateTimeout() {
         final long now = mClock.getTime();
         if ((now - mLastEventTime) <= TIMEOUT_EXTEND_INTERVAL) {
             mTimeout *= 2;
@@ -170,11 +173,13 @@ public class Throttle {
         }
     }
 
-    /* package */ int getTimeoutForTest() {
+    // exposed for testing
+    public int getTimeoutForTest() {
         return mTimeout;
     }
 
-    /* package */ long getLastEventTimeForTest() {
+    // exposed for testing
+    public long getLastEventTimeForTest() {
         return mLastEventTime;
     }
 }

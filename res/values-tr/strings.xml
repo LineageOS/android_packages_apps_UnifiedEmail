@@ -23,7 +23,6 @@
     <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Konu"</string>
     <string name="body_hint" msgid="4279864165439577668">"E-posta yazın"</string>
-    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Dosya ekleyin"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Resim ekle"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Video ekle"</string>
@@ -37,6 +36,7 @@
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"<xliff:g id="DATE">%s</xliff:g> tarihinde <xliff:g id="PERSON">%s</xliff:g> yazdı:"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Yönlendirilen ileti ----------&lt;br&gt;Gönderen: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Tarih:<xliff:g id="DATE">%2$s</xliff:g> &lt;br&gt;Konu: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Alıcı: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- Yönlendirilen ileti ----------"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Ek türünü seçin"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"<xliff:g id="MAXSIZE">%1$s</xliff:g> boyutundan büyük dosyalar eklenemez."</string>
@@ -65,8 +65,6 @@
     <string name="report_phishing" msgid="5714205737453138338">"Kimlik avı olarak bildir"</string>
     <string name="delete" msgid="844871204175957681">"Sil"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Taslakları sil"</string>
-    <string name="next" msgid="4674401197968248302">"Daha eski"</string>
-    <string name="previous" msgid="309943944831349924">"Daha yeni"</string>
     <string name="refresh" msgid="490989798005710951">"Yenile"</string>
     <string name="reply" msgid="2032052598496088561">"Yanıtla"</string>
     <string name="reply_all" msgid="7257248094625487557">"Tümünü yanıtla"</string>
@@ -78,19 +76,9 @@
     <string name="menu_move_to_inbox" msgid="3201472943201077389">"Gelen Kutusuna taşı"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"Klasör ayarları"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"Otomatik boyutlandırmayı geri çevir"</string>
-    <string name="message_modified" msgid="2564340197585393687">"(Bu ileti, bu ekrana sığacak şekilde orijinalinden farklı hale getirilmiştir.)"</string>
-    <string name="folder_list_title" msgid="4276644062440415214">"Klasörler"</string>
-    <string name="folder_list_more" msgid="537172187223133825">"Diğer"</string>
-    <string name="folder_list_show_all_accounts" msgid="8054807182336991835">"Diğer hesaplar"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Senkronize et ve bildir"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Klasör ayarları"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"Hesap ayarları"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Ayarlar"</string>
     <string name="menu_search" msgid="5297197523031943248">"Ara"</string>
-    <string name="more" msgid="1238344647379009858">"Diğer"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> / <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Daha yeni"</string>
-    <string name="older" msgid="6651690916337202936">"Daha eski"</string>
     <string name="mark_important" msgid="6904096897104265870">"Önemli olarak işaretle"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Önemsiz olarak işaretle"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Cc/Bcc ekle"</string>
@@ -100,7 +88,6 @@
     <string name="quoted_text" msgid="7250749398672037355">"Alıntılanan metni dahil et"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Alıntılanan metin"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Satır içi yanıtla"</string>
-    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -115,7 +102,6 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> Dosyası"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"Önizle"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Kaydet"</string>
-    <string name="info_attachment" msgid="607849900865956536">"Bilgi"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"İptal"</string>
     <string name="download_again" msgid="7418568915429156518">"Tekrar indir"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Bilgi"</string>
@@ -130,12 +116,6 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Paylaş"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Tümünü paylaş"</string>
     <string name="saving" msgid="925514721138014677">"Kaydediliyor…"</string>
-    <string name="attach_image" msgid="3713654042212409705">"Resim"</string>
-    <string name="attach_video" msgid="4996812138609677305">"Video"</string>
-  <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d ek"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d ek"</item>
-  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Şunu kullanarak paylaş:"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Tarayıcıda Aç"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopyala"</string>
@@ -153,10 +133,6 @@
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"İleti dizisini taşı"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> ileti dizisini taşı"</item>
-  </plurals>
-  <plurals name="unread_mail_count">
-    <item quantity="one" msgid="6419664007105806274">"Okunmamış 1 e-posta"</item>
-    <item quantity="other" msgid="1634106533609170998">"Okunmamış <xliff:g id="ID_1">%1$d</xliff:g> e-posta"</item>
   </plurals>
     <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> konu: <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> tarih: <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
     <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> konu: <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> saat: <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
@@ -231,22 +207,12 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> klasörüne taşındı"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Sonuçlar"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Bu hesapta arama desteklenmiyor"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Arama Modu"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"İleti Dizisi Arama Modu"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Geri Düğmesini Ayarla"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Geri Düğmesini Kaldır"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Normal Moda Ayarla"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Arama Sonucu Modu"</string>
-    <string name="folderMode" msgid="553052020619895714">"Klasör Modunu Ayarla"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Aranıyor…"</string>
-    <string name="recent_folders" msgid="8240081561436891330">"Son"</string>
-    <string name="add_label" msgid="1638508840481944248">"Etiket ekle"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> / <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"Daha yeni"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"Daha eski"</string>
-    <string name="new_incoming_messages_one" msgid="3200934730744395520">"<xliff:g id="SENDER">%s</xliff:g> adlı kişiden yeni ileti."</string>
-    <string name="new_incoming_messages_many" msgid="1071412616544342913">"<xliff:g id="COUNT">%1$d</xliff:g> yeni ileti"</string>
-    <string name="show" msgid="7114006150083237343">"Göster"</string>
+    <string name="add_label" msgid="6060201715848652940">"Klasör ekle"</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"<xliff:g id="SENDER">%s</xliff:g> adlı kişiden yeni iletiler. Göster."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> yeni ileti. Göster."</item>
+  </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Alıcı ayrıntılarını genişlet"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Alıcı ayrıntılarını daralt"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g> iletişim bilgilerini göster"</string>
@@ -259,6 +225,7 @@
     <string name="to_heading" msgid="1142876841308812954">"Alıcı: "</string>
     <string name="cc_heading" msgid="52678613787360092">"Cc: "</string>
     <string name="bcc_heading" msgid="4698055226318660420">"Bcc: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"Tarih: "</string>
     <string name="show_images" msgid="1875700481186331432">"Resimleri göster"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Bu gönderenden gelen resimleri her zaman göster"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Bu gönderenden gelen resimler otomatik olarak gösterilecek."</string>
@@ -282,8 +249,6 @@
     <string name="done" msgid="3079981801778027540">"Bitti"</string>
     <string name="cancel" msgid="8762981157252199115">"İptal"</string>
     <string name="clear" msgid="3184687982186479442">"Temizle"</string>
-    <string name="close" msgid="419945428844076406">"Kapat"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"Bu hesap için hiçbir klasör ayarlanmamış."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Başarılı"</item>
     <item msgid="7109065688039971961">"Bağlantı yok."</item>
@@ -304,24 +269,17 @@
     <string name="loading_conversation" msgid="489160038366067983">"Yükleniyor..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Hesap seç"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Klasör seç"</string>
-    <!-- no translation found for folder_shortcut_widget_label (6700454062559797794) -->
-    <skip />
-    <string name="sync_all" msgid="1057043212338233359">"Senkronizasyon: Tümü"</string>
-  <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Senkronizasyon: Son <xliff:g id="COUNT">%1$d</xliff:g> gün"</item>
-    <item quantity="other" msgid="6856940335775567991">"Senkronizasyon: Son <xliff:g id="COUNT">%1$d</xliff:g> gün"</item>
-  </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Senkronizasyon: Yok"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"E-posta klasörü"</string>
     <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Klasörleri değiştir"</string>
     <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Taşı"</string>
     <string name="search_hint" msgid="3625734263059221350">"Postalarda ara"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="folders" msgid="3359679829905256429">"Klasörler"</string>
     <string name="network_error" msgid="2125579009654728299">"Bağlantı yok"</string>
-    <string name="loading" msgid="2600808404156989255">"İleti dizileri yükleniyor…"</string>
     <string name="retry" msgid="4515885444824418022">"Yeniden dene"</string>
     <string name="load_more" msgid="420892447103014683">"Daha fazla yükle"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Ad klasörü kısayolu"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Senkronize etmek için bekleniyor"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"E-postanız birazdan görüntülenecektir."</string>
@@ -329,7 +287,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Bu hesap otomatik olarak senkronize edilecek şekilde yapılandırılmadı.\nPostayı bir kez senkronize etmek için "<b>"Şimdi Senk Et"</b>"\'e veya bu hesabı postayı otomatik olarak senkronize edilecek şekilde ayarlamak için "<b>"Senk Ayarlarını Değiştir"</b>"\'e dokunun."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Şimdi senk et"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Senk ayarlarını değiştir"</string>
-    <string name="no_new_messages" msgid="2315965287002311844">"Yeni mesaj yok"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Resim yüklenemedi"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Seçim birden fazla hesap içerdiğinden taşınamıyor."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -347,9 +304,6 @@
     <string name="sync_error" msgid="7368819509040597851">"Senkronize edilemedi."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Cihazınızda senkronizasyon için yeterli depolama alanı yok."</string>
     <string name="storage" msgid="3262760336059073446">"Depolama"</string>
-    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
-    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="senders_split_token" msgid="5895854795157860258">", "</string>
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Tüm klasörler"</string>
@@ -423,14 +377,25 @@
     <string name="drawer_open" msgid="6074646853178471940">"Gezinme menüsünü aç"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Gezinme menüsünü kapat"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"İlgili ileti dizisini seçmek için gönderenin resmine dokunun."</string>
-    <!-- no translation found for long_press_to_select_tip (9205666839837250150) -->
-    <skip />
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Bir ileti dizisini seçmek için uzun dokunun ve sonra başka ileti dizilerini seçmek için tekrar dokunun."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Klasör simgesi"</string>
     <string name="add_account" msgid="2162808366829269770">"Hesap ekle"</string>
     <string name="attached_message" msgid="4267189489654642035">"Ekli ileti"</string>
     <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="date_message_received_today" msgid="7923108495669251362">"Bugün, <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="date_message_received_yesterday" msgid="2240669381396206434">"Dün, <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <!-- no translation found for dismiss_tip_hover_text (1930345936314578166) -->
-    <skip />
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"İpucunu kapat"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"Otomatik senkronizasyon kapalı."</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Açmak için dokun."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Hesap senkronizasyonu kapalı."</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> içinde açın."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"Hesap ayarları"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g> içinde gönderilmemiş <xliff:g id="NUMBER">%1$s</xliff:g> ileti var"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Otomatik senkronizasyon açılsın mı?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Yalnızca Gmail değil, tüm uygulamalarda ve hesaplarda yaptığınız değişiklikler web ile diğer cihazlarınız ve <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> arasında senkronize edilir."</string>
+    <string name="phone" msgid="5171715391553213328">"telefon"</string>
+    <string name="tablet" msgid="7956969657216748522">"tablet"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Aç"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"<xliff:g id="NUMBER">%1$s</xliff:g> klasör daha göster"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"Klasörleri gizle"</string>
 </resources>
