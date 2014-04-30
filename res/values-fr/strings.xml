@@ -322,7 +322,7 @@
     <item msgid="732746454445519134">"Afficher les conversations plus anciennes après suppression"</item>
     <item msgid="2189929276292165301">"Afficher la liste des conversations après suppression"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Supprimer les autorisations liées aux images"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Supprimer autorisations pour images"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Supprimer les autorisations liées aux images ?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Les images intégrées ne seront plus affichées pour les expéditeurs que vous aviez autorisés."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Les images ne s\'afficheront pas automatiquement."</string>
