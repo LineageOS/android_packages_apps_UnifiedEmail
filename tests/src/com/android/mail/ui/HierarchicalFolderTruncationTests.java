@@ -30,24 +30,25 @@ public class HierarchicalFolderTruncationTests extends AndroidTestCase {
     }
 
     public void testEmpty() {
-        assertEquals("", mAdapter.truncateHierarchy(null));
+        assertEquals(null, mAdapter.truncateHierarchy(null));
     }
 
     public void testNoParents() {
-        assertEquals("name", mAdapter.truncateHierarchy("name"));
+        assertEquals("name", mAdapter.truncateHierarchy("name").toString());
     }
 
     public void testSingleParent() {
-        assertEquals("parent\u2215folder", mAdapter.truncateHierarchy("parent/folder"));
+        assertEquals("parent\u2215folder", mAdapter.truncateHierarchy("parent/folder").toString());
     }
 
     public void testDoubleParent() {
         assertEquals("grandparent\u2215parent\u2215folder",
-                mAdapter.truncateHierarchy("grandparent/parent/folder"));
+                mAdapter.truncateHierarchy("grandparent/parent/folder").toString());
     }
 
     public void testEllipsizedDoubleParent() {
         assertEquals("grandparent\u2215\u2026\u2215parent\u2215folder",
-                mAdapter.truncateHierarchy("grandparent/stuff/stuff/stuff/stuff/parent/folder"));
+                mAdapter.truncateHierarchy("grandparent/stuff/stuff/stuff/stuff/parent/folder")
+                        .toString());
     }
 }

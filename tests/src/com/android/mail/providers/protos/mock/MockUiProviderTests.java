@@ -165,19 +165,20 @@ public class MockUiProviderTests extends AndroidTestCase {
                                     "Conversation zeroConv0");
                             messageUri = Uri.parse(convFoldersCursor.getString(messageUriCol));
                             messageUris.add(messageUri);
+                            count++;
                             break;
                         case 1:
                             assertEquals(convFoldersCursor.getString(subject),
                                     "Conversation zeroConv1");
                             messageUri = Uri.parse(convFoldersCursor.getString(messageUriCol));
                             messageUris.add(messageUri);
+                            count++;
                             break;
                     }
-                    count++;
                 }
             }
         }
-        assertEquals(count, 4);
+        assertEquals(count, 2);
         count = 0;
         ArrayList<Uri> attachmentUris = new ArrayList<Uri>();
         for (Uri u : messageUris) {

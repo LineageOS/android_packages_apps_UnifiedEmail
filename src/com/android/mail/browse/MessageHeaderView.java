@@ -508,7 +508,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     public static Address getAddress(Map<String, Address> cache, String emailStr) {
         Address addr = null;
-        synchronized (cache) {
+        synchronized (cache != null ? cache : emailStr) {
             if (cache != null) {
                 addr = cache.get(emailStr);
             }
