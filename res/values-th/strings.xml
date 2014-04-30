@@ -331,7 +331,7 @@
   </string-array>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"ล้างการอนุมัติภาพ"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"ล้างการอนุมัติภาพไหม"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"หยุดการแสดงภาพในบรรทัดจากผู้ส่งที่คุณอนุญาตไว้ก่อนหน้านี้"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"หยุดการแสดงภาพในบรรทัดจากผู้ส่ง ที่คุณอนุญาตไว้ก่อนหน้านี้"</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"รูปภาพจะไม่แสดงโดยอัตโนมัติ"</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"ลายเซ็น"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"ลายเซ็น"</string>
