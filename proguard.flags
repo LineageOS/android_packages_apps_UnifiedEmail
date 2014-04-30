@@ -41,6 +41,10 @@
   *** of(...);
 }
 
+-keepclasseswithmembers class com.android.mail.providers.Message {
+  public <methods>;
+}
+
 -keepclasseswithmembers class com.android.mail.ui.LeaveBehindItem {
   *** setAnimatedHeight(...);
 }

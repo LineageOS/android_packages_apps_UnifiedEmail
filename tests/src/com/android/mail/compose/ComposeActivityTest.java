@@ -561,7 +561,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String[] cc = activity.getCcAddresses();
                 String[] bcc = activity.getBccAddresses();
                 assertEquals(to.length, 1);
-                assertTrue(to[0].contains(refMessage.getTo()));
+                assertFalse(to[0].contains(refMessage.getTo()));
                 assertEquals(cc.length, 0);
                 assertEquals(bcc.length, 0);
             }
@@ -604,7 +604,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String bccAsString = TextUtils.join(",", bcc);
                 assertEquals(to.length, 1);
                 assertFalse(toAsString.contains(customFrom));
-                assertFalse(ccAsString.contains(customFrom));
+                assertTrue(ccAsString.contains(customFrom));
                 assertFalse(bccAsString.contains(customFrom));
             }
         });
@@ -645,8 +645,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String ccAsString = TextUtils.join(",", cc);
                 String bccAsString = TextUtils.join(",", bcc);
                 // Should have the same count as the original message.
-                assertEquals(to.length, 3);
-                assertFalse(toAsString.contains(customFrom));
+                assertEquals(to.length, 4);
+                assertTrue(toAsString.contains(customFrom));
                 assertFalse(ccAsString.contains(customFrom));
                 assertFalse(bccAsString.contains(customFrom));
             }
@@ -984,7 +984,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
             @Override
             public void run() {
                 activity.mRefMessage = refMessage;
-                activity.initAttachments(refMessage);
+                activity.initAttachments(refMessage, false);
                 assertEquals(activity.getAttachments().size(), 2);
                 activity.onNavigationItemSelected(1, ComposeActivity.REPLY);
                 assertEquals(activity.getAttachments().size(), 0);
