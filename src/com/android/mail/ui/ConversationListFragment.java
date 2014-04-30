@@ -889,8 +889,8 @@ public final class ConversationListFragment extends ListFragment implements
             mErrorListener.onError(mFolder, false);
         }
 
-        // Notify of changes to the Folder.
-        onFolderStatusUpdated();
+        // Update the sync status bar with sync results if needed
+        checkSyncStatus();
 
         // Blow away conversation items cache.
         ConversationItemViewModel.onFolderUpdated(mFolder);
@@ -916,31 +916,11 @@ public final class ConversationListFragment extends ListFragment implements
             showListView();
         }
         final boolean showFooter = mFooterView.updateStatus(cursor);
-        // Update the folder status, in case the cursor could affect it.
-        onFolderStatusUpdated();
+        // Update the sync status bar with sync results if needed
+        checkSyncStatus();
         mListAdapter.setFooterVisibility(showFooter);
         mLoadingViewPending = false;
         mHandler.removeCallbacks(mLoadingViewRunnable);
-    }
-
-    private void onFolderStatusUpdated() {
-        // Update the sync status bar with sync results if needed
-        checkSyncStatus();
-
-        final ConversationCursor cursor = getConversationListCursor();
-        Bundle extras = cursor != null ? cursor.getExtras() : Bundle.EMPTY;
-        int errorStatus = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
-                extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
-                : UIProvider.LastSyncResult.SUCCESS;
-        int cursorStatus = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
-        // We want to update the UI with this information if either we are loaded or complete, or
-        // we have a folder with a non-0 count.
-        final int folderCount = mFolder != null ? mFolder.totalCount : 0;
-        if (errorStatus == UIProvider.LastSyncResult.SUCCESS
-                && (cursorStatus == UIProvider.CursorStatus.LOADED
-                || cursorStatus == UIProvider.CursorStatus.COMPLETE) || folderCount > 0) {
-            updateSearchResultHeader(folderCount);
-        }
     }
 
     private void setSwipeAction() {
