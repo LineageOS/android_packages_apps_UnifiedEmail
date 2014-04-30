@@ -347,6 +347,7 @@ public class FolderListFragment extends ListFragment implements
         };
         mFolderChanger = mActivity.getFolderSelector();
         if (accountController != null) {
+            mAccountController = accountController;
             // Current account and its observer.
             setSelectedAccount(mAccountObserver.initialize(accountController));
             // List of all accounts and its observer.
@@ -363,7 +364,6 @@ public class FolderListFragment extends ListFragment implements
                 }
             };
             mAllAccountsObserver.initialize(accountController);
-            mAccountController = accountController;
 
             // Observer for when the drawer is closed
             mDrawerObserver = new DrawerClosedObserver() {
@@ -870,7 +870,8 @@ public class FolderListFragment extends ListFragment implements
         private void rebuildFolderList() {
             final boolean oldInboxPresent = mInboxPresent;
             mItemList = recalculateListFolders();
-            if ((mInboxPresent && !oldInboxPresent) || FolderUri.EMPTY.equals(mSelectedFolderUri)) {
+            if (mAccountController != null && ((mInboxPresent && !oldInboxPresent) ||
+                    FolderUri.EMPTY.equals(mSelectedFolderUri))) {
                 // We didn't have an inbox folder before, but now we do. This can occur when
                 // setting up a new account. We automatically create the "starred" virtual
                 // virtual folder, but we won't create the inbox until it gets synced.
