@@ -66,7 +66,7 @@
     <string name="discard_drafts" msgid="6862272443470085375">"Hylkää luonnokset"</string>
     <string name="refresh" msgid="490989798005710951">"Päivitä"</string>
     <string name="reply" msgid="2032052598496088561">"Vastaa"</string>
-    <string name="reply_all" msgid="7257248094625487557">"Vastaa kaik."</string>
+    <string name="reply_all" msgid="7257248094625487557">"Vastaa kaikille"</string>
     <string name="resume_draft" msgid="6450150180834092146">"Muokkaa"</string>
     <string name="forward" msgid="6822914459902983767">"Lähetä edelleen"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Viestin kirjoitus"</string>
