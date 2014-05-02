@@ -109,6 +109,9 @@ public class ReplyFromAccount implements Serializable {
      */
     public static boolean matchesAccountOrCustomFrom(Account account, String possibleCustomFrom,
             List<ReplyFromAccount> replyFromAccounts) {
+        if (TextUtils.isEmpty(possibleCustomFrom)) {
+            return false;
+        }
         Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(possibleCustomFrom);
         if (tokens != null && tokens.length > 0) {
             String parsedFromAddress = Utils.normalizeEmailAddress(tokens[0].getAddress());
