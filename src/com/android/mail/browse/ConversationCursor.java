@@ -688,9 +688,11 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                             // cache entry
                             mDeletedCount--;
                             removed = true;
-                            LogUtils.d(LOG_TAG,
+                            LogUtils.i(LOG_TAG,
                                     "IN resetCursor, sDeletedCount decremented to: %d by %s",
-                                    mDeletedCount, key);
+                                    mDeletedCount,
+                                    (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) ? key
+                                            : "[redacted]");
                         }
                     }
                 } else {
@@ -2339,6 +2341,10 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         sb.append(mDeletedCount);
         sb.append(" mUnderlying=");
         sb.append(mUnderlyingCursor);
+        if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+            sb.append(" mCacheMap=");
+            sb.append(mCacheMap);
+        }
         sb.append("}");
         return sb.toString();
     }

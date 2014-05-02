@@ -722,8 +722,14 @@ public final class ConversationListFragment extends ListFragment implements
 
     public boolean isAnimating() {
         final AnimatedAdapter adapter = getAnimatedAdapter();
-        return (adapter != null && adapter.isAnimating()) ||
-                (mListView != null && mListView.isScrolling());
+        if (adapter != null && adapter.isAnimating()) {
+            return true;
+        }
+        final boolean isScrolling = (mListView != null && mListView.isScrolling());
+        if (isScrolling) {
+            LogUtils.i(LOG_TAG, "CLF.isAnimating=true due to scrolling");
+        }
+        return isScrolling;
     }
 
     private void clearChoicesAndActivated() {
@@ -1140,6 +1146,14 @@ public final class ConversationListFragment extends ListFragment implements
 
         // This will call back to showSyncStatusBar():
         mActivity.getFolderController().requestFolderRefresh();
+
+        // Clear list adapter state out of an abundance of caution.
+        // There is a class of bugs where an animation that should have finished doesn't (maybe
+        // it didn't start, or it didn't finish), and the list gets stuck pretty much forever.
+        // Clearing the state here is in line with user expectation for 'refresh'.
+        getAnimatedAdapter().clearAnimationState();
+        // possibly act on the now-cleared state
+        mActivity.onAnimationEnd(mListAdapter);
     }
 
     /**
