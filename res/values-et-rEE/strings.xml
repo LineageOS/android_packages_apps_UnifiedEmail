@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Teisaldati kausta <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Tulemused"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Sellel kontol ei toetata otsingut."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Otsimine ..."</string>
     <string name="add_label" msgid="6060201715848652940">"Lisa kaust"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Näita uut sõnumit saatjalt <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Näita <xliff:g id="COUNT">%1$d</xliff:g> uut sõnumit."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Üksikasjad"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Üksikasjade peitmine"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"saajad: <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Saaja üksikasjade laiendamine"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Ahenda saaja üksikasjad"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Kuva saatja <xliff:g id="NAME">%1$s</xliff:g> kontaktandmed"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Kuva kontaktandmed"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Kausta otseteele nime andmine"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Sünkroonimise ootel"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Teie meil ilmub peagi."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Konto ei ole sünkroonitud"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"See konto ei ole seadistatud automaatseks sünkroonimiseks.\nPuudutage käsku "<b>"Sünkrooni kohe"</b>", et meile üks kord sünkroonida, või käsku "<b>"Muuda sünkroonimisseadeid"</b>", et seadistada see konto meilide automaatseks sünkroonimiseks."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sünkr. kohe"</string>

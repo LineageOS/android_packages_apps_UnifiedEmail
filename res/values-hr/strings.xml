@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Premješteno u mapu <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Rezultati"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Pretraživanje nije podržano na ovom računu."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Traženje..."</string>
     <string name="add_label" msgid="6060201715848652940">"Dodaj mapu"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Pokaži nove poruke pošiljatelja <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Pokaži sljedeći broj novih poruka: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Pojedinosti"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Sakrij detalje"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"prima <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Proširi podatke o primatelju"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Sažmi podatke o primatelju"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Prikaži podatke o kontaktu za <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Prikaži podatke o kontaktu"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Naziv prečaca mape"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Čekanje na sinkronizaciju"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Vaša će se e-pošta uskoro pojaviti."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Račun nije sinkroniziran"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Ovaj račun nije postavljen za automatsku sinkronizaciju.\nDodirnite "<b>"Sinkroniziraj sada"</b>" da biste poštu sinkronizirali jednom ili "<b>"Promjena sinkronizacije"</b>" da biste ovaj račun postavili za automatsku sinkronizaciju pošte."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sink. sada"</string>

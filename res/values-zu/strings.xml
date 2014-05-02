@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Kuhanjiswe ku-<xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Imiphumela"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Usesho alusekelwe kule akhawunti."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Iyasesha..."</string>
     <string name="add_label" msgid="6060201715848652940">"Engeza ifolda"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Bonisa umlayezo omusha osuka ku-<xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Bonisa imilayezo emisha engu-<xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Imininingwane"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Fihla imininingwane"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"kuya ku-<xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Nweba imininigwane yomtholi"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Goqa imininingwane yomtholi"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Khombisa imininingwane yokuxhumana ka-<xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Bonisa ulwazi loxhumana naye"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Isinqamuleli sefolda yegama"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Ilinde ukuvumelanisa"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"I-imeyli yakho izovela maduze."</string>
     <string name="not_synced_title" msgid="794279749170198599">"I-akhawunti ayivumelanisiwe"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Le akhawunti ayisethiwe kufika ekuvumelaniseni kokuzenzakalela.\nThinta u-"<b>"Vumelanisa manje"</b>" ukuze uvumelanise imeyila kanye, noma "<b>"shintsha izilungiselelo zokuvumelanisa"</b>" ukuze usethe le akhawunti ukuze ivumelanise imeyili ngokuzenzakalela."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Vumelanisa manje"</string>

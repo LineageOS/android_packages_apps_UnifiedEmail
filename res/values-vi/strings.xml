@@ -61,7 +61,7 @@
     <string name="archive" msgid="847250094775910499">"Lưu trữ"</string>
     <string name="report_spam" msgid="6467567747975393907">"Báo cáo spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Báo cáo không phải spam"</string>
-    <string name="report_phishing" msgid="5714205737453138338">"Báo cáo thư lừa đảo"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"Báo cáo lừa đảo"</string>
     <string name="delete" msgid="844871204175957681">"Xóa"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"Hủy thư nháp"</string>
     <string name="refresh" msgid="490989798005710951">"Làm mới"</string>
@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Đã chuyển vào <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Kết quả"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Không hỗ trợ tính năng tìm kiếm trên tài khoản này."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Đang tìm kiếm…"</string>
     <string name="add_label" msgid="6060201715848652940">"Thêm thư mục"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Hiển thị tin nhắn mới từ <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Hiển thị <xliff:g id="COUNT">%1$d</xliff:g> tin nhắn mới."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Chi tiết"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Ẩn chi tiết"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"tới <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Mở rộng chi tiết người nhận"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Thu gọn chi tiết người nhận"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Hiển thị thông tin liên hệ cho <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Hiển thị thông tin liên hệ"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Lối tắt thư mục tên"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Đang đợi đồng bộ hóa"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Email của bạn sẽ xuất hiện trong chốc lát."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Tài khoản chưa được đồng bộ hóa"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tài khoản này không được thiết lập để tự động đồng bộ hóa.\nChạm vào "<b>"Đồng bộ hóa ngay bây giờ"</b>" để đồng bộ hóa thư một lần hoặc "<b>"Thay đổi cài đặt đồng bộ hóa"</b>" để thiết lập tài khoản này tự động đồng bộ hóa thư."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Đồng bộ hóa ngay bây giờ"</string>

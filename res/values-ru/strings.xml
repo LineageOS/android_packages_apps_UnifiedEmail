@@ -200,8 +200,8 @@
     <item quantity="other" msgid="3012054504370916482">"Архивировано (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"Удаленных цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="8630099095360065837">"Удаленных цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="4398693029405479323">"Удалено цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="other" msgid="8630099095360065837">"Удалено цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Удалено"</string>
     <string name="archived" msgid="7533995360704366325">"Отправлено в архив"</string>
@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Перемещено в папку \"<xliff:g id="FOLDERNAME">%1$s</xliff:g>\""</string>
     <string name="search_results_header" msgid="4669917471897026269">"Результаты"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"В этом аккаунте не поддерживается поиск."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Поиск…"</string>
     <string name="add_label" msgid="6060201715848652940">"Добавить папку"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Показать новое сообщение (автор: <xliff:g id="SENDER">%s</xliff:g>)"</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Показать новые сообщения (<xliff:g id="COUNT">%1$d</xliff:g>)"</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Показать подробную информацию"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Скрыть"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"кому: <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Показать сведения о получателе"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Скрыть сведения о получателе"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Показать контактные данные пользователя <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Показать контактные данные"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Ярлык папки"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Синхронизация…"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Ваши сообщения загружаются."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Аккаунт не синхронизирован"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"В этом аккаунте не настроена автоматическая синхронизация.\nВыберите "<b>"Настройки синхронизации"</b>", чтобы включить ее, или "<b>"Синхронизировать сейчас"</b>", чтобы синхронизировать почту один раз."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр."</string>

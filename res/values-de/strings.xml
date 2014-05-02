@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Verschoben nach <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Ergebnisse"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Die Suche wird für dieses Konto nicht unterstützt."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Wird gesucht..."</string>
     <string name="add_label" msgid="6060201715848652940">"Ordner hinzufügen"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Neue Nachricht von <xliff:g id="SENDER">%s</xliff:g> anzeigen"</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"<xliff:g id="COUNT">%1$d</xliff:g> neue Nachrichten anzeigen"</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Details"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Details ausblenden"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"an <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Empfängerdetails maximieren"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Empfängerdetails minimieren"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Kontaktinformationen für <xliff:g id="NAME">%1$s</xliff:g> anzeigen"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Kontaktinformationen anzeigen"</string>
   <plurals name="show_messages_read">
@@ -290,11 +288,10 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Ordnerverknüpfung benennen"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Warten auf Synchronisierung"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Ihre E-Mails werden gleich angezeigt."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Konto nicht synchronisiert"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Für dieses Konto ist keine automatische Synchronisierung eingerichtet.\nZur einmaligen Synchronisierung der E-Mails tippen Sie auf "<b>"Synchronisieren"</b>". Zum Einrichten der automatischen Synchronisierung für dieses Konto tippen Sie auf "<b>"Synchronisierungseinstellungen ändern"</b>"."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synchronisieren"</string>
-    <string name="change_sync_settings" msgid="5514293926214426577">"Synchr.-Einstellungen ändern"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"Synchronisierungseinstellungen ändern"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Fehler beim Laden des Bildes"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Verschieben nicht möglich, weil mehrere Konten ausgewählt wurden."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>

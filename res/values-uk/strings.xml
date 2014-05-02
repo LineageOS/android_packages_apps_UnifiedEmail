@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Переміщено в папку <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Результати"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Функція пошуку в цьому обліковому записі не підтримується."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Пошук..."</string>
     <string name="add_label" msgid="6060201715848652940">"Додати папку"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Показати нове повідомлення (автор <xliff:g id="SENDER">%s</xliff:g>)."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Показати нові повідомлення (<xliff:g id="COUNT">%1$d</xliff:g>)."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Деталі"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Сховати деталі"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"кому: <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Розгорнути дані отримувача"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Згорнути дані отримувача"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Показати контактну інформацію відправника <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Показати контактну інформацію"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Назвати ярлик папки"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Очікування на синхронізацію"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Електронна пошта з’явиться незабаром."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Обліковий запис не синхронізовано"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Цей обліковий запис не налаштовано для автоматичної синхронізації.\nВиберіть "<b>"Синхронізувати зараз"</b>", щоб синхронізувати пошту один раз, або "<b>"Змінити налаштування синхронізації"</b>", щоб налаштувати цей обліковий запис для автоматичної синхронізації пошти."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр. зараз"</string>

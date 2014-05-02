@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"تم النقل إلى <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"النتائج"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"لا يمكن استخدام البحث على هذا الحساب."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"جارٍ البحث…"</string>
     <string name="add_label" msgid="6060201715848652940">"إضافة مجلد"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"عرض رسالة جديدة من <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"عرض <xliff:g id="COUNT">%1$d</xliff:g> من الرسائل الجديدة."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"التفاصيل"</string>
-    <string name="hide_details" msgid="7022374044607095589">"إخفاء التفاصيل"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"إلى <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"توسيع تفاصيل المستلم"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"تصغير تفاصيل المستلم"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"عرض معلومات جهة الاتصال لـ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"عرض معلومات جهة الاتصال"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"اختصار اسم المجلد"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"في انتظار المزامنة"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"سيظهر بريدك الإلكتروني بعد قليل."</string>
     <string name="not_synced_title" msgid="794279749170198599">"لم تتم مزامنة الحساب"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"لم يتم تعيين هذا الحساب على المزامنة تلقائيًا.\nيمكنك لمس "<b>"المزامنة الآن"</b>" لمزامنة البريد مرة واحدة أو "<b>"تغيير إعدادات المزامنة"</b>" لإعداد هذا الحساب على مزامنة البريد تلقائيًا."</string>
     <string name="manual_sync" msgid="6743983544685622800">"مزامنة الآن"</string>

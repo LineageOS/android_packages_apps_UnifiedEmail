@@ -22,7 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"Копија"</string>
     <string name="bcc" msgid="3098643138241111579">"Скривена копија"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Наслов"</string>
-    <string name="body_hint" msgid="4279864165439577668">"Напишите поруку е-поште"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Напишите имејл"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Приложи датотеку"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Приложи слику"</string>
     <string name="save_draft" msgid="5555744208032445632">"Сачувај недовршену поруку"</string>
@@ -123,7 +123,7 @@
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Позови..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Додај контакт"</string>
-    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Пошаљи поруку е-поште"</string>
+    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Пошаљи имејл"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Мапа"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Дели везу"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Помоћ"</string>
@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Премештена је у <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Резултати"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Претрага није подржана на овом налогу."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Претраживање..."</string>
     <string name="add_label" msgid="6060201715848652940">"Додај директоријум"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Прикажи нову поруку пошиљаоца <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Прикажи нове поруке (<xliff:g id="COUNT">%1$d</xliff:g>)."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Детаљи"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Сакриј детаље"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"коме: <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Прошири детаље о примаоцу"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Скупи детаље о примаоцу"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Прикажи контакт информације корисника <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Прикажи контакт информације"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Именовање пречице директоријума"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Чека се синхронизација"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Адреса е-поште ће се ускоро појавити."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Налог није синхронизован"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Овај налог није подешен за аутоматску синхронизацију.\nДодирните "<b>"Синхронизуј одмах"</b>" да бисте синхронизовали пошту једном, односно "<b>"Промени подешавања синхронизације"</b>" да бисте подесили овај налог да аутоматски синхронизује пошту."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр. одмах"</string>

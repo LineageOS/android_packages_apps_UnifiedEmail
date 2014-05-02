@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Przeniesiono do: <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Wyniki"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Wyszukiwanie nie jest obsługiwane na tym koncie."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Wyszukiwanie…"</string>
     <string name="add_label" msgid="6060201715848652940">"Dodaj folder"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Pokaż nową wiadomość od: <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Pokaż nowe wiadomości (<xliff:g id="COUNT">%1$d</xliff:g>)."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Szczegóły"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Ukryj szczegóły"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"do <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Rozwiń szczegóły odbiorcy"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Zwiń szczegóły odbiorcy"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Pokaż informacje kontaktowe: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Pokaż informacje kontaktowe"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Nazwij skrót folderu"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Czekam na synchronizację"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"E-maile pojawią się za chwilę."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Konto nie jest zsynchronizowane"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Konto nie jest skonfigurowane do automatycznej synchronizacji.\nKliknij "<b>"Synchronizuj"</b>", by zsynchronizować pocztę jeden raz, lub "<b>"Zmień ustawienia synchronizacji"</b>", by skonfigurować konto do automatycznej synchronizacji wiadomości."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synchronizuj"</string>

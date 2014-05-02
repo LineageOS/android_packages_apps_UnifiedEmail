@@ -66,7 +66,7 @@
     <string name="discard_drafts" msgid="6862272443470085375">"Hylkää luonnokset"</string>
     <string name="refresh" msgid="490989798005710951">"Päivitä"</string>
     <string name="reply" msgid="2032052598496088561">"Vastaa"</string>
-    <string name="reply_all" msgid="7257248094625487557">"Vastaa kaik."</string>
+    <string name="reply_all" msgid="7257248094625487557">"Vastaa kaikille"</string>
     <string name="resume_draft" msgid="6450150180834092146">"Muokkaa"</string>
     <string name="forward" msgid="6822914459902983767">"Lähetä edelleen"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Viestin kirjoitus"</string>
@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"Siirretty kansioon <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="4669917471897026269">"Tulokset"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"Hakua ei voi käyttää tällä tilillä."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"Haetaan.."</string>
     <string name="add_label" msgid="6060201715848652940">"Lisää kansio"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Näytä uusi viesti lähettäjältä <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Näytä <xliff:g id="COUNT">%1$d</xliff:g> uutta viestiä."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Tiedot"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Piilota tiedot"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"vast.ott. <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Laajenna vastaanottajan tiedot"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Tiivistä vastaanottajan tiedot"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Näytä henkilön <xliff:g id="NAME">%1$s</xliff:g> yhteystiedot"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Näytä yhteystiedot"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Nimeä kansion pikakuvake"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Odotetaan synkronointia"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Sähköpostit näytetään piakkoin."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Tiliä ei ole synkronoitu"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tätä tiliä ei ole määritetty synkronoitavaksi automaattisesti.\nKosketa "<b>"Synkronoi"</b>" synkronoidaksesi sähköpostit kerran tai "<b>"Muuta synkronointiasetuksia"</b>" asettaaksesi tilin synkronoimaan sähköpostit automaattisesti."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synkronoi"</string>

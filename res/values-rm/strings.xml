@@ -315,18 +315,14 @@
     <skip />
     <!-- no translation found for search_unsupported (4654227193354052607) -->
     <skip />
-    <!-- no translation found for search_results_searching_header (3821361153909466819) -->
-    <skip />
     <!-- no translation found for add_label (6060201715848652940) -->
     <skip />
     <!-- no translation found for new_incoming_messages_one (827152289636155810) -->
     <skip />
     <!-- no translation found for new_incoming_messages_many:other (1018949581192786598) -->
-    <!-- no translation found for details (5065930681696657503) -->
+    <!-- no translation found for expand_recipient_details (2266544827446346880) -->
     <skip />
-    <!-- no translation found for hide_details (7022374044607095589) -->
-    <skip />
-    <!-- no translation found for to_message_header (7406436821725529743) -->
+    <!-- no translation found for collapse_recipient_details (3608892454869745927) -->
     <skip />
     <!-- no translation found for contact_info_string (6911322458329265644) -->
     <skip />
@@ -438,8 +434,6 @@
     <!-- no translation found for shortcut_name_title (8220482314700618391) -->
     <skip />
     <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
     <skip />
     <!-- no translation found for not_synced_title (794279749170198599) -->
     <skip />

@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"已移至「<xliff:g id="FOLDERNAME">%1$s</xliff:g>」"</string>
     <string name="search_results_header" msgid="4669917471897026269">"搜尋結果"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"這個帳戶不支援搜尋功能。"</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"搜尋中…"</string>
     <string name="add_label" msgid="6060201715848652940">"新增資料夾"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"顯示來自<xliff:g id="SENDER">%s</xliff:g>的新郵件。"</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"顯示 <xliff:g id="COUNT">%1$d</xliff:g> 封新郵件。"</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"詳細資料"</string>
-    <string name="hide_details" msgid="7022374044607095589">"隱藏詳細資料"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"寄給<xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"展開收件者詳細資料"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"收合收件者詳細資料"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"顯示 <xliff:g id="NAME">%1$s</xliff:g> 的聯絡人資訊"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"顯示聯絡人資訊"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"名稱資料夾捷徑"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"正在等待同步處理"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"即將顯示您的電子郵件。"</string>
     <string name="not_synced_title" msgid="794279749170198599">"帳戶尚未同步處理"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"這個帳戶尚未設成自動同步處理。\n請輕觸 [立即同步處理]"<b></b>"，將您的郵件同步處理一次，或者輕觸 [變更同步處理設定]"<b></b>"，將帳戶設定成自動同步處理郵件。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步處理"</string>

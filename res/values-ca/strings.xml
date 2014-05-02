@@ -83,7 +83,7 @@
     <string name="add_cc_label" msgid="504861315425773180">"Afegeix Cc/Cco"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Afegeix Cco"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Inclou el text citat"</string>
-    <string name="quoted_text_label" msgid="541007446961960617">"Text de la cita"</string>
+    <string name="quoted_text_label" msgid="541007446961960617">"Missatge anterior"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Respon entre línies"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
@@ -213,15 +213,13 @@
     <string name="conversation_folder_moved" msgid="297469098857964678">"S\'ha mogut a <xliff:g id="FOLDERNAME">%1$s</xliff:g>."</string>
     <string name="search_results_header" msgid="4669917471897026269">"Resultats"</string>
     <string name="search_unsupported" msgid="4654227193354052607">"La cerca no és compatible en aquest compte."</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"S\'està cercant..."</string>
     <string name="add_label" msgid="6060201715848652940">"Afegeix una carpeta"</string>
     <string name="new_incoming_messages_one" msgid="827152289636155810">"Mostra el missatge nou de <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Mostra <xliff:g id="COUNT">%1$d</xliff:g> missatges nous."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Detalls"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Amaga els detalls"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"per a <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Amplia els detalls del destinatari"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Redueix les dades del destinatari"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Mostra la informació de contacte de <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Mostra la informació de contacte"</string>
   <plurals name="show_messages_read">
@@ -290,7 +288,6 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Tecla de drecera per posar nom a la carpeta"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"S\'està esperant per sincronitzar"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"El correu electrònic apareixerà aviat."</string>
     <string name="not_synced_title" msgid="794279749170198599">"El compte no s\'ha sincronitzat"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Aquest compte no està configurat per sincronitzar automàticament.\nToca "<b>"Sincronitza ara"</b>" per sincronitzar el correu una vegada o bé "<b>"Canvia la configuració de sincronització"</b>" per configurar aquest compte per sincronitzar el correu de manera automàtica."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincronitza ara"</string>
@@ -319,7 +316,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Detalls del missatge"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Avançament automàtic"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Selecciona la pantalla que es mostrarà en suprimir un missatge"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Estableix la preferència d\'avançament autom.\n(després de suprimir, etc.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Avançament automàtic\n(després de suprimir, etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Més recent"</item>
     <item msgid="5562093094216840213">"Més antiga"</item>
