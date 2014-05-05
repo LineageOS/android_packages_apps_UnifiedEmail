@@ -396,6 +396,6 @@
     <string name="phone" msgid="5171715391553213328">"telefon"</string>
     <string name="tablet" msgid="7956969657216748522">"tablet"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Włącz"</string>
-    <string name="show_n_more_folders" msgid="337747297817699776">"Pokaż jeszcze <xliff:g id="NUMBER">%1$s</xliff:g> foldery(ów)"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"Pokaż więcej folderów (<xliff:g id="NUMBER">%1$s</xliff:g>)"</string>
     <string name="hide_folders" msgid="7473552966537131652">"Ukryj foldery"</string>
 </resources>
