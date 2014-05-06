@@ -289,7 +289,7 @@
     <!-- no translation found for load_attachment (6181745283445986413) -->
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"ለአቃፊ አቋራጭ ስም ስጥ"</string>
-    <string name="wait_for_sync_title" msgid="2767841242539238015">"ማመሳሰል በመጠበቅ ላይ"</string>
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"አስምር በመጠበቅ ላይ"</string>
     <string name="not_synced_title" msgid="794279749170198599">"መለያ አልተመሳሰለም"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"ይህ መለያ በራስ-ሰር እንዲመሳሰል አልተዋቀረም።\nመልዕክት አንዴ ለማመሳሰል "<b>"አሁን አመሳስል"</b>"ን ንካ፣ ወይም ደግሞ ይሄ መለያ መልዕክት በራስ-ሰር እንዲያመሳስል ለማዋቀር "<b>"የማመሳሰል ቅንብሮችን ቀይር"</b>"።"</string>
     <string name="manual_sync" msgid="6743983544685622800">"አሁን አመሳስል"</string>
@@ -316,7 +316,7 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"ሁሉም አቃፊዎች"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"የቅርብ ጊዜ አቃፊዎች"</string>
     <string name="message_details_title" msgid="2183394728494962332">"የመልዕክት ዝርዝሮች"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"በራስ-አልቅ"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"ራስ-አልቅ"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"አንድ መልዕክት ከሰረዙ በኋላ የትኛው ማያ ገጽ እንዲታይ እንደሚፈልጉ ይምረጡ።"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"የራስ-አልቅ ምርጫዎችን ያዋቅሩ\n(ከሰረዙ በኋላ፣ ወዘተ.)"</string>
   <string-array name="prefEntries_autoAdvance">

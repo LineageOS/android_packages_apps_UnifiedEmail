@@ -22,7 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
     <string name="bcc" msgid="3098643138241111579">"Cci"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Objet"</string>
-    <string name="body_hint" msgid="4279864165439577668">"Compose email"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Composez un message"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Joindre un fichier"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Joindre une photo"</string>
     <string name="save_draft" msgid="5555744208032445632">"Enregistrer le brouillon"</string>
