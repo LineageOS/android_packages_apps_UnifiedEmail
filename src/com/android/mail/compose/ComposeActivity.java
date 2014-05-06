@@ -545,7 +545,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else if (message != null && action != EDIT_DRAFT) {
             initFromDraftMessage(message);
             initQuotedTextFromRefMessage(mRefMessage, action);
-            showCcBcc(savedState);
             mShowQuotedText = message.appendRefMessageContent;
             // if we should be showing quoted text but mRefMessage is null
             // and we have some quotedText, display that
@@ -562,9 +561,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 throw new IllegalStateException("Message must not be null to edit draft");
             }
             initFromDraftMessage(message);
-            final boolean showBcc = !TextUtils.isEmpty(message.getBcc());
-            final boolean showCc = showBcc || !TextUtils.isEmpty(message.getCc());
-            mCcBccView.show(false, showCc, showBcc);
             // Update the action to the draft type of the previous draft
             switch (message.draftType) {
                 case UIProvider.DraftType.REPLY:
@@ -749,6 +745,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         initChangeListeners();
+
+        // These two should be identical since we check CC and BCC the same way
+        boolean showCc = !TextUtils.isEmpty(mCc.getText()) || (savedInstanceState != null &&
+                savedInstanceState.getBoolean(EXTRA_SHOW_CC));
+        boolean showBcc = !TextUtils.isEmpty(mBcc.getText()) || (savedInstanceState != null &&
+                savedInstanceState.getBoolean(EXTRA_SHOW_BCC));
+        mCcBccView.show(false /* animate */, showCc, showBcc);
         updateHideOrShowCcBcc();
         updateHideOrShowQuotedText(mShowQuotedText);
 
@@ -1340,16 +1343,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 }
             }
         }
-
-        if (mRefMessage != null) {
-            // CC field only gets populated when doing REPLY_ALL.
-            // BCC never gets auto-populated, unless the user is editing
-            // a draft with one.
-            if (!TextUtils.isEmpty(mCc.getText()) && action == REPLY_ALL) {
-                mCcBccView.show(false, true, false);
-            }
-        }
-        updateHideOrShowCcBcc();
     }
 
     private void setFieldsFromRefMessage(int action) {
@@ -1774,16 +1767,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                         : R.string.add_bcc_label));
             } else {
                 mCcBccButton.setVisibility(View.INVISIBLE);
-            }
-        }
-    }
-
-    private void showCcBcc(Bundle state) {
-        if (state != null && state.containsKey(EXTRA_SHOW_CC)) {
-            boolean showCc = state.getBoolean(EXTRA_SHOW_CC);
-            boolean showBcc = state.getBoolean(EXTRA_SHOW_BCC);
-            if (showCc || showBcc) {
-                mCcBccView.show(false, showCc, showBcc);
             }
         }
     }
