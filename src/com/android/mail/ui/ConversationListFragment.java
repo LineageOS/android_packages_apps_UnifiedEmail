@@ -150,7 +150,7 @@ public final class ConversationListFragment extends ListFragment implements
     private int mConversationCursorHash;
     // The number of items in the last known ConversationCursor
     private int mConversationCursorLastCount;
-    // State variable to keep track if we just loaded a new list
+    // State variable to keep track if we just loaded a new list, used for analytics only
     // True if NO DATA has returned, false if we either partially or fully loaded the data
     private boolean mInitialCursorLoading;
 
@@ -181,7 +181,7 @@ public final class ConversationListFragment extends ListFragment implements
     private final Runnable mLoadingViewRunnable = new FragmentRunnable("LoadingRunnable", this) {
         @Override
         public void go() {
-            if (mInitialCursorLoading) {
+            if (!isCursorReadyToShow()) {
                 mCanTakeDownLoadingView = false;
                 showLoadingView();
                 mHandler.removeCallbacks(mHideLoadingRunnable);
@@ -195,7 +195,7 @@ public final class ConversationListFragment extends ListFragment implements
         @Override
         public void go() {
             mCanTakeDownLoadingView = true;
-            if (!mInitialCursorLoading) {
+            if (isCursorReadyToShow()) {
                 hideLoadingViewAndShowContents();
             }
         }
@@ -650,14 +650,14 @@ public final class ConversationListFragment extends ListFragment implements
     public void onResume() {
         super.onResume();
 
-        final ConversationCursor conversationCursor = getConversationListCursor();
-        if (!isCursorReadyToShow(conversationCursor)) {
+        if (!isCursorReadyToShow()) {
+            // If the cursor got reset, let's reset the analytics state variable and show the list
+            // view since we are waiting for load again
             mInitialCursorLoading = true;
-
-            // Let's show the list view when we resume and are waiting for load again
             showListView();
         }
 
+        final ConversationCursor conversationCursor = getConversationListCursor();
         if (conversationCursor != null) {
             conversationCursor.handleNotificationActions();
 
@@ -870,7 +870,7 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     public void onFolderUpdated(Folder folder) {
-        if (mInitialCursorLoading) {
+        if (!isCursorReadyToShow()) {
             // Wait a bit before showing either the empty or loading view. If the messages are
             // actually local, it's disorienting to see this appear on every folder transition.
             // If they aren't, then it will likely take more than 200 milliseconds to load, and
@@ -910,7 +910,7 @@ public final class ConversationListFragment extends ListFragment implements
         // Also change the cursor here.
         onCursorUpdated();
 
-        if (!mInitialCursorLoading && mCanTakeDownLoadingView) {
+        if (isCursorReadyToShow() && mCanTakeDownLoadingView) {
             hideLoadingViewAndShowContents();
         }
     }
@@ -1132,7 +1132,7 @@ public final class ConversationListFragment extends ListFragment implements
                 // completed loading.
                 // Use this point to log the appropriate timing information that depends on when
                 // the conversation list view finishes loading
-                if (isCursorReadyToShow(newCursor)) {
+                if (isCursorReadyToShow()) {
                     if (newCursor.getCount() == 0) {
                         Analytics.getInstance().sendEvent("empty_state", "post_label_change",
                                 mFolder.getTypeDescription(), 0);
@@ -1166,16 +1166,15 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * Helper function to determine if the given cursor is ready to populate the UI
-     * @param cursor
+     * Helper function to determine if the current cursor is ready to populate the UI
      * @return
      */
-    private boolean isCursorReadyToShow(ConversationCursor cursor) {
+    private boolean isCursorReadyToShow() {
+        ConversationCursor cursor = getConversationListCursor();
         if (cursor == null) {
             return false;
         }
-        final int status = cursor.getExtras().getInt(
-                UIProvider.CursorExtraKeys.EXTRA_STATUS);
+        final int status = cursor.getExtras().getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
         return (cursor.getCount() > 0 || !UIProvider.CursorStatus.isWaitingForResults(status));
     }
 }
