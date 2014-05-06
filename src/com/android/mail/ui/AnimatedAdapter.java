@@ -973,6 +973,25 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 || !mSwipeDeletingItems.isEmpty();
     }
 
+    /**
+     * Forcibly clear any internal state that would cause {@link #isAnimating()} to return true.
+     * Call this in times of desperation, when you really, really want to trash state and just
+     * start over.
+     */
+    public void clearAnimationState() {
+        if (!isAnimating()) {
+            return;
+        }
+
+        mUndoingItems.clear();
+        mSwipeUndoingItems.clear();
+        mFadeLeaveBehindItems.clear();
+        mDeletingItems.clear();
+        mSwipeDeletingItems.clear();
+        mAnimatingViews.clear();
+        LogUtils.w(LOG_TAG, "AA.clearAnimationState forcibly cleared state, this=%s", this);
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
@@ -991,6 +1010,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         sb.append(mFadeLeaveBehindItems);
         sb.append(" mLastDeletingItems=");
         sb.append(mLastDeletingItems);
+        sb.append(" mAnimatingViews=");
+        sb.append(mAnimatingViews);
+        sb.append(" mPendingDestruction=");
+        sb.append(mPendingDestruction);
         sb.append("}");
         return sb.toString();
     }

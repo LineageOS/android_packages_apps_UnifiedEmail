@@ -3039,7 +3039,10 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public final void onRefreshRequired() {
         if (isAnimating() || isDragging()) {
-            LogUtils.i(ConversationCursor.LOG_TAG, "onRefreshRequired: delay until animating done");
+            final ConversationListFragment f = getConversationListFragment();
+            LogUtils.w(ConversationCursor.LOG_TAG,
+                    "onRefreshRequired: delay until animating done. cursor=%s adapter=%s",
+                    mConversationListCursor, (f != null) ? f.getAnimatedAdapter() : null);
             return;
         }
         // Refresh the query in the background
@@ -3099,6 +3102,11 @@ public abstract class AbstractActivityController implements ActivityController,
         if (!isAnimating()) {
             // Swap cursors
             mConversationListCursor.sync();
+        } else {
+            // (CLF guaranteed to be non-null due to check in isAnimating)
+            LogUtils.w(LOG_TAG,
+                    "AAC.onRefreshReady suppressing sync() due to animation. cursor=%s aa=%s",
+                    mConversationListCursor, getConversationListFragment().getAnimatedAdapter());
         }
         mTracker.onCursorUpdated();
         perhapsShowFirstSearchResult();
@@ -3159,6 +3167,10 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onAnimationEnd(AnimatedAdapter animatedAdapter) {
+        if (animatedAdapter != null) {
+            LogUtils.i(LOG_TAG, "AAC.onAnimationEnd. cursor=%s adapter=%s", mConversationListCursor,
+                    animatedAdapter);
+        }
         if (mConversationListCursor == null) {
             LogUtils.e(LOG_TAG, "null ConversationCursor in onAnimationEnd");
             return;
@@ -3461,7 +3473,8 @@ public abstract class AbstractActivityController implements ActivityController,
                 return null;
             }
             return new ConversationCursorLoader(mActivity, account,
-                    folder.conversationListUri, folder.name, ignoreInitialConversationLimit);
+                    folder.conversationListUri, folder.getTypeDescription(),
+                    ignoreInitialConversationLimit);
         }
 
         @Override
