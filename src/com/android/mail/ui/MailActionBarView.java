@@ -666,7 +666,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // what is in the text field
         String queryText = mSearchWidget.getQuery().toString();
         // What the suggested query is
-        String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
+        String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1));
         // If the text the user typed in is a prefix of what is in the search
         // widget suggestion query, just take the search widget suggestion
         // query. Otherwise, it is a suffix and we want to remove matching
