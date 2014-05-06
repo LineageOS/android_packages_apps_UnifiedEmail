@@ -651,6 +651,13 @@ public final class ConversationListFragment extends ListFragment implements
         super.onResume();
 
         final ConversationCursor conversationCursor = getConversationListCursor();
+        if (!isCursorReadyToShow(conversationCursor)) {
+            mInitialCursorLoading = true;
+
+            // Let's show the list view when we resume and are waiting for load again
+            showListView();
+        }
+
         if (conversationCursor != null) {
             conversationCursor.handleNotificationActions();
 
@@ -1125,10 +1132,7 @@ public final class ConversationListFragment extends ListFragment implements
                 // completed loading.
                 // Use this point to log the appropriate timing information that depends on when
                 // the conversation list view finishes loading
-                final int cursorStatus = newCursor.getExtras().getInt(
-                        UIProvider.CursorExtraKeys.EXTRA_STATUS);
-                if (newCursor.getCount() > 0 ||
-                        !UIProvider.CursorStatus.isWaitingForResults(cursorStatus)) {
+                if (isCursorReadyToShow(newCursor)) {
                     if (newCursor.getCount() == 0) {
                         Analytics.getInstance().sendEvent("empty_state", "post_label_change",
                                 mFolder.getTypeDescription(), 0);
@@ -1159,5 +1163,19 @@ public final class ConversationListFragment extends ListFragment implements
         } else {
             mConversationCursorLastCount = 0;
         }
+    }
+
+    /**
+     * Helper function to determine if the given cursor is ready to populate the UI
+     * @param cursor
+     * @return
+     */
+    private boolean isCursorReadyToShow(ConversationCursor cursor) {
+        if (cursor == null) {
+            return false;
+        }
+        final int status = cursor.getExtras().getInt(
+                UIProvider.CursorExtraKeys.EXTRA_STATUS);
+        return (cursor.getCount() > 0 || !UIProvider.CursorStatus.isWaitingForResults(status));
     }
 }
