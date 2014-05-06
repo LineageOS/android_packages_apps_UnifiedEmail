@@ -867,10 +867,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mPendingDestruction = next;
     }
 
-    /* package */ void setNextAction(ListItemsRemovedListener next) {
-        mPendingDestruction = next;
-    }
-
     private void updateAnimatingConversationItems(Object obj, HashSet<Long> items) {
         if (!items.isEmpty()) {
             if (obj instanceof ConversationItemView) {
