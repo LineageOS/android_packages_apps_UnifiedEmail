@@ -39,7 +39,8 @@ public abstract class AbstractMailActivity extends Activity
 
     private final UiHandler mUiHandler = new UiHandler();
 
-    private static final boolean STRICT_MODE = false;
+    // STOPSHIP: ship with false
+    private static final boolean STRICT_MODE = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
