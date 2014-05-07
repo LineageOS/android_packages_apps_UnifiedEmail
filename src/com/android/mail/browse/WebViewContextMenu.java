@@ -261,6 +261,16 @@ public class WebViewContextMenu implements OnCreateContextMenuListener,
                 String decodedPhoneExtra;
                 try {
                     decodedPhoneExtra = URLDecoder.decode(extra, Charset.defaultCharset().name());
+
+                    // International numbers start with '+' followed by the country code, etc.
+                    // However, during decode, the initial '+' is changed into ' '.
+                    // Let's special case that here to avoid losing that information. If the decoded
+                    // string starts with one space, let's replace that space with + since it's
+                    // impossible for the normal number string to start with a space.
+                    // b/10640197
+                    if (decodedPhoneExtra.startsWith(" ") && !decodedPhoneExtra.startsWith("  ")) {
+                        decodedPhoneExtra = decodedPhoneExtra.replaceFirst(" ", "+");
+                    }
                 } catch (UnsupportedEncodingException ignore) {
                     // Should never happen; default charset is UTF-8
                     decodedPhoneExtra = extra;
