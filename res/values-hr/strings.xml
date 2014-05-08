@@ -31,7 +31,7 @@
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Odgovor"</item>
     <item msgid="4085029907540221568">"Odgovori svima"</item>
-    <item msgid="857480048798815437">"Dalje"</item>
+    <item msgid="857480048798815437">"Proslijedi"</item>
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"Dana <xliff:g id="DATE">%s</xliff:g> osoba <xliff:g id="PERSON">%s</xliff:g> napisala je:"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Proslijeđena poruka ----------&lt;br&gt;Šalje: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Datum: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Predmet: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Prima: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
