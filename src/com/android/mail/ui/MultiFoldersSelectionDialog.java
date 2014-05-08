@@ -40,6 +40,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Displays a folder selection dialog for the conversation provided. It allows
@@ -115,9 +117,13 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
                                 checked.add(mCurrentFolder.folderUri.fullUri.toString());
                             }
                         }
-                        for (final Uri folderUri : mOperations.keySet()) {
-                            // TODO: this makes these entries sort to the top after rotation
-                            checked.add(folderUri.toString());
+                        final Set<String> originalChecked = ImmutableSet.copyOf(checked);
+                        for (final Map.Entry<Uri, FolderOperation> entry : mOperations.entrySet()) {
+                            if (entry.getValue().mAdd) {
+                                checked.add(entry.getKey().toString());
+                            } else {
+                                checked.remove(entry.getKey().toString());
+                            }
                         }
                         mAdapter.clearSections();
                         // TODO(mindyp) : bring this back in UR8 when Email providers
@@ -131,10 +137,24 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
 
                         // TODO(mindyp): we currently do not support frequently moved to
                         // folders, at headers[1]; need to define what that means.*/
-                        mAdapter.addSection(new AddableFolderSelectorAdapter(context,
-                                AddableFolderSelectorAdapter.filterFolders(data,
-                                        ImmutableSet.of(FolderType.INBOX_SECTION)), checked,
-                                R.layout.multi_folders_view, null));
+
+                        final String[] headers = context.getResources().getStringArray(
+                                R.array.change_folder_sections);
+                        Cursor c = AddableFolderSelectorAdapter.filterFolders(data,
+                                ImmutableSet.of(FolderType.INBOX_SECTION), originalChecked,
+                                true /* includeOnlyInitiallySelected */);
+                        if (c.getCount() > 0) {
+                            mAdapter.addSection(new AddableFolderSelectorAdapter(context, c,
+                                    checked, R.layout.multi_folders_view, headers[0]));
+                        }
+
+                        c = AddableFolderSelectorAdapter.filterFolders(data,
+                                ImmutableSet.of(FolderType.INBOX_SECTION), originalChecked,
+                                false /* includeOnlyInitiallySelected */);
+                        if (c.getCount() > 0) {
+                            mAdapter.addSection(new AddableFolderSelectorAdapter(context, c,
+                                    checked, R.layout.multi_folders_view, headers[1]));
+                        }
 
                         dialog.getListView().setAdapter(mAdapter);
                     }
@@ -168,7 +188,7 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
      * @param row The item being updated.
      */
     private void update(FolderSelectorAdapter.FolderRow row) {
-        final boolean add = !row.isPresent();
+        final boolean add = !row.isSelected();
         if (mSingle) {
             if (!add) {
                 // This would remove the check on a single radio button, so just
@@ -179,14 +199,14 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
             for (int i = 0, size = mAdapter.getCount(); i < size; i++) {
                 final Object item = mAdapter.getItem(i);
                 if (item instanceof FolderRow) {
-                   ((FolderRow)item).setIsPresent(false);
+                   ((FolderRow)item).setIsSelected(false);
                    final Folder folder = ((FolderRow)item).getFolder();
                    mOperations.put(folder.folderUri.fullUri,
                            new FolderOperation(folder, false));
                 }
             }
         }
-        row.setIsPresent(add);
+        row.setIsSelected(add);
         mAdapter.notifyDataSetChanged();
         final Folder folder = row.getFolder();
         mOperations.put(folder.folderUri.fullUri, new FolderOperation(folder, add));

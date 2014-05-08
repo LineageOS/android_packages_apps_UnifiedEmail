@@ -20,9 +20,11 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.net.Uri;
 
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.MatrixCursorWithCachedColumns;
 
 import java.util.Set;
@@ -30,12 +32,29 @@ import java.util.Set;
 public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
 
     public AddableFolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> initiallySelected, int layout, String header) {
-        super(context, folders, initiallySelected, layout, header);
+            Set<String> selected, int layout, String header) {
+        super(context, folders, selected, layout, header);
     }
 
+    /**
+     * Essentially uses filterFolders with no filter to convert the cursors
+     */
+    public static Cursor filterFolders(final Cursor folderCursor) {
+        return filterFolders(folderCursor, null /* excludedTypes */, null /* initiallySelected */,
+                true /* includeInitiallySelected, useless in this case */);
+    }
+
+    /**
+     * @param folderCursor
+     * @param excludedTypes folder types that we want to filter out.
+     * @param initiallySelected set of folder uris that are previously selected.
+     * @param includeInitiallySelected if we want to ONLY include or exclude initiallySelected,
+     *   doesn't do anything if initiallySelected is null.
+     * @return
+     */
     public static Cursor filterFolders(final Cursor folderCursor,
-            final Set<Integer> excludedTypes) {
+            final Set<Integer> excludedTypes, final Set<String> initiallySelected,
+            final boolean includeOnlyInitiallySelected) {
         final int projectionSize = UIProvider.FOLDERS_PROJECTION.length;
         final MatrixCursor cursor =
                 new MatrixCursorWithCachedColumns(UIProvider.FOLDERS_PROJECTION);
@@ -44,19 +63,30 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
             do {
                 final int type = folderCursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
 
+                // Check for excluded types
+                boolean exclude = false;
                 if (excludedTypes != null) {
-                    boolean exclude = false;
-
                     for (final int excludedType : excludedTypes) {
                         if (Folder.isType(type, excludedType)) {
                             exclude = true;
                             break;
                         }
                     }
+                }
 
-                    if (exclude) {
-                        continue;
-                    }
+                if (initiallySelected != null) {
+                    // TODO: there has to be a better way to get this value...
+                    String uri = new FolderUri(Uri.parse(folderCursor.getString(
+                            UIProvider.FOLDER_URI_COLUMN))).getComparisonUri().toString();
+                    // Check if the folder is already selected and if we are trying to include only
+                    // the ones that were initially selected or only the ones that aren't.
+                    // Xor is what we want, since we essentially want the following:
+                    // (includeOnlyInitial && !contains) || (!includeOnlyInitial && contains)
+                    exclude |= includeOnlyInitiallySelected ^ initiallySelected.contains(uri);
+                }
+
+                if (exclude) {
+                    continue;
                 }
 
                 if (Folder.isType(type, UIProvider.FolderType.INBOX)
