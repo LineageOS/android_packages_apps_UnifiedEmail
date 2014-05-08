@@ -112,9 +112,9 @@
     <string name="saved" msgid="6660844285730790469">"Guardado, <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="442019281547315527">"Error; toca y reintenta."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Archivos adjuntos"</string>
-    <string name="menu_photo_save_all" msgid="4295226099481995348">"Guard todo"</string>
+    <string name="menu_photo_save_all" msgid="4295226099481995348">"Guardar todo"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Compartir"</string>
-    <string name="menu_photo_share_all" msgid="4577299400844129078">"Comp. todo"</string>
+    <string name="menu_photo_share_all" msgid="4577299400844129078">"Compartir todo"</string>
     <string name="saving" msgid="925514721138014677">"Guardando..."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Compartir mediante"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Abrir en el navegador"</string>
@@ -310,7 +310,7 @@
     <string name="recent_folders_heading" msgid="8613621794529777406">"Carpetas recientes"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Detalles del mensaje"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Avance automático"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"Elige la pantalla que deseas ver luego de eliminar un mensaje."</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"Elegir la pantalla que deseas ver luego de eliminar un mensaje"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"Preferencia de avance automático\n(luego de eliminar, etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Más reciente"</item>
