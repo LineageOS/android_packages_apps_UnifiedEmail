@@ -245,7 +245,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /**
      * A single thread for running tasks in the background.
      */
-    private Handler mSendSaveTaskHandler = null;
+    private final static Handler SEND_SAVE_TASK_HANDLER;
+    static {
+        HandlerThread handlerThread = new HandlerThread("Send Message Task Thread");
+        handlerThread.start();
+
+        SEND_SAVE_TASK_HANDLER = new Handler(handlerThread.getLooper());
+    }
+
     private RecipientEditTextView mTo;
     private RecipientEditTextView mCc;
     private RecipientEditTextView mBcc;
@@ -3045,17 +3052,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         setAccount(mReplyFromAccount.account);
 
-        if (mSendSaveTaskHandler == null) {
-            HandlerThread handlerThread = new HandlerThread("Send Message Task Thread");
-            handlerThread.start();
-
-            mSendSaveTaskHandler = new Handler(handlerThread.getLooper());
-        }
-
         Message msg = createMessage(mReplyFromAccount, mRefMessage, getMode());
         mRequestId = sendOrSaveInternal(this, mReplyFromAccount, msg, mRefMessage, body,
                 mQuotedTextView.getQuotedTextIfIncluded(), callback,
-                mSendSaveTaskHandler, save, mComposeMode, mDraftAccount, mExtraValues);
+                SEND_SAVE_TASK_HANDLER, save, mComposeMode, mDraftAccount, mExtraValues);
 
         // Don't display the toast if the user is just changing the orientation,
         // but we still need to save the draft to the cursor because this is how we restore
