@@ -1706,6 +1706,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                             .getParcelableArrayList(Intent.EXTRA_STREAM);
                     ArrayList<Attachment> attachments = new ArrayList<Attachment>();
                     for (Parcelable uri : uris) {
+                        if (uri == null || !(uri instanceof Uri)) {
+                            continue;
+                        }
                         try {
                             final Attachment a = mAttachmentsView.generateLocalAttachment(
                                     (Uri) uri);
@@ -1725,20 +1728,22 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     }
                     totalSize += addAttachments(attachments);
                 } else {
-                    final Uri uri = extras.getParcelable(Intent.EXTRA_STREAM);
-                    long size = 0;
-                    try {
-                        final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
-                        size = mAttachmentsView.addAttachment(mAccount, a);
+                    final Parcelable uri = extras.getParcelable(Intent.EXTRA_STREAM);
+                    if (uri != null && uri instanceof Uri) {
+                        long size = 0;
+                        try {
+                            final Attachment a = mAttachmentsView.generateLocalAttachment((Uri)uri);
+                            size = mAttachmentsView.addAttachment(mAccount, a);
 
-                        Analytics.getInstance().sendEvent("send_intent_attachment",
-                                Utils.normalizeMimeType(a.getContentType()), null, size);
+                            Analytics.getInstance().sendEvent("send_intent_attachment",
+                                    Utils.normalizeMimeType(a.getContentType()), null, size);
 
-                    } catch (AttachmentFailureException e) {
-                        LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                        showAttachmentTooBigToast(e.getErrorRes());
+                        } catch (AttachmentFailureException e) {
+                            LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                            showAttachmentTooBigToast(e.getErrorRes());
+                        }
+                        totalSize += size;
                     }
-                    totalSize += size;
                 }
             }
 
