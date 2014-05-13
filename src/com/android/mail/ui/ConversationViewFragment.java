@@ -1077,13 +1077,11 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                                                 // per onLoadFinished()
     }
 
-    private static OverlayPosition[] parsePositions(final String[] topArray,
-            final String[] bottomArray) {
+    private static OverlayPosition[] parsePositions(final int[] topArray, final int[] bottomArray) {
         final int len = topArray.length;
         final OverlayPosition[] positions = new OverlayPosition[len];
         for (int i = 0; i < len; i++) {
-            positions[i] = new OverlayPosition(
-                    Integer.parseInt(topArray[i]), Integer.parseInt(bottomArray[i]));
+            positions[i] = new OverlayPosition(topArray[i], bottomArray[i]);
         }
         return positions;
     }
@@ -1194,8 +1192,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
      */
     private class MailJsBridge {
         @JavascriptInterface
-        public void onWebContentGeometryChange(final String[] overlayTopStrs,
-                final String[] overlayBottomStrs) {
+        public void onWebContentGeometryChange(final int[] overlayTopStrs,
+                final int[] overlayBottomStrs) {
             try {
                 getHandler().post(new FragmentRunnable("onWebContentGeometryChange",
                         ConversationViewFragment.this) {
