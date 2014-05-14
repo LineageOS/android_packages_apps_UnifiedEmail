@@ -1063,7 +1063,8 @@ public class ConversationItemView extends View
         final BidiFormatter bidiFormatter = mAdapter.getBidiFormatter();
         final String badgeText = mCoordinates.isWideMode() || mHeader.badgeText == null ? "" :
                 bidiFormatter.unicodeWrap(mHeader.badgeText);
-        final String subject = bidiFormatter.unicodeWrap(filterTag(mHeader.conversation.subject));
+        final String subject = bidiFormatter.unicodeWrap(
+                filterTag(getContext(), mHeader.conversation.subject));
         final String snippet = bidiFormatter.unicodeWrap(mHeader.conversation.getSnippet());
         final Spannable displayedStringBuilder = new SpannableString(
                 Conversation.getSubjectAndSnippetForDisplay(
@@ -1368,9 +1369,9 @@ public class ConversationItemView extends View
      * []), return the subject with that tag ellipsized, e.g.
      * "[android-gmail-team] Hello" -> "[andr...] Hello"
      */
-    private String filterTag(String subject) {
+    public static String filterTag(Context context, String subject) {
         String result = subject;
-        String formatString = getContext().getResources().getString(R.string.filtered_tag);
+        String formatString = context.getResources().getString(R.string.filtered_tag);
         if (!TextUtils.isEmpty(subject) && subject.charAt(0) == '[') {
             int end = subject.indexOf(']');
             if (end > 0) {

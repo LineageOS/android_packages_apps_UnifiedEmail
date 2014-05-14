@@ -49,6 +49,7 @@ import com.android.mail.EmailAddress;
 import com.android.mail.MailIntentService;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.SendersView;
 import com.android.mail.photomanager.LetterTileProvider;
@@ -945,7 +946,7 @@ public class NotificationUtils {
                             }
                             final CharSequence digestLine = getSingleMessageInboxLine(context,
                                     sendersBuilder.toString(),
-                                    conversation.subject,
+                                    ConversationItemView.filterTag(context, conversation.subject),
                                     conversation.getSnippet());
                             digest.addLine(digestLine);
                             numDigestItems++;
@@ -1073,6 +1074,8 @@ public class NotificationUtils {
                 }
             }
 
+            final String subject = ConversationItemView.filterTag(context, conversation.subject);
+
             // TODO(skennedy) Can we remove this check?
             if (Utils.isRunningJellybeanOrLater()) {
                 // For a new-style notification
@@ -1097,8 +1100,7 @@ public class NotificationUtils {
                 }
 
                 // The notification content will be the subject of the conversation.
-                notification.setContentText(
-                        getSingleMessageLittleText(context, conversation.subject));
+                notification.setContentText(getSingleMessageLittleText(context, subject));
 
                 // The notification subtext will be the subject of the conversation for inbox
                 // notifications, or will based on the the label name for user label
@@ -1117,8 +1119,7 @@ public class NotificationUtils {
                 final Message message;
                 if (messageCursor.moveToPosition(firstUnseenMessagePos)) {
                     message = messageCursor.getMessage();
-                    bigText.bigText(getSingleMessageBigText(context,
-                            conversation.subject, message));
+                    bigText.bigText(getSingleMessageBigText(context, subject, message));
                 } else {
                     LogUtils.e(LOG_TAG, "Failed to load message");
                     message = null;
@@ -1137,8 +1138,8 @@ public class NotificationUtils {
 
                 // The title of a single conversation notification is built from both the sender
                 // and subject of the new message.
-                notification.setContentTitle(getSingleMessageNotificationTitle(context,
-                        from, conversation.subject));
+                notification.setContentTitle(
+                        getSingleMessageNotificationTitle(context, from, subject));
 
                 // The notification content will be the subject of the conversation for inbox
                 // notifications, or will based on the the label name for user label
