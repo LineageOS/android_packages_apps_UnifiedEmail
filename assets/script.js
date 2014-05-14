@@ -618,13 +618,13 @@ function measurePositions() {
         expandedBody = expandedBodyDivs[i];
         headerSpacer = expandedBody.previousElementSibling;
         // addJavascriptInterface handler only supports string arrays
-        overlayTops[i] = "" + prevBodyBottom;
-        overlayBottoms[i] = "" + (getTotalOffset(headerSpacer).top + headerSpacer.offsetHeight);
+        overlayTops[i] = prevBodyBottom;
+        overlayBottoms[i] = (getTotalOffset(headerSpacer).top + headerSpacer.offsetHeight);
         prevBodyBottom = getTotalOffset(expandedBody.nextElementSibling).top;
     }
     // add an extra one to mark the top/bottom of the last message footer spacer
-    overlayTops[i] = "" + prevBodyBottom;
-    overlayBottoms[i] = "" + document.documentElement.scrollHeight;
+    overlayTops[i] = prevBodyBottom;
+    overlayBottoms[i] = document.documentElement.scrollHeight;
 
     window.mail.onWebContentGeometryChange(overlayTops, overlayBottoms);
 }
