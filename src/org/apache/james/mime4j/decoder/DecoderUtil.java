@@ -160,7 +160,7 @@ public class DecoderUtil {
         if (body.indexOf("=?") == -1) {
             return body;
         }
-        
+
         int previousEnd = 0;
         boolean previousWasEncoded = false;
 
@@ -168,26 +168,24 @@ public class DecoderUtil {
 
         while (true) {
             int begin = body.indexOf("=?", previousEnd);
-            
+
             // ANDROID:  The mime4j original version has an error here.  It gets confused if
             // the encoded string begins with an '=' (just after "?Q?").  This patch seeks forward
             // to find the two '?' in the "header", before looking for the final "?=".
-            int endScan = begin + 2;
-            if (begin != -1) {
-                int qm1 = body.indexOf('?', endScan + 2);
-                int qm2 = body.indexOf('?', qm1 + 1);
-                if (qm2 != -1) {
-                    endScan = qm2 + 1;
-                }
+            if (begin == -1) {
+                break;
             }
-            
-            int end = begin == -1 ? -1 : body.indexOf("?=", endScan);
+            int qm1 = body.indexOf('?', begin + 2);
+            if (qm1 == -1) {
+                break;
+            }
+            int qm2 = body.indexOf('?', qm1 + 1);
+            if (qm2 == -1) {
+                break;
+            }
+            int end = body.indexOf("?=", qm2 + 1);
             if (end == -1) {
-                if (previousEnd == 0)
-                    return body;
-
-                sb.append(body.substring(previousEnd));
-                return sb.toString();
+                break;
             }
             end += 2;
 
@@ -207,16 +205,23 @@ public class DecoderUtil {
             previousEnd = end;
             previousWasEncoded = decoded != null;
         }
+
+        if (previousEnd == 0)
+            return body;
+
+        sb.append(body.substring(previousEnd));
+        return sb.toString();
     }
 
-    // return null on error
-    private static String decodeEncodedWord(String body, int begin, int end) {
+    // return null on error. Begin is index of '=?' in body.
+    public static String decodeEncodedWord(String body, int begin, int end) {
+        // Skip the '?=' chars in body and scan forward from there for next '?'
         int qm1 = body.indexOf('?', begin + 2);
-        if (qm1 == end - 2)
+        if (qm1 == -1 || qm1 == end - 2)
             return null;
 
         int qm2 = body.indexOf('?', qm1 + 1);
-        if (qm2 == end - 2)
+        if (qm2 == -1 || qm2 == end - 2)
             return null;
 
         String mimeCharset = body.substring(begin + 2, qm1);

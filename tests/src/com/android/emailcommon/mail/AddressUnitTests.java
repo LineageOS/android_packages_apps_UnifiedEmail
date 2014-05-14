@@ -88,6 +88,24 @@ public class AddressUnitTests extends AndroidTestCase {
         }
     }
 
+    @SmallTest
+    public void testEncodedWords() {
+        final String body = "=?UTF-8?B?Foobar?=";
+        DecoderUtil.decodeEncodedWords(body);
+
+        final String body2 = "=?UTF-8?B?Foobar?==?";
+        DecoderUtil.decodeEncodedWords(body2);
+    }
+
+    @SmallTest
+    public void testEncodedWord() {
+        final String body = "=?UTF-8?B?Foobar?=";
+        DecoderUtil.decodeEncodedWord(body, 0, body.length());
+
+        final String body2 = "=?Foobar";
+        DecoderUtil.decodeEncodedWord(body2, 0, body2.length());
+    }
+
     /**
      * Test for setAddress().
      */
