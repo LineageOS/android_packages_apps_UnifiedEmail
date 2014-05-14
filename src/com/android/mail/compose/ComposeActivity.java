@@ -128,7 +128,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, TextWatcher,
         AttachmentAddedOrDeletedListener, OnAccountChangedListener,
-        LoaderManager.LoaderCallbacks<Cursor>, TextView.OnEditorActionListener {
+        LoaderManager.LoaderCallbacks<Cursor>, TextView.OnEditorActionListener,
+        RecipientEditTextView.RecipientEntryItemClickedListener {
     /**
      * An {@link Intent} action that launches {@link ComposeActivity}, but is handled as if the
      * {@link Activity} were launched with no special action.
@@ -2066,6 +2067,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             view.setDropdownChipLayouter(layouter);
         }
         view.setAdapter(getRecipientAdapter());
+        view.setRecipientEntryItemClickedListener(this);
         if (mValidator == null) {
             final String accountName = mAccount.getEmailAddress();
             int offset = accountName.indexOf("@") + 1;
@@ -2248,6 +2250,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void doSave(boolean showToast) {
         sendOrSaveWithSanityChecks(true, showToast, false, false);
+    }
+
+    @Override
+    public void onRecipientEntryItemClicked(int charactersTyped, int position) {
+        // Send analytics of characters typed and position in dropdown selected.
+        Analytics.getInstance().sendEvent(
+                "suggest_click", Integer.toString(charactersTyped), Integer.toString(position), 0);
     }
 
     @VisibleForTesting
