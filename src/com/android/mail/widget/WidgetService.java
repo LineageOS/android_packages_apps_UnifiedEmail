@@ -37,6 +37,7 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SendersView;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.preferences.MailPrefs;
@@ -432,7 +433,8 @@ public class WidgetService extends RemoteViewsService {
                 // Load up our remote view.
                 RemoteViews remoteViews = mWidgetConversationListItemViewBuilder.getStyledView(date,
                         conversation, new FolderUri(mFolderUri), ignoreFolderType,
-                        senderBuilder, filterTag(conversation.subject));
+                        senderBuilder,
+                        ConversationItemView.filterTag(mContext, conversation.subject));
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation_list_item,
@@ -619,23 +621,6 @@ public class WidgetService extends RemoteViewsService {
          */
         private static boolean isDataValid(Cursor cursor) {
             return cursor != null && !cursor.isClosed() && cursor.moveToFirst();
-        }
-
-        /**
-         * If the subject contains the tag of a mailing-list (text surrounded with []), return the
-         * subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello"
-         */
-        private static String filterTag(String subject) {
-            String result = subject;
-            if (subject.length() > 0 && subject.charAt(0) == '[') {
-                int end = subject.indexOf(']');
-                if (end > 0) {
-                    String tag = subject.substring(1, end);
-                    result = "[" + Utils.ellipsize(tag, 7) + "]" + subject.substring(end + 1);
-                }
-            }
-
-            return result;
         }
 
         /**
