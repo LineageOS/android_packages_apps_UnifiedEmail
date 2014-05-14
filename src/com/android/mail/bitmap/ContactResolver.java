@@ -22,16 +22,16 @@ import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Handler;
 
-import com.android.oldbitmap.BitmapCache;
-import com.android.oldbitmap.DecodeTask;
-import com.android.oldbitmap.ReusableBitmap;
-import com.android.oldbitmap.DecodeTask.Request;
 import com.android.ex.photo.util.Trace;
 import com.android.mail.ContactInfo;
 import com.android.mail.SenderInfoLoader;
 import com.android.mail.bitmap.ContactRequest.ContactRequestHolder;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.oldbitmap.BitmapCache;
+import com.android.oldbitmap.DecodeTask;
+import com.android.oldbitmap.DecodeTask.Request;
+import com.android.oldbitmap.ReusableBitmap;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.HashSet;
@@ -50,7 +50,7 @@ public class ContactResolver implements Runnable {
 
     private static final String TAG = LogTag.getLogTag();
 
-    private final ContentResolver mResolver;
+    protected final ContentResolver mResolver;
     private final BitmapCache mCache;
     /** Insertion ordered set allows us to work from the top down. */
     private final LinkedHashSet<ContactRequestHolder> mBatch;
@@ -96,9 +96,18 @@ public class ContactResolver implements Runnable {
             mTask.cancel(true);
         }
 
-        mTask = new ContactResolverTask(batch, mResolver, mCache, this);
+        mTask = getContactResolverTask(batch);
         mTask.executeOnExecutor(EXECUTOR);
         Trace.endSection();
+    }
+
+    protected ContactResolverTask getContactResolverTask(
+            LinkedHashSet<ContactRequestHolder> batch) {
+        return new ContactResolverTask(batch, mResolver, mCache, this);
+    }
+
+    public BitmapCache getCache() {
+        return mCache;
     }
 
     public void add(final ContactRequest request, final ContactDrawableInterface drawable) {
@@ -140,7 +149,7 @@ public class ContactResolver implements Runnable {
      * but upon finishing each individual task, we need to jump out to the UI thread and update
      * that view.
      */
-    private static class ContactResolverTask extends AsyncTask<Void, Result, Void> {
+    public static class ContactResolverTask extends AsyncTask<Void, Result, Void> {
 
         private final Set<ContactRequestHolder> mContactRequests;
         private final ContentResolver mResolver;
@@ -168,8 +177,7 @@ public class ContactResolver implements Runnable {
 
             Trace.beginSection("load contact photo bytes");
             // Query the contacts provider for the current batch of emails.
-            ImmutableMap<String, ContactInfo> contactInfos = SenderInfoLoader
-                    .loadContactPhotos(mResolver, emails, false /* decodeBitmaps */);
+            final ImmutableMap<String, ContactInfo> contactInfos = loadContactPhotos(emails);
             Trace.endSection();
 
             for (ContactRequestHolder request : mContactRequests) {
@@ -222,6 +230,10 @@ public class ContactResolver implements Runnable {
             }
 
             return null;
+        }
+
+        protected ImmutableMap<String, ContactInfo> loadContactPhotos(Set<String> emails) {
+            return SenderInfoLoader.loadContactPhotos(mResolver, emails, false /* decodeBitmaps */);
         }
 
         /**

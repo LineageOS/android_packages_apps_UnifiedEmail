@@ -85,4 +85,12 @@ public class ContactLoaderCallbacks implements ContactInfoSource,
     public void unregisterObserver(DataSetObserver observer) {
         mObservable.unregisterObserver(observer);
     }
+
+    protected Context getContext() {
+        return mContext;
+    }
+
+    protected Set<String> getSenders() {
+        return mSenders;
+    }
 }

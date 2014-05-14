@@ -253,16 +253,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private final ContactResolver mContactResolver;
 
     private static final int ATTACHMENT_PREVIEWS_CACHE_TARGET_SIZE_BYTES = 0; // TODO: enable cache
-    /** 339KB cache fits 10 bitmaps at 33856 bytes each. */
-    private static final int SENDERS_IMAGES_CACHE_TARGET_SIZE_BYTES = 1024 * 339;
     /**
      * This is the fractional portion of the total cache size above that's dedicated to non-pooled
      * bitmaps. (This is basically the portion of cache dedicated to GIFs.)
      */
     private static final float ATTACHMENT_PREVIEWS_CACHE_NON_POOLED_FRACTION = 0.1f;
-    private static final float SENDERS_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION = 0f;
-    /** Each string has upper estimate of 50 bytes, so this cache would be 5KB. */
-    private static final int SENDERS_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY = 100;
 
     public AnimatedAdapter(Context context, ConversationCursor cursor,
             ConversationSelectionSet batch, ControllableActivity activity,
@@ -278,11 +273,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mAttachmentPreviewsCache = new AltBitmapCache(ATTACHMENT_PREVIEWS_CACHE_TARGET_SIZE_BYTES,
                 ATTACHMENT_PREVIEWS_CACHE_NON_POOLED_FRACTION, 0);
         mAttachmentPreviewsDecodeAggregator = new DecodeAggregator();
-        mSendersImagesCache = new AltBitmapCache(Utils.isLowRamDevice(mContext) ?
-                0 : SENDERS_IMAGES_CACHE_TARGET_SIZE_BYTES,
-                SENDERS_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION,
-                SENDERS_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY);
-        mContactResolver = new ContactResolver(mContext.getContentResolver(), mSendersImagesCache);
+        mSendersImagesCache = mActivity.getSenderImageCache();
+
+        mContactResolver =
+                mActivity.getContactResolver(mContext.getContentResolver(), mSendersImagesCache);
 
         mHandler = new Handler();
         if (sDismissAllShortDelay == -1) {

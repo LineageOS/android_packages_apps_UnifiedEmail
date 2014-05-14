@@ -22,31 +22,29 @@ import android.net.Uri;
 
 public class ContactInfo {
     public final Uri contactUri;
-    public final Integer status;
     public final byte[] photoBytes;
     public final Bitmap photo;
 
-    public ContactInfo(Uri contactUri, Integer status) {
-        this(contactUri, status, null, null);
+    public ContactInfo(Uri contactUri) {
+        this(contactUri, null, null);
     }
 
-    public ContactInfo(Uri contactUri, Integer status, byte[] photoBytes) {
-        this(contactUri, status, photoBytes, null);
+    public ContactInfo(Uri contactUri, byte[] photoBytes) {
+        this(contactUri, photoBytes, null);
     }
 
-    public ContactInfo(Uri contactUri, Integer status, Bitmap photo) {
-        this(contactUri, status, null, photo);
+    public ContactInfo(Uri contactUri, Bitmap photo) {
+        this(contactUri, null, photo);
     }
 
-    private ContactInfo(Uri contactUri, Integer status, byte[] photoBytes, Bitmap photo) {
+    private ContactInfo(Uri contactUri, byte[] photoBytes, Bitmap photo) {
         this.contactUri = contactUri;
-        this.status = status;
         this.photoBytes = photoBytes;
         this.photo = photo;
     }
 
     @Override
     public String toString() {
-        return "{status=" + status + " photo=" + (photo != null ? photo : photoBytes) + "}";
+        return "{photo=" + (photo != null ? photo : photoBytes) + "}";
     }
 }

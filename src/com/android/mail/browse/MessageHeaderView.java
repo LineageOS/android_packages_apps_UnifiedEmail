@@ -851,10 +851,13 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         boolean photoSet = false;
         final String email = mSender.getAddress();
         final ContactInfo info = mContactInfoSource.getContactInfo(email);
-        // Need to also check if we have a contactUri because we put empty
-        // results in the ContactInfoSource if no result was found but a query happened.
-        if (info != null && info.contactUri != null) {
-            mPhotoView.assignContactUri(info.contactUri);
+        if (info != null) {
+            if (info.contactUri != null) {
+                mPhotoView.assignContactUri(info.contactUri);
+            } else {
+                mPhotoView.assignContactFromEmail(email, true /* lazyLookup */);
+            }
+
             if (info.photo != null) {
                 mPhotoView.setImageBitmap(info.photo);
                 photoSet = true;

@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.support.v4.app.NotificationCompat;
@@ -50,6 +51,7 @@ import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.SendersView;
+import com.android.mail.photo.ContactPhotoFetcher;
 import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
@@ -85,6 +87,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class NotificationUtils {
     public static final String LOG_TAG = "NotifUtils";
+
+    public static final String EXTRA_UNREAD_COUNT = "unread-count";
+    public static final String EXTRA_UNSEEN_COUNT = "unseen-count";
+    public static final String EXTRA_GET_ATTENTION = "get-attention";
 
     /** Contains a list of <(account, label), unread conversations> */
     private static NotificationMap sActiveNotificationMap = null;
@@ -321,10 +327,11 @@ public class NotificationUtils {
      * Get all notifications for all accounts, cancel them, and repost.
      * This happens when locale changes.
      **/
-    public static void cancelAndResendNotificationsOnLocaleChange(Context context) {
+    public static void cancelAndResendNotificationsOnLocaleChange(
+            Context context, final ContactPhotoFetcher photoFetcher) {
         LogUtils.d(LOG_TAG, "cancelAndResendNotificationsOnLocaleChange");
         sBidiFormatter = BidiFormatter.getInstance();
-        resendNotifications(context, true, null, null);
+        resendNotifications(context, true, null, null, photoFetcher);
     }
 
     /**
@@ -343,7 +350,8 @@ public class NotificationUtils {
      *                  upon which an action occurred.
      */
     public static void resendNotifications(Context context, final boolean cancelExisting,
-            final Uri accountUri, final FolderUri folderUri) {
+            final Uri accountUri, final FolderUri folderUri,
+            final ContactPhotoFetcher photoFetcher) {
         LogUtils.d(LOG_TAG, "resendNotifications ");
 
         if (cancelExisting) {
@@ -376,7 +384,7 @@ public class NotificationUtils {
                     NotificationActionUtils.sUndoNotifications.get(notificationId);
             if (undoableAction == null) {
                 validateNotifications(context, folder, notification.account, true,
-                        false, notification);
+                        false, notification, photoFetcher);
             } else {
                 // Create an undo notification
                 NotificationActionUtils.createUndoNotification(context, undoableAction);
@@ -443,12 +451,31 @@ public class NotificationUtils {
         }
     }
 
+    public static void sendSetNewEmailIndicatorIntent(Context context, final int unreadCount,
+            final int unseenCount, final Account account, final Folder folder,
+            final boolean getAttention) {
+        LogUtils.i(LOG_TAG, "sendSetNewEmailIndicator account: %s, folder: %s",
+                LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()),
+                LogUtils.sanitizeName(LOG_TAG, folder.name));
+
+        final Intent intent = new Intent(MailIntentService.ACTION_SEND_SET_NEW_EMAIL_INDICATOR);
+        intent.setPackage(context.getPackageName()); // Make sure we only deliver this to ourselves
+        intent.putExtra(EXTRA_UNREAD_COUNT, unreadCount);
+        intent.putExtra(EXTRA_UNSEEN_COUNT, unseenCount);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account);
+        intent.putExtra(Utils.EXTRA_FOLDER, folder);
+        intent.putExtra(EXTRA_GET_ATTENTION, getAttention);
+        context.startService(intent);
+    }
+
     /**
-     * Display only one notification.
+     * Display only one notification. Should only be called from
+     * {@link com.android.mail.MailIntentService}. Use {@link #sendSetNewEmailIndicatorIntent}
+     * if you need to perform this action anywhere else.
      */
     public static void setNewEmailIndicator(Context context, final int unreadCount,
             final int unseenCount, final Account account, final Folder folder,
-            final boolean getAttention) {
+            final boolean getAttention, final ContactPhotoFetcher photoFetcher) {
         LogUtils.d(LOG_TAG, "setNewEmailIndicator unreadCount = %d, unseenCount = %d, account = %s,"
                 + " folder = %s, getAttention = %b", unreadCount, unseenCount,
                 account.getEmailAddress(), folder.folderUri, getAttention);
@@ -489,7 +516,7 @@ public class NotificationUtils {
 
         if (NotificationActionUtils.sUndoNotifications.get(notificationId) == null) {
             validateNotifications(context, folder, account, getAttention, ignoreUnobtrusiveSetting,
-                    key);
+                    key, photoFetcher);
         }
     }
 
@@ -498,7 +525,7 @@ public class NotificationUtils {
      */
     private static void validateNotifications(Context context, final Folder folder,
             final Account account, boolean getAttention, boolean ignoreUnobtrusiveSetting,
-            NotificationKey key) {
+            NotificationKey key, final ContactPhotoFetcher photoFetcher) {
 
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
 
@@ -661,7 +688,7 @@ public class NotificationUtils {
                     configureLatestEventInfoFromConversation(context, account, folderPreferences,
                             notification, wearableExtender, msgNotifications, notificationId,
                             cursor, clickIntent, notificationIntent, unreadCount, unseenCount,
-                            folder, when);
+                            folder, when, photoFetcher);
                     eventInfoConfigured = true;
                 }
             }
@@ -860,7 +887,7 @@ public class NotificationUtils {
             final int summaryNotificationId, final Cursor conversationCursor,
             final PendingIntent clickIntent, final Intent notificationIntent,
             final int unreadCount, final int unseenCount,
-            final Folder folder, final long when) {
+            final Folder folder, final long when, final ContactPhotoFetcher photoFetcher) {
         final Resources res = context.getResources();
         final String notificationAccountDisplayName = account.getDisplayName();
         final String notificationAccountEmail = account.getEmailAddress();
@@ -983,14 +1010,15 @@ public class NotificationUtils {
                             int childNotificationId = getNotificationId(summaryNotificationId,
                                     conversation.hashCode());
 
-                            NotificationCompat.WearableExtender childWearExtender =
+                            final NotificationCompat.WearableExtender childWearExtender =
                                     new NotificationCompat.WearableExtender();
-
-                            ConfigResult result = configureNotifForOneConversation(context, account,
+                            final ConfigResult result =
+                                    configureNotifForOneConversation(context, account,
                                     folderPreferences, childNotif, childWearExtender,
                                     conversationCursor, notificationIntent, folder, when, res,
                                     notificationAccountDisplayName, notificationAccountEmail,
-                                    isInbox, notificationLabelName, childNotificationId);
+                                    isInbox, notificationLabelName, childNotificationId,
+                                    photoFetcher);
                             msgNotifications.put(childNotificationId,
                                     NotificationBuilders.of(childNotif, childWearExtender));
 
@@ -1026,11 +1054,11 @@ public class NotificationUtils {
             // Move the cursor to the most recent unread conversation
             seekToLatestUnreadConversation(conversationCursor);
 
-            ConfigResult result = configureNotifForOneConversation(context, account,
+            final ConfigResult result = configureNotifForOneConversation(context, account,
                     folderPreferences, notification, wearableExtender, conversationCursor,
                     notificationIntent, folder, when, res, notificationAccountDisplayName,
                     notificationAccountEmail, isInbox, notificationLabelName,
-                    summaryNotificationId);
+                    summaryNotificationId, photoFetcher);
             notificationTicker = result.notificationTicker;
 
             wearableExtender.setBackground(result.contactIconInfo.wearableBg);
@@ -1065,10 +1093,11 @@ public class NotificationUtils {
             NotificationCompat.Builder notification,
             NotificationCompat.WearableExtender wearExtender, Cursor conversationCursor,
             Intent notificationIntent, Folder folder, long when, Resources res,
-            String notificationAccountDisplayName, String notificationAccountEmail, boolean isInbox,
-            String notificationLabelName, int notificationId) {
+            String notificationAccountDisplayName, String notificationAccountEmail,
+            boolean isInbox, String notificationLabelName, int notificationId,
+            final ContactPhotoFetcher photoFetcher) {
 
-        ConfigResult result = new ConfigResult();
+        final ConfigResult result = new ConfigResult();
 
         final Conversation conversation = new Conversation(conversationCursor);
 
@@ -1090,8 +1119,9 @@ public class NotificationUtils {
                 final Message message = messageCursor.getMessage();
                 fromAddress = message.getFrom();
                 from = getDisplayableSender(fromAddress);
-                result.contactIconInfo = getContactIcon(context, from,
-                        getSenderAddress(fromAddress), folder);
+                result.contactIconInfo = getContactIcon(
+                        context, account.getAccountManagerAccount().name, from,
+                        getSenderAddress(fromAddress), folder, photoFetcher);
                 notification.setLargeIcon(result.contactIconInfo.icon);
             }
 
@@ -1514,6 +1544,59 @@ public class NotificationUtils {
         }
     }
 
+    private static ContactIconInfo getContactIcon(final Context context, String accountName,
+            final String displayName, final String senderAddress, final Folder folder,
+            final ContactPhotoFetcher photoFetcher) {
+
+        if (senderAddress == null) {
+            return null;
+        }
+
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            throw new IllegalStateException(
+                    "getContactIcon should not be called on the main thread.");
+        }
+
+        // Get the ideal size for this icon.
+        final Resources res = context.getResources();
+        final int idealIconHeight =
+                res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
+        final int idealIconWidth =
+                res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
+        final int idealWearableBgWidth =
+                res.getDimensionPixelSize(R.dimen.wearable_background_width);
+        final int idealWearableBgHeight =
+                res.getDimensionPixelSize(R.dimen.wearable_background_height);
+
+        final ContactIconInfo contactIconInfo =
+                photoFetcher != null ? photoFetcher.getContactPhoto(
+                context, accountName, senderAddress,idealIconWidth, idealIconHeight,
+                idealWearableBgWidth, idealWearableBgHeight) :
+                getContactInfo(context, senderAddress, idealIconWidth, idealIconHeight,
+                idealWearableBgWidth, idealWearableBgHeight);
+
+        if (contactIconInfo.icon == null) {
+            // Make a colorful tile!
+            final Dimensions dimensions = new Dimensions(idealIconWidth, idealIconHeight,
+                    Dimensions.SCALE_ONE);
+
+            contactIconInfo.icon = new LetterTileProvider(context).getLetterTile(dimensions,
+                    displayName, senderAddress);
+        }
+
+        if (contactIconInfo.icon == null) {
+            // Icon should be the default mail icon.
+            contactIconInfo.icon = getDefaultNotificationIcon(context, folder,
+                    false /* single new message */);
+        }
+
+        if (contactIconInfo.wearableBg == null) {
+            contactIconInfo.wearableBg = getDefaultWearableBg(context);
+        }
+
+        return contactIconInfo;
+    }
+
     private static ArrayList<Long> findContacts(Context context, Collection<String> addresses) {
         ArrayList<String> whereArgs = new ArrayList<String>();
         StringBuilder whereBuilder = new StringBuilder();
@@ -1544,42 +1627,29 @@ public class NotificationUtils {
         return contactIds;
     }
 
-    private static ContactIconInfo getContactIcon(final Context context, final String displayName,
-            final String senderAddress, final Folder folder) {
-        if (senderAddress == null) {
-            return null;
-        }
-
-        ContactIconInfo contactIconInfo = new ContactIconInfo();
-
-        final List<Long> contactIds = findContacts(context, Arrays.asList(senderAddress));
-
-        // Get the ideal size for this icon.
-        final Resources res = context.getResources();
-        final int idealIconHeight =
-                res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-        final int idealIconWidth =
-                res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
+    public static ContactIconInfo getContactInfo(
+            final Context context, final String senderAddress,
+            final int idealIconWidth, final int idealIconHeight,
+            final int idealWearableBgWidth, final int idealWearableBgHeight) {
+        final ContactIconInfo contactIconInfo = new ContactIconInfo();
+        final List<Long> contactIds = findContacts( context, Arrays.asList(
+                new String[] { senderAddress }));
 
         if (contactIds != null) {
             for (final long id : contactIds) {
                 final Uri contactUri = ContentUris.withAppendedId(
                         ContactsContract.Contacts.CONTENT_URI, id);
-                InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(
-                        context.getContentResolver(), contactUri, true /*preferHighres*/);
+                final InputStream inputStream =
+                        ContactsContract.Contacts.openContactPhotoInputStream(
+                                context.getContentResolver(), contactUri, true /*preferHighres*/);
 
                 if (inputStream != null) {
                     try {
-                        Bitmap source = BitmapFactory.decodeStream(inputStream);
+                        final Bitmap source = BitmapFactory.decodeStream(inputStream);
                         if (source != null) {
                             // We should scale this image to fit the intended size
                             contactIconInfo.icon = Bitmap.createScaledBitmap(source, idealIconWidth,
                                     idealIconHeight, true);
-
-                            int idealWearableBgWidth = res.getDimensionPixelSize(
-                                    R.dimen.wearable_background_width);
-                            int idealWearableBgHeight = res.getDimensionPixelSize(
-                                    R.dimen.wearable_background_height);
 
                             contactIconInfo.wearableBg = Bitmap.createScaledBitmap(source,
                                     idealWearableBgWidth, idealWearableBgHeight, true);
@@ -1593,25 +1663,6 @@ public class NotificationUtils {
                     }
                 }
             }
-        }
-
-        if (contactIconInfo.icon == null) {
-            // Make a colorful tile!
-            final Dimensions dimensions = new Dimensions(idealIconWidth, idealIconHeight,
-                    Dimensions.SCALE_ONE);
-
-            contactIconInfo.icon = new LetterTileProvider(context).getLetterTile(dimensions,
-                    displayName, senderAddress);
-        }
-
-        if (contactIconInfo.icon == null) {
-            // Icon should be the default mail icon.
-            contactIconInfo.icon = getDefaultNotificationIcon(context, folder,
-                    false /* single new message */);
-        }
-
-        if (contactIconInfo.wearableBg == null) {
-            contactIconInfo.wearableBg = getDefaultWearableBg(context);
         }
 
         return contactIconInfo;
@@ -1821,7 +1872,7 @@ public class NotificationUtils {
         public ContactIconInfo contactIconInfo;
     }
 
-    private static class ContactIconInfo {
+    public static class ContactIconInfo {
         public Bitmap icon;
         public Bitmap wearableBg;
     }

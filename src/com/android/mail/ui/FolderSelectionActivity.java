@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.appwidget.AppWidgetManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,6 +35,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.android.mail.R;
+import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
@@ -43,6 +45,7 @@ import com.android.mail.utils.MailObservable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
 import com.android.mail.widget.WidgetProvider;
+import com.android.oldbitmap.BitmapCache;
 
 import java.util.ArrayList;
 
@@ -472,5 +475,28 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public FragmentLauncher getFragmentLauncher() {
         // Unsupported
         return null;
+    }
+
+    @Override
+    public ContactLoaderCallbacks getContactLoaderCallbacks() {
+        // Unsupported
+        return null;
+    }
+
+    @Override
+    public ContactResolver getContactResolver(ContentResolver resolver, BitmapCache bitmapCache) {
+        // Unsupported
+        return null;
+    }
+
+    @Override
+    public BitmapCache getSenderImageCache() {
+        // Unsupported
+        return null;
+    }
+
+    @Override
+    public void resetSenderImageCache() {
+        //Unsupported
     }
 }
