@@ -75,6 +75,8 @@ import android.widget.Toast;
 import com.android.common.Rfc822Validator;
 import com.android.common.contacts.DataUsageStatUpdater;
 import com.android.emailcommon.mail.Address;
+import com.android.ex.chips.BaseRecipientAdapter;
+import com.android.ex.chips.DropdownChipLayouter;
 import com.android.ex.chips.RecipientEditTextView;
 import com.android.mail.MailIntentService;
 import com.android.mail.R;
@@ -872,7 +874,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
-    protected final void onActivityResult(int request, int result, Intent data) {
+    protected void onActivityResult(int request, int result, Intent data) {
         if (request == RESULT_PICK_ATTACHMENT && result == RESULT_OK) {
             addAttachmentAndUpdateView(data);
             mAddingAttachment = false;
@@ -915,7 +917,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
-    protected final void onSaveInstanceState(Bundle state) {
+    protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
         final Bundle inner = new Bundle();
         saveState(inner);
@@ -2059,7 +2061,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void setupRecipients(RecipientEditTextView view) {
-        view.setAdapter(new RecipientAdapter(this, mAccount));
+        final DropdownChipLayouter layouter = getDropdownChipLayouter();
+        if (layouter != null) {
+            view.setDropdownChipLayouter(layouter);
+        }
+        view.setAdapter(getRecipientAdapter());
         if (mValidator == null) {
             final String accountName = mAccount.getEmailAddress();
             int offset = accountName.indexOf("@") + 1;
@@ -2070,6 +2076,22 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mValidator = new Rfc822Validator(account);
         }
         view.setValidator(mValidator);
+    }
+
+    /**
+     * Derived classes should override if they wish to provide their own autocomplete behavior.
+     */
+    public BaseRecipientAdapter getRecipientAdapter() {
+        return new RecipientAdapter(this, mAccount);
+    }
+
+    /**
+     * Derived classes should override this to provide their own dropdown behavior.
+     * If the result is null, the default {@link com.android.ex.chips.DropdownChipLayouter}
+     * is used.
+     */
+    public DropdownChipLayouter getDropdownChipLayouter() {
+        return null;
     }
 
     @Override
@@ -2230,10 +2252,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     public interface SendOrSaveCallback {
-        public void initializeSendOrSave(SendOrSaveTask sendOrSaveTask);
-        public void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage, Message message);
-        public Message getMessage();
-        public void sendOrSaveFinished(SendOrSaveTask sendOrSaveTask, boolean success);
+        void initializeSendOrSave(SendOrSaveTask sendOrSaveTask);
+        void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage, Message message);
+        Message getMessage();
+        void sendOrSaveFinished(SendOrSaveTask sendOrSaveTask, boolean success);
+        void incrementRecipientsTimesContacted(List<String> recipients);
     }
 
     @VisibleForTesting
@@ -2285,18 +2308,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             sendOrSaveMessage(messageIdToSave, sendOrSaveMessage, selectedAccount);
 
             if (!sendOrSaveMessage.mSave) {
-                incrementRecipientsTimesContacted(mContext,
+                incrementRecipientsTimesContacted(
                         (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.TO));
-                incrementRecipientsTimesContacted(mContext,
+                incrementRecipientsTimesContacted(
                         (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.CC));
-                incrementRecipientsTimesContacted(mContext,
+                incrementRecipientsTimesContacted(
                         (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.BCC));
             }
             mSendOrSaveCallback.sendOrSaveFinished(SendOrSaveTask.this, true);
         }
 
-        private static void incrementRecipientsTimesContacted(final Context context,
-                final String addressString) {
+        private void incrementRecipientsTimesContacted(final String addressString) {
             if (TextUtils.isEmpty(addressString)) {
                 return;
             }
@@ -2305,8 +2327,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             for (final Rfc822Token token : tokens) {
                 recipients.add(token.getAddress());
             }
-            final DataUsageStatUpdater statsUpdater = new DataUsageStatUpdater(context);
-            statsUpdater.updateWithAddress(recipients);
+            mSendOrSaveCallback.incrementRecipientsTimesContacted(recipients);
         }
 
         /**
@@ -2414,6 +2435,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
             return resolver.call(account.uri, method, account.uri.toString(), methodExtras);
         }
+    }
+
+    /**
+     * Reports recipients that have been contacted in order to improve auto-complete
+     * suggestions. Default behavior updates usage statistics in ContactsProvider.
+     * @param recipients addresses
+     */
+    protected void incrementRecipientsTimesContacted(List<String> recipients) {
+        final DataUsageStatUpdater statsUpdater = new DataUsageStatUpdater(this);
+        statsUpdater.updateWithAddress(recipients);
     }
 
     @VisibleForTesting
@@ -3052,6 +3083,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 if (sTestSendOrSaveCallback != null) {
                     sTestSendOrSaveCallback.sendOrSaveFinished(task, success);
                 }
+            }
+
+            @Override
+            public void incrementRecipientsTimesContacted(final List<String> recipients) {
+                ComposeActivity.this.incrementRecipientsTimesContacted(recipients);
             }
         };
 
