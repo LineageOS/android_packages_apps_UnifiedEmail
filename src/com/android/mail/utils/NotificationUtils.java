@@ -28,13 +28,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.preview.support.v4.app.NotificationManagerCompat;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts.Photo;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.text.BidiFormatter;
-import android.support.wearable.notifications.WearableNotifications;
+import android.support.wearable.app.NotificationManagerCompat;
+import android.support.wearable.notifications.WearableNotificationOptions;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -573,10 +573,10 @@ public class NotificationUtils {
             PendingIntent clickIntent;
 
             NotificationCompat.Builder notification = new NotificationCompat.Builder(context);
-            WearableNotifications.Builder wearableNotification =
-                    new WearableNotifications.Builder(notification);
-            Map<Integer, WearableNotifications.Builder> msgNotifications =
-                    new ArrayMap<Integer, WearableNotifications.Builder>();
+            WearableNotificationOptions.Builder wearableNotification =
+                    new WearableNotificationOptions.Builder();
+            Map<Integer, NotificationBuilders> msgNotifications =
+                    new ArrayMap<Integer, NotificationBuilders>();
             notification.setSmallIcon(R.drawable.stat_notify_email);
             notification.setTicker(account.getDisplayName());
 
@@ -741,7 +741,8 @@ public class NotificationUtils {
                     notification.setTicker(null);
                 }
 
-                nm.notify(notificationId, wearableNotification.build());
+                wearableNotification.build().applyTo(notification);
+                nm.notify(notificationId, notification.build());
 
                 if (prevChildNotifications != null) {
                     Set<Integer> currentNotificationIds = msgNotifications.keySet();
@@ -754,9 +755,10 @@ public class NotificationUtils {
                     }
                 }
 
-                for (Map.Entry<Integer, WearableNotifications.Builder> entry
-                        : msgNotifications.entrySet()) {
-                    nm.notify(entry.getKey(), entry.getValue().build());
+                for (Map.Entry<Integer, NotificationBuilders> entry : msgNotifications.entrySet()) {
+                    NotificationBuilders builders = entry.getValue();
+                    builders.wearableNotifBuilder.build().applyTo(builders.notifBuilder);
+                    nm.notify(entry.getKey(), builders.notifBuilder.build());
                     LogUtils.d(LOG_TAG, "notifying child notification %s", entry.getKey());
                 }
 
@@ -836,8 +838,8 @@ public class NotificationUtils {
     private static void configureLatestEventInfoFromConversation(final Context context,
             final Account account, final FolderPreferences folderPreferences,
             final NotificationCompat.Builder notification,
-            final WearableNotifications.Builder summaryWearNotif,
-            final Map<Integer, WearableNotifications.Builder> msgNotifications,
+            final WearableNotificationOptions.Builder summaryWearNotif,
+            final Map<Integer, NotificationBuilders> msgNotifications,
             final int summaryNotificationId, final Cursor conversationCursor,
             final PendingIntent clickIntent, final Intent notificationIntent,
             final int unreadCount, final int unseenCount,
@@ -887,8 +889,7 @@ public class NotificationUtils {
                 // Group by account.
                 String notificationGroupKey =
                         account.uri.toString() + "/" + folder.folderUri.fullUri;
-                summaryWearNotif.setGroup(notificationGroupKey,
-                        WearableNotifications.GROUP_ORDER_SUMMARY);
+                summaryWearNotif.setGroup(notificationGroupKey).setGroupSummary(true);
 
                 int numDigestItems = 0;
                 do {
@@ -950,9 +951,13 @@ public class NotificationUtils {
                             childNotif.setSmallIcon(R.drawable.stat_notify_email);
                             childNotif.setContentText(digestLine);
 
-                            WearableNotifications.Builder childWearNotif =
-                                    new WearableNotifications.Builder(childNotif).setGroup(
-                                            notificationGroupKey, numDigestItems);
+                            // TODO: Use a stable sort key if possible, e.g. message post time
+                            // + msgid hash
+                            String groupSortKey = String.format("%010d", numDigestItems);
+                            WearableNotificationOptions.Builder childWearNotif =
+                                    new WearableNotificationOptions.Builder()
+                                            .setGroup(notificationGroupKey)
+                                            .setSortKey(groupSortKey);
                             int childNotificationId = getNotificationId(summaryNotificationId,
                                     conversation.hashCode());
 
@@ -961,7 +966,8 @@ public class NotificationUtils {
                                     notificationIntent, folder, when, res,
                                     notificationAccountDisplayName, notificationAccountEmail,
                                     isInbox, notificationLabelName, childNotificationId);
-                            msgNotifications.put(childNotificationId, childWearNotif);
+                            msgNotifications.put(childNotificationId,
+                                    NotificationBuilders.of(childNotif, childWearNotif));
                         } finally {
                             if (messageCursor != null) {
                                 messageCursor.close();
@@ -1017,7 +1023,7 @@ public class NotificationUtils {
      */
     private static String configureNotifForOneConversation(Context context, Account account,
             FolderPreferences folderPreferences, NotificationCompat.Builder notification,
-            WearableNotifications.Builder summaryWearNotif, Cursor conversationCursor,
+            WearableNotificationOptions.Builder summaryWearNotif, Cursor conversationCursor,
             Intent notificationIntent, Folder folder, long when, Resources res,
             String notificationAccountDisplayName, String notificationAccountEmail, boolean isInbox,
             String notificationLabelName, int notificationId) {
@@ -1742,6 +1748,22 @@ public class NotificationUtils {
             }
 
             accountPreferences.clearDefaultInboxNotificationsEnabled();
+        }
+    }
+
+    private static class NotificationBuilders {
+        public final NotificationCompat.Builder notifBuilder;
+        public final WearableNotificationOptions.Builder wearableNotifBuilder;
+
+        private NotificationBuilders(NotificationCompat.Builder notifBuilder,
+                WearableNotificationOptions.Builder wearableNotifBuilder) {
+            this.notifBuilder = notifBuilder;
+            this.wearableNotifBuilder = wearableNotifBuilder;
+        }
+
+        public static NotificationBuilders of(NotificationCompat.Builder notifBuilder,
+                WearableNotificationOptions.Builder wearableNotifBuilder) {
+            return new NotificationBuilders(notifBuilder, wearableNotifBuilder);
         }
     }
 }

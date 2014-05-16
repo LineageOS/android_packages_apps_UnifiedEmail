@@ -31,7 +31,8 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.wearable.notifications.RemoteInput;
-import android.support.wearable.notifications.WearableNotifications;
+import android.support.wearable.notifications.WearableAction;
+import android.support.wearable.notifications.WearableNotificationOptions;
 import android.widget.RemoteViews;
 
 import com.android.mail.MailIntentService;
@@ -198,7 +199,7 @@ public class NotificationActionUtils {
      */
     public static void addNotificationActions(final Context context,
             final Intent notificationIntent, final NotificationCompat.Builder notification,
-            WearableNotifications.Builder wearableNotification, final Account account,
+            WearableNotificationOptions.Builder wearableNotification, final Account account,
             final Conversation conversation, final Message message,
             final Folder folder, final int notificationId, final long when,
             final Set<String> notificationActions) {
@@ -214,6 +215,11 @@ public class NotificationActionUtils {
             String title = context.getString(notificationAction.getDisplayStringResId(
                     folder, conversation, message));
 
+            // Always add all actions to both standard and wearable notifications.
+            notification.addAction(actionIconResId, title, pendingIntent);
+
+            WearableAction.Builder wearableActionBuilder = new WearableAction.Builder(
+                    actionIconResId, title, pendingIntent);
             if (notificationAction == NotificationActionType.REPLY
                     || notificationAction == NotificationActionType.REPLY_ALL) {
                 wearableNotification.addAction(new WearableNotifications.Action.Builder(
