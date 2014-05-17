@@ -70,8 +70,11 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.io.Closeables;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -89,6 +92,7 @@ public class NotificationUtils {
     private static NotificationMap sActiveNotificationMap = null;
 
     private static final SparseArray<Bitmap> sNotificationIcons = new SparseArray<Bitmap>();
+    private static WeakReference<Bitmap> sDefaultWearableBg = new WeakReference<Bitmap>(null);
 
     private static TextAppearanceSpan sNotificationUnreadStyleSpan;
     private static CharacterStyle sNotificationReadStyleSpan;
@@ -835,6 +839,15 @@ public class NotificationUtils {
         return icon;
     }
 
+    private static Bitmap getDefaultWearableBg(Context context) {
+        Bitmap bg = sDefaultWearableBg.get();
+        if (bg == null) {
+            bg = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_email);
+            sDefaultWearableBg = new WeakReference<Bitmap>(bg);
+        }
+        return bg;
+    }
+
     private static void configureLatestEventInfoFromConversation(final Context context,
             final Account account, final FolderPreferences folderPreferences,
             final NotificationCompat.Builder notification,
@@ -891,6 +904,7 @@ public class NotificationUtils {
                         account.uri.toString() + "/" + folder.folderUri.fullUri;
                 summaryWearNotif.setGroup(notificationGroupKey).setGroupSummary(true);
 
+                ConfigResult firstResult = null;
                 int numDigestItems = 0;
                 do {
                     final Conversation conversation = new Conversation(conversationCursor);
@@ -961,13 +975,17 @@ public class NotificationUtils {
                             int childNotificationId = getNotificationId(summaryNotificationId,
                                     conversation.hashCode());
 
-                            configureNotifForOneConversation(context, account, folderPreferences,
-                                    childNotif, childWearNotif, conversationCursor,
-                                    notificationIntent, folder, when, res,
+                            ConfigResult result = configureNotifForOneConversation(context, account,
+                                    folderPreferences, childNotif, childWearNotif,
+                                    conversationCursor, notificationIntent, folder, when, res,
                                     notificationAccountDisplayName, notificationAccountEmail,
                                     isInbox, notificationLabelName, childNotificationId);
                             msgNotifications.put(childNotificationId,
                                     NotificationBuilders.of(childNotif, childWearNotif));
+
+                            if (firstResult == null) {
+                                firstResult = result;
+                            }
                         } finally {
                             if (messageCursor != null) {
                                 messageCursor.close();
@@ -978,6 +996,13 @@ public class NotificationUtils {
                         }
                     }
                 } while (numDigestItems <= maxNumDigestItems && conversationCursor.moveToNext());
+
+                if (firstResult != null && firstResult.contactIconInfo != null) {
+                    summaryWearNotif.setBackground(firstResult.contactIconInfo.wearableBg);
+                } else {
+                    LogUtils.w(LOG_TAG, "First contact icon is null!");
+                    summaryWearNotif.setBackground(getDefaultWearableBg(context));
+                }
             } else {
                 // The body of the notification is the account name, or the label name.
                 notification.setContentText(
@@ -990,11 +1015,14 @@ public class NotificationUtils {
             // Move the cursor to the most recent unread conversation
             seekToLatestUnreadConversation(conversationCursor);
 
-            notificationTicker = configureNotifForOneConversation(context, account,
+            ConfigResult result = configureNotifForOneConversation(context, account,
                     folderPreferences, notification, summaryWearNotif, conversationCursor,
                     notificationIntent, folder, when, res, notificationAccountDisplayName,
                     notificationAccountEmail, isInbox, notificationLabelName,
                     summaryNotificationId);
+            notificationTicker = result.notificationTicker;
+
+            summaryWearNotif.setBackground(result.contactIconInfo.wearableBg);
         }
 
         // Build the notification ticker
@@ -1021,14 +1049,15 @@ public class NotificationUtils {
      * Configure the notification for one conversation.  When there are multiple conversations,
      * this method is used to configure bundled notification for Android Wear.
      */
-    private static String configureNotifForOneConversation(Context context, Account account,
-            FolderPreferences folderPreferences, NotificationCompat.Builder notification,
+    private static ConfigResult configureNotifForOneConversation(Context context,
+            Account account, FolderPreferences folderPreferences,
+            NotificationCompat.Builder notification,
             WearableNotificationOptions.Builder summaryWearNotif, Cursor conversationCursor,
             Intent notificationIntent, Folder folder, long when, Resources res,
             String notificationAccountDisplayName, String notificationAccountEmail, boolean isInbox,
             String notificationLabelName, int notificationId) {
 
-        String notificationTicker;
+        ConfigResult result = new ConfigResult();
 
         final Conversation conversation = new Conversation(conversationCursor);
 
@@ -1050,8 +1079,9 @@ public class NotificationUtils {
                 final Message message = messageCursor.getMessage();
                 fromAddress = message.getFrom();
                 from = getDisplayableSender(fromAddress);
-                notification.setLargeIcon(
-                        getContactIcon(context, from, getSenderAddress(fromAddress), folder));
+                result.contactIconInfo = getContactIcon(context, from,
+                        getSenderAddress(fromAddress), folder);
+                notification.setLargeIcon(result.contactIconInfo.icon);
             }
 
             // Assume that the last message in this conversation is unread
@@ -1082,13 +1112,13 @@ public class NotificationUtils {
 
                     notification.setContentTitle(sendersBuilder);
                     // For a single new conversation, the ticker is based on the sender's name.
-                    notificationTicker = sendersBuilder.toString();
+                    result.notificationTicker = sendersBuilder.toString();
                 } else {
                     from = getWrappedFromString(from);
                     // The title of a single message the sender.
                     notification.setContentTitle(from);
                     // For a single new conversation, the ticker is based on the sender's name.
-                    notificationTicker = from;
+                    result.notificationTicker = from;
                 }
 
                 // The notification content will be the subject of the conversation.
@@ -1142,7 +1172,7 @@ public class NotificationUtils {
                         isInbox ? notificationAccountDisplayName : notificationLabelName);
 
                 // For a single new conversation, the ticker is based on the sender's name.
-                notificationTicker = from;
+                result.notificationTicker = from;
             }
         } finally {
             if (messageCursor != null) {
@@ -1152,7 +1182,7 @@ public class NotificationUtils {
                 cursor.close();
             }
         }
-        return notificationTicker;
+        return result;
     }
 
     private static String getWrappedFromString(String from) {
@@ -1503,16 +1533,15 @@ public class NotificationUtils {
         return contactIds;
     }
 
-    private static Bitmap getContactIcon(final Context context, final String displayName,
+    private static ContactIconInfo getContactIcon(final Context context, final String displayName,
             final String senderAddress, final Folder folder) {
         if (senderAddress == null) {
             return null;
         }
 
-        Bitmap icon = null;
+        ContactIconInfo contactIconInfo = new ContactIconInfo();
 
-        final List<Long> contactIds = findContacts( context, Arrays.asList(
-                new String[] { senderAddress }));
+        final List<Long> contactIds = findContacts(context, Arrays.asList(senderAddress));
 
         // Get the ideal size for this icon.
         final Resources res = context.getResources();
@@ -1523,49 +1552,58 @@ public class NotificationUtils {
 
         if (contactIds != null) {
             for (final long id : contactIds) {
-                final Uri contactUri =
-                        ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
-                final Uri photoUri = Uri.withAppendedPath(contactUri, Photo.CONTENT_DIRECTORY);
-                final Cursor cursor = context.getContentResolver().query(
-                        photoUri, new String[] { Photo.PHOTO }, null, null, null);
+                final Uri contactUri = ContentUris.withAppendedId(
+                        ContactsContract.Contacts.CONTENT_URI, id);
+                InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(
+                        context.getContentResolver(), contactUri, true /*preferHighres*/);
 
-                if (cursor != null) {
+                if (inputStream != null) {
                     try {
-                        if (cursor.moveToFirst()) {
-                            final byte[] data = cursor.getBlob(0);
-                            if (data != null) {
-                                icon = BitmapFactory.decodeStream(new ByteArrayInputStream(data));
-                                if (icon != null && icon.getHeight() < idealIconHeight) {
-                                    // We should scale this image to fit the intended size
-                                    icon = Bitmap.createScaledBitmap(
-                                            icon, idealIconWidth, idealIconHeight, true);
-                                }
-                                if (icon != null) {
-                                    break;
-                                }
-                            }
+                        Bitmap source = BitmapFactory.decodeStream(inputStream);
+                        if (source != null) {
+                            // We should scale this image to fit the intended size
+                            contactIconInfo.icon = Bitmap.createScaledBitmap(source, idealIconWidth,
+                                    idealIconHeight, true);
+
+                            int idealWearableBgWidth = res.getDimensionPixelSize(
+                                    R.dimen.wearable_background_width);
+                            int idealWearableBgHeight = res.getDimensionPixelSize(
+                                    R.dimen.wearable_background_height);
+
+                            contactIconInfo.wearableBg = Bitmap.createScaledBitmap(source,
+                                    idealWearableBgWidth, idealWearableBgHeight, true);
+                        }
+
+                        if (contactIconInfo.icon != null) {
+                            break;
                         }
                     } finally {
-                        cursor.close();
+                        Closeables.closeQuietly(inputStream);
                     }
                 }
             }
         }
 
-        if (icon == null) {
+        if (contactIconInfo.icon == null) {
             // Make a colorful tile!
             final Dimensions dimensions = new Dimensions(idealIconWidth, idealIconHeight,
                     Dimensions.SCALE_ONE);
 
-            icon = new LetterTileProvider(context).getLetterTile(dimensions,
+            contactIconInfo.icon = new LetterTileProvider(context).getLetterTile(dimensions,
                     displayName, senderAddress);
         }
 
-        if (icon == null) {
+        if (contactIconInfo.icon == null) {
             // Icon should be the default mail icon.
-            icon = getDefaultNotificationIcon(context, folder, false /* single new message */);
+            contactIconInfo.icon = getDefaultNotificationIcon(context, folder,
+                    false /* single new message */);
         }
-        return icon;
+
+        if (contactIconInfo.wearableBg == null) {
+            contactIconInfo.wearableBg = getDefaultWearableBg(context);
+        }
+
+        return contactIconInfo;
     }
 
     private static String getMessageBodyWithoutElidedText(final Message message) {
@@ -1765,5 +1803,15 @@ public class NotificationUtils {
                 WearableNotificationOptions.Builder wearableNotifBuilder) {
             return new NotificationBuilders(notifBuilder, wearableNotifBuilder);
         }
+    }
+
+    private static class ConfigResult {
+        public String notificationTicker;
+        public ContactIconInfo contactIconInfo;
+    }
+
+    private static class ContactIconInfo {
+        public Bitmap icon;
+        public Bitmap wearableBg;
     }
 }

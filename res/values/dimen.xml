@@ -214,4 +214,13 @@
 
     <dimen name="avatar_border_width">.5dp</dimen>
     <dimen name="progress_bar_height">12dp</dimen>
+
+    <dimen name="undo_description_padding">16dip</dimen>
+    <dimen name="undo_icon_padding_start">12dip</dimen>
+    <dimen name="undo_icon_padding_end">8dip</dimen>
+
+    <!-- The width of the wearable image background. -->
+    <dimen name="wearable_background_width">320dp</dimen>
+    <!-- The height of the wearable image background. -->
+    <dimen name="wearable_background_height">320dp</dimen>
 </resources>
