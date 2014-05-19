@@ -94,9 +94,10 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
                         // TODO(mindyp): we currently do not support frequently moved to
                         // folders, at headers[1]; need to define what that means.*/
                         // TODO(pwestbro): determine if we need to call filterFolders
+                        // if filterFolders is not necessary, remove the method decl with one arg.
                         mAdapter.addSection(
                                 new UserFolderHierarchicalFolderSelectorAdapter(context,
-                                AddableFolderSelectorAdapter.filterFolders(data, null),
+                                AddableFolderSelectorAdapter.filterFolders(data),
                                 R.layout.single_folders_view, headers[2], mCurrentFolder));
 
                         dialog.getListView().setAdapter(mAdapter);
