@@ -15,6 +15,7 @@
  */
 package com.android.mail.utils;
 
+import android.os.Looper;
 import android.util.Log;
 
 import com.android.mail.perf.Timer;
@@ -59,6 +60,46 @@ public final class HtmlSanitizer {
      */
     private static final ElementPolicy TRANSLATE_BODY_TO_DIV = new ElementPolicy() {
         public String apply(String elementName, List<String> attrs) {
+            return "div";
+        }
+    };
+
+    /**
+     * Translates <div> tags surrounding quoted text into <div class="elided-text"> which allows
+     * quoted text collapsing in ConversationViewFragment.
+     */
+    private static final ElementPolicy TRANSLATE_DIV_CLASS = new ElementPolicy() {
+        public String apply(String elementName, List<String> attrs) {
+            boolean showHideQuotedText = false;
+
+            // check if the class attribute is listed
+            final int classIndex = attrs.indexOf("class");
+            if (classIndex >= 0) {
+                // remove the class attribute and its value
+                final String value = attrs.remove(classIndex + 1);
+                attrs.remove(classIndex);
+
+                // gmail and yahoo use a specific div class name to indicate quoted text
+                showHideQuotedText = "gmail_quote".equals(value) || "yahoo_quoted".equals(value);
+            }
+
+            // check if the id attribute is listed
+            final int idIndex = attrs.indexOf("id");
+            if (idIndex >= 0) {
+                // remove the id attribute and its value
+                final String value = attrs.remove(idIndex + 1);
+                attrs.remove(idIndex);
+
+                // AOL uses a specifc id value to indicate quoted text
+                showHideQuotedText = value.startsWith("AOLMsgPart");
+            }
+
+            // insert a class attribute with a value of "elided-text" to hide/show quoted text
+            if (showHideQuotedText) {
+                attrs.add("class");
+                attrs.add("elided-text");
+            }
+
             return "div";
         }
     };
@@ -166,7 +207,9 @@ public final class HtmlSanitizer {
             .allowElements("details")
             .allowElements("dfn")
             .allowElements("dir").allowAttributes("compact").onElements("dir")
-            .allowElements("div").allowAttributes("align", "background").onElements("div")
+            .allowElements(TRANSLATE_DIV_CLASS, "div")
+                .allowAttributes("align", "background", "class", "id")
+            .onElements("div")
             .allowElements("dl")
             .allowElements("dt")
             .allowElements("em")
@@ -291,11 +334,18 @@ public final class HtmlSanitizer {
     private HtmlSanitizer() {}
 
     /**
+     * Sanitizing email is treated as an expensive operation; this method should be called from
+     * a background Thread.
+     *
      * @param rawHtml the unsanitized, suspicious html
      * @return the sanitized form of the <code>rawHtml</code>; <code>null</code> if
      *      <code>rawHtml</code> was <code>null</code>
      */
     public static String sanitizeHtml(final String rawHtml) {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            throw new IllegalStateException("sanitizing email should not occur on the main thread");
+        }
+
         if (rawHtml == null) {
             return null;
         }

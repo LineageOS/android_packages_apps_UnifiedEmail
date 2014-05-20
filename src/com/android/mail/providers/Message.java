@@ -40,6 +40,7 @@ import com.android.emailcommon.mail.Part;
 import com.android.emailcommon.utility.ConversionUtilities;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.ui.HtmlMessage;
+import com.android.mail.utils.HtmlSanitizer;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
@@ -413,6 +414,9 @@ public class Message implements Parcelable, HtmlMessage {
         }
     }
 
+    /**
+     * This constructor exists solely to generate Message objects from .eml attachments.
+     */
     public Message(Context context, MimeMessage mimeMessage, Uri emlFileUri)
             throws MessagingException {
         // Set message header values.
@@ -458,7 +462,9 @@ public class Message implements Parcelable, HtmlMessage {
 
         snippet = data.snippet;
         bodyText = data.textContent;
-        bodyHtml = data.htmlContent;
+
+        // sanitize the HTML found within the .eml file before consuming it
+        bodyHtml = HtmlSanitizer.sanitizeHtml(data.htmlContent);
 
         // populate mAttachments
         mAttachments = Lists.newArrayList();
