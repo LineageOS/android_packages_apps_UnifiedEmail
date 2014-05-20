@@ -24,11 +24,6 @@ datetimepicker_dir := ../../../frameworks/opt/datetimepicker/res
 res_dirs := res $(chips_dir) $(photo_dir) $(gridlayout_dir) $(datetimepicker_dir)
 
 ##################################################
-include $(CLEAR_VARS)
-
-include $(BUILD_MULTI_PREBUILT)
-
-##################################################
 # Build APK
 include $(CLEAR_VARS)
 
@@ -43,6 +38,7 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-gridlayout
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 LOCAL_STATIC_JAVA_LIBRARIES += android-opt-datetimepicker
+LOCAL_STATIC_JAVA_LIBRARIES += owasp-html-sanitizer
 # STOPSHIP: Open source the wearable support jar
 LOCAL_STATIC_JAVA_LIBRARIES += prebuilt-wearable-support
 
