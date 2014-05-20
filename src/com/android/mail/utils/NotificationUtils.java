@@ -101,10 +101,10 @@ public class NotificationUtils {
     private static CharacterStyle sNotificationReadStyleSpan;
 
     /** A factory that produces a plain text converter that removes elided text. */
-    private static final HtmlTree.PlainTextConverterFactory MESSAGE_CONVERTER_FACTORY =
-            new HtmlTree.PlainTextConverterFactory() {
+    private static final HtmlTree.ConverterFactory MESSAGE_CONVERTER_FACTORY =
+            new HtmlTree.ConverterFactory() {
                 @Override
-                public HtmlTree.PlainTextConverter createInstance() {
+                public HtmlTree.Converter<String> createInstance() {
                     return new MailMessagePlainTextConverter();
                 }
             };
@@ -1698,7 +1698,7 @@ public class NotificationUtils {
         }
         // Get the html "tree" for this message body
         final HtmlTree htmlTree = com.android.mail.utils.Utils.getHtmlTree(html);
-        htmlTree.setPlainTextConverterFactory(MESSAGE_CONVERTER_FACTORY);
+        htmlTree.setConverterFactory(MESSAGE_CONVERTER_FACTORY);
 
         return htmlTree.getPlainText();
     }

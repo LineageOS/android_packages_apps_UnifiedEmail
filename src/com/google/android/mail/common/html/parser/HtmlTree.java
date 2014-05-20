@@ -15,6 +15,8 @@
  */
 package com.google.android.mail.common.html.parser;
 
+import android.text.Spanned;
+
 import com.google.android.mail.common.base.CharMatcher;
 import com.google.android.mail.common.base.Preconditions;
 import com.google.android.mail.common.base.X;
@@ -52,21 +54,20 @@ public class HtmlTree {
 
   /**
    * An interface that allows clients to provide their own implementation
-   * of a {@link PlainTextConverter}.
+   * of a {@link Converter}.
    */
-  public static interface PlainTextConverterFactory {
+  public static interface ConverterFactory {
     /**
-     * Creates a new instance of a {@link PlainTextConverter} to convert
-     * the contents of an {@link HtmlTree} to plain text.
+     * Creates a new instance of a {@link Converter} to convert
+     * the contents of an {@link HtmlTree} to some resulting object.
      */
-    PlainTextConverter createInstance();
+    Converter createInstance();
   }
 
   /**
-   * An interface for an object which converts a single HtmlTree into
-   * plaintext.
+   * An interface for an object which converts a single HtmlTree into some object
    */
-  public static interface PlainTextConverter {
+  public static interface Converter<T> {
     /**
      * Adds the given node {@code n} to plain text.
      *
@@ -83,16 +84,16 @@ public class HtmlTree {
     int getPlainTextLength();
 
     /**
-     * Returns the current plain text.
+     * Returns the current built object.
      */
-    String getPlainText();
+    T getObject();
   }
 
   /** A factory that produces converters of the default implementation. */
-  private static final PlainTextConverterFactory DEFAULT_CONVERTER_FACTORY =
-      new PlainTextConverterFactory() {
+  private static final ConverterFactory DEFAULT_CONVERTER_FACTORY =
+      new ConverterFactory() {
         @Override
-        public PlainTextConverter createInstance() {
+        public Converter<String> createInstance() {
           return new DefaultPlainTextConverter();
         }
       };
@@ -107,13 +108,16 @@ public class HtmlTree {
   /** Plain text (lazy creation) */
   private String plainText;
 
+  /** Constructed span (lazy creation) */
+  private Spanned constructedSpan;
+
   /** The html string (lazy creation) */
   private String html;
 
   /** textPositions[node pos] = the text position */
   private int[] textPositions;
 
-  private PlainTextConverterFactory converterFactory = DEFAULT_CONVERTER_FACTORY;
+  private ConverterFactory converterFactory = DEFAULT_CONVERTER_FACTORY;
 
   // For debugging only
   private static final boolean DEBUG = false;
@@ -127,10 +131,10 @@ public class HtmlTree {
   }
 
   /**
-   * Sets a new {@link PlainTextConverterFactory} to be used to convert
+   * Sets a new {@link ConverterFactory} to be used to convert
    * the contents of this tree to plaintext.
    */
-  public void setPlainTextConverterFactory(PlainTextConverterFactory factory) {
+  public void setConverterFactory(ConverterFactory factory) {
     if (factory == null) {
       throw new NullPointerException("factory must not be null");
     }
@@ -562,7 +566,7 @@ public class HtmlTree {
     // entry for the size of the text.
     textPositions = new int[numNodes + 1];
 
-    PlainTextConverter converter = converterFactory.createInstance();
+    Converter<String> converter = (Converter<String>) converterFactory.createInstance();
 
     for (int i = 0; i < numNodes; i++) {
       textPositions[i] = converter.getPlainTextLength();
@@ -572,7 +576,7 @@ public class HtmlTree {
     // Add a last entry, so that textPositions_[nodes_.size()] is valid.
     textPositions[numNodes] = converter.getPlainTextLength();
 
-    plainText = converter.getPlainText();
+    plainText = converter.getObject();
 
     if (DEBUG) {
       debug("Plain text: " + plainText);
@@ -584,6 +588,41 @@ public class HtmlTree {
       }
     }
   }
+
+    //------------------------------------------------------------------------
+    // Spanned view of the html tree
+    //------------------------------------------------------------------------
+    /**
+     * @return a Spanned representation of the html tree
+     */
+    public Spanned getSpanned() {
+        if (constructedSpan == null) {
+            convertToSpan();
+        }
+        return constructedSpan;
+    }
+
+    /**
+     * Converts the html tree to plain text.
+     * We simply iterate through the nodes in the tree.
+     * As we output the plain-text, we keep track of the text position
+     * of each node.
+     * For String nodes, we replace '\n' with ' ' unless we're in a
+     * <pre> block.
+     */
+    private void convertToSpan() {
+        X.assertTrue(constructedSpan == null);
+
+        int numNodes = nodes.size();
+
+        Converter<Spanned> converter = (Converter<Spanned>) converterFactory.createInstance();
+
+        for (int i = 0; i < numNodes; i++) {
+            converter.addNode(nodes.get(i), i, ends.get(i));
+        }
+
+        constructedSpan = converter.getObject();
+    }
 
   /**
    * Encapsulates the logic for outputting plain text with respect to text
@@ -836,7 +875,7 @@ public class HtmlTree {
    * Contains the logic for converting the contents of one HtmlTree into
    * plaintext.
    */
-  public static class DefaultPlainTextConverter implements PlainTextConverter {
+  public static class DefaultPlainTextConverter implements Converter<String> {
 
     private static final Set<HTML.Element> BLANK_LINE_ELEMENTS =
         ImmutableSet.of(
@@ -928,7 +967,7 @@ public class HtmlTree {
     }
 
     @Override
-    public final String getPlainText() {
+    public final String getObject() {
       return printer.getText();
     }
   }
