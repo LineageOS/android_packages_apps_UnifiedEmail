@@ -270,7 +270,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"مزامنة المجلد"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> مقروءة"</item>
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</item>
   </plurals>
     <string name="actionbar_large_unread_count" msgid="2780005218279965391">"أكثر من <xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"عرض المزيد من المحادثات"</string>
@@ -305,6 +305,8 @@
     <item msgid="6593672292311851204">"مستخدمة بشكل متكرر"</item>
     <item msgid="3584541772344786752">"جميع المجلدات"</item>
   </string-array>
+    <!-- no translation found for change_folder_sections:0 (53174547922204815) -->
+    <!-- no translation found for change_folder_sections:1 (8635593741453580597) -->
     <string name="signin" msgid="8958889809095796177">"تسجيل الدخول"</string>
     <string name="info" msgid="6009817562073541204">"معلومات"</string>
     <string name="report" msgid="5417082746232614958">"الإبلاغ"</string>

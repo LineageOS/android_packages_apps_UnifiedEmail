@@ -305,6 +305,8 @@
     <item msgid="6593672292311851204">"De uso frequente"</item>
     <item msgid="3584541772344786752">"Todas as pastas"</item>
   </string-array>
+    <!-- no translation found for change_folder_sections:0 (53174547922204815) -->
+    <!-- no translation found for change_folder_sections:1 (8635593741453580597) -->
     <string name="signin" msgid="8958889809095796177">"Fazer login"</string>
     <string name="info" msgid="6009817562073541204">"Informações"</string>
     <string name="report" msgid="5417082746232614958">"Informar"</string>
