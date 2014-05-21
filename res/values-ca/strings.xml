@@ -86,7 +86,7 @@
     <string name="feedback" msgid="79365993169715049">"Envia comentaris"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Ajuda"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Inclou el text citat"</string>
-    <string name="quoted_text_label" msgid="541007446961960617">"Text de la cita"</string>
+    <string name="quoted_text_label" msgid="541007446961960617">"Missatge anterior"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Respon entre línies"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
@@ -311,7 +311,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Detalls del missatge"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Avançament automàtic"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Selecciona la pantalla que es mostrarà en suprimir un missatge"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Estableix la preferència d\'avançament autom.\n(després de suprimir, etc.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Avançament automàtic\n(després de suprimir, etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Més recent"</item>
     <item msgid="5562093094216840213">"Més antiga"</item>
