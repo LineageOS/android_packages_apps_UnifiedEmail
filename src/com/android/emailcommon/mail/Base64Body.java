@@ -27,6 +27,8 @@ import java.io.OutputStream;
 
 public class Base64Body implements Body {
     private final InputStream mSource;
+    // Because we consume the input stream, we can only write out once
+    private boolean mAlreadyWritten;
 
     public Base64Body(InputStream source) {
         mSource = source;
@@ -37,9 +39,25 @@ public class Base64Body implements Body {
         return mSource;
     }
 
+    /**
+     * This method consumes the input stream, so can only be called once
+     * @param out Stream to write to
+     * @throws IllegalStateException If called more than once
+     * @throws IOException
+     * @throws MessagingException
+     */
     @Override
-    public void writeTo(OutputStream out) throws IOException, MessagingException {
-        final Base64OutputStream b64out = new Base64OutputStream(out, Base64.DEFAULT);
-        IOUtils.copyLarge(mSource, b64out);
+    public void writeTo(OutputStream out)
+            throws IllegalStateException, IOException, MessagingException {
+        if (mAlreadyWritten) {
+            throw new IllegalStateException("Base64Body can only be written once");
+        }
+        mAlreadyWritten = true;
+        try {
+            final Base64OutputStream b64out = new Base64OutputStream(out, Base64.DEFAULT);
+            IOUtils.copyLarge(mSource, b64out);
+        } finally {
+            mSource.close();
+        }
     }
 }
