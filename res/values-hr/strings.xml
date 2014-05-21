@@ -386,7 +386,7 @@
     <string name="attached_message" msgid="4267189489654642035">"Poruka u privitku"</string>
     <string name="date_message_received_yesterday" msgid="5690676561028193570">"Jučer, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Odbacivanje savjeta"</string>
-    <string name="auto_sync_off" msgid="7185342309138211107">"Automatska sinkronizacija nije uključena."</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"Automatska sinkronizacija isključena."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Dodirnite za isključivanje."</string>
     <string name="account_sync_off" msgid="5699548271856775808">"Sinkronizacija računa nije uključena."</string>
     <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Uključite je u <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
