@@ -507,10 +507,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * thread.
      */
     public static ObjectCursorLoader<Folder> forSearchResults(Account account, String query,
-            Context context) {
+            String queryIdentifier, Context context) {
         if (account.searchUri != null) {
             final Uri.Builder searchBuilder = account.searchUri.buildUpon();
             searchBuilder.appendQueryParameter(UIProvider.SearchQueryParameters.QUERY, query);
+            searchBuilder.appendQueryParameter(UIProvider.SearchQueryParameters.QUERY_IDENTIFER,
+                    queryIdentifier);
             final Uri searchUri = searchBuilder.build();
             return new ObjectCursorLoader<Folder>(context, searchUri, UIProvider.FOLDERS_PROJECTION,
                     FACTORY);

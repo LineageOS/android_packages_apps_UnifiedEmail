@@ -47,6 +47,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -3567,6 +3568,8 @@ public abstract class AbstractActivityController implements ActivityController,
                     LogUtils.d(LOG_TAG, "LOADER_SEARCH created");
                     return Folder.forSearchResults(mAccount,
                             args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
+                            // We can just use current time as a unique identifier for this search
+                            Long.toString(SystemClock.uptimeMillis()),
                             mActivity.getActivityContext());
                 case LOADER_FIRST_FOLDER:
                     LogUtils.d(LOG_TAG, "LOADER_FIRST_FOLDER created");
