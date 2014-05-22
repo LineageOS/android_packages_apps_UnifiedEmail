@@ -662,6 +662,19 @@ public class UIProvider {
          */
         public static final String QUERY = "query";
 
+        /*
+        * This parameter is set by ACTION_SEARCH to differentiate one ACTION_SEARCH from another.
+        * This is necessary because the Uri we construct for each query is only based on the
+        * search query string. However, subsequent searches with the same string will confuse
+        * the underlying provider into thinking that it's still the same "session", thus it will
+        * keep the data it had before. This is a problem when we do search on some keyword, then
+        * without navigating away we do the same search again (expecting to see new results there
+        * and outdated results gone). By keying the Uri on both search query and a unique id,
+        * we ensure that old data gets properly destroyed.
+        * @see UnifiedGmail, MailEngine#getConversationCursorForQuery.
+        */
+        public static final String QUERY_IDENTIFER = "query_identifier";
+
         private SearchQueryParameters() {}
     }
 
