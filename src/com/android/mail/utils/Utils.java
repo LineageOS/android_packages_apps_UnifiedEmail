@@ -529,7 +529,10 @@ public class Utils {
             return;
         }
         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
+
+        settingsIntent.setPackage(context.getPackageName());
         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
         context.startActivity(settingsIntent);
     }
 
@@ -544,8 +547,10 @@ public class Utils {
         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT,
                 appendVersionQueryParameter(context, account.settingsIntentUri));
 
+        settingsIntent.setPackage(context.getPackageName());
         settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
         context.startActivity(settingsIntent);
     }
 
@@ -561,9 +566,11 @@ public class Utils {
         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT,
                 appendVersionQueryParameter(context, account.settingsIntentUri));
 
+        settingsIntent.setPackage(context.getPackageName());
         settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
         settingsIntent.putExtra(EditSettingsExtras.EXTRA_FOLDER, folder);
         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
         context.startActivity(settingsIntent);
     }
 
@@ -577,9 +584,11 @@ public class Utils {
          }
          final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
 
+         settingsIntent.setPackage(context.getPackageName());
          settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
          settingsIntent.putExtra(EditSettingsExtras.EXTRA_MANAGE_FOLDERS, true);
          settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
          context.startActivity(settingsIntent);
     }
 
@@ -591,6 +600,7 @@ public class Utils {
             sendFeedback(activity, account.sendFeedbackIntentUri, reportingProblem);
         }
     }
+
     public static void sendFeedback(Activity activity, Uri feedbackIntentUri,
             boolean reportingProblem) {
         if (activity != null &&  !isEmpty(feedbackIntentUri)) {

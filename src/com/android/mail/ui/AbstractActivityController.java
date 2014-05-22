@@ -733,7 +733,10 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mAccount != null && !Uri.EMPTY.equals(mAccount.settings.setupIntentUri)) {
             // Launch the intent!
             final Intent intent = new Intent(Intent.ACTION_EDIT);
+
+            intent.setPackage(mContext.getPackageName());
             intent.setData(mAccount.settings.setupIntentUri);
+
             mActivity.startActivity(intent);
         }
     }
