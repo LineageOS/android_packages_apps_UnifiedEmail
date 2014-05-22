@@ -1074,4 +1074,37 @@
          Empty by default since this should be overridden by implementing apps. -->
     <string name="full_message_activity" translatable="false"></string>
 
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_yes">Yes</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_no">No</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_ok">OK</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_hehe">Hehe</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_thanks">Thanks</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_i_agree">I agree</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_nice">Nice</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_later">I\'ll get back to you later</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_smiling_face">:)</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_frowning_face">:(</string>
+
+    <array name="reply_choices">
+        <item>@string/reply_choice_yes</item>
+        <item>@string/reply_choice_no</item>
+        <item>@string/reply_choice_ok</item>
+        <item>@string/reply_choice_hehe</item>
+        <item>@string/reply_choice_thanks</item>
+        <item>@string/reply_choice_i_agree</item>
+        <item>@string/reply_choice_nice</item>
+        <item>@string/reply_choice_later</item>
+        <item>@string/reply_choice_smiling_face</item>
+        <item>@string/reply_choice_frowning_face</item>
+    </array>
 </resources>

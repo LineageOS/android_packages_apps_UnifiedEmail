@@ -222,8 +222,13 @@ public class NotificationActionUtils {
                     actionIconResId, title, pendingIntent);
             if (notificationAction == NotificationActionType.REPLY
                     || notificationAction == NotificationActionType.REPLY_ALL) {
+                String[] choices = context.getResources().getStringArray(R.array.reply_choices);
                 wearableActionBuilder.addRemoteInput(
-                        new RemoteInput.Builder(WEAR_REPLY_INPUT).setLabel(title).build());
+                        new RemoteInput.Builder(WEAR_REPLY_INPUT)
+                                .setLabel(title)
+                                .setChoices(choices)
+                                .build()
+                );
                 LogUtils.d(LOG_TAG, "Adding wearable action!!");
             }
 
