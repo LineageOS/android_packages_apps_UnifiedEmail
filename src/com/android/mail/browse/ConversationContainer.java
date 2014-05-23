@@ -315,6 +315,9 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      *
      */
     public View getViewForItem(ConversationOverlayItem item) {
+        if (mOverlayAdapter == null) {
+            return null;
+        }
         View result = null;
         int adapterPos = -1;
         for (int i = 0, len = mOverlayAdapter.getCount(); i < len; i++) {
