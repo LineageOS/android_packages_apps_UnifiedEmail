@@ -219,9 +219,8 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"عرض <xliff:g id="COUNT">%1$d</xliff:g> من الرسائل الجديدة."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"التفاصيل"</string>
-    <string name="hide_details" msgid="7022374044607095589">"إخفاء التفاصيل"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"إلى <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"توسيع تفاصيل المستلم"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"تصغير تفاصيل المستلم"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"عرض معلومات جهة الاتصال لـ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"عرض معلومات جهة الاتصال"</string>
   <plurals name="show_messages_read">
@@ -305,8 +304,10 @@
     <item msgid="6593672292311851204">"مستخدمة بشكل متكرر"</item>
     <item msgid="3584541772344786752">"جميع المجلدات"</item>
   </string-array>
-    <!-- no translation found for change_folder_sections:0 (53174547922204815) -->
-    <!-- no translation found for change_folder_sections:1 (8635593741453580597) -->
+  <string-array name="change_folder_sections">
+    <item msgid="53174547922204815">"المجلدات الحالية"</item>
+    <item msgid="8635593741453580597">"المجلدات الأخرى"</item>
+  </string-array>
     <string name="signin" msgid="8958889809095796177">"تسجيل الدخول"</string>
     <string name="info" msgid="6009817562073541204">"معلومات"</string>
     <string name="report" msgid="5417082746232614958">"الإبلاغ"</string>

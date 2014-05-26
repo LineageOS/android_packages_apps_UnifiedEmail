@@ -219,9 +219,8 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"<xliff:g id="COUNT">%1$d</xliff:g> አዲስ መልዕክቶችን አሳይ።"</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"ዝርዝሮች"</string>
-    <string name="hide_details" msgid="7022374044607095589">"ዝርዝሮችን ደብቅ"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"ለ<xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"የተቀባይ ዝርዝሮችን ዘርጋ"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"የተቀባይ ዝርዝሮች ሰብስብ"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"የ<xliff:g id="NAME">%1$s</xliff:g> የእውቂያ መረጃ አሳይ"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"የዕውቂያ መረጃ አሳይ"</string>
   <plurals name="show_messages_read">
@@ -298,15 +297,17 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"ምርጫው ብዙ መለያዎችን ስለያዘ ማንቀሳቀስ አይቻልም።"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <string name="ignore_spam_warning" msgid="1554651881128904262">"ተወው፣ ይህን መልዕክት አምነዋለሁ"</string>
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"ችላ በል፣ ይህን መልዕክት አምነዋለሁ"</string>
     <string name="via_domain" msgid="380109230928079350">"በ<xliff:g id="VIADOMAIN">%1$s</xliff:g> በኩል"</string>
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"ስርዓት"</item>
     <item msgid="6593672292311851204">"በብዛት ጥቅም ላይ የዋሉ"</item>
     <item msgid="3584541772344786752">"ሁሉም አቃፊዎች"</item>
   </string-array>
-    <!-- no translation found for change_folder_sections:0 (53174547922204815) -->
-    <!-- no translation found for change_folder_sections:1 (8635593741453580597) -->
+  <string-array name="change_folder_sections">
+    <item msgid="53174547922204815">"የአሁን አቃፊዎች"</item>
+    <item msgid="8635593741453580597">"ሌሎች አቃፊዎች"</item>
+  </string-array>
     <string name="signin" msgid="8958889809095796177">"በመለያ ግባ"</string>
     <string name="info" msgid="6009817562073541204">"መረጃ"</string>
     <string name="report" msgid="5417082746232614958">"ሪፖርት አድርግ"</string>
