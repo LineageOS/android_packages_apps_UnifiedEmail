@@ -219,9 +219,8 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"បង្ហាញ​សារ​ថ្មី <xliff:g id="COUNT">%1$d</xliff:g> ​។"</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"ព័ត៌មាន​លម្អិត"</string>
-    <string name="hide_details" msgid="7022374044607095589">"លាក់​ព័ត៌មាន​​លម្អិត"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"ជូន​ចំពោះ <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"ពង្រីក​សេចក្ដី​លម្អិត​របស់​អ្នក​ទទួល"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"បញ្ចូល​​ព័ត៌មាន​លម្អិត​អ្នក​ទទួល"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"បង្ហាញ​ព័ត៌មាន​ទំនាក់ទំនង​សម្រាប់ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"បង្ហាញ​ព័ត៌មាន​ទំនាក់ទំនង"</string>
   <plurals name="show_messages_read">
@@ -305,8 +304,10 @@
     <item msgid="6593672292311851204">"បាន​ប្រើ​ជា​ញឹកញាប់"</item>
     <item msgid="3584541772344786752">"ថត​ទាំងអស់"</item>
   </string-array>
-    <!-- no translation found for change_folder_sections:0 (53174547922204815) -->
-    <!-- no translation found for change_folder_sections:1 (8635593741453580597) -->
+  <string-array name="change_folder_sections">
+    <item msgid="53174547922204815">"ថត​បច្ចុប្បន្ន"</item>
+    <item msgid="8635593741453580597">"ថត​ផ្សេងទៀត"</item>
+  </string-array>
     <string name="signin" msgid="8958889809095796177">"ចូល"</string>
     <string name="info" msgid="6009817562073541204">"ព័ត៌មាន"</string>
     <string name="report" msgid="5417082746232614958">"របាយការណ៍"</string>

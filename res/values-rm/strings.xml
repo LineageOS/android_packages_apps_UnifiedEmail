@@ -322,11 +322,9 @@
     <!-- no translation found for new_incoming_messages_one (827152289636155810) -->
     <skip />
     <!-- no translation found for new_incoming_messages_many:other (1018949581192786598) -->
-    <!-- no translation found for details (5065930681696657503) -->
+    <!-- no translation found for expand_recipient_details (2266544827446346880) -->
     <skip />
-    <!-- no translation found for hide_details (7022374044607095589) -->
-    <skip />
-    <!-- no translation found for to_message_header (7406436821725529743) -->
+    <!-- no translation found for collapse_recipient_details (3608892454869745927) -->
     <skip />
     <!-- no translation found for contact_info_string (6911322458329265644) -->
     <skip />

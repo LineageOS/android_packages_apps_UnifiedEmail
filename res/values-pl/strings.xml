@@ -219,9 +219,8 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Pokaż nowe wiadomości (<xliff:g id="COUNT">%1$d</xliff:g>)."</item>
   </plurals>
-    <string name="details" msgid="5065930681696657503">"Szczegóły"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Ukryj szczegóły"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"do <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Rozwiń szczegóły odbiorcy"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Zwiń szczegóły odbiorcy"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Pokaż informacje kontaktowe: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Pokaż informacje kontaktowe"</string>
   <plurals name="show_messages_read">
@@ -305,8 +304,10 @@
     <item msgid="6593672292311851204">"Często używane"</item>
     <item msgid="3584541772344786752">"Wszystkie foldery"</item>
   </string-array>
-    <!-- no translation found for change_folder_sections:0 (53174547922204815) -->
-    <!-- no translation found for change_folder_sections:1 (8635593741453580597) -->
+  <string-array name="change_folder_sections">
+    <item msgid="53174547922204815">"Bieżące foldery"</item>
+    <item msgid="8635593741453580597">"Inne foldery"</item>
+  </string-array>
     <string name="signin" msgid="8958889809095796177">"Zaloguj się"</string>
     <string name="info" msgid="6009817562073541204">"Informacje"</string>
     <string name="report" msgid="5417082746232614958">"Zgłoś"</string>
