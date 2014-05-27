@@ -217,7 +217,10 @@ public class NotificationActionUtils {
             notification.addAction(actionIconResId, title, pendingIntent);
 
             NotificationCompat.Action.Builder wearableActionBuilder =
-                    new NotificationCompat.Action.Builder(actionIconResId, title, pendingIntent);
+                    new NotificationCompat.Action.Builder(
+                            mapWearActionResId(notificationAction, actionIconResId), title,
+                            pendingIntent);
+
             if (notificationAction == NotificationActionType.REPLY
                     || notificationAction == NotificationActionType.REPLY_ALL) {
                 String[] choices = context.getResources().getStringArray(R.array.reply_choices);
@@ -225,12 +228,27 @@ public class NotificationActionUtils {
                         new RemoteInput.Builder(WEAR_REPLY_INPUT)
                                 .setLabel(title)
                                 .setChoices(choices)
-                                .build()
-                );
-                LogUtils.d(LOG_TAG, "Adding wearable action!!");
+                                .build());
             }
 
             wearExtender.addAction(wearableActionBuilder.build());
+            LogUtils.d(LOG_TAG, "Adding wearable action!!");
+        }
+    }
+
+    private static int mapWearActionResId(NotificationActionType notificationAction,
+            int defActionIconResId) {
+        switch (notificationAction) {
+            case REPLY:
+                return R.drawable.ic_wear_full_reply;
+            case REPLY_ALL:
+                return R.drawable.ic_wear_full_reply_all;
+            case ARCHIVE_REMOVE_LABEL:
+                return R.drawable.ic_wear_full_archive;
+            case DELETE:
+                return R.drawable.ic_wear_full_delete;
+            default:
+                return defActionIconResId;
         }
     }
 
