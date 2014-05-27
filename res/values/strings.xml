@@ -649,7 +649,7 @@
         <item>All Folders</item>
     </string-array>
 
-    <!-- The section headers for the change folder dialog [CHAR LIMIT=15] -->
+    <!-- The section headers for the change folder dialog [CHAR LIMIT=20] -->
     <string-array name="change_folder_sections">
         <item>Current Folders</item>
         <item>Other Folders</item>
