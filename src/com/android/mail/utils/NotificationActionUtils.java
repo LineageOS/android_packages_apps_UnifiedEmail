@@ -29,10 +29,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.RemoteInput;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.wearable.notifications.RemoteInput;
-import android.support.wearable.notifications.WearableAction;
-import android.support.wearable.notifications.WearableNotificationOptions;
 import android.widget.RemoteViews;
 
 import com.android.mail.MailIntentService;
@@ -199,7 +197,7 @@ public class NotificationActionUtils {
      */
     public static void addNotificationActions(final Context context,
             final Intent notificationIntent, final NotificationCompat.Builder notification,
-            WearableNotificationOptions.Builder wearableNotification, final Account account,
+            NotificationCompat.WearableExtender wearExtender, final Account account,
             final Conversation conversation, final Message message,
             final Folder folder, final int notificationId, final long when,
             final Set<String> notificationActions) {
@@ -218,8 +216,8 @@ public class NotificationActionUtils {
             // Always add all actions to both standard and wearable notifications.
             notification.addAction(actionIconResId, title, pendingIntent);
 
-            WearableAction.Builder wearableActionBuilder = new WearableAction.Builder(
-                    actionIconResId, title, pendingIntent);
+            NotificationCompat.Action.Builder wearableActionBuilder =
+                    new NotificationCompat.Action.Builder(actionIconResId, title, pendingIntent);
             if (notificationAction == NotificationActionType.REPLY
                     || notificationAction == NotificationActionType.REPLY_ALL) {
                 String[] choices = context.getResources().getStringArray(R.array.reply_choices);
@@ -232,7 +230,7 @@ public class NotificationActionUtils {
                 LogUtils.d(LOG_TAG, "Adding wearable action!!");
             }
 
-            wearableNotification.addAction(wearableActionBuilder.build());
+            wearExtender.addAction(wearableActionBuilder.build());
         }
     }
 
