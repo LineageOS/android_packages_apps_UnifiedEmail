@@ -17,6 +17,7 @@
 package com.android.mail.compose;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
@@ -656,6 +657,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         finishSetup(action, intent, savedState);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private static AsyncTask<Void, Void, Message> createWearReplyTask(
             final ComposeActivity composeActivity,
             final Uri refMessageUri, final String[] projection, final int action,
@@ -2811,16 +2813,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /**
      * @param save True to save, false to send
      * @param showToast True to show a toast once the message is sent/saved
-     * @return Whether the send or save succeeded.
      */
-    protected boolean sendOrSaveWithSanityChecks(final boolean save, final boolean showToast,
+    protected void sendOrSaveWithSanityChecks(final boolean save, final boolean showToast,
             final boolean orientationChanged, final boolean autoSend) {
         if (mAccounts == null || mAccount == null) {
             Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
             if (autoSend) {
                 finish();
             }
-            return false;
+            return;
         }
 
         final String[] to, cc, bcc;
@@ -2832,11 +2833,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             bcc = getBccAddresses();
         }
 
+        final ArrayList<String> recipients = buildEmailAddressList(to);
+        recipients.addAll(buildEmailAddressList(cc));
+        recipients.addAll(buildEmailAddressList(bcc));
+
         // Don't let the user send to nobody (but it's okay to save a message
         // with no recipients)
         if (!save && (to.length == 0 && cc.length == 0 && bcc.length == 0)) {
             showRecipientErrorDialog(getString(R.string.recipient_needed));
-            return false;
+            return;
         }
 
         List<String> wrongEmails = new ArrayList<String>();
@@ -2851,7 +2856,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             String errorText = String.format(getString(R.string.invalid_recipient),
                     wrongEmails.get(0));
             showRecipientErrorDialog(errorText);
-            return false;
+            return;
         }
 
         // Show a warning before sending only if there are no attachments.
@@ -2870,25 +2875,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // the dialog listener is required to enable sending again.
                 if (warnAboutEmptySubject) {
                     showSendConfirmDialog(R.string.confirm_send_message_with_no_subject,
-                            showToast);
-                    return true;
+                            showToast, recipients);
+                    return;
                 }
 
                 if (warnAboutEmptyBody) {
                     showSendConfirmDialog(R.string.confirm_send_message_with_no_body,
-                            showToast);
-                    return true;
+                            showToast, recipients);
+                    return;
                 }
             }
             // Ask for confirmation to send (if always required)
             if (showSendConfirmation()) {
-                showSendConfirmDialog(R.string.confirm_send_message, showToast);
-                return true;
+                showSendConfirmDialog(R.string.confirm_send_message, showToast, recipients);
+                return;
             }
         }
 
-        sendOrSave(save, showToast);
-        return true;
+        performAdditionalSendOrSaveSanityChecks(save, showToast, recipients);
     }
 
     /**
@@ -2913,25 +2917,33 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public static class SendConfirmDialogFragment extends DialogFragment
             implements DialogInterface.OnClickListener {
 
+        private static final String MESSAGE_ID = "messageId";
+        private static final String SHOW_TOAST = "showToast";
+        private static final String RECIPIENTS = "recipients";
+
         private boolean mShowToast;
+
+        private ArrayList<String> mRecipients;
 
         // Public no-args constructor needed for fragment re-instantiation
         public SendConfirmDialogFragment() {}
 
         public static SendConfirmDialogFragment newInstance(final int messageId,
-                final boolean showToast) {
+                final boolean showToast, final ArrayList<String> recipients) {
             final SendConfirmDialogFragment frag = new SendConfirmDialogFragment();
             final Bundle args = new Bundle(3);
-            args.putInt("messageId", messageId);
-            args.putBoolean("showToast", showToast);
+            args.putInt(MESSAGE_ID, messageId);
+            args.putBoolean(SHOW_TOAST, showToast);
+            args.putStringArrayList(RECIPIENTS, recipients);
             frag.setArguments(args);
             return frag;
         }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final int messageId = getArguments().getInt("messageId");
-            mShowToast = getArguments().getBoolean("showToast");
+            final int messageId = getArguments().getInt(MESSAGE_ID);
+            mShowToast = getArguments().getBoolean(SHOW_TOAST);
+            mRecipients = getArguments().getStringArrayList(RECIPIENTS);
 
             final int confirmTextId = (messageId == R.string.confirm_send_message) ?
                     R.string.ok : R.string.send;
@@ -2946,19 +2958,25 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         @Override
         public void onClick(DialogInterface dialog, int which) {
             if (which == DialogInterface.BUTTON_POSITIVE) {
-                ((ComposeActivity) getActivity()).finishSendConfirmDialog(mShowToast);
+                ((ComposeActivity) getActivity()).finishSendConfirmDialog(mShowToast, mRecipients);
             }
         }
     }
 
-    private void finishSendConfirmDialog(final boolean showToast) {
-        sendOrSave(false /* save */, showToast);
+    private void finishSendConfirmDialog(
+            final boolean showToast, final ArrayList<String> recipients) {
+        performAdditionalSendOrSaveSanityChecks(false /* save */, showToast, recipients);
     }
 
+    // The list of recipients are used by the additional sendOrSave checks.
+    // However, the send confirm dialog may be shown before performing
+    // the additional checks. As a result, we need to plumb the recipient
+    // list through the send confirm dialog so that
+    // performAdditionalSendOrSaveChecks can be performed properly.
     private void showSendConfirmDialog(final int messageId,
-            final boolean showToast) {
-        final DialogFragment frag = SendConfirmDialogFragment.newInstance(messageId,
-                showToast);
+            final boolean showToast, final ArrayList<String> recipients) {
+        final DialogFragment frag = SendConfirmDialogFragment.newInstance(
+                messageId, showToast, recipients);
         frag.show(getFragmentManager(), "send confirm");
     }
 
@@ -3104,7 +3122,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return draftType;
     }
 
-    private void sendOrSave(final boolean save, final boolean showToast) {
+    /**
+     * Derived classes should override this step to perform additional checks before
+     * send or save. The default implementation simply calls {@link #sendOrSave(boolean, boolean)}.
+     */
+    protected void performAdditionalSendOrSaveSanityChecks(
+            final boolean save, final boolean showToast, ArrayList<String> recipients) {
+        sendOrSave(save, showToast);
+    }
+
+    protected void sendOrSave(final boolean save, final boolean showToast) {
         // Check if user is a monkey. Monkeys can compose and hit send
         // button but are not allowed to send anything off the device.
         if (ActivityManager.isUserAMonkey()) {
@@ -3605,8 +3632,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         private boolean hasChanged() {
-            String[] currRecips = tokenizeRecips(getAddressesFromList(mView));
-            int totalCount = currRecips.length;
+            final ArrayList<String> currRecips = buildEmailAddressList(getAddressesFromList(mView));
+            int totalCount = currRecips.size();
             int totalPrevCount = 0;
             for (Entry<String, Integer> entry : mContent.entrySet()) {
                 totalPrevCount += entry.getValue();
@@ -3630,18 +3657,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return false;
         }
 
-        private String[] tokenizeRecips(String[] recips) {
-            // Tokenize them all and put them in the list.
-            String[] recipAddresses = new String[recips.length];
-            for (int i = 0; i < recips.length; i++) {
-                recipAddresses[i] = Rfc822Tokenizer.tokenize(recips[i])[0].getAddress();
-            }
-            return recipAddresses;
-        }
-
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            String[] recips = tokenizeRecips(getAddressesFromList(mView));
+            final ArrayList<String> recips = buildEmailAddressList(getAddressesFromList(mView));
             for (String recip : recips) {
                 if (!mContent.containsKey(recip)) {
                     mContent.put(recip, 1);
@@ -3655,6 +3673,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // Do nothing.
         }
+    }
+
+    /**
+     * Returns a list of email addresses from the recipients. List only contains
+     * email addresses strips additional info like the recipient's name.
+     */
+    private static ArrayList<String> buildEmailAddressList(String[] recips) {
+        // Tokenize them all and put them in the list.
+        final ArrayList<String> recipAddresses = Lists.newArrayListWithCapacity(recips.length);
+        for (int i = 0; i < recips.length; i++) {
+            recipAddresses.add(Rfc822Tokenizer.tokenize(recips[i])[0].getAddress());
+        }
+        return recipAddresses;
     }
 
     public static void registerTestSendOrSaveCallback(SendOrSaveCallback testCallback) {
