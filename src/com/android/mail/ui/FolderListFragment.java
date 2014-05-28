@@ -663,6 +663,12 @@ public class FolderListFragment extends ListFragment implements
     }
 
     protected void onAccountSelected(Account account) {
+        // Only reset the cache if the account has changed.
+        if (mCurrentAccount == null || account == null ||
+                !mCurrentAccount.getEmailAddress().equals(account.getEmailAddress())) {
+            mActivity.resetSenderImageCache();
+        }
+
         if (account != null && mSelectedFolderUri.equals(account.settings.defaultInbox)) {
             // We're already in the default inbox for account,
             // just close the drawer (no new target folders/accounts)

@@ -17,8 +17,12 @@
 
 package com.android.mail.ui;
 
+import android.content.ContentResolver;
+
+import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Folder;
+import com.android.oldbitmap.BitmapCache;
 
 /**
  * A controllable activity is an Activity that has a Controller attached. This activity must be
@@ -113,4 +117,11 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      * Returns the {@link FragmentLauncher} object associated with this activity, if any.
      */
     FragmentLauncher getFragmentLauncher();
+
+    ContactLoaderCallbacks getContactLoaderCallbacks();
+
+    ContactResolver getContactResolver(ContentResolver resolver, BitmapCache bitmapCache);
+
+    BitmapCache getSenderImageCache();
+    void resetSenderImageCache();
 }

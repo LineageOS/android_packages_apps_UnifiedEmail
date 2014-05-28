@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -34,10 +35,13 @@ import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.mail.analytics.AnalyticsTimer;
+import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
+import com.android.oldbitmap.AltBitmapCache;
+import com.android.oldbitmap.BitmapCache;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -48,6 +52,13 @@ import java.net.URLEncoder;
  * conversation list or a conversation view).
  */
 public class MailActivity extends AbstractMailActivity implements ControllableActivity {
+
+    /** 339KB cache fits 10 bitmaps at 33856 bytes each. */
+    private static final int SENDERS_IMAGES_CACHE_TARGET_SIZE_BYTES = 1024 * 339;
+    private static final float SENDERS_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION = 0f;
+    /** Each string has upper estimate of 50 bytes, so this cache would be 5KB. */
+    private static final int SENDERS_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY = 100;
+
     /**
      * The activity controller to which we delegate most Activity lifecycle events.
      */
@@ -67,6 +78,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
      * and have the NFC message changed accordingly.
      */
     protected static String sAccountName = null;
+
+    private BitmapCache mSendersImageCache;
 
     /**
      * Create an NFC message (in the NDEF: Nfc Data Exchange Format) to instruct the recepient to
@@ -145,6 +158,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
             AnalyticsTimer.getInstance().trackStart(AnalyticsTimer.COLD_START_LAUNCHER);
         }
 
+        resetSenderImageCache();
         mViewMode = new ViewMode();
         final boolean tabletUi = Utils.useTabletUI(this.getResources());
         mController = ControllerFactory.forActivity(this, mViewMode, tabletUi);
@@ -266,7 +280,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public void onStop() {
+    protected void onStop() {
         super.onStop();
         mController.onStop();
     }
@@ -422,6 +436,33 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public FragmentLauncher getFragmentLauncher() {
         return mController;
+    }
+
+    @Override
+    public ContactLoaderCallbacks getContactLoaderCallbacks() {
+        return new ContactLoaderCallbacks(getActivityContext());
+    }
+
+    @Override
+    public ContactResolver getContactResolver(ContentResolver resolver, BitmapCache bitmapCache) {
+        return new ContactResolver(resolver, bitmapCache);
+    }
+
+    @Override
+    public BitmapCache getSenderImageCache() {
+        return mSendersImageCache;
+    }
+
+    @Override
+    public void resetSenderImageCache() {
+        mSendersImageCache = createNewSenderImageCache();
+    }
+
+    private BitmapCache createNewSenderImageCache() {
+        return new AltBitmapCache(Utils.isLowRamDevice(this) ?
+                0 : SENDERS_IMAGES_CACHE_TARGET_SIZE_BYTES,
+                SENDERS_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION,
+                SENDERS_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY);
     }
 
     @Override

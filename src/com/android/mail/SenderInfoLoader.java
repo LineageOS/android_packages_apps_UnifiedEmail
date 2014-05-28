@@ -17,10 +17,6 @@
 
 package com.android.mail;
 
-import com.android.oldbitmap.Trace;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-
 import android.content.AsyncTaskLoader;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -37,6 +33,10 @@ import android.provider.ContactsContract.Contacts.Photo;
 import android.provider.ContactsContract.Data;
 import android.util.Pair;
 
+import com.android.oldbitmap.Trace;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -51,14 +51,12 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
     private static final String[] DATA_COLS = new String[] {
         Email._ID,                  // 0
         Email.DATA,                 // 1
-        Email.CONTACT_PRESENCE,     // 2
-        Email.CONTACT_ID,           // 3
-        Email.PHOTO_ID,             // 4
+        Email.CONTACT_ID,           // 2
+        Email.PHOTO_ID,             // 3
     };
     private static final int DATA_EMAIL_COLUMN = 1;
-    private static final int DATA_STATUS_COLUMN = 2;
-    private static final int DATA_CONTACT_ID_COLUMN = 3;
-    private static final int DATA_PHOTO_ID_COLUMN = 4;
+    private static final int DATA_CONTACT_ID_COLUMN = 2;
+    private static final int DATA_PHOTO_ID_COLUMN = 3;
 
     private static final String[] PHOTO_COLS = new String[] { Photo._ID, Photo.PHOTO };
     private static final int PHOTO_PHOTO_ID_COLUMN = 0;
@@ -68,7 +66,7 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
      * Limit the query params to avoid hitting the maximum of 99. We choose a number smaller than
      * 99 since the contacts provider may wrap our query in its own and insert more params.
      */
-    static final int MAX_QUERY_PARAMS = 75;
+    private static final int MAX_QUERY_PARAMS = 75;
 
     private final Set<String> mSenders;
 
@@ -155,14 +153,9 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
             while (cursor.moveToPosition(++i)) {
                 String email = cursor.getString(DATA_EMAIL_COLUMN);
                 long contactId = cursor.getLong(DATA_CONTACT_ID_COLUMN);
-                Integer status = null;
                 Uri contactUri = ContentUris.withAppendedId(Contacts.CONTENT_URI, contactId);
 
-                if (!cursor.isNull(DATA_STATUS_COLUMN)) {
-                    status = cursor.getInt(DATA_STATUS_COLUMN);
-                }
-
-                ContactInfo result = new ContactInfo(contactUri, status);
+                ContactInfo result = new ContactInfo(contactUri);
 
                 if (!cursor.isNull(DATA_PHOTO_ID_COLUMN)) {
                     long photoId = cursor.getLong(DATA_PHOTO_ID_COLUMN);
@@ -179,7 +172,7 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
             // and lookup skipped (truncated above).
             for (String email : emailsList) {
                 if (!results.containsKey(email)) {
-                    results.put(email, new ContactInfo(null, null));
+                    results.put(email, new ContactInfo(null));
                 }
             }
 
@@ -226,12 +219,10 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
                     Bitmap photo = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.length);
                     Trace.endSection();
                     // overwrite existing photo-less result
-                    results.put(email,
-                            new ContactInfo(prevResult.contactUri, prevResult.status, photo));
+                    results.put(email, new ContactInfo(prevResult.contactUri, photo));
                 } else {
                     // overwrite existing photoBytes-less result
-                    results.put(email, new ContactInfo(
-                            prevResult.contactUri, prevResult.status, photoBytes));
+                    results.put(email, new ContactInfo(prevResult.contactUri, photoBytes));
                 }
             }
             Trace.endSection();
@@ -256,7 +247,7 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
         return null;
     }
 
-    static ArrayList<String> getTruncatedQueryParams(Collection<String> params) {
+    private static ArrayList<String> getTruncatedQueryParams(Collection<String> params) {
         int truncatedLen = Math.min(params.size(), MAX_QUERY_PARAMS);
         ArrayList<String> truncated = new ArrayList<String>(truncatedLen);
 
@@ -276,7 +267,7 @@ public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, Conta
         return items.toArray(new String[items.size()]);
     }
 
-    static void appendQuestionMarks(StringBuilder query, Iterable<?> items) {
+    private static void appendQuestionMarks(StringBuilder query, Iterable<?> items) {
         boolean first = true;
         for (Object item : items) {
             if (first) {

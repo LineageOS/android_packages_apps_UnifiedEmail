@@ -292,7 +292,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     public ContactLoaderCallbacks getContactInfoSource() {
         if (mContactLoaderCallbacks == null) {
-            mContactLoaderCallbacks = new ContactLoaderCallbacks(mActivity.getActivityContext());
+            mContactLoaderCallbacks = mActivity.getContactLoaderCallbacks();
         }
         return mContactLoaderCallbacks;
     }
