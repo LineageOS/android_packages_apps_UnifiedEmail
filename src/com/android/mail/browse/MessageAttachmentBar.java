@@ -236,7 +236,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
                 mPopup.show();
 
-                AttachmentActionHandler.onOverflowOpened(getContext());
+                AttachmentActionHandler.onOverflowOpened(getContext(), mAttachment);
             }
         } else {
             // Handles clicking the attachment
@@ -314,12 +314,13 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     }
 
     private boolean shouldShowExtraOption1() {
-        return !mHideExtraOptionOne && mActionHandler.shouldShowExtraOption1();
+        return !mHideExtraOptionOne &&
+                mActionHandler.shouldShowExtraOption1(mAttachment.getContentType());
     }
 
     private boolean shouldShowOverflow() {
-        return (shouldShowPreview() || shouldShowSave() || shouldShowDownloadAgain()
-                || shouldShowExtraOption1()) && !shouldShowCancel();
+        return (shouldShowPreview() || shouldShowSave() || shouldShowDownloadAgain() ||
+                shouldShowExtraOption1()) && !shouldShowCancel();
     }
 
     private boolean shouldShowCancel() {
