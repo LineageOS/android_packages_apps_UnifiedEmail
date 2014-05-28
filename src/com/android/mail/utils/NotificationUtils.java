@@ -16,7 +16,6 @@
 package com.android.mail.utils;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -105,6 +104,7 @@ public class NotificationUtils {
 
     private static BidiFormatter sBidiFormatter = BidiFormatter.getInstance();
 
+    // Maps summary notification to child notification ids.
     private static Map<NotificationKey, Set<Integer>> sChildNotificationsMap =
             new HashMap<NotificationKey, Set<Integer>>();
 
@@ -425,8 +425,7 @@ public class NotificationUtils {
 
         // Cancel & remove the invalid notifications.
         if (notificationsToCancel.size() > 0) {
-            NotificationManager nm = (NotificationManager) context.getSystemService(
-                    Context.NOTIFICATION_SERVICE);
+            NotificationManagerCompat nm = NotificationManagerCompat.from(context);
             for (NotificationKey notification : notificationsToCancel) {
                 final Folder folder = notification.folder;
                 final int notificationId =
@@ -437,6 +436,8 @@ public class NotificationUtils {
                 notificationMap.remove(notification);
                 NotificationActionUtils.sUndoNotifications.remove(notificationId);
                 NotificationActionUtils.sNotificationTimestamps.delete(notificationId);
+
+                cancelChildNotifications(notification, nm);
             }
             notificationMap.saveNotificationMap(context);
         }
@@ -463,8 +464,10 @@ public class NotificationUtils {
             LogUtils.d(LOG_TAG, "setNewEmailIndicator - cancelling %s / %s",
                     account.getEmailAddress(), folder.persistentId);
             notificationMap.remove(key);
-            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
-                    .cancel(notificationId);
+
+            NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+            nm.cancel(notificationId);
+            cancelChildNotifications(key, nm);
         } else {
             LogUtils.d(LOG_TAG, "setNewEmailIndicator - update count for: %s / %s " +
                     "to: unread: %d unseen %d", account.getEmailAddress(), folder.persistentId,
