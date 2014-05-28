@@ -222,15 +222,12 @@ public class NotificationActionUtils {
                     actionIconResId, title, pendingIntent);
             if (notificationAction == NotificationActionType.REPLY
                     || notificationAction == NotificationActionType.REPLY_ALL) {
-                wearableNotification.addAction(new WearableNotifications.Action.Builder(
-                        actionIconResId, title, pendingIntent)
-                        .addRemoteInput(new RemoteInput.Builder(WEAR_REPLY_INPUT)
-                                .setLabel(title).build())
-                        .build());
+                wearableActionBuilder.addRemoteInput(
+                        new RemoteInput.Builder(WEAR_REPLY_INPUT).setLabel(title).build());
                 LogUtils.d(LOG_TAG, "Adding wearable action!!");
-            } else {
-                notification.addAction(actionIconResId, title, pendingIntent);
             }
+
+            wearableNotification.addAction(wearableActionBuilder.build());
         }
     }
 
