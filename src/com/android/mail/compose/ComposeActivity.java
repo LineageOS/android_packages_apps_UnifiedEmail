@@ -47,7 +47,7 @@ import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import android.support.wearable.notifications.RemoteInput;
+import android.support.v4.app.RemoteInput;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableString;
@@ -56,7 +56,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -106,7 +105,6 @@ import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
-import com.android.mail.utils.NotificationUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -177,6 +175,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // List of all the fields
     static final String[] ALL_EXTRAS = { EXTRA_SUBJECT, EXTRA_BODY, EXTRA_TO, EXTRA_CC, EXTRA_BCC,
             EXTRA_QUOTED_TEXT };
+
+    private static final String LEGACY_WEAR_EXTRA = "com.google.android.wearable.extras";
 
     private static SendOrSaveCallback sTestSendOrSaveCallback = null;
     // Map containing information about requests to create new messages, and the id of the
@@ -525,19 +525,35 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
+                String wearReply = null;
                 if (remoteInput != null) {
-                    String wearReply = remoteInput.getString(
+                    LogUtils.d(LOG_TAG, "Got remote input from new api");
+                    CharSequence input = remoteInput.getCharSequence(
                             NotificationActionUtils.WEAR_REPLY_INPUT);
-                    if (!TextUtils.isEmpty(wearReply)) {
-                        createWearReplyTask(this, mRefMessageUri, UIProvider.MESSAGE_PROJECTION,
-                                mComposeMode, wearReply).execute();
-                        finish();
-                        return;
-                    } else {
-                        LogUtils.w(LOG_TAG, "remote input string is null");
+                    if (input != null) {
+                        wearReply = input.toString();
                     }
                 } else {
-                    LogUtils.d(LOG_TAG, "No remote input");
+                    // TODO: remove after legacy code has been removed.
+                    LogUtils.d(LOG_TAG,
+                            "No remote input from new api, falling back to compatibility mode");
+                    ClipData clipData = intent.getClipData();
+                    if (clipData != null
+                            && LEGACY_WEAR_EXTRA.equals(clipData.getDescription().getLabel())) {
+                        Bundle extras = clipData.getItemAt(0).getIntent().getExtras();
+                        if (extras != null) {
+                            wearReply = extras.getString(NotificationActionUtils.WEAR_REPLY_INPUT);
+                        }
+                    }
+                }
+
+                if (!TextUtils.isEmpty(wearReply)) {
+                    createWearReplyTask(this, mRefMessageUri, UIProvider.MESSAGE_PROJECTION,
+                            mComposeMode, wearReply).execute();
+                    finish();
+                    return;
+                } else {
+                    LogUtils.w(LOG_TAG, "remote input string is null");
                 }
             }
 

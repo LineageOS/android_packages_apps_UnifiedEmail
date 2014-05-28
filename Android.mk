@@ -43,8 +43,6 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-gridlayout
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 LOCAL_STATIC_JAVA_LIBRARIES += android-opt-datetimepicker
-# STOPSHIP: Open source the wearable support jar
-LOCAL_STATIC_JAVA_LIBRARIES += prebuilt-wearable-support
 
 LOCAL_SDK_VERSION := current
 
