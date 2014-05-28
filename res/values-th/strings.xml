@@ -448,4 +448,24 @@
     <string name="copyright_information" msgid="1673715390305905781">"ข้อมูลลิขสิทธิ์"</string>
     <string name="privacy_policy" msgid="2072093492013385609">"นโยบายส่วนบุคคล"</string>
     <string name="open_source_licenses" msgid="6831573769505612579">"ใบอนุญาตโอเพนซอร์ส"</string>
+    <!-- no translation found for reply_choice_yes (5279400403860280271) -->
+    <skip />
+    <!-- no translation found for reply_choice_no (1626377088683186268) -->
+    <skip />
+    <!-- no translation found for reply_choice_ok (5138061449166345173) -->
+    <skip />
+    <!-- no translation found for reply_choice_hehe (7883585007161871893) -->
+    <skip />
+    <!-- no translation found for reply_choice_thanks (8365439191962120322) -->
+    <skip />
+    <!-- no translation found for reply_choice_i_agree (24980061720212740) -->
+    <skip />
+    <!-- no translation found for reply_choice_nice (7472107121354003424) -->
+    <skip />
+    <!-- no translation found for reply_choice_later (2694622729579726898) -->
+    <skip />
+    <!-- no translation found for reply_choice_smiling_face (7319371040013238561) -->
+    <skip />
+    <!-- no translation found for reply_choice_frowning_face (1620301664784374038) -->
+    <skip />
 </resources>

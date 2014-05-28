@@ -448,4 +448,14 @@
     <string name="copyright_information" msgid="1673715390305905781">"Autorių teisių inform."</string>
     <string name="privacy_policy" msgid="2072093492013385609">"Privatumo politika"</string>
     <string name="open_source_licenses" msgid="6831573769505612579">"Atvirojo šaltinio licenc."</string>
+    <string name="reply_choice_yes" msgid="5279400403860280271">"Taip"</string>
+    <string name="reply_choice_no" msgid="1626377088683186268">"Ne"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"Gerai"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"Hehe"</string>
+    <string name="reply_choice_thanks" msgid="8365439191962120322">"Ačiū"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"Sutinku"</string>
+    <string name="reply_choice_nice" msgid="7472107121354003424">"Puiku"</string>
+    <string name="reply_choice_later" msgid="2694622729579726898">"Atsakysiu jums vėliau"</string>
+    <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
+    <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>
