@@ -894,4 +894,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         }
         return Uri.parse(uri);
     }
+
+    public static final boolean isRoot(Folder folder) {
+        return (folder == null) || Uri.EMPTY.equals(folder.parent);
+    }
 }

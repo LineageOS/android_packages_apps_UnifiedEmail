@@ -875,7 +875,7 @@ public abstract class AbstractActivityController implements ActivityController,
     public void onFolderChanged(Folder folder, final boolean force) {
         /** If the folder doesn't exist, or its parent URI is empty,
          * this is not a child folder */
-        final boolean isTopLevel = (folder == null) || (folder.parent == Uri.EMPTY);
+        final boolean isTopLevel = Folder.isRoot(folder);
         final int mode = mViewMode.getMode();
         mDrawerToggle.setDrawerIndicatorEnabled(
                 getShouldShowDrawerIndicator(mode, isTopLevel));
@@ -2235,7 +2235,7 @@ public abstract class AbstractActivityController implements ActivityController,
         if (isDrawerEnabled()) {
             /** If the folder doesn't exist, or its parent URI is empty,
              * this is not a child folder */
-            final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
+            final boolean isTopLevel = Folder.isRoot(mFolder);
             mDrawerToggle.setDrawerIndicatorEnabled(
                     getShouldShowDrawerIndicator(newMode, isTopLevel));
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -4329,7 +4329,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
             // When closed, we want to use either the burger, or up, based on where we are
             final int mode = mViewMode.getMode();
-            final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
+            final boolean isTopLevel = Folder.isRoot(mFolder);
             mDrawerToggle.setDrawerIndicatorEnabled(getShouldShowDrawerIndicator(mode, isTopLevel));
 
             for (DrawerLayout.DrawerListener l : mObservers) {
