@@ -194,7 +194,8 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             if (mHideExtraOptionOne) {
                 mExtraOption1Item.setVisible(false);
             } else {
-                mExtraOption1Item.setEnabled(mActionHandler.shouldShowExtraOption1());
+                mExtraOption1Item.setEnabled(
+                        mActionHandler.shouldShowExtraOption1(attachment.getContentType()));
             }
         } else {
             if (mMenu != null) {
