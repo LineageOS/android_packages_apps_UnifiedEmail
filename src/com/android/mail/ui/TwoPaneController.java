@@ -22,7 +22,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
@@ -196,7 +195,7 @@ public final class TwoPaneController extends AbstractActivityController {
             mViewMode.enterConversationListMode();
         }
 
-        if (folder.parent != Uri.EMPTY) {
+        if (!Utils.isEmpty(folder.parent)) {
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
         }
@@ -255,8 +254,8 @@ public final class TwoPaneController extends AbstractActivityController {
         }
         // On two-pane, the back button is only removed in the conversation list mode for top level
         // folders, and shown for every other condition.
-        if ((mViewMode.isListMode() && (mFolder == null || mFolder.parent == null
-                || mFolder.parent == Uri.EMPTY)) || mViewMode.isWaitingForSync()) {
+        if ((mViewMode.isListMode() && (Folder.isRoot(mFolder) || mFolder.parent == null))
+                || mViewMode.isWaitingForSync()) {
             mActionBarView.removeBackButton();
         } else {
             mActionBarView.setBackButton();
@@ -408,9 +407,7 @@ public final class TwoPaneController extends AbstractActivityController {
             mActivity.finish();
         } else if (mode == ViewMode.CONVERSATION_LIST
                 || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
-            final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
-
-            if (isTopLevel) {
+            if (Folder.isRoot(mFolder)) {
                 // Show the drawer
                 toggleDrawerState();
             } else {
@@ -450,7 +447,7 @@ public final class TwoPaneController extends AbstractActivityController {
             // folder list has had a chance to initialize.
             final FolderListFragment folderList = getFolderListFragment();
             if (mode == ViewMode.CONVERSATION_LIST && folderList != null
-                    && mFolder != null && mFolder.parent != Uri.EMPTY) {
+                    && !Folder.isRoot(mFolder)) {
                 // If the user navigated via the left folders list into a child folder,
                 // back should take the user up to the parent folder's conversation list.
                 navigateUpFolderHierarchy();

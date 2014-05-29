@@ -22,7 +22,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
@@ -374,7 +373,7 @@ public final class OnePaneController extends AbstractActivityController {
             // Not needed, the activity is going away anyway.
         } else if (mode == ViewMode.CONVERSATION_LIST
                 || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
-            final boolean isTopLevel = (mFolder == null) || (mFolder.parent == Uri.EMPTY);
+            final boolean isTopLevel = Folder.isRoot(mFolder);
 
             if (isTopLevel) {
                 // Show the drawer.

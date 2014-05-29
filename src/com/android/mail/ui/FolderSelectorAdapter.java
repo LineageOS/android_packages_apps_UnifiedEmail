@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -218,7 +219,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
                 node.mWrappedObject = folderRow;
             }
             // Special case the top level folders
-            if (folderRow.mFolder.parent == null || folderRow.mFolder.parent.equals(Uri.EMPTY)) {
+            if (Utils.isEmpty(folderRow.mFolder.parent)) {
                 root.addChild(node);
             } else {
                 // Find or half-create the parent TreeNode wrapper
