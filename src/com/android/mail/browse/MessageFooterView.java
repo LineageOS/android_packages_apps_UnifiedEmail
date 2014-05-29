@@ -263,7 +263,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mAttachmentBarList.setVisibility(View.VISIBLE);
 
         if (!barAttachments.isEmpty() &&
-                AttachmentActionHandler.shouldShowAboveBarAttachmentLayout(getContext())) {
+                AttachmentActionHandler.shouldShowAboveBarAttachmentLayout(
+                        getContext(), barAttachments)) {
             showAboveAttachmentBarListLayout();
         } else {
             hideAboveAttachmentBarListLayout();

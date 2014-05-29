@@ -43,6 +43,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AttachmentActionHandler {
     private static final String PROGRESS_FRAGMENT_TAG = "attachment-progress";
@@ -255,8 +256,8 @@ public class AttachmentActionHandler {
         sOptionHandler = handler;
     }
 
-    public boolean shouldShowExtraOption1() {
-        return (sOptionHandler != null) && sOptionHandler.shouldShowExtraOption1();
+    public boolean shouldShowExtraOption1(String mimeType) {
+        return (sOptionHandler != null) && sOptionHandler.shouldShowExtraOption1(mimeType);
     }
 
     public void handleOption1() {
@@ -266,9 +267,10 @@ public class AttachmentActionHandler {
         sOptionHandler.handleOption1(mContext, mAccount, mMessage, mAttachment, mFragmentManager);
     }
 
-    public static boolean shouldShowAboveBarAttachmentLayout(Context context) {
+    public static boolean shouldShowAboveBarAttachmentLayout(
+            Context context, List<Attachment> attachments) {
         return (sOptionHandler != null) &&
-                sOptionHandler.shouldShowAboveBarAttachmentLayout(context);
+                sOptionHandler.shouldShowAboveBarAttachmentLayout(context, attachments);
     }
 
     public static void setupAboveBarAttachmentLayout(View view) {
@@ -277,9 +279,9 @@ public class AttachmentActionHandler {
         }
     }
 
-    public static void onOverflowOpened(Context context) {
+    public static void onOverflowOpened(Context context, Attachment attachment) {
         if(sOptionHandler != null) {
-            sOptionHandler.onOverflowOpened(context);
+            sOptionHandler.onOverflowOpened(context, attachment);
         }
     }
 
@@ -306,7 +308,7 @@ public class AttachmentActionHandler {
      */
     public static class OptionHandler {
 
-        public boolean shouldShowExtraOption1() {
+        public boolean shouldShowExtraOption1(String mimeType) {
             return false;
         }
 
@@ -315,13 +317,14 @@ public class AttachmentActionHandler {
             // no-op
         }
 
-        public boolean shouldShowAboveBarAttachmentLayout(Context context) {
+        public boolean shouldShowAboveBarAttachmentLayout(
+                Context context, List<Attachment> attachments) {
             return false;
         }
 
         public void setupAboveBarAttachmentLayout(View view) { /* no-op */ }
 
-        public void onOverflowOpened(Context context) { /* no-op */ }
+        public void onOverflowOpened(Context context, Attachment attachment) { /* no-op */ }
 
         public void registerDismissListener(Uri conversationUri,
                 AboveAttachmentLayoutDismissedListener listener) {
