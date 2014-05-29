@@ -1505,8 +1505,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             // aligned with the most up-to-date data.
             if (!newMsg.isEqual(oldMsg)) {
                 mAdapter.updateItemsForMessage(newMsg, changedOverlayPositions);
-                LogUtils.i(LOG_TAG, "msg #%d (%d): detected field(s) change. isSending=%s",
-                        pos, newMsg.id, newMsg.isSending);
+                LogUtils.i(LOG_TAG, "msg #%d (%d): detected field(s) change. sendingState=%s",
+                        pos, newMsg.id, newMsg.sendingState);
             }
 
             // update changed message bodies in-place

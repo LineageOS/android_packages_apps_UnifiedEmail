@@ -179,9 +179,9 @@ public class MessageCursor extends ObjectCursor<ConversationMessage> {
             }
             sb.append(String.format(
                     "[Message #%d hash=%s uri=%s id=%s serverId=%s from='%s' draftType=%d" +
-                    " isSending=%s read=%s starred=%s attUris=%s]\n",
+                    " sendingState=%s read=%s starred=%s attUris=%s]\n",
                     pos, m.getStateHashCode(), m.uri, m.id, m.serverId, m.getFrom(), m.draftType,
-                    m.isSending, m.read, m.starred, attUris));
+                    m.sendingState, m.read, m.starred, attUris));
         }
         return sb.toString();
     }

@@ -1079,6 +1079,7 @@ public class UIProvider {
         public static final int QUEUED = 1;
         public static final int SENDING = 2;
         public static final int SENT = 3;
+        public static final int RETRYING = 4;
         public static final int SEND_ERROR = -1;
     }
 
@@ -1573,7 +1574,7 @@ public class UIProvider {
         MessageColumns.SPAM_WARNING_LEVEL,
         MessageColumns.SPAM_WARNING_LINK_TYPE,
         MessageColumns.VIA_DOMAIN,
-        MessageColumns.IS_SENDING,
+        MessageColumns.SENDING_STATE,
         MessageColumns.CLIPPED,
         MessageColumns.PERMALINK
     };
@@ -1621,7 +1622,7 @@ public class UIProvider {
     public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 32;
     public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 33;
     public static final int MESSAGE_VIA_DOMAIN_COLUMN = 34;
-    public static final int MESSAGE_IS_SENDING_COLUMN = 35;
+    public static final int MESSAGE_SENDING_STATE_COLUMN = 35;
     public static final int MESSAGE_CLIPPED_COLUMN = 36;
     public static final int MESSAGE_PERMALINK_COLUMN = 37;
 
@@ -1840,10 +1841,10 @@ public class UIProvider {
          */
         public static final String VIA_DOMAIN = "viaDomain";
         /**
-         * This boolean column indicates whether the message is an outgoing message in the process
-         * of being sent (will be zero for incoming messages and messages that are already sent).
+         * This int column indicates whether the message is an outgoing message in the process
+         * of being sent. See {@link com.android.mail.providers.UIProvider.ConversationSendingState}
          */
-        public static final String IS_SENDING = "isSending";
+        public static final String SENDING_STATE = "sendingState";
         /**
          * This boolean column indicates whether the message body has been clipped.
          */

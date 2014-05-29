@@ -53,9 +53,13 @@ public class SendersView {
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
     private static CharSequence sSendingString;
+    private static CharSequence sRetryingString;
+    private static CharSequence sFailedString;
     private static String sDraftCountFormatString;
     private static CharacterStyle sDraftsStyleSpan;
     private static CharacterStyle sSendingStyleSpan;
+    private static CharacterStyle sRetryingStyleSpan;
+    private static CharacterStyle sFailedStyleSpan;
     private static TextAppearanceSpan sUnreadStyleSpan;
     private static CharacterStyle sReadStyleSpan;
     private static String sMeSubjectString;
@@ -121,9 +125,13 @@ public class SendersView {
             sDraftsStyleSpan = new TextAppearanceSpan(context, R.style.DraftTextAppearance);
             sUnreadStyleSpan = new TextAppearanceSpan(context, R.style.SendersUnreadTextAppearance);
             sSendingStyleSpan = new TextAppearanceSpan(context, R.style.SendingTextAppearance);
+            sRetryingStyleSpan = new TextAppearanceSpan(context, R.style.RetryingTextAppearance);
+            sFailedStyleSpan = new TextAppearanceSpan(context, R.style.FailedTextAppearance);
             sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersReadTextAppearance);
             sMessageCountSpacerString = res.getString(R.string.message_count_spacer);
             sSendingString = res.getString(R.string.sending);
+            sRetryingString = res.getString(R.string.message_retrying);
+            sFailedString = res.getString(R.string.message_failed);
             sBidiFormatter = BidiFormatter.getInstance();
         }
     }
@@ -147,7 +155,6 @@ public class SendersView {
             getSenderResources(context, resourceCachingRequired);
             int count = conversationInfo.messageCount;
             int draftCount = conversationInfo.draftCount;
-            boolean showSending = sendingStatus == UIProvider.ConversationSendingState.SENDING;
             if (count > 1) {
                 messageInfo.append(count + "");
             }
@@ -172,19 +179,34 @@ public class SendersView {
                         draftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 messageInfo.append(draftString);
             }
-            if (showSending) {
+
+            boolean showState = sendingStatus == UIProvider.ConversationSendingState.SENDING ||
+                    sendingStatus == UIProvider.ConversationSendingState.RETRYING ||
+                    sendingStatus == UIProvider.ConversationSendingState.SEND_ERROR;
+            if (showState) {
                 // If we are showing a message count or any draft text, prepend
                 // the sending state text with a comma.
                 if (count > 1 || draftCount > 0) {
                     messageInfo.append(sSendersSplitToken);
                 }
-                SpannableStringBuilder sending = new SpannableStringBuilder();
-                sending.append(sSendingString);
-                sending.setSpan(sSendingStyleSpan, 0, sending.length(), 0);
-                messageInfo.append(sending);
+
+                SpannableStringBuilder stateSpan = new SpannableStringBuilder();
+
+                if (sendingStatus == UIProvider.ConversationSendingState.SENDING) {
+                    stateSpan.append(sSendingString);
+                    stateSpan.setSpan(sSendingStyleSpan, 0, stateSpan.length(), 0);
+                } else if (sendingStatus == UIProvider.ConversationSendingState.RETRYING) {
+                    stateSpan.append(sRetryingString);
+                    stateSpan.setSpan(sReadStyleSpan, 0, stateSpan.length(), 0);
+                } else if (sendingStatus == UIProvider.ConversationSendingState.SEND_ERROR) {
+                    stateSpan.append(sFailedString);
+                    stateSpan.setSpan(sFailedStyleSpan, 0, stateSpan.length(), 0);
+                }
+                messageInfo.append(stateSpan);
             }
+
             // Prepend a space if we are showing other message info text.
-            if (count > 1 || (draftCount > 0 && hasSenders) || showSending) {
+            if (count > 1 || (draftCount > 0 && hasSenders) || showState) {
                 messageInfo.insert(0, sMessageCountSpacerString);
             }
         } finally {

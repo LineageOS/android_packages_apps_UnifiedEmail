@@ -203,9 +203,9 @@ public class Message implements Parcelable, HtmlMessage {
      */
     public String viaDomain;
     /**
-     * @see UIProvider.MessageColumns#IS_SENDING
+     * @see UIProvider.MessageColumns#SENDING_STATE
      */
-    public boolean isSending;
+    public int sendingState;
 
     /**
      * @see UIProvider.MessageColumns#CLIPPED
@@ -249,7 +249,7 @@ public class Message implements Parcelable, HtmlMessage {
      */
     public boolean isEqual(Message o) {
         return TextUtils.equals(this.getFrom(), o.getFrom()) &&
-                this.isSending == o.isSending &&
+                this.sendingState == o.sendingState &&
                 TextUtils.equals(this.getTo(), o.getTo()) &&
                 TextUtils.equals(this.getCc(), o.getCc()) &&
                 TextUtils.equals(this.getBcc(), o.getBcc()) &&
@@ -291,7 +291,7 @@ public class Message implements Parcelable, HtmlMessage {
         dest.writeInt(spamWarningLevel);
         dest.writeInt(spamLinkType);
         dest.writeString(viaDomain);
-        dest.writeInt(isSending ? 1 : 0);
+        dest.writeInt(sendingState);
         dest.writeInt(clipped ? 1 : 0);
         dest.writeString(permalink);
     }
@@ -327,7 +327,7 @@ public class Message implements Parcelable, HtmlMessage {
         spamWarningLevel = in.readInt();
         spamLinkType = in.readInt();
         viaDomain = in.readString();
-        isSending = in.readInt() != 0;
+        sendingState = in.readInt();
         clipped = in.readInt() != 0;
         permalink = in.readString();
     }
@@ -407,7 +407,7 @@ public class Message implements Parcelable, HtmlMessage {
             spamWarningLevel = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LEVEL_COLUMN);
             spamLinkType = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN);
             viaDomain = cursor.getString(UIProvider.MESSAGE_VIA_DOMAIN_COLUMN);
-            isSending = cursor.getInt(UIProvider.MESSAGE_IS_SENDING_COLUMN) != 0;
+            sendingState = cursor.getInt(UIProvider.MESSAGE_SENDING_STATE_COLUMN);
             clipped = cursor.getInt(UIProvider.MESSAGE_CLIPPED_COLUMN) != 0;
             permalink = cursor.getString(UIProvider.MESSAGE_PERMALINK_COLUMN);
         }
@@ -440,7 +440,7 @@ public class Message implements Parcelable, HtmlMessage {
         alwaysShowImages = false;
         viaDomain = null;
         draftType = UIProvider.DraftType.NOT_A_DRAFT;
-        isSending = false;
+        sendingState = UIProvider.ConversationSendingState.OTHER;
         starred = false;
         spamWarningString = null;
         messageFlags = 0;

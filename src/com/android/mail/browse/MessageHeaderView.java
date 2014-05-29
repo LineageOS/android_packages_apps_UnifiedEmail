@@ -135,7 +135,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
     private boolean mIsDraft = false;
 
-    private boolean mIsSending;
+    private int mSendingState;
 
     private String mSnippet;
 
@@ -451,7 +451,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
          * sender name to "Draft".
          */
         mIsDraft = mMessage.draftType != UIProvider.DraftType.NOT_A_DRAFT;
-        mIsSending = mMessage.isSending;
+        mSendingState = mMessage.sendingState;
 
         // If this was a sent message AND:
         // 1. the account has a custom from, the cursor will populate the
@@ -484,7 +484,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         updateChildVisibility();
 
         final String snippet;
-        if (mIsDraft || mIsSending) {
+        if (mIsDraft || mSendingState != UIProvider.ConversationSendingState.OTHER) {
             snippet = makeSnippet(mMessage.snippet);
         } else {
             snippet = mMessage.snippet;
@@ -557,14 +557,24 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
     private CharSequence getHeaderTitle() {
         CharSequence title;
-
-        if (mIsDraft) {
-            title = getResources().getQuantityText(R.plurals.draft, 1);
-        } else if (mIsSending) {
-            title = getResources().getString(R.string.sending);
-        } else {
-            title = getBidiFormatter().unicodeWrap(
-                    getSenderName(mSender));
+        switch (mSendingState) {
+            case UIProvider.ConversationSendingState.QUEUED:
+            case UIProvider.ConversationSendingState.SENDING:
+                title = getResources().getString(R.string.sending);
+                break;
+            case UIProvider.ConversationSendingState.RETRYING:
+                title = getResources().getString(R.string.message_retrying);
+                break;
+            case UIProvider.ConversationSendingState.SEND_ERROR:
+                title = getResources().getString(R.string.message_failed);
+                break;
+            default:
+                if (mIsDraft) {
+                    title = getResources().getQuantityText(R.plurals.draft, 1);
+                } else {
+                    title = getBidiFormatter().unicodeWrap(
+                            getSenderName(mSender));
+                }
         }
 
         return title;
@@ -572,7 +582,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
     private CharSequence getHeaderSubtitle() {
         CharSequence sub;
-        if (mIsSending) {
+        if (mSendingState != UIProvider.ConversationSendingState.OTHER) {
             sub = null;
         } else {
             if (isExpanded()) {
