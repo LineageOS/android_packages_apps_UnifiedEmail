@@ -281,6 +281,7 @@ public final class OnePaneController extends AbstractActivityController {
                 || action == R.id.remove_folder
                 || action == R.id.delete
                 || action == R.id.discard_drafts
+                || action == R.id.discard_outbox
                 || action == R.id.mark_important
                 || action == R.id.mark_not_important
                 || action == R.id.mute

@@ -132,6 +132,8 @@
     <string name="delete">Delete</string>
     <!-- Menu item: discard the drafts in this conversation [CHAR LIMIT = 30] -->
     <string name="discard_drafts">Discard drafts</string>
+    <!-- Menu item: discard the failed messages in this conversation [CHAR LIMIT = 30] -->
+    <string name="discard_failed">Discard failed</string>
     <!-- Menu item: refresh the inbox -->
     <string name="refresh">Refresh</string>
     <!-- Menu item: reply to this message -->

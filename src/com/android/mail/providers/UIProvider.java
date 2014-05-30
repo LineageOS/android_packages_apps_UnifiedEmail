@@ -1409,6 +1409,11 @@ public class UIProvider {
         public static final String DISCARD_DRAFTS = "discard_drafts";
 
         /**
+         * Move all failed messages into drafts operation
+         */
+        public static final String MOVE_FAILED_TO_DRAFTS = "move_failed_to_drafts";
+
+        /**
          * Update conversation folder(s) operation. ContentValues passed as part
          * of this update will be of the format (FOLDERS_UPDATED, csv of updated
          * folders) where the comma separated values of the updated folders will

@@ -239,6 +239,8 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             cc.mostlyArchive(convList);
         } else if (mSwipeAction == R.id.delete) {
             cc.mostlyDelete(convList);
+        } else if (mSwipeAction == R.id.discard_outbox) {
+            cc.moveFailedIntoDrafts(convList);
         }
         if (mSwipedListener != null) {
             mSwipedListener.onListItemSwiped(convList);

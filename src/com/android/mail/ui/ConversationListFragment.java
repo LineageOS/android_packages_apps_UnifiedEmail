@@ -915,7 +915,12 @@ public final class ConversationListFragment extends ListFragment implements
                 switch (swipeSetting) {
                     // Try to respect user's setting as best as we can and default to doing nothing
                     case Swipe.DELETE:
-                        action = R.id.delete;
+                        // Delete in Outbox means discard failed message and put it in draft
+                        if (mFolder.isType(UIProvider.FolderType.OUTBOX)) {
+                            action = R.id.discard_outbox;
+                        } else {
+                            action = R.id.delete;
+                        }
                         break;
                     case Swipe.ARCHIVE:
                         // Special case spam since it shouldn't remove spam folder label on swipe
