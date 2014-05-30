@@ -356,6 +356,7 @@ public class NotificationActionUtils {
 
                 final Intent intent = createReplyIntent(context, account, messageUri, false);
                 intent.setPackage(context.getPackageName());
+                intent.setData(conversation.uri);
                 intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(intent);
@@ -369,6 +370,7 @@ public class NotificationActionUtils {
 
                 final Intent intent = createReplyIntent(context, account, messageUri, true);
                 intent.setPackage(context.getPackageName());
+                intent.setData(conversation.uri);
                 intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
 
                 taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(intent);
@@ -381,6 +383,7 @@ public class NotificationActionUtils {
 
                 final Intent intent = new Intent(intentAction);
                 intent.setPackage(context.getPackageName());
+                intent.setData(conversation.uri);
                 putNotificationActionExtra(intent, notificationAction);
 
                 return PendingIntent.getService(
@@ -390,6 +393,7 @@ public class NotificationActionUtils {
 
                 final Intent intent = new Intent(intentAction);
                 intent.setPackage(context.getPackageName());
+                intent.setData(conversation.uri);
                 putNotificationActionExtra(intent, notificationAction);
 
                 return PendingIntent.getService(
@@ -568,6 +572,7 @@ public class NotificationActionUtils {
 
         final Intent clickIntent = new Intent(NotificationActionIntentService.ACTION_UNDO);
         clickIntent.setPackage(packageName);
+        clickIntent.setData(notificationAction.mConversation.uri);
         putNotificationActionExtra(clickIntent, notificationAction);
         final PendingIntent clickPendingIntent = PendingIntent.getService(context, notificationId,
                 clickIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -641,6 +646,7 @@ public class NotificationActionUtils {
             final Context context, final NotificationAction notificationAction) {
         final Intent intent = new Intent(NotificationActionIntentService.ACTION_UNDO_TIMEOUT);
         intent.setPackage(context.getPackageName());
+        intent.setData(notificationAction.mConversation.uri);
         putNotificationActionExtra(intent, notificationAction);
 
         final int requestCode = notificationAction.getAccount().hashCode()
