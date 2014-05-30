@@ -188,6 +188,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private static final String LEGACY_WEAR_EXTRA = "com.google.android.wearable.extras";
 
+    /**
+     * Constant value for the threshold to use for auto-complete suggestions
+     * for the to/cc/bcc fields.
+     */
+    private static final int COMPLETION_THRESHOLD = 1;
+
     private static SendOrSaveCallback sTestSendOrSaveCallback = null;
     // Map containing information about requests to create new messages, and the id of the
     // messages that were the result of those requests.
@@ -1262,11 +1268,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             addAttachmentsButton.setOnClickListener(this);
         }
         mTo = (RecipientEditTextView) findViewById(R.id.to);
-        mTo.setTokenizer(new Rfc822Tokenizer());
+        initializeRecipientEditTextView(mTo);
         mCc = (RecipientEditTextView) findViewById(R.id.cc);
-        mCc.setTokenizer(new Rfc822Tokenizer());
+        initializeRecipientEditTextView(mCc);
         mBcc = (RecipientEditTextView) findViewById(R.id.bcc);
-        mBcc.setTokenizer(new Rfc822Tokenizer());
+        initializeRecipientEditTextView(mBcc);
         // TODO: add special chips text change watchers before adding
         // this as a text changed watcher to the to, cc, bcc fields.
         mSubject = (TextView) findViewById(R.id.subject);
@@ -1278,6 +1284,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mFromStaticText = (TextView) findViewById(R.id.from_account_name);
         mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
         mFromSpinner = (FromAddressSpinner) findViewById(R.id.from_picker);
+    }
+
+    private void initializeRecipientEditTextView(RecipientEditTextView view) {
+        view.setTokenizer(new Rfc822Tokenizer());
+        view.setThreshold(COMPLETION_THRESHOLD);
     }
 
     @Override
