@@ -316,6 +316,10 @@
     </plurals>
     <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
     <string name="sending">Sending\u2026</string>
+    <!-- Message displayed in the outgoing message list item when the message failed to sent and is being retried [CHAR LIMIT=20] -->
+    <string name="message_retrying">Retrying\u2026</string>
+    <!-- Message displayed in the outgoing message list item when the message failed to send [CHAR LIMIT=20] -->
+    <string name="message_failed">Failed</string>
     <!-- Message displayed in a browse list item for one second after a send failed [CHAR LIMIT=26]-->
     <string name="send_failed">Message wasn\'t sent.</string>
     <!-- String used to represent "me" when used as an object pronoun. This string is used when
