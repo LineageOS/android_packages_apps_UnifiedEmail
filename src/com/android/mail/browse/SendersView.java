@@ -197,7 +197,7 @@ public class SendersView {
                     stateSpan.setSpan(sSendingStyleSpan, 0, stateSpan.length(), 0);
                 } else if (sendingStatus == UIProvider.ConversationSendingState.RETRYING) {
                     stateSpan.append(sRetryingString);
-                    stateSpan.setSpan(sReadStyleSpan, 0, stateSpan.length(), 0);
+                    stateSpan.setSpan(sRetryingStyleSpan, 0, stateSpan.length(), 0);
                 } else if (sendingStatus == UIProvider.ConversationSendingState.SEND_ERROR) {
                     stateSpan.append(sFailedString);
                     stateSpan.setSpan(sFailedStyleSpan, 0, stateSpan.length(), 0);
