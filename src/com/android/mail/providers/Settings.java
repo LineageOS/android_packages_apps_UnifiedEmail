@@ -102,6 +102,7 @@ public class Settings implements Parcelable {
     public final Uri setupIntentUri;
     public final String veiledAddressPattern;
     public final int showImages;
+    public final int warmWelcomeStatus;
 
     /**
      * The {@link Uri} to use when moving a conversation to the inbox. May
@@ -137,6 +138,7 @@ public class Settings implements Parcelable {
         veiledAddressPattern = null;
         moveToInbox = Uri.EMPTY;
         showImages = ShowImages.ASK_FIRST;
+        warmWelcomeStatus = -1;
     }
 
     public Settings(Parcel inParcel) {
@@ -161,6 +163,7 @@ public class Settings implements Parcelable {
         veiledAddressPattern = inParcel.readString();
         moveToInbox = Utils.getValidUri(inParcel.readString());
         showImages = inParcel.readInt();
+        warmWelcomeStatus = inParcel.readInt();
     }
 
     public Settings(Cursor cursor) {
@@ -196,6 +199,8 @@ public class Settings implements Parcelable {
         moveToInbox = Utils.getValidUri(
                 cursor.getString(cursor.getColumnIndex(SettingsColumns.MOVE_TO_INBOX)));
         showImages = cursor.getInt(cursor.getColumnIndex(SettingsColumns.SHOW_IMAGES));
+        warmWelcomeStatus = cursor.getInt(
+                cursor.getColumnIndex(SettingsColumns.WARM_WELCOME_STATUS));
     }
 
     private Settings(JSONObject json) {
@@ -227,6 +232,8 @@ public class Settings implements Parcelable {
         veiledAddressPattern = json.optString(SettingsColumns.VEILED_ADDRESS_PATTERN, null);
         moveToInbox = Utils.getValidUri(json.optString(SettingsColumns.MOVE_TO_INBOX));
         showImages = json.optInt(SettingsColumns.SHOW_IMAGES, sDefault.showImages);
+        warmWelcomeStatus =
+                json.optInt(SettingsColumns.WARM_WELCOME_STATUS, sDefault.warmWelcomeStatus);
     }
 
     /**
@@ -273,6 +280,7 @@ public class Settings implements Parcelable {
             json.put(SettingsColumns.MOVE_TO_INBOX,
                     getNonNull(moveToInbox, sDefault.moveToInbox));
             json.put(SettingsColumns.SHOW_IMAGES, showImages);
+            json.put(SettingsColumns.WARM_WELCOME_STATUS, warmWelcomeStatus);
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not serialize settings");
         }
@@ -316,6 +324,7 @@ public class Settings implements Parcelable {
                 veiledAddressPattern);
         map.put(UIProvider.AccountColumns.SettingsColumns.MOVE_TO_INBOX, moveToInbox);
         map.put(UIProvider.AccountColumns.SettingsColumns.SHOW_IMAGES, showImages);
+        map.put(UIProvider.AccountColumns.SettingsColumns.WARM_WELCOME_STATUS, warmWelcomeStatus);
 
         return map;
     }
@@ -363,6 +372,7 @@ public class Settings implements Parcelable {
         dest.writeString(veiledAddressPattern);
         dest.writeString(getNonNull(moveToInbox, sDefault.moveToInbox).toString());
         dest.writeInt(showImages);
+        dest.writeInt(warmWelcomeStatus);
     }
 
     /**
@@ -471,7 +481,8 @@ public class Settings implements Parcelable {
                 && setupIntentUri == that.setupIntentUri
                 && conversationViewMode == that.conversationViewMode
                 && TextUtils.equals(veiledAddressPattern, that.veiledAddressPattern))
-                && Objects.equal(moveToInbox, that.moveToInbox);
+                && Objects.equal(moveToInbox, that.moveToInbox)
+                && warmWelcomeStatus == that.warmWelcomeStatus;
     }
 
     @Override
@@ -483,7 +494,7 @@ public class Settings implements Parcelable {
                     convListAttachmentPreviews, confirmDelete, confirmArchive, confirmSend,
                     defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
                     importanceMarkersEnabled, showChevronsEnabled, setupIntentUri,
-                    conversationViewMode, veiledAddressPattern, moveToInbox);
+                    conversationViewMode, veiledAddressPattern, moveToInbox, warmWelcomeStatus);
         }
         return mHashCode;
     }

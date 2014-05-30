@@ -40,6 +40,7 @@ import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
+import com.android.mail.welcome.WelcomeTourCompletionListener;
 import com.android.oldbitmap.AltBitmapCache;
 import com.android.oldbitmap.BitmapCache;
 
@@ -468,5 +469,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public String getHelpContext() {
         return mController.getHelpContext();
+    }
+
+    @Override
+    public void onWelcomeTourRequested(
+            WelcomeTourCompletionListener completionListener) {
+        // Do nothing.
     }
 }

@@ -22,6 +22,7 @@ import android.content.ContentResolver;
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Folder;
+import com.android.mail.welcome.WelcomeTourListener;
 import com.android.oldbitmap.BitmapCache;
 
 /**
@@ -30,7 +31,8 @@ import com.android.oldbitmap.BitmapCache;
  */
 public interface ControllableActivity extends HelpCallback, RestrictedActivity,
         FolderItemView.DropHandler, UndoListener,
-        AnimatedAdapter.Listener, ConversationListFooterView.FooterViewClickListener {
+        AnimatedAdapter.Listener, ConversationListFooterView.FooterViewClickListener,
+        WelcomeTourListener {
     /**
      * Returns the ViewMode the activity is updating.
      * @see com.android.mail.ui.ViewMode

@@ -44,6 +44,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MailObservable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
+import com.android.mail.welcome.WelcomeTourCompletionListener;
 import com.android.mail.widget.WidgetProvider;
 import com.android.oldbitmap.BitmapCache;
 
@@ -497,6 +498,12 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     @Override
     public void resetSenderImageCache() {
-        //Unsupported
+        // Unsupported
+    }
+
+    @Override
+    public void onWelcomeTourRequested(
+            WelcomeTourCompletionListener completionListener) {
+        // Unsupported
     }
 }

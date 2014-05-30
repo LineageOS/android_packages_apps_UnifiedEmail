@@ -184,6 +184,7 @@ public class UIProvider {
             .put(AccountColumns.QUICK_RESPONSE_URI, String.class)
             .put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, String.class)
             .put(AccountColumns.SettingsColumns.SHOW_IMAGES, Integer.class)
+            .put(AccountColumns.SettingsColumns.WARM_WELCOME_STATUS, Integer.class)
             .build();
 
     public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
@@ -618,6 +619,11 @@ public class UIProvider {
              * Show images in conversation view.
              */
             public static final String SHOW_IMAGES = "show_images";
+
+            /**
+             * Status of the warm welcome tour for the app.
+             */
+            public static final String WARM_WELCOME_STATUS = "warm_welcome_status";
         }
     }
 

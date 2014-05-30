@@ -108,6 +108,7 @@ import com.android.mail.utils.MailObservable;
 import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
+import com.android.mail.welcome.WelcomeTourCompletionListener;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -141,7 +142,8 @@ import java.util.TimerTask;
  * </p>
  */
 public abstract class AbstractActivityController implements ActivityController,
-        EmptyFolderDialogFragment.EmptyFolderDialogFragmentListener {
+        EmptyFolderDialogFragment.EmptyFolderDialogFragmentListener,
+        WelcomeTourCompletionListener {
     // Keys for serialization of various information in Bundles.
     /** Tag for {@link #mAccount} */
     private static final String SAVED_ACCOUNT = "saved-account";
@@ -169,7 +171,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private static final String SAVED_CONVERSATION_LIST_SCROLL_POSITIONS =
             "saved-conversation-list-scroll-positions";
 
-    /** Tag  used when loading a wait fragment */
+    /** Tag used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
     /** Tag used when loading a conversation list fragment. */
     public static final String TAG_CONVERSATION_LIST = "tag-conversation-list";
@@ -990,6 +992,17 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
+     * Renders the welcome tour if required.
+     */
+    protected void transitionToWelcomeTour(
+            WelcomeTourCompletionListener completionListener) {
+        if (mViewMode.getMode() != ViewMode.WARM_WELCOME_FLOW) {
+            mViewMode.enterWarmWelcomeMode();
+            mActivity.onWelcomeTourRequested(completionListener);
+        }
+    }
+
+    /**
      * Marks the {@link #mFolderChanged} value if the newFolder is different from the existing
      * {@link #mFolder}. This should be called immediately <b>before</b> assigning newFolder to
      * mFolder.
@@ -1641,6 +1654,7 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     protected abstract boolean handleBackPress();
+
     protected abstract boolean handleUpPress();
 
     @Override

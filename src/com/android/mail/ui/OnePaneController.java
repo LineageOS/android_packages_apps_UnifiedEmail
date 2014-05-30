@@ -254,8 +254,18 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     protected void hideWaitForInitialization() {
-        transitionToInbox();
+        transitionToWelcomeTour(this);
         super.hideWaitForInitialization();
+    }
+
+    @Override
+    public void onWelcomeTourComplete() {
+        // The inbox could have changed, in which case we should load it again.
+        if (mInbox == null || !isDefaultInbox(mInbox.folderUri, mAccount)) {
+            loadAccountInbox();
+        } else {
+            onFolderChanged(mInbox, false /* force */);
+        }
     }
 
     @Override
@@ -327,18 +337,6 @@ public final class OnePaneController extends AbstractActivityController {
         }
         mToastBar.hide(false, false /* actionClicked */);
         return true;
-    }
-
-    /**
-     * Switch to the Inbox by creating a new conversation list context that loads the inbox.
-     */
-    private void transitionToInbox() {
-        // The inbox could have changed, in which case we should load it again.
-        if (mInbox == null || !isDefaultInbox(mInbox.folderUri, mAccount)) {
-            loadAccountInbox();
-        } else {
-            onFolderChanged(mInbox, false /* force */);
-        }
     }
 
     @Override
