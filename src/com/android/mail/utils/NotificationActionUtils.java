@@ -584,6 +584,7 @@ public class NotificationActionUtils {
         // When the notification is cleared, we perform the destructive action
         final Intent deleteIntent = new Intent(NotificationActionIntentService.ACTION_DESTRUCT);
         deleteIntent.setPackage(packageName);
+        deleteIntent.setData(notificationAction.mConversation.uri);
         putNotificationActionExtra(deleteIntent, notificationAction);
         final PendingIntent deletePendingIntent = PendingIntent.getService(context,
                 notificationId, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT);
