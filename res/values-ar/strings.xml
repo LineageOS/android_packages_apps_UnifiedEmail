@@ -271,7 +271,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"مزامنة المجلد"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> مقروءة"</item>
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</item>
   </plurals>
     <string name="actionbar_large_unread_count" msgid="2780005218279965391">"أكثر من <xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"عرض المزيد من المحادثات"</string>
@@ -447,4 +447,14 @@
     <string name="copyright_information" msgid="1673715390305905781">"معلومات حقوق الطبع والنشر"</string>
     <string name="privacy_policy" msgid="2072093492013385609">"سياسة الخصوصية"</string>
     <string name="open_source_licenses" msgid="6831573769505612579">"تراخيص برامج مفتوحة المصدر"</string>
+    <string name="reply_choice_yes" msgid="5279400403860280271">"نعم"</string>
+    <string name="reply_choice_no" msgid="1626377088683186268">"لا"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"موافق"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"هاها"</string>
+    <string name="reply_choice_thanks" msgid="8365439191962120322">"شكرًا"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"أوافق"</string>
+    <string name="reply_choice_nice" msgid="7472107121354003424">"لطيف"</string>
+    <string name="reply_choice_later" msgid="2694622729579726898">"سأرد عليك لاحقًا"</string>
+    <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
+    <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>

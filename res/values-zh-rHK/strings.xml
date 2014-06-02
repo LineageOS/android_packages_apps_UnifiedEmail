@@ -447,4 +447,14 @@
     <string name="copyright_information" msgid="1673715390305905781">"版權資訊"</string>
     <string name="privacy_policy" msgid="2072093492013385609">"私隱權政策"</string>
     <string name="open_source_licenses" msgid="6831573769505612579">"開放原始碼授權"</string>
+    <string name="reply_choice_yes" msgid="5279400403860280271">"是"</string>
+    <string name="reply_choice_no" msgid="1626377088683186268">"否"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"確定"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"呵呵"</string>
+    <string name="reply_choice_thanks" msgid="8365439191962120322">"謝謝"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"我同意"</string>
+    <string name="reply_choice_nice" msgid="7472107121354003424">"很好"</string>
+    <string name="reply_choice_later" msgid="2694622729579726898">"我稍後會回覆您"</string>
+    <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
+    <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>
