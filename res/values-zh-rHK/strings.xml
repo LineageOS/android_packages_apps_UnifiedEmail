@@ -147,6 +147,8 @@
     <item quantity="other" msgid="6961049507579977505">"草稿"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"正在傳送..."</string>
+    <string name="message_retrying" msgid="64661613119987741">"正在重試…"</string>
+    <string name="message_failed" msgid="4820279576299009735">"失敗"</string>
     <string name="send_failed" msgid="750908595144529579">"未發送郵件。"</string>
     <string name="me_object_pronoun" msgid="6957328068206184521">"我"</string>
     <string name="me_subject_pronoun" msgid="271527705272088475">"我"</string>
@@ -448,24 +450,14 @@
     <string name="copyright_information" msgid="1673715390305905781">"版權資訊"</string>
     <string name="privacy_policy" msgid="2072093492013385609">"私隱權政策"</string>
     <string name="open_source_licenses" msgid="6831573769505612579">"開放原始碼授權"</string>
-    <!-- no translation found for reply_choice_yes (5279400403860280271) -->
-    <skip />
-    <!-- no translation found for reply_choice_no (1626377088683186268) -->
-    <skip />
-    <!-- no translation found for reply_choice_ok (5138061449166345173) -->
-    <skip />
-    <!-- no translation found for reply_choice_hehe (7883585007161871893) -->
-    <skip />
-    <!-- no translation found for reply_choice_thanks (8365439191962120322) -->
-    <skip />
-    <!-- no translation found for reply_choice_i_agree (24980061720212740) -->
-    <skip />
-    <!-- no translation found for reply_choice_nice (7472107121354003424) -->
-    <skip />
-    <!-- no translation found for reply_choice_later (2694622729579726898) -->
-    <skip />
-    <!-- no translation found for reply_choice_smiling_face (7319371040013238561) -->
-    <skip />
-    <!-- no translation found for reply_choice_frowning_face (1620301664784374038) -->
-    <skip />
+    <string name="reply_choice_yes" msgid="5279400403860280271">"是"</string>
+    <string name="reply_choice_no" msgid="1626377088683186268">"否"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"確定"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"呵呵"</string>
+    <string name="reply_choice_thanks" msgid="8365439191962120322">"謝謝"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"我同意"</string>
+    <string name="reply_choice_nice" msgid="7472107121354003424">"很好"</string>
+    <string name="reply_choice_later" msgid="2694622729579726898">"我稍後會回覆您"</string>
+    <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
+    <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>
