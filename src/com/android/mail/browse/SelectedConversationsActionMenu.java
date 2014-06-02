@@ -347,7 +347,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         inflater.inflate(R.menu.conversation_list_selection_actions_menu, menu);
         mActionMode = mode;
         mMenu = menu;
-        updateCount();
         return true;
     }
 
@@ -510,16 +509,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // before hiding the menu.
         if (set.isEmpty()) {
             return;
-        }
-        updateCount();
-    }
-
-    /**
-     * Updates the visible count of how many conversations are selected.
-     */
-    private void updateCount() {
-        if (mActionMode != null) {
-            mActionMode.setTitle(mContext.getString(R.string.num_selected, mSelectionSet.size()));
         }
     }
 
