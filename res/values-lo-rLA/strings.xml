@@ -120,7 +120,7 @@
     <string name="contextmenu_openlink" msgid="2176176524824953775">"ເປີດໃນໂປຣແກຣມທ່ອງເວັບ"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"ສຳເນົາ"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"ສຳເນົາລິ້ງ URL"</string>
-    <string name="contextmenu_view_image" msgid="8855189263365643422">"ເບິ່ງຮູບ​ພາບ"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"ເບິ່ງຮູບ​ພາບ​"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"ໂທ..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS..."</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"ເພີ່ມລາຍຊື່"</string>
@@ -147,6 +147,8 @@
     <item quantity="other" msgid="6961049507579977505">"ສະບັບຮ່າງ"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"ກຳລັງສົ່ງ..."</string>
+    <string name="message_retrying" msgid="64661613119987741">"ກຳລັງລອງໃໝ່..."</string>
+    <string name="message_failed" msgid="4820279576299009735">"ລົ້ມເຫຼວ"</string>
     <string name="send_failed" msgid="750908595144529579">"ຂໍ້ຄວາມບໍ່ຖືກສົ່ງ."</string>
     <string name="me_object_pronoun" msgid="6957328068206184521">"ຂ້ອຍ"</string>
     <string name="me_subject_pronoun" msgid="271527705272088475">"ຂ້ອຍ"</string>
@@ -424,7 +426,7 @@
     <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"ຂໍ້ຄວາມ"</string>
     <string name="send_to_contacts_text" msgid="2696513899649703420">"ສົ່ງໃຫ້ຜູ່ທີ່ຢູ່ໃນລາຍຊື່ຕິດຕໍ່ຂອງຂ້ອຍເທົ່ານັ້ນ"</string>
     <string name="send_to_domain_text" msgid="5055332409482662383">"ສົ່ງ​ໃຫ້ສະເພາະ <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
-    <string name="pick_start_date_title" msgid="915230000170560933">"ມື້ເລີ່ມ"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"ມື້ເລີ່ມ​"</string>
     <string name="pick_end_date_title" msgid="2068598706186320098">"ມື້ຈົບ (ເປັນທາງເລືອກ​)"</string>
     <string name="date_not_set" msgid="4925325938525330766">"ຍັງບໍ່ໄດ້ຕັ້ງ"</string>
     <string name="set_end_date_dialog_title" msgid="72028456826019380">"ມື້ຈົບ (ເປັນທາງເລືອກ)"</string>

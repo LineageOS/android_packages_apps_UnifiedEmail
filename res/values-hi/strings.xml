@@ -147,6 +147,8 @@
     <item quantity="other" msgid="6961049507579977505">"अधूरा ईमेल"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"भेज रहा है…"</string>
+    <string name="message_retrying" msgid="64661613119987741">"पुन: प्रयास हो रहा है..."</string>
+    <string name="message_failed" msgid="4820279576299009735">"विफल"</string>
     <string name="send_failed" msgid="750908595144529579">"संदेश नहीं भेजा गया था."</string>
     <string name="me_object_pronoun" msgid="6957328068206184521">"मैं"</string>
     <string name="me_subject_pronoun" msgid="271527705272088475">"मैं"</string>
