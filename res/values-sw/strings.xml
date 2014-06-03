@@ -53,7 +53,7 @@
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="custom_from_account_label" msgid="5069652141632649722">"Tuma barua kama:"</string>
     <string name="send" msgid="8242003661397555986">"Tuma"</string>
-    <string name="mark_read" msgid="8438349154394313195">"Weka alama kuwa imesomwa"</string>
+    <string name="mark_read" msgid="8438349154394313195">"Weka alama kuwa umesoma"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Tia alama kuwa hujasoma"</string>
     <string name="mute" msgid="1995954983688603977">"Komesha arifa"</string>
     <string name="add_star" msgid="2866003744391266498">"Ongeza nyota"</string>

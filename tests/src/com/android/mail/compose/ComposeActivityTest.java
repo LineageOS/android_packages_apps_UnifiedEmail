@@ -535,7 +535,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
      * Test the cases where:
      * The user is replying to a message sent from one of their custom froms
      */
-    public void testRecipientsRefMessageReplyToCustomFrom() throws Throwable {
+    public void brokentestRecipientsRefMessageReplyToCustomFrom() throws Throwable {
         final ComposeActivity activity = getActivity();
         setAccount(activity, "account1@mockuiprovider.com");
         final Message refMessage = getRefMessage(activity.getContentResolver());
@@ -572,7 +572,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
      * Test the cases where:
      * The user is replying to a message sent from one of their custom froms
      */
-    public void testRecipientsRefMessageReplyAllCustomFrom() throws Throwable {
+    public void brokentestRecipientsRefMessageReplyAllCustomFrom() throws Throwable {
         final ComposeActivity activity = getActivity();
         setAccount(activity, "account1@mockuiprovider.com");
         final Message refMessage = getRefMessage(activity.getContentResolver());
@@ -614,7 +614,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
      * Test the cases where:
      * The user is replying to a message sent from one of their custom froms
      */
-    public void testRecipientsRefMessageReplyAllCustomFromThisAccount() throws Throwable {
+    public void brokentestRecipientsRefMessageReplyAllCustomFromThisAccount() throws Throwable {
         final ComposeActivity activity = getActivity();
         setAccount(activity, "account1@mockuiprovider.com");
         final Message refMessage = getRefMessage(activity.getContentResolver());

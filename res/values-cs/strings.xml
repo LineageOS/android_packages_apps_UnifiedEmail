@@ -227,7 +227,7 @@
     <string name="bcc_heading" msgid="4698055226318660420">"Skrytá: "</string>
     <string name="date_heading" msgid="2086174555097691910">"Datum: "</string>
     <string name="show_images" msgid="1875700481186331432">"Zobrazit obrázky"</string>
-    <string name="always_show_images" msgid="5966408990164581801">"Obr. od tohoto odesílatele vždy zobrazit"</string>
+    <string name="always_show_images" msgid="5966408990164581801">"Vždy zobrazit obrázky od tohoto kontaktu"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Obrázky od tohoto odesílatele se zobrazí automaticky."</string>
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> přes <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>

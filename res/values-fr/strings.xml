@@ -53,8 +53,8 @@
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="custom_from_account_label" msgid="5069652141632649722">"Envoyer depuis :"</string>
     <string name="send" msgid="8242003661397555986">"Envoyer"</string>
-    <string name="mark_read" msgid="8438349154394313195">"Marquer comme lue"</string>
-    <string name="mark_unread" msgid="6231373939351125713">"Marquer comme non lue"</string>
+    <string name="mark_read" msgid="8438349154394313195">"Marquer comme lu"</string>
+    <string name="mark_unread" msgid="6231373939351125713">"Marquer comme non lu"</string>
     <string name="mute" msgid="1995954983688603977">"Ignorer"</string>
     <string name="add_star" msgid="2866003744391266498">"Activer le suivi"</string>
     <string name="remove_star" msgid="4372327933122106128">"Désactiver le suivi"</string>
