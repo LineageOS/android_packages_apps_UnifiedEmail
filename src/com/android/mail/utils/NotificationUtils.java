@@ -1003,6 +1003,7 @@ public class NotificationUtils {
                             PendingIntent childClickIntent = createClickPendingIntent(context,
                                     childNotificationIntent);
                             childNotif.setContentIntent(childClickIntent);
+                            childNotif.setAutoCancel(true);
 
                             // TODO: Use a stable sort key if possible, e.g. message post time
                             // + msgid hash
