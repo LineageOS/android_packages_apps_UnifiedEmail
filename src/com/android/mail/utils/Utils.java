@@ -773,7 +773,7 @@ public class Utils {
     }
 
     public static boolean isEmpty(Uri uri) {
-        return Uri.EMPTY.equals(uri);
+        return uri == null || Uri.EMPTY.equals(uri);
     }
 
     public static String dumpFragment(Fragment f) {
