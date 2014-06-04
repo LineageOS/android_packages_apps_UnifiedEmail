@@ -2885,8 +2885,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     return;
                 }
             }
-            // Ask for confirmation to send (if always required)
-            if (showSendConfirmation()) {
+            // Ask for confirmation to send if not autoSend.
+            if (!autoSend && showSendConfirmation()) {
                 showSendConfirmDialog(R.string.confirm_send_message, showToast, recipients);
                 return;
             }
