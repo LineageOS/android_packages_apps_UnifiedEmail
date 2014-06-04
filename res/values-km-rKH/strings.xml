@@ -447,4 +447,14 @@
     <string name="copyright_information" msgid="1673715390305905781">"ព័ត៌មាន​រក្សាសិទ្ធិ"</string>
     <string name="privacy_policy" msgid="2072093492013385609">"គោលនយោបាយ​ភាព​​ឯកជន​"</string>
     <string name="open_source_licenses" msgid="6831573769505612579">"អាជ្ញាប័ណ្ណកម្មវិធីកូដចំហ"</string>
+    <string name="reply_choice_yes" msgid="5279400403860280271">"បាទ/ចាស"</string>
+    <string name="reply_choice_no" msgid="1626377088683186268">"ទេ"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"យល់ព្រម​"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"ហេហេ"</string>
+    <string name="reply_choice_thanks" msgid="8365439191962120322">"អរគុណ"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"ខ្ញុំ​យល់​ព្រម"</string>
+    <string name="reply_choice_nice" msgid="7472107121354003424">"ល្អ"</string>
+    <string name="reply_choice_later" msgid="2694622729579726898">"ខ្ញុំនឹងទាក់ទងអ្នកវិញពេលក្រោយ"</string>
+    <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
+    <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>
