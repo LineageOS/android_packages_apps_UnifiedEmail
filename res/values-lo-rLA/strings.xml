@@ -120,7 +120,7 @@
     <string name="contextmenu_openlink" msgid="2176176524824953775">"ເປີດໃນໂປຣແກຣມທ່ອງເວັບ"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"ສຳເນົາ"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"ສຳເນົາລິ້ງ URL"</string>
-    <string name="contextmenu_view_image" msgid="8855189263365643422">"ເບິ່ງຮູບ​ພາບ​"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"ເບິ່ງຮູບ​ພາບ"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"ໂທ..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS..."</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"ເພີ່ມລາຍຊື່"</string>
@@ -426,7 +426,7 @@
     <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"ຂໍ້ຄວາມ"</string>
     <string name="send_to_contacts_text" msgid="2696513899649703420">"ສົ່ງໃຫ້ຜູ່ທີ່ຢູ່ໃນລາຍຊື່ຕິດຕໍ່ຂອງຂ້ອຍເທົ່ານັ້ນ"</string>
     <string name="send_to_domain_text" msgid="5055332409482662383">"ສົ່ງ​ໃຫ້ສະເພາະ <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
-    <string name="pick_start_date_title" msgid="915230000170560933">"ມື້ເລີ່ມ​"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"ມື້ເລີ່ມ"</string>
     <string name="pick_end_date_title" msgid="2068598706186320098">"ມື້ຈົບ (ເປັນທາງເລືອກ​)"</string>
     <string name="date_not_set" msgid="4925325938525330766">"ຍັງບໍ່ໄດ້ຕັ້ງ"</string>
     <string name="set_end_date_dialog_title" msgid="72028456826019380">"ມື້ຈົບ (ເປັນທາງເລືອກ)"</string>
@@ -455,7 +455,7 @@
     <string name="reply_choice_ok" msgid="5138061449166345173">"ຕົກລົງ"</string>
     <string name="reply_choice_hehe" msgid="7883585007161871893">"​ຮິ​ຮິ"</string>
     <string name="reply_choice_thanks" msgid="8365439191962120322">"​ຂອບ​ໃຈ"</string>
-    <string name="reply_choice_i_agree" msgid="24980061720212740">"​ຂ້ອຍ​​ຍອມ​ຮັບ"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"ຂ້ອຍ​ເຫັນ​ດີ"</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"​ຄັກ​ຢູ່"</string>
     <string name="reply_choice_later" msgid="2694622729579726898">"ຂ້ອຍ​ຈະຕອບ​ກັບຫາ​ເຈົ້າພາຍ​ຫຼັງ"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>

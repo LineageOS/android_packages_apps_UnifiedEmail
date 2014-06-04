@@ -128,7 +128,7 @@
     <string name="contextmenu_map" msgid="7721544518698532954">"Mapa"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Sdílet odkaz"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Nápověda"</string>
-    <string name="contextmenu_feedback" msgid="4429118420169571473">"Odeslat názor"</string>
+    <string name="contextmenu_feedback" msgid="4429118420169571473">"Odeslat zpětnou vazbu"</string>
     <!-- no translation found for num_selected (5723323585692387843) -->
     <skip />
   <plurals name="move_conversation">
@@ -442,7 +442,7 @@
     <string name="view_entire_message" msgid="1553882732296911563">"Zobrazit celou zprávu"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Soubor nelze otevřít."</string>
     <string name="help_and_info" msgid="7873089811705257882">"Nápověda"</string>
-    <string name="feedback" msgid="79365993169715049">"Odeslat názor"</string>
+    <string name="feedback" msgid="79365993169715049">"Odeslat zpětnou vazbu"</string>
     <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
     <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> verze <xliff:g id="VERSION">%2$s</xliff:g>"</string>
     <string name="view_app_page" msgid="5320196120982618014"></string>
