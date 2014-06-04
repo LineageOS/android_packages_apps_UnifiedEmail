@@ -37,6 +37,11 @@
         android:title="@string/add_file_attachment"
         android:showAsAction="never" />
 
+    <item android:id="@+id/attach_from_service_stub1"
+        android:title="@string/attach_from_service_stub1"
+        android:showAsAction="never"
+        android:visible="false" />
+
     <item android:id="@+id/discard"
         android:showAsAction="never"
         android:title="@string/discard" />

@@ -215,12 +215,13 @@ class AttachmentsView extends LinearLayout {
      * @throws AttachmentFailureException
      */
     public Attachment generateLocalAttachment(Uri contentUri) throws AttachmentFailureException {
-        // FIXME: do not query resolver for type on the UI thread
-        final ContentResolver contentResolver = getContext().getContentResolver();
-        String contentType = contentResolver.getType(contentUri);
         if (contentUri == null || TextUtils.isEmpty(contentUri.getPath())) {
             throw new AttachmentFailureException("Failed to create local attachment");
         }
+
+        // FIXME: do not query resolver for type on the UI thread
+        final ContentResolver contentResolver = getContext().getContentResolver();
+        String contentType = contentResolver.getType(contentUri);
 
         if (contentType == null) contentType = "";
 
