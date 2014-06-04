@@ -46,7 +46,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
-import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.support.v4.app.RemoteInput;
 import android.text.Editable;
@@ -2163,7 +2162,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void setupRecipients(RecipientEditTextView view) {
-        if (mUseNewChips) {
+        // todo - remove this experiment
+        if (LogUtils.isLoggable("NewChips", LogUtils.DEBUG) || mUseNewChips) {
             final DropdownChipLayouter layouter = getDropdownChipLayouter();
             if (layouter != null) {
                 view.setDropdownChipLayouter(layouter);
