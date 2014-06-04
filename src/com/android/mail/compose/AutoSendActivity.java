@@ -64,11 +64,14 @@ public class AutoSendActivity extends ComposeActivity {
         sendOrSaveWithSanityChecks(false /* send */, true /* show  toast */);
     }
 
-    protected boolean sendOrSaveWithSanityChecks(final boolean save,
-            final boolean showToast) {
+    /**
+     * This is a custom version for auto-send.
+     */
+    private void sendOrSaveWithSanityChecks(final boolean save, final boolean showToast) {
         if (mDontSaveOrSend) {
-            return false;
+            return;
         }
-        return super.sendOrSaveWithSanityChecks(save, showToast, false, true);
+        sendOrSaveWithSanityChecks(
+                save, showToast, false /* orientationChanged */, true /* autoSend */);
     }
 }
