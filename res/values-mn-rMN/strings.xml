@@ -147,6 +147,8 @@
     <item quantity="other" msgid="6961049507579977505">"Ноорог"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Илгээж байна ..."</string>
+    <string name="message_retrying" msgid="64661613119987741">"Дахин оролдож байна..."</string>
+    <string name="message_failed" msgid="4820279576299009735">"Амжилтгүй"</string>
     <string name="send_failed" msgid="750908595144529579">"Зурвас илгээгдээгүй."</string>
     <string name="me_object_pronoun" msgid="6957328068206184521">"би"</string>
     <string name="me_subject_pronoun" msgid="271527705272088475">"би"</string>

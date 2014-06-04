@@ -147,6 +147,8 @@
     <item quantity="other" msgid="6961049507579977505">"Osnutki"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Pošiljanje…"</string>
+    <string name="message_retrying" msgid="64661613119987741">"Vnovični poskus …"</string>
+    <string name="message_failed" msgid="4820279576299009735">"Ni uspelo"</string>
     <string name="send_failed" msgid="750908595144529579">"Sporočilo ni bilo poslano."</string>
     <string name="me_object_pronoun" msgid="6957328068206184521">"jaz"</string>
     <string name="me_subject_pronoun" msgid="271527705272088475">"jaz"</string>
