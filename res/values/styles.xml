@@ -67,7 +67,9 @@
         <item name="android:layout_marginRight">@dimen/compose_recipient_heading_margin_end</item>
     </style>
 
-    <style name="ComposeFieldLayout" parent="android:Widget.Holo.Light.EditText">
+    <style name="ComposeFieldLayoutBase" parent="android:Widget.Holo.Light.EditText" />
+
+    <style name="ComposeFieldLayout" parent="@style/ComposeFieldLayoutBase">
         <item name="android:addStatesFromChildren">true</item>
         <item name="android:focusable">false</item>
         <item name="android:focusableInTouchMode">false</item>
@@ -171,7 +173,8 @@
     </style>
 
     <!-- Browse list item styles -->
-    <style name="ConversationListFade" parent="@android:style/Widget.Holo.Light.ListView">
+    <style name="ConversationListFadeBase" parent="@android:style/Widget.Holo.Light.ListView" />
+    <style name="ConversationListFade" parent="@style/ConversationListFadeBase">
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">0dip</item>
     </style>
@@ -197,7 +200,8 @@
 
     <style name="MinTimeProgressViewStyle" parent="@android:style/Widget.Holo.Light.ProgressBar" />
 
-    <style name="MinTimeProgressDialogStyle" parent="@android:style/Theme.Holo.Light.Dialog">
+    <style name="MinTimeProgressDialogStyleBase" parent="@android:style/Theme.Holo.Light.Dialog" />
+    <style name="MinTimeProgressDialogStyle" parent="@style/MinTimeProgressDialogStyleBase">
         <item name="android:windowAnimationStyle">@style/MinTimeAnimationStyle</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -297,13 +301,15 @@
         <item name="android:textIsSelectable">true</item>
     </style>
 
-    <style name="MessageHeaderActionButtonStyle" parent="android:Widget.Holo.Button.Borderless">
+    <style name="MessageButtonStyleBase" parent="android:Widget.Holo.Button.Borderless" />
+
+    <style name="MessageHeaderActionButtonStyle" parent="@style/MessageButtonStyleBase">
         <item name="android:layout_width">@dimen/message_header_action_button_width</item>
         <item name="android:layout_height">@dimen/message_header_action_button_height</item>
         <item name="android:scaleType">center</item>
     </style>
 
-    <style name="MessageAttachmentButtonBaseStyle" parent="@android:style/Widget.Holo.Button.Borderless">
+    <style name="MessageAttachmentButtonBaseStyle" parent="@style/MessageButtonStyleBase">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:minHeight">0dip</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
@@ -379,7 +385,8 @@
         <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
     </style>
 
-    <style name="ComposeTheme" parent="@android:style/Theme.Holo.Light">
+    <style name="ComposeThemeBase" parent="@android:style/Theme.Holo.Light" />
+    <style name="ComposeTheme" parent="@style/ComposeThemeBase">
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
@@ -418,8 +425,9 @@
     <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme">
     </style>
 
+    <style name="WaitFragmentTitleBase" parent="@android:style/Widget.Holo.TextView" />
 
-    <style name="WaitFragmentTitle" parent="@android:style/Widget.Holo.TextView">
+    <style name="WaitFragmentTitle" parent="@style/WaitFragmentTitleBase">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:layout_marginBottom">8dip</item>
@@ -523,7 +531,9 @@
         <item name="android:textColor">?android:attr/textColorLink</item>
     </style>
 
-    <style name="AbstractNewMessageButtonStyle" parent="@android:style/Widget.Holo.Light.Button">
+    <style name="AbstractNewMessageButtonStyleBase" parent="@android:style/Widget.Holo.Light.Button" />
+
+    <style name="AbstractNewMessageButtonStyle" parent="@style/AbstractNewMessageButtonStyleBase">
         <item name="android:layout_marginBottom">@dimen/toast_bar_margin</item>
         <item name="android:background">@drawable/new_message_toast_background</item>
         <item name="android:singleLine">true</item>
@@ -685,7 +695,9 @@
         <item name="android:layout_alignParentRight">true</item>
     </style>
 
-    <style name="CustomActionButton" parent="android:style/Widget.Holo.Light.ActionButton">
+    <style name="CustomActionButtonBase" parent="android:style/Widget.Holo.Light.ActionButton" />
+
+    <style name="CustomActionButton" parent="@style/CustomActionButtonBase">
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
@@ -715,8 +727,11 @@
         <item name="android:paddingRight">@dimen/vacation_responder_padding_horizontal</item>
     </style>
 
+    <style name="AbstractVacationResponderDateSpinnerBase"
+           parent="android:style/Widget.Holo.Light.Spinner" />
+
     <style name="AbstractVacationResponderDateSpinner"
-           parent="android:style/Widget.Holo.Light.Spinner">
+           parent="@style/AbstractVacationResponderDateSpinnerBase">
         <item name="android:textColor">@color/vacation_responder_spinner_text</item>
         <item name="android:textSize">16sp</item>
     </style>

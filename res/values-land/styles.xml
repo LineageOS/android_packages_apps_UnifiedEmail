@@ -25,7 +25,7 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="ComposeFieldLayout" parent="android:Widget.Holo.Light.EditText">
+    <style name="ComposeFieldLayout" parent="@style/ComposeFieldLayoutBase">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:addStatesFromChildren">true</item>

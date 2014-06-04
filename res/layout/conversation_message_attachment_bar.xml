@@ -70,7 +70,7 @@
 
         <ImageView
             android:id="@+id/overflow"
-            style="@android:style/Widget.Holo.Light.ActionButton.Overflow"
+            style="@style/OverflowButtonStyle"
             android:layout_width="48dip"
             android:layout_height="match_parent" />
 
