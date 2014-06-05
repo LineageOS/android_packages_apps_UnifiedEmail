@@ -2859,8 +2859,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return;
         }
 
-        // Show a warning before sending only if there are no attachments.
         if (!save) {
+            if (autoSend) {
+                // Skip all further checks during autosend. This flow is used by Android Wear
+                // and Google Now.
+                sendOrSave(save, showToast);
+                return;
+            }
+
+            // Show a warning before sending only if there are no attachments, body, or subject.
             if (mAttachmentsView.getAttachments().isEmpty() && showEmptyTextWarnings()) {
                 boolean warnAboutEmptySubject = isSubjectEmpty();
                 boolean emptyBody = TextUtils.getTrimmedLength(mBodyView.getEditableText()) == 0;
@@ -2885,8 +2892,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     return;
                 }
             }
-            // Ask for confirmation to send if not autoSend.
-            if (!autoSend && showSendConfirmation()) {
+            // Ask for confirmation to send.
+            if (showSendConfirmation()) {
                 showSendConfirmDialog(R.string.confirm_send_message, showToast, recipients);
                 return;
             }
