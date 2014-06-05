@@ -1092,6 +1092,11 @@ public class NotificationUtils {
             if (messageCursor.moveToPosition(messageCursor.getCount() - 1)) {
                 final Message message = messageCursor.getMessage();
                 fromAddress = message.getFrom();
+                if (fromAddress == null) {
+                    // No sender. Go back to default value.
+                    LogUtils.e(LOG_TAG, "No sender found for message: %d" + message.getId());
+                    fromAddress = "";
+                }
                 from = getDisplayableSender(fromAddress);
                 result.contactIconInfo = getContactIcon(context, from,
                         getSenderAddress(fromAddress), folder);
