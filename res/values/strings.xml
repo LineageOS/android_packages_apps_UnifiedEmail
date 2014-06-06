@@ -1089,7 +1089,9 @@
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
     <string name="reply_choice_nice">Nice</string>
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
-    <string name="reply_choice_later">I\'ll get back to you later</string>
+    <string name="reply_on_my_way">On my way</string>
+    <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_later">OK, let me get back to you</string>
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
     <string name="reply_choice_smiling_face">:)</string>
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
@@ -1103,6 +1105,7 @@
         <item>@string/reply_choice_thanks</item>
         <item>@string/reply_choice_i_agree</item>
         <item>@string/reply_choice_nice</item>
+        <item>@string/reply_on_my_way</item>
         <item>@string/reply_choice_later</item>
         <item>@string/reply_choice_smiling_face</item>
         <item>@string/reply_choice_frowning_face</item>
