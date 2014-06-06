@@ -117,6 +117,15 @@ public class NotificationActionIntentService extends IntentService {
 
         logNotificationAction(action, notificationAction);
 
+        if (notificationAction.getSource() == NotificationAction.SOURCE_REMOTE) {
+            // Skip undo if the action is bridged from remote node.  This should be similar to the
+            // logic after the Undo notification expires in a regular flow.
+            NotificationActionUtils.processDestructiveAction(this, notificationAction);
+            NotificationActionUtils.resendNotifications(context, notificationAction.getAccount(),
+                    notificationAction.getFolder());
+            return;
+        }
+
         if (ACTION_UNDO.equals(action)) {
             NotificationActionUtils.cancelUndoTimeout(context, notificationAction);
             NotificationActionUtils.cancelUndoNotification(context, notificationAction);

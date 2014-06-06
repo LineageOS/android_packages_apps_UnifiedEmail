@@ -41,6 +41,14 @@ public class MailIntentService extends IntentService {
             "com.android.mail.action.RESEND_NOTIFICATIONS";
     public static final String ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS =
             "com.android.mail.action.CLEAR_NEW_MAIL_NOTIFICATIONS";
+
+    /**
+     * After user replies an email from Wear, it marks the conversation as read and resend
+     * notifications.
+     */
+    public static final String ACTION_RESEND_NOTIFICATIONS_WEAR =
+            "com.android.mail.action.RESEND_NOTIFICATIONS_WEAR";
+
     public static final String ACTION_BACKUP_DATA_CHANGED =
             "com.android.mail.action.BACKUP_DATA_CHANGED";
     public static final String ACTION_SEND_SET_NEW_EMAIL_INDICATOR =
@@ -72,16 +80,24 @@ public class MailIntentService extends IntentService {
             final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
 
             NotificationUtils.clearFolderNotification(this, account, folder, true /* markSeen */);
-
             Analytics.getInstance().sendEvent("notification_dismiss", folder.getTypeDescription(),
                     null, 0);
-
         } else if (ACTION_RESEND_NOTIFICATIONS.equals(action)) {
             final Uri accountUri = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT_URI);
             final Uri folderUri = intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
 
             NotificationUtils.resendNotifications(this, false, accountUri,
                     new FolderUri(folderUri), getContactPhotoFetcher());
+        } else if (ACTION_RESEND_NOTIFICATIONS_WEAR.equals(action)) {
+            final Account account = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
+            final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
+            final Uri conversationUri = intent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
+
+            // Mark the conversation as read and refresh the notifications.  This happens
+            // when user replies to a conversation remotely from a Wear device.
+            NotificationUtils.markConversationAsReadAndSeen(this, conversationUri);
+            NotificationUtils.resendNotifications(this, false, account.uri,
+                    folder.folderUri, getContactPhotoFetcher());
         } else if (ACTION_SEND_SET_NEW_EMAIL_INDICATOR.equals(action)) {
             final int unreadCount = intent.getIntExtra(NotificationUtils.EXTRA_UNREAD_COUNT, 0);
             final int unseenCount = intent.getIntExtra(NotificationUtils.EXTRA_UNSEEN_COUNT, 0);

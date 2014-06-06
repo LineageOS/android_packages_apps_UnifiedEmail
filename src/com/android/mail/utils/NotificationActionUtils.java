@@ -205,25 +205,32 @@ public class NotificationActionUtils {
                 getSortedNotificationActions(folder, notificationActions);
 
         for (final NotificationActionType notificationAction : sortedActions) {
-            PendingIntent pendingIntent = getNotificationActionPendingIntent(
+            final PendingIntent pendingIntent = getNotificationActionPendingIntent(
                     context, account, conversation, message,
                     folder, notificationIntent, notificationAction, notificationId, when);
-            int actionIconResId = notificationAction.getActionIconResId(folder, conversation,
+            final int actionIconResId = notificationAction.getActionIconResId(folder, conversation,
                     message);
-            String title = context.getString(notificationAction.getDisplayStringResId(
+            final String title = context.getString(notificationAction.getDisplayStringResId(
                     folder, conversation, message));
 
             // Always add all actions to both standard and wearable notifications.
             notification.addAction(actionIconResId, title, pendingIntent);
 
-            NotificationCompat.Action.Builder wearableActionBuilder =
+            // Use a different intent for wear because it triggers different set of behavior:
+            // no undo for archive/delete, and mark conversation as read after reply.
+            final PendingIntent wearPendingIntent = getWearNotificationActionPendingIntent(
+                    context, account, conversation, message,
+                    folder, notificationIntent, notificationAction, notificationId, when);
+
+            final NotificationCompat.Action.Builder wearableActionBuilder =
                     new NotificationCompat.Action.Builder(
                             mapWearActionResId(notificationAction, actionIconResId), title,
-                            pendingIntent);
+                            wearPendingIntent);
 
             if (notificationAction == NotificationActionType.REPLY
                     || notificationAction == NotificationActionType.REPLY_ALL) {
-                String[] choices = context.getResources().getStringArray(R.array.reply_choices);
+                final String[] choices = context.getResources().getStringArray(
+                        R.array.reply_choices);
                 wearableActionBuilder.addRemoteInput(
                         new RemoteInput.Builder(WEAR_REPLY_INPUT)
                                 .setLabel(title)
@@ -346,7 +353,8 @@ public class NotificationActionUtils {
         final Uri messageUri = message.uri;
 
         final NotificationAction notificationAction = new NotificationAction(action, account,
-                conversation, message, folder, conversation.id, message.serverId, message.id, when);
+                conversation, message, folder, conversation.id, message.serverId, message.id, when,
+                NotificationAction.SOURCE_LOCAL);
 
         switch (action) {
             case REPLY: {
@@ -405,6 +413,61 @@ public class NotificationActionUtils {
     }
 
     /**
+     * Creates a {@link PendingIntent} for the specified Wear notification action.
+     */
+    private static PendingIntent getWearNotificationActionPendingIntent(final Context context,
+            final Account account, final Conversation conversation, final Message message,
+            final Folder folder, final Intent notificationIntent,
+            final NotificationActionType action, final int notificationId, final long when) {
+        final Uri messageUri = message.uri;
+
+        final NotificationAction notificationAction = new NotificationAction(action, account,
+                conversation, message, folder, conversation.id, message.serverId, message.id, when,
+                NotificationAction.SOURCE_REMOTE);
+
+        switch (action) {
+            case REPLY:
+            case REPLY_ALL: {
+                // Build a task stack that forces the conversation view on the stack before the
+                // reply activity.
+                final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+
+                final Intent intent = createReplyIntent(context, account, messageUri,
+                        (action == NotificationActionType.REPLY_ALL));
+                intent.setPackage(context.getPackageName());
+                intent.setData(buildWearUri(conversation.uri));
+                intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_FOLDER, folder);
+                intent.putExtra(ComposeActivity.EXTRA_NOTIFICATION_CONVERSATION, conversation.uri);
+
+                taskStackBuilder.addNextIntent(notificationIntent).addNextIntent(intent);
+
+                return taskStackBuilder.getPendingIntent(notificationId,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+            case ARCHIVE_REMOVE_LABEL:
+            case DELETE: {
+                final String intentAction = (action == NotificationActionType.ARCHIVE_REMOVE_LABEL)
+                        ? NotificationActionIntentService.ACTION_ARCHIVE_REMOVE_LABEL
+                        : NotificationActionIntentService.ACTION_DELETE;
+
+                final Intent intent = new Intent(intentAction);
+                intent.setPackage(context.getPackageName());
+                intent.setData(buildWearUri(conversation.uri));
+                putNotificationActionExtra(intent, notificationAction);
+
+                return PendingIntent.getService(context, notificationId, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+        }
+
+        throw new IllegalArgumentException("Invalid NotificationActionType");
+    }
+
+    private static Uri buildWearUri(Uri uri) {
+        return uri.buildUpon().appendQueryParameter("type", "wear").build();
+    }
+
+    /**
      * @return an intent which, if launched, will reply to the conversation
      */
     public static Intent createReplyIntent(final Context context, final Account account,
@@ -416,6 +479,9 @@ public class NotificationActionUtils {
     }
 
     public static class NotificationAction implements Parcelable {
+        public static final int SOURCE_LOCAL = 0;
+        public static final int SOURCE_REMOTE = 1;
+
         private final NotificationActionType mNotificationActionType;
         private final Account mAccount;
         private final Conversation mConversation;
@@ -425,11 +491,12 @@ public class NotificationActionUtils {
         private final String mMessageId;
         private final long mLocalMessageId;
         private final long mWhen;
+        private final int mSource;
 
         public NotificationAction(final NotificationActionType notificationActionType,
                 final Account account, final Conversation conversation, final Message message,
                 final Folder folder, final long conversationId, final String messageId,
-                final long localMessageId, final long when) {
+                final long localMessageId, final long when, final int source) {
             mNotificationActionType = notificationActionType;
             mAccount = account;
             mConversation = conversation;
@@ -439,6 +506,7 @@ public class NotificationActionUtils {
             mMessageId = messageId;
             mLocalMessageId = localMessageId;
             mWhen = when;
+            mSource = source;
         }
 
         public NotificationActionType getNotificationActionType() {
@@ -477,6 +545,10 @@ public class NotificationActionUtils {
             return mWhen;
         }
 
+        public int getSource() {
+            return mSource;
+        }
+
         public int getActionTextResId() {
             switch (mNotificationActionType) {
                 case ARCHIVE_REMOVE_LABEL:
@@ -509,6 +581,7 @@ public class NotificationActionUtils {
             out.writeString(mMessageId);
             out.writeLong(mLocalMessageId);
             out.writeLong(mWhen);
+            out.writeInt(mSource);
         }
 
         public static final Parcelable.ClassLoaderCreator<NotificationAction> CREATOR =
@@ -540,6 +613,7 @@ public class NotificationActionUtils {
             mMessageId = in.readString();
             mLocalMessageId = in.readLong();
             mWhen = in.readLong();
+            mSource = in.readInt();
         }
     }
 
@@ -757,8 +831,6 @@ public class NotificationActionUtils {
         removeUndoNotification(context, notificationId, true);
         sNotificationTimestamps.delete(notificationId);
         processDestructiveAction(context, notificationAction);
-
-        resendNotifications(context, account, folder);
     }
 
     /**
