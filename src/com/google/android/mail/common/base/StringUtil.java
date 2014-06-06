@@ -1370,8 +1370,15 @@ public final class StringUtil {
               charcode = Long.parseLong(
                   new String(chars, i + 2, j - i - 2));
             }
-            if (charcode > 0 && charcode < 65536) {
+            // D800 to DFFF are for UTF16 surrogate pairs, and are not valid HTML entities
+            // Code points 0xFFFE and 0xFFFF are unicode noncharacters
+            if ((charcode > 0 && charcode < 0xD800) || (charcode > 0xDFFF && charcode < 0xFFFE)) {
               escaped[pos++] = (char) charcode;
+              replaced = true;
+            } else if (charcode >= 0x10000 && charcode < 0x110000) {
+              // These characters are represented as surrogate pairs in UTF16
+              escaped[pos++] = (char) ((charcode - 0x10000) / 0x400 + 0xD800);
+              escaped[pos++] = (char) ((charcode - 0x10000) % 0x400 + 0xDC00);
               replaced = true;
             }
           } catch (NumberFormatException ex) {
