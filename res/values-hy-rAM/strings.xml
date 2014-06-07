@@ -147,10 +147,8 @@
     <item quantity="other" msgid="6961049507579977505">"Սևագրություններ"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Ուղարկվում է..."</string>
-    <!-- no translation found for message_retrying (64661613119987741) -->
-    <skip />
-    <!-- no translation found for message_failed (4820279576299009735) -->
-    <skip />
+    <string name="message_retrying" msgid="64661613119987741">"Կրկին է փորձում..."</string>
+    <string name="message_failed" msgid="4820279576299009735">"Ձախողվեց"</string>
     <string name="send_failed" msgid="750908595144529579">"Հաղորդագրությունը չի ուղարկվել:"</string>
     <string name="me_object_pronoun" msgid="6957328068206184521">"ինձ"</string>
     <string name="me_subject_pronoun" msgid="271527705272088475">"ինձ"</string>
