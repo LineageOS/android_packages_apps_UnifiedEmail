@@ -16,9 +16,9 @@
      limitations under the License.
 -->
 <resources>
-    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Quantum.Widget.ActionBar.Title" />
+    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title" />
 
-    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Quantum.Light.Dialog.MinWidth">
+    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Material.Light.Dialog.MinWidth">
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
     </style>
 </resources>

@@ -16,59 +16,59 @@
      limitations under the License.
 -->
 <resources>
-    <style name="UnifiedEmailTheme" parent="@android:style/Theme.Quantum.Light.DarkActionBar">
+    <style name="UnifiedEmailTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
         <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
-        <item name="android:listViewWhiteStyle">@android:style/Widget.Quantum.Light.ListView</item>
+        <item name="android:listViewWhiteStyle">@android:style/Widget.Material.Light.ListView</item>
     </style>
 
     <style name="OverflowButtonStyle"
-           parent="@android:style/Widget.Quantum.Light.ActionButton.Overflow" />
+           parent="@android:style/Widget.Material.Light.ActionButton.Overflow" />
 
-    <style name="PlainSpinnerDropdown" parent="@android:style/Widget.Quantum.Light.Spinner">
+    <style name="PlainSpinnerDropdown" parent="@android:style/Widget.Material.Light.Spinner">
         <item name="android:background">@null</item>
     </style>
 
-    <style name="PlainActionBarStyle" parent="@android:style/Widget.Quantum.Light.ActionBar.Solid">
+    <style name="PlainActionBarStyle" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
         <item name="android:displayOptions"></item>
     </style>
 
-    <style name="WaitFragmentTitleBase" parent="@android:style/Widget.Quantum.TextView" />
+    <style name="WaitFragmentTitleBase" parent="@android:style/Widget.Material.TextView" />
 
     <style name="AbstractNewMessageButtonStyleBase"
-        parent="@android:style/Widget.Quantum.Light.Button">
+        parent="@android:style/Widget.Material.Light.Button">
     </style>
 
-    <style name="CustomActionButtonBase" parent="android:style/Widget.Quantum.Light.ActionButton" />
+    <style name="CustomActionButtonBase" parent="android:style/Widget.Material.Light.ActionButton" />
 
-    <style name="ComposeFieldLayoutBase" parent="android:Widget.Quantum.Light.EditText" />
+    <style name="ComposeFieldLayoutBase" parent="android:Widget.Material.Light.EditText" />
 
-    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Quantum.Widget.ActionBar.Title" />
+    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title" />
 
-    <style name="AccountSpinnerAnchorTextSecondary" parent="@android:style/TextAppearance.Quantum.Widget.ActionBar.Subtitle" />
+    <style name="AccountSpinnerAnchorTextSecondary" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle" />
 
-    <style name="ConversationListFadeBase" parent="@android:style/Widget.Quantum.Light.ListView" />
+    <style name="ConversationListFadeBase" parent="@android:style/Widget.Material.Light.ListView" />
 
-    <style name="MinTimeProgressViewStyle" parent="@android:style/Widget.Quantum.Light.ProgressBar" />
+    <style name="MinTimeProgressViewStyle" parent="@android:style/Widget.Material.Light.ProgressBar" />
 
-    <style name="MinTimeProgressDialogStyleBase" parent="@android:style/Theme.Quantum.Light.Dialog" />
+    <style name="MinTimeProgressDialogStyleBase" parent="@android:style/Theme.Material.Light.Dialog" />
 
-    <style name="MessageButtonStyleBase" parent="android:Widget.Quantum.Button.Borderless" />
+    <style name="MessageButtonStyleBase" parent="android:Widget.Material.Button.Borderless" />
 
-    <style name="WidgetTitle" parent="@android:style/TextAppearance.Quantum.Widget.ActionBar.Title.Inverse">
+    <style name="WidgetTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title.Inverse">
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="WidgetSubtitle" parent="@android:style/TextAppearance.Quantum.Widget.ActionBar.Subtitle.Inverse">
+    <style name="WidgetSubtitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle.Inverse">
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Quantum.Light.DialogWhenLarge">
+    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Material.Light.DialogWhenLarge">
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
     </style>
 
     <style name="ComposeThemeBase" parent="@style/UnifiedEmailTheme" />
 
     <style name="AbstractVacationResponderDateSpinnerBase"
-           parent="android:style/Widget.Quantum.Light.Spinner" />
+           parent="android:style/Widget.Material.Light.Spinner" />
 </resources>
