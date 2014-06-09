@@ -751,8 +751,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (changingFolders && !ConversationListContext.isSearchResult(listContext)) {
             closeSearchField();
         }
-
-        mActivity.invalidateOptionsMenu();
+        if (mSearch == null || !mSearch.isActionViewExpanded()) {
+            mActivity.invalidateOptionsMenu();
+        }
     }
 
     @Override
