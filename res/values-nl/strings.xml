@@ -251,8 +251,7 @@
     <string name="message_invite_tentative" msgid="3898050756490962079">"Misschien"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"Nee"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="yes" msgid="7474216525286833848">"Ja"</string>
-    <string name="no" msgid="427548507197604096">"Nee"</string>
+    <string name="send_anyway" msgid="426079691638238572">"Toch verzenden"</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Gereed"</string>
     <string name="cancel" msgid="8762981157252199115">"Annuleren"</string>
@@ -455,9 +454,10 @@
     <string name="reply_choice_ok" msgid="5138061449166345173">"OK"</string>
     <string name="reply_choice_hehe" msgid="7883585007161871893">"Hehe"</string>
     <string name="reply_choice_thanks" msgid="8365439191962120322">"Bedankt"</string>
-    <string name="reply_choice_i_agree" msgid="24980061720212740">"Lijkt me goed"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"Mee eens"</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"Leuk"</string>
-    <string name="reply_choice_later" msgid="2694622729579726898">"Ik om er later op terug"</string>
+    <string name="reply_on_my_way" msgid="8200386879475660650">"Ik ben onderweg"</string>
+    <string name="reply_choice_later" msgid="6294535370720117768">"Hier kom ik later op terug"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>

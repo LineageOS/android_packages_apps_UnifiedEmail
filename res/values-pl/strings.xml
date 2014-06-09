@@ -251,8 +251,7 @@
     <string name="message_invite_tentative" msgid="3898050756490962079">"Może"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"Nie"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="yes" msgid="7474216525286833848">"Tak"</string>
-    <string name="no" msgid="427548507197604096">"Nie"</string>
+    <string name="send_anyway" msgid="426079691638238572">"Wyślij mimo wszystko"</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Gotowe"</string>
     <string name="cancel" msgid="8762981157252199115">"Anuluj"</string>
@@ -457,7 +456,8 @@
     <string name="reply_choice_thanks" msgid="8365439191962120322">"Dzięki"</string>
     <string name="reply_choice_i_agree" msgid="24980061720212740">"Zgadzam się"</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"Super"</string>
-    <string name="reply_choice_later" msgid="2694622729579726898">"Skontaktuję się z Tobą później"</string>
+    <string name="reply_on_my_way" msgid="8200386879475660650">"Jestem w drodze"</string>
+    <string name="reply_choice_later" msgid="6294535370720117768">"OK, odezwę się do Ciebie"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>

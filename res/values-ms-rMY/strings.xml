@@ -251,8 +251,8 @@
     <string name="message_invite_tentative" msgid="3898050756490962079">"Mungkin"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"Tidak"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="yes" msgid="7474216525286833848">"Ya"</string>
-    <string name="no" msgid="427548507197604096">"Tiada"</string>
+    <!-- no translation found for send_anyway (426079691638238572) -->
+    <skip />
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Selesai"</string>
     <string name="cancel" msgid="8762981157252199115">"Batal"</string>
@@ -457,7 +457,10 @@
     <string name="reply_choice_thanks" msgid="8365439191962120322">"Terima kasih"</string>
     <string name="reply_choice_i_agree" msgid="24980061720212740">"Saya bersetuju"</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"Nice"</string>
-    <string name="reply_choice_later" msgid="2694622729579726898">"Saya akan hubungi anda semula"</string>
+    <!-- no translation found for reply_on_my_way (8200386879475660650) -->
+    <skip />
+    <!-- no translation found for reply_choice_later (6294535370720117768) -->
+    <skip />
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>
