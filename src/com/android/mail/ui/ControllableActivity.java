@@ -21,6 +21,7 @@ import android.content.ContentResolver;
 
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.ConversationListFooterView;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.welcome.WelcomeTourListener;
 import com.android.oldbitmap.BitmapCache;
@@ -29,7 +30,7 @@ import com.android.oldbitmap.BitmapCache;
  * A controllable activity is an Activity that has a Controller attached. This activity must be
  * able to attach the various view fragments and delegate the method calls between them.
  */
-public interface ControllableActivity extends HelpCallback, RestrictedActivity,
+public interface ControllableActivity extends RestrictedActivity,
         FolderItemView.DropHandler, UndoListener,
         AnimatedAdapter.Listener, ConversationListFooterView.FooterViewClickListener,
         WelcomeTourListener {
@@ -126,4 +127,9 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
 
     BitmapCache getSenderImageCache();
     void resetSenderImageCache();
+
+    /**
+     * Shows help to user, could be in browser or another activity.
+     */
+    void showHelp(Account account, int viewMode);
 }
