@@ -381,9 +381,7 @@
     <skip />
     <!-- no translation found for enumeration_comma (5191660524342286026) -->
     <skip />
-    <!-- no translation found for yes (7474216525286833848) -->
-    <skip />
-    <!-- no translation found for no (427548507197604096) -->
+    <!-- no translation found for send_anyway (426079691638238572) -->
     <skip />
     <!-- no translation found for ok (8339355733816891026) -->
     <skip />
@@ -709,7 +707,9 @@
     <skip />
     <!-- no translation found for reply_choice_nice (7472107121354003424) -->
     <skip />
-    <!-- no translation found for reply_choice_later (2694622729579726898) -->
+    <!-- no translation found for reply_on_my_way (8200386879475660650) -->
+    <skip />
+    <!-- no translation found for reply_choice_later (6294535370720117768) -->
     <skip />
     <!-- no translation found for reply_choice_smiling_face (7319371040013238561) -->
     <skip />
