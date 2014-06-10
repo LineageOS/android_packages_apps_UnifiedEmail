@@ -26,7 +26,6 @@ import com.android.mail.providers.UIProvider.AccountColumns.SettingsColumns;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.DefaultReplyBehavior;
-import com.android.mail.providers.UIProvider.MessageTextSize;
 import com.android.mail.providers.UIProvider.SnapHeaderValue;
 import com.android.mail.providers.UIProvider.Swipe;
 import com.android.mail.utils.LogTag;
@@ -71,7 +70,6 @@ public class Settings implements Parcelable {
      */
     private final int mAutoAdvance;
     private Integer mTransientAutoAdvance = null;
-    public final int messageTextSize;
     public final int snapHeaders;
     public final int replyBehavior;
     public final int convListIcon;
@@ -120,7 +118,6 @@ public class Settings implements Parcelable {
     private Settings() {
         signature = "";
         mAutoAdvance = AutoAdvance.LIST;
-        messageTextSize = MessageTextSize.NORMAL;
         snapHeaders = SnapHeaderValue.ALWAYS;
         replyBehavior = DefaultReplyBehavior.REPLY;
         convListIcon = ConversationListIcon.SENDER_IMAGE;
@@ -145,7 +142,6 @@ public class Settings implements Parcelable {
     public Settings(Parcel inParcel) {
         signature = inParcel.readString();
         mAutoAdvance = inParcel.readInt();
-        messageTextSize = inParcel.readInt();
         snapHeaders = inParcel.readInt();
         replyBehavior = inParcel.readInt();
         convListIcon = inParcel.readInt();
@@ -170,7 +166,6 @@ public class Settings implements Parcelable {
     public Settings(Cursor cursor) {
         signature = cursor.getString(cursor.getColumnIndex(SettingsColumns.SIGNATURE));
         mAutoAdvance = cursor.getInt(cursor.getColumnIndex(SettingsColumns.AUTO_ADVANCE));
-        messageTextSize = cursor.getInt(cursor.getColumnIndex(SettingsColumns.MESSAGE_TEXT_SIZE));
         snapHeaders = cursor.getInt(cursor.getColumnIndex(SettingsColumns.SNAP_HEADERS));
         replyBehavior = cursor.getInt(cursor.getColumnIndex(SettingsColumns.REPLY_BEHAVIOR));
         convListIcon = cursor.getInt(cursor.getColumnIndex(SettingsColumns.CONV_LIST_ICON));
@@ -206,7 +201,6 @@ public class Settings implements Parcelable {
     private Settings(JSONObject json) {
         signature = json.optString(SettingsColumns.SIGNATURE, sDefault.signature);
         mAutoAdvance = json.optInt(SettingsColumns.AUTO_ADVANCE, sDefault.getAutoAdvanceSetting());
-        messageTextSize = json.optInt(SettingsColumns.MESSAGE_TEXT_SIZE, sDefault.messageTextSize);
         snapHeaders = json.optInt(SettingsColumns.SNAP_HEADERS, sDefault.snapHeaders);
         replyBehavior = json.optInt(SettingsColumns.REPLY_BEHAVIOR, sDefault.replyBehavior);
         convListIcon = json.optInt(SettingsColumns.CONV_LIST_ICON, sDefault.convListIcon);
@@ -257,7 +251,6 @@ public class Settings implements Parcelable {
         try {
             json.put(SettingsColumns.SIGNATURE, getNonNull(signature, sDefault.signature));
             json.put(SettingsColumns.AUTO_ADVANCE, getAutoAdvanceSetting());
-            json.put(SettingsColumns.MESSAGE_TEXT_SIZE, messageTextSize);
             json.put(SettingsColumns.SNAP_HEADERS, snapHeaders);
             json.put(SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
             json.put(SettingsColumns.CONV_LIST_ICON, convListIcon);
@@ -298,7 +291,6 @@ public class Settings implements Parcelable {
 
         map.put(UIProvider.AccountColumns.SettingsColumns.SIGNATURE, signature);
         map.put(UIProvider.AccountColumns.SettingsColumns.AUTO_ADVANCE, getAutoAdvanceSetting());
-        map.put(UIProvider.AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, messageTextSize);
         map.put(UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS, snapHeaders);
         map.put(UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
         map.put(UIProvider.AccountColumns.SettingsColumns.CONV_LIST_ICON, convListIcon);
@@ -352,7 +344,6 @@ public class Settings implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString((String) getNonNull(signature, sDefault.signature));
         dest.writeInt(getAutoAdvanceSetting());
-        dest.writeInt(messageTextSize);
         dest.writeInt(snapHeaders);
         dest.writeInt(replyBehavior);
         dest.writeInt(convListIcon);
@@ -463,7 +454,6 @@ public class Settings implements Parcelable {
         return (TextUtils.equals(signature, that.signature)
                 && mAutoAdvance == that.mAutoAdvance
                 && autoAdvanceEquals
-                && messageTextSize == that.messageTextSize
                 && snapHeaders == that.snapHeaders
                 && replyBehavior == that.replyBehavior
                 && convListIcon == that.convListIcon
@@ -489,7 +479,7 @@ public class Settings implements Parcelable {
         if (mHashCode == 0) {
             mHashCode = super.hashCode()
                     ^ Objects.hashCode(signature, mAutoAdvance, mTransientAutoAdvance,
-                    messageTextSize, snapHeaders, replyBehavior, convListIcon,
+                    snapHeaders, replyBehavior, convListIcon,
                     convListAttachmentPreviews, confirmDelete, confirmArchive, confirmSend,
                     defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
                     importanceMarkersEnabled, showChevronsEnabled, setupIntentUri,

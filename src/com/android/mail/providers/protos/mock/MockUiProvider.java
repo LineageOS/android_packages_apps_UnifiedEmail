@@ -367,7 +367,6 @@ public final class MockUiProvider extends ContentProvider {
         // Add settings columns
         accountMap.put(SettingsColumns.SIGNATURE, "");
         accountMap.put(SettingsColumns.AUTO_ADVANCE, 1);
-        accountMap.put(SettingsColumns.MESSAGE_TEXT_SIZE, 1);
         accountMap.put(SettingsColumns.SNAP_HEADERS, 1);
         accountMap.put(SettingsColumns.REPLY_BEHAVIOR, 1);
         accountMap.put(SettingsColumns.CONV_LIST_ICON, 1);

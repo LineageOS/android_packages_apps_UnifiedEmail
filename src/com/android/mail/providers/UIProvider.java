@@ -161,7 +161,6 @@ public class UIProvider {
             .put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, String.class)
             .put(AccountColumns.SettingsColumns.SIGNATURE, String.class)
             .put(AccountColumns.SettingsColumns.AUTO_ADVANCE, Integer.class)
-            .put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, Integer.class)
             .put(AccountColumns.SettingsColumns.SNAP_HEADERS, Integer.class)
             .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, Integer.class)
             .put(AccountColumns.SettingsColumns.CONV_LIST_ICON, Integer.class)
@@ -514,12 +513,6 @@ public class UIProvider {
              * be one of the values in {@link UIProvider.AutoAdvance}
              */
             public static final String AUTO_ADVANCE = "auto_advance";
-
-            /**
-             * Integer column containing the user's specified message text size preference.  This
-             * value will be one of the values in {@link UIProvider.MessageTextSize}
-             */
-            public static final String MESSAGE_TEXT_SIZE = "message_text_size";
 
             /**
              * Integer column contaning the user's specified snap header preference.  This value
@@ -2292,14 +2285,6 @@ public class UIProvider {
         public static final int ALWAYS = 0;
         public static final int PORTRAIT_ONLY = 1;
         public static final int NEVER = 2;
-    }
-
-    public static final class MessageTextSize {
-        public static final int TINY = -2;
-        public static final int SMALL = -1;
-        public static final int NORMAL = 0;
-        public static final int LARGE = 1;
-        public static final int HUGE = 2;
     }
 
     public static final class DefaultReplyBehavior {
