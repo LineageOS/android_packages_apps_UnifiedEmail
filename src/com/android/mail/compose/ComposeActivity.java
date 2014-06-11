@@ -220,6 +220,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     /** If set, we will clear notifications for this folder. */
     public static final String EXTRA_NOTIFICATION_FOLDER = "extra-notification-folder";
+    public static final String EXTRA_NOTIFICATION_CONVERSATION = "extra-notification-conversation";
 
     //  If this is a reply/forward then this extra will hold the original message
     private static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
@@ -533,14 +534,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Clear the notification and mark the conversation as seen, if necessary
         final Folder notificationFolder =
                 intent.getParcelableExtra(EXTRA_NOTIFICATION_FOLDER);
-        if (notificationFolder != null) {
-            final Intent clearNotifIntent =
-                    new Intent(MailIntentService.ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS);
-            clearNotifIntent.setPackage(getPackageName());
-            clearNotifIntent.putExtra(Utils.EXTRA_ACCOUNT, account);
-            clearNotifIntent.putExtra(Utils.EXTRA_FOLDER, notificationFolder);
 
-            startService(clearNotifIntent);
+        if (notificationFolder != null) {
+            final Uri conversationUri = intent.getParcelableExtra(EXTRA_NOTIFICATION_CONVERSATION);
+            Intent actionIntent;
+            if (conversationUri != null) {
+                actionIntent = new Intent(MailIntentService.ACTION_RESEND_NOTIFICATIONS_WEAR);
+                actionIntent.putExtra(Utils.EXTRA_CONVERSATION, conversationUri);
+            } else {
+                actionIntent = new Intent(MailIntentService.ACTION_CLEAR_NEW_MAIL_NOTIFICATIONS);
+                actionIntent.setData(Utils.appendVersionQueryParameter(this,
+                        notificationFolder.folderUri.fullUri));
+            }
+            actionIntent.setPackage(getPackageName());
+            actionIntent.putExtra(Utils.EXTRA_ACCOUNT, account);
+            actionIntent.putExtra(Utils.EXTRA_FOLDER, notificationFolder);
+
+            startService(actionIntent);
         }
 
         if (intent.getBooleanExtra(EXTRA_FROM_EMAIL_TASK, false)) {

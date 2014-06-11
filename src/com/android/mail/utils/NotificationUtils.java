@@ -111,8 +111,8 @@ public class NotificationUtils {
 
     private static BidiFormatter sBidiFormatter = BidiFormatter.getInstance();
 
-    // Maps summary notification to child notification ids.
-    private static Map<NotificationKey, Set<Integer>> sChildNotificationsMap =
+    // Maps summary notification to conversation notification ids.
+    private static Map<NotificationKey, Set<Integer>> sConversationNotificationMap =
             new HashMap<NotificationKey, Set<Integer>>();
 
     /**
@@ -446,7 +446,7 @@ public class NotificationUtils {
                 NotificationActionUtils.sUndoNotifications.remove(notificationId);
                 NotificationActionUtils.sNotificationTimestamps.delete(notificationId);
 
-                cancelChildNotifications(notification, nm);
+                cancelConversationNotifications(notification, nm);
             }
             notificationMap.saveNotificationMap(context);
         }
@@ -495,7 +495,7 @@ public class NotificationUtils {
 
             NotificationManagerCompat nm = NotificationManagerCompat.from(context);
             nm.cancel(notificationId);
-            cancelChildNotifications(key, nm);
+            cancelConversationNotifications(key, nm);
         } else {
             LogUtils.d(LOG_TAG, "setNewEmailIndicator - update count for: %s / %s " +
                     "to: unread: %d unseen %d", account.getEmailAddress(), folder.persistentId,
@@ -596,7 +596,7 @@ public class NotificationUtils {
                         LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()),
                         LogUtils.sanitizeName(LOG_TAG, folder.persistentId));
                 nm.cancel(notificationId);
-                cancelChildNotifications(notificationKey, nm);
+                cancelConversationNotifications(notificationKey, nm);
 
                 return;
             }
@@ -714,30 +714,31 @@ public class NotificationUtils {
 
             int defaults = 0;
 
-            // Check if any current child notifications exist previously.  Only notify if one of
-            // them is new.
-            boolean hasNewChildNotification;
-            Set<Integer> prevChildNotifications = sChildNotificationsMap.get(notificationKey);
-            if (prevChildNotifications != null) {
-                hasNewChildNotification = false;
+            // Check if any current conversation notifications exist previously.  Only notify if
+            // one of them is new.
+            boolean hasNewConversationNotification;
+            Set<Integer> prevConversationNotifications =
+                    sConversationNotificationMap.get(notificationKey);
+            if (prevConversationNotifications != null) {
+                hasNewConversationNotification = false;
                 for (Integer currentNotificationId : msgNotifications.keySet()) {
-                    if (!prevChildNotifications.contains(currentNotificationId)) {
-                        hasNewChildNotification = true;
+                    if (!prevConversationNotifications.contains(currentNotificationId)) {
+                        hasNewConversationNotification = true;
                         break;
                     }
                 }
             } else {
-                hasNewChildNotification = true;
+                hasNewConversationNotification = true;
             }
 
-            LogUtils.d(LOG_TAG, "getAttention=%s,oldWhen=%s,hasNewChildNotification=%s",
-                    getAttention, oldWhen, hasNewChildNotification);
+            LogUtils.d(LOG_TAG, "getAttention=%s,oldWhen=%s,hasNewConversationNotification=%s",
+                    getAttention, oldWhen, hasNewConversationNotification);
 
             /*
              * We do not want to notify if this is coming back from an Undo notification, hence the
              * oldWhen check.
              */
-            if (getAttention && oldWhen == 0 && hasNewChildNotification) {
+            if (getAttention && oldWhen == 0 && hasNewConversationNotification) {
                 final AccountPreferences accountPreferences =
                         new AccountPreferences(context, account.getEmailAddress());
                 if (accountPreferences.areNotificationsEnabled()) {
@@ -767,13 +768,13 @@ public class NotificationUtils {
                 notification.extend(wearableExtender);
                 nm.notify(notificationId, notification.build());
 
-                if (prevChildNotifications != null) {
+                if (prevConversationNotifications != null) {
                     Set<Integer> currentNotificationIds = msgNotifications.keySet();
-                    for (Integer prevChildNotificationId : prevChildNotifications) {
-                        if (!currentNotificationIds.contains(prevChildNotificationId)) {
-                            nm.cancel(prevChildNotificationId);
-                            LogUtils.d(LOG_TAG, "canceling child notification %s",
-                                    prevChildNotificationId);
+                    for (Integer prevConversationNotificationId : prevConversationNotifications) {
+                        if (!currentNotificationIds.contains(prevConversationNotificationId)) {
+                            nm.cancel(prevConversationNotificationId);
+                            LogUtils.d(LOG_TAG, "canceling conversation notification %s",
+                                    prevConversationNotificationId);
                         }
                     }
                 }
@@ -782,12 +783,12 @@ public class NotificationUtils {
                     NotificationBuilders builders = entry.getValue();
                     builders.notifBuilder.extend(builders.wearableNotifBuilder);
                     nm.notify(entry.getKey(), builders.notifBuilder.build());
-                    LogUtils.d(LOG_TAG, "notifying child notification %s", entry.getKey());
+                    LogUtils.d(LOG_TAG, "notifying conversation notification %s", entry.getKey());
                 }
 
-                Set<Integer> childNotificationIds = new HashSet<Integer>();
-                childNotificationIds.addAll(msgNotifications.keySet());
-                sChildNotificationsMap.put(notificationKey, childNotificationIds);
+                Set<Integer> conversationNotificationIds = new HashSet<Integer>();
+                conversationNotificationIds.addAll(msgNotifications.keySet());
+                sConversationNotificationMap.put(notificationKey, conversationNotificationIds);
             } else {
                 LogUtils.i(LOG_TAG, "event info not configured - not notifying");
             }
@@ -993,38 +994,37 @@ public class NotificationUtils {
                             digest.addLine(digestLine);
                             numDigestItems++;
 
-                            // Adding child notification for Wear.
-                            NotificationCompat.Builder childNotif =
+                            // Adding conversation notification for Wear.
+                            NotificationCompat.Builder conversationNotif =
                                     new NotificationCompat.Builder(context);
-                            childNotif.setSmallIcon(R.drawable.stat_notify_email);
-                            childNotif.setContentText(digestLine);
-                            Intent childNotificationIntent = createViewConversationIntent(context,
-                                    account, folder, conversationCursor);
-                            PendingIntent childClickIntent = createClickPendingIntent(context,
-                                    childNotificationIntent);
-                            childNotif.setContentIntent(childClickIntent);
-                            childNotif.setAutoCancel(true);
+                            conversationNotif.setSmallIcon(R.drawable.stat_notify_email);
+                            conversationNotif.setContentText(digestLine);
+                            Intent conversationNotificationIntent = createViewConversationIntent(
+                                    context, account, folder, conversationCursor);
+                            PendingIntent conversationClickIntent = createClickPendingIntent(
+                                    context, conversationNotificationIntent);
+                            conversationNotif.setContentIntent(conversationClickIntent);
+                            conversationNotif.setAutoCancel(true);
 
-                            // TODO: Use a stable sort key if possible, e.g. message post time
-                            // + msgid hash
                             String groupSortKey = String.format("%010d", numDigestItems);
-                            childNotif.setGroup(notificationGroupKey);
-                            childNotif.setSortKey(groupSortKey);
+                            conversationNotif.setGroup(notificationGroupKey);
+                            conversationNotif.setSortKey(groupSortKey);
 
-                            int childNotificationId = getNotificationId(summaryNotificationId,
-                                    conversation.hashCode());
+                            int conversationNotificationId = getNotificationId(
+                                    summaryNotificationId, conversation.hashCode());
 
-                            final NotificationCompat.WearableExtender childWearExtender =
+                            final NotificationCompat.WearableExtender conversationWearExtender =
                                     new NotificationCompat.WearableExtender();
                             final ConfigResult result =
                                     configureNotifForOneConversation(context, account,
-                                    folderPreferences, childNotif, childWearExtender,
+                                    folderPreferences, conversationNotif, conversationWearExtender,
                                     conversationCursor, notificationIntent, folder, when, res,
                                     notificationAccountDisplayName, notificationAccountEmail,
-                                    isInbox, notificationLabelName, childNotificationId,
+                                    isInbox, notificationLabelName, conversationNotificationId,
                                     photoFetcher);
-                            msgNotifications.put(childNotificationId,
-                                    NotificationBuilders.of(childNotif, childWearExtender));
+                            msgNotifications.put(conversationNotificationId,
+                                    NotificationBuilders.of(conversationNotif,
+                                            conversationWearExtender));
 
                             if (firstResult == null) {
                                 firstResult = result;
@@ -1502,11 +1502,23 @@ public class NotificationUtils {
                 NotificationManagerCompat.from(context);
         notificationManager.cancel(getNotificationId(account.getAccountManagerAccount(), folder));
 
-        cancelChildNotifications(key, notificationManager);
+        cancelConversationNotifications(key, notificationManager);
 
         if (markSeen) {
             markSeen(context, folder);
         }
+    }
+
+    /**
+     * Use content resolver to update a conversation.  Should not be called from a main thread.
+     */
+    public static void markConversationAsReadAndSeen(Context context, Uri conversationUri) {
+        LogUtils.v(LOG_TAG, "markConversationAsReadAndSeen=%s", conversationUri);
+
+        final ContentValues values = new ContentValues(2);
+        values.put(UIProvider.ConversationColumns.SEEN, Boolean.TRUE);
+        values.put(UIProvider.ConversationColumns.READ, Boolean.TRUE);
+        context.getContentResolver().update(conversationUri, values, null, null);
     }
 
     /**
@@ -1536,20 +1548,20 @@ public class NotificationUtils {
             notificationManager.cancel(getNotificationId(account, folder));
             notificationMap.remove(notificationKey);
 
-            cancelChildNotifications(notificationKey, notificationManager);
+            cancelConversationNotifications(notificationKey, notificationManager);
         }
 
         notificationMap.saveNotificationMap(context);
     }
 
-    private static void cancelChildNotifications(NotificationKey key,
+    private static void cancelConversationNotifications(NotificationKey key,
             NotificationManagerCompat nm) {
-        Set<Integer> childNotifications = sChildNotificationsMap.get(key);
-        if (childNotifications != null) {
-            for (Integer childNotification : childNotifications) {
-                nm.cancel(childNotification);
+        final Set<Integer> conversationNotifications = sConversationNotificationMap.get(key);
+        if (conversationNotifications != null) {
+            for (Integer conversationNotification : conversationNotifications) {
+                nm.cancel(conversationNotification);
             }
-            sChildNotificationsMap.remove(key);
+            sConversationNotificationMap.remove(key);
         }
     }
 
@@ -1619,7 +1631,7 @@ public class NotificationUtils {
 
         ContentResolver resolver = context.getContentResolver();
         Cursor c = resolver.query(Email.CONTENT_URI,
-                new String[]{Email.CONTACT_ID}, whereBuilder.toString(),
+                new String[] {Email.CONTACT_ID}, whereBuilder.toString(),
                 whereArgs.toArray(new String[0]), null);
 
         ArrayList<Long> contactIds = new ArrayList<Long>();
@@ -1747,8 +1759,8 @@ public class NotificationUtils {
         return 1 ^ account.hashCode() ^ folder.hashCode();
     }
 
-    private static int getNotificationId(int summaryNotificationId, int childHashCode) {
-        return summaryNotificationId ^ childHashCode;
+    private static int getNotificationId(int summaryNotificationId, int conversationHashCode) {
+        return summaryNotificationId ^ conversationHashCode;
     }
 
     private static class NotificationKey {
