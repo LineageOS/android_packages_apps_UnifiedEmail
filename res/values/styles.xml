@@ -385,12 +385,13 @@
         <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
     </style>
 
-    <style name="ComposeThemeBase" parent="@android:style/Theme.Holo.Light" />
+    <style name="ComposeThemeBase" parent="@android:style/Theme.Holo.Light">
+        <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
+    </style>
     <style name="ComposeTheme" parent="@style/ComposeThemeBase">
         <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
