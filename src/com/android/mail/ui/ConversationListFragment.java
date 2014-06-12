@@ -923,7 +923,10 @@ public final class ConversationListFragment extends ListFragment implements
 
     private void hideLoadingViewAndShowContents() {
         final ConversationCursor cursor = getConversationListCursor();
-        if (cursor != null && cursor.getCount() == 0) {
+        // Even though cursor might be empty, the list adapter might have teasers. So we check the
+        // list adapter count if the cursor is fully/partially loaded.
+        if (cursor != null && ConversationCursor.isCursorReadyToShow(cursor) &&
+                mListAdapter.getCount() == 0) {
             showEmptyView();
         } else {
             showListView();
@@ -1181,14 +1184,11 @@ public final class ConversationListFragment extends ListFragment implements
 
     /**
      * Helper function to determine if the current cursor is ready to populate the UI
+     * Since we extracted the functionality into a static function in ConversationCursor,
+     * this function remains for the sole purpose of readability.
      * @return
      */
     private boolean isCursorReadyToShow() {
-        ConversationCursor cursor = getConversationListCursor();
-        if (cursor == null) {
-            return false;
-        }
-        final int status = cursor.getExtras().getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
-        return (cursor.getCount() > 0 || !UIProvider.CursorStatus.isWaitingForResults(status));
+        return ConversationCursor.isCursorReadyToShow(getConversationListCursor());
     }
 }

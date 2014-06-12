@@ -1047,6 +1047,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         // We recreate all the special views using mFleetingViews.
         mSpecialViews.clear();
 
+        // If the conversation cursor hasn't finished loading, hide all special views
+        if (!ConversationCursor.isCursorReadyToShow(getConversationCursor())) {
+            return;
+        }
+
         // Fleeting (temporary) views specify a position, which is 0-indexed and
         // has to be adjusted for the number of fleeting views above it.
         for (final ConversationSpecialItemView specialView : mFleetingViews) {

@@ -2460,4 +2460,22 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
     public void emptyFolder() {
         ConversationCursorOperationListener.OperationHelper.emptyFolder(mUnderlyingCursor);
     }
+
+    /**
+     * Check if the provided cursor is ready to display anything in the UI. The return value tells
+     * us if the cursor is ready to be displayed.
+     * @param cursor
+     * @return true if the cursor is partially/completely loaded with >0 count or completely loaded
+     * and empty.
+     */
+    public static boolean isCursorReadyToShow(ConversationCursor cursor) {
+        if (cursor == null) {
+            return false;
+        }
+        Bundle extras = cursor.getExtras();
+        // if no extras, default to LOADING state (so isWaitingForResults check will pass)
+        final int status = (extras == null) ? UIProvider.CursorStatus.LOADING :
+                extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
+        return (cursor.getCount() > 0 || !UIProvider.CursorStatus.isWaitingForResults(status));
+    }
 }
