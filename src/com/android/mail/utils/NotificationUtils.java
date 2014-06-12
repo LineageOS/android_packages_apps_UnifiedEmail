@@ -1128,7 +1128,7 @@ public class NotificationUtils {
                 fromAddress = message.getFrom();
                 if (fromAddress == null) {
                     // No sender. Go back to default value.
-                    LogUtils.e(LOG_TAG, "No sender found for message: %d" + message.getId());
+                    LogUtils.e(LOG_TAG, "No sender found for message: %d", message.getId());
                     fromAddress = "";
                 }
                 from = getDisplayableSender(fromAddress);
