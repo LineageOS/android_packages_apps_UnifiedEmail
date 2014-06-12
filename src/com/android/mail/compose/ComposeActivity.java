@@ -288,7 +288,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private View mFromSpinnerWrapper;
     @VisibleForTesting
     protected FromAddressSpinner mFromSpinner;
-    private boolean mAddingAttachment;
+    protected boolean mAddingAttachment;
     private boolean mAttachmentsChanged;
     private boolean mTextChanged;
     private boolean mReplyFromChanged;
@@ -929,9 +929,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     protected void onActivityResult(int request, int result, Intent data) {
-        if (request == RESULT_PICK_ATTACHMENT && result == RESULT_OK) {
-            addAttachmentAndUpdateView(data);
+        if (request == RESULT_PICK_ATTACHMENT) {
             mAddingAttachment = false;
+            if (result == RESULT_OK) {
+                addAttachmentAndUpdateView(data);
+            }
         } else if (request == RESULT_CREATE_ACCOUNT) {
             // We were waiting for the user to create an account
             if (result != RESULT_OK) {
