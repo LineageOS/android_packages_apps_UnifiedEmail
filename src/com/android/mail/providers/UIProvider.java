@@ -1031,7 +1031,8 @@ public class UIProvider {
         ConversationColumns.ATTACHMENT_PREVIEW_URI0,
         ConversationColumns.ATTACHMENT_PREVIEW_URI1,
         ConversationColumns.ATTACHMENT_PREVIEW_STATES,
-        ConversationColumns.ATTACHMENT_PREVIEWS_COUNT
+        ConversationColumns.ATTACHMENT_PREVIEWS_COUNT,
+        ConversationColumns.ORDER_KEY
     };
 
     /**
@@ -1073,6 +1074,7 @@ public class UIProvider {
     public static final int CONVERSATION_ATTACHMENT_PREVIEW_URI1_COLUMN = 27;
     public static final int CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN = 28;
     public static final int CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN = 29;
+    public static final int CONVERSATION_ORDER_KEY_COLUMN = 30;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -1280,6 +1282,11 @@ public class UIProvider {
          * total count may be higher than the number of ATTACHMENT_PREVIEW_URI columns.
          */
         public static final String ATTACHMENT_PREVIEWS_COUNT = "attachmentPreviewsCount";
+
+        /**
+         * This long column contains the data that is used for ordering the result.
+         */
+        public static final String ORDER_KEY = "orderKey";
 
         private ConversationColumns() {
         }
