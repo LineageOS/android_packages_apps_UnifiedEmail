@@ -1006,7 +1006,11 @@ public class NotificationUtils {
                             conversationNotif.setContentIntent(conversationClickIntent);
                             conversationNotif.setAutoCancel(true);
 
-                            String groupSortKey = String.format("%010d", numDigestItems);
+                            // Conversations are sorted in descending order, but notification sort
+                            // key is in ascending order.  Invert the order key to get the right
+                            // order.  Left pad 19 zeros because it's a long.
+                            String groupSortKey = String.format("%019d",
+                                    (Long.MAX_VALUE - conversation.orderKey));
                             conversationNotif.setGroup(notificationGroupKey);
                             conversationNotif.setSortKey(groupSortKey);
 

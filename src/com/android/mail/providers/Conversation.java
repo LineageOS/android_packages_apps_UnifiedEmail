@@ -157,6 +157,10 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#REMOTE
      */
     public final boolean isRemote;
+    /**
+     * @see UIProvider.ConversationColumns#ORDER_KEY
+     */
+    public final long orderKey;
 
     /**
      * Used within the UI to indicate the adapter position of this conversation
@@ -220,6 +224,7 @@ public class Conversation implements Parcelable {
         dest.writeString(attachmentPreviewUri1);
         dest.writeInt(attachmentPreviewStates);
         dest.writeInt(attachmentPreviewsCount);
+        dest.writeLong(orderKey);
     }
 
     private Conversation(Parcel in, ClassLoader loader) {
@@ -252,6 +257,7 @@ public class Conversation implements Parcelable {
         attachmentPreviewUri1 = in.readString();
         attachmentPreviewStates = in.readInt();
         attachmentPreviewsCount = in.readInt();
+        orderKey = in.readLong();
     }
 
     @Override
@@ -345,6 +351,7 @@ public class Conversation implements Parcelable {
                 UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN);
         attachmentPreviewsCount = cursor.getInt(
                 UIProvider.CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN);
+        orderKey = cursor.getLong(UIProvider.CONVERSATION_ORDER_KEY_COLUMN);
     }
 
     public Conversation(Conversation other) {
@@ -383,6 +390,7 @@ public class Conversation implements Parcelable {
         attachmentPreviewUri1 = other.attachmentPreviewUri1;
         attachmentPreviewStates = other.attachmentPreviewStates;
         attachmentPreviewsCount = other.attachmentPreviewsCount;
+        orderKey = other.orderKey;
     }
 
     private Conversation(long id, Uri uri, String subject, long dateMs,
@@ -392,7 +400,7 @@ public class Conversation implements Parcelable {
             boolean spam, boolean phishing, boolean muted, Uri accountUri,
             ConversationInfo conversationInfo, Uri conversationBase, boolean isRemote,
             String attachmentPreviewUri0, String attachmentPreviewUri1, int attachmentPreviewStates,
-            int attachmentPreviewsCount, String permalink) {
+            int attachmentPreviewsCount, String permalink, long orderKey) {
         if (conversationInfo == null) {
             throw new IllegalArgumentException("Null conversationInfo");
         }
@@ -423,6 +431,7 @@ public class Conversation implements Parcelable {
         this.attachmentPreviewUri1 = attachmentPreviewUri1;
         this.attachmentPreviewStates = attachmentPreviewStates;
         this.attachmentPreviewsCount = attachmentPreviewsCount;
+        this.orderKey = orderKey;
     }
 
     public static class Builder {
@@ -452,6 +461,7 @@ public class Conversation implements Parcelable {
         private int mAttachmentPreviewStates;
         private int mAttachmentPreviewsCount;
         private String mPermalink;
+        private long mOrderKey;
 
         public Builder setId(long id) {
             mId = id;
@@ -586,6 +596,11 @@ public class Conversation implements Parcelable {
             return this;
         }
 
+        public Builder setOrderKey(long orderKey) {
+            mOrderKey = orderKey;
+            return this;
+        }
+
         public Builder() {}
 
         public Conversation build() {
@@ -597,7 +612,7 @@ public class Conversation implements Parcelable {
                     mSendingState, mPriority, mRead, mSeen, mStarred, mRawFolders, mConvFlags,
                     mPersonalLevel, mSpam, mPhishing, mMuted, mAccountUri, mConversationInfo,
                     mConversationBaseUri, mIsRemote, mAttachmentPreviewUri0, mAttachmentPreviewUri1,
-                    mAttachmentPreviewStates, mAttachmentPreviewsCount, mPermalink);
+                    mAttachmentPreviewStates, mAttachmentPreviewsCount, mPermalink, mOrderKey);
         }
     }
 
