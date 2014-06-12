@@ -1572,41 +1572,43 @@ public class NotificationUtils {
     private static ContactIconInfo getContactIcon(final Context context, String accountName,
             final String displayName, final String senderAddress, final Folder folder,
             final ContactPhotoFetcher photoFetcher) {
-
-        if (senderAddress == null) {
-            return null;
-        }
-
         if (Looper.myLooper() == Looper.getMainLooper()) {
             throw new IllegalStateException(
                     "getContactIcon should not be called on the main thread.");
         }
 
-        // Get the ideal size for this icon.
-        final Resources res = context.getResources();
-        final int idealIconHeight =
-                res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-        final int idealIconWidth =
-                res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
-        final int idealWearableBgWidth =
-                res.getDimensionPixelSize(R.dimen.wearable_background_width);
-        final int idealWearableBgHeight =
-                res.getDimensionPixelSize(R.dimen.wearable_background_height);
+        final ContactIconInfo contactIconInfo;
+        if (senderAddress == null) {
+            contactIconInfo = new ContactIconInfo();
+        } else {
+            // Get the ideal size for this icon.
+            final Resources res = context.getResources();
+            final int idealIconHeight =
+                    res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
+            final int idealIconWidth =
+                    res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
+            final int idealWearableBgWidth =
+                    res.getDimensionPixelSize(R.dimen.wearable_background_width);
+            final int idealWearableBgHeight =
+                    res.getDimensionPixelSize(R.dimen.wearable_background_height);
 
-        final ContactIconInfo contactIconInfo =
-                photoFetcher != null ? photoFetcher.getContactPhoto(
-                context, accountName, senderAddress,idealIconWidth, idealIconHeight,
-                idealWearableBgWidth, idealWearableBgHeight) :
-                getContactInfo(context, senderAddress, idealIconWidth, idealIconHeight,
-                idealWearableBgWidth, idealWearableBgHeight);
+            if (photoFetcher != null) {
+                contactIconInfo = photoFetcher.getContactPhoto(context, accountName,
+                        senderAddress, idealIconWidth, idealIconHeight, idealWearableBgWidth,
+                        idealWearableBgHeight);
+            } else {
+                contactIconInfo = getContactInfo(context, senderAddress, idealIconWidth,
+                        idealIconHeight, idealWearableBgWidth, idealWearableBgHeight);
+            }
 
-        if (contactIconInfo.icon == null) {
-            // Make a colorful tile!
-            final Dimensions dimensions = new Dimensions(idealIconWidth, idealIconHeight,
-                    Dimensions.SCALE_ONE);
+            if (contactIconInfo.icon == null) {
+                // Make a colorful tile!
+                final Dimensions dimensions = new Dimensions(idealIconWidth, idealIconHeight,
+                        Dimensions.SCALE_ONE);
 
-            contactIconInfo.icon = new LetterTileProvider(context).getLetterTile(dimensions,
-                    displayName, senderAddress);
+                contactIconInfo.icon = new LetterTileProvider(context).getLetterTile(dimensions,
+                        displayName, senderAddress);
+            }
         }
 
         if (contactIconInfo.icon == null) {
