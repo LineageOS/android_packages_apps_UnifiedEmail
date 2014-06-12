@@ -20,6 +20,7 @@ package com.android.mail.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
@@ -44,6 +45,8 @@ public final class MailPrefs extends VersionedPrefs {
     private static final String PREFS_NAME = "UnifiedEmail";
 
     private static MailPrefs sInstance;
+
+    private final int mSnapHeaderDefault;
 
     public static final class PreferenceKeys {
         private static final String MIGRATED_VERSION = "migrated-version";
@@ -94,6 +97,16 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String GLOBAL_SYNC_OFF_DISMISSES = "num-of-dismisses-auto-sync-off";
         public static final String AIRPLANE_MODE_ON_DISMISSES = "num-of-dismisses-airplane-mode-on";
 
+        public static final String AUTO_ADVANCE_MODE = "auto-advance-mode";
+
+        public static final String CONFIRM_DELETE = "confirm-delete";
+        public static final String CONFIRM_ARCHIVE = "confirm-archive";
+        public static final String CONFIRM_SEND = "confirm-send";
+
+        public static final String CONVERSATION_OVERVIEW_MODE = "conversation-overview-mode";
+
+        public static final String SNAP_HEADER_MODE = "snap-header-mode";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
@@ -103,6 +116,12 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(DISPLAY_IMAGES_PATTERNS)
                 .add(SHOW_SENDER_IMAGES)
                 .add(LONG_PRESS_TO_SELECT_TIP_SHOWN)
+                .add(AUTO_ADVANCE_MODE)
+                .add(CONFIRM_DELETE)
+                .add(CONFIRM_ARCHIVE)
+                .add(CONFIRM_SEND)
+                .add(CONVERSATION_OVERVIEW_MODE)
+                .add(SNAP_HEADER_MODE)
                 .build();
     }
 
@@ -127,6 +146,7 @@ public final class MailPrefs extends VersionedPrefs {
 
     private MailPrefs(Context c) {
         super(c, PREFS_NAME);
+        mSnapHeaderDefault = c.getResources().getInteger(R.integer.prefDefault_snapHeader);
     }
 
     @Override
@@ -434,5 +454,68 @@ public final class MailPrefs extends VersionedPrefs {
         final int value = getSharedPreferences().getInt(
                 PreferenceKeys.GLOBAL_SYNC_OFF_DISMISSES, 0);
         getEditor().putInt(PreferenceKeys.GLOBAL_SYNC_OFF_DISMISSES, value + 1).apply();
+    }
+
+    public void setConfirmDelete(final boolean confirmDelete) {
+        getEditor().putBoolean(PreferenceKeys.CONFIRM_DELETE, confirmDelete).apply();
+        notifyBackupPreferenceChanged();
+    }
+
+    public boolean getConfirmDelete() {
+        return getSharedPreferences().getBoolean(PreferenceKeys.CONFIRM_DELETE, false);
+    }
+
+    public void setConfirmArchive(final boolean confirmArchive) {
+        getEditor().putBoolean(PreferenceKeys.CONFIRM_ARCHIVE, confirmArchive).apply();
+        notifyBackupPreferenceChanged();
+    }
+
+    public boolean getConfirmArchive() {
+        return getSharedPreferences().getBoolean(PreferenceKeys.CONFIRM_ARCHIVE, false);
+    }
+
+    public void setConfirmSend(final boolean confirmSend) {
+        getEditor().putBoolean(PreferenceKeys.CONFIRM_SEND, confirmSend).apply();
+        notifyBackupPreferenceChanged();
+    }
+
+    public boolean getConfirmSend() {
+        return getSharedPreferences().getBoolean(PreferenceKeys.CONFIRM_SEND, false);
+    }
+
+    public void setAutoAdvanceMode(final int mode) {
+        getEditor().putInt(PreferenceKeys.AUTO_ADVANCE_MODE, mode).apply();
+        notifyBackupPreferenceChanged();
+    }
+
+    public int getAutoAdvanceMode() {
+        return getSharedPreferences()
+                .getInt(PreferenceKeys.AUTO_ADVANCE_MODE, UIProvider.AutoAdvance.DEFAULT);
+    }
+
+    public void setConversationOverviewMode(final boolean overviewMode) {
+        getEditor().putBoolean(PreferenceKeys.CONVERSATION_OVERVIEW_MODE, overviewMode);
+    }
+
+    public boolean getConversationOverviewMode() {
+        return getSharedPreferences()
+                .getBoolean(PreferenceKeys.CONVERSATION_OVERVIEW_MODE, true);
+    }
+
+    public boolean isConversationOverviewModeSet() {
+        return getSharedPreferences().contains(PreferenceKeys.CONVERSATION_OVERVIEW_MODE);
+    }
+
+    public void setSnapHeaderMode(final int snapHeaderMode) {
+        getEditor().putInt(PreferenceKeys.SNAP_HEADER_MODE, snapHeaderMode);
+    }
+
+    public int getSnapHeaderMode() {
+        return getSharedPreferences()
+                .getInt(PreferenceKeys.SNAP_HEADER_MODE, mSnapHeaderDefault);
+    }
+
+    public int getSnapHeaderDefault() {
+        return mSnapHeaderDefault;
     }
 }
