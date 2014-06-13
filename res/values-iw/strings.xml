@@ -454,7 +454,8 @@
     <string name="reply_choice_thanks" msgid="8365439191962120322">"תודה"</string>
     <string name="reply_choice_i_agree" msgid="24980061720212740">"אני מסכים"</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"נחמד"</string>
-    <string name="reply_choice_later" msgid="2694622729579726898">"נדבר מאוחר יותר"</string>
+    <string name="reply_on_my_way" msgid="8200386879475660650">"אני בדרך"</string>
+    <string name="reply_choice_later" msgid="6294535370720117768">"אוקיי, נדבר מאוחר יותר"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>
