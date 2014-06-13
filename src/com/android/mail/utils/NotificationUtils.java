@@ -269,11 +269,10 @@ public class NotificationUtils {
          */
         public synchronized void saveNotificationMap(Context context) {
             final Set<String> notificationSet = Sets.newHashSet();
-            final Set<NotificationKey> keys = mMap.keySet();
+            final Set<NotificationKey> keys = keySet();
             for (NotificationKey key : keys) {
-                final Pair<Integer, Integer> value = mMap.get(key);
-                final Integer unreadCount = value.first;
-                final Integer unseenCount = value.second;
+                final Integer unreadCount = getUnread(key);
+                final Integer unseenCount = getUnseen(key);
                 if (unreadCount != null && unseenCount != null) {
                     final String[] partValues = new String[] {
                             key.account.uri.toString(), key.folder.folderUri.fullUri.toString(),
