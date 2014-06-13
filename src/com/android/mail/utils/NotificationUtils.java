@@ -602,7 +602,7 @@ public class NotificationUtils {
             }
 
             // We now have all we need to create the notification and the pending intent
-            PendingIntent clickIntent;
+            PendingIntent clickIntent = null;
 
             NotificationCompat.Builder notification = new NotificationCompat.Builder(context);
             NotificationCompat.WearableExtender wearableExtender =
@@ -611,6 +611,7 @@ public class NotificationUtils {
                     new ArrayMap<Integer, NotificationBuilders>();
             notification.setSmallIcon(R.drawable.stat_notify_email);
             notification.setTicker(account.getDisplayName());
+            notification.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
 
             final long when;
 
@@ -766,6 +767,12 @@ public class NotificationUtils {
                 }
 
                 notification.extend(wearableExtender);
+
+                // create the *public* form of the *private* notification we have been assembling
+                final Notification publicNotification = createPublicNotification(context, account,
+                        folder, when, unseenCount, unreadCount, clickIntent);
+                notification.setPublicVersion(publicNotification);
+
                 nm.notify(notificationId, notification.build());
 
                 if (prevConversationNotifications != null) {
@@ -797,6 +804,64 @@ public class NotificationUtils {
                 cursor.close();
             }
         }
+    }
+
+    /**
+     * Build and return a redacted form of a notification using the given information. This redacted
+     * form is shown above the lock screen and is devoid of sensitive information.
+     *
+     * @param context a context used to construct the notification
+     * @param account the account for which the notification is being generated
+     * @param folder the folder for which the notification is being generated
+     * @param when the timestamp of the notification
+     * @param unseenCount the number of unseen messages
+     * @param unreadCount the number of unread messages
+     * @param clickIntent the behavior to invoke if the notification is tapped (note that the user
+     *                    will be prompted to unlock the device before the behavior is executed)
+     * @return the redacted form of the notification to display above the lock screen
+     */
+    private static Notification createPublicNotification(Context context, Account account,
+            Folder folder, long when, int unseenCount, int unreadCount, PendingIntent clickIntent) {
+        final boolean multipleUnseen = unseenCount > 1;
+        final Bitmap largeIcon = getDefaultNotificationIcon(context, folder, multipleUnseen);
+
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                .setContentTitle(createTitle(context, unseenCount))
+                .setContentText(account.getDisplayName())
+                .setContentIntent(clickIntent)
+                .setSmallIcon(R.drawable.stat_notify_email)
+                .setLargeIcon(largeIcon)
+                .setNumber(unreadCount)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setWhen(when);
+
+        // if this public notification summarizes multiple single notifications, mark it as the
+        // summary notification and generate the same group key as the single notifications
+        if (multipleUnseen) {
+            builder.setGroup(createGroupKey(account, folder));
+            builder.setGroupSummary(true);
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * @param account the account in which the unread email resides
+     * @param folder the folder in which the unread email resides
+     * @return a key that groups notifications with common accounts and folders
+     */
+    private static String createGroupKey(Account account, Folder folder) {
+        return account.uri.toString() + "/" + folder.folderUri.fullUri;
+    }
+
+    /**
+     * @param context a context used to construct the title
+     * @param unseenCount the number of unseen messages
+     * @return e.g. "1 new message" or "2 new messages"
+     */
+    private static String createTitle(Context context, int unseenCount) {
+        final Resources resources = context.getResources();
+        return resources.getQuantityString(R.plurals.new_messages, unseenCount, unseenCount);
     }
 
     private static PendingIntent createClickPendingIntent(Context context,
@@ -909,7 +974,7 @@ public class NotificationUtils {
 
         if (unseenCount > 1) {
             // Build the string that describes the number of new messages
-            final String newMessagesString = res.getString(R.string.new_messages, unseenCount);
+            final String newMessagesString = createTitle(context, unseenCount);
 
             // Use the default notification icon
             notification.setLargeIcon(
@@ -934,9 +999,8 @@ public class NotificationUtils {
                 final NotificationCompat.InboxStyle digest =
                         new NotificationCompat.InboxStyle(notification);
 
-                // Group by account.
-                String notificationGroupKey =
-                        account.uri.toString() + "/" + folder.folderUri.fullUri;
+                // Group by account and folder
+                final String notificationGroupKey = createGroupKey(account, folder);
                 notification.setGroup(notificationGroupKey).setGroupSummary(true);
 
                 ConfigResult firstResult = null;
