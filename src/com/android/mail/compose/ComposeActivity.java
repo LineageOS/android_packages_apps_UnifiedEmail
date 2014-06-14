@@ -448,6 +448,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             LogUtils.d(LOG_TAG, "Launching with extraValues: %s", extraValues.toString());
             intent.putExtra(EXTRA_VALUES, extraValues);
         }
+        if (action == COMPOSE) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        } else if (message != null) {
+            intent.setDataAndNormalize(message.uri);
+        }
         context.startActivity(intent);
     }
 
@@ -456,6 +461,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         intent.setPackage(context.getPackageName());
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
+        if (mailto != null) {
+            intent.setDataAndNormalize(mailto);
+        }
         context.startActivity(intent);
     }
 
