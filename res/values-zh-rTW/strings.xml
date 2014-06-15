@@ -251,8 +251,7 @@
     <string name="message_invite_tentative" msgid="3898050756490962079">"或許"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"否"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">"、 "</string>
-    <!-- no translation found for send_anyway (426079691638238572) -->
-    <skip />
+    <string name="send_anyway" msgid="426079691638238572">"直接傳送"</string>
     <string name="ok" msgid="8339355733816891026">"確定"</string>
     <string name="done" msgid="3079981801778027540">"完成"</string>
     <string name="cancel" msgid="8762981157252199115">"取消"</string>
@@ -457,10 +456,8 @@
     <string name="reply_choice_thanks" msgid="8365439191962120322">"謝謝"</string>
     <string name="reply_choice_i_agree" msgid="24980061720212740">"我同意"</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"很好"</string>
-    <!-- no translation found for reply_on_my_way (8200386879475660650) -->
-    <skip />
-    <!-- no translation found for reply_choice_later (6294535370720117768) -->
-    <skip />
+    <string name="reply_on_my_way" msgid="8200386879475660650">"我正在路上"</string>
+    <string name="reply_choice_later" msgid="6294535370720117768">"好，我稍後再回覆您"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
 </resources>
