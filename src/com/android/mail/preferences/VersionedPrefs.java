@@ -95,6 +95,16 @@ public abstract class VersionedPrefs {
         return mEditor;
     }
 
+    public void registerOnSharedPreferenceChangeListener(
+            SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unregisterOnSharedPreferenceChangeListener(
+            SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
+    }
+
     /**
      * Returns the current version of the {@link SharedPreferences} file.
      */
