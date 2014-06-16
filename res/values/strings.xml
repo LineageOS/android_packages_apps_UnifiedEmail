@@ -734,6 +734,9 @@
         <item>Show conversation list after you delete</item>
     </string-array>
 
+    <!-- Dialog title for the auto-advance list -->
+    <string name="prefDialogTitle_autoAdvance">Advance to</string>
+
     <!-- TODO: these pref keys that are never user visible should probably be
     moved to a donttranslate file -->
     <!-- The default auto-advance mode -->
@@ -1117,4 +1120,60 @@
         <item>@string/reply_choice_smiling_face</item>
         <item>@string/reply_choice_frowning_face</item>
     </array>
+
+    <!-- Settings screen, heading for grouping action confirmation related  settings together [CHAR LIMIT=100] -->
+    <string name="preference_header_action_confirmations">Action Confirmations</string>
+    <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
+    <string name="preference_confirm_before_delete_title">Confirm before deleting</string>
+    <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
+    <string name="preference_confirm_before_archive_title">Confirm before archiving</string>
+    <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
+    <string name="preference_confirm_before_send_title">Confirm before sending</string>
+
+    <!--  Settings screen, Conversation mode setting titile  [CHAR LIMIT=30] -->
+    <string name="preferences_conversation_mode_title">Auto-fit messages</string>
+    <!--  Settings screen, Conversation mode setting summary [CHAR LIMIT=70] -->
+    <string name="preferences_conversation_mode_summary">Shrink messages to fit the screen</string>
+
+    <!--  Settings screen, disable snap headers setting title  [CHAR LIMIT=30] -->
+    <string name="preferences_disable_snap_headers_title">Message actions</string>
+
+    <!-- The snap header summaries -->
+    <string-array name="prefSummaries_snapHeader">
+        <item>Always show message actions at the top of the screen</item>
+        <item>Only show message actions at the top of the screen when rotated to portrait</item>
+        <item>Don\'t show message actions outside the message header</item>
+    </string-array>
+
+    <!-- The snap header modes -->
+    <string-array name="prefEntries_snapHeader">
+        <item>Always show</item>
+        <item>Only show in portrait</item>
+        <item>Don\'t show</item>
+    </string-array>
+
+    <!-- The snap header values -->
+    <string-array translatable="false" name="prefValues_snapHeader">
+        <item>always</item>
+        <item>portrait</item>
+        <item>never</item>
+    </string-array>
+
+    <!--  Settings screen, auto advance title  [CHAR LIMIT=200]-->
+    <string name="preference_advance_to_title">Auto-advance</string>
+
+    <!-- Settings screen, title of "Clear search history" menu item -->
+    <string name="clear_history_title">Clear search history</string>
+    <!-- Message shown in toast when the user taps "clear search history" in general preferences. [CHAR LIMIT=50] -->
+    <string name="search_history_cleared">Search history cleared.</string>
+    <!-- Settings screen, title of dialog shown to confirm action when user taps
+    "Clear search history" in preferences [CHAR LIMIT=200]-->
+    <string name="clear_history_dialog_title">Clear search history?</string>
+    <!-- Settings screen, message of dialog shown to confirm action when user taps
+    "Clear search history" in preferences [CHAR LIMIT=1000]-->
+    <string name="clear_history_dialog_message">All the searches you\'ve previously performed will be removed.</string>
+
+    <!-- Settings screen, preference item to launch into Settings [CHAR LIMIT=50] -->
+    <string name="manage_accounts_menu_item">Manage Accounts</string>
+
 </resources>
