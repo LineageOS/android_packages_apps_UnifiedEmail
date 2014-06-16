@@ -78,4 +78,11 @@ public class AnalyticsTimer {
                     label);
         }
     }
+
+    /**
+     * Removes a previously recorded start time of the provided id, if it exists.
+     */
+    public void stopTracking(String id) {
+        mStartTimes.remove(id);
+    }
 }
