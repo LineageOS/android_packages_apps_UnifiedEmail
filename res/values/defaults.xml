@@ -19,4 +19,5 @@
     <!-- Default visibility mode of conversation view snap header, matches values in UIProvider -->
     <!-- Display in portrait only -->
     <integer name="prefDefault_snapHeader">1</integer>
+    <bool name="prefDefault_actionStripActionReplyAll">false</bool>
 </resources>
