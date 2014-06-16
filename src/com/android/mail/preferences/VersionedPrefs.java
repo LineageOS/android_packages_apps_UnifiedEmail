@@ -51,7 +51,7 @@ public abstract class VersionedPrefs {
      * The current version number for {@link SharedPreferences}. This is a constant for all
      * applications based on UnifiedEmail.
      */
-    protected static final int CURRENT_VERSION_NUMBER = 3;
+    protected static final int CURRENT_VERSION_NUMBER = 4;
 
     protected static final String LOG_TAG = LogTag.getLogTag();
 
