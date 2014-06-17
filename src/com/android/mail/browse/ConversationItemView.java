@@ -143,7 +143,8 @@ public class ConversationItemView extends View
     // Static colors.
     private static int sSendersTextColorRead;
     private static int sSendersTextColorUnread;
-    private static int sDateTextColor;
+    private static int sDateTextColorRead;
+    private static int sDateTextColorUnread;
     private static int sStarTouchSlop;
     private static int sSenderImageTouchSlop;
     private static int sShrinkAnimationDuration;
@@ -472,7 +473,8 @@ public class ConversationItemView extends View
                     new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_unread));
             sSnippetTextReadSpan =
                     new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_read));
-            sDateTextColor = res.getColor(R.color.date_text_color);
+            sDateTextColorRead = res.getColor(R.color.date_text_color_read);
+            sDateTextColorUnread = res.getColor(R.color.date_text_color_unread);
             sStarTouchSlop = res.getDimensionPixelSize(R.dimen.star_touch_slop);
             sSenderImageTouchSlop = res.getDimensionPixelSize(R.dimen.sender_image_touch_slop);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
@@ -1190,8 +1192,7 @@ public class ConversationItemView extends View
             // We use the info icon ImageView for positioning, since we want the date text to be
             // at the right, since there is no info icon
             // In RTL, we just use infoIconX
-            mDateX = (isRtl) ? mCoordinates.infoIconX :
-                    mCoordinates.infoIconXRight - mDateWidth;
+            mDateX = (isRtl) ? mCoordinates.infoIconX : mCoordinates.infoIconXRight - mDateWidth;
         }
 
         // The paperclip is drawn starting at the start of the date text minus
@@ -1487,7 +1488,7 @@ public class ConversationItemView extends View
         // Date.
         sPaint.setTextSize(mCoordinates.dateFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
-        sPaint.setColor(sDateTextColor);
+        sPaint.setColor(isUnread ? sDateTextColorUnread : sDateTextColorRead);
         drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateYBaseline,
                 sPaint);
 
