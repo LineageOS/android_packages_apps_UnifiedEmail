@@ -76,7 +76,9 @@
             android:title="@string/preferences_disable_snap_headers_title"
             gm:entrySummaries="@array/prefSummaries_snapHeader" />
 
-    <PreferenceCategory android:title="@string/preference_header_action_confirmations" >
+    <PreferenceCategory
+            android:title="@string/preference_header_action_confirmations"
+            android:key="removal-actions-group">
         <CheckBoxPreference
                 android:defaultValue="true"
                 android:key="confirm-delete"

@@ -46,14 +46,17 @@ import com.google.common.annotations.VisibleForTesting;
 /**
  * This fragment shows general app preferences.
  */
-public final class GeneralPrefsFragment extends MailPreferenceFragment
+public class GeneralPrefsFragment extends MailPreferenceFragment
         implements OnClickListener, OnPreferenceChangeListener {
 
     // Keys used to reference pref widgets which don't map directly to preference entries
     static final String AUTO_ADVANCE_WIDGET = "auto-advance-widget";
     static final String SNAP_HEADER_MODE_WIDGET = "snap-header-mode-widget";
 
-    private MailPrefs mMailPrefs;
+    // Category for removal actions
+    protected static final String REMOVAL_ACTIONS_GROUP = "removal-actions-group";
+
+    protected MailPrefs mMailPrefs;
 
     private AlertDialog mClearSearchHistoryDialog;
 
