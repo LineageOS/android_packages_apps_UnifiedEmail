@@ -28,7 +28,7 @@
       that supports FOLDER_SERVER_SEARCH -->
     <item android:id="@+id/search" android:title="@string/menu_search"
         android:showAsAction="ifRoom|collapseActionView"
-        android:icon="@drawable/ic_menu_search_holo_light"
+        android:icon="@drawable/ic_menu_search"
         android:actionLayout="@layout/mail_actionbar_searchview" />
 
     <!-- Available only in the trash folder, when the account supports emptying it -->
