@@ -41,18 +41,13 @@ public class HtmlUtils {
     /**
      * Use our custom SpannedConverter to process the HtmlNode results from HtmlTree.
      * @param html
-     * @return
+     * @return processed HTML as a Spanned
      */
-    public static Spanned htmlToSpan(String html) {
+    public static Spanned htmlToSpan(String html, HtmlTree.ConverterFactory factory) {
         AnalyticsTimer.getInstance().trackStart(AnalyticsTimer.COMPOSE_HTML_TO_SPAN);
         // Get the html "tree"
         final HtmlTree htmlTree = com.android.mail.utils.Utils.getHtmlTree(html);
-        htmlTree.setConverterFactory(new HtmlTree.ConverterFactory() {
-            @Override
-            public HtmlTree.Converter createInstance() {
-                return new SpannedConverter();
-            }
-        });
+        htmlTree.setConverterFactory(factory);
         final Spanned spanned = htmlTree.getSpanned();
         AnalyticsTimer.getInstance().logDuration(AnalyticsTimer.COMPOSE_HTML_TO_SPAN, true,
                 "compose", "html_to_span", null);
@@ -73,9 +68,9 @@ public class HtmlUtils {
      *   - p
      *   - div
      */
-    private static class SpannedConverter implements HtmlTree.Converter<Spanned> {
+    public static class SpannedConverter implements HtmlTree.Converter<Spanned> {
 
-        private final SpannableStringBuilder mBuilder = new SpannableStringBuilder();
+        protected final SpannableStringBuilder mBuilder = new SpannableStringBuilder();
         private final LinkedList<TagWrapper> mSeenTags = Lists.newLinkedList();
 
         @Override
@@ -97,7 +92,7 @@ public class HtmlUtils {
         /**
          * Helper function to handle start tag
          */
-        private void handleStart(HtmlDocument.Tag tag) {
+        protected void handleStart(HtmlDocument.Tag tag) {
             // Special case these tags since they only affect the number of newlines
             final String tagName = tag.getName().toLowerCase();
             if (tagName.equals("br")) {
@@ -124,7 +119,7 @@ public class HtmlUtils {
         /**
          * Helper function to handle end tag
          */
-        private void handleEnd(HtmlDocument.EndTag tag) {
+        protected void handleEnd(HtmlDocument.EndTag tag) {
             final String tagName = tag.getName().toLowerCase();
             TagWrapper lastSeen;
             while ((lastSeen = mSeenTags.poll()) != null && !lastSeen.tagName.equals(tagName)) { }
