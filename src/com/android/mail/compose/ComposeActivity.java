@@ -452,7 +452,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (action == COMPOSE) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         } else if (message != null) {
-            intent.setDataAndNormalize(message.uri);
+            intent.setData(Utils.normalizeUri(message.uri));
         }
         context.startActivity(intent);
     }
@@ -463,7 +463,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         if (mailto != null) {
-            intent.setDataAndNormalize(mailto);
+            intent.setData(Utils.normalizeUri(mailto));
         }
         context.startActivity(intent);
     }
