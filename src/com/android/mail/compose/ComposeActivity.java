@@ -104,6 +104,7 @@ import com.android.mail.ui.WaitFragment;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.ContentProviderTask;
+import com.android.mail.utils.HtmlUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
@@ -1027,7 +1028,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         int mode = getMode();
         state.putInt(EXTRA_ACTION, mode);
 
-        final Message message = createMessage(selectedReplyFromAccount, mRefMessage, mode);
+        final Message message = createMessage(selectedReplyFromAccount, mRefMessage, mode,
+                removeComposingSpans(mBodyView.getText()));
         if (mDraft != null) {
             message.id = mDraft.id;
             message.serverId = mDraft.serverId;
@@ -1062,8 +1064,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return mode;
     }
 
+    /**
+     * This function might be called from a background thread, so be sure to move everything that
+     * can potentially modify the UI to the main thread (e.g. removeComposingSpans for body).
+     */
     private Message createMessage(ReplyFromAccount selectedReplyFromAccount, Message refMessage,
-            int mode) {
+            int mode, Spanned body) {
         Message message = new Message();
         message.id = UIProvider.INVALID_MESSAGE_ID;
         message.serverId = null;
@@ -1076,7 +1082,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.setBcc(formatSenders(mBcc.getText().toString()));
         message.setReplyTo(null);
         message.dateReceivedMs = 0;
-        message.bodyHtml = spannedBodyToHtml(mBodyView.getText());
+        message.bodyHtml = spannedBodyToHtml(body, true);
         message.bodyText = mBodyView.getText().toString();
         message.embedsExternalResources = false;
         message.refMessageUri = mRefMessage != null ? mRefMessage.uri : null;
@@ -1326,10 +1332,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * String.
      *
      * @param body the body text including fancy style spans
+     * @param removedComposing whether the function already removed composingSpans. Necessary
+     *   because we cannot call removeComposingSpans from a background thread.
      * @return HTML formatted body that's suitable for sending or saving
      */
-    private String spannedBodyToHtml(Spanned body) {
-        final HtmlifyBeginResult r = onHtmlifyBegin(removeComposingSpans(body));
+    private String spannedBodyToHtml(Spanned body, boolean removedComposing) {
+        if (!removedComposing) {
+            body = removeComposingSpans(body);
+        }
+        final HtmlifyBeginResult r = onHtmlifyBegin(body);
         return onHtmlifyEnd(Html.toHtml(r.result), r.extras);
     }
 
@@ -1355,7 +1366,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     public String getBodyHtml() {
-        return spannedBodyToHtml(mBodyView.getText());
+        return spannedBodyToHtml(mBodyView.getText(), false);
     }
 
     @VisibleForTesting
@@ -1485,7 +1496,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Set the body
         CharSequence quotedText = null;
         if (!TextUtils.isEmpty(message.bodyHtml)) {
-            CharSequence htmlText = "";
             if (quotedTextIndex > -1) {
                 // Find the offset in the html text of the actual quoted text and strip it out.
                 // Note that the actual quotedTextOffset in the message has not changed as
@@ -1494,15 +1504,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // to see the differences.
                 quotedTextIndex = QuotedTextView.findQuotedTextIndex(message.bodyHtml);
                 if (quotedTextIndex > -1) {
-                    htmlText = Utils.convertHtmlToPlainText(message.bodyHtml.substring(0,
-                            quotedTextIndex));
+                    new HtmlToSpannedTask().execute(message.bodyHtml.substring(0, quotedTextIndex));
                     quotedText = message.bodyHtml.subSequence(quotedTextIndex,
                             message.bodyHtml.length());
                 }
             } else {
-                htmlText = Utils.convertHtmlToPlainText(message.bodyHtml);
+                new HtmlToSpannedTask().execute(message.bodyHtml);
             }
-            mBodyView.setText(htmlText);
         } else {
             final String body = message.bodyText;
             final CharSequence bodyText;
@@ -3033,7 +3041,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
-            Message message, final Message refMessage, Spanned body, final CharSequence quotedText,
+            Message message, final Message refMessage, final CharSequence quotedText,
             SendOrSaveCallback callback, Handler handler, boolean save, int composeMode,
             ReplyFromAccount draftAccount, final ContentValues extraValues) {
         final ContentValues values = new ContentValues();
@@ -3047,8 +3055,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         MessageModification.putSubject(values, message.subject);
 
-        // Make sure to remove only the composing spans from the Spannable before saving.
-        final String htmlBody = spannedBodyToHtml(body);
+        // bodyHtml already have the composing spans removed.
+        final String htmlBody = message.bodyHtml;
         final String textBody = Utils.convertHtmlToPlainText(htmlBody);
         // fullbody will contain the actual body plus the quoted text.
         final String fullBody;
@@ -3165,9 +3173,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return;
         }
 
-        final Spanned body = mBodyView.getEditableText();
-
-        SendOrSaveCallback callback = new SendOrSaveCallback() {
+        final SendOrSaveCallback callback = new SendOrSaveCallback() {
             // FIXME: unused
             private int mRestoredRequestId;
 
@@ -3251,13 +3257,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 ComposeActivity.this.incrementRecipientsTimesContacted(recipients);
             }
         };
-
         setAccount(mReplyFromAccount.account);
 
-        Message msg = createMessage(mReplyFromAccount, mRefMessage, getMode());
-        mRequestId = sendOrSaveInternal(this, mReplyFromAccount, msg, mRefMessage, body,
-                mQuotedTextView.getQuotedTextIfIncluded(), callback,
-                SEND_SAVE_TASK_HANDLER, save, mComposeMode, mDraftAccount, mExtraValues);
+        final Spanned body = removeComposingSpans(mBodyView.getText());
+        SEND_SAVE_TASK_HANDLER.post(new Runnable() {
+            @Override
+            public void run() {
+                final Message msg = createMessage(mReplyFromAccount, mRefMessage, getMode(), body);
+                mRequestId = sendOrSaveInternal(ComposeActivity.this, mReplyFromAccount, msg,
+                        mRefMessage, mQuotedTextView.getQuotedTextIfIncluded(), callback,
+                        SEND_SAVE_TASK_HANDLER, save, mComposeMode, mDraftAccount, mExtraValues);
+            }
+        });
 
         // Don't display the toast if the user is just changing the orientation,
         // but we still need to save the draft to the cursor because this is how we restore
@@ -3832,5 +3843,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
         // Do nothing.
+    }
+
+    /**
+     * Background task to convert the message's html to Spanned.
+     */
+    private class HtmlToSpannedTask extends AsyncTask<String, Void, Spanned> {
+
+        @Override
+        protected Spanned doInBackground(String... input) {
+            return HtmlUtils.htmlToSpan(input[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Spanned spanned) {
+            mBodyView.removeTextChangedListener(ComposeActivity.this);
+            mBodyView.setText(spanned);
+            mTextChanged = false;
+            mBodyView.addTextChangedListener(ComposeActivity.this);
+        }
     }
 }
