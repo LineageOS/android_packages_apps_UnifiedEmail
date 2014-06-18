@@ -120,7 +120,7 @@
     <string name="contextmenu_openlink" msgid="2176176524824953775">"ເປີດໃນໂປຣແກຣມທ່ອງເວັບ"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"ສຳເນົາ"</string>
     <string name="contextmenu_copylink" msgid="3580131515400610839">"ສຳເນົາລິ້ງ URL"</string>
-    <string name="contextmenu_view_image" msgid="8855189263365643422">"ເບິ່ງຮູບ​ພາບ​"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"ເບິ່ງຮູບ​ພາບ"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"ໂທ..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS..."</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"ເພີ່ມລາຍຊື່"</string>
@@ -251,7 +251,7 @@
     <string name="message_invite_tentative" msgid="3898050756490962079">"ອາດຈະໄປ"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"ບໍ່"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="send_anyway" msgid="426079691638238572">"ສົ່ງ​"</string>
+    <string name="send_anyway" msgid="426079691638238572">"ສົ່ງ"</string>
     <string name="ok" msgid="8339355733816891026">"ຕົກລົງ"</string>
     <string name="done" msgid="3079981801778027540">"ແລ້ວໆ"</string>
     <string name="cancel" msgid="8762981157252199115">"ຍົກເລີກ"</string>
@@ -333,6 +333,7 @@
     <item msgid="732746454445519134">"ສະແດງການສົນທະນາທີ່ເກົ່າກວ່າ ຫຼັງຈາກທ່ານລຶບແລ້ວ"</item>
     <item msgid="2189929276292165301">"ສະແດງລາຍການການສົນທະນາ ຫຼັງຈາກທ່ານລຶບແລ້ວ"</item>
   </string-array>
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"ເລື່ອນໄປຫາ"</string>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"ລຶບການອະນຸມັດຮູບ"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"ລຶບການອະນຸມັດຮູບ?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"ຢຸດການສະແດງຮູບພາບໃນແຖວຈາກຜູ່ສົ່ງທີ່ທ່ານເຄີຍອະນຸຍາດມາກ່ອນແລ້ວ."</string>
@@ -353,7 +354,10 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> ຂໍ້ຄວາມໃຫມ່"</string>
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> ຂໍ້​ຄວາມ​ໃໝ່"</item>
+    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g> ​ອີ​ເມວ​ໃໝ່"</item>
+  </plurals>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"ປິດສຽງ"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"ການເກັບເຂົ້າແຟ້ມ &amp; ການລຶບ"</string>
@@ -425,7 +429,7 @@
     <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"ຂໍ້ຄວາມ"</string>
     <string name="send_to_contacts_text" msgid="2696513899649703420">"ສົ່ງໃຫ້ຜູ່ທີ່ຢູ່ໃນລາຍຊື່ຕິດຕໍ່ຂອງຂ້ອຍເທົ່ານັ້ນ"</string>
     <string name="send_to_domain_text" msgid="5055332409482662383">"ສົ່ງ​ໃຫ້ສະເພາະ <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
-    <string name="pick_start_date_title" msgid="915230000170560933">"ມື້ເລີ່ມ​"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"ມື້ເລີ່ມ"</string>
     <string name="pick_end_date_title" msgid="2068598706186320098">"ມື້ຈົບ (ເປັນທາງເລືອກ​)"</string>
     <string name="date_not_set" msgid="4925325938525330766">"ຍັງບໍ່ໄດ້ຕັ້ງ"</string>
     <string name="set_end_date_dialog_title" msgid="72028456826019380">"ມື້ຈົບ (ເປັນທາງເລືອກ)"</string>
@@ -460,4 +464,27 @@
     <string name="reply_choice_later" msgid="6294535370720117768">"​ຕົກ​ລົງ, ​ໄວ້ຂ້ອຍ​ຈະ​ຕິດ​ຕໍ່​ກັບ​ຫາ​ເຈົ້າ"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"​ຢືນ​ຢັນ​ກ່ອນ​ດຳ​ເນີນ​ການ"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"​ຢືນ​ຢັນ​ກ່ອນ​ການ​ລຶບ"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"​ຢືນ​ຢັນ​ກ່ອນ​ຈັດ​ເກັບ​ເຂົ້າ​ແຟ້ມ"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"​ຢືນ​ຢັນ​ກ່ອນ​ການ​ສົ່ງ"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"​ປັບ​ຂໍ້​ຄວາມ​ໃຫ້​ພໍ​ດີ​ອັດ​ຕະ​ໂນ​ມັດ"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"​ຫຍໍ້​ຂໍ້​ຄວາມ​ໃຫ້​ພໍ​ດີ​ກັບ​ໜ້າ"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"​ຈັດ​ການ​ຂໍ້​ຄວາມ"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"ສະ​ແດງ​ຄຳ​ສັ່ງ​ຂໍ້​ຄວາມ​ຢູ່​ເທິງ​ສຸດ​ຂອງ​ໜ້າ​ຈໍ"</item>
+    <item msgid="1197074110597228768">"​ສະ​ແດງ​ສະ​ເພາະ​ຄຳ​ສັ່ງ​ຂໍ້​ຄວາມ​ຢູ່​ເທິງ​ສຸດ​ຂອງ​ໜ້າ​ຈໍ​ເທື່ອ​ໝຸນ​ຈໍ​ໄປ​ລວງ​ຕັ້ງ"</item>
+    <item msgid="8496844279095098067">"​ບໍ່​ສະ​ແດງ​ຄຳ​ສ​ັ່ງ​ຂໍ້​ຄວາມ​ຢູ່​ນອກ​ສ່ວນ​ຫົວ​ຂໍ້​ອີ​ເມວ"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"​ສະ​ແດງ​ທຸກ​ຄັ້ງ"</item>
+    <item msgid="8546075502478857367">"​ສະ​ເພາະ​ສະ​ເພາະ​​ລວງ​ຕັ້ງ"</item>
+    <item msgid="863690009910739926">"ບໍ່ສະແດງ"</item>
+  </string-array>
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"​ເລື່ອນ​ອັດ​ຕະ​ໂນ​ມັດ"</string>
+    <string name="clear_history_title" msgid="8974919373315137028">"​ລຶບ​ປະ​ຫວັດ​ການ​ຊອກ​ຫາ"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"​ລຶບ​ລ້າງ​ປະ​ຫວັດ​ການ​ຊອກ​ຫາ​ແລ້ວ."</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"ລຶບ​ປະ​ຫວັດ​ການ​ຊອກ​ຫາ​ບໍ?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"​ທຸກໆ​ການ​ຊອກ​ຫາ​ທີ່​ທ່ານ​ເຄີຍ​ຊອກ​ມາ​ກ່ອນ​ໜ້າ​ນີ້​ຈະ​ຖືກ​ລຶບ​ອອກ."</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"​ຈັດ​ການ​ບັນ​ຊີ"</string>
 </resources>

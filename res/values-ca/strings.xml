@@ -333,6 +333,7 @@
     <item msgid="732746454445519134">"Mostra una conversa més antiga després de suprimir"</item>
     <item msgid="2189929276292165301">"Mostra la llista de converses després de suprimir"</item>
   </string-array>
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"Avançament a"</string>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Esborra les aprovacions d\'imatges"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vols esborrar les aprovacions d\'imatges?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Ja no es mostraran imatges de remitents que s\'hagin permès anteriorment."</string>
@@ -353,7 +354,10 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> missatges nous"</string>
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> missatge nou"</item>
+    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g> missatges nous"</item>
+  </plurals>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Silenci"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Accions d\'arxivament i de supressió"</string>
@@ -460,4 +464,27 @@
     <string name="reply_choice_later" msgid="6294535370720117768">"D\'acord, ja contactaré amb tu."</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Confirmacions d\'accions"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"Confirma abans de suprimir"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"Confirma abans d\'arxivar"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"Confirma abans d\'enviar"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"Ajustament de missatges"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"Adapta els missatges a la mida de la pantalla"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"Accions de missatges"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"Mostra sempre les accions de missatges a la part superior de la pantalla"</item>
+    <item msgid="1197074110597228768">"Mostra només accions de missatges a la part superior de la pantalla en mode vertical"</item>
+    <item msgid="8496844279095098067">"No mostris accions de missatges fora de la capçalera del missatge"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"Mostra sempre"</item>
+    <item msgid="8546075502478857367">"Mostra només en vertical"</item>
+    <item msgid="863690009910739926">"No mostris"</item>
+  </string-array>
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"Avança automàticament"</string>
+    <string name="clear_history_title" msgid="8974919373315137028">"Esborra l\'historial de cerca"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"S\'ha buidat l\'historial de cerca."</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"Vols esborrar l\'historial de cerca?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Se suprimiran totes les cerques que hagis fet."</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Gestiona els comptes"</string>
 </resources>

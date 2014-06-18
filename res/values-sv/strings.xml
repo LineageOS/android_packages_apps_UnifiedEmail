@@ -333,6 +333,7 @@
     <item msgid="732746454445519134">"Visa en äldre konversation efter borttagning"</item>
     <item msgid="2189929276292165301">"Visa konversationslistan efter borttagning"</item>
   </string-array>
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"Flytta till"</string>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Ta bort godkännanden av bilder"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vill du ta bort godkännanden av bilder?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Sluta visa infogade bilder från avsändare vars bilder du tidigare har godkänt."</string>
@@ -353,7 +354,10 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> nya meddelanden"</string>
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> nytt meddelande"</item>
+    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g> nya meddelanden"</item>
+  </plurals>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Tyst"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Åtgärderna arkivera och ta bort"</string>
@@ -460,4 +464,27 @@
     <string name="reply_choice_later" msgid="6294535370720117768">"Okej, jag återkommer."</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Åtgärdsbekräftelser"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"Bekräfta innan du tar bort"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"Bekräfta innan du arkiverar"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"Bekräfta innan du skickar"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"Anpassa meddelanden automatiskt"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"Förminska meddelandena så att de får plats på skärmen"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"Aktiviteter för meddelanden"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"Visa alltid aktiviteter för meddelanden högst upp på skärmen"</item>
+    <item msgid="1197074110597228768">"Visa endast aktiviteter för meddelanden högst upp på skärmen när telefonen är i stående läge"</item>
+    <item msgid="8496844279095098067">"Visa inte aktiviteter för meddelanden utanför meddelanderubriken"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"Visa alltid"</item>
+    <item msgid="8546075502478857367">"Visa bara i stående läge"</item>
+    <item msgid="863690009910739926">"Visa inte"</item>
+  </string-array>
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"Flytta automatiskt"</string>
+    <string name="clear_history_title" msgid="8974919373315137028">"Rensa sökhistoriken"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"Sökhistoriken har rensats."</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"Vill du rensa sökhistoriken?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Alla dina sökningar kommer att tas bort."</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Hantera konton"</string>
 </resources>

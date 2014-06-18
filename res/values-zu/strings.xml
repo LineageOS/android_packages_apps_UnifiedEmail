@@ -333,6 +333,7 @@
     <item msgid="732746454445519134">"Bonisa ingxoxo endala ngemuva kokususa"</item>
     <item msgid="2189929276292165301">"Bonisa uhlu lwengxoxo ngemuva kokususa"</item>
   </string-array>
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"Dlulela ku-"</string>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Sula ukuvunywa kwesithombe"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Sula ukuvunywa kwesithombe?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Misa ukubonisa izithombe ezisemugqeni ezisuka kubathumeli obavumele ngaphambilini."</string>
@@ -353,7 +354,10 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g><xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> imilayezo emisha"</string>
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> umlayezo omusha"</item>
+    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g> imilayezo emisha"</item>
+  </plurals>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Thulile"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Izenzo zokufaka kungobo yomlando nokususa"</string>
@@ -460,4 +464,27 @@
     <string name="reply_choice_later" msgid="6294535370720117768">"Kulungile, ngizobuya kuwe"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Ukuqinisekiswa kwesenzo"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"Qinisekisa ngaphambi kokususa"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"Qinisekisa ngaphambi kokufaka kungobo yomlando"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"Qinisekisa ngaphambi kokuthumela"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"Linganisa ngokuzenzakalela imilayezo"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"Nciphisa imilayezo ukuze ilingane isikrini"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"Izenzo zomlayezo"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"Bonisa njalo izenzo zemlayezo ngaphezu kwesikrini"</item>
+    <item msgid="1197074110597228768">"Bonisa kuphela izenzo zomlayezo ngaphezulu kwesikrini uma ijikiselwe ekumeni ngobude"</item>
+    <item msgid="8496844279095098067">"Ungabonisi izenzo zomlayezo ngaphandle kwesihloko somlayezo"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"Bonisa njalo"</item>
+    <item msgid="8546075502478857367">"Bonisa kuphela ekumeni ngobude"</item>
+    <item msgid="863690009910739926">"Ungabonisi"</item>
+  </string-array>
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"Thuthukisa ngokuzenzakalela"</string>
+    <string name="clear_history_title" msgid="8974919373315137028">"Sula umlando wokusesha"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"Umlando wokusesha usuliwe."</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"Sula umlando wokusesha?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Konke ukusesha okwenzile ngokudlule kuzosuswa."</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Phatha ama-akhawunti"</string>
 </resources>
