@@ -109,6 +109,7 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.Utils;
+import com.google.android.mail.common.html.parser.HtmlTree;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -324,6 +325,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Account[] mAccounts;
     private boolean mRespondedInline;
     private boolean mPerformedSendOrDiscard = false;
+
+    private final HtmlTree.ConverterFactory mSpanConverterFactory =
+            new HtmlTree.ConverterFactory() {
+            @Override
+                public HtmlTree.Converter<Spanned> createInstance() {
+                    return getSpanConverter();
+                }
+            };
 
     /**
      * Can be called from a non-UI thread.
@@ -1465,6 +1474,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
             initAttachments(mRefMessage);
         }
+    }
+
+    protected HtmlTree.Converter<Spanned> getSpanConverter() {
+        return new HtmlUtils.SpannedConverter();
     }
 
     private void initFromDraftMessage(Message message) {
@@ -3839,7 +3852,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         @Override
         protected Spanned doInBackground(String... input) {
-            return HtmlUtils.htmlToSpan(input[0]);
+            return HtmlUtils.htmlToSpan(input[0], mSpanConverterFactory);
         }
 
         @Override
