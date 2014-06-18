@@ -70,8 +70,16 @@ public abstract class VersionedPrefs {
         setCurrentVersion(CURRENT_VERSION_NUMBER);
 
         if (!hasMigrationCompleted()) {
-            final boolean migrationComplete = PreferenceMigratorHolder.createPreferenceMigrator()
-                    .performMigration(context, oldVersion, CURRENT_VERSION_NUMBER);
+            final BasePreferenceMigrator preferenceMigrator =
+                    PreferenceMigratorHolder.createPreferenceMigrator();
+            final boolean migrationComplete;
+            if (preferenceMigrator != null) {
+                migrationComplete = preferenceMigrator
+                        .performMigration(context, oldVersion, CURRENT_VERSION_NUMBER);
+            } else {
+                LogUtils.w(LogUtils.TAG, "No preference migrator found, not migrating preferences");
+                migrationComplete = false;
+            }
 
             if (migrationComplete) {
                 setMigrationComplete();
