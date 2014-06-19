@@ -75,8 +75,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private static final String TAG = ConversationViewFragment.LAYOUT_TAG;
 
     private static final int[] BOTTOM_LAYER_VIEW_IDS = {
-        R.id.webview,
-        R.id.conversation_side_border_overlay
+        R.id.webview
     };
 
     private static final int[] TOP_LAYER_VIEW_IDS = {

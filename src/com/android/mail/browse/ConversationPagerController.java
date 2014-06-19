@@ -64,7 +64,7 @@ public class ConversationPagerController {
     private boolean mShown;
     /**
      * True when the initial conversation passed to show() is busy loading. We assume that the
-     * first {@link #onConversationSeen(Conversation)} callback is triggered by that initial
+     * first {@link #onConversationSeen()} callback is triggered by that initial
      * conversation, and unset this flag when first signaled. Side-to-side paging will not re-enable
      * this flag, since it's only needed for initial conversation load.
      */

@@ -65,7 +65,12 @@
         <item name="android:paddingEnd">@dimen/undo_text_padding</item>
     </style>
 
-    <style name="ConversationViewSideMarginStyle">
+    <style name="ConversationViewPaddingStyle">
+        <item name="android:paddingStart">@dimen/conversation_view_margin_side</item>
+        <item name="android:paddingEnd">@dimen/conversation_view_margin_side</item>
+    </style>
+
+    <style name="ConversationViewMarginStyle">
         <item name="android:layout_marginStart">@dimen/conversation_view_margin_side</item>
         <item name="android:layout_marginEnd">@dimen/conversation_view_margin_side</item>
     </style>
@@ -73,13 +78,6 @@
     <style name="NewMessageButtonStyle" parent="AbstractNewMessageButtonStyle">
         <item name="android:layout_marginStart">@dimen/toast_bar_margin</item>
         <item name="android:layout_marginEnd">@dimen/toast_bar_margin</item>
-    </style>
-
-    <style name="ConversationViewSideMarginMinusGradientStyle">
-        <item name="android:layout_marginStart">@dimen/conversation_view_margin_side_minus_gradient
-        </item>
-        <item name="android:layout_marginEnd">@dimen/conversation_view_margin_side_minus_gradient
-        </item>
     </style>
 
     <style name="FolderListItemStartStyle">

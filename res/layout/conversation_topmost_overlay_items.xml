@@ -20,7 +20,7 @@
              android:id="@+id/snap_header"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             style="@style/ConversationViewSideMarginStyle"
+             style="@style/ConversationViewPaddingStyle"
              android:layout_gravity="top"
              android:visibility="gone"/>
 
