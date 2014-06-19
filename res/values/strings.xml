@@ -1167,4 +1167,11 @@
     <!-- Settings screen, preference item to launch into Settings [CHAR LIMIT=50] -->
     <string name="manage_accounts_menu_item">Manage Accounts</string>
 
+    <!-- Settings screen, main title of the screen, big font [CHAR LIMIT=50]-->
+    <string name="general_preferences_title">General settings</string>
+
+    <!-- Settings screen title -->
+    <!-- Name of the Settings activity -->
+    <string name="activity_preferences">Settings</string>
+
 </resources>

@@ -25,6 +25,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.widget.BaseWidgetProvider;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -137,15 +138,16 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String ARCHIVE_AND_DELETE = "archive-and-delete";
     }
 
-    public static MailPrefs get(Context c) {
+    public static MailPrefs get(final Context c) {
         if (sInstance == null) {
-            sInstance = new MailPrefs(c);
+            sInstance = new MailPrefs(c, PREFS_NAME);
         }
         return sInstance;
     }
 
-    private MailPrefs(Context c) {
-        super(c, PREFS_NAME);
+    @VisibleForTesting
+    public MailPrefs(final Context c, final String prefsName) {
+        super(c, prefsName);
         mSnapHeaderDefault = c.getResources().getInteger(R.integer.prefDefault_snapHeader);
     }
 
@@ -494,7 +496,7 @@ public final class MailPrefs extends VersionedPrefs {
     }
 
     public void setConversationOverviewMode(final boolean overviewMode) {
-        getEditor().putBoolean(PreferenceKeys.CONVERSATION_OVERVIEW_MODE, overviewMode);
+        getEditor().putBoolean(PreferenceKeys.CONVERSATION_OVERVIEW_MODE, overviewMode).apply();
     }
 
     public boolean getConversationOverviewMode() {
@@ -507,7 +509,7 @@ public final class MailPrefs extends VersionedPrefs {
     }
 
     public void setSnapHeaderMode(final int snapHeaderMode) {
-        getEditor().putInt(PreferenceKeys.SNAP_HEADER_MODE, snapHeaderMode);
+        getEditor().putInt(PreferenceKeys.SNAP_HEADER_MODE, snapHeaderMode).apply();
     }
 
     public int getSnapHeaderMode() {
