@@ -320,8 +320,7 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Wszystkie foldery"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Ostatnie foldery"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Szczegóły wiadomości"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"Autoprzechodzenie"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"Wybierz ekran, który ma wyświetlać się po usunięciu wiadomości"</string>
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"Automatyczne przechodzenie"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"Ustaw automatyczne przechodzenie\n(np. po usunięciu)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Nowsze wątki"</item>
@@ -333,6 +332,7 @@
     <item msgid="732746454445519134">"Pokazuj starszą konwersację po usunięciu"</item>
     <item msgid="2189929276292165301">"Pokazuj listę konwersacji po usunięciu"</item>
   </string-array>
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"Przejdź do"</string>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Wyłącz pokazywanie obrazów"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Wyłączyć pokazywanie obrazów?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Przestań pokazywać w wiadomościach obrazy od zatwierdzonych wcześniej nadawców."</string>
@@ -353,7 +353,10 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"Nowe wiadomości: <xliff:g id="COUNT">%1$d</xliff:g>"</string>
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> nowa wiadomość"</item>
+    <item quantity="other" msgid="6295442146249725952">"Nowe wiadomości: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+  </plurals>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Cichy"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Czynności archiwizuj i usuń"</string>
@@ -460,4 +463,26 @@
     <string name="reply_choice_later" msgid="6294535370720117768">"OK, odezwę się do Ciebie"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Potwierdzenia czynności"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"Potwierdź przed usunięciem"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"Potwierdź przed zarchiwizowaniem"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"Potwierdź przed wysłaniem"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"Autodopasowanie wiadomości"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"Zmniejsz wiadomości, by zmieścić je na ekranie"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"Pasek opcji"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"Zawsze pokazuj pasek opcji u góry ekranu"</item>
+    <item msgid="1197074110597228768">"Pokazuj pasek opcji u góry ekranu tylko w trybie pionowym"</item>
+    <item msgid="8496844279095098067">"Nie pokazuj paska opcji poza nagłówkiem wiadomości"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"Zawsze pokazuj"</item>
+    <item msgid="8546075502478857367">"Pokazuj w trybie pionowym"</item>
+    <item msgid="863690009910739926">"Nie pokazuj"</item>
+  </string-array>
+    <string name="clear_history_title" msgid="8974919373315137028">"Wyczyść historię wyszukiwania"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"Wyczyszczono historię wyszukiwania."</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"Wyczyścić historię wyszukiwania?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Wszystkie poprzednie wyszukiwania zostaną usunięte."</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Zarządzaj kontami"</string>
 </resources>
