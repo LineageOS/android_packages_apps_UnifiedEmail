@@ -18,10 +18,18 @@
 package com.android.mail.ui.settings;
 
 import android.app.Fragment;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.text.TextUtils;
 
 import com.android.mail.R;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.MailAppProvider;
+import com.android.mail.providers.UIProvider;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.lang.ref.WeakReference;
@@ -31,11 +39,38 @@ public class MailPreferenceActivity extends PreferenceActivity {
 
     public static final String PREFERENCE_FRAGMENT_ID = "preference_fragment_id";
 
+    private static final int ACCOUNT_LOADER_ID = 0;
+
     private WeakReference<GeneralPrefsFragment> mGeneralPrefsFragmentRef;
+
+    private Cursor mAccountsCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getLoaderManager().initLoader(ACCOUNT_LOADER_ID, null, new AccountLoaderCallbacks());
+    }
+
+    private class AccountLoaderCallbacks implements LoaderCallbacks<Cursor> {
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            return new CursorLoader(MailPreferenceActivity.this,
+                    MailAppProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION,
+                    null, null, null);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            mAccountsCursor = data;
+            invalidateHeaders();
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+            mAccountsCursor = null;
+            invalidateHeaders();
+        }
     }
 
     @VisibleForTesting
@@ -54,11 +89,43 @@ public class MailPreferenceActivity extends PreferenceActivity {
 
     @Override
     protected boolean isValidFragment(String fragmentName) {
-        return GeneralPrefsFragment.class.getCanonicalName().equals(fragmentName);
+        // TODO: STOPSHIP fix Email to use the PublicPreferenceActivity trampoline
+        return true;
     }
 
     @Override
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.preference_headers, target);
+        if (mAccountsCursor != null && mAccountsCursor.moveToFirst()) {
+            do {
+                final Account account = new Account(mAccountsCursor);
+                if (!TextUtils.isEmpty(account.getEmailAddress())) {
+                    final Header header = new Header();
+                    if (TextUtils.isEmpty(account.getDisplayName()) ||
+                            TextUtils.equals(account.getDisplayName(), account.getEmailAddress())) {
+                        // No (useful) display name, just use the email address
+                        header.title = account.getEmailAddress();
+                    } else {
+                        header.title = account.getDisplayName();
+                        header.summary = account.getEmailAddress();
+                    }
+                    header.fragment = account.settingsFragmentClass;
+                    final Bundle accountBundle = new Bundle(1);
+                    accountBundle.putString(MailAccountPrefsFragment.ARG_ACCOUNT_EMAIL,
+                            account.getEmailAddress());
+                    header.fragmentArguments = accountBundle;
+
+                    target.add(header);
+                }
+            } while (mAccountsCursor.moveToNext());
+        }
+        onBuildExtraHeaders(target);
+    }
+
+    /**
+     * Override this in a subclass to add extra headers besides "General Settings" and accounts
+     * @param target List of headers to mutate
+     */
+    public void onBuildExtraHeaders(List<Header> target) {
     }
 }

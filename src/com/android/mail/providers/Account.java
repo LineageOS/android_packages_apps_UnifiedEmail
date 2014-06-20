@@ -221,6 +221,11 @@ public class Account implements Parcelable {
     public final Uri quickResponseUri;
 
     /**
+     * Fragment class name for account settings
+     */
+    public final String settingsFragmentClass;
+
+    /**
      * Transient cache of parsed {@link #accountFromAddresses}, plus an entry for the main account
      * address.
      */
@@ -265,6 +270,7 @@ public class Account implements Parcelable {
             json.put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
             json.put(AccountColumns.SYNC_AUTHORITY, syncAuthority);
             json.put(AccountColumns.QUICK_RESPONSE_URI, quickResponseUri);
+            json.put(AccountColumns.SETTINGS_FRAGMENT_CLASS, settingsFragmentClass);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -359,6 +365,7 @@ public class Account implements Parcelable {
         enableMessageTransforms = json.optInt(AccountColumns.ENABLE_MESSAGE_TRANSFORMS);
         syncAuthority = json.optString(AccountColumns.SYNC_AUTHORITY);
         quickResponseUri = Utils.getValidUri(json.optString(AccountColumns.QUICK_RESPONSE_URI));
+        settingsFragmentClass = json.optString(AccountColumns.SETTINGS_FRAGMENT_CLASS, "");
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -437,6 +444,8 @@ public class Account implements Parcelable {
         }
         quickResponseUri = Utils.getValidUri(cursor.getString(
                 cursor.getColumnIndex(AccountColumns.QUICK_RESPONSE_URI)));
+        settingsFragmentClass = cursor.getString(cursor.getColumnIndex(
+                AccountColumns.SETTINGS_FRAGMENT_CLASS));
         settings = new Settings(cursor);
     }
 
@@ -538,6 +547,7 @@ public class Account implements Parcelable {
             LogUtils.e(LOG_TAG, "Unexpected empty syncAuthority from Parcel");
         }
         quickResponseUri = in.readParcelable(null);
+        settingsFragmentClass = in.readString();
         final int hasSettings = in.readInt();
         if (hasSettings == 0) {
             LogUtils.e(LOG_TAG, new Throwable(), "Unexpected null settings in Account(Parcel)");
@@ -580,6 +590,7 @@ public class Account implements Parcelable {
         dest.writeInt(enableMessageTransforms);
         dest.writeString(syncAuthority);
         dest.writeParcelable(quickResponseUri, 0);
+        dest.writeString(settingsFragmentClass);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
             dest.writeInt(0);
@@ -641,6 +652,7 @@ public class Account implements Parcelable {
                 Objects.equal(enableMessageTransforms, other.enableMessageTransforms) &&
                 Objects.equal(syncAuthority, other.syncAuthority) &&
                 Objects.equal(quickResponseUri, other.quickResponseUri) &&
+                Objects.equal(settingsFragmentClass, other.settingsFragmentClass) &&
                 Objects.equal(settings, other.settings);
     }
 
@@ -845,6 +857,7 @@ public class Account implements Parcelable {
         map.put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, enableMessageTransforms);
         map.put(AccountColumns.SYNC_AUTHORITY, syncAuthority);
         map.put(AccountColumns.QUICK_RESPONSE_URI, quickResponseUri);
+        map.put(AccountColumns.SETTINGS_FRAGMENT_CLASS, settingsFragmentClass);
         settings.getValueMap(map);
 
         return map;
