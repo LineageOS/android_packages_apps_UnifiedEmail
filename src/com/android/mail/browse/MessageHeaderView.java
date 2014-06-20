@@ -50,7 +50,6 @@ import com.android.mail.ContactInfo;
 import com.android.mail.ContactInfoSource;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
-import com.android.mail.browse.ConversationViewAdapter.BorderItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
@@ -212,8 +211,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
 
-        void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight,
-                int topBorderHeight, int bottomBorderHeight);
+        void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight);
 
         void setMessageDetailsExpanded(MessageHeaderItem messageHeaderItem, boolean expanded,
                 int previousMessageHeaderItemHeight);
@@ -1020,77 +1018,14 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
         updateChildVisibility();
 
-        final BorderHeights borderHeights = updateBorderExpandedState();
-
         // Force-measure the new header height so we can set the spacer size and
         // reveal the message div in one pass. Force-measuring makes it unnecessary to set
         // mSizeChanged.
         int h = measureHeight();
         mMessageHeaderItem.setHeight(h);
         if (mCallbacks != null) {
-            mCallbacks.setMessageExpanded(mMessageHeaderItem, h,
-                    borderHeights.topHeight, borderHeights.bottomHeight);
+            mCallbacks.setMessageExpanded(mMessageHeaderItem, h);
         }
-    }
-
-    /**
-     * Checks the neighboring messages to this message and
-     * updates the {@link BorderItem}s of the borders of this message
-     * in case they should be collapsed or expanded.
-     * @return a {@link BorderHeights} object containing
-     * the new heights of the top and bottom borders.
-     */
-    private BorderHeights updateBorderExpandedState() {
-        final int position = mMessageHeaderItem.getPosition();
-        final boolean isExpanded = mMessageHeaderItem.isExpanded();
-        final int abovePosition = position - 2; // position of MessageFooterItem above header
-        final int belowPosition = position + 3; // position of next MessageHeaderItem
-        final ConversationViewAdapter adapter = mMessageHeaderItem.getAdapter();
-        final int size = adapter.getCount();
-        final BorderHeights borderHeights = new BorderHeights();
-
-        // if an above message exists, update the border above this message
-        if (isValidPosition(abovePosition, size)) {
-            final ConversationOverlayItem item = adapter.getItem(abovePosition);
-            final int type = item.getType();
-            if (type == ConversationViewAdapter.VIEW_TYPE_MESSAGE_FOOTER ||
-                    type == ConversationViewAdapter.VIEW_TYPE_SUPER_COLLAPSED_BLOCK) {
-                final BorderItem borderItem = (BorderItem) adapter.getItem(abovePosition + 1);
-                final boolean borderIsExpanded = isExpanded || item.isExpanded();
-                borderItem.setExpanded(borderIsExpanded);
-                borderHeights.topHeight = borderIsExpanded ?
-                        BorderView.getExpandedHeight() : BorderView.getCollapsedHeight();
-                borderItem.setHeight(borderHeights.topHeight);
-            }
-        }
-
-
-        // if a below message exists, update the border below this message
-        if (isValidPosition(belowPosition, size)) {
-            final ConversationOverlayItem item = adapter.getItem(belowPosition);
-            if (item.getType() == ConversationViewAdapter.VIEW_TYPE_MESSAGE_HEADER) {
-                final BorderItem borderItem = (BorderItem) adapter.getItem(belowPosition - 1);
-                final boolean borderIsExpanded = isExpanded || item.isExpanded();
-                borderItem.setExpanded(borderIsExpanded);
-                borderHeights.bottomHeight = borderIsExpanded ?
-                        BorderView.getExpandedHeight() : BorderView.getCollapsedHeight();
-                borderItem.setHeight(borderHeights.bottomHeight);
-            }
-        }
-
-        return borderHeights;
-    }
-
-    /**
-     * A plain-old-data class used to return the new heights of the top and bottom borders
-     * in {@link #updateBorderExpandedState()}.
-     * If {@link #topHeight} or {@link #bottomHeight} are -1 after returning,
-     * do not update the heights of the spacer for their respective borders
-     * as their state has not changed.
-     */
-    private class BorderHeights {
-        public int topHeight = -1;
-        public int bottomHeight = -1;
     }
 
     private static boolean isValidPosition(int position, int size) {
