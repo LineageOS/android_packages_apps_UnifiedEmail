@@ -120,10 +120,14 @@ public class ConversationInfo implements Parcelable {
         for (MessageInfo msg : messageInfos) {
             changed |= msg.markRead(read);
         }
-        if (read) {
-            firstSnippet = lastSnippet;
-        } else {
-            firstSnippet = firstUnreadSnippet;
+        // Change the firstSnippet only if the conversation has than more than one
+        // message in this conversation. Otherwise firstSnippet = lastSnippet = firstUnreadSnippet
+        if (messageCount > 0) {
+            if (read) {
+                firstSnippet = lastSnippet;
+            } else {
+                firstSnippet = firstUnreadSnippet;
+            }
         }
         return changed;
     }
