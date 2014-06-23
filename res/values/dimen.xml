@@ -58,7 +58,6 @@
     <dimen name="message_header_action_button_height">48dp</dimen>
     <dimen name="message_header_padding_start">
         @dimen/conversation_message_content_margin_side</dimen>
-    <dimen name="message_header_title_container_margin_end_collapsed">10dp</dimen>
     <dimen name="message_sender_name_text_size">16sp</dimen>
     <dimen name="message_header_subtitle_text_size">12sp</dimen>
     <dimen name="super_collapsed_height">30sp</dimen>

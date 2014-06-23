@@ -23,11 +23,6 @@
         android:src="@drawable/ic_edit_holo_light"
         android:contentDescription="@string/resume_draft" />
     <ImageView
-        android:id="@+id/star"
-        style="@style/MessageHeaderActionButtonStyle"
-        android:src="@drawable/message_header_star"
-        android:contentDescription="@string/add_star" />
-    <ImageView
         android:id="@+id/reply"
         style="@style/MessageHeaderActionButtonStyle"
         android:src="@drawable/ic_reply_holo_light"
