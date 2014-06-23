@@ -16,6 +16,24 @@
       "revId": "b09d5f593aa0ad191dfc67fb6ce22fc7e55d1a05",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba0121b8_93954442",
+        "filename": "src/com/android/mail/providers/ConversationInfo.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 3134
+      },
+      "writtenOn": "2014-06-23T21:27:38Z",
+      "side": 1,
+      "message": "I derped in the comment, sorry. I\u0027ll fix the comment tonight\n\nI try to explain my patch:\n\nThe stock email app doesn\u0027t support conversations and never call set() method, but rather it got the conversation reference from EmailProvider#generateConversationInfo(). In that method the ConversationInfo(int) contructor is called with the number of message, but the messageCount is never set in that constructor, just resize the array according to the message size. Also this method initializes the firstSnippet var. So for the stock Email app we have:\n\nmessageCount \u003d 0\nfirstSnippet !\u003d null\nfirstUnreadSnippet \u003d null\nlastSnippet \u003d null\n\nIn that case when mark/unmark is called the current code set firstSnippet to firstUnreadSnippet or lastSnippet  which actually are null, so my patch just try to prevent to used firstUnreadSnippet/lastSnippet that are prepared just for conversations support (I guess gmail use the \"set\" method in order to allow email conversations).",
+      "parentUuid": "ba0121b8_53dd6c41",
+      "revId": "b09d5f593aa0ad191dfc67fb6ce22fc7e55d1a05",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
