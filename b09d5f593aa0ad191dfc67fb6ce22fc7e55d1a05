@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba0121b8_53dd6c41",
+        "filename": "src/com/android/mail/providers/ConversationInfo.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1063
+      },
+      "writtenOn": "2014-06-23T19:29:33Z",
+      "side": 1,
+      "message": "... only if the conversion has messages.\n\n\nWhat I don\u0027t yet understand is how messageCount can become 0, but firstSnippet, lastSnippet and firstUnreadSnippet are !\u003d null. On reset(), all of them are reset, and one would hope that on set() all of them are set appropriately.\n\nCan you explain this a bit more?",
+      "revId": "b09d5f593aa0ad191dfc67fb6ce22fc7e55d1a05",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
