@@ -456,12 +456,12 @@
     <string name="reply_choice_yes" msgid="5279400403860280271">"Oui"</string>
     <string name="reply_choice_no" msgid="1626377088683186268">"Non"</string>
     <string name="reply_choice_ok" msgid="5138061449166345173">"OK"</string>
-    <string name="reply_choice_hehe" msgid="7883585007161871893">"Hé hé"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"Haha"</string>
     <string name="reply_choice_thanks" msgid="8365439191962120322">"Merci"</string>
     <string name="reply_choice_i_agree" msgid="24980061720212740">"Je suis d’accord."</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"Bien"</string>
     <string name="reply_on_my_way" msgid="8200386879475660650">"J\'arrive."</string>
-    <string name="reply_choice_later" msgid="6294535370720117768">"OK, je te réponds plus tard."</string>
+    <string name="reply_choice_later" msgid="6294535370720117768">"Je te tiens au courant."</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
     <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Confirmations des actions"</string>
