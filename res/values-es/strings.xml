@@ -451,8 +451,8 @@
     <string name="open_source_licenses" msgid="6831573769505612579">"Licencias software libre"</string>
     <string name="reply_choice_yes" msgid="5279400403860280271">"Sí"</string>
     <string name="reply_choice_no" msgid="1626377088683186268">"No"</string>
-    <string name="reply_choice_ok" msgid="5138061449166345173">"Aceptar"</string>
-    <string name="reply_choice_hehe" msgid="7883585007161871893">"Je Je"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"Vale"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"Je, je"</string>
     <string name="reply_choice_thanks" msgid="8365439191962120322">"Gracias"</string>
     <string name="reply_choice_i_agree" msgid="24980061720212740">"Estoy de acuerdo"</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"Genial"</string>
