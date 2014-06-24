@@ -34,6 +34,24 @@
       "revId": "b09d5f593aa0ad191dfc67fb6ce22fc7e55d1a05",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba0121b8_d3f21c9a",
+        "filename": "src/com/android/mail/providers/ConversationInfo.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1063
+      },
+      "writtenOn": "2014-06-24T02:46:58Z",
+      "side": 1,
+      "message": "Ok, understood. I wonder whether \u0027messageCount \u003e 0\u0027 or \u0027lastSnippet !\u003d null \u0026\u0026 firstUnreadSnippet !\u003d null\u0027 is the better check, though.",
+      "parentUuid": "ba0121b8_93954442",
+      "revId": "b09d5f593aa0ad191dfc67fb6ce22fc7e55d1a05",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
