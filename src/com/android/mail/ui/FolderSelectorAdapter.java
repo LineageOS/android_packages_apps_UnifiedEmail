@@ -130,8 +130,8 @@ public class FolderSelectorAdapter extends BaseAdapter {
                 allFolders.add(row);
 
                 // Add system folders here since we want the original unsorted order (for now..)
-                if (!row.isSelected() && meetsRequirements(folder) &&
-                        !Objects.equal(folder, mExcludedFolder) && folder.isProviderFolder()) {
+                if (meetsRequirements(folder) && !Objects.equal(folder, mExcludedFolder) &&
+                        folder.isProviderFolder()) {
                     systemFolders.add(row);
                 }
             } while (folders.moveToNext());
