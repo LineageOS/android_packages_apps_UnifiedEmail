@@ -37,4 +37,7 @@
     <declare-styleable name="FancySummaryListPreference">
         <attr name="entrySummaries" format="reference" />
     </declare-styleable>
+    <declare-styleable name="ConversationHeaderDrawableState">
+        <attr name="state_starred" format="boolean" />
+    </declare-styleable>
 </resources>

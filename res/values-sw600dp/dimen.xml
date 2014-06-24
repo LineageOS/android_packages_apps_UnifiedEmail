@@ -19,9 +19,7 @@
     <dimen name="conversation_view_margin_side">16dp</dimen>
     <dimen name="conversation_header_margin_side">15dp</dimen>
     <dimen name="conversation_header_font_size">24sp</dimen>
-    <dimen name="conversation_header_vertical_padding">26dip</dimen>
-    <dimen name="conversation_header_vertical_padding_condensed">26dip</dimen>
-    <dimen name="conversation_header_side_padding">24dip</dimen>
+    <dimen name="conversation_header_padding_side">24dp</dimen>
     <dimen name="conversation_message_content_margin_side">24dp</dimen>
     <dimen name="conversation_page_gutter">0dip</dimen>
     <dimen name="message_header_inner_side_padding">16dp</dimen>

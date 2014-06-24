@@ -433,8 +433,8 @@ public class ConversationItemView extends View
         if (STAR_OFF == null) {
             final Resources res = context.getResources();
             // Initialize static bitmaps.
-            STAR_OFF = BitmapFactory.decodeResource(res, R.drawable.ic_btn_star_off);
-            STAR_ON = BitmapFactory.decodeResource(res, R.drawable.ic_btn_star_on);
+            STAR_OFF = BitmapFactory.decodeResource(res, R.drawable.ic_star_outline_20dp);
+            STAR_ON = BitmapFactory.decodeResource(res, R.drawable.ic_star_20dp);
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
             ONLY_TO_ME = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_double);
             TO_ME_AND_OTHERS = BitmapFactory.decodeResource(res, R.drawable.ic_email_caret_single);

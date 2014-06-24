@@ -43,13 +43,10 @@
         <item name="android:paddingStart">@dimen/message_header_inner_side_padding</item>
     </style>
 
-    <style name="ConversationSubjectStyle" parent="AbstractConversationSubjectStyle">
-        <item name="android:paddingStart">@dimen/conversation_header_side_padding</item>
-        <item name="android:paddingEnd">@dimen/conversation_header_side_padding</item>
-    </style>
-
-    <style name="ConversationHeaderFolderStyle">
-        <item name="android:paddingStart">@dimen/conversation_header_side_padding</item>
+    <style name="ConversationHeaderMarginStyle">
+        <item name="android:layout_marginStart">@dimen/conversation_header_margin_side</item>
+        <item name="android:layout_marginEnd">@dimen/conversation_header_margin_side</item>
+        <item name="android:paddingStart">@dimen/conversation_header_padding_side</item>
     </style>
 
     <style name="CheckedTextStyle">
@@ -120,11 +117,6 @@
 
     <style name="AttachmentIconStyle">
         <item name="android:layout_marginStart">@dimen/attachment_icon_padding</item>
-    </style>
-
-    <style name="ConversationHeaderSideMarginStyle">
-        <item name="android:layout_marginStart">@dimen/conversation_header_margin_side</item>
-        <item name="android:layout_marginEnd">@dimen/conversation_header_margin_side</item>
     </style>
 
     <style name="UndoNotificationStyle">

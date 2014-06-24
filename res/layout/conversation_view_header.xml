@@ -20,29 +20,29 @@
     android:id="@+id/conversation_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
-    android:orientation="vertical"
-    style="@style/ConversationHeaderSideMarginStyle" >
+    android:background="@color/conversation_view_background_color"
+    android:orientation="horizontal"
+    android:minHeight="88sp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    style="@style/ConversationHeaderMarginStyle" >
 
-    <TextView
-        android:id="@+id/subject"
-        android:layout_width="wrap_content"
+    <com.android.mail.browse.SubjectAndFolderView
+        android:id="@+id/subject_and_folder_view"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/conversation_header_vertical_padding"
-        android:includeFontPadding="false"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
         android:textAlignment="viewStart"
         style="@style/ConversationSubjectStyle" />
 
-    <com.android.mail.browse.FolderSpanTextView
-        android:id="@+id/folders"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|end"
+    <com.android.mail.browse.StarView
+        android:id="@+id/conversation_header_star"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_gravity="center_vertical"
         android:background="?android:attr/selectableItemBackground"
-        android:gravity="right|end"
-        android:includeFontPadding="false"
-        android:lineSpacingExtra="4dp"
-        android:textSize="@dimen/conversation_folder_font_size"
-        style="@style/ConversationHeaderFolderStyle"/>
+        android:scaleType="center"
+        android:src="@drawable/star" />
 
 </com.android.mail.browse.ConversationViewHeader>
