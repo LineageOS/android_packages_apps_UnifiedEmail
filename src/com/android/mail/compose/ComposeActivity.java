@@ -2424,25 +2424,34 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
             if (!sendOrSaveMessage.mSave) {
                 incrementRecipientsTimesContacted(
-                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.TO));
-                incrementRecipientsTimesContacted(
-                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.CC));
-                incrementRecipientsTimesContacted(
+                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.TO),
+                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.CC),
                         (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.BCC));
             }
             mSendOrSaveCallback.sendOrSaveFinished(SendOrSaveTask.this, true);
         }
 
-        private void incrementRecipientsTimesContacted(final String addressString) {
+        private void incrementRecipientsTimesContacted(
+                final String toAddresses, final String ccAddresses, final String bccAddresses) {
+            final List<String> recipients = Lists.newArrayList();
+            addAddressesToRecipientList(recipients, toAddresses);
+            addAddressesToRecipientList(recipients, ccAddresses);
+            addAddressesToRecipientList(recipients, bccAddresses);
+            mSendOrSaveCallback.incrementRecipientsTimesContacted(recipients);
+        }
+
+        private void addAddressesToRecipientList(
+                final List<String> recipients, final String addressString) {
+            if (recipients == null) {
+                throw new IllegalArgumentException("recipientList cannot be null");
+            }
             if (TextUtils.isEmpty(addressString)) {
                 return;
             }
             final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addressString);
-            final ArrayList<String> recipients = new ArrayList<String>(tokens.length);
             for (final Rfc822Token token : tokens) {
                 recipients.add(token.getAddress());
             }
-            mSendOrSaveCallback.incrementRecipientsTimesContacted(recipients);
         }
 
         /**
