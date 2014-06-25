@@ -15,7 +15,6 @@
 LOCAL_PATH:= $(call my-dir)
 
 src_dirs := src
-res_dirs := res
 
 ##################################################
 
@@ -31,7 +30,6 @@ LOCAL_PACKAGE_NAME := UnifiedEmailTests
 LOCAL_INSTRUMENTATION_FOR := UnifiedEmail
 
 LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs))
-LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 LOCAL_AAPT_FLAGS := --auto-add-overlay
 
 include $(BUILD_PACKAGE)
