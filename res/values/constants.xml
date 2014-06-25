@@ -137,7 +137,7 @@
     <integer name="vacation_responder_body_length">1024000</integer>
 
     <!-- Indicates whether the help and feedback items should be displayed in the drawer. -->
-    <bool name="show_help_and_feedback_in_drawer">false</bool>
+    <bool name="show_help_and_feedback_in_drawer">true</bool>
 
     <!-- Indicates whether help URLs should be opened by a system browser outside the application or with a webview inside the application -->
     <bool name="openHelpWithBrowser">true</bool>

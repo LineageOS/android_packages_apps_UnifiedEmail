@@ -18,6 +18,10 @@
 <resources>
     <!-- Help context for the compose screen  -->
     <string name="compose_help_context" translatable="false">compose</string>
+    <!-- Help context for the conversation list screen  -->
+    <string name="conversation_list_help_context" translatable="false">android_conversation_list</string>
+    <!-- Help context for the conversation view screen  -->
+    <string name="conversation_view_help_context" translatable="false">android_conversation_view</string>
     <!-- Help context for the wait mode  -->
     <string name="wait_help_context" translatable="false">wait</string>
     <!-- Help context for the conversation list, and viewing the conversation (one or two pane)  -->

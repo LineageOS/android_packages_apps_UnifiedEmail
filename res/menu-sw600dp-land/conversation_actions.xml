@@ -146,13 +146,8 @@
         android:showAsAction="never" />
 
     <item
-        android:id="@+id/feedback_menu_item"
-        android:title="@string/feedback"
-        android:showAsAction="never" />
-
-    <item
         android:id="@+id/help_info_menu_item"
-        android:title="@string/help_and_info"
+        android:title="@string/help_and_feedback"
         android:showAsAction="never" />
 
 </menu>
