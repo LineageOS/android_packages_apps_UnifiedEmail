@@ -1177,4 +1177,5 @@
     <!-- Name of the Settings activity -->
     <string name="activity_preferences">Settings</string>
 
+    <string name="user_agent_format" translatable="false">%1$s AndroidUnifiedEmail/%2$s</string>
 </resources>
