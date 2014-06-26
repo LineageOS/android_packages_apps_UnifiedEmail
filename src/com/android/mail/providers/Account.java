@@ -723,7 +723,7 @@ public class Account implements Parcelable {
             mReplyFroms = Lists.newArrayList();
 
             // skip if sending is unsupported
-            if (supportsCapability(AccountCapabilities.SENDING_UNAVAILABLE)) {
+            if (supportsCapability(AccountCapabilities.VIRTUAL_ACCOUNT)) {
                 return mReplyFroms;
             }
 

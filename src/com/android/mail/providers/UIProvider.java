@@ -296,9 +296,9 @@ public class UIProvider {
          */
         public static final int INITIAL_CONVERSATION_LIMIT = 0x40000;
         /**
-         * Whether the account cannot be used for sending
+         * Whether the account is not a real account, i.e. Combined View
          */
-        public static final int SENDING_UNAVAILABLE = 0x80000;
+        public static final int VIRTUAL_ACCOUNT = 0x80000;
         /**
          * Whether the account supports discarding drafts from a conversation.  This should be
          * removed when all providers support this capability
