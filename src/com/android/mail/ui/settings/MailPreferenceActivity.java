@@ -30,6 +30,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.lang.ref.WeakReference;
@@ -99,7 +100,8 @@ public class MailPreferenceActivity extends PreferenceActivity {
         if (mAccountsCursor != null && mAccountsCursor.moveToFirst()) {
             do {
                 final Account account = new Account(mAccountsCursor);
-                if (!TextUtils.isEmpty(account.getEmailAddress())) {
+                // TODO: This will no longer be needed when the Combined view is moved to Unified
+                if (!account.supportsCapability(AccountCapabilities.VIRTUAL_ACCOUNT)) {
                     final Header header = new Header();
                     if (TextUtils.isEmpty(account.getDisplayName()) ||
                             TextUtils.equals(account.getDisplayName(), account.getEmailAddress())) {
