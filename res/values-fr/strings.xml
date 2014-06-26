@@ -444,6 +444,7 @@
     <string name="view_entire_message" msgid="1553882732296911563">"Afficher l\'intégralité du message"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Impossible d\'ouvrir ce fichier."</string>
     <string name="help_and_info" msgid="7873089811705257882">"Aide"</string>
+    <string name="help_and_feedback" msgid="8247702474242002137">"Aide et commentaires"</string>
     <string name="feedback" msgid="79365993169715049">"Envoyer des commentaires"</string>
     <string name="copyright" msgid="8707923211554475583">"© Google Inc. <xliff:g id="YEAR">%1$d</xliff:g>"</string>
     <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> version <xliff:g id="VERSION">%2$s</xliff:g>"</string>
@@ -455,12 +456,12 @@
     <string name="reply_choice_yes" msgid="5279400403860280271">"Oui"</string>
     <string name="reply_choice_no" msgid="1626377088683186268">"Non"</string>
     <string name="reply_choice_ok" msgid="5138061449166345173">"OK"</string>
-    <string name="reply_choice_hehe" msgid="7883585007161871893">"Hé hé"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"Haha"</string>
     <string name="reply_choice_thanks" msgid="8365439191962120322">"Merci"</string>
     <string name="reply_choice_i_agree" msgid="24980061720212740">"Je suis d’accord."</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"Bien"</string>
     <string name="reply_on_my_way" msgid="8200386879475660650">"J\'arrive."</string>
-    <string name="reply_choice_later" msgid="6294535370720117768">"OK, je te réponds plus tard."</string>
+    <string name="reply_choice_later" msgid="6294535370720117768">"Je te tiens au courant."</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
     <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Confirmations des actions"</string>
@@ -485,4 +486,6 @@
     <string name="clear_history_dialog_title" msgid="2726420681651913195">"Effacer l\'historique des recherches ?"</string>
     <string name="clear_history_dialog_message" msgid="3779277353786135671">"Toutes les recherches que vous avez effectuées auparavant seront supprimées."</string>
     <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Gérer les comptes"</string>
+    <string name="general_preferences_title" msgid="8621924870295902645">"Paramètres généraux"</string>
+    <string name="activity_preferences" msgid="6611815076475600840">"Paramètres"</string>
 </resources>

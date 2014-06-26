@@ -444,6 +444,7 @@
     <string name="view_entire_message" msgid="1553882732296911563">"ดูทั้งข้อความ"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"ไม่สามารถเปิดไฟล์นี้"</string>
     <string name="help_and_info" msgid="7873089811705257882">"ความช่วยเหลือ"</string>
+    <string name="help_and_feedback" msgid="8247702474242002137">"ความช่วยเหลือและความเห็น"</string>
     <string name="feedback" msgid="79365993169715049">"ส่งความคิดเห็น"</string>
     <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
     <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> เวอร์ชัน <xliff:g id="VERSION">%2$s</xliff:g>"</string>
@@ -485,4 +486,6 @@
     <string name="clear_history_dialog_title" msgid="2726420681651913195">"ล้างประวัติการค้นหาไหม"</string>
     <string name="clear_history_dialog_message" msgid="3779277353786135671">"ระบบจะนำการค้นหาทั้งหมดที่คุณได้ทำไปก่อนหน้านี้ออก"</string>
     <string name="manage_accounts_menu_item" msgid="1585009985898462502">"จัดการบัญชี"</string>
+    <string name="general_preferences_title" msgid="8621924870295902645">"การตั้งค่าทั่วไป"</string>
+    <string name="activity_preferences" msgid="6611815076475600840">"การตั้งค่า"</string>
 </resources>
