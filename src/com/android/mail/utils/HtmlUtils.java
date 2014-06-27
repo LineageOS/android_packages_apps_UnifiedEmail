@@ -20,9 +20,9 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.QuoteSpan;
-import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.text.style.URLSpan;
@@ -71,6 +71,10 @@ public class HtmlUtils {
      *   - div
      */
     public static class SpannedConverter implements HtmlTree.Converter<Spanned> {
+        // Pinto normal text size is 2 while normal for AbsoluteSizeSpan is 12.
+        // So 6 seems to be the magic number here. Html.toHtml also uses 6 as divider.
+        private static final int WEB_TO_ANDROID_SIZE_MULTIPLIER = 6;
+
         protected final SpannableStringBuilder mBuilder = new SpannableStringBuilder();
         private final LinkedList<TagWrapper> mSeenTags = Lists.newLinkedList();
 
@@ -207,9 +211,8 @@ public class HtmlUtils {
             if (attr != null) {
                 int i = Integer.parseInt(attr.getValue());
                 if (i != -1) {
-                    // default text size for pinto SEEMS to be 2, let's just use this
-                    mBuilder.setSpan(new RelativeSizeSpan(i / 2f), start, end,
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    mBuilder.setSpan(new AbsoluteSizeSpan(i * WEB_TO_ANDROID_SIZE_MULTIPLIER,
+                            true /* use dip */), start, end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
 
