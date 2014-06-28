@@ -480,6 +480,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.compose);
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null && Utils.isRunningLOrLater()) {
+            // Hide the app icon.  This only happens on L devices, as pre-L the action bar
+            // layout works with app icon
+            actionBar.setIcon(null);
+        }
+
         mInnerSavedState = (savedInstanceState != null) ?
                 savedInstanceState.getBundle(KEY_INNER_SAVED_STATE) : null;
         checkValidAccounts();
