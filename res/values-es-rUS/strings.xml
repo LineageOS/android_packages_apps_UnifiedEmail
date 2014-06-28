@@ -485,6 +485,6 @@
     <string name="clear_history_title" msgid="8974919373315137028">"Eliminar historial de búsquedas"</string>
     <string name="search_history_cleared" msgid="1524305711478787614">"Se eliminó el historial de búsquedas."</string>
     <string name="clear_history_dialog_title" msgid="2726420681651913195">"¿Quieres eliminar el historial de búsquedas?"</string>
-    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Se eliminarán todas las búsquedas que realizaste previamente."</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Se eliminarán todas las búsquedas que realizaste."</string>
     <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Administrar cuentas"</string>
 </resources>
