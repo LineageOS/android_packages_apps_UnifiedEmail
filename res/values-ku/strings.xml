@@ -17,7 +17,77 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="discard">ڕەتکردنەوە</string>
+  <string-array name="compose_modes">
+    <item>Reply</item>
+    <item>Reply all</item>
+    <item>پۆ پێش</item>
+  </string-array>
+  <string name="send">ناردن</string>
+  <string name="mute">کپکردن</string>
+  <string name="delete">سڕینه‌وه‌</string>
+  <string name="refresh">تازەکردنەوە</string>
+  <string name="resume_draft">دەستکاری</string>
+  <string name="forward">پۆ پێش</string>
+  <string name="menu_settings">ڕێکخستنه‌کان</string>
+  <string name="menu_search">گەڕان</string>
+  <string name="help_and_info">یارمەتی</string>
+  <string name="attachment_audio">ده‌نگ</string>
+  <string name="preview_attachment">دەرخستن</string>
   <string name="save_attachment">پاشەکەوتکردن</string>
+  <string name="cancel_attachment">هەڵوەشاندنەوە</string>
+  <string name="please_wait">تکایە چاوەڕێبکە\u2026</string>
+  <string name="menu_photo_share">هاوبه‌شیکردن</string>
   <string name="choosertitle_sharevia">به‌شداریپێکردن له‌ ڕێگه‌ی</string>
+  <string name="contextmenu_copy">لەبەرگرتنەوە</string>
+  <string name="contextmenu_copylink">لەبەرگرتنەوەی بەستەرەیURL</string>
+  <string name="contextmenu_dial_dot">لێدان بۆ \u2026</string>
+  <string name="contextmenu_add_contact">زیادکردن بۆ پەیوەندەکان</string>
+  <string name="contextmenu_send_mail">ناردنی ئیمێڵ</string>
+  <string name="contextmenu_map">نەخشە</string>
+  <string name="contextmenu_sharelink">بەشدارکردن بەستەرە</string>
+  <string name="contextmenu_help">یارمەتی</string>
+  <string name="sending">ناردن\u2026</string>
+  <string name="loading_conversations">دامەزراندنی\u2026</string>
+  <string name="deleted">سڕایەوە</string>
+  <string name="search_results_searching_header">گەڕان\u2026</string>
+  <string name="message_invite_accept">بەڵێ</string>
+  <string name="message_invite_decline">نەخێر</string>
+  <string name="yes">بەڵێ</string>
+  <string name="no">نەخێر</string>
+  <string name="ok">باشه‌</string>
+  <string name="done">ئه‌نجامدرا</string>
+  <string name="cancel">هەڵوەشاندنەوە</string>
   <string name="clear">پاکردنەوە</string>
+  <string-array name="sync_status">
+    <item>Success</item>
+    <item>No connection.</item>
+    <item>نەتوانرا بچێتەژورەوە.</item>
+    <item>Security error.</item>
+    <item>Couldn\'t sync.</item>
+    <item>Internal Error</item>
+  </string-array>
+  <string name="loading_conversation">دامەزراندنی\u2026</string>
+  <string name="activity_mailbox_selection">هەژمارێک هەڵبژێرە</string>
+  <string name="network_error">په‌یوه‌ندی نیه‌</string>
+  <string name="retry">دوبارە هەوڵدانەوە</string>
+  <string name="manual_sync">ئێستا بینێرە</string>
+  <string-array name="moveto_folder_sections">
+    <item>سیستەم</item>
+    <item>Frequently Used</item>
+    <item>All Folders</item>
+  </string-array>
+  <string name="report">ڕاپۆرت</string>
+  <string name="storage">بیرگه‌</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item>Newer</item>
+    <item>بەتەمەنتر</item>
+    <item>Conversation list</item>
+  </string-array>
+  <string name="preferences_signature_summary_not_set">دانەنراوە</string>
+  <string name="notification_action_delete">سڕینه‌وه‌</string>
+  <string name="notification_action_undo_delete">سڕایەوە</string>
+  <string name="silent_ringtone">بێدەنگ</string>
+  <string name="add_account">دانانی هەژمار</string>
+  <string name="turn_auto_sync_on_dialog_confirm_btn">کردنە کار</string>
 </resources>
